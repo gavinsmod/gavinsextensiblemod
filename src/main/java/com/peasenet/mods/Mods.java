@@ -7,6 +7,5 @@ package com.peasenet.mods;
 public class Mods {
     public static boolean flyEnabled = false;
     public static boolean fastMine = false;
-    public static boolean xrayEnabled = false;
     public static boolean fullBrightEnabled = false;
 }

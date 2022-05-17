@@ -1,4 +1,4 @@
-package com.peasenet.example;
+package com.peasenet.mixins;
 
 import com.peasenet.mods.Mods;
 import net.minecraft.block.BlockState;

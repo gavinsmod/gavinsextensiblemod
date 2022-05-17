@@ -1,6 +1,6 @@
-package com.peasenet.example;
+package com.peasenet.mixins;
 
-import com.peasenet.mods.Mods;
+import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.XrayMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * @version 5/15/2022
  */
 @Mixin(Block.class)
-public class XRay {
+public class MixinBlock {
     @Inject(at = @At("HEAD"), method = "shouldDrawSide(" + "Lnet/minecraft/block/BlockState;" + // state
             "Lnet/minecraft/world/BlockView;" + // reader
             "Lnet/minecraft/util/math/BlockPos;" + // pos
@@ -26,12 +26,8 @@ public class XRay {
             ")Z", // ci
             cancellable = true)
     private static boolean xray(BlockState state, BlockView world, BlockPos pos, Direction side, BlockPos otherPos, CallbackInfoReturnable<Boolean> cir) {
-        if (Mods.xrayEnabled) {
-            boolean blockVisible = XrayMod.isBlockVisible(state);
-            cir.setReturnValue(blockVisible);
-            return blockVisible;
-        }
-        cir.setReturnValue(true);
-        return true;
+        boolean blockVisible = XrayMod.shouldDrawFace(state);
+        cir.setReturnValue(blockVisible);
+        return blockVisible;
     }
 }

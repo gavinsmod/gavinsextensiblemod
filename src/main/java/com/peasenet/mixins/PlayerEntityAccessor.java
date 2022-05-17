@@ -1,4 +1,4 @@
-package com.peasenet.example;
+package com.peasenet.mixins;
 
 import net.minecraft.entity.player.PlayerAbilities;
 import net.minecraft.entity.player.PlayerEntity;

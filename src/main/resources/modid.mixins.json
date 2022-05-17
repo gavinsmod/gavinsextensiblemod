@@ -1,16 +1,16 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.peasenet.example",
+  "package": "com.peasenet.mixins",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
   ],
   "client": [
     "PlayerEntityAccessor",
     "PlayerInventoryAccessor",
-    "Fly",
+    "MixinPlayerEntity",
     "FastMine",
-    "XRay",
+    "MixinBlock",
     "MixinLightmapTextureManager"
   ],
   "injectors": {

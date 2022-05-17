@@ -1,8 +1,11 @@
 package com.peasenet.mods;
 
+import com.peasenet.main.GavinsMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.option.AoMode;
+import net.minecraft.client.option.KeyBinding;
 
 import java.util.ArrayList;
 
@@ -10,9 +13,10 @@ import java.util.ArrayList;
  * @author gt3ch1
  * @version 5/16/2022
  */
-public class XrayMod {
+public class XrayMod extends Mod {
+    private static AoMode prevAoMode;
     /**
-     * Block list of blocks that SHOULD be visible (coal, iron, gold, diamond, lapis, redstone, etc.)
+     * A list of blocks that SHOULD be visible (coal, iron, gold, diamond, lapis, redstone, etc.)
      */
     public static ArrayList<Block> blocks = new ArrayList<>() {
         {
@@ -38,13 +42,38 @@ public class XrayMod {
         }
     };
 
+    public XrayMod(ModType type, KeyBinding keyBinding) {
+        super(type, keyBinding);
+    }
+
+    @Override
+    public void activate() {
+        prevAoMode = getOptions().ao;
+        isEnabled = true;
+        getOptions().ao = AoMode.OFF;
+        getClient().chunkCullingEnabled = false;
+        getClient().worldRenderer.reload();
+        onEnable();
+    }
+
+    @Override
+    public void deactivate() {
+        isEnabled = false;
+        getOptions().ao = prevAoMode;
+        getClient().chunkCullingEnabled = true;
+        getClient().worldRenderer.reload();
+        onDisable();
+    }
+
     /**
      * Checks if a block is visible
      *
      * @param block Block to check
      * @return True if visible, false if not
      */
-    public static boolean isBlockVisible(BlockState block) {
-        return blocks.contains(block.getBlock());
+    public static boolean shouldDrawFace(BlockState block) {
+        if (GavinsMod.XRay.isActive())
+            return blocks.contains(block.getBlock());
+        return true;
     }
 }

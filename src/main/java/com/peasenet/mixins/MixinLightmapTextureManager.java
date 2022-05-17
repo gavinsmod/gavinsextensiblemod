@@ -1,5 +1,6 @@
-package com.peasenet.example;
+package com.peasenet.mixins;
 
+import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mods;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -16,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinLightmapTextureManager {
     @Redirect(at = @At(value = "FIELD", target = "Lnet/minecraft/client/option/GameOptions;gamma*:D", opcode = Opcodes.GETFIELD), method = "update(F)V")
     private double getFieldValue(GameOptions options) {
-        if (Mods.xrayEnabled || Mods.fullBrightEnabled) {
+        if (GavinsMod.XRay.isActive() || Mods.fullBrightEnabled) {
             return 10000;
         } else {
             return options.gamma;
