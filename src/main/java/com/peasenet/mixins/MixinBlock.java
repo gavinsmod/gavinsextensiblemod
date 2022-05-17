@@ -1,7 +1,6 @@
 package com.peasenet.mixins;
 
-import com.peasenet.main.GavinsMod;
-import com.peasenet.mods.XrayMod;
+import com.peasenet.mods.ModXray;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -26,7 +25,7 @@ public class MixinBlock {
             ")Z", // ci
             cancellable = true)
     private static boolean xray(BlockState state, BlockView world, BlockPos pos, Direction side, BlockPos otherPos, CallbackInfoReturnable<Boolean> cir) {
-        boolean blockVisible = XrayMod.shouldDrawFace(state);
+        boolean blockVisible = ModXray.shouldDrawFace(state);
         cir.setReturnValue(blockVisible);
         return blockVisible;
     }

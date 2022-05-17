@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * @author gt3ch1
  * @version 5/16/2022
  */
-public class XrayMod extends Mod {
+public class ModXray extends Mod {
     private static AoMode prevAoMode;
     /**
      * A list of blocks that SHOULD be visible (coal, iron, gold, diamond, lapis, redstone, etc.)
@@ -42,7 +42,7 @@ public class XrayMod extends Mod {
         }
     };
 
-    public XrayMod(ModType type, KeyBinding keyBinding) {
+    public ModXray(ModType type, KeyBinding keyBinding) {
         super(type, keyBinding);
     }
 

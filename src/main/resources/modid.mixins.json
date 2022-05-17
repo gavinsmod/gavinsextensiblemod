@@ -9,7 +9,6 @@
     "PlayerEntityAccessor",
     "PlayerInventoryAccessor",
     "MixinPlayerEntity",
-    "FastMine",
     "MixinBlock",
     "MixinLightmapTextureManager"
   ],
