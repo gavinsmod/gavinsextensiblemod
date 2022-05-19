@@ -1,39 +1,34 @@
 package com.peasenet.main;
 
 import com.peasenet.mods.Mod;
-import com.peasenet.mods.Mods;
+import com.peasenet.util.RenderUtils;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.ClientGameSession;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.option.AoMode;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.LiteralText;
-import org.lwjgl.glfw.GLFW;
+import net.minecraft.util.math.Box;
 
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.HashSet;
 
 /**
  * @author gt3ch1
  * @version 5/15/2022
  */
 public class GavinsModClient implements ClientModInitializer {
-    public static KeyBinding fastMineKeybinding;
-    public static KeyBinding fullBrightKeybinding;
+
+    public static HashSet<Box> boxesToRender = new HashSet<>();
+    public static boolean boxesRendered = false;
 
     @Override
     public void onInitializeClient() {
         GavinsMod.LOGGER.info("GavinsMod keybinding initialized");
-        AtomicReference<AoMode> prevAoMode = new AtomicReference<>((AoMode) AoMode.OFF);
-        AtomicReference<Boolean> prevCulling = new AtomicReference<>(false);
         ClientTickEvents.START_CLIENT_TICK.register((client) -> {
-            for(Mod m : GavinsMod.mods){
+            for (Mod m : GavinsMod.mods) {
                 m.onTick();
             }
         });
+        WorldRenderEvents.AFTER_ENTITIES.register(RenderUtils::onRender);
     }
 
     public static MinecraftClient getMinecraftClient() {
@@ -42,5 +37,10 @@ public class GavinsModClient implements ClientModInitializer {
 
     public static ClientPlayerEntity getPlayer() {
         return getMinecraftClient().player;
+    }
+
+    public static void AddBox(Box box) {
+        if (!boxesRendered)
+            boxesToRender.add(box);
     }
 }

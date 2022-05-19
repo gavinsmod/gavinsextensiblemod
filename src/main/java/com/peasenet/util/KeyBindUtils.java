@@ -4,10 +4,12 @@ import com.peasenet.mods.ModType;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import org.lwjgl.glfw.GLFW;
 
-public class UtilKeyBind {
+public class KeyBindUtils {
     /**
      * Gets the keybinding for the given mod type.
+     *
      * @param type The mod type.
      * @return The keybinding.
      */
@@ -22,10 +24,20 @@ public class UtilKeyBind {
 
     /**
      * Registers the keybinding for the given mod type.
+     *
      * @param type The mod type.
      * @return The keybinding.
      */
     public static KeyBinding registerKeyBindForType(ModType type) {
         return KeyBindingHelper.registerKeyBinding(getKeyBinding(type));
+    }
+
+    public static KeyBinding reigsterEmptyKeyBind(ModType type) {
+        return KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                type.getTranslationKey(),
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_UNKNOWN,
+                type.getCategory()
+        ));
     }
 }

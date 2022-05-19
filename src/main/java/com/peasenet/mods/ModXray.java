@@ -1,11 +1,13 @@
 package com.peasenet.mods;
 
 import com.peasenet.main.GavinsMod;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.option.AoMode;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 
@@ -14,7 +16,6 @@ import java.util.ArrayList;
  * @version 5/16/2022
  */
 public class ModXray extends Mod {
-    private static AoMode prevAoMode;
     /**
      * A list of blocks that SHOULD be visible (coal, iron, gold, diamond, lapis, redstone, etc.)
      */
@@ -34,7 +35,7 @@ public class ModXray extends Mod {
             add(Blocks.DEEPSLATE_LAPIS_ORE);
             add(Blocks.DEEPSLATE_REDSTONE_ORE);
             add(Blocks.DEEPSLATE_EMERALD_ORE);
-            add(Blocks.CHEST);
+//            add(Blocks.CHEST);
             add(Blocks.END_PORTAL_FRAME);
             add(Blocks.END_PORTAL);
             add(Blocks.ENDER_CHEST);
@@ -42,15 +43,19 @@ public class ModXray extends Mod {
         }
     };
 
-    public ModXray(ModType type, KeyBinding keyBinding) {
-        super(type, keyBinding);
+    public ModXray() {
+        super(ModType.XRAY, ModCategory.WORLD, KeyBindingHelper.registerKeyBinding(
+                new KeyBinding(ModType.XRAY.getTranslationKey(),
+                        InputUtil.Type.KEYSYM,
+                        GLFW.GLFW_KEY_X,
+                        ModType.XRAY.getCategory())));
+        ;
     }
 
     @Override
     public void activate() {
-        prevAoMode = getOptions().ao;
         isEnabled = true;
-        getOptions().ao = AoMode.OFF;
+
         getClient().chunkCullingEnabled = false;
         getClient().worldRenderer.reload();
         onEnable();
@@ -59,7 +64,6 @@ public class ModXray extends Mod {
     @Override
     public void deactivate() {
         isEnabled = false;
-        getOptions().ao = prevAoMode;
         getClient().chunkCullingEnabled = true;
         getClient().worldRenderer.reload();
         onDisable();
@@ -72,7 +76,7 @@ public class ModXray extends Mod {
      * @return True if visible, false if not
      */
     public static boolean shouldDrawFace(BlockState block) {
-        if (GavinsMod.XRay.isActive())
+        if (GavinsMod.XRayEnabled())
             return blocks.contains(block.getBlock());
         return true;
     }

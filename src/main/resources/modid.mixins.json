@@ -10,7 +10,11 @@
     "PlayerInventoryAccessor",
     "MixinPlayerEntity",
     "MixinBlock",
-    "MixinLightmapTextureManager"
+    "MixinEntity",
+    "MixinLightmapTextureManager",
+    "WorldRendererInvoker",
+    "MixinMinecraftClient",
+    "EntityAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

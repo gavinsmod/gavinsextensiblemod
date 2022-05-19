@@ -12,16 +12,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerEntity.class)
 public class MixinPlayerEntity {
+
+    PlayerEntityAccessor accessor = (PlayerEntityAccessor) this;
+
     @Inject(method = "tick", at = @At("HEAD"))
     public void checkFlyKeybind(CallbackInfo info) {
-        PlayerEntityAccessor accessor = (PlayerEntityAccessor) this;
         PlayerAbilities abilities = accessor.getAbilities();
-        abilities.allowFlying = GavinsMod.Fly.isActive() || abilities.creativeMode;
+        abilities.allowFlying = GavinsMod.FlyEnabled() || abilities.creativeMode;
     }
 
     @Inject(method = "getBlockBreakingSpeed", at = @At("RETURN"), cancellable = true)
     public float checkFastMine(BlockState state, CallbackInfoReturnable<Float> ci) {
-        if (GavinsMod.FastMine.isActive()) {
+
+        if (GavinsMod.FastMineEnabled()) {
             ci.setReturnValue(500.0f);
             return 500.0f;
         }

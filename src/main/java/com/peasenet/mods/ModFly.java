@@ -1,9 +1,9 @@
 package com.peasenet.mods;
 
-import net.minecraft.client.option.KeyBinding;
+import com.peasenet.util.KeyBindUtils;
 
 public class ModFly extends Mod {
-    public ModFly(ModType type, KeyBinding keyBinding) {
-        super(type, keyBinding);
+    public ModFly() {
+        super(ModType.FLY, ModCategory.TICKABLE, KeyBindUtils.registerKeyBindForType(ModType.FLY));
     }
 }

@@ -1,6 +1,7 @@
 package com.peasenet.mods;
 
 import com.peasenet.main.GavinsModClient;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
@@ -10,11 +11,12 @@ public abstract class Mod implements IMod {
 
     public KeyBinding keyBinding;
     private final ModType type;
-
+    private final ModCategory category;
     public boolean isEnabled = false;
 
-    public Mod(ModType type, KeyBinding keyBinding) {
+    public Mod(ModType type, ModCategory category, KeyBinding keyBinding) {
         this.type = type;
+        this.category = category;
         this.keyBinding = keyBinding;
     }
 
@@ -31,8 +33,8 @@ public abstract class Mod implements IMod {
     }
 
     protected void checkKeybinding() {
-        if(keyBinding.wasPressed()) {
-            if(isEnabled) {
+        if (keyBinding.wasPressed()) {
+            if (isEnabled) {
                 deactivate();
             } else {
                 activate();
@@ -54,15 +56,24 @@ public abstract class Mod implements IMod {
         onDisable();
     }
 
+    public void afterEntities(WorldRenderContext context) {
+
+    }
+
     public static void sendMessage(String message) {
         GavinsModClient.getPlayer().sendMessage(new LiteralText(message), false);
     }
 
-    protected static MinecraftClient getClient(){
+    protected static MinecraftClient getClient() {
         return GavinsModClient.getMinecraftClient();
     }
 
-    protected static GameOptions getOptions(){
+    protected static GameOptions getOptions() {
         return getClient().options;
     }
+
+    public ModCategory getCategory() {
+        return category;
+    }
+
 }

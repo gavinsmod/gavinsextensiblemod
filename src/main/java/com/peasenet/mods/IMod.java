@@ -1,8 +1,9 @@
 package com.peasenet.mods;
 
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+
 public interface IMod {
 
-    boolean active = false;
 
     /**
      * Runs on enabling of mod.
@@ -33,4 +34,18 @@ public interface IMod {
      * Disables the mod.
      */
     void deactivate();
+
+    /**
+     * Renders after entities.
+     *
+     * @param context
+     */
+    void afterEntities(WorldRenderContext context);
+
+    /**
+     * Get the mod category
+     *
+     * @return
+     */
+    ModCategory getCategory();
 }
