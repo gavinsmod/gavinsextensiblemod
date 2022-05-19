@@ -18,8 +18,12 @@ public class GavinsMod implements ModInitializer {
     private static final ModFly Fly = new ModFly();
     private static final ModFastMine FastMine = new ModFastMine();
     private static final ModFullBright FullBright = new ModFullBright();
-    private static final ModMobEsp MobEsp = new ModMobEsp();
     private static final ModChestEsp ChestEsp = new ModChestEsp();
+    private static final ModChestTracer ChestTracer = new ModChestTracer();
+    private static final ModMobEsp MobEsp = new ModMobEsp();
+    private static final ModMobTracer MobTracer = new ModMobTracer();
+    private static final ModEntityItemTracer EntityItemTracer = new ModEntityItemTracer();
+    private static final ModEntityItemEsp EntityItemEsp = new ModEntityItemEsp();
     public static ArrayList<Mod> mods;
 
     @Override
@@ -31,8 +35,15 @@ public class GavinsMod implements ModInitializer {
                 add(Fly);
                 add(FastMine);
                 add(FullBright);
-                add(MobEsp);
+
                 add(ChestEsp);
+                add(ChestTracer);
+
+                add(MobEsp);
+                add(MobTracer);
+
+                add(EntityItemEsp);
+                add(EntityItemTracer);
             }
         };
     }
@@ -53,12 +64,29 @@ public class GavinsMod implements ModInitializer {
         return FullBright.isActive();
     }
 
-    public static boolean MobTracerEnabled() {
+    public static boolean ChestEspEnabled() {
+        return ChestEsp.isActive();
+    }
+
+    public static boolean EntityTracerEnabled() {
+        return MobTracer.isActive();
+    }
+
+    public static boolean EntityEspEnabled() {
         return MobEsp.isActive();
     }
 
-    public static boolean ChestFinderEnabled() {
-        return ChestEsp.isActive();
+    public static boolean ChestTracerEnabled() {
+        return ChestTracer.isActive();
     }
+
+    public static boolean EntityItemTracerEnabled() {
+        return EntityItemTracer.isActive();
+    }
+
+    public static boolean EntityItemEspEnabled() {
+        return EntityItemEsp.isActive();
+    }
+
 }
 

@@ -80,17 +80,16 @@ public class RenderUtils {
         assert level != null;
         int chunk_x = player.getChunkPos().x;
         int chunk_z = player.getChunkPos().z;
-        // For all chunks in a radius of CHUNK_RADIUS from the player, draw the esp.
-        if (GavinsMod.ChestFinderEnabled()) {
-            for (int x = chunk_x - CHUNK_RADIUS; x <= chunk_x + CHUNK_RADIUS; x++) {
-                for (int z = chunk_z - CHUNK_RADIUS; z <= chunk_z + CHUNK_RADIUS; z++) {
+
+        // prevent an expensive computation!
+        if(GavinsMod.ChestEspEnabled() || GavinsMod.ChestTracerEnabled()) {
+            for (int x = chunk_x - CHUNK_RADIUS; x <= chunk_x + CHUNK_RADIUS; x++)
+                for (int z = chunk_z - CHUNK_RADIUS; z <= chunk_z + CHUNK_RADIUS; z++)
                     drawEspToChests(level, stack, delta, buffer, px, py, pz, x, z);
-                }
-            }
         }
-        if (GavinsMod.MobTracerEnabled()) {
-            drawEntityEsp(level, player, stack, delta, buffer, px, py, pz);
-        }
+
+
+        drawEntityEsp(level, player, stack, delta, buffer, px, py, pz);
         tessellator.draw();
         stack.pop();
         RenderSystem.applyModelViewMatrix();
@@ -108,15 +107,14 @@ public class RenderUtils {
             BlockEntity type = level.getBlockEntity(blockPos);
 
             Box aabb = new Box(blockPos);
+            if (GavinsMod.ChestEspEnabled())
+                drawBox(stack, buffer, aabb, Colors.PURPLE);
 
-            drawBox(stack, buffer, aabb, Colors.PURPLE);
-
-
-            //TODO: Make tracer for chests a separate mod.
-//            Vec3d center = aabb.getCenter();
-//            RenderUtils.renderSingleLine(stack, buffer, px, py, pz, (float) center.x,
-//                    (float) center.y, (float) center.z, r, g, b, a);
-
+            if (GavinsMod.ChestTracerEnabled()) {
+                Vec3d center = aabb.getCenter();
+                RenderUtils.renderSingleLine(stack, buffer, px, py, pz, (float) center.x, (float) center.y, (float) center.z,
+                        Colors.PURPLE.getRed(), Colors.PURPLE.getGreen(), Colors.PURPLE.getBlue(), Colors.PURPLE.getAlpha());
+            }
         });
 
     }
@@ -136,10 +134,10 @@ public class RenderUtils {
             double x = e.prevX + (e.getX() - e.prevX) * delta;
             double y = e.prevY + (e.getY() - e.prevY) * delta;
             double z = e.prevZ + (e.getZ() - e.prevZ) * delta;
+            Box aabb = type.createSimpleBoundingBox(x, y, z);
 
             Color c = Colors.PURPLE;
 
-            //TODO: Make this a separate mod.
             if (type == EntityType.ITEM) {
                 c = Colors.DARK_CYAN;
                 Item i = ((ItemEntity) e).getStack().getItem();
@@ -147,29 +145,26 @@ public class RenderUtils {
                 if (i.asItem() == Items.CREEPER_SPAWN_EGG) {
                     c = Colors.WHITE;
                 }
-//                if(item == Items.CREEPER_SPAWN_EGG) {
-//                    r = 1;
-//                    b = 0.5f;
-//                    a = 0.25f;
-//                }
-
-            } else if (type.getSpawnGroup().isPeaceful()) {
-                // green
-                c = Colors.GREEN;
-            } else if (!type.getSpawnGroup().isPeaceful()) {
-                // red
-                c = Colors.RED;
-            } else if (type.getSpawnGroup().isRare()) {
-                c = Colors.GOLD;
-            } else if (type == EntityType.PLAYER) {
-                c = Colors.YELLOW;
+                if (GavinsMod.EntityItemEspEnabled())
+                    drawBox(stack, buffer, aabb, c);
+                if (GavinsMod.EntityItemTracerEnabled())
+                    drawTracer(stack, buffer, px, py, pz, aabb, c);
+                return;
             }
 
-            Box aabb = type.createSimpleBoundingBox(x, y, z);
+            if (type.getSpawnGroup().isPeaceful())
+                c = Colors.GREEN;
+             if (!type.getSpawnGroup().isPeaceful())
+                c = Colors.RED;
+             if (type.getSpawnGroup().isRare())
+                c = Colors.GOLD;
+             if (type == EntityType.PLAYER)
+                c = Colors.YELLOW;
 
-            drawBox(stack, buffer, aabb, c);
-//          TODO: Make tracer for mobs a separate mod.
-            drawTracer(stack, buffer, px, py, pz, aabb, c);
+            if (GavinsMod.EntityEspEnabled())
+                drawBox(stack, buffer, aabb, c);
+            if (GavinsMod.EntityTracerEnabled())
+                drawTracer(stack, buffer, px, py, pz, aabb, c);
         });
     }
 
