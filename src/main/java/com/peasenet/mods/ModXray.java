@@ -44,7 +44,7 @@ public class ModXray extends Mod {
     };
 
     public ModXray() {
-        super(ModType.XRAY, ModCategory.WORLD, KeyBindingHelper.registerKeyBinding(
+        super(ModType.XRAY, ModCategory.RENDER, KeyBindingHelper.registerKeyBinding(
                 new KeyBinding(ModType.XRAY.getTranslationKey(),
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_X,

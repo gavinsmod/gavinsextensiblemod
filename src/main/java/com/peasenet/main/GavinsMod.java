@@ -18,8 +18,8 @@ public class GavinsMod implements ModInitializer {
     private static final ModFly Fly = new ModFly();
     private static final ModFastMine FastMine = new ModFastMine();
     private static final ModFullBright FullBright = new ModFullBright();
-    private static final ModMobTracer MobTracer = new ModMobTracer();
-    private static final ModChestFinder ChestFinder = new ModChestFinder();
+    private static final ModMobEsp MobEsp = new ModMobEsp();
+    private static final ModChestEsp ChestEsp = new ModChestEsp();
     public static ArrayList<Mod> mods;
 
     @Override
@@ -31,8 +31,8 @@ public class GavinsMod implements ModInitializer {
                 add(Fly);
                 add(FastMine);
                 add(FullBright);
-                add(MobTracer);
-                add(ChestFinder);
+                add(MobEsp);
+                add(ChestEsp);
             }
         };
     }
@@ -54,11 +54,11 @@ public class GavinsMod implements ModInitializer {
     }
 
     public static boolean MobTracerEnabled() {
-        return MobTracer.isActive();
+        return MobEsp.isActive();
     }
 
     public static boolean ChestFinderEnabled() {
-        return ChestFinder.isActive();
+        return ChestEsp.isActive();
     }
 }
 

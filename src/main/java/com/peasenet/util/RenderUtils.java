@@ -3,6 +3,8 @@ package com.peasenet.util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
+import com.peasenet.util.color.Color;
+import com.peasenet.util.color.Colors;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
@@ -19,11 +21,9 @@ import net.minecraft.util.math.*;
 import org.lwjgl.opengl.GL11;
 
 public class RenderUtils {
-    private static final float MAX_COLOR = 256;
-    private static final float red = 255.0f;
-    private static final float green = 0.0f;
-    private static final float blue = 255.0f;
-    private static final float alpha = 255.0f;
+
+    private RenderUtils() {
+    }
 
     public static void renderSingleLine(MatrixStack stack, VertexConsumer buffer, float x1, float y1, float z1,
                                         float x2, float y2,
@@ -80,7 +80,7 @@ public class RenderUtils {
         assert level != null;
         int chunk_x = player.getChunkPos().x;
         int chunk_z = player.getChunkPos().z;
-        // For all chunks in a radius of CHUNK_RADIUS from the player
+        // For all chunks in a radius of CHUNK_RADIUS from the player, draw the esp.
         if (GavinsMod.ChestFinderEnabled()) {
             for (int x = chunk_x - CHUNK_RADIUS; x <= chunk_x + CHUNK_RADIUS; x++) {
                 for (int z = chunk_z - CHUNK_RADIUS; z <= chunk_z + CHUNK_RADIUS; z++) {
@@ -107,20 +107,22 @@ public class RenderUtils {
 
             BlockEntity type = level.getBlockEntity(blockPos);
 
-            float r = (red % MAX_COLOR) / 255F;
-            float g = (green % MAX_COLOR) / 255F;
-            float b = (blue % MAX_COLOR) / 255F;
-            float a = (alpha % MAX_COLOR) / 255F;
-
             Box aabb = new Box(blockPos);
 
-            WorldRenderer.drawBox(stack, buffer, aabb, r, g, b, a);
+            drawBox(stack, buffer, aabb, Colors.PURPLE);
 
-            Vec3d center = aabb.getCenter();
+
+            //TODO: Make tracer for chests a separate mod.
+//            Vec3d center = aabb.getCenter();
 //            RenderUtils.renderSingleLine(stack, buffer, px, py, pz, (float) center.x,
 //                    (float) center.y, (float) center.z, r, g, b, a);
+
         });
 
+    }
+
+    private static void drawBox(MatrixStack stack, BufferBuilder buffer, Box aabb, Color c) {
+        WorldRenderer.drawBox(stack, buffer, aabb, c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
     }
 
     private static void drawEntityEsp(ClientWorld level, ClientPlayerEntity player, MatrixStack stack, float delta, BufferBuilder buffer, float px, float py, float pz) {
@@ -135,20 +137,15 @@ public class RenderUtils {
             double y = e.prevY + (e.getY() - e.prevY) * delta;
             double z = e.prevZ + (e.getZ() - e.prevZ) * delta;
 
-            float r = (red % MAX_COLOR) / 255F;
-            float g = (green % MAX_COLOR) / 255F;
-            float b = (blue % MAX_COLOR) / 255F;
-            float a = (alpha % MAX_COLOR) / 255F;
+            Color c = Colors.PURPLE;
 
+            //TODO: Make this a separate mod.
             if (type == EntityType.ITEM) {
-                r = 0;
-                g = 0.5f;
+                c = Colors.DARK_CYAN;
                 Item i = ((ItemEntity) e).getStack().getItem();
                 //TODO: This will be a list of rare items.
                 if (i.asItem() == Items.CREEPER_SPAWN_EGG) {
-                    r = 1;
-                    g = 1;
-                    b = 1;
+                    c = Colors.WHITE;
                 }
 //                if(item == Items.CREEPER_SPAWN_EGG) {
 //                    r = 1;
@@ -158,35 +155,27 @@ public class RenderUtils {
 
             } else if (type.getSpawnGroup().isPeaceful()) {
                 // green
-                r = 0;
-                g = 1f;
-                b = 0;
+                c = Colors.GREEN;
             } else if (!type.getSpawnGroup().isPeaceful()) {
                 // red
-                g = 0;
-                b = 0;
+                c = Colors.RED;
             } else if (type.getSpawnGroup().isRare()) {
-                // gold
-                g = 0.8f;
-                b = 0;
+                c = Colors.GOLD;
             } else if (type == EntityType.PLAYER) {
-                // yellow
-                r = 1f;
-                g = 1f;
-                b = 0;
+                c = Colors.YELLOW;
             }
 
             Box aabb = type.createSimpleBoundingBox(x, y, z);
 
-            WorldRenderer.drawBox(stack, buffer, aabb, r, g, b, a);
-
-            Vec3d center = aabb.getCenter();
-            RenderUtils.renderSingleLine(stack, buffer, px, py, pz, (float) center.x,
-                    (float) center.y, (float) center.z, r, g, b, a);
+            drawBox(stack, buffer, aabb, c);
+//          TODO: Make tracer for mobs a separate mod.
+            drawTracer(stack, buffer, px, py, pz, aabb, c);
         });
     }
 
-
-    private RenderUtils() {
+    private static void drawTracer(MatrixStack stack, BufferBuilder buffer, float px, float py, float pz, Box aabb, Color c) {
+        Vec3d center = aabb.getCenter();
+        RenderUtils.renderSingleLine(stack, buffer, px, py, pz, (float) center.x,
+                (float) center.y, (float) center.z, c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
     }
 }

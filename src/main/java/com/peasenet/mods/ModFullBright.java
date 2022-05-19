@@ -9,7 +9,7 @@ public class ModFullBright extends Mod {
 
 
     public ModFullBright() {
-        super(ModType.FULL_BRIGHT, ModCategory.WORLD, KeyBindingHelper.registerKeyBinding(
+        super(ModType.FULL_BRIGHT, ModCategory.RENDER, KeyBindingHelper.registerKeyBinding(
                 new KeyBinding(ModType.FULL_BRIGHT.getTranslationKey(),
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_B,

@@ -6,5 +6,5 @@ package com.peasenet.mods;
  */
 public enum ModCategory {
     TICKABLE,
-    WORLD
+    RENDER
 }
