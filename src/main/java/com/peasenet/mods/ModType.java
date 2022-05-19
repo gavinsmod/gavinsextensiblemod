@@ -2,13 +2,18 @@ package com.peasenet.mods;
 
 import org.lwjgl.glfw.GLFW;
 
-import static com.peasenet.mods.ModCategory.TICKABLE;
+import static com.peasenet.mods.ModCategory.MOVEMENT;
 import static com.peasenet.mods.ModCategory.RENDER;
 
 public enum ModType {
 
-    FLY("Fly", "key.gavinsmod.fly", "category.gavinsmod.test", GLFW.GLFW_KEY_F, TICKABLE),
-    FAST_MINE("Fast Mine", "key.gavinsmod.fastmine", "category.gavinsmod.test", GLFW.GLFW_KEY_G, RENDER),
+    // MOVEMENT
+    FLY("Fly", "key.gavinsmod.fly", "category.gavinsmod.test", GLFW.GLFW_KEY_F, MOVEMENT),
+    FAST_MINE("Fast Mine", "key.gavinsmod.fastmine", "category.gavinsmod.test", GLFW.GLFW_KEY_G, MOVEMENT),
+    AUTO_JUMP("Auto Jump", "key.gavinsmod.autojump", "category.gavinsmod.test", GLFW.GLFW_KEY_UNKNOWN, MOVEMENT),
+    CLIMB("Climb", "key.gavinsmod.climb", "category.gavinsmod.test", GLFW.GLFW_KEY_UNKNOWN, MOVEMENT),
+
+    //RENDER
     XRAY("Xray", "key.gavinsmod.xray", "category.gavinsmod.test", GLFW.GLFW_KEY_X, RENDER),
     FULL_BRIGHT("Full Bright", "key.gavinsmod.fullbright", "category.gavinsmod.test", GLFW.GLFW_KEY_B, RENDER),
     CHEST_ESP("Chest Finder", "key.gavinsmod.chestesp", "category.gavinsmod.test", GLFW.GLFW_KEY_K, RENDER),
@@ -17,6 +22,7 @@ public enum ModType {
     ENTITY_ITEM_ESP("Item ESP", "key.gavinsmod.entityitemesp", "category.gavinsmod.test", GLFW.GLFW_KEY_UNKNOWN, RENDER),
     MOB_ESP("Mob ESP", "key.gavinsmod.mobesp", "category.gavinsmod.test", GLFW.GLFW_KEY_UNKNOWN, RENDER),
     MOB_TRACER("Mob Tracer", "key.gavinsmod.mobtracer", "category.gavinsmod.test", GLFW.GLFW_KEY_UNKNOWN, RENDER);
+
     private final String translationKey;
     private final String name;
     private final String category;

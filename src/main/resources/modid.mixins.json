@@ -14,7 +14,8 @@
     "MixinLightmapTextureManager",
     "WorldRendererInvoker",
     "MixinMinecraftClient",
-    "EntityAccessor"
+    "EntityAccessor",
+    "MixinLivingEntity"
   ],
   "injectors": {
     "defaultRequire": 1

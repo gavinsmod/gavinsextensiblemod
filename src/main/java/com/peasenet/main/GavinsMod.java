@@ -14,8 +14,12 @@ import java.util.ArrayList;
  */
 public class GavinsMod implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("gavinsmod");
+    // MOVEMENT
     private static final ModXray XRay = new ModXray();
     private static final ModFly Fly = new ModFly();
+    private static final ModAutoJump AutoJump = new ModAutoJump();
+    private static final ModClimb Climb = new ModClimb();
+    // RENDER
     private static final ModFastMine FastMine = new ModFastMine();
     private static final ModFullBright FullBright = new ModFullBright();
     private static final ModChestEsp ChestEsp = new ModChestEsp();
@@ -31,11 +35,15 @@ public class GavinsMod implements ModInitializer {
         LOGGER.info("GavinsMod initialized");
         mods = new ArrayList<>() {
             {
-                add(XRay);
+                // MOVEMENT
                 add(Fly);
                 add(FastMine);
-                add(FullBright);
+                add(AutoJump);
+                add(Climb);
 
+                // RENDER
+                add(XRay);
+                add(FullBright);
                 add(ChestEsp);
                 add(ChestTracer);
 
@@ -48,9 +56,6 @@ public class GavinsMod implements ModInitializer {
         };
     }
 
-    public static boolean XRayEnabled() {
-        return XRay.isActive();
-    }
 
     public static boolean FlyEnabled() {
         return Fly.isActive();
@@ -59,6 +64,14 @@ public class GavinsMod implements ModInitializer {
     public static boolean FastMineEnabled() {
         return FastMine.isActive();
     }
+
+    public static boolean AutoJumpEnabled() {
+        return AutoJump.isActive();
+    }
+    public static boolean XRayEnabled() {
+        return XRay.isActive();
+    }
+
 
     public static boolean FullBrightEnabled() {
         return FullBright.isActive();
@@ -86,6 +99,10 @@ public class GavinsMod implements ModInitializer {
 
     public static boolean EntityItemEspEnabled() {
         return EntityItemEsp.isActive();
+    }
+
+    public static boolean ClimbEnabled() {
+        return Climb.isActive();
     }
 
 }

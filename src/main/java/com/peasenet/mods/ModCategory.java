@@ -5,6 +5,6 @@ package com.peasenet.mods;
  * @version 5/18/2022
  */
 public enum ModCategory {
-    TICKABLE,
+    MOVEMENT,
     RENDER
 }
