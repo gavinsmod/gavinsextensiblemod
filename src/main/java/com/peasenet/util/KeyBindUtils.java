@@ -42,7 +42,7 @@ public class KeyBindUtils {
      * @param type The mod type.
      * @return The keybinding.
      */
-    public static KeyBinding reigsterEmptyKeyBind(Mods type) {
+    public static KeyBinding registerEmptyKeyBind(Mods type) {
         return KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 type.getTranslationKey(),
                 InputUtil.Type.KEYSYM,

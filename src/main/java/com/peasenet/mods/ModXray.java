@@ -14,6 +14,7 @@ import java.util.ArrayList;
 /**
  * @author gt3ch1
  * @version 5/16/2022
+ * A mod for an xray like feature, allowing the player to see through certain blocks.
  */
 public class ModXray extends Mod {
     /**
@@ -35,7 +36,6 @@ public class ModXray extends Mod {
             add(Blocks.DEEPSLATE_LAPIS_ORE);
             add(Blocks.DEEPSLATE_REDSTONE_ORE);
             add(Blocks.DEEPSLATE_EMERALD_ORE);
-//            add(Blocks.CHEST);
             add(Blocks.END_PORTAL_FRAME);
             add(Blocks.END_PORTAL);
             add(Blocks.ENDER_CHEST);
