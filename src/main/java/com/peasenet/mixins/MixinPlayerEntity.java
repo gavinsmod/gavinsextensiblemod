@@ -21,6 +21,8 @@ public class MixinPlayerEntity {
     public void checkFlyKeybind(CallbackInfo info) {
         PlayerAbilities abilities = accessor.getAbilities();
         abilities.allowFlying = GavinsMod.FlyEnabled() || abilities.creativeMode;
+        if (!GavinsMod.FlyEnabled() && !abilities.creativeMode)
+            accessor.getAbilities().flying = false;
     }
 
 
