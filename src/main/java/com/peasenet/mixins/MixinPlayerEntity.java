@@ -36,11 +36,8 @@ public class MixinPlayerEntity {
     @Inject(method = "travel", at = @At("HEAD"),cancellable = true)
     public void checkAutoJump(Vec3d movementInput, CallbackInfo info) {
         PlayerEntity p = ((PlayerEntity)(Object)this);
-        if(GavinsMod.AutoJumpEnabled()) {
-            assert GavinsModClient.getMinecraftClient().player != null;
-            if(GavinsModClient.getPlayer().isOnGround()) {
-                GavinsModClient.getPlayer().jump();
-            }
+        if(GavinsMod.AutoJumpEnabled() && !p.isCreative()) {
+            GavinsModClient.getMinecraftClient().options.jumpKey.setPressed(true);
         }
     }
 }
