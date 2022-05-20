@@ -1,20 +1,20 @@
 package com.peasenet.mods;
 
-import com.peasenet.gui.MainScreen;
+import com.peasenet.gui.GuiMainMenu;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.util.KeyBindUtils;
 
 public class ModGui extends Mod{
     public ModGui() {
-        super(Mods.MOD_GUI, ModCategory.RENDER, KeyBindUtils.registerKeyBindForType(Mods.MOD_GUI));
+        super(Mods.MOD_GUI, ModCategory.GUI, KeyBindUtils.registerKeyBindForType(Mods.MOD_GUI));
     }
 
     @Override
     public void onEnable() {
-        GavinsModClient.getMinecraftClient().setScreen(new MainScreen(null));
+        GavinsModClient.getMinecraftClient().setScreen(new GuiMainMenu(null));
     }
     @Override
     public void onDisable() {
-        GavinsModClient.getMinecraftClient().setScreen(new MainScreen(null));
+        GavinsModClient.getMinecraftClient().setScreen(new GuiMainMenu(null));
     }
 }
