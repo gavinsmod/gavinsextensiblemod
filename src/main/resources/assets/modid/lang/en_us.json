@@ -6,11 +6,13 @@
     "key.gavinsmod.xray": "X-Ray",
     "key.gavinsmod.fullbright": "Full Bright",
     "key.gavinsmod.chestesp": "Chest ESP",
-    "key.gavinsmod.chesttracers": "Chest Tracers",
+    "key.gavinsmod.chesttracer": "Chest Tracers",
     "key.gavinsmod.entityitemtracer": "Item Tracers",
     "key.gavinsmod.entityitemesp": "Item ESP",
     "key.gavinsmod.mobesp": "Mob ESP",
     "key.gavinsmod.mobtracer": "Mob Tracers",
     "key.gavinsmod.gui": "GUI",
+    "key.gavinsmod.gui.movement": "Movement",
+    "key.gavinsmod.gui.render": "Render",
     "category.gavinsmod.test": "Gavin's Mod"
 }
