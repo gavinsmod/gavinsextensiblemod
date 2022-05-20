@@ -22,8 +22,14 @@ public class MainScreen extends SpruceScreen {
     @Override
     public void init() {
         super.init();
-        int startY = this.height / 4 + 48;
+        int startY = 20;
         this.addDrawableChild(new SpruceButtonWidget(Position.of(this, this.width / 2 - 75, this.height - 29), 150, 20, new LiteralText("Back"),
                 btn -> this.client.setScreen(this.parent)));
+        // Movement button
+        this.addDrawableChild(new SpruceButtonWidget(Position.of(this, this.width / 2 - 125, startY), 100, 20, new LiteralText("§aMovement"),
+                btn -> this.client.setScreen(new GuiMovement(this))));
+        // Render button
+        this.addDrawableChild(new SpruceButtonWidget(Position.of(this, this.width / 2 + 25, startY), 100, 20, new LiteralText("§aRender"),
+                btn -> this.client.setScreen(new GuiRender(this))));
     }
 }

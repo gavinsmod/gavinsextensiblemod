@@ -8,10 +8,10 @@ import org.lwjgl.glfw.GLFW;
 public class ModFastMine extends Mod {
     public ModFastMine() {
 
-        super(ModType.FAST_MINE, ModCategory.MOVEMENT, KeyBindingHelper.registerKeyBinding(
-                new KeyBinding(ModType.FAST_MINE.getTranslationKey(),
+        super(Mods.FAST_MINE, ModCategory.MOVEMENT, KeyBindingHelper.registerKeyBinding(
+                new KeyBinding(Mods.FAST_MINE.getTranslationKey(),
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_G,
-                        ModType.FAST_MINE.getCategory())));
+                        Mods.FAST_MINE.getCategory())));
     }
 }

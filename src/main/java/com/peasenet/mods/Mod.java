@@ -10,11 +10,11 @@ import net.minecraft.text.LiteralText;
 public abstract class Mod implements IMod {
 
     public KeyBinding keyBinding;
-    private final ModType type;
+    private final Mods type;
     private final ModCategory category;
     public boolean isEnabled = false;
 
-    public Mod(ModType type, ModCategory category, KeyBinding keyBinding) {
+    public Mod(Mods type, ModCategory category, KeyBinding keyBinding) {
         this.type = type;
         this.category = category;
         this.keyBinding = keyBinding;
@@ -60,6 +60,14 @@ public abstract class Mod implements IMod {
 
     }
 
+    public void toggle() {
+        if (isActive()) {
+            deactivate();
+        } else {
+            activate();
+        }
+    }
+
     public static void sendMessage(String message) {
         GavinsModClient.getPlayer().sendMessage(new LiteralText(message), false);
     }
@@ -74,6 +82,14 @@ public abstract class Mod implements IMod {
 
     public ModCategory getCategory() {
         return category;
+    }
+
+    public String getTranslationKey() {
+        return type.getTranslationKey();
+    }
+
+    public String getName() {
+        return type.getName();
     }
 
 }
