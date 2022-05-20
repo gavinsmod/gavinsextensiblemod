@@ -13,6 +13,8 @@ import net.minecraft.text.LiteralText;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author gt3ch1
@@ -38,29 +40,14 @@ public class GuiRender extends SpruceScreen {
 
     private SpruceOptionListWidget getOptionList(Position position, int width, int height) {
         var list = new SpruceOptionListWidget(position, width, height);
-        ArrayList<SpruceOption> options = new ArrayList<>();
-        // Get all mods that are under "Render"
-        for (var mod : GavinsMod.mods) {
-            if (mod.getCategory() == ModCategory.RENDER) {
-                var option = new SpruceBooleanOption(mod.getTranslationKey(),
-                        mod::isActive,
-                        newValue -> mod.toggle(),
-                        new LiteralText(mod.getName()), true);
-                options.add(option);
-            }
-        }
-        // Check if options is even, if true, then addOptionEntry can be populated
-        // with two options, if not, the addOptionEntry can be populated with one, and null.
-        if (options.size() % 2 == 0) {
-            for (int i = 0; i < options.size(); i += 2) {
-                list.addOptionEntry(options.get(i), options.get(i + 1));
-            }
-        } else {
-            for (int i = 0; i < options.size() - 1; i++) {
-                list.addOptionEntry(options.get(i), options.get(i + 1));
-            }
-            list.addOptionEntry(options.get(options.size() - 1), null);
-        }
+
+        list.addAll(GavinsMod.mods.stream()
+            .filter(mod -> mod.getCategory() == ModCategory.RENDER)
+            .map(mod -> new SpruceBooleanOption(mod.getTranslationKey(),
+                mod::isActive,
+                newValue -> mod.toggle(),
+                new LiteralText(mod.getName()), true))
+            .toArray(SpruceOption[]::new));
 
         return list;
     }
