@@ -72,6 +72,7 @@ public class GavinsMod implements ModInitializer {
     public static boolean AutoJumpEnabled() {
         return AutoJump.isActive();
     }
+
     public static boolean XRayEnabled() {
         return XRay.isActive();
     }
@@ -107,54 +108,6 @@ public class GavinsMod implements ModInitializer {
 
     public static boolean ClimbEnabled() {
         return Climb.isActive();
-    }
-
-    public static void ToggleXray() {
-        XRay.toggle();
-    }
-
-    public static void ToggleFly() {
-        Fly.toggle();
-    }
-
-    public static void ToggleFastMine() {
-        FastMine.toggle();
-    }
-
-    public static void ToggleAutoJump() {
-        AutoJump.toggle();
-    }
-
-    public static void ToggleFullBright() {
-        FullBright.toggle();
-    }
-
-    public static void ToggleChestEsp() {
-        ChestEsp.toggle();
-    }
-
-    public static void ToggleEntityTracer() {
-        MobTracer.toggle();
-    }
-
-    public static void ToggleEntityEsp() {
-        MobEsp.toggle();
-    }
-
-    public static void ToggleChestTracer() {
-        ChestTracer.toggle();
-    }
-
-    public static void ToggleEntityItemTracer() {
-        EntityItemTracer.toggle();
-    }
-
-    public static void ToggleEntityItemEsp() {
-        EntityItemEsp.toggle();
-    }
-
-    public static void ToggleClimb() {
-        Climb.toggle();
     }
 
 }

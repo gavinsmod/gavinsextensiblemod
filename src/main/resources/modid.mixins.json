@@ -10,7 +10,6 @@
     "PlayerInventoryAccessor",
     "MixinPlayerEntity",
     "MixinBlock",
-    "MixinEntity",
     "MixinLightmapTextureManager",
     "WorldRendererInvoker",
     "MixinMinecraftClient",
