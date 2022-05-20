@@ -6,6 +6,10 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
+/**
+ * @author gt3ch1
+ * Used to get and create keybindings for different mods.
+ */
 public class KeyBindUtils {
     /**
      * Gets the keybinding for the given mod type.
@@ -32,6 +36,12 @@ public class KeyBindUtils {
         return KeyBindingHelper.registerKeyBinding(getKeyBinding(type));
     }
 
+    /**
+     * Registers and returns the keybinding for the given mod type.
+     *
+     * @param type The mod type.
+     * @return The keybinding.
+     */
     public static KeyBinding reigsterEmptyKeyBind(Mods type) {
         return KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 type.getTranslationKey(),
