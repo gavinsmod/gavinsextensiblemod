@@ -15,8 +15,7 @@
     "WorldRendererInvoker",
     "MixinMinecraftClient",
     "EntityAccessor",
-    "MixinLivingEntity",
-    "MixinInGameHud"
+    "MixinLivingEntity"
   ],
   "injectors": {
     "defaultRequire": 1

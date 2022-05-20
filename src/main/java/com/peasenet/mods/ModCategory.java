@@ -7,5 +7,6 @@ package com.peasenet.mods;
  */
 public enum ModCategory {
     MOVEMENT,
-    RENDER
+    RENDER,
+    GUI
 }

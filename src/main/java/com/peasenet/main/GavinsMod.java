@@ -28,6 +28,7 @@ public class GavinsMod implements ModInitializer {
     private static final ModMobTracer MobTracer = new ModMobTracer();
     private static final ModEntityItemTracer EntityItemTracer = new ModEntityItemTracer();
     private static final ModEntityItemEsp EntityItemEsp = new ModEntityItemEsp();
+    private static final ModGui Gui = new ModGui();
     public static ArrayList<Mod> mods;
 
     @Override
@@ -52,6 +53,9 @@ public class GavinsMod implements ModInitializer {
 
                 add(EntityItemEsp);
                 add(EntityItemTracer);
+
+                //GUI
+                add(Gui);
             }
         };
     }

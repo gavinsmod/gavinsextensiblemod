@@ -2,8 +2,7 @@ package com.peasenet.mods;
 
 import org.lwjgl.glfw.GLFW;
 
-import static com.peasenet.mods.ModCategory.MOVEMENT;
-import static com.peasenet.mods.ModCategory.RENDER;
+import static com.peasenet.mods.ModCategory.*;
 
 /**
  * @author gt3ch1
@@ -28,7 +27,8 @@ public enum Mods {
     ENTITY_ITEM_TRACER("Item Tracer", "key.gavinsmod.entityitemtracer", "category.gavinsmod.test", RENDER),
     ENTITY_ITEM_ESP("Item ESP", "key.gavinsmod.entityitemesp", "category.gavinsmod.test", RENDER),
     MOB_ESP("Mob ESP", "key.gavinsmod.mobesp", "category.gavinsmod.test", RENDER),
-    MOB_TRACER("Mob Tracer", "key.gavinsmod.mobtracer", "category.gavinsmod.test", RENDER);
+    MOB_TRACER("Mob Tracer", "key.gavinsmod.mobtracer", "category.gavinsmod.test", RENDER),
+    MOD_GUI("GUI", "key.gavinsmod.gui", "category.gavinsmod.test", GLFW.GLFW_KEY_I, GUI);
 
     private final String translationKey;
     private final String name;
