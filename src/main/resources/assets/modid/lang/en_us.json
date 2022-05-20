@@ -1,4 +1,16 @@
 {
     "key.gavinsmod.fly": "Fly",
-    "category.gavinsmod.test": "Gavin's Mod Test"
+    "key.gavinsmod.fastmine": "Fast Mine",
+    "key.gavinsmod.autojump": "Auto Jump",
+    "key.gavinsmod.climb": "Climb",
+    "key.gavinsmod.xray": "X-Ray",
+    "key.gavinsmod.fullbright": "Full Bright",
+    "key.gavinsmod.chestesp": "Chest ESP",
+    "key.gavinsmod.chesttracers": "Chest Tracers",
+    "key.gavinsmod.entityitemtracer": "Item Tracers",
+    "key.gavinsmod.entityitemesp": "Item ESP",
+    "key.gavinsmod.mobesp": "Mob ESP",
+    "key.gavinsmod.mobtracer": "Mob Tracers",
+    "key.gavinsmod.gui": "GUI",
+    "category.gavinsmod.test": "Gavin's Mod"
 }
