@@ -11,18 +11,18 @@ import static com.peasenet.mods.ModCategory.*;
 public enum Mods {
 
     // MOVEMENT
-    FLY("Fly", "key.gavinsmod.fly", "category.gavinsmod.test", GLFW.GLFW_KEY_F, MOVEMENT),
+    FLY("Fly", "key.gavinsmod.fly", "category.gavinsmod.test", MOVEMENT),
 
-    FAST_MINE("Fast Mine", "key.gavinsmod.fastmine", "category.gavinsmod.test", GLFW.GLFW_KEY_G, MOVEMENT),
+    FAST_MINE("Fast Mine", "key.gavinsmod.fastmine", "category.gavinsmod.test", MOVEMENT),
 
     AUTO_JUMP("Auto Jump", "key.gavinsmod.autojump", "category.gavinsmod.test", MOVEMENT),
 
     CLIMB("Climb", "key.gavinsmod.climb", "category.gavinsmod.test", MOVEMENT),
 
     //RENDER
-    XRAY("Xray", "key.gavinsmod.xray", "category.gavinsmod.test", GLFW.GLFW_KEY_X, RENDER),
-    FULL_BRIGHT("Full Bright", "key.gavinsmod.fullbright", "category.gavinsmod.test", GLFW.GLFW_KEY_B, RENDER),
-    CHEST_ESP("Chest Finder", "key.gavinsmod.chestesp", "category.gavinsmod.test", GLFW.GLFW_KEY_K, RENDER),
+    XRAY("Xray", "key.gavinsmod.xray", "category.gavinsmod.test", RENDER),
+    FULL_BRIGHT("Full Bright", "key.gavinsmod.fullbright", "category.gavinsmod.test", RENDER),
+    CHEST_ESP("Chest ESP", "key.gavinsmod.chestesp", "category.gavinsmod.test", RENDER),
     CHEST_TRACER("Chest Tracer", "key.gavinsmod.chesttracer", "category.gavinsmod.test", RENDER),
     ENTITY_ITEM_TRACER("Item Tracer", "key.gavinsmod.entityitemtracer", "category.gavinsmod.test", RENDER),
     ENTITY_ITEM_ESP("Item ESP", "key.gavinsmod.entityitemesp", "category.gavinsmod.test", RENDER),

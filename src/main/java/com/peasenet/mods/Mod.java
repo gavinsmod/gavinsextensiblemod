@@ -37,8 +37,9 @@ public abstract class Mod implements IMod {
 
     /**
      * Creates a new mod.
-     * @param type The type of the mod.
-     * @param category The category of this mod.
+     *
+     * @param type       The type of the mod.
+     * @param category   The category of this mod.
      * @param keyBinding The keybind for this mod.
      */
 
@@ -50,7 +51,8 @@ public abstract class Mod implements IMod {
 
     /**
      * Creats a new mod with an empty keybinding.
-     * @param type The type of the mod.
+     *
+     * @param type     The type of the mod.
      * @param category The category of this mod.
      */
     public Mod(Mods type, ModCategory category) {
@@ -61,6 +63,7 @@ public abstract class Mod implements IMod {
 
     /**
      * Sends a message to the player.
+     *
      * @param message The message to send.
      */
     public static void sendMessage(String message) {
@@ -69,6 +72,7 @@ public abstract class Mod implements IMod {
 
     /**
      * Gets the minecraft client.
+     *
      * @return The minecraft client.
      */
     protected static MinecraftClient getClient() {
@@ -76,11 +80,11 @@ public abstract class Mod implements IMod {
     }
 
     public void onEnable() {
-        sendMessage(type.getName() + " enabled");
+        sendMessage(getGavinsModMessage() + type.getName() + " §a§lenabled§r!");
     }
 
     public void onDisable() {
-        sendMessage(type.getName() + " disabled");
+        sendMessage(getGavinsModMessage() + type.getName() + " §c§ldisabled§r!");
     }
 
     public void onTick() {
@@ -133,6 +137,10 @@ public abstract class Mod implements IMod {
 
     public String getName() {
         return type.getName();
+    }
+
+    public static String getGavinsModMessage() {
+        return "§d§l[ §b§lGavinsMod §d§l] §9";
     }
 
 }

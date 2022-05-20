@@ -1,42 +1,39 @@
 {
-  "schemaVersion": 1,
-  "id": "modid",
-  "version": "${version}",
-
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
-  "authors": [
-    "Me!"
-  ],
-  "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
-  },
-
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
-
-  "environment": "*",
-  "entrypoints": {
-      "main": [
-          "com.peasenet.main.GavinsMod"
-      ],
-      "client": [
-          "com.peasenet.main.GavinsModClient"
-      ]
-  },
-  "mixins": [
-    "modid.mixins.json"
-  ],
-
-  "depends": {
-      "fabricloader": ">=0.13.3",
-      "fabric": "*",
-      "minecraft": "~1.18.2",
-      "java": ">=17",
-      "fabric-key-binding-api-v1": "*"
-  },
-  "suggests": {
-    "another-mod": "*"
-  }
+    "schemaVersion": 1,
+    "id": "gavinsmod",
+    "version": "${version}",
+    "name": "GavinsMod",
+    "description": "A simple modded client containing some hacks!",
+    "authors": [
+        "GT3CH1",
+        "Starmism"
+    ],
+    "contact": {
+        "homepage": "https://github.com/gt3ch1/minecraft-mod",
+        "sources": "https://github.com/gt3ch1/minecraft-mod"
+    },
+    "license": "MIT",
+    "icon": "assets/gavinsmod/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "com.peasenet.main.GavinsMod"
+        ],
+        "client": [
+            "com.peasenet.main.GavinsModClient"
+        ]
+    },
+    "mixins": [
+        "modid.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=0.13.3",
+        "fabric": "*",
+        "minecraft": "~1.18.2",
+        "java": ">=17",
+        "fabric-key-binding-api-v1": "*"
+    },
+    "suggests": {
+        "another-mod": "*"
+    }
 }
