@@ -151,15 +151,20 @@ public class RenderUtils {
                     drawTracer(stack, buffer, px, py, pz, aabb, c);
                 return;
             }
-            if (type.getSpawnGroup().isRare())
-                c = Colors.GOLD;
+
+            if (type == EntityType.PLAYER) {
+                c = Colors.PURPLE;
+                if (GavinsMod.EntityPlayerEspEnabled())
+                    drawBox(stack, buffer, aabb, c);
+                if (GavinsMod.EntityPlayerTracerEnabled())
+                    drawTracer(stack, buffer, px, py, pz, aabb, c);
+                return;
+            }
+
             if (type.getSpawnGroup().isPeaceful())
                 c = Colors.GREEN;
             if (!type.getSpawnGroup().isPeaceful())
                 c = Colors.RED;
-            if (type == EntityType.PLAYER)
-                c = Colors.PURPLE;
-
 
             if (GavinsMod.EntityEspEnabled())
                 drawBox(stack, buffer, aabb, c);

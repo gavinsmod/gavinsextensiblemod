@@ -26,6 +26,8 @@ public enum Mods {
     CHEST_TRACER("Chest Tracer", "key.gavinsmod.chesttracer", "category.gavinsmod.test", RENDER),
     ENTITY_ITEM_TRACER("Item Tracer", "key.gavinsmod.entityitemtracer", "category.gavinsmod.test", RENDER),
     ENTITY_ITEM_ESP("Item ESP", "key.gavinsmod.entityitemesp", "category.gavinsmod.test", RENDER),
+    ENTITY_PLAYER_ESP("Player ESP", "key.gavinsmod.entityplayeresp", "category.gavinsmod.test", RENDER),
+    ENTITY_PLAYER_TRACER("Player Tracer", "key.gavinsmod.entityplayertracer", "category.gavinsmod.test", RENDER),
     MOB_ESP("Mob ESP", "key.gavinsmod.mobesp", "category.gavinsmod.test", RENDER),
     MOB_TRACER("Mob Tracer", "key.gavinsmod.mobtracer", "category.gavinsmod.test", RENDER),
     MOD_GUI("GUI", "key.gavinsmod.gui", "category.gavinsmod.test", GLFW.GLFW_KEY_I, GUI);

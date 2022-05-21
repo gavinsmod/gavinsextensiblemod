@@ -28,6 +28,8 @@ public class GavinsMod implements ModInitializer {
     private static final ModMobTracer MobTracer = new ModMobTracer();
     private static final ModEntityItemTracer EntityItemTracer = new ModEntityItemTracer();
     private static final ModEntityItemEsp EntityItemEsp = new ModEntityItemEsp();
+    private static final ModEntityPlayerTracer EntityPlayerTracer = new ModEntityPlayerTracer();
+    private static final ModEntityPlayerEsp EntityPlayerEsp = new ModEntityPlayerEsp();
     private static final ModGui Gui = new ModGui();
     public static ArrayList<Mod> mods;
 
@@ -53,6 +55,9 @@ public class GavinsMod implements ModInitializer {
 
                 add(EntityItemEsp);
                 add(EntityItemTracer);
+
+                add(EntityPlayerEsp);
+                add(EntityPlayerTracer);
 
                 //GUI
                 add(Gui);
@@ -106,9 +111,18 @@ public class GavinsMod implements ModInitializer {
         return EntityItemEsp.isActive();
     }
 
+    public static boolean EntityPlayerTracerEnabled() {
+        return EntityPlayerTracer.isActive();
+    }
+
+    public static boolean EntityPlayerEspEnabled() {
+        return EntityPlayerEsp.isActive();
+    }
+
     public static boolean ClimbEnabled() {
         return Climb.isActive();
     }
+
 
 }
 
