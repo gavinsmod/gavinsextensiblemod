@@ -7,18 +7,12 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.util.math.Box;
-
-import java.util.HashSet;
 
 /**
  * @author gt3ch1
  * @version 5/15/2022
  */
 public class GavinsModClient implements ClientModInitializer {
-
-    public static HashSet<Box> boxesToRender = new HashSet<>();
-    public static boolean boxesRendered = false;
 
     @Override
     public void onInitializeClient() {
@@ -37,10 +31,5 @@ public class GavinsModClient implements ClientModInitializer {
 
     public static ClientPlayerEntity getPlayer() {
         return getMinecraftClient().player;
-    }
-
-    public static void AddBox(Box box) {
-        if (!boxesRendered)
-            boxesToRender.add(box);
     }
 }
