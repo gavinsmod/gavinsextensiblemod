@@ -11,6 +11,8 @@
     "key.gavinsmod.entityitemesp": "Item ESP",
     "key.gavinsmod.mobesp": "Mob ESP",
     "key.gavinsmod.mobtracer": "Mob Tracers",
+    "key.gavinsmod.entityplayeresp": "Player ESP",
+    "key.gavinsmod.entityplayertracer": "Player Tracers",
     "key.gavinsmod.gui": "GUI",
     "key.gavinsmod.gui.movement": "Movement",
     "key.gavinsmod.gui.render": "Render",

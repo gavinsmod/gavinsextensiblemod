@@ -82,7 +82,7 @@ public class RenderUtils {
         int chunk_z = player.getChunkPos().z;
 
         // prevent an expensive computation!
-        if(GavinsMod.ChestEspEnabled() || GavinsMod.ChestTracerEnabled()) {
+        if (GavinsMod.ChestEspEnabled() || GavinsMod.ChestTracerEnabled()) {
             for (int x = chunk_x - CHUNK_RADIUS; x <= chunk_x + CHUNK_RADIUS; x++)
                 for (int z = chunk_z - CHUNK_RADIUS; z <= chunk_z + CHUNK_RADIUS; z++)
                     drawEspToChests(level, stack, delta, buffer, px, py, pz, x, z);
@@ -149,7 +149,8 @@ public class RenderUtils {
                     drawBox(stack, buffer, aabb, c);
                 if (GavinsMod.EntityItemTracerEnabled())
                     drawTracer(stack, buffer, px, py, pz, aabb, c);
-                return;
+                if (GavinsMod.EntityItemEspEnabled() || GavinsMod.EntityItemTracerEnabled())
+                    return;
             }
 
             if (type == EntityType.PLAYER) {
@@ -158,7 +159,8 @@ public class RenderUtils {
                     drawBox(stack, buffer, aabb, c);
                 if (GavinsMod.EntityPlayerTracerEnabled())
                     drawTracer(stack, buffer, px, py, pz, aabb, c);
-                return;
+                if (GavinsMod.EntityPlayerEspEnabled() || GavinsMod.EntityPlayerTracerEnabled())
+                    return;
             }
 
             if (type.getSpawnGroup().isPeaceful())
