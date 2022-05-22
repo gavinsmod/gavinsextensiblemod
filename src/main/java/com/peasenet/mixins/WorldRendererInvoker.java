@@ -18,8 +18,8 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(WorldRenderer.class)
 public interface WorldRendererInvoker {
     @Invoker("drawBlockOutline")
-    public void drawOutlineInvoker(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double d, double e, double f, BlockPos pos, BlockState state);
+    void drawOutlineInvoker(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double d, double e, double f, BlockPos pos, BlockState state);
 
     @Accessor("bufferBuilders")
-    public BufferBuilderStorage getBufferBuilder();
+    BufferBuilderStorage getBufferBuilder();
 }

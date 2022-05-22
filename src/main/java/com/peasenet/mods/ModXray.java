@@ -49,7 +49,6 @@ public class ModXray extends Mod {
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_X,
                         Mods.XRAY.getCategory())));
-        ;
     }
 
     @Override

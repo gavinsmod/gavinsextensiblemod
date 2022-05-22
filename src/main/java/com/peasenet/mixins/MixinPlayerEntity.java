@@ -6,9 +6,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerAbilities;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -20,9 +22,9 @@ public class MixinPlayerEntity {
     @Inject(method = "tick", at = @At("HEAD"))
     public void checkFlyKeybind(CallbackInfo info) {
         PlayerAbilities abilities = accessor.getAbilities();
-        abilities.allowFlying = GavinsMod.FlyEnabled() || abilities.creativeMode;
-        if (!GavinsMod.FlyEnabled() && !abilities.creativeMode)
-            accessor.getAbilities().flying = false;
+        boolean flying = GavinsMod.FlyEnabled() || abilities.creativeMode || GavinsMod.NoClipEnabled();
+        abilities.allowFlying = flying;
+        accessor.getAbilities().flying = flying;
     }
 
 
@@ -35,10 +37,22 @@ public class MixinPlayerEntity {
         return 1.0F;
     }
 
-    @Inject(method = "travel", at = @At("HEAD"),cancellable = true)
+    @Redirect(method = "tick()V", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerEntity;noClip:Z", opcode = Opcodes.PUTFIELD))
+    public void doNoClip(PlayerEntity p, boolean b) {
+        //TODO: This does werid things with sprinting.
+        if (GavinsMod.NoClipEnabled()) {
+            p.noClip = true;
+            b = true;
+        } else {
+            p.noClip = false;
+            b = false;
+        }
+    }
+
+    @Inject(method = "travel", at = @At("HEAD"), cancellable = true)
     public void checkAutoJump(Vec3d movementInput, CallbackInfo info) {
-        PlayerEntity p = ((PlayerEntity)(Object)this);
-        if(GavinsMod.AutoJumpEnabled() && !p.isCreative()) {
+        PlayerEntity p = ((PlayerEntity) (Object) this);
+        if (GavinsMod.AutoJumpEnabled() && !p.isCreative()) {
             GavinsModClient.getMinecraftClient().options.jumpKey.setPressed(true);
         }
     }

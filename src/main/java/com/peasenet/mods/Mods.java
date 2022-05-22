@@ -18,6 +18,7 @@ public enum Mods {
     AUTO_JUMP("Auto Jump", "key.gavinsmod.autojump", "category.gavinsmod.test", MOVEMENT),
 
     CLIMB("Climb", "key.gavinsmod.climb", "category.gavinsmod.test", MOVEMENT),
+    NO_CLIP("No Clip", "key.gavinsmod.noclip", "category.gavinsmod.test", MOVEMENT),
 
     //RENDER
     XRAY("Xray", "key.gavinsmod.xray", "category.gavinsmod.test", RENDER),
