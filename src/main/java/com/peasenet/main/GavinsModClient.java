@@ -28,7 +28,7 @@ public class GavinsModClient implements ClientModInitializer {
                 m.onTick();
             }
         });
-        WorldRenderEvents.END.register(RenderUtils::onRender);
+        WorldRenderEvents.AFTER_ENTITIES.register(RenderUtils::onRender);
     }
 
     public static MinecraftClient getMinecraftClient() {
