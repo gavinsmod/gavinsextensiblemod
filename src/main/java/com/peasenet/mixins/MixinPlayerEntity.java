@@ -35,9 +35,11 @@ public class MixinPlayerEntity {
     }
 
     @Redirect(method = "tick()V", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerEntity;noClip:Z", opcode = Opcodes.PUTFIELD))
-    public void doNoClip(PlayerEntity p) {
+    public void doNoClip(PlayerEntity p, boolean noClip) {
         //TODO: This does werid things with sprinting.
         p.noClip = GavinsMod.NoClipEnabled();
+        //NOTE: This is fine. It is required for fabric to work.
+        noClip = GavinsMod.NoClipEnabled();
     }
 
     @Inject(method = "travel", at = @At("HEAD"), cancellable = true)
