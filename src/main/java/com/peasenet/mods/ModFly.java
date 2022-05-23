@@ -8,6 +8,6 @@ import com.peasenet.util.KeyBindUtils;
  */
 public class ModFly extends Mod {
     public ModFly() {
-        super(Mods.FLY, ModCategory.MOVEMENT, KeyBindUtils.registerKeyBindForType(Mods.FLY));
+        super(Mods.FLY, Mods.Category.MOVEMENT, KeyBindUtils.registerKeyBindForType(Mods.FLY));
     }
 }

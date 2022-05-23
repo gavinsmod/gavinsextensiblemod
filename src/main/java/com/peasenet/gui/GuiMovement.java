@@ -1,13 +1,8 @@
 package com.peasenet.gui;
 
-import com.peasenet.main.GavinsMod;
-import com.peasenet.mods.ModCategory;
+import com.peasenet.mods.Mods;
 import dev.lambdaurora.spruceui.Position;
-import dev.lambdaurora.spruceui.option.SpruceBooleanOption;
-import dev.lambdaurora.spruceui.option.SpruceOption;
-import dev.lambdaurora.spruceui.screen.SpruceScreen;
 import dev.lambdaurora.spruceui.widget.SpruceButtonWidget;
-import dev.lambdaurora.spruceui.widget.container.SpruceOptionListWidget;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.LiteralText;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +23,7 @@ public class GuiMovement extends GavinsModGui {
         this.addDrawableChild(new SpruceButtonWidget(Position.of(this, this.width / 2 - 75, this.height - 29), 150, 20, new LiteralText("Back"),
                 btn -> this.client.setScreen(this.parent)).asVanilla());
 
-        this.addDrawableChild(getOptionList(Position.of(0, 22), this.width, this.height - 35 - 22, ModCategory.MOVEMENT));
+        this.addDrawableChild(getOptionList(Position.of(0, 22), this.width, this.height - 35 - 22, Mods.Category.MOVEMENT));
     }
 
 

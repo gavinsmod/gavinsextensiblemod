@@ -23,7 +23,7 @@ public abstract class Mod implements IMod {
     /**
      * The category of this mod.
      */
-    private final ModCategory category;
+    private final Mods.Category category;
 
     /**
      * Whether the mod is enabled.
@@ -43,7 +43,7 @@ public abstract class Mod implements IMod {
      * @param keyBinding The keybind for this mod.
      */
 
-    public Mod(Mods type, ModCategory category, KeyBinding keyBinding) {
+    public Mod(Mods type, Mods.Category category, KeyBinding keyBinding) {
         this.type = type;
         this.category = category;
         this.keyBinding = keyBinding;
@@ -55,7 +55,7 @@ public abstract class Mod implements IMod {
      * @param type     The type of the mod.
      * @param category The category of this mod.
      */
-    public Mod(Mods type, ModCategory category) {
+    public Mod(Mods type, Mods.Category category) {
         this.type = type;
         this.category = category;
         this.keyBinding = KeyBindUtils.registerEmptyKeyBind(type);
@@ -127,7 +127,7 @@ public abstract class Mod implements IMod {
         }
     }
 
-    public ModCategory getCategory() {
+    public Mods.Category getCategory() {
         return category;
     }
 

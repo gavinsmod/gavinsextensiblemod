@@ -9,6 +9,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
  */
 public class ModChestEsp extends Mod implements WorldRenderEvents.AfterEntities {
     public ModChestEsp() {
-        super(Mods.CHEST_ESP, ModCategory.RENDER, KeyBindUtils.registerEmptyKeyBind(Mods.CHEST_ESP));
+        super(Mods.CHEST_ESP, Mods.Category.RENDER, KeyBindUtils.registerEmptyKeyBind(Mods.CHEST_ESP));
     }
 }

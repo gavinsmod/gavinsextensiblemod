@@ -59,7 +59,7 @@ public interface IMod {
      * Get the mod category
      * @return The mod category
      */
-    ModCategory getCategory();
+    Mods.Category getCategory();
 
     /**
      * Gets the translation key for the mod.

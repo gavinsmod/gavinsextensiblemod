@@ -10,7 +10,7 @@ public class ModFullBright extends Mod {
 
 
     public ModFullBright() {
-        super(Mods.FULL_BRIGHT, ModCategory.RENDER, KeyBindUtils.registerKeyBindForType(Mods.FULL_BRIGHT));
+        super(Mods.FULL_BRIGHT, Mods.Category.RENDER, KeyBindUtils.registerKeyBindForType(Mods.FULL_BRIGHT));
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.peasenet.mods;
 
 import org.lwjgl.glfw.GLFW;
 
-import static com.peasenet.mods.ModCategory.*;
+import static com.peasenet.mods.Mods.Category.*;
 
 /**
  * @author gt3ch1
@@ -37,7 +37,7 @@ public enum Mods {
     private final String name;
     private final String category;
     private final int keyBinding;
-    private final ModCategory modCategory;
+    private final Category modCategory;
 
 
     /**
@@ -49,7 +49,7 @@ public enum Mods {
      * @param key            - The keybinding of the mod.
      * @param modCategory    - The mod category of the mod.
      */
-    Mods(String name, String translationKey, String category, int key, ModCategory modCategory) {
+    Mods(String name, String translationKey, String category, int key, Category modCategory) {
         this.name = name;
         this.category = category;
         this.translationKey = translationKey;
@@ -65,7 +65,7 @@ public enum Mods {
      * @param category       - The settings category of the mod.
      * @param modCategory    - The mod category of the mod.
      */
-    Mods(String name, String translationKey, String category, ModCategory modCategory) {
+    Mods(String name, String translationKey, String category, Category modCategory) {
         this(name, translationKey, category, GLFW.GLFW_KEY_UNKNOWN, modCategory);
     }
 
@@ -110,7 +110,18 @@ public enum Mods {
      *
      * @return The mod category of the mod.
      */
-    public ModCategory getModCategory() {
+    public Category getModCategory() {
         return modCategory;
+    }
+
+    /**
+     * @author gt3ch1
+     * @version 5/18/2022
+     * A list of different mod categories.
+     */
+    public enum Category {
+        MOVEMENT,
+        RENDER,
+        GUI
     }
 }

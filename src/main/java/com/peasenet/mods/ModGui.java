@@ -6,7 +6,7 @@ import com.peasenet.util.KeyBindUtils;
 
 public class ModGui extends Mod{
     public ModGui() {
-        super(Mods.MOD_GUI, ModCategory.GUI, KeyBindUtils.registerKeyBindForType(Mods.MOD_GUI));
+        super(Mods.MOD_GUI, Mods.Category.GUI, KeyBindUtils.registerKeyBindForType(Mods.MOD_GUI));
     }
 
     @Override
