@@ -1,10 +1,7 @@
 package com.peasenet.gui;
 
 import com.peasenet.mods.Mods;
-import dev.lambdaurora.spruceui.Position;
-import dev.lambdaurora.spruceui.widget.SpruceButtonWidget;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.LiteralText;
 import org.jetbrains.annotations.Nullable;
 
 /**
