@@ -24,6 +24,7 @@ public class GuiMainMenu extends SpruceScreen {
     public void init() {
         super.init();
         int startY = 80;
+        assert this.client != null;
         this.addDrawableChild(new SpruceButtonWidget(Position.of(this, this.width / 2 - 75, this.height - 29), 150, 20, new LiteralText("Back"),
                 btn -> this.client.setScreen(this.parent)));
         // Movement button
@@ -34,5 +35,9 @@ public class GuiMainMenu extends SpruceScreen {
         this.addDrawableChild(new SpruceButtonWidget(Position.of(this, this.width / 2 + 25, startY), 100, 20,
                 new TranslatableText("key.gavinsmod.gui.render"),
                 btn -> this.client.setScreen(new GuiRender(this))));
+        // Combat button
+        this.addDrawableChild(new SpruceButtonWidget(Position.of(this, this.width / 2 - 125, startY + 40), 100, 20,
+                new TranslatableText("key.gavinsmod.gui.combat"),
+                btn -> this.client.setScreen(new GuiCombat(this))));
     }
 }
