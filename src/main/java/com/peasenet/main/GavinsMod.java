@@ -19,6 +19,10 @@ public class GavinsMod implements ModInitializer {
     private static final ModFly Fly = new ModFly();
     private static final ModAutoJump AutoJump = new ModAutoJump();
     private static final ModClimb Climb = new ModClimb();
+    private static final ModNoClip NoClip = new ModNoClip();
+    private static final ModNoFall NoFall = new ModNoFall();
+    // COMBAT
+    private static final ModKillAura KillAura = new ModKillAura();
     // RENDER
     private static final ModFastMine FastMine = new ModFastMine();
     private static final ModFullBright FullBright = new ModFullBright();
@@ -28,6 +32,9 @@ public class GavinsMod implements ModInitializer {
     private static final ModMobTracer MobTracer = new ModMobTracer();
     private static final ModEntityItemTracer EntityItemTracer = new ModEntityItemTracer();
     private static final ModEntityItemEsp EntityItemEsp = new ModEntityItemEsp();
+    private static final ModEntityPlayerTracer EntityPlayerTracer = new ModEntityPlayerTracer();
+    private static final ModEntityPlayerEsp EntityPlayerEsp = new ModEntityPlayerEsp();
+    private static final ModGui Gui = new ModGui();
     public static ArrayList<Mod> mods;
 
     @Override
@@ -40,6 +47,10 @@ public class GavinsMod implements ModInitializer {
                 add(FastMine);
                 add(AutoJump);
                 add(Climb);
+                add(NoClip);
+                add(NoFall);
+                // COMBAT
+                add(KillAura);
 
                 // RENDER
                 add(XRay);
@@ -52,10 +63,15 @@ public class GavinsMod implements ModInitializer {
 
                 add(EntityItemEsp);
                 add(EntityItemTracer);
+
+                add(EntityPlayerEsp);
+                add(EntityPlayerTracer);
+
+                //GUI
+                add(Gui);
             }
         };
     }
-
 
     public static boolean FlyEnabled() {
         return Fly.isActive();
@@ -68,10 +84,22 @@ public class GavinsMod implements ModInitializer {
     public static boolean AutoJumpEnabled() {
         return AutoJump.isActive();
     }
+
     public static boolean XRayEnabled() {
         return XRay.isActive();
     }
 
+    public static boolean ClimbEnabled() {
+        return Climb.isActive();
+    }
+
+    public static boolean NoClipEnabled() {
+        return NoClip.isActive();
+    }
+
+    public static boolean KillAuraEnabled() {
+        return KillAura.isActive();
+    }
 
     public static boolean FullBrightEnabled() {
         return FullBright.isActive();
@@ -101,56 +129,16 @@ public class GavinsMod implements ModInitializer {
         return EntityItemEsp.isActive();
     }
 
-    public static boolean ClimbEnabled() {
-        return Climb.isActive();
+    public static boolean EntityPlayerTracerEnabled() {
+        return EntityPlayerTracer.isActive();
     }
 
-    public static void ToggleXray() {
-        XRay.toggle();
+    public static boolean EntityPlayerEspEnabled() {
+        return EntityPlayerEsp.isActive();
     }
 
-    public static void ToggleFly() {
-        Fly.toggle();
-    }
-
-    public static void ToggleFastMine() {
-        FastMine.toggle();
-    }
-
-    public static void ToggleAutoJump() {
-        AutoJump.toggle();
-    }
-
-    public static void ToggleFullBright() {
-        FullBright.toggle();
-    }
-
-    public static void ToggleChestEsp() {
-        ChestEsp.toggle();
-    }
-
-    public static void ToggleEntityTracer() {
-        MobTracer.toggle();
-    }
-
-    public static void ToggleEntityEsp() {
-        MobEsp.toggle();
-    }
-
-    public static void ToggleChestTracer() {
-        ChestTracer.toggle();
-    }
-
-    public static void ToggleEntityItemTracer() {
-        EntityItemTracer.toggle();
-    }
-
-    public static void ToggleEntityItemEsp() {
-        EntityItemEsp.toggle();
-    }
-
-    public static void ToggleClimb() {
-        Climb.toggle();
+    public static boolean NoFallEnabled() {
+        return NoFall.isActive();
     }
 
 }

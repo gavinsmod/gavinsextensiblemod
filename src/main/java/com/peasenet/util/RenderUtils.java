@@ -6,13 +6,13 @@ import com.peasenet.main.GavinsModClient;
 import com.peasenet.util.color.Color;
 import com.peasenet.util.color.Colors;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
@@ -20,35 +20,45 @@ import net.minecraft.item.Items;
 import net.minecraft.util.math.*;
 import org.lwjgl.opengl.GL11;
 
+/**
+ * @author gt3ch1
+ * @version 5/23/2022
+ * A utility class for rendering tracers and esp's.
+ */
 public class RenderUtils {
+    private static int CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.viewDistance / 2;
 
     private RenderUtils() {
     }
 
-    public static void renderSingleLine(MatrixStack stack, VertexConsumer buffer, float x1, float y1, float z1,
-                                        float x2, float y2,
-                                        float z2, float r, float g, float b, float a) {
-        Vec3f normal = new Vec3f(x2 - x1, y2 - y1, z2 - z1);
+    /**
+     * Draws a single line in the given color.
+     * @param stack The matrix stack to use.
+     * @param buffer The buffer to write to.
+     * @param playerPos The position of the player.
+     * @param boxPos The center of the location we want to draw a line to.
+     * @param color The color to draw the line in.
+     */
+    public static void renderSingleLine(MatrixStack stack, VertexConsumer buffer, Vec3f playerPos,
+                                        Vec3f boxPos, Color color) {
+        Vec3f normal = new Vec3f(boxPos.getX() - playerPos.getX(), boxPos.getY() - playerPos.getY(), boxPos.getZ() - playerPos.getZ());
         normal.normalize();
-        renderSingleLine(stack, buffer, x1, y1, z1, x2, y2, z2, r, g, b, a, normal.getX(), normal.getY(),
-                normal.getZ());
-    }
-
-    public static void renderSingleLine(MatrixStack stack, VertexConsumer buffer, float x1, float y1, float z1,
-                                        float x2, float y2,
-                                        float z2, float r, float g, float b, float a, float normalX, float normalY, float normalZ) {
         Matrix4f matrix4f = stack.peek().getPositionMatrix();
         Matrix3f matrix3f = stack.peek().getNormalMatrix();
-        buffer.vertex(matrix4f, x1, y1, z1).color(r, g, b, a)
-                .normal(matrix3f, normalX, normalY, normalZ).next();
-        buffer.vertex(matrix4f, x2, y2, z2).color(r, g, b, a)
-                .normal(matrix3f, normalX, normalY, normalZ).next();
+        buffer.vertex(matrix4f, playerPos.getX(), playerPos.getY(), playerPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
+                .normal(matrix3f, normal.getX(), normal.getY(), normal.getZ()).next();
+        buffer.vertex(matrix4f, boxPos.getX(), boxPos.getY(), boxPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
+                .normal(matrix3f, normal.getX(), normal.getY(), normal.getZ()).next();
     }
 
-    public static void onRender(WorldRenderContext context) {
-        // this helps with lag
-        int CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.viewDistance / 2;
 
+    /**
+     * Processes events for rendering player, chest, item, and mob tracers or esp's in the world.
+     * @param context The render context.
+     */
+    public static void onRender(WorldRenderContext context) {
+        CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.viewDistance / 2;
+        // this helps with lag
         MinecraftClient minecraft = MinecraftClient.getInstance();
         ClientWorld level = minecraft.world;
         ClientPlayerEntity player = minecraft.player;
@@ -57,12 +67,7 @@ public class RenderUtils {
         Camera mainCamera = minecraft.gameRenderer.getCamera();
         Vec3d camera = mainCamera.getPos();
 
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.depthMask(false);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.disableTexture();
+        setupRenderSystem();
 
         stack.push();
         Tessellator tessellator = Tessellator.getInstance();
@@ -71,71 +76,95 @@ public class RenderUtils {
 
         RenderSystem.applyModelViewMatrix();
         stack.translate(-camera.x, -camera.y, -camera.z);
-        Vec3f look = mainCamera.getHorizontalPlane();
-        float px = (float) (player.prevX + (player.getX() - player.prevX) * delta) + look.getX();
-        float py = (float) (player.prevY + (player.getY() - player.prevY) * delta) + look.getY()
-                + player.getStandingEyeHeight();
-        float pz = (float) (player.prevZ + (player.getZ() - player.prevZ) * delta) + look.getZ();
-
+        assert player != null;
+        Vec3f playerPos = PlayerUtils.getNewPlayerPosition(delta, mainCamera);
         assert level != null;
         int chunk_x = player.getChunkPos().x;
         int chunk_z = player.getChunkPos().z;
 
-        // prevent an expensive computation!
-        if(GavinsMod.ChestEspEnabled() || GavinsMod.ChestTracerEnabled()) {
-            for (int x = chunk_x - CHUNK_RADIUS; x <= chunk_x + CHUNK_RADIUS; x++)
-                for (int z = chunk_z - CHUNK_RADIUS; z <= chunk_z + CHUNK_RADIUS; z++)
-                    drawEspToChests(level, stack, delta, buffer, px, py, pz, x, z);
-        }
-
-
-        drawEntityEsp(level, player, stack, delta, buffer, px, py, pz);
+        drawChestMods(level, stack, buffer, playerPos, chunk_x, chunk_z);
+        drawEntityMods(level, player, stack, delta, buffer, playerPos);
         tessellator.draw();
         stack.pop();
+
+        resetRenderSystem();
+    }
+
+    /**
+     * Resets the render system to the default state.
+     */
+    private static void resetRenderSystem() {
         RenderSystem.applyModelViewMatrix();
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDisable(GL11.GL_BLEND);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+//        GL11.glEnable(GL11.GL_TEXTURE);
         GL11.glDisable(GL11.GL_LINE_SMOOTH);
     }
 
-    private static void drawEspToChests(ClientWorld level, MatrixStack stack, float delta, BufferBuilder buffer, float px, float py, float pz, int chunk_x, int chunk_z) {
-        level.getChunk(chunk_x, chunk_z).getBlockEntities().forEach((blockPos, blockEntity) -> {
-            if (!(blockEntity instanceof ChestBlockEntity))
-                return;
+    /**
+     * Sets up the render system for the tracers and esps to work.
+     */
+    private static void setupRenderSystem() {
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.disableTexture();
+    }
 
-            BlockEntity type = level.getBlockEntity(blockPos);
+    /**
+     * Draws Chest ESPs and tracers.
+     *
+     * @param level     The world.
+     * @param stack     The matrix stack.
+     * @param buffer    The buffer to write to.
+     * @param playerPos The player's position.
+     * @param chunk_x   The player's chunk x.
+     * @param chunk_z   The player's chunk z.
+     */
+    private static void drawChestMods(ClientWorld level, MatrixStack stack, BufferBuilder buffer, Vec3f playerPos, int chunk_x, int chunk_z) {
+        if (GavinsMod.ChestEspEnabled() || GavinsMod.ChestTracerEnabled()) {
+            for (int x = chunk_x - CHUNK_RADIUS; x <= chunk_x + CHUNK_RADIUS; x++) {
+                for (int z = chunk_z - CHUNK_RADIUS; z <= chunk_z + CHUNK_RADIUS; z++) {
+                    level.getChunk(chunk_x, chunk_z).getBlockEntities().forEach((blockPos, blockEntity) -> {
+                        if (!(blockEntity instanceof ChestBlockEntity))
+                            return;
 
-            Box aabb = new Box(blockPos);
-            if (GavinsMod.ChestEspEnabled())
-                drawBox(stack, buffer, aabb, Colors.PURPLE);
+                        Box aabb = new Box(blockPos);
+                        Vec3f boxPos = new Vec3f(aabb.getCenter());
+                        if (GavinsMod.ChestEspEnabled())
+                            drawBox(stack, buffer, aabb, Colors.PURPLE);
 
-            if (GavinsMod.ChestTracerEnabled()) {
-                Vec3d center = aabb.getCenter();
-                RenderUtils.renderSingleLine(stack, buffer, px, py, pz, (float) center.x, (float) center.y, (float) center.z,
-                        Colors.PURPLE.getRed(), Colors.PURPLE.getGreen(), Colors.PURPLE.getBlue(), Colors.PURPLE.getAlpha());
+                        if (GavinsMod.ChestTracerEnabled())
+                            renderSingleLine(stack, buffer, playerPos, boxPos, Colors.PURPLE);
+
+                    });
+                }
             }
-        });
-
+        }
     }
 
     private static void drawBox(MatrixStack stack, BufferBuilder buffer, Box aabb, Color c) {
         WorldRenderer.drawBox(stack, buffer, aabb, c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
     }
 
-    private static void drawEntityEsp(ClientWorld level, ClientPlayerEntity player, MatrixStack stack, float delta, BufferBuilder buffer, float px, float py, float pz) {
+    /**
+     * Draws the Entity based ESP's and tracers.
+     *
+     * @param level     The world.
+     * @param player    The player.
+     * @param stack     The matrix stack.
+     * @param delta     The change in time.
+     * @param buffer    The buffer to write to.
+     * @param playerPos The player's position.
+     */
+    private static void drawEntityMods(ClientWorld level, ClientPlayerEntity player, MatrixStack stack, float delta, BufferBuilder buffer, Vec3f playerPos) {
         level.getEntities().forEach(e -> {
-            if ((e.squaredDistanceTo(player) > 1000) || player == e)
+            if ((e.squaredDistanceTo(player) > 64 * CHUNK_RADIUS * 16) || player == e)
                 return;
 
             EntityType<?> type = e.getType();
 
-
-            double x = e.prevX + (e.getX() - e.prevX) * delta;
-            double y = e.prevY + (e.getY() - e.prevY) * delta;
-            double z = e.prevZ + (e.getZ() - e.prevZ) * delta;
-            Box aabb = type.createSimpleBoundingBox(x, y, z);
-
+            Box aabb = getEntityBox(delta, e, type);
+            Vec3f boxPos = new Vec3f(aabb.getCenter());
             Color c = Colors.PURPLE;
 
             if (type == EntityType.ITEM) {
@@ -148,29 +177,42 @@ public class RenderUtils {
                 if (GavinsMod.EntityItemEspEnabled())
                     drawBox(stack, buffer, aabb, c);
                 if (GavinsMod.EntityItemTracerEnabled())
-                    drawTracer(stack, buffer, px, py, pz, aabb, c);
+                    renderSingleLine(stack, buffer, playerPos, boxPos, c);
+                return;
+            }
+
+            if (type == EntityType.PLAYER) {
+                if (GavinsMod.EntityPlayerEspEnabled())
+                    drawBox(stack, buffer, aabb, c);
+                if (GavinsMod.EntityPlayerTracerEnabled())
+                    renderSingleLine(stack, buffer, playerPos, boxPos, c);
                 return;
             }
 
             if (type.getSpawnGroup().isPeaceful())
                 c = Colors.GREEN;
-             if (!type.getSpawnGroup().isPeaceful())
+            if (!type.getSpawnGroup().isPeaceful())
                 c = Colors.RED;
-             if (type.getSpawnGroup().isRare())
-                c = Colors.GOLD;
-             if (type == EntityType.PLAYER)
-                c = Colors.YELLOW;
 
             if (GavinsMod.EntityEspEnabled())
                 drawBox(stack, buffer, aabb, c);
             if (GavinsMod.EntityTracerEnabled())
-                drawTracer(stack, buffer, px, py, pz, aabb, c);
+                renderSingleLine(stack, buffer, playerPos, boxPos, c);
         });
     }
 
-    private static void drawTracer(MatrixStack stack, BufferBuilder buffer, float px, float py, float pz, Box aabb, Color c) {
-        Vec3d center = aabb.getCenter();
-        RenderUtils.renderSingleLine(stack, buffer, px, py, pz, (float) center.x,
-                (float) center.y, (float) center.z, c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
+    /**
+     * Gets the bounding box of an entity.
+     *
+     * @param delta The delta time.
+     * @param e     The entity.
+     * @param type  The entity type.
+     * @return The bounding box of the entity.
+     */
+    private static Box getEntityBox(float delta, Entity e, EntityType<?> type) {
+        double x = e.prevX + (e.getX() - e.prevX) * delta;
+        double y = e.prevY + (e.getY() - e.prevY) * delta;
+        double z = e.prevZ + (e.getZ() - e.prevZ) * delta;
+        return type.createSimpleBoundingBox(x, y, z);
     }
 }

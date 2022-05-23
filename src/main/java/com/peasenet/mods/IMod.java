@@ -1,9 +1,10 @@
 package com.peasenet.mods;
 
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-
+/**
+ * @author gt3ch1
+ * The interface of the base mod class.
+ */
 public interface IMod {
-
 
     /**
      * Runs on enabling of mod.
@@ -21,7 +22,13 @@ public interface IMod {
     void onTick();
 
     /**
+     * Checks the keybinding of the mod.
+     */
+    void checkKeybinding();
+
+    /**
      * Whether the mod is enabled.
+     * @return True if the mod is enabled.
      */
     boolean isActive();
 
@@ -36,16 +43,26 @@ public interface IMod {
     void deactivate();
 
     /**
-     * Renders after entities.
-     *
-     * @param context
+     * Toggles the mod.
      */
-    void afterEntities(WorldRenderContext context);
+    void toggle();
 
     /**
      * Get the mod category
-     *
-     * @return
+     * @return The mod category
      */
-    ModCategory getCategory();
+    Mods.Category getCategory();
+
+    /**
+     * Gets the translation key for the mod.
+     * @return The translation key for the mod.
+     */
+    String getTranslationKey();
+
+    /**
+     * Gets the name of the mod.
+     *
+     * @return The name of the mod.
+     */
+    String getName();
 }

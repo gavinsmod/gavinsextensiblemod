@@ -12,8 +12,8 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface EntityAccessor {
 
     @Accessor("onGround")
-    public boolean getOnGround();
+    boolean getOnGround();
 
     @Accessor("onGround")
-    public void setOnGround(boolean onGround);
+    void setOnGround(boolean onGround);
 }

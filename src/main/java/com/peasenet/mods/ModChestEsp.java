@@ -1,14 +1,13 @@
 package com.peasenet.mods;
 
 import com.peasenet.util.KeyBindUtils;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 
 /**
  * @author gt3ch1
- * @version 5/17/2022
+ * A mod that allows the client to see an esp (a box) around chests.
  */
-public class ModChestEsp extends Mod implements WorldRenderEvents.AfterEntities {
+public class ModChestEsp extends Mod {
     public ModChestEsp() {
-        super(Mods.CHEST_ESP, ModCategory.RENDER, KeyBindUtils.reigsterEmptyKeyBind(Mods.CHEST_ESP));
+        super(Mods.CHEST_ESP, Mods.Category.RENDER, KeyBindUtils.registerEmptyKeyBind(Mods.CHEST_ESP));
     }
 }

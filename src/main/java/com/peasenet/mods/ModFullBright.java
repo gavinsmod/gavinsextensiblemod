@@ -1,32 +1,26 @@
 package com.peasenet.mods;
 
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import org.lwjgl.glfw.GLFW;
+import com.peasenet.util.KeyBindUtils;
 
+/**
+ * @author gt3ch1
+ * A mod that allows the client to see very clearly in the absence of a light source.
+ */
 public class ModFullBright extends Mod {
 
-
     public ModFullBright() {
-        super(Mods.FULL_BRIGHT, ModCategory.RENDER, KeyBindingHelper.registerKeyBinding(
-                new KeyBinding(Mods.FULL_BRIGHT.getTranslationKey(),
-                        InputUtil.Type.KEYSYM,
-                        GLFW.GLFW_KEY_B,
-                        Mods.FULL_BRIGHT.getCategory())));
+        super(Mods.FULL_BRIGHT, Mods.Category.RENDER, KeyBindUtils.registerKeyBindForType(Mods.FULL_BRIGHT));
     }
 
     @Override
     public void activate() {
-        isEnabled = true;
         getClient().worldRenderer.reload();
-        onEnable();
+        super.activate();
     }
 
     @Override
     public void deactivate() {
         getClient().worldRenderer.reload();
-        isEnabled = false;
-        onDisable();
+        super.deactivate();
     }
 }

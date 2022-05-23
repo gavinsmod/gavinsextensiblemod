@@ -14,12 +14,13 @@ import java.util.ArrayList;
 /**
  * @author gt3ch1
  * @version 5/16/2022
+ * A mod for an xray like feature, allowing the player to see through certain blocks.
  */
 public class ModXray extends Mod {
     /**
      * A list of blocks that SHOULD be visible (coal, iron, gold, diamond, lapis, redstone, etc.)
      */
-    public static ArrayList<Block> blocks = new ArrayList<>() {
+    public static final ArrayList<Block> blocks = new ArrayList<>() {
         {
             add(Blocks.COAL_ORE);
             add(Blocks.IRON_ORE);
@@ -35,7 +36,6 @@ public class ModXray extends Mod {
             add(Blocks.DEEPSLATE_LAPIS_ORE);
             add(Blocks.DEEPSLATE_REDSTONE_ORE);
             add(Blocks.DEEPSLATE_EMERALD_ORE);
-//            add(Blocks.CHEST);
             add(Blocks.END_PORTAL_FRAME);
             add(Blocks.END_PORTAL);
             add(Blocks.ENDER_CHEST);
@@ -44,12 +44,11 @@ public class ModXray extends Mod {
     };
 
     public ModXray() {
-        super(Mods.XRAY, ModCategory.RENDER, KeyBindingHelper.registerKeyBinding(
+        super(Mods.XRAY, Mods.Category.RENDER, KeyBindingHelper.registerKeyBinding(
                 new KeyBinding(Mods.XRAY.getTranslationKey(),
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_X,
                         Mods.XRAY.getCategory())));
-        ;
     }
 
     @Override
