@@ -96,7 +96,7 @@ public class RenderUtils {
     private static void resetRenderSystem() {
         RenderSystem.applyModelViewMatrix();
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        GL11.glEnable(GL11.GL_TEXTURE);
+//        GL11.glEnable(GL11.GL_TEXTURE);
         GL11.glDisable(GL11.GL_LINE_SMOOTH);
     }
 
