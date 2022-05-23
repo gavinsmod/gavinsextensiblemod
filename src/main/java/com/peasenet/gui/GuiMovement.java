@@ -14,18 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public class GuiMovement extends GavinsModGui {
 
     public GuiMovement(@Nullable Screen screen) {
-        super(screen);
+        super(screen, Mods.Category.MOVEMENT);
     }
-
-    @Override
-    protected void init() {
-        super.init();
-        this.addDrawableChild(new SpruceButtonWidget(Position.of(this, this.width / 2 - 75, this.height - 29), 150, 20, new LiteralText("Back"),
-                btn -> this.client.setScreen(this.parent)).asVanilla());
-
-        this.addDrawableChild(getOptionList(Position.of(0, 22), this.width, this.height - 35 - 22, Mods.Category.MOVEMENT));
-    }
-
-
 
 }

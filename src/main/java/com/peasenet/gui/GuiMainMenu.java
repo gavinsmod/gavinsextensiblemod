@@ -23,7 +23,7 @@ public class GuiMainMenu extends SpruceScreen {
     @Override
     public void init() {
         super.init();
-        int startY = 20;
+        int startY = 80;
         this.addDrawableChild(new SpruceButtonWidget(Position.of(this, this.width / 2 - 75, this.height - 29), 150, 20, new LiteralText("Back"),
                 btn -> this.client.setScreen(this.parent)));
         // Movement button

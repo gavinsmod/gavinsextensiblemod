@@ -12,20 +12,7 @@ import org.jetbrains.annotations.Nullable;
  * @version 5/19/2022
  */
 public class GuiRender extends GavinsModGui {
-
     public GuiRender(@Nullable Screen screen) {
-        super(screen);
+        super(screen, Mods.Category.RENDER);
     }
-
-    @Override
-    protected void init() {
-        super.init();
-        this.addDrawableChild(new SpruceButtonWidget(Position.of(this, this.width / 2 - 75, this.height - 29), 150, 20, new LiteralText("Back"),
-                btn -> this.client.setScreen(this.parent)).asVanilla());
-
-        this.addDrawableChild(getOptionList(Position.of(0, 22), this.width, this.height - 35 - 22, Mods.Category.RENDER));
-    }
-
-
-
 }
