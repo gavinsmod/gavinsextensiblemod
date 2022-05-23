@@ -77,6 +77,7 @@ public class RenderUtils {
 
         RenderSystem.applyModelViewMatrix();
         stack.translate(-camera.x, -camera.y, -camera.z);
+        assert player != null;
         Vec3f playerPos = getPlayerPosition(player, delta, mainCamera);
         assert level != null;
         int chunk_x = player.getChunkPos().x;
@@ -157,8 +158,7 @@ public class RenderUtils {
         float py = (float) (player.prevY + (player.getY() - player.prevY) * delta) + look.getY()
                 + player.getStandingEyeHeight();
         float pz = (float) (player.prevZ + (player.getZ() - player.prevZ) * delta) + look.getZ();
-        Vec3f playerPos = new Vec3f(px, py, pz);
-        return playerPos;
+        return new Vec3f(px, py, pz);
     }
 
     private static void drawBox(MatrixStack stack, BufferBuilder buffer, Box aabb, Color c) {
@@ -197,18 +197,15 @@ public class RenderUtils {
                     drawBox(stack, buffer, aabb, c);
                 if (GavinsMod.EntityItemTracerEnabled())
                     renderSingleLine(stack, buffer, playerPos, boxPos, c);
-                if (GavinsMod.EntityItemEspEnabled() || GavinsMod.EntityItemTracerEnabled())
-                    return;
+                return;
             }
 
             if (type == EntityType.PLAYER) {
-                c = Colors.PURPLE;
                 if (GavinsMod.EntityPlayerEspEnabled())
                     drawBox(stack, buffer, aabb, c);
                 if (GavinsMod.EntityPlayerTracerEnabled())
                     renderSingleLine(stack, buffer, playerPos, boxPos, c);
-                if (GavinsMod.EntityPlayerEspEnabled() || GavinsMod.EntityPlayerTracerEnabled())
-                    return;
+                return;
             }
 
             if (type.getSpawnGroup().isPeaceful())
