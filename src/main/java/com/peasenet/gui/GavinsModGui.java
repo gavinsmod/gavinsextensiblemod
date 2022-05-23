@@ -29,6 +29,7 @@ public class GavinsModGui extends SpruceScreen {
 
     /**
      * Creates a new gui with the given parent. Upon exiting, the menu will return to the parent menu.
+     *
      * @param screen The parent of this gui.
      */
     public GavinsModGui(@Nullable Screen screen, Mods.Category category) {
@@ -39,16 +40,17 @@ public class GavinsModGui extends SpruceScreen {
 
     /**
      * Gets a list of options given the category of this gui.
+     *
      * @param position The position to render the options.
-     * @param width The width to render the options.
-     * @param height The height to render the options.
-     * @return
+     * @param width    The width to render the options.
+     * @param height   The height to render the options.
+     * @return The option list of this UI based off of its mod category.
      */
     protected SpruceOptionListWidget getOptionList(Position position, int width, int height) {
         var list = new SpruceOptionListWidget(position, width, height);
 
         list.addAll(GavinsMod.mods.stream()
-                .filter(mod -> mod.getCategory() ==  this.category)
+                .filter(mod -> mod.getCategory() == this.category)
                 .map(mod -> new SpruceBooleanOption(mod.getTranslationKey(),
                         mod::isActive,
                         newValue -> mod.toggle(),
@@ -59,11 +61,12 @@ public class GavinsModGui extends SpruceScreen {
     }
 
     @Override
-    public void init(){
+    public void init() {
         super.init();
+        assert this.client != null;
         this.addDrawableChild(new SpruceButtonWidget(Position.of(this, this.width / 2 - 75, this.height - 29), 150, 20, new LiteralText("Back"),
                 btn -> this.client.setScreen(this.parent)).asVanilla());
 
-        this.addDrawableChild(getOptionList(Position.of(this.width/2 - 150, 22), this.width/2 + 75, this.height - 75));
+        this.addDrawableChild(getOptionList(Position.of(this.width / 2 - 150, 22), this.width / 2 + 75, this.height - 75));
     }
 }

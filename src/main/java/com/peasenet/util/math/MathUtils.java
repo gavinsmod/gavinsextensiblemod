@@ -9,6 +9,12 @@ import net.minecraft.util.math.Vec3d;
  * @version 5/23/2022
  */
 public class MathUtils {
+    /**
+     * Gets the rotation to set to see the given entity at its midpoint.
+     *
+     * @param entity The entity to look at.
+     * @return The rotation to set to.
+     */
     public static Rotation getRotationToEntity(Entity entity) {
         var player = GavinsModClient.getPlayer();
         var playerPos = new Vec3d(player.getX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());

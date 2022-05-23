@@ -20,7 +20,7 @@ public class ModXray extends Mod {
     /**
      * A list of blocks that SHOULD be visible (coal, iron, gold, diamond, lapis, redstone, etc.)
      */
-    public static ArrayList<Block> blocks = new ArrayList<>() {
+    public static final ArrayList<Block> blocks = new ArrayList<>() {
         {
             add(Blocks.COAL_ORE);
             add(Blocks.IRON_ORE);

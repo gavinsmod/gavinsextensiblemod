@@ -2,7 +2,6 @@ package com.peasenet.mods;
 
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.util.KeyBindUtils;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.LiteralText;
@@ -13,7 +12,6 @@ import net.minecraft.text.LiteralText;
  * and a gui button based off of the given category.
  */
 public abstract class Mod implements IMod {
-
 
     /**
      * The type of the mod.
@@ -33,7 +31,9 @@ public abstract class Mod implements IMod {
     /**
      * The keybind for this mod.
      */
-    protected KeyBinding keyBinding;
+    protected final KeyBinding keyBinding;
+
+    public static final String GAVINS_MOD_STRING = "§d§l[ §b§lGavinsMod §d§l] §9";
 
     /**
      * Creates a new mod.
@@ -80,11 +80,11 @@ public abstract class Mod implements IMod {
     }
 
     public void onEnable() {
-        sendMessage(getGavinsModMessage() + type.getName() + " §a§lenabled§r!");
+        sendMessage(GAVINS_MOD_STRING + type.getName() + " §a§lenabled§r!");
     }
 
     public void onDisable() {
-        sendMessage(getGavinsModMessage() + type.getName() + " §c§ldisabled§r!");
+        sendMessage(GAVINS_MOD_STRING + type.getName() + " §c§ldisabled§r!");
     }
 
     public void onTick() {
@@ -115,10 +115,6 @@ public abstract class Mod implements IMod {
         onDisable();
     }
 
-    public void afterEntities(WorldRenderContext context) {
-
-    }
-
     public void toggle() {
         if (isActive()) {
             deactivate();
@@ -137,10 +133,6 @@ public abstract class Mod implements IMod {
 
     public String getName() {
         return type.getName();
-    }
-
-    public static String getGavinsModMessage() {
-        return "§d§l[ §b§lGavinsMod §d§l] §9";
     }
 
 }

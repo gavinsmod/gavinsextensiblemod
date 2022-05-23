@@ -3,10 +3,12 @@ package com.peasenet.util;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.util.math.Rotation;
+import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3f;
 
 /**
  * @author gt3ch1
@@ -33,6 +35,23 @@ public class PlayerUtils {
     public static Vec3d getPlayerPos() {
         var player = GavinsModClient.getPlayer();
         return player.getPos();
+    }
+
+    /**
+     * Gets the new player position after the change in time.
+     *
+     * @param deltaTime The change in time.
+     * @param camera    The camera to use.
+     * @return The new player position.
+     */
+    public static Vec3f getNewPlayerPosition(float deltaTime, Camera camera) {
+        var look = camera.getHorizontalPlane();
+        var player = GavinsModClient.getPlayer();
+        var px = (float) (player.prevX + (getPlayerPos().getX() - player.prevX) * deltaTime) + look.getX();
+        var py = (float) (player.prevY + (getPlayerPos().getY() - player.prevY) * deltaTime) + look.getY()
+                + player.getStandingEyeHeight();
+        var pz = (float) (player.prevZ + (getPlayerPos().getZ() - player.prevZ) * deltaTime) + look.getZ();
+        return new Vec3f(px, py, pz);
     }
 
     /**
@@ -128,8 +147,8 @@ public class PlayerUtils {
      */
     public static void handleNoFall() {
         var player = GavinsModClient.getPlayer();
-        if (player != null)
-            player.networkHandler.sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(GavinsMod.NoFallEnabled()));
+        if (player != null) {
+            player.networkHandler.sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(GavinsMod.NoFallEnabled() || (GavinsMod.FlyEnabled() && isFalling())));
+        }
     }
-
 }

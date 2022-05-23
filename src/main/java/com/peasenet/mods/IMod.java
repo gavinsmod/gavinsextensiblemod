@@ -1,7 +1,5 @@
 package com.peasenet.mods;
 
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-
 /**
  * @author gt3ch1
  * The interface of the base mod class.
@@ -45,12 +43,6 @@ public interface IMod {
     void deactivate();
 
     /**
-     * Hook for rendering things after the entities in the world are rendered.
-     * @param context The render context.
-     */
-    void afterEntities(WorldRenderContext context);
-
-    /**
      * Toggles the mod.
      */
     void toggle();
@@ -69,7 +61,8 @@ public interface IMod {
 
     /**
      * Gets the name of the mod.
-     * @return
+     *
+     * @return The name of the mod.
      */
     String getName();
 }

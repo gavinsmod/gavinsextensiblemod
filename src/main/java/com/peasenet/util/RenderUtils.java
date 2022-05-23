@@ -18,7 +18,6 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.*;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -78,7 +77,7 @@ public class RenderUtils {
         RenderSystem.applyModelViewMatrix();
         stack.translate(-camera.x, -camera.y, -camera.z);
         assert player != null;
-        Vec3f playerPos = getPlayerPosition(player, delta, mainCamera);
+        Vec3f playerPos = PlayerUtils.getNewPlayerPosition(delta, mainCamera);
         assert level != null;
         int chunk_x = player.getChunkPos().x;
         int chunk_z = player.getChunkPos().z;
@@ -141,24 +140,6 @@ public class RenderUtils {
                 }
             }
         }
-    }
-
-    /**
-     * Gets the players position after a change of time.
-     *
-     * @param player     The player.
-     * @param delta      The time difference.
-     * @param mainCamera The main camera.
-     * @return The player position after the change of time.
-     */
-    @NotNull
-    private static Vec3f getPlayerPosition(ClientPlayerEntity player, float delta, Camera mainCamera) {
-        Vec3f look = mainCamera.getHorizontalPlane();
-        float px = (float) (player.prevX + (player.getX() - player.prevX) * delta) + look.getX();
-        float py = (float) (player.prevY + (player.getY() - player.prevY) * delta) + look.getY()
-                + player.getStandingEyeHeight();
-        float pz = (float) (player.prevZ + (player.getZ() - player.prevZ) * delta) + look.getZ();
-        return new Vec3f(px, py, pz);
     }
 
     private static void drawBox(MatrixStack stack, BufferBuilder buffer, Box aabb, Color c) {
