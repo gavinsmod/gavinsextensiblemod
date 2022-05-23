@@ -4,6 +4,7 @@
     "key.gavinsmod.autojump": "Auto Jump",
     "key.gavinsmod.climb": "Climb",
     "key.gavinsmod.noclip": "No Clip",
+    "key.gavinsmod.nofall": "No Fall",
     "key.gavinsmod.xray": "X-Ray",
     "key.gavinsmod.fullbright": "Full Bright",
     "key.gavinsmod.chestesp": "Chest ESP",
@@ -14,8 +15,10 @@
     "key.gavinsmod.mobtracer": "Mob Tracers",
     "key.gavinsmod.entityplayeresp": "Player ESP",
     "key.gavinsmod.entityplayertracer": "Player Tracers",
+    "key.gavinsmod.killaura": "Kill Aura",
     "key.gavinsmod.gui": "GUI",
     "key.gavinsmod.gui.movement": "Movement",
     "key.gavinsmod.gui.render": "Render",
+    "key.gavinsmod.gui.combat": "Combat",
     "category.gavinsmod.test": "Gavin's Mod"
 }

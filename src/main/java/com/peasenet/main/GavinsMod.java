@@ -20,6 +20,9 @@ public class GavinsMod implements ModInitializer {
     private static final ModAutoJump AutoJump = new ModAutoJump();
     private static final ModClimb Climb = new ModClimb();
     private static final ModNoClip NoClip = new ModNoClip();
+    private static final ModNoFall NoFall = new ModNoFall();
+    // COMBAT
+    private static final ModKillAura KillAura = new ModKillAura();
     // RENDER
     private static final ModFastMine FastMine = new ModFastMine();
     private static final ModFullBright FullBright = new ModFullBright();
@@ -45,6 +48,9 @@ public class GavinsMod implements ModInitializer {
                 add(AutoJump);
                 add(Climb);
                 add(NoClip);
+                add(NoFall);
+                // COMBAT
+                add(KillAura);
 
                 // RENDER
                 add(XRay);
@@ -67,7 +73,6 @@ public class GavinsMod implements ModInitializer {
         };
     }
 
-    // Movement
     public static boolean FlyEnabled() {
         return Fly.isActive();
     }
@@ -92,7 +97,9 @@ public class GavinsMod implements ModInitializer {
         return NoClip.isActive();
     }
 
-    // Render
+    public static boolean KillAuraEnabled() {
+        return KillAura.isActive();
+    }
 
     public static boolean FullBrightEnabled() {
         return FullBright.isActive();
@@ -128,6 +135,10 @@ public class GavinsMod implements ModInitializer {
 
     public static boolean EntityPlayerEspEnabled() {
         return EntityPlayerEsp.isActive();
+    }
+
+    public static boolean NoFallEnabled() {
+        return NoFall.isActive();
     }
 
 }

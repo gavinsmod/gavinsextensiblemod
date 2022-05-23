@@ -18,6 +18,8 @@ A "mod" that actually contains hacks/cheats for Minecraft.
 - Fast Mine
 - Auto Jump
 - Wall Climb
+- Kill Aura
+- No Fall
 - And more to come!
 
 ## Installation

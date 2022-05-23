@@ -19,7 +19,9 @@ public enum Mods {
 
     CLIMB("Climb", "key.gavinsmod.climb", "category.gavinsmod.test", MOVEMENT),
     NO_CLIP("No Clip", "key.gavinsmod.noclip", "category.gavinsmod.test", MOVEMENT),
-
+    NO_FALL("No Fall", "key.gavinsmod.nofall", "category.gavinsmod.test", MOVEMENT),
+    //COMBAT
+    KILL_AURA("Kill Aura", "key.gavinsmod.killaura", "category.gavinsmod.test", COMBAT),
     //RENDER
     XRAY("Xray", "key.gavinsmod.xray", "category.gavinsmod.test", RENDER),
     FULL_BRIGHT("Full Bright", "key.gavinsmod.fullbright", "category.gavinsmod.test", RENDER),
@@ -122,6 +124,7 @@ public enum Mods {
     public enum Category {
         MOVEMENT,
         RENDER,
+        COMBAT,
         GUI
     }
 }
