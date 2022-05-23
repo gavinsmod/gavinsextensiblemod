@@ -8,22 +8,19 @@ import com.peasenet.util.KeyBindUtils;
  */
 public class ModFullBright extends Mod {
 
-
     public ModFullBright() {
         super(Mods.FULL_BRIGHT, Mods.Category.RENDER, KeyBindUtils.registerKeyBindForType(Mods.FULL_BRIGHT));
     }
 
     @Override
     public void activate() {
-        isEnabled = true;
         getClient().worldRenderer.reload();
-        onEnable();
+        super.activate();
     }
 
     @Override
     public void deactivate() {
         getClient().worldRenderer.reload();
-        isEnabled = false;
-        onDisable();
+        super.deactivate();
     }
 }
