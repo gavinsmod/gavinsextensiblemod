@@ -30,12 +30,9 @@ public class MixinPlayerEntity {
 
 
     @Inject(method = "getBlockBreakingSpeed", at = @At("RETURN"), cancellable = true)
-    public float checkFastMine(BlockState state, CallbackInfoReturnable<Float> ci) {
-        if (GavinsMod.FastMineEnabled()) {
+    public void checkFastMine(BlockState state, CallbackInfoReturnable<Float> ci) {
+        if (GavinsMod.FastMineEnabled())
             ci.setReturnValue(500.0f);
-            return 500.0f;
-        }
-        return 1.0F;
     }
 
     @Redirect(method = "tick()V", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerEntity;noClip:Z", opcode = Opcodes.PUTFIELD))
