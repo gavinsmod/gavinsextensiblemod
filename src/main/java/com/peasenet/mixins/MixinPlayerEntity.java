@@ -24,7 +24,8 @@ public class MixinPlayerEntity {
         PlayerAbilities abilities = accessor.getAbilities();
         boolean flying = GavinsMod.FlyEnabled() || abilities.creativeMode || GavinsMod.NoClipEnabled();
         abilities.allowFlying = flying;
-        accessor.getAbilities().flying = flying;
+        if(GavinsMod.NoClipEnabled())
+            accessor.getAbilities().flying = flying;
     }
 
 
