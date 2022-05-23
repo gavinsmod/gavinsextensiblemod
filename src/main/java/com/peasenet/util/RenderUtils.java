@@ -59,8 +59,8 @@ public class RenderUtils {
 
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.depthMask(false);
-        RenderSystem.enableBlend();
+//        RenderSystem.depthMask(false);
+//        RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableTexture();
 
@@ -89,13 +89,14 @@ public class RenderUtils {
         }
 
 
-        drawEntityEsp(level, player, stack, delta, buffer, px, py, pz);
+        drawEntityEsp(level, player, stack, delta, buffer, px, py, pz,CHUNK_RADIUS);
         tessellator.draw();
         stack.pop();
         RenderSystem.applyModelViewMatrix();
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDisable(GL11.GL_BLEND);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        GL11.glEnable(GL11.GL_TEXTURE);
+//        GL11.glEnable(GL11.GL_DEPTH_TEST);
+//        GL11.glDisable(GL11.GL_BLEND);
         GL11.glDisable(GL11.GL_LINE_SMOOTH);
     }
 
@@ -123,9 +124,9 @@ public class RenderUtils {
         WorldRenderer.drawBox(stack, buffer, aabb, c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
     }
 
-    private static void drawEntityEsp(ClientWorld level, ClientPlayerEntity player, MatrixStack stack, float delta, BufferBuilder buffer, float px, float py, float pz) {
+    private static void drawEntityEsp(ClientWorld level, ClientPlayerEntity player, MatrixStack stack, float delta, BufferBuilder buffer, float px, float py, float pz,int chunk_radius) {
         level.getEntities().forEach(e -> {
-            if ((e.squaredDistanceTo(player) > 1000) || player == e)
+            if ((e.squaredDistanceTo(player) > 64*chunk_radius*16) || player == e)
                 return;
 
             EntityType<?> type = e.getType();
