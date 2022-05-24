@@ -1,6 +1,5 @@
 package com.peasenet.mods;
 
-import com.peasenet.gui.GuiClick;
 import com.peasenet.gui.GuiMainMenu;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
@@ -16,8 +15,16 @@ public class ModGui extends Mod{
         GavinsModClient.getMinecraftClient().setScreen(new GuiMainMenu(GavinsMod.gui));
         isEnabled = false;
     }
+
     @Override
     public void onDisable() {
+        GavinsModClient.getMinecraftClient().setScreen(new GuiMainMenu(GavinsMod.gui));
+        isEnabled = false;
+    }
 
+    @Override
+    public void toggle() {
+        GavinsModClient.getMinecraftClient().setScreen(new GuiMainMenu(GavinsMod.gui));
+        isEnabled = false;
     }
 }

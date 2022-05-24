@@ -102,7 +102,6 @@ public class PlayerUtils {
             abilities.flying = true;
         if (!abilities.creativeMode && !GavinsMod.FlyEnabled() && !GavinsMod.NoClipEnabled())
             abilities.flying = false;
-
     }
 
     /**
@@ -141,9 +140,22 @@ public class PlayerUtils {
      * Handles No Fall. This will prevent the player from falling when enabled.
      */
     public static void handleNoFall() {
+
         var player = GavinsModClient.getPlayer();
-        if (player != null && isFalling() && (GavinsMod.FlyEnabled() || GavinsMod.NoFallEnabled())) {
+        assert player != null;
+        if ((GavinsMod.NoFallEnabled() && isFalling()) || (GavinsMod.FlyEnabled() && !onGround())) {
             player.networkHandler.sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
         }
+    }
+
+    public static void setPosition(Vec3d pos) {
+        var player = GavinsModClient.getPlayer();
+        player.setPos(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    public static void moveUp(int amount) {
+        var player = GavinsModClient.getPlayer();
+        var pos = player.getPos();
+        player.setPos(pos.getX(), pos.getY() + amount, pos.getZ());
     }
 }
