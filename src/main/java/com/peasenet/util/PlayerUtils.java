@@ -140,10 +140,9 @@ public class PlayerUtils {
      * Handles No Fall. This will prevent the player from falling when enabled.
      */
     public static void handleNoFall() {
-
         var player = GavinsModClient.getPlayer();
         assert player != null;
-        if ((GavinsMod.NoFallEnabled() && isFalling()) || (GavinsMod.FlyEnabled() && !onGround())) {
+        if ((GavinsMod.NoFallEnabled()) || (GavinsMod.FlyEnabled() && !onGround())) {
             player.networkHandler.sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
         }
     }
