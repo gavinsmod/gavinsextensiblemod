@@ -14,13 +14,13 @@ public class ModFullBright extends Mod {
 
     @Override
     public void activate() {
-        getClient().worldRenderer.reload();
+//        getClient().worldRenderer.reload();
         super.activate();
     }
 
     @Override
     public void deactivate() {
-        getClient().worldRenderer.reload();
+//        getClient().worldRenderer.reload();
         super.deactivate();
     }
 }
