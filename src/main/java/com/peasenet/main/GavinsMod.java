@@ -122,6 +122,15 @@ public class GavinsMod implements ModInitializer {
         return modsByCategory;
     }
 
+    public static Mod getModByType(Mods type) {
+        for (Mod mod : mods) {
+            if (mod.getType() == type) {
+                return mod;
+            }
+        }
+        return null;
+    }
+
     @Override
     public void onInitialize() {
         LOGGER.info("GavinsMod initialized");

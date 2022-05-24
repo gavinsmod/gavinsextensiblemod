@@ -140,11 +140,11 @@ public class PlayerUtils {
      * Handles No Fall. This will prevent the player from falling when enabled.
      */
     public static void handleNoFall() {
+        //TODO: This is apparently a bit weird in preventing the player from crouching + moving while flying.
         var player = GavinsModClient.getPlayer();
         assert player != null;
-        if ((GavinsMod.NoFallEnabled()) || (GavinsMod.FlyEnabled() && !onGround())) {
+        if (GavinsMod.NoFallEnabled())
             player.networkHandler.sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
-        }
     }
 
     public static void setPosition(Vec3d pos) {
@@ -155,6 +155,7 @@ public class PlayerUtils {
     public static void moveUp(int amount) {
         var player = GavinsModClient.getPlayer();
         var pos = player.getPos();
-        player.setPos(pos.getX(), pos.getY() + amount, pos.getZ());
+        pos.add(0, amount, 0);
+        setPosition(pos);
     }
 }

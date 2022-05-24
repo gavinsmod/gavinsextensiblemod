@@ -139,4 +139,7 @@ public abstract class Mod implements IMod {
         return type.getChatCommand();
     }
 
+    public Mods getType() {
+        return type;
+    }
 }
