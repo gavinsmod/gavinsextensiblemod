@@ -122,9 +122,18 @@ public enum Mods {
      * A list of different mod categories.
      */
     public enum Category {
-        MOVEMENT,
-        RENDER,
-        COMBAT,
-        GUI
+        MOVEMENT("key.gavinsmod.gui.movement"),
+        RENDER("key.gavinsmod.gui.render"),
+        COMBAT("key.gavinsmod.gui.combat"),
+        GUI("key.gavinsmod.gui.gui");
+
+        public final String translationKey;
+        Category(String translationKey) {
+            this.translationKey = translationKey;
+        }
+
+        public String getTranslationKey() {
+            return translationKey;
+        }
     }
 }

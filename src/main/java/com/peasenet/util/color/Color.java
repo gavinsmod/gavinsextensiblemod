@@ -68,5 +68,13 @@ public class Color {
         return alpha/255f;
     }
 
+    /**
+     * Gets the float array value of this color. values range from 0 to 1.
+     * @return float array of color values
+     */
+    public float[] getAsFloatArray() {
+        return new float[]{getRed(), getGreen(), getBlue(), getAlpha()};
+    }
+
 
 }

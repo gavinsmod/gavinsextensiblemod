@@ -1,5 +1,6 @@
 package com.peasenet.main;
 
+import com.peasenet.gui.GuiClick;
 import com.peasenet.mods.*;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
  */
 public class GavinsMod implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("gavinsmod");
+    public static final GuiClick gui = new GuiClick();
     // MOVEMENT
     private static final ModXray XRay = new ModXray();
     private static final ModFly Fly = new ModFly();
@@ -36,42 +38,6 @@ public class GavinsMod implements ModInitializer {
     private static final ModEntityPlayerEsp EntityPlayerEsp = new ModEntityPlayerEsp();
     private static final ModGui Gui = new ModGui();
     public static ArrayList<Mod> mods;
-
-    @Override
-    public void onInitialize() {
-        LOGGER.info("GavinsMod initialized");
-        mods = new ArrayList<>() {
-            {
-                // MOVEMENT
-                add(Fly);
-                add(FastMine);
-                add(AutoJump);
-                add(Climb);
-                add(NoClip);
-                add(NoFall);
-                // COMBAT
-                add(KillAura);
-
-                // RENDER
-                add(XRay);
-                add(FullBright);
-                add(ChestEsp);
-                add(ChestTracer);
-
-                add(MobEsp);
-                add(MobTracer);
-
-                add(EntityItemEsp);
-                add(EntityItemTracer);
-
-                add(EntityPlayerEsp);
-                add(EntityPlayerTracer);
-
-                //GUI
-                add(Gui);
-            }
-        };
-    }
 
     public static boolean FlyEnabled() {
         return Fly.isActive();
@@ -139,6 +105,52 @@ public class GavinsMod implements ModInitializer {
 
     public static boolean NoFallEnabled() {
         return NoFall.isActive();
+    }
+
+    public static ArrayList<Mod> getModsInCategory(Mods.Category category) {
+        ArrayList<Mod> modsByCategory = new ArrayList<>();
+        for (Mod mod : mods) {
+            if (mod.getCategory() == category) {
+                modsByCategory.add(mod);
+            }
+        }
+        return modsByCategory;
+    }
+
+    @Override
+    public void onInitialize() {
+        LOGGER.info("GavinsMod initialized");
+        mods = new ArrayList<>() {
+            {
+                // MOVEMENT
+                add(Fly);
+                add(FastMine);
+                add(AutoJump);
+                add(Climb);
+                add(NoClip);
+                add(NoFall);
+                // COMBAT
+                add(KillAura);
+
+                // RENDER
+                add(XRay);
+                add(FullBright);
+                add(ChestEsp);
+                add(ChestTracer);
+
+                add(MobEsp);
+                add(MobTracer);
+
+                add(EntityItemEsp);
+                add(EntityItemTracer);
+
+                add(EntityPlayerEsp);
+                add(EntityPlayerTracer);
+
+                //GUI
+                add(Gui);
+            }
+        };
     }
 
 }

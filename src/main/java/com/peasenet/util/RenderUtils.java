@@ -56,7 +56,7 @@ public class RenderUtils {
      * Processes events for rendering player, chest, item, and mob tracers or esp's in the world.
      * @param context The render context.
      */
-    public static void onRender(WorldRenderContext context) {
+    public static void afterEntities(WorldRenderContext context) {
         CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.viewDistance / 2;
         // this helps with lag
         MinecraftClient minecraft = MinecraftClient.getInstance();
