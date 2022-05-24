@@ -81,8 +81,12 @@ public class PlayerUtils {
     public static void attackEntity(Entity entity) {
         var player = GavinsModClient.getPlayer();
         assert GavinsModClient.getMinecraftClient().interactionManager != null;
-        GavinsModClient.getMinecraftClient().interactionManager.attackEntity(player, entity);
-        player.swingHand(Hand.MAIN_HAND);
+        var lastAttackTime = player.getLastAttackTime();
+        if (onGround() && !player.noClip && lastAttackTime < lastAttackTime + 60) {
+            GavinsModClient.getMinecraftClient().interactionManager.attackEntity(player, entity);
+            player.tryAttack(entity);
+            player.swingHand(Hand.MAIN_HAND);
+        }
     }
 
     /**
@@ -112,18 +116,6 @@ public class PlayerUtils {
         return player.squaredDistanceTo(entity);
     }
 
-    /**
-     * Performs an attack jump (crit)
-     *
-     * @param entity The entity to attack.
-     */
-    public static void doAttackJump(Entity entity) {
-        var player = GavinsModClient.getPlayer();
-        if (onGround())
-            player.jump();
-
-        attackEntity(entity);
-    }
 
     /**
      * Gets whether the player is in creative mode.

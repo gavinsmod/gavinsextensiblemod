@@ -25,6 +25,7 @@ public class GavinsMod implements ModInitializer {
     private static final ModNoFall NoFall = new ModNoFall();
     // COMBAT
     private static final ModKillAura KillAura = new ModKillAura();
+    private static final ModAutoCrit AutoCrit = new ModAutoCrit();
     // RENDER
     private static final ModFastMine FastMine = new ModFastMine();
     private static final ModFullBright FullBright = new ModFullBright();
@@ -107,6 +108,10 @@ public class GavinsMod implements ModInitializer {
         return NoFall.isActive();
     }
 
+    public static boolean AutoCritEnabled() {
+        return AutoCrit.isActive();
+    }
+
     public static ArrayList<Mod> getModsInCategory(Mods.Category category) {
         ArrayList<Mod> modsByCategory = new ArrayList<>();
         for (Mod mod : mods) {
@@ -131,6 +136,7 @@ public class GavinsMod implements ModInitializer {
                 add(NoFall);
                 // COMBAT
                 add(KillAura);
+                add(AutoCrit);
 
                 // RENDER
                 add(XRay);
