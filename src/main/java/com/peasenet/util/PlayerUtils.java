@@ -93,11 +93,10 @@ public class PlayerUtils {
         if (player == null || player.getAbilities() == null)
             return;
         var abilities = player.getAbilities();
-        var allowFlying = GavinsMod.FlyEnabled() || abilities.creativeMode || GavinsMod.NoClipEnabled();
-        abilities.allowFlying = allowFlying;
+        abilities.allowFlying = GavinsMod.FlyEnabled() || abilities.creativeMode || GavinsMod.NoClipEnabled();
         if (GavinsMod.NoClipEnabled())
             abilities.flying = true;
-        if (!abilities.creativeMode && !GavinsMod.FlyEnabled())
+        if (!abilities.creativeMode && !GavinsMod.FlyEnabled() && !GavinsMod.NoClipEnabled())
             abilities.flying = false;
 
     }
@@ -151,8 +150,8 @@ public class PlayerUtils {
      */
     public static void handleNoFall() {
         var player = GavinsModClient.getPlayer();
-        if (player != null && isFalling()) {
-            player.networkHandler.sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(GavinsMod.NoFallEnabled() || GavinsMod.FlyEnabled()));
+        if (player != null && isFalling() && (GavinsMod.FlyEnabled() || GavinsMod.NoFallEnabled())) {
+            player.networkHandler.sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
         }
     }
 }
