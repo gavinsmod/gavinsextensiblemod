@@ -133,7 +133,12 @@ public class PlayerUtils {
      */
     public static boolean isFalling() {
         var player = GavinsModClient.getPlayer();
-        return player.isFallFlying() || player.getVelocity().y < -0.5;
+        return player.isFallFlying();
+    }
+
+    public static boolean fallSpeedCanDamage() {
+        var player = GavinsModClient.getPlayer();
+        return player.getVelocity().y < -0.5;
     }
 
     /**
@@ -142,9 +147,14 @@ public class PlayerUtils {
     public static void handleNoFall() {
         //TODO: This is apparently a bit weird in preventing the player from crouching + moving while flying.
         var player = GavinsModClient.getPlayer();
-        assert player != null;
-        if (GavinsMod.NoFallEnabled())
-            player.networkHandler.sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
+        if (player != null) {
+            if (player.fallDistance <= (isFalling() ? 1 : 2))
+                return;
+            if (player.isSneaking() && !fallSpeedCanDamage() && player.isFallFlying())
+                return;
+            if (GavinsMod.NoFallEnabled())
+                player.networkHandler.sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
+        }
     }
 
     public static void setPosition(Vec3d pos) {
