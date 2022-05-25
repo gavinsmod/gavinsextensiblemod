@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class GavinsMod implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("gavinsmod");
-    public static final String VERSION = "v1.0.1";
+    public static final String VERSION = "v1.1.0";
     public static final GuiClick gui = new GuiClick();
     // MOVEMENT
     private static final ModXray XRay = new ModXray();
