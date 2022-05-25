@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 
 /**
@@ -124,7 +125,11 @@ public class GavinsMod implements ModInitializer {
      * @return The mods in the given category.
      */
     public static ArrayList<Mod> getModsInCategory(Mods.Category category) {
-        return mods.stream().filter(mod -> mod.getCategory() == category).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        // use stream to filter by category and sort by mod name
+        return mods.stream()
+                .filter(mod -> mod.getCategory() == category)
+                .sorted(Comparator.comparing(Mod::getName))
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
 
