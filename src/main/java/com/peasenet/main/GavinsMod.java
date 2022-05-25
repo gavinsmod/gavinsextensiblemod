@@ -42,80 +42,9 @@ public class GavinsMod implements ModInitializer {
     private static final ModGui Gui = new ModGui();
     public static ArrayList<Mod> mods;
 
-    public static boolean FlyEnabled() {
-        return Fly.isActive();
-    }
-
-    public static boolean FastMineEnabled() {
-        return FastMine.isActive();
-    }
-
-    public static boolean AutoJumpEnabled() {
-        return AutoJump.isActive();
-    }
-
-    public static boolean XRayEnabled() {
-        return XRay.isActive();
-    }
-
-    public static boolean ClimbEnabled() {
-        return Climb.isActive();
-    }
-
-    public static boolean NoClipEnabled() {
-        return NoClip.isActive();
-    }
-
-    public static boolean KillAuraEnabled() {
-        return KillAura.isActive();
-    }
-
-    public static boolean FullBrightEnabled() {
-        return FullBright.isActive();
-    }
-
-    public static boolean ChestEspEnabled() {
-        return ChestEsp.isActive();
-    }
-
-    public static boolean EntityTracerEnabled() {
-        return MobTracer.isActive();
-    }
-
-    public static boolean EntityEspEnabled() {
-        return MobEsp.isActive();
-    }
-
-    public static boolean ChestTracerEnabled() {
-        return ChestTracer.isActive();
-    }
-
-    public static boolean EntityItemTracerEnabled() {
-        return EntityItemTracer.isActive();
-    }
-
-    public static boolean EntityItemEspEnabled() {
-        return EntityItemEsp.isActive();
-    }
-
-    public static boolean EntityPlayerTracerEnabled() {
-        return EntityPlayerTracer.isActive();
-    }
-
-    public static boolean EntityPlayerEspEnabled() {
-        return EntityPlayerEsp.isActive();
-    }
-
-    public static boolean NoFallEnabled() {
-        return NoFall.isActive();
-    }
-
-    public static boolean AutoCritEnabled() {
-        return AutoCrit.isActive();
-    }
-
     public static boolean isEnabled(Type mod) {
-        return mods.get(mod.ordinal()).isActive();
+        // find mod via stream and check if it is enabled.
+        return mods.stream().filter(m -> m.getType() == mod).findFirst().get().isActive();
     }
 
     /**
