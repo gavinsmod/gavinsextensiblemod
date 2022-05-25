@@ -11,16 +11,50 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
+/**
+ * @author gt3ch1
+ * @version 5/24/2022
+ * Creates a GUI that allows the user to toggle mods on and off by clicking.
+ */
 public class GuiClick {
 
+    /**
+     * The X axis increment.
+     */
     private static final int X_INCREMENT = 90;
+
+    /**
+     * The Y axis increment.
+     */
     private static final int Y_INCREMENT = 12;
 
+    /**
+     * The top left corner of the GUI starting point x axis.
+     */
     static final int START_X1 = 10;
+
+    /**
+     * The top left corner of the GUI starting point y axis.
+     */
     static final int START_Y1 = 10;
+
+    /**
+     * The bottom left corner of the GUI starting point x axis.
+     */
     static final int START_X2 = START_X1 + X_INCREMENT;
+
+    /**
+     * The bottom left corner of the GUI starting point y axis.
+     */
     static final int START_Y2 = 21;
 
+    /**
+     * Renders the clickable ui
+     *
+     * @param matrixStack The matrix stack used to draw boxes on screen.
+     * @param tr          The text render to use to draw text
+     * @param title       The title of the ui.
+     */
     public void render(MatrixStack matrixStack, TextRenderer tr, Text title) {
         int xt1 = START_X1;
         int yt1 = START_Y1;
@@ -54,6 +88,17 @@ public class GuiClick {
         }
     }
 
+    /**
+     * Draws all the mods in a category.
+     *
+     * @param matrixStack The matrix stack used to draw boxes on screen..
+     * @param tr          The text render to use to draw text.
+     * @param xt1         The x coordinate of the top left corner of the box.
+     * @param yt1         The y coordinate of the top left corner of the box.
+     * @param xt2         The x coordinate of the bottom right corner of the box.
+     * @param yt2         The y coordinate of the bottom right corner of the box.
+     * @param category    The category to draw.
+     */
     private void drawModsInCategory(MatrixStack matrixStack, TextRenderer tr, int xt1, int yt1, int xt2, int yt2, Mods.Category category) {
         for (Mod mod : GavinsMod.getModsInCategory(category)) {
             yt1 += Y_INCREMENT;
@@ -65,6 +110,16 @@ public class GuiClick {
         }
     }
 
+    /**
+     * Draws a box on screen.
+     *
+     * @param acColor     The color of the box as a 4 point float array.
+     * @param xt1         The x coordinate of the top left corner of the box.
+     * @param yt1         The y coordinate of the top left corner of the box.
+     * @param xt2         The x coordinate of the bottom right corner of the box.
+     * @param yt2         The y coordinate of the bottom right corner of the box.
+     * @param matrixStack The matrix stack used to draw boxes on screen.
+     */
     private void drawBox(float[] acColor, int xt1, int yt1, int xt2, int yt2, MatrixStack matrixStack) {
         RenderSystem.setShader(GameRenderer::getPositionShader);
         RenderSystem.enableBlend();
@@ -80,6 +135,16 @@ public class GuiClick {
         BufferRenderer.draw(bufferBuilder);
     }
 
+    /**
+     * Draws a box outline on screen.
+     *
+     * @param acColor     The color of the box as a 4 point float array.
+     * @param xt1         The x coordinate of the top left corner of the box.
+     * @param yt1         The y coordinate of the top left corner of the box.
+     * @param xt2         The x coordinate of the bottom right corner of the box.
+     * @param yt2         The y coordinate of the bottom right corner of the box.
+     * @param matrixStack The matrix stack used to draw boxes on screen.
+     */
     private void drawOutline(float[] acColor, int xt1, int yt1, int xt2, int yt2, MatrixStack matrixStack) {
         RenderSystem.setShader(GameRenderer::getPositionShader);
         RenderSystem.enableBlend();
@@ -98,8 +163,14 @@ public class GuiClick {
     }
 
 
+    /**
+     * Handles clicks on the gui.
+     *
+     * @param mouseX The x coordinate of the mouse.
+     * @param mouseY The y coordinate of the mouse.
+     * @param button The mouse button that was clicked.
+     */
     public void mouseClicked(double mouseX, double mouseY, int button) {
-        // Get the x and y coordinates of the mod
         if (button != 0) return;
         int xt1 = START_X1;
         int yt1 = START_Y1 + Y_INCREMENT;
