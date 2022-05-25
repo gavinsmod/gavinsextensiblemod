@@ -1,13 +1,31 @@
 package com.peasenet.util.color;
 
+/**
+ * @author gt3ch1
+ * @version 5/24/2022
+ * <p>
+ * A representation of a color. The maximum value for each channel is 255, and the minimum is 0.
+ */
 public class Color {
 
+    /**
+     * The red value of this color.
+     */
     private final int red;
 
+    /**
+     * The green value of this color.
+     */
     private final int green;
 
+    /**
+     * The blue value of this color.
+     */
     private final int blue;
 
+    /**
+     * The alpha value of this color.
+     */
     private final int alpha;
 
     /**

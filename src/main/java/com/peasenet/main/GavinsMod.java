@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 5/14/2022
+ * @version 5/24/2022
  */
 public class GavinsMod implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("gavinsmod");
@@ -113,24 +113,16 @@ public class GavinsMod implements ModInitializer {
         return AutoCrit.isActive();
     }
 
+    /**
+     * Gets all of the mods in the given category.
+     *
+     * @param category The category to get the mods from.
+     * @return The mods in the given category.
+     */
     public static ArrayList<Mod> getModsInCategory(Mods.Category category) {
-        ArrayList<Mod> modsByCategory = new ArrayList<>();
-        for (Mod mod : mods) {
-            if (mod.getCategory() == category) {
-                modsByCategory.add(mod);
-            }
-        }
-        return modsByCategory;
+        return mods.stream().filter(mod -> mod.getCategory() == category).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
-    public static Mod getModByType(Mods type) {
-        for (Mod mod : mods) {
-            if (mod.getType() == type) {
-                return mod;
-            }
-        }
-        return null;
-    }
 
     @Override
     public void onInitialize() {

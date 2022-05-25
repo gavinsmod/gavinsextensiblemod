@@ -136,6 +136,11 @@ public class PlayerUtils {
         return player.isFallFlying();
     }
 
+    /**
+     * Gets whether the player can be damaged by the current fall speed.
+     *
+     * @return True if the player can be damaged, false otherwise.
+     */
     public static boolean fallSpeedCanDamage() {
         var player = GavinsModClient.getPlayer();
         return player.getVelocity().y < -0.5;
@@ -157,11 +162,21 @@ public class PlayerUtils {
         }
     }
 
+    /**
+     * Sets the position of the player to the given position.
+     *
+     * @param pos The position to set the player to.
+     */
     public static void setPosition(Vec3d pos) {
         var player = GavinsModClient.getPlayer();
         player.setPos(pos.getX(), pos.getY(), pos.getZ());
     }
 
+    /**
+     * Moves the player up by the given amount.
+     *
+     * @param amount The amount to move the player up.
+     */
     public static void moveUp(int amount) {
         var player = GavinsModClient.getPlayer();
         var pos = player.getPos();

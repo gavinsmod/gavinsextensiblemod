@@ -96,7 +96,6 @@ public class RenderUtils {
     private static void resetRenderSystem() {
         RenderSystem.applyModelViewMatrix();
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-//        GL11.glEnable(GL11.GL_TEXTURE);
         GL11.glDisable(GL11.GL_LINE_SMOOTH);
     }
 
@@ -142,6 +141,14 @@ public class RenderUtils {
         }
     }
 
+    /**
+     * Draws a box on the world.
+     *
+     * @param stack  The matrix stack.
+     * @param buffer The buffer to write to.
+     * @param aabb   The box to draw.
+     * @param c      The color to draw the box in.
+     */
     private static void drawBox(MatrixStack stack, BufferBuilder buffer, Box aabb, Color c) {
         WorldRenderer.drawBox(stack, buffer, aabb, c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
     }
