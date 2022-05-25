@@ -9,6 +9,6 @@ import com.peasenet.util.KeyBindUtils;
  */
 public class ModChestTracer extends Mod {
     public ModChestTracer() {
-        super(Mods.CHEST_TRACER, Mods.Category.RENDER, KeyBindUtils.registerKeyBindForType(Mods.CHEST_TRACER));
+        super(Type.CHEST_TRACER, Type.Category.RENDER, KeyBindUtils.registerKeyBindForType(Type.CHEST_TRACER));
     }
 }

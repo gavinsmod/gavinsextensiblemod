@@ -7,6 +7,6 @@ package com.peasenet.mods;
  */
 public class ModEntityPlayerEsp extends Mod {
     public ModEntityPlayerEsp() {
-        super(Mods.ENTITY_PLAYER_ESP, Mods.Category.RENDER);
+        super(Type.ENTITY_PLAYER_ESP, Type.Category.RENDER);
     }
 }

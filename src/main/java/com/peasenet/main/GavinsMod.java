@@ -114,7 +114,7 @@ public class GavinsMod implements ModInitializer {
         return AutoCrit.isActive();
     }
 
-    public static boolean isEnabled(Mods mod) {
+    public static boolean isEnabled(Type mod) {
         return mods.get(mod.ordinal()).isActive();
     }
 
@@ -124,7 +124,7 @@ public class GavinsMod implements ModInitializer {
      * @param category The category to get the mods from.
      * @return The mods in the given category.
      */
-    public static ArrayList<Mod> getModsInCategory(Mods.Category category) {
+    public static ArrayList<Mod> getModsInCategory(Type.Category category) {
         // use stream to filter by category and sort by mod name
         return mods.stream()
                 .filter(mod -> mod.getCategory() == category)

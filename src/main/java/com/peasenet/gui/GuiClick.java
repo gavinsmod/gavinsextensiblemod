@@ -3,7 +3,7 @@ package com.peasenet.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
-import com.peasenet.mods.Mods;
+import com.peasenet.mods.Type;
 import com.peasenet.util.color.Colors;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
@@ -72,9 +72,9 @@ public class GuiClick {
         yt2 += Y_INCREMENT;
 
         // Draw each of the mod categories
-        for (Mods.Category category : Mods.Category.values()) {
+        for (Type.Category category : Type.Category.values()) {
             // skip the GUI category
-            if (category == Mods.Category.GUI) continue;
+            if (category == Type.Category.GUI) continue;
 
             // Draw the category name
             drawBox(Colors.DARK_RED.getAsFloatArray(), xt1, yt1, xt2, yt2, matrixStack);
@@ -99,7 +99,7 @@ public class GuiClick {
      * @param yt2         The y coordinate of the bottom right corner of the box.
      * @param category    The category to draw.
      */
-    private void drawModsInCategory(MatrixStack matrixStack, TextRenderer tr, int xt1, int yt1, int xt2, int yt2, Mods.Category category) {
+    private void drawModsInCategory(MatrixStack matrixStack, TextRenderer tr, int xt1, int yt1, int xt2, int yt2, Type.Category category) {
         for (Mod mod : GavinsMod.getModsInCategory(category)) {
             yt1 += Y_INCREMENT;
             yt2 += Y_INCREMENT;
@@ -177,9 +177,9 @@ public class GuiClick {
         int xt2 = START_X2;
         int yt2 = START_Y2 + Y_INCREMENT;
         // Get all mods per category
-        for (Mods.Category category : Mods.Category.values()) {
+        for (Type.Category category : Type.Category.values()) {
             // skip over gui category
-            if (category == Mods.Category.GUI) {
+            if (category == Type.Category.GUI) {
                 continue;
             }
             // Get the mods in the category

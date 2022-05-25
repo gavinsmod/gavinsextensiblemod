@@ -9,7 +9,7 @@ import com.peasenet.util.KeyBindUtils;
 public class ModFullBright extends Mod {
 
     public ModFullBright() {
-        super(Mods.FULL_BRIGHT, Mods.Category.RENDER, KeyBindUtils.registerKeyBindForType(Mods.FULL_BRIGHT));
+        super(Type.FULL_BRIGHT, Type.Category.RENDER, KeyBindUtils.registerKeyBindForType(Type.FULL_BRIGHT));
     }
 
     @Override

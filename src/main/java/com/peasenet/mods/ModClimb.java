@@ -9,6 +9,6 @@ import com.peasenet.util.KeyBindUtils;
  */
 public class ModClimb extends Mod {
     public ModClimb() {
-        super(Mods.CLIMB, Mods.Category.MOVEMENT, KeyBindUtils.registerKeyBindForType(Mods.CLIMB));
+        super(Type.CLIMB, Type.Category.MOVEMENT, KeyBindUtils.registerKeyBindForType(Type.CLIMB));
     }
 }

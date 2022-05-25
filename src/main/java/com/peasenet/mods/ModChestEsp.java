@@ -9,6 +9,6 @@ import com.peasenet.util.KeyBindUtils;
  */
 public class ModChestEsp extends Mod {
     public ModChestEsp() {
-        super(Mods.CHEST_ESP, Mods.Category.RENDER, KeyBindUtils.registerEmptyKeyBind(Mods.CHEST_ESP));
+        super(Type.CHEST_ESP, Type.Category.RENDER, KeyBindUtils.registerEmptyKeyBind(Type.CHEST_ESP));
     }
 }

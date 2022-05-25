@@ -7,6 +7,6 @@ package com.peasenet.mods;
  */
 public class ModEntityPlayerTracer extends Mod {
     public ModEntityPlayerTracer() {
-        super(Mods.ENTITY_PLAYER_TRACER, Mods.Category.RENDER);
+        super(Type.ENTITY_PLAYER_TRACER, Type.Category.RENDER);
     }
 }

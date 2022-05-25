@@ -8,6 +8,6 @@ import com.peasenet.util.KeyBindUtils;
  */
 public class ModMobEsp extends Mod {
     public ModMobEsp() {
-        super(Mods.MOB_ESP, Mods.Category.RENDER, KeyBindUtils.registerKeyBindForType(Mods.MOB_ESP));
+        super(Type.MOB_ESP, Type.Category.RENDER, KeyBindUtils.registerKeyBindForType(Type.MOB_ESP));
     }
 }

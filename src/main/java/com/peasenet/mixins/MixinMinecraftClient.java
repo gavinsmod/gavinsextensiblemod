@@ -1,7 +1,7 @@
 package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
-import com.peasenet.mods.Mods;
+import com.peasenet.mods.Type;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinMinecraftClient {
     @Inject(at = @At(value = "HEAD"), method = "isAmbientOcclusionEnabled()Z", cancellable = true)
     private static void ixXrayOrFullbright(CallbackInfoReturnable<Boolean> ci) {
-        boolean disabled = GavinsMod.isEnabled(Mods.XRAY) || GavinsMod.isEnabled(Mods.FULL_BRIGHT);
+        boolean disabled = GavinsMod.isEnabled(Type.XRAY) || GavinsMod.isEnabled(Type.FULL_BRIGHT);
         ci.setReturnValue(!disabled);
         ci.cancel();
     }

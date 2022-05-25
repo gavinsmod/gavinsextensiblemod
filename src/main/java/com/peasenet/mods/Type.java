@@ -2,13 +2,13 @@ package com.peasenet.mods;
 
 import org.lwjgl.glfw.GLFW;
 
-import static com.peasenet.mods.Mods.Category.*;
+import static com.peasenet.mods.Type.Category.*;
 
 /**
  * @author gt3ch1
  * An enum containing all the mods.
  */
-public enum Mods {
+public enum Type {
 
     // MOVEMENT
     FLY("Fly", "key.gavinsmod.fly", "category.gavinsmod.test", MOVEMENT, "fly"),
@@ -53,7 +53,7 @@ public enum Mods {
      * @param key            - The keybinding of the mod.
      * @param modCategory    - The mod category of the mod.
      */
-    Mods(String name, String translationKey, String category, int key, Category modCategory, String chatCommand) {
+    Type(String name, String translationKey, String category, int key, Category modCategory, String chatCommand) {
         this.name = name;
         this.category = category;
         this.translationKey = translationKey;
@@ -70,7 +70,7 @@ public enum Mods {
      * @param category       - The settings category of the mod.
      * @param modCategory    - The mod category of the mod.
      */
-    Mods(String name, String translationKey, String category, Category modCategory, String chatCommand) {
+    Type(String name, String translationKey, String category, Category modCategory, String chatCommand) {
         this(name, translationKey, category, GLFW.GLFW_KEY_UNKNOWN, modCategory, chatCommand);
     }
 

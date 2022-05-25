@@ -44,11 +44,11 @@ public class ModXray extends Mod {
     };
 
     public ModXray() {
-        super(Mods.XRAY, Mods.Category.RENDER, KeyBindingHelper.registerKeyBinding(
-                new KeyBinding(Mods.XRAY.getTranslationKey(),
+        super(Type.XRAY, Type.Category.RENDER, KeyBindingHelper.registerKeyBinding(
+                new KeyBinding(Type.XRAY.getTranslationKey(),
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_X,
-                        Mods.XRAY.getCategory())));
+                        Type.XRAY.getCategory())));
     }
 
     /**
@@ -58,7 +58,7 @@ public class ModXray extends Mod {
      * @return True if visible, false if not
      */
     public static boolean shouldDrawFace(BlockState block) {
-        if (GavinsMod.isEnabled(Mods.XRAY))
+        if (GavinsMod.isEnabled(Type.XRAY))
             return blocks.contains(block.getBlock());
         return true;
     }

@@ -1,6 +1,6 @@
 package com.peasenet.util;
 
-import com.peasenet.mods.Mods;
+import com.peasenet.mods.Type;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -17,7 +17,7 @@ public class KeyBindUtils {
      * @param type The mod type.
      * @return The keybinding.
      */
-    public static KeyBinding getKeyBinding(Mods type) {
+    public static KeyBinding getKeyBinding(Type type) {
         return new KeyBinding(
                 type.getTranslationKey(),
                 InputUtil.Type.KEYSYM,
@@ -32,7 +32,7 @@ public class KeyBindUtils {
      * @param type The mod type.
      * @return The keybinding.
      */
-    public static KeyBinding registerKeyBindForType(Mods type) {
+    public static KeyBinding registerKeyBindForType(Type type) {
         return KeyBindingHelper.registerKeyBinding(getKeyBinding(type));
     }
 
@@ -42,7 +42,7 @@ public class KeyBindUtils {
      * @param type The mod type.
      * @return The keybinding.
      */
-    public static KeyBinding registerEmptyKeyBind(Mods type) {
+    public static KeyBinding registerEmptyKeyBind(Type type) {
         return KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 type.getTranslationKey(),
                 InputUtil.Type.KEYSYM,

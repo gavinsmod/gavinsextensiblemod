@@ -8,6 +8,6 @@ package com.peasenet.mods;
 public class ModNoClip extends Mod {
 
     public ModNoClip() {
-        super(Mods.NO_CLIP, Mods.Category.MOVEMENT);
+        super(Type.NO_CLIP, Type.Category.MOVEMENT);
     }
 }

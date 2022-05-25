@@ -9,6 +9,6 @@ import com.peasenet.util.KeyBindUtils;
  */
 public class ModEntityItemTracer extends Mod {
     public ModEntityItemTracer() {
-        super(Mods.ENTITY_ITEM_TRACER, Mods.Category.RENDER, KeyBindUtils.registerKeyBindForType(Mods.ENTITY_ITEM_TRACER));
+        super(Type.ENTITY_ITEM_TRACER, Type.Category.RENDER, KeyBindUtils.registerKeyBindForType(Type.ENTITY_ITEM_TRACER));
     }
 }

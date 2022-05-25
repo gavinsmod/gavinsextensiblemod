@@ -3,7 +3,7 @@ package com.peasenet.util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
-import com.peasenet.mods.Mods;
+import com.peasenet.mods.Type;
 import com.peasenet.util.color.Color;
 import com.peasenet.util.color.Colors;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -123,7 +123,7 @@ public class RenderUtils {
      * @param chunk_z   The player's chunk z.
      */
     private static void drawChestMods(ClientWorld level, MatrixStack stack, BufferBuilder buffer, Vec3f playerPos, int chunk_x, int chunk_z) {
-        if (GavinsMod.isEnabled(Mods.CHEST_ESP) || GavinsMod.isEnabled(Mods.CHEST_TRACER)) {
+        if (GavinsMod.isEnabled(Type.CHEST_ESP) || GavinsMod.isEnabled(Type.CHEST_TRACER)) {
             for (int x = chunk_x - CHUNK_RADIUS; x <= chunk_x + CHUNK_RADIUS; x++) {
                 for (int z = chunk_z - CHUNK_RADIUS; z <= chunk_z + CHUNK_RADIUS; z++) {
                     level.getChunk(chunk_x, chunk_z).getBlockEntities().forEach((blockPos, blockEntity) -> {
@@ -135,7 +135,7 @@ public class RenderUtils {
                         if (GavinsMod.isEnabled(Type.CHEST_ESP))
                             drawBox(stack, buffer, aabb, Colors.PURPLE);
 
-                        if (GavinsMod.isEnabled(Mods.CHEST_TRACER))
+                        if (GavinsMod.isEnabled(Type.CHEST_TRACER))
                             renderSingleLine(stack, buffer, playerPos, boxPos, Colors.PURPLE);
 
                     });
@@ -184,17 +184,17 @@ public class RenderUtils {
                 if (i.asItem() == Items.CREEPER_SPAWN_EGG) {
                     c = Colors.WHITE;
                 }
-                if (GavinsMod.isEnabled(Mods.ENTITY_ITEM_ESP))
+                if (GavinsMod.isEnabled(Type.ENTITY_ITEM_ESP))
                     drawBox(stack, buffer, aabb, c);
-                if (GavinsMod.isEnabled(Mods.ENTITY_ITEM_TRACER))
+                if (GavinsMod.isEnabled(Type.ENTITY_ITEM_TRACER))
                     renderSingleLine(stack, buffer, playerPos, boxPos, c);
                 return;
             }
 
             if (type == EntityType.PLAYER) {
-                if (GavinsMod.isEnabled(Mods.ENTITY_PLAYER_ESP))
+                if (GavinsMod.isEnabled(Type.ENTITY_PLAYER_ESP))
                     drawBox(stack, buffer, aabb, c);
-                if (GavinsMod.isEnabled(Mods.ENTITY_PLAYER_TRACER))
+                if (GavinsMod.isEnabled(Type.ENTITY_PLAYER_TRACER))
                     renderSingleLine(stack, buffer, playerPos, boxPos, c);
                 return;
             }
@@ -204,9 +204,9 @@ public class RenderUtils {
             if (!type.getSpawnGroup().isPeaceful())
                 c = Colors.RED;
 
-            if (GavinsMod.isEnabled(Mods.MOB_ESP))
+            if (GavinsMod.isEnabled(Type.MOB_ESP))
                 drawBox(stack, buffer, aabb, c);
-            if (GavinsMod.isEnabled(Mods.MOB_TRACER))
+            if (GavinsMod.isEnabled(Type.MOB_TRACER))
                 renderSingleLine(stack, buffer, playerPos, boxPos, c);
         });
     }
