@@ -113,6 +113,10 @@ public class GavinsMod implements ModInitializer {
         return AutoCrit.isActive();
     }
 
+    public static boolean isEnabled(Mods mod) {
+        return mods.get(mod.ordinal()).isActive();
+    }
+
     /**
      * Gets all of the mods in the given category.
      *

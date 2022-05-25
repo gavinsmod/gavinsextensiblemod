@@ -2,6 +2,7 @@ package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
+import com.peasenet.mods.Mods;
 import com.peasenet.util.PlayerUtils;
 import com.peasenet.util.math.MathUtils;
 import net.minecraft.block.BlockState;
@@ -31,34 +32,33 @@ public class MixinPlayerEntity {
 
     @Inject(method = "getBlockBreakingSpeed", at = @At("RETURN"), cancellable = true)
     public void checkFastMine(BlockState state, CallbackInfoReturnable<Float> ci) {
-        if (GavinsMod.FastMineEnabled())
+        if (GavinsMod.isEnabled(Mods.FAST_MINE))
             ci.setReturnValue(500.0f);
     }
 
     @Redirect(method = "tick()V", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerEntity;noClip:Z", opcode = Opcodes.PUTFIELD))
     public void doNoClip(PlayerEntity p, boolean noClip) {
-        //TODO: This does werid things with sprinting.
-        p.noClip = GavinsMod.NoClipEnabled();
+        p.noClip = GavinsMod.isEnabled(Mods.NO_CLIP);
         //NOTE: This is fine. It is required for fabric to work.
-        noClip = GavinsMod.NoClipEnabled();
+        noClip = p.noClip;
     }
 
     @Inject(method = "travel", at = @At("HEAD"), cancellable = true)
     public void checkAutoJump(Vec3d movementInput, CallbackInfo info) {
-        if (GavinsMod.AutoJumpEnabled() && !PlayerUtils.isCreative()) {
+        if (GavinsMod.isEnabled(Mods.AUTO_JUMP) && !PlayerUtils.isCreative()) {
             PlayerUtils.doJump();
         }
     }
 
     @Inject(method = "attack", at = @At("HEAD"))
     public void checkAutoCrit(Entity entity, CallbackInfo info) {
-        if (GavinsMod.AutoCritEnabled())
+        if (GavinsMod.isEnabled(Mods.AUTO_CRIT))
             PlayerUtils.doJump();
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
     public void checkKillAura(CallbackInfo ci) {
-        if (GavinsModClient.getMinecraftClient().world != null && GavinsMod.KillAuraEnabled()) {
+        if (GavinsModClient.getMinecraftClient().world != null && GavinsMod.isEnabled(Mods.KILL_AURA)) {
             // Sort entities by distance
             var stream = StreamSupport.stream(GavinsModClient.getMinecraftClient().world.getEntities().spliterator(), false)
                     .filter(e -> e instanceof MobEntity)

@@ -51,6 +51,18 @@ public class ModXray extends Mod {
                         Mods.XRAY.getCategory())));
     }
 
+    /**
+     * Checks if a block is visible
+     *
+     * @param block Block to check
+     * @return True if visible, false if not
+     */
+    public static boolean shouldDrawFace(BlockState block) {
+        if (GavinsMod.isEnabled(Mods.XRAY))
+            return blocks.contains(block.getBlock());
+        return true;
+    }
+
     @Override
     public void activate() {
         isEnabled = true;
@@ -66,17 +78,5 @@ public class ModXray extends Mod {
         getClient().chunkCullingEnabled = true;
         getClient().worldRenderer.reload();
         onDisable();
-    }
-
-    /**
-     * Checks if a block is visible
-     *
-     * @param block Block to check
-     * @return True if visible, false if not
-     */
-    public static boolean shouldDrawFace(BlockState block) {
-        if (GavinsMod.XRayEnabled())
-            return blocks.contains(block.getBlock());
-        return true;
     }
 }
