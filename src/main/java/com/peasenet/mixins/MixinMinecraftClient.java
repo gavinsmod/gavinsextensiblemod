@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * @author gt3ch1, ate47
- * Credit: https://github.com/ate47/Xray/
+ * Credit: <a href="https://github.com/ate47/Xray/">https://github.com/ate47/Xray/</a>
  * @version 5/18/2022
  */
 @Mixin(MinecraftClient.class)

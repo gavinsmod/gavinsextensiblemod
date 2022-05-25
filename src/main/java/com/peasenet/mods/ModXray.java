@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * @author gt3ch1
  * @version 5/16/2022
- * A mod for an xray like feature, allowing the player to see through certain blocks.
+ * A mod for xray like feature, allowing the player to see through certain blocks.
  */
 public class ModXray extends Mod {
     /**
