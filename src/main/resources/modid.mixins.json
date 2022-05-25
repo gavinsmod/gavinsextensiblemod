@@ -6,14 +6,11 @@
     "mixins": [
     ],
     "client": [
-        "PlayerEntityAccessor",
-        "PlayerInventoryAccessor",
         "MixinPlayerEntity",
         "MixinBlock",
         "MixinLightmapTextureManager",
         "WorldRendererInvoker",
         "MixinMinecraftClient",
-        "EntityAccessor",
         "MixinLivingEntity",
         "MixinClientPlayerEntity"
     ],
