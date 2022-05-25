@@ -81,8 +81,12 @@ public class PlayerUtils {
     public static void attackEntity(Entity entity) {
         var player = GavinsModClient.getPlayer();
         assert GavinsModClient.getMinecraftClient().interactionManager != null;
-        GavinsModClient.getMinecraftClient().interactionManager.attackEntity(player, entity);
-        player.swingHand(Hand.MAIN_HAND);
+        var lastAttackTime = player.getLastAttackTime();
+        if (onGround() && !player.noClip && lastAttackTime < lastAttackTime + 60) {
+            GavinsModClient.getMinecraftClient().interactionManager.attackEntity(player, entity);
+            player.tryAttack(entity);
+            player.swingHand(Hand.MAIN_HAND);
+        }
     }
 
     /**
@@ -93,13 +97,11 @@ public class PlayerUtils {
         if (player == null || player.getAbilities() == null)
             return;
         var abilities = player.getAbilities();
-        var allowFlying = GavinsMod.FlyEnabled() || abilities.creativeMode || GavinsMod.NoClipEnabled();
-        abilities.allowFlying = allowFlying;
+        abilities.allowFlying = GavinsMod.FlyEnabled() || abilities.creativeMode || GavinsMod.NoClipEnabled();
         if (GavinsMod.NoClipEnabled())
             abilities.flying = true;
-        if (!abilities.creativeMode && !GavinsMod.FlyEnabled())
+        if (!abilities.creativeMode && !GavinsMod.FlyEnabled() && !GavinsMod.NoClipEnabled())
             abilities.flying = false;
-
     }
 
     /**
@@ -113,18 +115,6 @@ public class PlayerUtils {
         return player.squaredDistanceTo(entity);
     }
 
-    /**
-     * Performs an attack jump (crit)
-     *
-     * @param entity The entity to attack.
-     */
-    public static void doAttackJump(Entity entity) {
-        var player = GavinsModClient.getPlayer();
-        if (onGround())
-            player.jump();
-
-        attackEntity(entity);
-    }
 
     /**
      * Gets whether the player is in creative mode.
@@ -143,16 +133,54 @@ public class PlayerUtils {
      */
     public static boolean isFalling() {
         var player = GavinsModClient.getPlayer();
-        return player.isFallFlying() || player.getVelocity().y < -0.5;
+        return player.isFallFlying();
+    }
+
+    /**
+     * Gets whether the player can be damaged by the current fall speed.
+     *
+     * @return True if the player can be damaged, false otherwise.
+     */
+    public static boolean fallSpeedCanDamage() {
+        var player = GavinsModClient.getPlayer();
+        return player.getVelocity().y < -0.5;
     }
 
     /**
      * Handles No Fall. This will prevent the player from falling when enabled.
      */
     public static void handleNoFall() {
+        //TODO: This is apparently a bit weird in preventing the player from crouching + moving while flying.
         var player = GavinsModClient.getPlayer();
-        if (player != null && isFalling()) {
-            player.networkHandler.sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(GavinsMod.NoFallEnabled() || GavinsMod.FlyEnabled()));
+        if (player != null) {
+            if (player.fallDistance <= (isFalling() ? 1 : 2))
+                return;
+            if (player.isSneaking() && !fallSpeedCanDamage() && player.isFallFlying())
+                return;
+            if (GavinsMod.NoFallEnabled())
+                player.networkHandler.sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
         }
+    }
+
+    /**
+     * Sets the position of the player to the given position.
+     *
+     * @param pos The position to set the player to.
+     */
+    public static void setPosition(Vec3d pos) {
+        var player = GavinsModClient.getPlayer();
+        player.setPos(pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    /**
+     * Moves the player up by the given amount.
+     *
+     * @param amount The amount to move the player up.
+     */
+    public static void moveUp(int amount) {
+        var player = GavinsModClient.getPlayer();
+        var pos = player.getPos();
+        pos.add(0, amount, 0);
+        setPosition(pos);
     }
 }

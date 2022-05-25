@@ -5,6 +5,7 @@ import com.peasenet.main.GavinsModClient;
 import com.peasenet.util.PlayerUtils;
 import com.peasenet.util.math.MathUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
@@ -49,21 +50,26 @@ public class MixinPlayerEntity {
         }
     }
 
+    @Inject(method = "attack", at = @At("HEAD"))
+    public void checkAutoCrit(Entity entity, CallbackInfo info) {
+        if (GavinsMod.AutoCritEnabled())
+            PlayerUtils.doJump();
+    }
+
     @Inject(method = "tick", at = @At("HEAD"))
     public void checkKillAura(CallbackInfo ci) {
         if (GavinsModClient.getMinecraftClient().world != null && GavinsMod.KillAuraEnabled()) {
             // Sort entities by distance
             var stream = StreamSupport.stream(GavinsModClient.getMinecraftClient().world.getEntities().spliterator(), false)
                     .filter(e -> e instanceof MobEntity)
+                    .filter(Entity::isAlive)
+                    .filter(e -> PlayerUtils.distanceToEntity(e) <= 12)
                     .sorted((e1, e2) -> (int) ((int) PlayerUtils.distanceToEntity(e1) - PlayerUtils.distanceToEntity(e2)))
                     .map(e -> (MobEntity) e);
 
             stream.forEach(entity -> {
-                // check distance to player
-                if (PlayerUtils.distanceToEntity(entity) > 5 && entity.getHealth() > 0)
-                    return;
                 PlayerUtils.setRotation(MathUtils.getRotationToEntity(entity));
-                PlayerUtils.doAttackJump(entity);
+                PlayerUtils.attackEntity(entity);
             });
         }
     }

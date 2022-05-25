@@ -65,4 +65,18 @@ public interface IMod {
      * @return The name of the mod.
      */
     String getName();
+
+    /**
+     * Gets the chat command of the mod.
+     *
+     * @return The chat command of the mod.
+     */
+    String getChatCommand();
+
+    /**
+     * Gets the type of the mod.
+     *
+     * @return The type of the mod.
+     */
+    Mods getType();
 }

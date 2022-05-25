@@ -22,7 +22,7 @@ public class GavinsModClient implements ClientModInitializer {
                 m.onTick();
             }
         });
-        WorldRenderEvents.AFTER_ENTITIES.register(RenderUtils::onRender);
+        WorldRenderEvents.AFTER_ENTITIES.register(RenderUtils::afterEntities);
     }
 
     public static MinecraftClient getMinecraftClient() {
