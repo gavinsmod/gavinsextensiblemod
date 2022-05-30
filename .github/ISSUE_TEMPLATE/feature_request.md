@@ -1,12 +1,20 @@
 ---
-name: Feature request about: Suggest an idea for this project labels: 'question, enhancement' assignees: 'GT3CH1'
+name: Feature request
+about: Suggest an idea for this project
+title: ''
+labels: ''
+assignees: ''
 
 ---
 
-## What is your idea?
+**Is your feature request related to a problem? Please describe.**
+A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
-_My very cool idea is..._
+**Describe the solution you'd like**
+A clear and concise description of what you want to happen.
 
-## Additional context
+**Describe alternatives you've considered**
+A clear and concise description of any alternative solutions or features you've considered.
 
-_Add any other context or screenshots about the feature request here._
+**Additional context**
+Add any other context or screenshots about the feature request here.
