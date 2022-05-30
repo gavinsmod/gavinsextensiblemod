@@ -27,7 +27,7 @@ import org.lwjgl.opengl.GL11;
  * A utility class for rendering tracers and esp's.
  */
 public class RenderUtils {
-    private static int CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.viewDistance / 2;
+    private static int CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.viewDistance;
 
     private RenderUtils() {
     }
@@ -137,7 +137,6 @@ public class RenderUtils {
 
                         if (GavinsMod.isEnabled(Type.CHEST_TRACER))
                             renderSingleLine(stack, buffer, playerPos, boxPos, Colors.PURPLE);
-
                     });
                 }
             }
@@ -166,7 +165,8 @@ public class RenderUtils {
      * @param buffer    The buffer to write to.
      * @param playerPos The player's position.
      */
-    private static void drawEntityMods(ClientWorld level, ClientPlayerEntity player, MatrixStack stack, float delta, BufferBuilder buffer, Vec3f playerPos) {
+    private static void drawEntityMods(ClientWorld level, ClientPlayerEntity player, MatrixStack stack,
+                                       float delta, BufferBuilder buffer, Vec3f playerPos) {
         level.getEntities().forEach(e -> {
             if ((e.squaredDistanceTo(player) > 64 * CHUNK_RADIUS * 16) || player == e)
                 return;
