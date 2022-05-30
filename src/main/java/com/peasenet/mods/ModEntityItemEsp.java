@@ -9,6 +9,6 @@ import com.peasenet.util.KeyBindUtils;
  */
 public class ModEntityItemEsp extends Mod {
     public ModEntityItemEsp() {
-        super(Mods.ENTITY_ITEM_ESP, Mods.Category.RENDER, KeyBindUtils.registerKeyBindForType(Mods.ENTITY_ITEM_ESP));
+        super(Type.ENTITY_ITEM_ESP, Type.Category.RENDER, KeyBindUtils.registerKeyBindForType(Type.ENTITY_ITEM_ESP));
     }
 }

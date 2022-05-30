@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * @author gt3ch1
  * @version 5/16/2022
- * A mod for an xray like feature, allowing the player to see through certain blocks.
+ * A mod for xray like feature, allowing the player to see through certain blocks.
  */
 public class ModXray extends Mod {
     /**
@@ -44,11 +44,23 @@ public class ModXray extends Mod {
     };
 
     public ModXray() {
-        super(Mods.XRAY, Mods.Category.RENDER, KeyBindingHelper.registerKeyBinding(
-                new KeyBinding(Mods.XRAY.getTranslationKey(),
+        super(Type.XRAY, Type.Category.RENDER, KeyBindingHelper.registerKeyBinding(
+                new KeyBinding(Type.XRAY.getTranslationKey(),
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_X,
-                        Mods.XRAY.getCategory())));
+                        Type.XRAY.getCategory())));
+    }
+
+    /**
+     * Checks if a block is visible
+     *
+     * @param block Block to check
+     * @return True if visible, false if not
+     */
+    public static boolean shouldDrawFace(BlockState block) {
+        if (GavinsMod.isEnabled(Type.XRAY))
+            return blocks.contains(block.getBlock());
+        return true;
     }
 
     @Override
@@ -66,17 +78,5 @@ public class ModXray extends Mod {
         getClient().chunkCullingEnabled = true;
         getClient().worldRenderer.reload();
         onDisable();
-    }
-
-    /**
-     * Checks if a block is visible
-     *
-     * @param block Block to check
-     * @return True if visible, false if not
-     */
-    public static boolean shouldDrawFace(BlockState block) {
-        if (GavinsMod.XRayEnabled())
-            return blocks.contains(block.getBlock());
-        return true;
     }
 }

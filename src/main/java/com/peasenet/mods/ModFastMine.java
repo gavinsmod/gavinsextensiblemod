@@ -8,6 +8,6 @@ import com.peasenet.util.KeyBindUtils;
  */
 public class ModFastMine extends Mod {
     public ModFastMine() {
-        super(Mods.FAST_MINE, Mods.Category.MOVEMENT, KeyBindUtils.registerKeyBindForType(Mods.FAST_MINE));
+        super(Type.FAST_MINE, Type.Category.MOVEMENT, KeyBindUtils.registerKeyBindForType(Type.FAST_MINE));
     }
 }

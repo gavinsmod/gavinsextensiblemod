@@ -7,6 +7,6 @@ package com.peasenet.mods;
  */
 public class ModAutoCrit extends Mod {
     public ModAutoCrit() {
-        super(Mods.AUTO_CRIT, Mods.Category.COMBAT);
+        super(Type.AUTO_CRIT, Type.Category.COMBAT);
     }
 }

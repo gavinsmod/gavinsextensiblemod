@@ -8,6 +8,6 @@ import com.peasenet.util.KeyBindUtils;
  */
 public class ModKillAura extends Mod {
     public ModKillAura() {
-        super(Mods.KILL_AURA, Mods.Category.COMBAT, KeyBindUtils.registerKeyBindForType(Mods.KILL_AURA));
+        super(Type.KILL_AURA, Type.Category.COMBAT, KeyBindUtils.registerKeyBindForType(Type.KILL_AURA));
     }
 }

@@ -6,6 +6,6 @@ package com.peasenet.mods;
  */
 public class ModNoFall extends Mod {
     public ModNoFall() {
-        super(Mods.NO_FALL, Mods.Category.MOVEMENT);
+        super(Type.NO_FALL, Type.Category.MOVEMENT);
     }
 }

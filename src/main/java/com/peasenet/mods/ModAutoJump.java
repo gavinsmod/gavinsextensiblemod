@@ -9,6 +9,6 @@ import com.peasenet.util.KeyBindUtils;
  */
 public class ModAutoJump extends Mod {
     public ModAutoJump() {
-        super(Mods.AUTO_JUMP, Mods.Category.MOVEMENT, KeyBindUtils.registerKeyBindForType(Mods.AUTO_JUMP));
+        super(Type.AUTO_JUMP, Type.Category.MOVEMENT, KeyBindUtils.registerKeyBindForType(Type.AUTO_JUMP));
     }
 }

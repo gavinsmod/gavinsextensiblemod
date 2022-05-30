@@ -2,6 +2,7 @@ package com.peasenet.util;
 
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
+import com.peasenet.mods.Type;
 import com.peasenet.util.math.Rotation;
 import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;
@@ -97,10 +98,10 @@ public class PlayerUtils {
         if (player == null || player.getAbilities() == null)
             return;
         var abilities = player.getAbilities();
-        abilities.allowFlying = GavinsMod.FlyEnabled() || abilities.creativeMode || GavinsMod.NoClipEnabled();
-        if (GavinsMod.NoClipEnabled())
+        abilities.allowFlying = GavinsMod.isEnabled(Type.FLY) || abilities.creativeMode || GavinsMod.isEnabled(Type.NO_CLIP);
+        if (GavinsMod.isEnabled(Type.FLY))
             abilities.flying = true;
-        if (!abilities.creativeMode && !GavinsMod.FlyEnabled() && !GavinsMod.NoClipEnabled())
+        if (!abilities.creativeMode && !GavinsMod.isEnabled(Type.FLY) && !GavinsMod.isEnabled(Type.NO_CLIP))
             abilities.flying = false;
     }
 
@@ -157,8 +158,9 @@ public class PlayerUtils {
                 return;
             if (player.isSneaking() && !fallSpeedCanDamage() && player.isFallFlying())
                 return;
-            if (GavinsMod.NoFallEnabled())
+            if (GavinsMod.isEnabled(Type.NO_FALL)) {
                 player.networkHandler.sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
+            }
         }
     }
 
