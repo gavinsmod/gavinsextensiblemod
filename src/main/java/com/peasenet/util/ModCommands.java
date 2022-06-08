@@ -33,10 +33,9 @@ public class ModCommands {
                 try {
                     int amount = Integer.parseInt(split[1]);
                     PlayerUtils.moveUp(amount);
-                    PlayerUtils.doJump();
                     return true;
                 } catch (NumberFormatException e) {
-                    // do nothing
+                    GavinsMod.LOGGER.error("Invalid number: " + split[1]);
                 }
             }
         }
