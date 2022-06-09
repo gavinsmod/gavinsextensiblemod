@@ -40,12 +40,25 @@ public class GavinsMod implements ModInitializer {
     private static final ModEntityItemEsp EntityItemEsp = new ModEntityItemEsp();
     private static final ModEntityPlayerTracer EntityPlayerTracer = new ModEntityPlayerTracer();
     private static final ModEntityPlayerEsp EntityPlayerEsp = new ModEntityPlayerEsp();
+    private static final ModAntiPumpkin AntiPumpkin = new ModAntiPumpkin();
+
+    // GUI
     private static final ModGui Gui = new ModGui();
+    private static final ModGuiTextOverlay ModGuiTextOverlay = new ModGuiTextOverlay();
     public static ArrayList<Mod> mods;
 
     public static boolean isEnabled(Type mod) {
         // find mod via stream and check if it is enabled.
         return mods.stream().filter(m -> m.getType() == mod).findFirst().get().isActive();
+    }
+
+    public static void setEnabled(Type mod, boolean enabled) {
+        // find mod via stream and set it to enabled.
+        var theMod = mods.stream().filter(m -> m.getType() == mod).findFirst().get();
+        if(enabled)
+            theMod.activate();
+        else
+            theMod.deactivate();
     }
 
     /**
@@ -95,8 +108,11 @@ public class GavinsMod implements ModInitializer {
                 add(EntityPlayerEsp);
                 add(EntityPlayerTracer);
 
+                add(AntiPumpkin);
+
                 //GUI
                 add(Gui);
+                add(ModGuiTextOverlay);
             }
         };
     }

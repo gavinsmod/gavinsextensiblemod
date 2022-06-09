@@ -1,5 +1,7 @@
 package com.peasenet.gui;
 
+import com.peasenet.main.GavinsMod;
+import com.peasenet.mods.Type;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -29,6 +31,7 @@ public class GuiMainMenu extends Screen {
         assert this.client != null;
         var tr = this.client.textRenderer;
         gui.render(matrixStack, tr, this.title);
+
         super.render(matrixStack, mouseX, mouseY, delta);
     }
 
@@ -42,5 +45,11 @@ public class GuiMainMenu extends Screen {
     @Override
     public boolean shouldPause() {
         return false;
+    }
+
+    @Override
+    public void close() {
+        GavinsMod.setEnabled(Type.MOD_GUI,false);
+        super.close();
     }
 }
