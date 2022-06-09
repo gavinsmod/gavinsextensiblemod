@@ -40,6 +40,9 @@ public class GavinsMod implements ModInitializer {
     private static final ModEntityItemEsp EntityItemEsp = new ModEntityItemEsp();
     private static final ModEntityPlayerTracer EntityPlayerTracer = new ModEntityPlayerTracer();
     private static final ModEntityPlayerEsp EntityPlayerEsp = new ModEntityPlayerEsp();
+    private static final ModAntiPumpkin AntiPumpkin = new ModAntiPumpkin();
+
+    // GUI
     private static final ModGui Gui = new ModGui();
     private static final ModGuiTextOverlay ModGuiTextOverlay = new ModGuiTextOverlay();
     public static ArrayList<Mod> mods;
@@ -104,6 +107,8 @@ public class GavinsMod implements ModInitializer {
 
                 add(EntityPlayerEsp);
                 add(EntityPlayerTracer);
+
+                add(AntiPumpkin);
 
                 //GUI
                 add(Gui);

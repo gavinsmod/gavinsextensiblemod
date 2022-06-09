@@ -18,6 +18,7 @@ import net.minecraft.util.math.Vec3f;
  */
 public class PlayerUtils {
     static int lastAttackTime = 0;
+
     /**
      * Sets the rotation of the player.
      *
@@ -183,8 +184,6 @@ public class PlayerUtils {
      */
     public static void moveUp(int amount) {
         var player = GavinsModClient.getPlayer();
-        var pos = player.getPos();
-        pos.add(0, amount, 0);
-        setPosition(pos);
+        setPosition(new Vec3d(player.getPos().getX(), player.getPos().getY() + amount, player.getPos().getZ()));
     }
 }
