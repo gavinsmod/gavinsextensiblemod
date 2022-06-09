@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
 public class MixinGameRender {
-    @Inject(method = "bobViewWhenHurt(Lnet/minecraft/util/math/MatrixStack;F)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "bobViewWhenHurt(Lnet/minecraft/client/util/math/MatrixStack;F)V", at = @At("HEAD"), cancellable = true)
     public void checkAntiHurt(MatrixStack stack, float f, CallbackInfo ci) {
         if (GavinsMod.isEnabled(Type.ANTI_HURT)) {
             ci.cancel();
