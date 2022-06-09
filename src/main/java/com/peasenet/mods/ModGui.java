@@ -18,18 +18,15 @@ public class ModGui extends Mod{
     @Override
     public void onEnable() {
         GavinsModClient.getMinecraftClient().setScreen(new GuiMainMenu(GavinsMod.gui));
-        isEnabled = false;
     }
 
     @Override
     public void onDisable() {
         GavinsModClient.getMinecraftClient().setScreen(new GuiMainMenu(GavinsMod.gui));
-        isEnabled = false;
     }
 
     @Override
     public void toggle() {
         GavinsModClient.getMinecraftClient().setScreen(new GuiMainMenu(GavinsMod.gui));
-        isEnabled = false;
     }
 }
