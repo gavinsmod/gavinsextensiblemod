@@ -13,6 +13,8 @@
         "MixinMinecraftClient",
         "MixinLivingEntity",
         "MixinClientPlayerEntity",
+        "MixinInGameHud",
+        "MinecraftClientAccessor",
         "MixinGameRender",
         "MixinInGameHud"
     ],

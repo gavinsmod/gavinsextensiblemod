@@ -12,11 +12,9 @@ public enum Type {
 
     // MOVEMENT
     FLY("Fly", "key.gavinsmod.fly", "category.gavinsmod.test", MOVEMENT, "fly"),
-
     FAST_MINE("Fast Mine", "key.gavinsmod.fastmine", "category.gavinsmod.test", MOVEMENT, "fastmine"),
-
+    FAST_PLACE("Fast Place", "key.gavinsmod.fastplace", "category.gavinsmod.test", MOVEMENT, "fastplace"),
     AUTO_JUMP("Auto Jump", "key.gavinsmod.autojump", "category.gavinsmod.test", MOVEMENT, "autojump"),
-
     CLIMB("Climb", "key.gavinsmod.climb", "category.gavinsmod.test", MOVEMENT, "climb"),
     NO_CLIP("No Clip", "key.gavinsmod.noclip", "category.gavinsmod.test", MOVEMENT, "noclip"),
     NO_FALL("No Fall", "key.gavinsmod.nofall", "category.gavinsmod.test", MOVEMENT, "nofall"),

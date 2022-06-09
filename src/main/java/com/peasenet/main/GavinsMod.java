@@ -25,12 +25,13 @@ public class GavinsMod implements ModInitializer {
     private static final ModClimb Climb = new ModClimb();
     private static final ModNoClip NoClip = new ModNoClip();
     private static final ModNoFall NoFall = new ModNoFall();
+    private static final ModFastMine FastMine = new ModFastMine();
+    private static final ModFastPlace FastPlace = new ModFastPlace();
     // COMBAT
     private static final ModKillAura KillAura = new ModKillAura();
     private static final ModAutoCrit AutoCrit = new ModAutoCrit();
     // RENDER
     private static final ModAntiHurt AntiHurt = new ModAntiHurt();
-    private static final ModFastMine FastMine = new ModFastMine();
     private static final ModFullBright FullBright = new ModFullBright();
     private static final ModChestEsp ChestEsp = new ModChestEsp();
     private static final ModChestTracer ChestTracer = new ModChestTracer();
@@ -84,6 +85,7 @@ public class GavinsMod implements ModInitializer {
                 // MOVEMENT
                 add(Fly);
                 add(FastMine);
+                add(FastPlace);
                 add(AutoJump);
                 add(Climb);
                 add(NoClip);
