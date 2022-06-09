@@ -31,6 +31,7 @@ public class GavinsMod implements ModInitializer {
     private static final ModKillAura KillAura = new ModKillAura();
     private static final ModAutoCrit AutoCrit = new ModAutoCrit();
     // RENDER
+    private static final ModAntiHurt AntiHurt = new ModAntiHurt();
     private static final ModFullBright FullBright = new ModFullBright();
     private static final ModChestEsp ChestEsp = new ModChestEsp();
     private static final ModChestTracer ChestTracer = new ModChestTracer();
@@ -94,6 +95,7 @@ public class GavinsMod implements ModInitializer {
                 add(AutoCrit);
 
                 // RENDER
+                add(AntiHurt);
                 add(XRay);
                 add(FullBright);
                 add(ChestEsp);
