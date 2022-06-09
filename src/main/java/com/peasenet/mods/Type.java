@@ -35,7 +35,6 @@ public enum Type {
     ANTI_HURT("Anti Hurt", "key.gavinsmod.antihurt", "category.gavinsmod.test", RENDER, "antihurt"),
     ANTI_PUMPKIN("Anti Pumpkin", "key.gavinsmod.antipumpkin", "category.gavinsmod.test", RENDER, "antipumpkin"),
     MOD_GUI("GUI", "key.gavinsmod.gui", "category.gavinsmod.test", GLFW.GLFW_KEY_I, GUI, "gui"),
-    ANTI_PUMPKIN("Anti Pumpkin", "key.gavinsmod.antipumpkin", "category.gavinsmod.test", RENDER, "antipumpkin"),
     MOD_GUI_TEXT_OVERLAY("GUI Text Overlay", "key.gavinsmod.guitextoverlay", "category.gavinsmod.test", GUI, "guitextoverlay");
     
 
