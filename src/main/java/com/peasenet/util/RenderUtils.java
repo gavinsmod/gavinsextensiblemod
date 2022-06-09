@@ -225,4 +225,5 @@ public class RenderUtils {
         double z = e.prevZ + (e.getZ() - e.prevZ) * delta;
         return type.createSimpleBoundingBox(x, y, z);
     }
+
 }

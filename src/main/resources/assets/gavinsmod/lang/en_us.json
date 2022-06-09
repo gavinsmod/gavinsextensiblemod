@@ -1,6 +1,7 @@
 {
     "key.gavinsmod.fly": "Fly",
     "key.gavinsmod.fastmine": "Fast Mine",
+    "key.gavinsmod.fastplace": "Fast Place",
     "key.gavinsmod.autojump": "Auto Jump",
     "key.gavinsmod.climb": "Climb",
     "key.gavinsmod.noclip": "No Clip",
@@ -17,9 +18,12 @@
     "key.gavinsmod.entityplayertracer": "Player Tracers",
     "key.gavinsmod.killaura": "Kill Aura",
     "key.gavinsmod.autocrit": "Auto Crit",
+    "key.gavinsmod.antihurt": "Anti Hurt",
     "key.gavinsmod.gui": "GUI",
+    "key.gavinsmod.guitextoverlay": "Text Overlay",
     "key.gavinsmod.gui.movement": "Movement",
     "key.gavinsmod.gui.render": "Render",
     "key.gavinsmod.gui.combat": "Combat",
+    "key.gavinsmod.antipumpkin": "Anti Pumpkin",
     "category.gavinsmod.test": "Gavin's Mod"
 }

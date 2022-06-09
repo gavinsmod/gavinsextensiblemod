@@ -1,4 +1,4 @@
-# Gavin's Mod v1.1.0
+# Gavin's Mod v1.2.0
 
 A "mod" that actually contains hacks/cheats for Minecraft.
 
@@ -17,14 +17,18 @@ A "mod" that actually contains hacks/cheats for Minecraft.
   ![](src/main/resources/assets/gavinsmod/screenshots/items.png)
 - Fly
 - Fast Mine
+- Fast Place
+- Anti Pumpkin Shadow
 - Auto Jump
 - Wall Climb
 - Kill Aura
 - Auto Crit
 - No Fall
-- In Game GUI
+- No Clip
+- In Game GUI (example below - may be outdated)
   ![img.png](src/main/resources/assets/gavinsmod/screenshots/gui.png)
-
+  - Also a text-based HUD
+- Anti Camera Bob
 ---
 
 ## Installation

@@ -17,6 +17,8 @@ import net.minecraft.util.math.Vec3f;
  * A helper class with utilities relating to the player.
  */
 public class PlayerUtils {
+    static int lastAttackTime = 0;
+
     /**
      * Sets the rotation of the player.
      *
@@ -82,12 +84,13 @@ public class PlayerUtils {
     public static void attackEntity(Entity entity) {
         var player = GavinsModClient.getPlayer();
         assert GavinsModClient.getMinecraftClient().interactionManager != null;
-        var lastAttackTime = player.getLastAttackTime();
-        if (onGround() && !player.noClip && lastAttackTime < lastAttackTime + 60) {
+        if (onGround() && !player.noClip && lastAttackTime % 20 == 0) {
             GavinsModClient.getMinecraftClient().interactionManager.attackEntity(player, entity);
             player.tryAttack(entity);
             player.swingHand(Hand.MAIN_HAND);
+            lastAttackTime = 0;
         }
+        lastAttackTime++;
     }
 
     /**
@@ -99,7 +102,7 @@ public class PlayerUtils {
             return;
         var abilities = player.getAbilities();
         abilities.allowFlying = GavinsMod.isEnabled(Type.FLY) || abilities.creativeMode || GavinsMod.isEnabled(Type.NO_CLIP);
-        if (GavinsMod.isEnabled(Type.FLY))
+        if (GavinsMod.isEnabled(Type.FLY) && GavinsMod.isEnabled(Type.NO_CLIP))
             abilities.flying = true;
         if (!abilities.creativeMode && !GavinsMod.isEnabled(Type.FLY) && !GavinsMod.isEnabled(Type.NO_CLIP))
             abilities.flying = false;
@@ -181,8 +184,6 @@ public class PlayerUtils {
      */
     public static void moveUp(int amount) {
         var player = GavinsModClient.getPlayer();
-        var pos = player.getPos();
-        pos.add(0, amount, 0);
-        setPosition(pos);
+        setPosition(new Vec3d(player.getPos().getX(), player.getPos().getY() + amount, player.getPos().getZ()));
     }
 }

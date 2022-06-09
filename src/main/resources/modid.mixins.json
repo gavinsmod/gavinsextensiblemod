@@ -12,7 +12,12 @@
         "WorldRendererInvoker",
         "MixinMinecraftClient",
         "MixinLivingEntity",
-        "MixinClientPlayerEntity"
+        "MixinClientPlayerEntity",
+        "MixinGameRender",
+        "MixinInGameHud",
+        "MinecraftClientAccessor",
+        "MixinGameRender",
+        "MixinInGameHud"
     ],
     "injectors": {
         "defaultRequire": 1

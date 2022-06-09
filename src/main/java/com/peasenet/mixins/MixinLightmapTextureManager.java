@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 /**
  * @author gt3ch1
+ * Credit: <a href="https://github.com/ate47/Xray/">https://github.com/ate47/Xray/</a>
  * @version 5/16/2022
  */
 @Mixin(value = LightmapTextureManager.class)

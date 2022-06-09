@@ -16,7 +16,7 @@ import java.util.Comparator;
  */
 public class GavinsMod implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("gavinsmod");
-    public static final String VERSION = "v1.1.0";
+    public static final String VERSION = "v1.2.0";
     public static final GuiClick gui = new GuiClick();
     // MOVEMENT
     private static final ModXray XRay = new ModXray();
@@ -25,11 +25,13 @@ public class GavinsMod implements ModInitializer {
     private static final ModClimb Climb = new ModClimb();
     private static final ModNoClip NoClip = new ModNoClip();
     private static final ModNoFall NoFall = new ModNoFall();
+    private static final ModFastMine FastMine = new ModFastMine();
+    private static final ModFastPlace FastPlace = new ModFastPlace();
     // COMBAT
     private static final ModKillAura KillAura = new ModKillAura();
     private static final ModAutoCrit AutoCrit = new ModAutoCrit();
     // RENDER
-    private static final ModFastMine FastMine = new ModFastMine();
+    private static final ModAntiHurt AntiHurt = new ModAntiHurt();
     private static final ModFullBright FullBright = new ModFullBright();
     private static final ModChestEsp ChestEsp = new ModChestEsp();
     private static final ModChestTracer ChestTracer = new ModChestTracer();
@@ -39,12 +41,25 @@ public class GavinsMod implements ModInitializer {
     private static final ModEntityItemEsp EntityItemEsp = new ModEntityItemEsp();
     private static final ModEntityPlayerTracer EntityPlayerTracer = new ModEntityPlayerTracer();
     private static final ModEntityPlayerEsp EntityPlayerEsp = new ModEntityPlayerEsp();
+    private static final ModAntiPumpkin AntiPumpkin = new ModAntiPumpkin();
+
+    // GUI
     private static final ModGui Gui = new ModGui();
+    private static final ModGuiTextOverlay ModGuiTextOverlay = new ModGuiTextOverlay();
     public static ArrayList<Mod> mods;
 
     public static boolean isEnabled(Type mod) {
         // find mod via stream and check if it is enabled.
         return mods.stream().filter(m -> m.getType() == mod).findFirst().get().isActive();
+    }
+
+    public static void setEnabled(Type mod, boolean enabled) {
+        // find mod via stream and set it to enabled.
+        var theMod = mods.stream().filter(m -> m.getType() == mod).findFirst().get();
+        if(enabled)
+            theMod.activate();
+        else
+            theMod.deactivate();
     }
 
     /**
@@ -70,6 +85,7 @@ public class GavinsMod implements ModInitializer {
                 // MOVEMENT
                 add(Fly);
                 add(FastMine);
+                add(FastPlace);
                 add(AutoJump);
                 add(Climb);
                 add(NoClip);
@@ -79,6 +95,7 @@ public class GavinsMod implements ModInitializer {
                 add(AutoCrit);
 
                 // RENDER
+                add(AntiHurt);
                 add(XRay);
                 add(FullBright);
                 add(ChestEsp);
@@ -93,8 +110,11 @@ public class GavinsMod implements ModInitializer {
                 add(EntityPlayerEsp);
                 add(EntityPlayerTracer);
 
+                add(AntiPumpkin);
+
                 //GUI
                 add(Gui);
+                add(ModGuiTextOverlay);
             }
         };
     }
