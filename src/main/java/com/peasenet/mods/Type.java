@@ -34,9 +34,9 @@ public enum Type {
     ENTITY_PLAYER_TRACER("Player Tracer", "key.gavinsmod.entityplayertracer", "category.gavinsmod.test", RENDER, "playertracer"),
     MOB_ESP("Mob ESP", "key.gavinsmod.mobesp", "category.gavinsmod.test", RENDER, "mobesp"),
     MOB_TRACER("Mob Tracer", "key.gavinsmod.mobtracer", "category.gavinsmod.test", RENDER, "mobtracer"),
+    MOD_GUI("GUI", "key.gavinsmod.gui", "category.gavinsmod.test", GLFW.GLFW_KEY_I, GUI, "gui"),
     ANTI_HURT("Anti Hurt", "key.gavinsmod.antihurt", "category.gavinsmod.test", RENDER, "antihurt"),
-    MOD_GUI("GUI", "key.gavinsmod.gui", "category.gavinsmod.test", GLFW.GLFW_KEY_I, GUI, "gui");
-
+    MOD_GUI_TEXT_OVERLAY("GUI Text Overlay", "key.gavinsmod.guitextoverlay", "category.gavinsmod.test", GUI, "guitextoverlay");
 
     private final String translationKey;
     private final String name;
@@ -142,6 +142,7 @@ public enum Type {
         GUI("key.gavinsmod.gui.gui");
 
         public final String translationKey;
+
         Category(String translationKey) {
             this.translationKey = translationKey;
         }

@@ -13,7 +13,8 @@
         "MixinMinecraftClient",
         "MixinLivingEntity",
         "MixinClientPlayerEntity",
-        "MixinGameRender"
+        "MixinGameRender",
+        "MixinInGameHud"
     ],
     "injectors": {
         "defaultRequire": 1
