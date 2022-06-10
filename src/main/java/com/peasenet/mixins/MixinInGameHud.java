@@ -6,7 +6,7 @@ import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -46,7 +46,7 @@ public class MixinInGameHud {
         // only get active mods, and mods that are not gui type.
         GavinsMod.mods.stream().filter(mod -> mod.isActive() && mod.getCategory() != Type.Category.GUI).sorted(Comparator.comparing(Mod::getName))
                 .forEach(mod -> {
-                    textRenderer.drawWithShadow(matrixStack, new TranslatableText(mod.getTranslationKey()), currX, currY.get(), 0xFFFFFF);
+                    textRenderer.drawWithShadow(matrixStack, Text.translatable(mod.getTranslationKey()), currX, currY.get(), 0xFFFFFF);
                     currY.addAndGet(12);
                 });
     }

@@ -3,6 +3,7 @@ package com.peasenet.util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
+import com.peasenet.mixinterface.ISimpleOption;
 import com.peasenet.mods.Type;
 import com.peasenet.util.color.Color;
 import com.peasenet.util.color.Colors;
@@ -27,7 +28,15 @@ import org.lwjgl.opengl.GL11;
  * A utility class for rendering tracers and esp's.
  */
 public class RenderUtils {
-    private static int CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.viewDistance;
+    /**
+     * How many chunks away to render things.
+     */
+    private static int CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.getViewDistance().getValue();
+
+    /**
+     * The last player configured gamma.
+     */
+    private static double LAST_GAMMA;
 
     private RenderUtils() {
     }
@@ -60,7 +69,7 @@ public class RenderUtils {
      * @param context The render context.
      */
     public static void afterEntities(WorldRenderContext context) {
-        CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.viewDistance / 2;
+        CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.getViewDistance().getValue() / 2;
         // this helps with lag
         MinecraftClient minecraft = MinecraftClient.getInstance();
         ClientWorld level = minecraft.world;
@@ -224,6 +233,30 @@ public class RenderUtils {
         double y = e.prevY + (e.getY() - e.prevY) * delta;
         double z = e.prevZ + (e.getZ() - e.prevZ) * delta;
         return type.createSimpleBoundingBox(x, y, z);
+    }
+
+    /**
+     * Sets the gamma of the game to the full bright value of 10000.0 while storing the last gamma value.
+     */
+    public static void setHighGamma() {
+        var gamma = GavinsModClient.getMinecraftClient().options.getGamma();
+        if (gamma.getValue() != 10000.0)
+            LAST_GAMMA = gamma.getValue();
+        @SuppressWarnings("unchecked")
+        var newGamma = (ISimpleOption<Double>) (Object) gamma;
+        newGamma.forceSetValue(10000.0);
+    }
+
+    /**
+     * Resets the gamma to the players last configured value.
+     */
+    public static void resetGamma() {
+        var gamma = GavinsModClient.getMinecraftClient().options.getGamma();
+        if (gamma.getValue() != LAST_GAMMA) {
+            @SuppressWarnings("unchecked")
+            var newGamma = (ISimpleOption<Double>) (Object) gamma;
+            newGamma.forceSetValue(LAST_GAMMA);
+        }
     }
 
 }

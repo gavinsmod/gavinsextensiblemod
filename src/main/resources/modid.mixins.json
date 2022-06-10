@@ -8,7 +8,6 @@
     "client": [
         "MixinPlayerEntity",
         "MixinBlock",
-        "MixinLightmapTextureManager",
         "WorldRendererInvoker",
         "MixinMinecraftClient",
         "MixinLivingEntity",
@@ -17,7 +16,8 @@
         "MixinInGameHud",
         "MinecraftClientAccessor",
         "MixinGameRender",
-        "MixinInGameHud"
+        "MixinInGameHud",
+        "SimpleOptionMixin"
     ],
     "injectors": {
         "defaultRequire": 1

@@ -4,7 +4,7 @@ import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Type;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import static com.peasenet.main.GavinsMod.VERSION;
 
@@ -17,7 +17,7 @@ public class GuiMainMenu extends Screen {
     private final GuiClick gui;
 
     public GuiMainMenu(GuiClick gui) {
-        super(new LiteralText("Gavin's Mod " + VERSION));
+        super(Text.literal("Gavin's Mod " + VERSION));
         this.gui = gui;
     }
 

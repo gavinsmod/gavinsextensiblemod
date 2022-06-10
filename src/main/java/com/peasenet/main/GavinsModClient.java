@@ -13,7 +13,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
  * @version 5/15/2022
  */
 public class GavinsModClient implements ClientModInitializer {
-
+    public static double LAST_GAMMA = 0.0;
     @Override
     public void onInitializeClient() {
         GavinsMod.LOGGER.info("GavinsMod keybinding initialized");
