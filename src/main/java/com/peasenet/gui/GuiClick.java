@@ -6,7 +6,10 @@ import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.util.color.Colors;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.*;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
@@ -125,7 +128,7 @@ public class GuiClick {
         bufferBuilder.vertex(matrix, xt1, yt2, 0).next();
         bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
         bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
-        BufferRenderer.drawWithoutShader(bufferBuilder.end());
+        Tessellator.getInstance().draw();
     }
 
     /**
@@ -151,7 +154,7 @@ public class GuiClick {
         bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
         bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
         bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
-        BufferRenderer.drawWithoutShader(bufferBuilder.end());
+        Tessellator.getInstance().draw();
     }
 
 

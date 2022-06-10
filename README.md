@@ -5,7 +5,7 @@ A "mod" that actually contains hacks/cheats for Minecraft.
 ## 1.19 Migration TO-DO list
 
 - [ ] Figure out how to make fullbright work again
-- [ ] Figure out how to draw the squares for the gui
+- [x] Figure out how to draw the squares for the gui
 - [x] Fix chat commands
 
 ---
