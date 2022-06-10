@@ -1,6 +1,7 @@
 package com.peasenet.mods;
 
 import com.peasenet.main.GavinsMod;
+import com.peasenet.util.RenderUtils;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -65,18 +66,19 @@ public class ModXray extends Mod {
 
     @Override
     public void activate() {
-        isEnabled = true;
-
-        getClient().chunkCullingEnabled = false;
+        RenderUtils.setHighGamma();
+//        getClient().chunkCullingEnabled = false;
         getClient().worldRenderer.reload();
-        onEnable();
+        super.activate();
     }
 
     @Override
     public void deactivate() {
-        isEnabled = false;
-        getClient().chunkCullingEnabled = true;
+        // check if full bright is disabled, if it is, reset gamma back to LAST_GAMMA
+        if (!GavinsMod.isEnabled(Type.FULL_BRIGHT))
+            RenderUtils.resetGamma();
+//        getClient().chunkCullingEnabled = true;
         getClient().worldRenderer.reload();
-        onDisable();
+        super.deactivate();
     }
 }

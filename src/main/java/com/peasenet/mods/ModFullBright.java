@@ -1,6 +1,8 @@
 package com.peasenet.mods;
 
+import com.peasenet.main.GavinsMod;
 import com.peasenet.util.KeyBindUtils;
+import com.peasenet.util.RenderUtils;
 
 /**
  * @author gt3ch1
@@ -14,13 +16,14 @@ public class ModFullBright extends Mod {
 
     @Override
     public void activate() {
-//        getClient().worldRenderer.reload();
+        RenderUtils.setHighGamma();
         super.activate();
     }
 
     @Override
     public void deactivate() {
-//        getClient().worldRenderer.reload();
+        if (!GavinsMod.isEnabled(Type.XRAY))
+            RenderUtils.resetGamma();
         super.deactivate();
     }
 }
