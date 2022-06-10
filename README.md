@@ -6,7 +6,7 @@ A "mod" that actually contains hacks/cheats for Minecraft.
 
 - [ ] Figure out how to make fullbright work again
 - [ ] Figure out how to draw the squares for the gui
-- [ ] Fix chat commands
+- [x] Fix chat commands
 
 ---
 
