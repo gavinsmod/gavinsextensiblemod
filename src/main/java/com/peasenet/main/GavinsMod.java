@@ -42,6 +42,7 @@ public class GavinsMod implements ModInitializer {
     private static final ModEntityPlayerTracer EntityPlayerTracer = new ModEntityPlayerTracer();
     private static final ModEntityPlayerEsp EntityPlayerEsp = new ModEntityPlayerEsp();
     private static final ModAntiPumpkin AntiPumpkin = new ModAntiPumpkin();
+    private static final ModHealthTag HealthTag = new ModHealthTag();
 
     // GUI
     private static final ModGui Gui = new ModGui();
@@ -111,6 +112,7 @@ public class GavinsMod implements ModInitializer {
                 add(EntityPlayerTracer);
 
                 add(AntiPumpkin);
+                add(HealthTag);
 
                 //GUI
                 add(Gui);
