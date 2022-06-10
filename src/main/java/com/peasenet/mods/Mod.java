@@ -4,7 +4,7 @@ import com.peasenet.main.GavinsModClient;
 import com.peasenet.util.KeyBindUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
@@ -67,7 +67,7 @@ public abstract class Mod implements IMod {
      * @param message The message to send.
      */
     public static void sendMessage(String message) {
-        GavinsModClient.getPlayer().sendMessage(new LiteralText(message), false);
+        GavinsModClient.getPlayer().sendMessage(Text.literal(message), false);
     }
 
     /**

@@ -9,7 +9,6 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 /**
  * @author gt3ch1
@@ -19,34 +18,29 @@ import net.minecraft.text.TranslatableText;
 public class GuiClick {
 
     /**
-     * The X axis increment.
-     */
-    private static final int X_INCREMENT = 90;
-
-    /**
-     * The Y axis increment.
-     */
-    private static final int Y_INCREMENT = 12;
-
-    /**
      * The top left corner of the GUI starting point x axis.
      */
     static final int START_X1 = 10;
-
     /**
      * The top left corner of the GUI starting point y axis.
      */
     static final int START_Y1 = 10;
-
-    /**
-     * The bottom left corner of the GUI starting point x axis.
-     */
-    static final int START_X2 = START_X1 + X_INCREMENT;
-
     /**
      * The bottom left corner of the GUI starting point y axis.
      */
     static final int START_Y2 = 21;
+    /**
+     * The X axis increment.
+     */
+    private static final int X_INCREMENT = 90;
+    /**
+     * The bottom left corner of the GUI starting point x axis.
+     */
+    static final int START_X2 = START_X1 + X_INCREMENT;
+    /**
+     * The Y axis increment.
+     */
+    private static final int Y_INCREMENT = 12;
 
     /**
      * Renders the clickable ui
@@ -78,7 +72,7 @@ public class GuiClick {
 
             // Draw the category name
             drawBox(Colors.DARK_RED.getAsFloatArray(), xt1, yt1, xt2, yt2, matrixStack);
-            tr.draw(matrixStack, new TranslatableText(category.getTranslationKey()), xt1 + 2, yt1 + 2, 0xFFFFFF);
+            tr.draw(matrixStack, Text.translatable(category.getTranslationKey()), xt1 + 2, yt1 + 2, 0xFFFFFF);
             drawOutline(Colors.BLACK.getAsFloatArray(), xt1, yt1, xt2, yt2, matrixStack);
 
             // Draw the checkboxes for each mod in the category
@@ -105,7 +99,7 @@ public class GuiClick {
             yt2 += Y_INCREMENT;
 
             drawBox(mod.isActive() ? Colors.GREEN.getAsFloatArray() : Colors.DARK_GRAY.getAsFloatArray(), xt1, yt1, xt2, yt2, matrixStack);
-            tr.draw(matrixStack, new TranslatableText(mod.getTranslationKey()), xt1 + 2, yt1 + 2, 0xffffff);
+            tr.draw(matrixStack, Text.translatable(mod.getTranslationKey()), xt1 + 2, yt1 + 2, 0xffffff);
             drawOutline(Colors.BLACK.getAsFloatArray(), xt1, yt1, xt2, yt2, matrixStack);
         }
     }
@@ -131,8 +125,7 @@ public class GuiClick {
         bufferBuilder.vertex(matrix, xt1, yt2, 0).next();
         bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
         bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
-        bufferBuilder.end();
-        BufferRenderer.draw(bufferBuilder);
+        BufferRenderer.drawWithoutShader(bufferBuilder.end());
     }
 
     /**
@@ -158,8 +151,7 @@ public class GuiClick {
         bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
         bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
         bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
-        bufferBuilder.end();
-        BufferRenderer.draw(bufferBuilder);
+        BufferRenderer.drawWithoutShader(bufferBuilder.end());
     }
 
 

@@ -27,7 +27,7 @@ import org.lwjgl.opengl.GL11;
  * A utility class for rendering tracers and esp's.
  */
 public class RenderUtils {
-    private static int CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.viewDistance;
+    private static int CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.getViewDistance().getValue();
 
     private RenderUtils() {
     }
@@ -60,7 +60,7 @@ public class RenderUtils {
      * @param context The render context.
      */
     public static void afterEntities(WorldRenderContext context) {
-        CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.viewDistance / 2;
+        CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.getViewDistance().getValue() / 2;
         // this helps with lag
         MinecraftClient minecraft = MinecraftClient.getInstance();
         ClientWorld level = minecraft.world;
