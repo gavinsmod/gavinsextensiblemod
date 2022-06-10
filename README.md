@@ -1,4 +1,4 @@
-# Gavin's Mod v1.2.0
+# Gavin's Mod v1.2
 
 A "mod" that actually contains hacks/cheats for Minecraft.
 
