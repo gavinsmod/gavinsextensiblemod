@@ -33,11 +33,11 @@ public abstract class EntityRendererMixin<T extends Entity> {
         double d = this.dispatcher.getSquaredDistanceToCamera(entity);
         if (entity instanceof LivingEntity && GavinsMod.isEnabled(Type.MOD_HPTAG)) {
             LivingEntity livingEntity = (LivingEntity) entity;
-            var currHealth = livingEntity.getHealth();
-            var maxHealth = livingEntity.getMaxHealth();
-            var healthPercent = currHealth / maxHealth;
-            var text = "" + (double) livingEntity.getHealth() + " HP";
-            if (!(d > 4096.0)) {
+            double currHealth = livingEntity.getHealth();
+            currHealth = Math.round(currHealth * 2) / 2.0;
+
+            var text = "" + currHealth + " HP";
+            if (!(d > 1024.0)) {
                 boolean bl = !entity.isSneaky();
                 float f = entity.getHeight() + 0.5F;
 
@@ -50,11 +50,11 @@ public abstract class EntityRendererMixin<T extends Entity> {
                 int j = (int) (g * 255.0F) << 24;
                 float h = (float) (-textRenderer.getWidth(text) / 2);
                 int color = 0x00ff00;
-                if (healthPercent < 0.75)
+                if (currHealth < 0.75)
                     color = 0xffff00;
-                if (healthPercent < 0.5)
+                if (currHealth < 0.5)
                     color = 0xffa500;
-                if (healthPercent < 0.25)
+                if (currHealth < 0.25)
                     color = 0xff0000;
                 textRenderer.draw(text, h, (float) 0, color, false, matrix4f, vertexConsumers, bl, j, light);
                 if (bl) {
