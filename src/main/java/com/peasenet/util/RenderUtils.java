@@ -62,7 +62,6 @@ public class RenderUtils {
                 .normal(matrix3f, normal.getX(), normal.getY(), normal.getZ()).next();
     }
 
-
     /**
      * Processes events for rendering player, chest, item, and mob tracers or esp's in the world.
      *

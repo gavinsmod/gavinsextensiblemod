@@ -17,7 +17,8 @@
         "MinecraftClientAccessor",
         "MixinGameRender",
         "MixinInGameHud",
-        "SimpleOptionMixin"
+        "SimpleOptionMixin",
+        "EntityRendererMixin"
     ],
     "injectors": {
         "defaultRequire": 1
