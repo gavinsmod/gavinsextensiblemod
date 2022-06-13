@@ -19,12 +19,15 @@
     "key.gavinsmod.killaura": "Kill Aura",
     "key.gavinsmod.autocrit": "Auto Crit",
     "key.gavinsmod.antihurt": "Anti Hurt",
+    "key.gavinsmod.antipumpkin": "Anti Pumpkin",
+    "key.gavinsmod.hptag": "HP Tags",
     "key.gavinsmod.gui": "GUI",
     "key.gavinsmod.guitextoverlay": "Text Overlay",
     "key.gavinsmod.gui.movement": "Movement",
     "key.gavinsmod.gui.render": "Render",
     "key.gavinsmod.gui.combat": "Combat",
-    "key.gavinsmod.antipumpkin": "Anti Pumpkin",
-    "key.gavinsmod.hptag": "HP Tags",
+    "key.gavinsmod.gui.misc": "Misc",
+    "key.gavinsmod.gui.esps": "ESPs",
+    "key.gavinsmod.gui.tracers": "Tracers",
     "category.gavinsmod.test": "Gavin's Mod"
 }

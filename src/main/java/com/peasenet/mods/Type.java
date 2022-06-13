@@ -36,7 +36,7 @@ public enum Type {
     ANTI_PUMPKIN("Anti Pumpkin", "key.gavinsmod.antipumpkin", "category.gavinsmod.test", RENDER, "antipumpkin"),
     MOD_HPTAG("HP Tags", "key.gavinsmod.hptag", "category.gavinsmod.test", RENDER, "hptag"),
     MOD_GUI("GUI", "key.gavinsmod.gui", "category.gavinsmod.test", GLFW.GLFW_KEY_I, GUI, "gui"),
-    MOD_GUI_TEXT_OVERLAY("GUI Text Overlay", "key.gavinsmod.guitextoverlay", "category.gavinsmod.test", GUI, "guitextoverlay");
+    MOD_GUI_TEXT_OVERLAY("GUI Text Overlay", "key.gavinsmod.guitextoverlay", "category.gavinsmod.test", MISC, "textoverlay");
 
 
     private final String translationKey;
@@ -140,6 +140,9 @@ public enum Type {
         MOVEMENT("key.gavinsmod.gui.movement"),
         RENDER("key.gavinsmod.gui.render"),
         COMBAT("key.gavinsmod.gui.combat"),
+        MISC("key.gavinsmod.gui.misc"),
+        ESPS("key.gavinsmod.gui.esps"),
+        TRACERS("key.gavinsmod.gui.tracers"),
         GUI("key.gavinsmod.gui.gui");
 
         public final String translationKey;
