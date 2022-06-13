@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(SimpleOption.class)
-public class SimpleOptionMixin<T> implements ISimpleOption<T> {
+public class MixinSimpleOption<T> implements ISimpleOption<T> {
     @Shadow
     T value;
 

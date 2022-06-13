@@ -31,7 +31,8 @@ public class RenderUtils {
     /**
      * How many chunks away to render things.
      */
-    private static int CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.getViewDistance().getValue();
+    private static int CHUNK_RADIUS = GavinsModClient.getMinecraftClient().getOptions().getViewDistance().getValue();
+
 
     /**
      * The last player configured gamma.
@@ -68,7 +69,7 @@ public class RenderUtils {
      * @param context The render context.
      */
     public static void afterEntities(WorldRenderContext context) {
-        CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.getViewDistance().getValue() / 2;
+        CHUNK_RADIUS = GavinsModClient.getMinecraftClient().getOptions().getViewDistance().getValue() / 2;
         // this helps with lag
         MinecraftClient minecraft = MinecraftClient.getInstance();
         ClientWorld level = minecraft.world;
@@ -238,7 +239,7 @@ public class RenderUtils {
      * Sets the gamma of the game to the full bright value of 10000.0 while storing the last gamma value.
      */
     public static void setHighGamma() {
-        var gamma = GavinsModClient.getMinecraftClient().options.getGamma();
+        var gamma = GavinsModClient.getMinecraftClient().getOptions().getGamma();
         if (gamma.getValue() != 10000.0)
             LAST_GAMMA = gamma.getValue();
         @SuppressWarnings("unchecked")
@@ -250,7 +251,7 @@ public class RenderUtils {
      * Resets the gamma to the players last configured value.
      */
     public static void resetGamma() {
-        var gamma = GavinsModClient.getMinecraftClient().options.getGamma();
+        var gamma = GavinsModClient.getMinecraftClient().getOptions().getGamma();
         if (gamma.getValue() != LAST_GAMMA) {
             @SuppressWarnings("unchecked")
             var newGamma = (ISimpleOption<Double>) (Object) gamma;

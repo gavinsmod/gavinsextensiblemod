@@ -58,9 +58,9 @@ public class MixinPlayerEntity {
 
     @Inject(method = "tick", at = @At("HEAD"))
     public void checkKillAura(CallbackInfo ci) {
-        if (GavinsModClient.getMinecraftClient().world != null && GavinsMod.isEnabled(Type.KILL_AURA)) {
+        if (GavinsModClient.getMinecraftClient().getWorld() != null && GavinsMod.isEnabled(Type.KILL_AURA)) {
             // Sort entities by distance
-            var stream = StreamSupport.stream(GavinsModClient.getMinecraftClient().world.getEntities().spliterator(), false)
+            var stream = StreamSupport.stream(GavinsModClient.getMinecraftClient().getWorld().getEntities().spliterator(), false)
                     .filter(e -> e instanceof MobEntity)
                     .filter(Entity::isAlive)
                     .filter(e -> PlayerUtils.distanceToEntity(e) <= 12)

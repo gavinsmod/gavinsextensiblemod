@@ -1,5 +1,6 @@
 package com.peasenet.main;
 
+import com.peasenet.mixinterface.IMinecraftClient;
 import com.peasenet.mods.Mod;
 import com.peasenet.util.RenderUtils;
 import net.fabricmc.api.ClientModInitializer;
@@ -25,11 +26,11 @@ public class GavinsModClient implements ClientModInitializer {
         WorldRenderEvents.AFTER_ENTITIES.register(RenderUtils::afterEntities);
     }
 
-    public static MinecraftClient getMinecraftClient() {
-        return MinecraftClient.getInstance();
+    public static IMinecraftClient getMinecraftClient() {
+        return (IMinecraftClient) (Object) MinecraftClient.getInstance();
     }
 
     public static ClientPlayerEntity getPlayer() {
-        return getMinecraftClient().player;
+        return getMinecraftClient().getPlayer();
     }
 }

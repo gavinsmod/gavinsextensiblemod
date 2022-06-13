@@ -6,19 +6,17 @@
     "mixins": [
     ],
     "client": [
-        "MixinPlayerEntity",
+        "EntityRendererMixin",
+        "MinecraftClientAccessor",
         "MixinBlock",
-        "WorldRendererInvoker",
-        "MixinMinecraftClient",
-        "MixinLivingEntity",
         "MixinClientPlayerEntity",
         "MixinGameRender",
         "MixinInGameHud",
-        "MinecraftClientAccessor",
-        "MixinGameRender",
-        "MixinInGameHud",
-        "SimpleOptionMixin",
-        "EntityRendererMixin"
+        "MixinLivingEntity",
+        "MixinMinecraftClient",
+        "MixinPlayerEntity",
+        "MixinSimpleOption",
+        "WorldRendererInvoker"
     ],
     "injectors": {
         "defaultRequire": 1

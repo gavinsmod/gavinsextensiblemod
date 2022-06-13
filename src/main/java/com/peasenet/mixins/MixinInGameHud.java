@@ -38,7 +38,7 @@ public class MixinInGameHud {
     }
 
     private void drawTextOverlay(MatrixStack matrixStack) {
-        var textRenderer = GavinsModClient.getMinecraftClient().textRenderer;
+        var textRenderer = GavinsModClient.getMinecraftClient().getTextRenderer();
         int currX = 10;
         if (GavinsMod.isEnabled(Type.MOD_GUI) || !GavinsMod.isEnabled(Type.MOD_GUI_TEXT_OVERLAY))
             return;

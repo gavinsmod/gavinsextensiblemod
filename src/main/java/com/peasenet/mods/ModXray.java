@@ -2,13 +2,9 @@ package com.peasenet.mods;
 
 import com.peasenet.main.GavinsMod;
 import com.peasenet.util.RenderUtils;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 
@@ -41,15 +37,13 @@ public class ModXray extends Mod {
             add(Blocks.END_PORTAL);
             add(Blocks.ENDER_CHEST);
             add(Blocks.SPAWNER);
+            add(Blocks.NETHERITE_BLOCK);
+            add(Blocks.NETHER_GOLD_ORE);
         }
     };
 
     public ModXray() {
-        super(Type.XRAY, Type.Category.RENDER, KeyBindingHelper.registerKeyBinding(
-                new KeyBinding(Type.XRAY.getTranslationKey(),
-                        InputUtil.Type.KEYSYM,
-                        GLFW.GLFW_KEY_X,
-                        Type.XRAY.getCategory())));
+        super(Type.XRAY, Type.Category.RENDER);
     }
 
     /**
@@ -67,8 +61,8 @@ public class ModXray extends Mod {
     @Override
     public void activate() {
         RenderUtils.setHighGamma();
-//        getClient().chunkCullingEnabled = false;
-        getClient().worldRenderer.reload();
+        getClient().setChunkCulling(false);
+        getClient().getWorldRenderer().reload();
         super.activate();
     }
 
@@ -77,8 +71,8 @@ public class ModXray extends Mod {
         // check if full bright is disabled, if it is, reset gamma back to LAST_GAMMA
         if (!GavinsMod.isEnabled(Type.FULL_BRIGHT))
             RenderUtils.resetGamma();
-//        getClient().chunkCullingEnabled = true;
-        getClient().worldRenderer.reload();
+        getClient().setChunkCulling(true);
+        getClient().getWorldRenderer().reload();
         super.deactivate();
     }
 }

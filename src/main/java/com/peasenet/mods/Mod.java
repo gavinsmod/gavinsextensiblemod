@@ -1,8 +1,8 @@
 package com.peasenet.mods;
 
 import com.peasenet.main.GavinsModClient;
+import com.peasenet.mixinterface.IMinecraftClient;
 import com.peasenet.util.KeyBindUtils;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.Text;
 
@@ -75,7 +75,7 @@ public abstract class Mod implements IMod {
      *
      * @return The minecraft client.
      */
-    protected static MinecraftClient getClient() {
+    protected static IMinecraftClient getClient() {
         return GavinsModClient.getMinecraftClient();
     }
 
