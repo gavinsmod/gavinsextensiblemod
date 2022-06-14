@@ -3,7 +3,7 @@ package com.peasenet.gui.mod;
 import com.peasenet.gui.GuiDropdown;
 import com.peasenet.mods.Type;
 import com.peasenet.util.color.Colors;
-import com.peasenet.util.math.Point;
+import com.peasenet.util.math.PointD;
 import net.minecraft.text.Text;
 
 /**
@@ -17,7 +17,7 @@ public class GuiMisc extends GuiDropdown {
      * Creates a new misc dropdown.
      */
     public GuiMisc() {
-        this(new Point(140, 10), 70, 10, Text.translatable("key.gavinsmod.gui.misc"));
+        this(new PointD(140, 10), 70, 10, Text.translatable("key.gavinsmod.gui.misc"));
     }
 
     /**
@@ -28,7 +28,7 @@ public class GuiMisc extends GuiDropdown {
      * @param height   - The height of the dropdown.
      * @param title    - The title of the dropdown.
      */
-    public GuiMisc(Point position, int width, int height, Text title) {
+    public GuiMisc(PointD position, int width, int height, Text title) {
         super(position, width, height, title, Type.Category.MISC);
         setBackground(Colors.GRAY);
     }

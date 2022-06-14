@@ -2,8 +2,12 @@ package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
-import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.util.RenderUtils;
+import com.peasenet.util.color.Colors;
+import com.peasenet.util.math.BoxD;
+import com.peasenet.util.math.PointD;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -37,17 +41,63 @@ public class MixinInGameHud {
         }
     }
 
+    /**
+     * Draws the GUI text overlay if enabled, and if the main menu is not open.
+     *
+     * @param matrixStack - The matrix stack to use.
+     */
     private void drawTextOverlay(MatrixStack matrixStack) {
         var textRenderer = GavinsModClient.getMinecraftClient().getTextRenderer();
-        int currX = 10;
+        var startingPoint = new PointD(0, 0);
+        int currX = (int) (startingPoint.x() + 2);
+        AtomicInteger currY = new AtomicInteger((int) (startingPoint.y() + 2));
+        drawFpsOverlay(matrixStack, textRenderer);
         if (GavinsMod.isEnabled(Type.MOD_GUI) || !GavinsMod.isEnabled(Type.MOD_GUI_TEXT_OVERLAY))
             return;
-        AtomicInteger currY = new AtomicInteger(10);
         // only get active mods, and mods that are not gui type.
-        GavinsMod.mods.stream().filter(mod -> mod.isActive() && mod.getCategory() != Type.Category.GUI && mod.getType() != Type.MOD_GUI_TEXT_OVERLAY).sorted(Comparator.comparing(Mod::getName))
-                .forEach(mod -> {
-                    textRenderer.drawWithShadow(matrixStack, Text.translatable(mod.getTranslationKey()), currX, currY.get(), 0xFFFFFF);
-                    currY.addAndGet(12);
-                });
+        var mods = GavinsMod.getModsForTextOverlay();
+        var modsCount = (int) GavinsMod.getModsForTextOverlay().count();
+        if (modsCount == 0)
+            return;
+        // get the mod with the longest name.
+        var longestModName = mods.max(Comparator.comparingInt(mod -> mod.getName().length())).get().getName().length();
+        var box = new BoxD(startingPoint, longestModName * 6 + 6, modsCount * 12);
+        RenderUtils.drawBox(Colors.BLACK.getAsFloatArray(), box, matrixStack);
+        mods = GavinsMod.getModsForTextOverlay();
+        AtomicInteger modCounter = new AtomicInteger();
+        mods.forEach(mod -> {
+            textRenderer.drawWithShadow(matrixStack, Text.translatable(mod.getTranslationKey()), currX, currY.get(), 0xFFFFFF);
+            if (modsCount > 1 && modCounter.get() < modsCount - 1) {
+                RenderUtils.drawSingleLine(Colors.WHITE.getAsFloatArray(), currX - 1, currY.get() + 9, longestModName * 6 + 5, currY.get() + 9, matrixStack);
+            }
+            currY.addAndGet(12);
+            modCounter.getAndIncrement();
+        });
+    }
+
+    /**
+     * Draws the FPS overlay if enabled.
+     *
+     * @param matrixStack  - The matrix stack to use.
+     * @param textRenderer - The text renderer to use.
+     */
+    private void drawFpsOverlay(MatrixStack matrixStack, TextRenderer textRenderer) {
+        if (!GavinsMod.isEnabled(Type.MOD_FPS_COUNTER))
+            return;
+        var fps = GavinsModClient.getMinecraftClient().getFps();
+        var fpsString = "FPS: " + fps;
+        var xCoordinate = GavinsModClient.getMinecraftClient().getWindow().getScaledWidth() - (fpsString.length() * 5 + 2);
+        var box = new BoxD(new PointD(xCoordinate - 2, 0), fpsString.length() * 5 + 4, 12);
+
+        var color = 0xFFFFFF;
+        if (fps >= 60)
+            color = 0x00FF00;
+        else if (fps >= 30)
+            color = 0xFFFF00;
+        else
+            color = 0xFF0000;
+
+        RenderUtils.drawBox(Colors.BLACK.getAsFloatArray(), box, matrixStack);
+        textRenderer.draw(matrixStack, Text.literal(fpsString), xCoordinate, 2, color);
     }
 }

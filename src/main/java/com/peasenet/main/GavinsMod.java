@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.stream.Stream;
 
 
 /**
@@ -48,7 +49,10 @@ public class GavinsMod implements ModInitializer {
 
     // GUI
     private static final ModGui Gui = new ModGui();
+    // MISC
     private static final ModGuiTextOverlay ModGuiTextOverlay = new ModGuiTextOverlay();
+    private static final ModFpsCounter FpsCounter = new ModFpsCounter();
+
     public static ArrayList<Mod> mods;
 
     public static boolean isEnabled(Type mod) {
@@ -79,6 +83,10 @@ public class GavinsMod implements ModInitializer {
                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
+    public static Stream<Mod> getModsForTextOverlay() {
+        return mods.stream().filter(mod -> mod.isActive() && mod.getCategory() != Type.Category.GUI
+                && mod.getType() != Type.MOD_GUI_TEXT_OVERLAY).sorted(Comparator.comparing(Mod::getName));
+    }
 
     @Override
     public void onInitialize() {
@@ -118,7 +126,9 @@ public class GavinsMod implements ModInitializer {
 
                 //GUI
                 add(Gui);
+                // MISC
                 add(ModGuiTextOverlay);
+                add(FpsCounter);
             }
         };
         ArrayList<com.peasenet.gui.Gui> guiList = new ArrayList<>();

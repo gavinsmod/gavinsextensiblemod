@@ -6,6 +6,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 
 public interface IMinecraftClient {
@@ -34,4 +35,6 @@ public interface IMinecraftClient {
     WorldRenderer getWorldRenderer();
 
     void setChunkCulling(boolean b);
+
+    Window getWindow();
 }

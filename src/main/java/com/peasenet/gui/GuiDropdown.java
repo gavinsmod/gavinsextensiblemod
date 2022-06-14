@@ -2,7 +2,7 @@ package com.peasenet.gui;
 
 import com.peasenet.main.GavinsMod;
 import com.peasenet.util.color.Colors;
-import com.peasenet.util.math.Point;
+import com.peasenet.util.math.PointD;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -42,7 +42,7 @@ public class GuiDropdown extends GuiDraggable {
      * @param title    - The title of the dropdown.
      * @param category - The category of the dropdown.
      */
-    public GuiDropdown(Point position, int width, int height, Text title, Category category) {
+    public GuiDropdown(PointD position, int width, int height, Text title, Category category) {
         super(position, width, height, title);
         setCategory(category);
     }
@@ -74,15 +74,15 @@ public class GuiDropdown extends GuiDraggable {
         for (int i = 0; i < mods.size(); i++) {
             var mod = mods.get(i);
             var x = getX();
-            var y = getY2() + i * 10 + 4;
-            buttons.add(new GuiClick(new Point(x, y), getWidth(), getHeight(), Text.translatable(mod.getTranslationKey())));
+            var y = getY2() + i * 10;
+            buttons.add(new GuiClick(new PointD(x, y + 2), (int) getWidth(), (int) getHeight(), Text.translatable(mod.getTranslationKey())));
         }
     }
 
     @Override
     public void render(MatrixStack matrices, TextRenderer tr) {
-        super.render(matrices, tr);
         // For each mod in the category, render it right below the title.
+        super.render(matrices, tr);
         if (!isOpen())
             return;
         for (int i = 0; i < buttons.size(); i++) {
@@ -94,6 +94,7 @@ public class GuiDropdown extends GuiDraggable {
                 button.setBackground(Colors.BLACK);
             button.render(matrices, tr);
         }
+
     }
 
     @Override
@@ -139,18 +140,32 @@ public class GuiDropdown extends GuiDraggable {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-
-        var newPoint = new Point((int) mouseX + (int) (mouseX - getX()), (int) mouseY + (int) (mouseY - getY()));
-        setPosition(newPoint);
-        if ((mouseX != deltaX && mouseY != deltaY)) {
-            for (int i = 0; i < buttons.size(); i++) {
-                var gui = buttons.get(i);
-                var x = newPoint.x();
-                var y = newPoint.y() + (i + 1) * 10;
-                gui.setPosition(new Point(x, y));
-            }
+        // calculate the offset between the mouse position and the top left corner of the gui
+        if (super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
+            resetDropdownsLocation(getPosition());
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void resetPosition() {
+        super.resetPosition();
+        isOpen = false;
+        resetDropdownsLocation(defaultPosition.getTopLeft());
+    }
+
+    /**
+     * Resets the position of all the mods in the dropdown.
+     *
+     * @param newPoint - The new position of the dropdown.
+     */
+    private void resetDropdownsLocation(PointD newPoint) {
+        for (int i = 0; i < buttons.size(); i++) {
+            var gui = buttons.get(i);
+            var x = newPoint.x();
+            var y = newPoint.y() + (i + 1) * 10 + 4;
+            gui.setPosition(new PointD(x, y));
+        }
     }
 }

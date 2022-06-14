@@ -3,7 +3,7 @@ package com.peasenet.gui.mod;
 import com.peasenet.gui.GuiDropdown;
 import com.peasenet.mods.Type;
 import com.peasenet.util.color.Colors;
-import com.peasenet.util.math.Point;
+import com.peasenet.util.math.PointD;
 import net.minecraft.text.Text;
 
 /**
@@ -17,7 +17,7 @@ public class GuiCombat extends GuiDropdown {
      * Creates a new combat dropdown.
      */
     public GuiCombat() {
-        this(new Point(80, 10), 50, 10, Text.translatable("key.gavinsmod.gui.combat"));
+        this(new PointD(80, 10), 50, 10, Text.translatable("key.gavinsmod.gui.combat"));
     }
 
     /**
@@ -28,7 +28,7 @@ public class GuiCombat extends GuiDropdown {
      * @param height   - The height of the dropdown.
      * @param title    - The title of the dropdown.
      */
-    public GuiCombat(Point position, int width, int height, Text title) {
+    public GuiCombat(PointD position, int width, int height, Text title) {
         super(position, width, height, title, Type.Category.COMBAT);
         setBackground(Colors.DARK_RED);
     }

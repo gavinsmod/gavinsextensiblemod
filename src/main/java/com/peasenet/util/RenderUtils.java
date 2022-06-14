@@ -7,6 +7,7 @@ import com.peasenet.mixinterface.ISimpleOption;
 import com.peasenet.mods.Type;
 import com.peasenet.util.color.Color;
 import com.peasenet.util.color.Colors;
+import com.peasenet.util.math.BoxD;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -133,20 +134,25 @@ public class RenderUtils {
      */
     private static void drawChestMods(ClientWorld level, MatrixStack stack, BufferBuilder buffer, Vec3f playerPos, int chunk_x, int chunk_z) {
         if (GavinsMod.isEnabled(Type.CHEST_ESP) || GavinsMod.isEnabled(Type.CHEST_TRACER)) {
-            for (int x = chunk_x - CHUNK_RADIUS; x <= chunk_x + CHUNK_RADIUS; x++) {
-                for (int z = chunk_z - CHUNK_RADIUS; z <= chunk_z + CHUNK_RADIUS; z++) {
-                    level.getChunk(chunk_x, chunk_z).getBlockEntities().forEach((blockPos, blockEntity) -> {
-                        if (!(blockEntity instanceof ChestBlockEntity))
-                            return;
-
-                        Box aabb = new Box(blockPos);
-                        Vec3f boxPos = new Vec3f(aabb.getCenter());
-                        if (GavinsMod.isEnabled(Type.CHEST_ESP))
-                            drawBox(stack, buffer, aabb, Colors.PURPLE);
-
-                        if (GavinsMod.isEnabled(Type.CHEST_TRACER))
-                            renderSingleLine(stack, buffer, playerPos, boxPos, Colors.PURPLE);
-                    });
+            // For each chunk in the CHUNK_RADIUS centered around chunk_x and chunk_z, draw a chest ESP or tracer.
+            for (int x = -CHUNK_RADIUS; x <= CHUNK_RADIUS; x++) {
+                for (int z = -CHUNK_RADIUS; z <= CHUNK_RADIUS; z++) {
+                    int chunk_x_ = chunk_x + x;
+                    int chunk_z_ = chunk_z + z;
+                    if (level.getChunk(chunk_x_, chunk_z_) != null) {
+                        level.getChunk(chunk_x_, chunk_z_).getBlockEntities().forEach((blockPos, blockEntity) -> {
+                                    if (blockEntity instanceof ChestBlockEntity) {
+                                        Box aabb = new Box(blockPos);
+                                        Vec3f boxPos = new Vec3f(aabb.getCenter());
+                                        if (GavinsMod.isEnabled(Type.CHEST_ESP))
+                                            drawBox(stack, buffer, aabb, Colors.PURPLE);
+                                        if (GavinsMod.isEnabled(Type.CHEST_TRACER)) {
+                                            renderSingleLine(stack, buffer, playerPos, boxPos, Colors.PURPLE);
+                                        }
+                                    }
+                                }
+                        );
+                    }
                 }
             }
         }
@@ -257,6 +263,81 @@ public class RenderUtils {
             var newGamma = (ISimpleOption<Double>) (Object) gamma;
             newGamma.forceSetValue(LAST_GAMMA);
         }
+    }
+
+    public static void drawBox(float[] acColor, BoxD box, MatrixStack matrixStack) {
+        drawBox(acColor, (int) box.getTopLeft().x(), (int) box.getTopLeft().y(), (int) box.getBottomRight().x(), (int) box.getBottomRight().y(), matrixStack);
+    }
+
+    /**
+     * Draws a box on screen.
+     *
+     * @param acColor     The color of the box as a 4 point float array.
+     * @param xt1         The x coordinate of the top left corner of the box.
+     * @param yt1         The y coordinate of the top left corner of the box.
+     * @param xt2         The x coordinate of the bottom right corner of the box.
+     * @param yt2         The y coordinate of the bottom right corner of the box.
+     * @param matrixStack The matrix stack used to draw boxes on screen.
+     */
+    public static void drawBox(float[] acColor, int xt1, int yt1, int xt2, int yt2, MatrixStack matrixStack) {
+        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.enableBlend();
+        var matrix = matrixStack.peek().getPositionMatrix();
+        var bufferBuilder = Tessellator.getInstance().getBuffer();
+        RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 0.5f);
+        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+        bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
+        bufferBuilder.vertex(matrix, xt1, yt2, 0).next();
+        bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
+        bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
+        Tessellator.getInstance().draw();
+    }
+
+    /**
+     * Draws a line on screen.
+     *
+     * @param accColor    - The color of the line as a 4 point float array.
+     * @param xt1         - The x coordinate of the first point of the line.
+     * @param yt1         - The y coordinate of the first point of the line.
+     * @param xt2         - The x coordinate of the second point of the line.
+     * @param yt2         - The y coordinate of the second point of the line.
+     * @param matrixStack - The matrix stack used to draw lines on screen.
+     */
+    public static void drawSingleLine(float[] accColor, int xt1, int yt1, int xt2, int yt2, MatrixStack matrixStack) {
+        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.enableBlend();
+        var matrix = matrixStack.peek().getPositionMatrix();
+        var bufferBuilder = Tessellator.getInstance().getBuffer();
+        RenderSystem.setShaderColor(accColor[0], accColor[1], accColor[2], 1f);
+        bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
+        bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
+        bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
+        Tessellator.getInstance().draw();
+    }
+
+    /**
+     * Draws a box outline on screen.
+     *
+     * @param acColor     The color of the box as a 4 point float array.
+     * @param xt1         The x coordinate of the top left corner of the box.
+     * @param yt1         The y coordinate of the top left corner of the box.
+     * @param xt2         The x coordinate of the bottom right corner of the box.
+     * @param yt2         The y coordinate of the bottom right corner of the box.
+     * @param matrixStack The matrix stack used to draw boxes on screen.
+     */
+    public static void drawOutline(float[] acColor, int xt1, int yt1, int xt2, int yt2, MatrixStack matrixStack) {
+        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.enableBlend();
+        var matrix = matrixStack.peek().getPositionMatrix();
+        var bufferBuilder = Tessellator.getInstance().getBuffer();
+        RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 1.0F);
+        bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
+        bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
+        bufferBuilder.vertex(matrix, xt1, yt2, 0).next();
+        bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
+        bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
+        bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
+        Tessellator.getInstance().draw();
     }
 
 }

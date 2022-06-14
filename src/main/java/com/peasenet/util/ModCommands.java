@@ -39,6 +39,10 @@ public class ModCommands {
                 }
             }
         }
+        if (message.startsWith("resetgui")) {
+            GavinsMod.gui.reset();
+            return true;
+        }
         return false;
     }
 }

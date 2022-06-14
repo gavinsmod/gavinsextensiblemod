@@ -15,10 +15,13 @@ import static com.peasenet.main.GavinsMod.VERSION;
 /**
  * @author gt3ch1
  * @version 6/13/2022
+ * The main menu for the mod.
  */
 public class GuiMainMenu extends Screen {
 
-    // A list of guis to display
+    /**
+     * A list of gui children to render.
+     */
     private final ArrayList<Gui> guis;
 
     /**
@@ -62,24 +65,24 @@ public class GuiMainMenu extends Screen {
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         for (var gui : guis) {
-            // Check if the mouse is over the gui by a padding of 10
-            if (gui.isDragging())
-                return gui.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
-            if (mouseX >= gui.getX() - 10 && mouseX <= gui.getX2() + 10 && mouseY >= gui.getY() - 10 && mouseY <= gui.getY2() + 10) {
-                if (gui.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
-                    gui.setDragging(true);
-                    return true;
-                }
+            if (gui.isDragging()) {
+                gui.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+                return true;
+            }
+            if (!gui.isDragging() && mouseWithinGui(mouseX, mouseY, gui)) {
+                gui.setDragging(true);
             }
         }
-        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+        return false;
+    }
+
+    private boolean mouseWithinGui(double mouseX, double mouseY, Gui gui) {
+        return mouseX >= gui.getX() && mouseX <= gui.getX2() && mouseY >= gui.getY() && mouseY <= gui.getY2();
     }
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        for (var gui : guis) {
-            gui.setDragging(false);
-        }
+        guis.forEach(g -> g.setDragging(false));
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
@@ -92,5 +95,14 @@ public class GuiMainMenu extends Screen {
     public void close() {
         GavinsMod.setEnabled(Type.MOD_GUI, false);
         super.close();
+    }
+
+    /**
+     * Resets all guis to their default position.
+     */
+    public void reset() {
+        for (var gui : guis) {
+            gui.resetPosition();
+        }
     }
 }

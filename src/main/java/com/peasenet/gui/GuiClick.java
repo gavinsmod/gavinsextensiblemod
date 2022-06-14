@@ -1,6 +1,6 @@
 package com.peasenet.gui;
 
-import com.peasenet.util.math.Point;
+import com.peasenet.util.math.PointD;
 import net.minecraft.text.Text;
 
 /**
@@ -17,7 +17,7 @@ public class GuiClick extends Gui {
      * @param height - The height of the gui.
      * @param title  - The title of the gui.
      */
-    public GuiClick(Point position, int width, int height, Text title) {
+    public GuiClick(PointD position, int width, int height, Text title) {
         super(position, width, height, title);
     }
 

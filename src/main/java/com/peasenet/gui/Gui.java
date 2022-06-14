@@ -1,14 +1,11 @@
 package com.peasenet.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.peasenet.util.RenderUtils;
 import com.peasenet.util.color.Color;
 import com.peasenet.util.color.Colors;
-import com.peasenet.util.math.Point;
+import com.peasenet.util.math.BoxD;
+import com.peasenet.util.math.PointD;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
@@ -20,24 +17,19 @@ import net.minecraft.text.Text;
 public class Gui {
 
     /**
-     * The top left corner of the gui.
+     * The original position of the gui.
      */
-    private Point position;
-
-    /**
-     * The width of the gui.
-     */
-    private final int width;
-
-    /**
-     * The height of the gui.
-     */
-    private final int height;
+    protected final BoxD defaultPosition;
 
     /**
      * The title of the gui.
      */
     private final Text title;
+
+    /**
+     * The box that contains the gui.
+     */
+    private BoxD box;
 
     /**
      * The background color of the gui.
@@ -56,10 +48,9 @@ public class Gui {
      * @param height - The height of the gui.
      * @param title  - The title of the gui.
      */
-    public Gui(Point topLeft, int width, int height, Text title) {
-        this.position = topLeft;
-        this.width = width;
-        this.height = height;
+    public Gui(PointD topLeft, int width, int height, Text title) {
+        this.box = new BoxD(topLeft, width, height);
+        this.defaultPosition = BoxD.copy(box);
         this.title = title;
         backgroundColor = Colors.BLACK;
     }
@@ -78,8 +69,8 @@ public class Gui {
      *
      * @return The x coordinate for the top left corner of the dropdown.
      */
-    public int getX() {
-        return position.x();
+    public double getX() {
+        return box.getTopLeft().x();
     }
 
     /**
@@ -87,8 +78,8 @@ public class Gui {
      *
      * @return The y coordinate for the top left corner of the dropdown.
      */
-    public int getY() {
-        return position.y();
+    public double getY() {
+        return box.getTopLeft().y();
     }
 
     /**
@@ -96,8 +87,8 @@ public class Gui {
      *
      * @return The x coordinate for the bottom right corner of the dropdown.
      */
-    public int getX2() {
-        return position.x() + width;
+    public double getX2() {
+        return box.getBottomRight().x();
     }
 
     /**
@@ -105,8 +96,8 @@ public class Gui {
      *
      * @return The y coordinate for the bottom right corner of the dropdown.
      */
-    public int getY2() {
-        return position.y() + height;
+    public double getY2() {
+        return box.getBottomRight().y();
     }
 
     /**
@@ -114,8 +105,8 @@ public class Gui {
      *
      * @return The width of the dropdown.
      */
-    public int getWidth() {
-        return width;
+    public double getWidth() {
+        return box.getWidth();
     }
 
     /**
@@ -123,17 +114,8 @@ public class Gui {
      *
      * @return The height of the dropdown.
      */
-    public int getHeight() {
-        return height;
-    }
-
-    /**
-     * Sets the top left corner of the gui element to the given point.
-     *
-     * @param position - The point to set the top left corner of the gui element to.
-     */
-    public void setPosition(Point position) {
-        this.position = position;
+    public double getHeight() {
+        return box.getHeight();
     }
 
     /**
@@ -143,59 +125,11 @@ public class Gui {
      * @param tr          The text render to use to draw text
      */
     public void render(MatrixStack matrixStack, TextRenderer tr) {
-        drawBox(backgroundColor.getAsFloatArray(), getX(), getY(), getX2(), getY2(), matrixStack);
-        tr.draw(matrixStack, title, getX() + 2, getY() + 2, 0xFFFFFF);
-        drawOutline(Colors.WHITE.getAsFloatArray(), getX(), getY(), getX2(), getY2(), matrixStack);
+        RenderUtils.drawBox(backgroundColor.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2(), matrixStack);
+        tr.draw(matrixStack, title, (int) getX() + 2, (int) getY() + 2, 0xFFFFFF);
+        RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2(), matrixStack);
     }
 
-    /**
-     * Draws a box on screen.
-     *
-     * @param acColor     The color of the box as a 4 point float array.
-     * @param xt1         The x coordinate of the top left corner of the box.
-     * @param yt1         The y coordinate of the top left corner of the box.
-     * @param xt2         The x coordinate of the bottom right corner of the box.
-     * @param yt2         The y coordinate of the bottom right corner of the box.
-     * @param matrixStack The matrix stack used to draw boxes on screen.
-     */
-    protected void drawBox(float[] acColor, int xt1, int yt1, int xt2, int yt2, MatrixStack matrixStack) {
-        RenderSystem.setShader(GameRenderer::getPositionShader);
-        RenderSystem.enableBlend();
-        var matrix = matrixStack.peek().getPositionMatrix();
-        var bufferBuilder = Tessellator.getInstance().getBuffer();
-        RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 0.5f);
-        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-        bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
-        bufferBuilder.vertex(matrix, xt1, yt2, 0).next();
-        bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
-        bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
-        Tessellator.getInstance().draw();
-    }
-
-    /**
-     * Draws a box outline on screen.
-     *
-     * @param acColor     The color of the box as a 4 point float array.
-     * @param xt1         The x coordinate of the top left corner of the box.
-     * @param yt1         The y coordinate of the top left corner of the box.
-     * @param xt2         The x coordinate of the bottom right corner of the box.
-     * @param yt2         The y coordinate of the bottom right corner of the box.
-     * @param matrixStack The matrix stack used to draw boxes on screen.
-     */
-    protected void drawOutline(float[] acColor, int xt1, int yt1, int xt2, int yt2, MatrixStack matrixStack) {
-        RenderSystem.setShader(GameRenderer::getPositionShader);
-        RenderSystem.enableBlend();
-        var matrix = matrixStack.peek().getPositionMatrix();
-        var bufferBuilder = Tessellator.getInstance().getBuffer();
-        RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 1.0F);
-        bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
-        bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
-        bufferBuilder.vertex(matrix, xt1, yt2, 0).next();
-        bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
-        bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
-        bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
-        Tessellator.getInstance().draw();
-    }
 
     /**
      * Checks whether the mouse is clicked.
@@ -239,5 +173,30 @@ public class Gui {
      */
     public void setDragging(boolean dragging) {
         this.dragging = dragging;
+    }
+
+    /**
+     * Resets the position to the default position.
+     */
+    public void resetPosition() {
+        this.box = BoxD.copy(defaultPosition);
+    }
+
+    /**
+     * Gets the current location of the top left corner of the gui.
+     *
+     * @return The current location of the top left corner of the gui.
+     */
+    public PointD getPosition() {
+        return box.getTopLeft();
+    }
+
+    /**
+     * Sets the top left corner of the gui element to the given point.
+     *
+     * @param position - The point to set the top left corner of the gui element to.
+     */
+    public void setPosition(PointD position) {
+        this.box.setTopLeft(position);
     }
 }

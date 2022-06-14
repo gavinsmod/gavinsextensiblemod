@@ -10,6 +10,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,26 +28,38 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     @Shadow
+    private static int currentFps;
+
+    @Shadow
     public ClientPlayerInteractionManager interactionManager;
+
     @Shadow
     @Final
     public GameOptions options;
+
     @Shadow
     @Final
     public TextRenderer textRenderer;
+
     @Shadow
     @Final
     public WorldRenderer worldRenderer;
+
     @Shadow
     public boolean chunkCullingEnabled;
+
     @Shadow
-    ClientWorld world;
+    public ClientWorld world;
+
     @Shadow
-    private int fpsCounter;
-    @Shadow
-    private int attackCooldown;
+    protected int attackCooldown;
+
     @Shadow
     private int itemUseCooldown;
+
+    @Final
+    @Shadow
+    private Window window;
 
     @Inject(at = @At(value = "HEAD"), method = "isAmbientOcclusionEnabled()Z", cancellable = true)
     private static void ixXrayOrFullbright(CallbackInfoReturnable<Boolean> ci) {
@@ -77,7 +90,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     @Override
     public int getFps() {
-        return fpsCounter;
+        return currentFps;
     }
 
     @Override
@@ -116,5 +129,10 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Override
     public void setChunkCulling(boolean b) {
         chunkCullingEnabled = b;
+    }
+
+    @Override
+    public Window getWindow() {
+        return window;
     }
 }
