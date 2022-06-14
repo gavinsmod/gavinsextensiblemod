@@ -1,13 +1,12 @@
 package com.peasenet.mods;
 
-import com.peasenet.util.KeyBindUtils;
-
 /**
  * @author gt3ch1
- * @version 5/23/2022
+ * @version 6/14/2022
+ * A mod that makes the player face and attack the nearest mob.
  */
 public class ModKillAura extends Mod {
     public ModKillAura() {
-        super(Type.KILL_AURA, Type.Category.COMBAT, KeyBindUtils.registerKeyBindForType(Type.KILL_AURA));
+        super(Type.KILL_AURA, Type.Category.COMBAT);
     }
 }

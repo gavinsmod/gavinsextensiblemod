@@ -5,12 +5,12 @@ import net.minecraft.item.BlockItem;
 
 /**
  * @author gt3ch1
- * @version 6/13/2022
+ * @version 6/14/2022
  * A mod that allows the player to place blocks really fast.
  */
 public class ModFastPlace extends Mod {
     public ModFastPlace() {
-        super(Type.FAST_PLACE, Type.Category.MOVEMENT);
+        super(Type.FAST_PLACE);
     }
 
     @Override

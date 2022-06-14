@@ -1,17 +1,17 @@
 package com.peasenet.mods;
 
 import com.peasenet.main.GavinsMod;
-import com.peasenet.util.KeyBindUtils;
 import com.peasenet.util.RenderUtils;
 
 /**
  * @author gt3ch1
+ * @version 6/14/2022
  * A mod that allows the client to see very clearly in the absence of a light source.
  */
 public class ModFullBright extends Mod {
 
     public ModFullBright() {
-        super(Type.FULL_BRIGHT, Type.Category.RENDER, KeyBindUtils.registerKeyBindForType(Type.FULL_BRIGHT));
+        super(Type.FULL_BRIGHT);
     }
 
     @Override

@@ -14,6 +14,14 @@ import net.minecraft.client.network.ClientPlayerEntity;
  * @version 6/14/2022
  */
 public class GavinsModClient implements ClientModInitializer {
+    public static IMinecraftClient getMinecraftClient() {
+        return (IMinecraftClient) MinecraftClient.getInstance();
+    }
+
+    public static ClientPlayerEntity getPlayer() {
+        return getMinecraftClient().getPlayer();
+    }
+
     @Override
     public void onInitializeClient() {
         GavinsMod.LOGGER.info("GavinsMod keybinding initialized");
@@ -23,13 +31,5 @@ public class GavinsModClient implements ClientModInitializer {
             }
         });
         WorldRenderEvents.AFTER_ENTITIES.register(RenderUtils::afterEntities);
-    }
-
-    public static IMinecraftClient getMinecraftClient() {
-        return (IMinecraftClient) MinecraftClient.getInstance();
-    }
-
-    public static ClientPlayerEntity getPlayer() {
-        return getMinecraftClient().getPlayer();
     }
 }

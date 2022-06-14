@@ -3,7 +3,6 @@ package com.peasenet.util.math;
 /**
  * @author gt3ch1
  * @version 5/23/2022
- * <p>
  * A class that represents a rotation (pitch and yaw).
  */
 public record Rotation(float pitch, float yaw) {

@@ -1,4 +1,4 @@
-package com.peasenet.gui;
+package com.peasenet.gui.elements;
 
 import com.peasenet.util.RenderUtils;
 import com.peasenet.util.color.Color;

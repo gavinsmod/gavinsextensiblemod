@@ -1,6 +1,6 @@
 package com.peasenet.gui.mod;
 
-import com.peasenet.gui.GuiDropdown;
+import com.peasenet.gui.elements.GuiDropdown;
 import com.peasenet.mods.Type;
 import com.peasenet.util.color.Colors;
 import com.peasenet.util.math.PointD;

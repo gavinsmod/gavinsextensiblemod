@@ -9,32 +9,29 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
+ * @version 6/14/2022
  * The base class for mods. Inheriting this class will allow for creating different mods that have a keybinding,
  * and a gui button based off of the given category.
  */
 public abstract class Mod implements IMod {
 
-    /**
-     * The type of the mod.
-     */
-    private final Type type;
-
-    /**
-     * The category of this mod.
-     */
-    private final Type.Category category;
-
-    /**
-     * Whether the mod is enabled.
-     */
-    protected boolean isEnabled = false;
-
+    public static final String GAVINS_MOD_STRING = "§d§l[ §b§lGavinsMod §d§l] §9";
     /**
      * The keybind for this mod.
      */
     protected final KeyBinding keyBinding;
-
-    public static final String GAVINS_MOD_STRING = "§d§l[ §b§lGavinsMod §d§l] §9";
+    /**
+     * The type of the mod.
+     */
+    private final Type type;
+    /**
+     * The category of this mod.
+     */
+    private final Type.Category category;
+    /**
+     * Whether the mod is enabled.
+     */
+    protected boolean isEnabled = false;
 
     /**
      * Creates a new mod.
@@ -60,6 +57,18 @@ public abstract class Mod implements IMod {
         this.type = type;
         this.category = category;
         this.keyBinding = KeyBindUtils.registerEmptyKeyBind(type);
+    }
+
+    /**
+     * Creates a new mod with the given type and keybinding.
+     *
+     * @param type       - The type of the mod.
+     * @param keyBinding - The keybind for this mod.
+     */
+    public Mod(Type type, KeyBinding keyBinding) {
+        this.type = type;
+        this.category = type.getModCategory();
+        this.keyBinding = keyBinding;
     }
 
     /**

@@ -19,8 +19,6 @@ import java.util.stream.Stream;
 public class GavinsMod implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("gavinsmod");
     public static final String VERSION = "v1.2.1";
-    // The main menu gui
-    public static GuiMainMenu gui;
     // MOVEMENT
     private static final ModXray XRay = new ModXray();
     private static final ModFly Fly = new ModFly();
@@ -47,13 +45,13 @@ public class GavinsMod implements ModInitializer {
     private static final ModAntiPumpkin AntiPumpkin = new ModAntiPumpkin();
     private static final ModHealthTag HealthTag = new ModHealthTag();
     private static final ModNoRain NoRain = new ModNoRain();
-
     // GUI
     private static final ModGui Gui = new ModGui();
     // MISC
     private static final ModGuiTextOverlay ModGuiTextOverlay = new ModGuiTextOverlay();
     private static final ModFpsCounter FpsCounter = new ModFpsCounter();
-
+    // The main menu gui
+    public static GuiMainMenu gui;
     public static ArrayList<Mod> mods;
 
     public static boolean isEnabled(Type mod) {
@@ -64,7 +62,7 @@ public class GavinsMod implements ModInitializer {
     public static void setEnabled(Type mod, boolean enabled) {
         // find mod via stream and set it to enabled.
         var theMod = mods.stream().filter(m -> m.getType() == mod).findFirst().get();
-        if(enabled)
+        if (enabled)
             theMod.activate();
         else
             theMod.deactivate();
@@ -133,7 +131,7 @@ public class GavinsMod implements ModInitializer {
                 add(FpsCounter);
             }
         };
-        ArrayList<com.peasenet.gui.Gui> guiList = new ArrayList<>();
+        ArrayList<com.peasenet.gui.elements.Gui> guiList = new ArrayList<>();
         guiList.add(new GuiMovement());
         guiList.add(new GuiCombat());
         guiList.add(new GuiESP());

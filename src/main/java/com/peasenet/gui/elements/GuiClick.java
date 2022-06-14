@@ -1,4 +1,4 @@
-package com.peasenet.gui;
+package com.peasenet.gui.elements;
 
 import com.peasenet.util.math.PointD;
 import net.minecraft.text.Text;

@@ -4,7 +4,7 @@ package com.peasenet.util.math;
  * @param x The x coordinate of the point.
  * @param y The y coordinate of the point.
  * @author gt3ch1
- * @version 6/13/2022
+ * @version 6/14/2022
  * A point in 2D space.
  */
 public record PointD(double x, double y) {

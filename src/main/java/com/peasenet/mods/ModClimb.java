@@ -1,14 +1,12 @@
 package com.peasenet.mods;
 
-import com.peasenet.util.KeyBindUtils;
-
 /**
  * @author gt3ch1
- * @version 5/21/2022
+ * @version 6/14/2022
  * A mod that allows the player to climb up walls despite a lack of ladders.
  */
 public class ModClimb extends Mod {
     public ModClimb() {
-        super(Type.CLIMB, Type.Category.MOVEMENT, KeyBindUtils.registerKeyBindForType(Type.CLIMB));
+        super(Type.CLIMB);
     }
 }

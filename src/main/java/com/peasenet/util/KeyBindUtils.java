@@ -8,6 +8,7 @@ import org.lwjgl.glfw.GLFW;
 
 /**
  * @author gt3ch1
+ * @version 6/14/2022
  * Used to get and create keybindings for different mods.
  */
 public class KeyBindUtils {

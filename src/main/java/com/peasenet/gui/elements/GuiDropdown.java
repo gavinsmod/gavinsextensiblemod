@@ -1,4 +1,4 @@
-package com.peasenet.gui;
+package com.peasenet.gui.elements;
 
 import com.peasenet.main.GavinsMod;
 import com.peasenet.util.color.Colors;
@@ -19,19 +19,17 @@ import static com.peasenet.mods.Type.Category;
 public class GuiDropdown extends GuiDraggable {
 
     /**
+     * The list of buttons(mods) in this dropdown.
+     */
+    private final ArrayList<GuiClick> buttons = new ArrayList<>();
+    /**
      * Whether the dropdown is open.
      */
     private boolean isOpen;
-
     /**
      * The category of the dropdown.
      */
     private Category category;
-
-    /**
-     * The list of buttons(mods) in this dropdown.
-     */
-    private final ArrayList<GuiClick> buttons = new ArrayList<>();
 
     /**
      * Creates a new dropdown like UI element.

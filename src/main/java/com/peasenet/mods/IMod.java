@@ -30,6 +30,7 @@ public interface IMod {
 
     /**
      * Whether the mod is enabled.
+     *
      * @return True if the mod is enabled.
      */
     boolean isActive();
@@ -58,6 +59,7 @@ public interface IMod {
 
     /**
      * Gets the translation key for the mod.
+     *
      * @return The translation key for the mod.
      */
     String getTranslationKey();

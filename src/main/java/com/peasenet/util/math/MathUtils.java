@@ -1,4 +1,5 @@
 package com.peasenet.util.math;
+
 import com.peasenet.main.GavinsModClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;

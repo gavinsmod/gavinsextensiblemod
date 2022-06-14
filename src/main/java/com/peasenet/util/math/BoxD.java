@@ -79,12 +79,4 @@ public class BoxD {
         return height;
     }
 
-    /**
-     * Gets the center of the box.
-     *
-     * @return The center of the box.
-     */
-    public PointD getCenter() {
-        return new PointD(topLeft.x() + getWidth() / 2, topLeft.y() + getHeight() / 2);
-    }
 }
