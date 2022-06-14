@@ -44,7 +44,7 @@ public class MixinInGameHud {
             return;
         AtomicInteger currY = new AtomicInteger(10);
         // only get active mods, and mods that are not gui type.
-        GavinsMod.mods.stream().filter(mod -> mod.isActive() && mod.getCategory() != Type.Category.GUI).sorted(Comparator.comparing(Mod::getName))
+        GavinsMod.mods.stream().filter(mod -> mod.isActive() && mod.getCategory() != Type.Category.GUI && mod.getType() != Type.MOD_GUI_TEXT_OVERLAY).sorted(Comparator.comparing(Mod::getName))
                 .forEach(mod -> {
                     textRenderer.drawWithShadow(matrixStack, Text.translatable(mod.getTranslationKey()), currX, currY.get(), 0xFFFFFF);
                     currY.addAndGet(12);

@@ -1,24 +1,50 @@
 package com.peasenet.gui;
 
 import com.peasenet.main.GavinsMod;
-import com.peasenet.mods.Type;
 import com.peasenet.util.color.Colors;
 import com.peasenet.util.math.Point;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
+import java.util.ArrayList;
+
+import static com.peasenet.mods.Type.Category;
+
+/**
+ * @author gt3ch1
+ * @version 6/13/2022
+ * A simple dropdown gui element
+ */
 public class GuiDropdown extends GuiDraggable {
 
-
-    // Whether the dropdown is open.
+    /**
+     * Whether the dropdown is open.
+     */
     private boolean isOpen;
 
-    private Type.Category category;
+    /**
+     * The category of the dropdown.
+     */
+    private Category category;
 
-    public GuiDropdown(Point position, int width, int height, Text title, Type.Category category) {
+    /**
+     * The list of buttons(mods) in this dropdown.
+     */
+    private final ArrayList<GuiClick> buttons = new ArrayList<>();
+
+    /**
+     * Creates a new dropdown like UI element.
+     *
+     * @param position - The position of the dropdown.
+     * @param width    - The width of the dropdown.
+     * @param height   - The height of the dropdown.
+     * @param title    - The title of the dropdown.
+     * @param category - The category of the dropdown.
+     */
+    public GuiDropdown(Point position, int width, int height, Text title, Category category) {
         super(position, width, height, title);
-        this.category = category;
+        setCategory(category);
     }
 
     /**
@@ -29,33 +55,28 @@ public class GuiDropdown extends GuiDraggable {
     }
 
     /**
-     * Opens the dropdown.
-     */
-    public void open() {
-        isOpen = true;
-    }
-
-    /**
-     * Closes the dropdown.
-     */
-    public void close() {
-        isOpen = false;
-    }
-
-    /**
      * Gets the category of the dropdown
      *
      * @return The category of the dropdown
      */
-    public Type.Category getCategory() {
+    public Category getCategory() {
         return category;
     }
 
     /**
      * Sets the category of the dropdown
      */
-    public void setCategory(Type.Category category) {
+    public void setCategory(Category category) {
         this.category = category;
+        var mods = GavinsMod.getModsInCategory(category);
+        if (mods == null)
+            return;
+        for (int i = 0; i < mods.size(); i++) {
+            var mod = mods.get(i);
+            var x = getX();
+            var y = getY2() + i * 10 + 4;
+            buttons.add(new GuiClick(new Point(x, y), getWidth(), getHeight(), Text.translatable(mod.getTranslationKey())));
+        }
     }
 
     @Override
@@ -64,19 +85,14 @@ public class GuiDropdown extends GuiDraggable {
         // For each mod in the category, render it right below the title.
         if (!isOpen())
             return;
-        var mods = GavinsMod.getModsInCategory(category);
-        for (int i = 0; i < mods.size(); i++) {
-            var mod = mods.get(i);
-            var text = mod.getName();
-            var x = getX();
-            var y = getY2() + i * 10;
-            var width = getWidth();
-            var height = getHeight();
-            var color = mod.isActive() ? 0xFFFFFF : 0xFF0000;
-            var backgroundColor = mod.isActive() ? Colors.GREEN.getAsFloatArray() : Colors.BLACK.getAsFloatArray();
-            drawBox(backgroundColor, x, y, x + width, y + height, matrices);
-            tr.draw(matrices, text, x + 2, y + 2, color);
-            drawOutline(Colors.WHITE.getAsFloatArray(), x, y, x + width, y + height, matrices);
+        for (int i = 0; i < buttons.size(); i++) {
+            var button = buttons.get(i);
+            var mod = GavinsMod.getModsInCategory(category).get(i);
+            if (mod.isActive())
+                button.setBackground(Colors.GREEN);
+            else
+                button.setBackground(Colors.BLACK);
+            button.render(matrices, tr);
         }
     }
 
@@ -86,26 +102,54 @@ public class GuiDropdown extends GuiDraggable {
         // Check if the mouse is within the bounds of the dropdown.
         if (mouseX >= getX() && mouseX <= getX2() && mouseY >= getY() && mouseY <= getY2()) {
             // If the dropdown is open, close it.
-            if (isOpen) {
-                close();
-            } else {
-                // Otherwise, open it.
-                open();
-            }
+            toggleMenu();
             return true;
         }
-        // Check if the mouse is within the bounds of any of the mods.
+        // Check if the mouse is within the bounds of the mods.
+        return toggleSelectedMod(mouseX, mouseY, button);
+    }
+
+    /**
+     * Toggles the mod that the mouse is currently hovering over, if applicable.
+     *
+     * @param mouseX - The x coordinate of the mouse.
+     * @param mouseY - The y coordinate of the mouse.
+     * @param button - The button that was clicked.
+     * @return Whether the mouse was clicked on a mod.
+     */
+    private boolean toggleSelectedMod(double mouseX, double mouseY, int button) {
         var mods = GavinsMod.getModsInCategory(category);
         for (int i = 0; i < mods.size(); i++) {
             var mod = mods.get(i);
-            var x = getX();
-            var y = getY2() + i * 10;
-            var width = getWidth();
-            var height = getHeight();
-            if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height) {
+            var gui = buttons.get(i);
+            if (isOpen && gui.mouseClicked(mouseX, mouseY, button)) {
                 mod.toggle();
                 return true;
             }
+        }
+        return false;
+    }
+
+    /**
+     * Toggles the dropdown.
+     */
+    private void toggleMenu() {
+        isOpen = !isOpen;
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+
+        var newPoint = new Point((int) mouseX + (int) (mouseX - getX()), (int) mouseY + (int) (mouseY - getY()));
+        setPosition(newPoint);
+        if ((mouseX != deltaX && mouseY != deltaY)) {
+            for (int i = 0; i < buttons.size(); i++) {
+                var gui = buttons.get(i);
+                var x = newPoint.x();
+                var y = newPoint.y() + (i + 1) * 10;
+                gui.setPosition(new Point(x, y));
+            }
+            return true;
         }
         return false;
     }

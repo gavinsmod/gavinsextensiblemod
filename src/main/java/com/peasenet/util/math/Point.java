@@ -1,12 +1,9 @@
 package com.peasenet.util.math;
 
-// A simple point class containing an x and y coordinate.
-public class Point {
-    public int x;
-    public int y;
-
-    public Point(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
+/**
+ * @author gt3ch1
+ * @version 6/13/2022
+ * A point in 2D space.
+ */
+public record Point(int x, int y) {
 }

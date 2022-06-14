@@ -1,6 +1,7 @@
 package com.peasenet.main;
 
-import com.peasenet.gui.GuiMovement;
+import com.peasenet.gui.GuiMainMenu;
+import com.peasenet.gui.mod.*;
 import com.peasenet.mods.*;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
@@ -17,7 +18,8 @@ import java.util.Comparator;
 public class GavinsMod implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("gavinsmod");
     public static final String VERSION = "v1.2.1";
-    public static final GuiMovement gui = new GuiMovement();
+    // The main menu gui
+    public static GuiMainMenu gui;
     // MOVEMENT
     private static final ModXray XRay = new ModXray();
     private static final ModFly Fly = new ModFly();
@@ -119,6 +121,14 @@ public class GavinsMod implements ModInitializer {
                 add(ModGuiTextOverlay);
             }
         };
+        ArrayList<com.peasenet.gui.Gui> guiList = new ArrayList<>();
+        guiList.add(new GuiMovement());
+        guiList.add(new GuiCombat());
+        guiList.add(new GuiESP());
+        guiList.add(new GuiMisc());
+        guiList.add(new GuiRender());
+        guiList.add(new GuiTracers());
+        gui = new GuiMainMenu(guiList);
     }
 
 }

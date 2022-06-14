@@ -1,13 +1,12 @@
 package com.peasenet.mods;
 
-import com.peasenet.gui.GuiMainMenu;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.util.KeyBindUtils;
 
 /**
  * @author gt3ch1
- * @version 5/24/2022
+ * @version 6/13/2022
  * A mod that allows the player to see a menu of all the mods by pressing the keybind.
  */
 public class ModGui extends Mod{
@@ -16,17 +15,7 @@ public class ModGui extends Mod{
     }
 
     @Override
-    public void onEnable() {
-        GavinsModClient.getMinecraftClient().setScreen(new GuiMainMenu(GavinsMod.gui));
-    }
-
-    @Override
-    public void onDisable() {
-        GavinsModClient.getMinecraftClient().setScreen(new GuiMainMenu(GavinsMod.gui));
-    }
-
-    @Override
-    public void toggle() {
-        GavinsModClient.getMinecraftClient().setScreen(new GuiMainMenu(GavinsMod.gui));
+    public void activate() {
+        GavinsModClient.getMinecraftClient().setScreen(GavinsMod.gui);
     }
 }

@@ -1,9 +1,7 @@
 package com.peasenet.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.peasenet.main.GavinsMod;
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
+import com.peasenet.util.color.Color;
 import com.peasenet.util.color.Colors;
 import com.peasenet.util.math.Point;
 import net.minecraft.client.font.TextRenderer;
@@ -14,24 +12,42 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
+/**
+ * @author gt3ch1
+ * @version 6/13/2022
+ * The base class for all gui elements.
+ */
 public class Gui {
 
     /**
-     * The X axis increment.
+     * The top left corner of the gui.
      */
-    private static final int X_INCREMENT = 75;
-    /**
-     * The Y axis increment.
-     */
-    private static final int Y_INCREMENT = 12;
-    // The top left corner of the gui.
     private Point position;
-    // The width of the dropdown.
-    private int width;
-    // The height of the dropdown.
-    private int height;
-    // The title of the dropdown.
-    private Text title;
+
+    /**
+     * The width of the gui.
+     */
+    private final int width;
+
+    /**
+     * The height of the gui.
+     */
+    private final int height;
+
+    /**
+     * The title of the gui.
+     */
+    private final Text title;
+
+    /**
+     * The background color of the gui.
+     */
+    private Color backgroundColor;
+
+    /**
+     * Whether this gui is currently being dragged.
+     */
+    private boolean dragging;
 
     /**
      * Creates a new GUI menu.
@@ -45,6 +61,16 @@ public class Gui {
         this.width = width;
         this.height = height;
         this.title = title;
+        backgroundColor = Colors.BLACK;
+    }
+
+    /**
+     * Sets the background color to the given color.
+     *
+     * @param color - The color to set the background to.
+     */
+    public void setBackground(Color color) {
+        backgroundColor = color;
     }
 
     /**
@@ -53,16 +79,7 @@ public class Gui {
      * @return The x coordinate for the top left corner of the dropdown.
      */
     public int getX() {
-        return position.x;
-    }
-
-    /**
-     * Sets the x coordinate for the top left corner of the dropdown.
-     *
-     * @param x The x coordinate for the top left corner of the dropdown.
-     */
-    public void setX(int x) {
-        this.position.x = x;
+        return position.x();
     }
 
     /**
@@ -71,16 +88,7 @@ public class Gui {
      * @return The y coordinate for the top left corner of the dropdown.
      */
     public int getY() {
-        return position.y;
-    }
-
-    /**
-     * Sets the y coordinate for the top left corner of the dropdown.
-     *
-     * @param y The y coordinate for the top left corner of the dropdown.
-     */
-    public void setY(int y) {
-        this.position.y = y;
+        return position.y();
     }
 
     /**
@@ -89,7 +97,7 @@ public class Gui {
      * @return The x coordinate for the bottom right corner of the dropdown.
      */
     public int getX2() {
-        return position.x + width;
+        return position.x() + width;
     }
 
     /**
@@ -98,7 +106,7 @@ public class Gui {
      * @return The y coordinate for the bottom right corner of the dropdown.
      */
     public int getY2() {
-        return position.y + height;
+        return position.y() + height;
     }
 
     /**
@@ -111,15 +119,6 @@ public class Gui {
     }
 
     /**
-     * Sets the width of the dropdown.
-     *
-     * @param width The width of the dropdown.
-     */
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    /**
      * Gets the height of the dropdown.
      *
      * @return The height of the dropdown.
@@ -129,38 +128,12 @@ public class Gui {
     }
 
     /**
-     * Sets the height of the dropdown.
+     * Sets the top left corner of the gui element to the given point.
      *
-     * @param height The height of the dropdown.
+     * @param position - The point to set the top left corner of the gui element to.
      */
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    /**
-     * Gets the title of the dropdown.
-     */
-    public Text getTitle() {
-        return title;
-    }
-
-    /**
-     * Sets the title of the dropdown.
-     */
-    public void setTitle(Text title) {
-        this.title = title;
-    }
-
     public void setPosition(Point position) {
         this.position = position;
-    }
-
-    protected void incrementY() {
-        this.position.y += Y_INCREMENT;
-    }
-
-    protected void incrementX() {
-        this.position.x += X_INCREMENT;
     }
 
     /**
@@ -170,30 +143,9 @@ public class Gui {
      * @param tr          The text render to use to draw text
      */
     public void render(MatrixStack matrixStack, TextRenderer tr) {
-        // Draw the title.
-        drawBox(Colors.RED.getAsFloatArray(), getX(), getY(), getX2(), getY2(), matrixStack);
+        drawBox(backgroundColor.getAsFloatArray(), getX(), getY(), getX2(), getY2(), matrixStack);
         tr.draw(matrixStack, title, getX() + 2, getY() + 2, 0xFFFFFF);
         drawOutline(Colors.WHITE.getAsFloatArray(), getX(), getY(), getX2(), getY2(), matrixStack);
-
-    }
-
-    /**
-     * Draws all the mods in a category.
-     *
-     * @param matrixStack The matrix stack used to draw boxes on screen..
-     * @param tr          The text render to use to draw text.
-     * @param category    The category to draw.
-     */
-    protected void drawModsInCategory(MatrixStack matrixStack, TextRenderer tr, Type.Category category) {
-        int yt1 = getX() + Y_INCREMENT;
-        int yt2 = getY() + Y_INCREMENT;
-        for (Mod mod : GavinsMod.getModsInCategory(category)) {
-            drawBox(mod.isActive() ? Colors.GREEN.getAsFloatArray() : Colors.DARK_GRAY.getAsFloatArray(), getX(), yt1, getX2(), yt2, matrixStack);
-            tr.draw(matrixStack, Text.translatable(mod.getTranslationKey()), getX() + 2, getY() + 2, 0xffffff);
-            drawOutline(Colors.BLACK.getAsFloatArray(), getX(), yt1, getX2(), yt2, matrixStack);
-            yt1 += Y_INCREMENT;
-            yt2 += Y_INCREMENT;
-        }
     }
 
     /**
@@ -236,8 +188,7 @@ public class Gui {
         var matrix = matrixStack.peek().getPositionMatrix();
         var bufferBuilder = Tessellator.getInstance().getBuffer();
         RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 1.0F);
-        bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP,
-                VertexFormats.POSITION);
+        bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
         bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
         bufferBuilder.vertex(matrix, xt1, yt2, 0).next();
         bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
@@ -246,11 +197,47 @@ public class Gui {
         Tessellator.getInstance().draw();
     }
 
+    /**
+     * Checks whether the mouse is clicked.
+     *
+     * @param mouseX - The x coordinate of the mouse.
+     * @param mouseY - The y coordinate of the mouse.
+     * @param button - The button that was clicked.
+     * @return Whether the mouse was clicked.
+     */
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         return false;
     }
 
+    /**
+     * Checks whether the mouse was dragged.
+     *
+     * @param mouseX - The x coordinate of the mouse.
+     * @param mouseY - The y coordinate of the mouse.
+     * @param button - The button that was dragged.
+     * @param deltaX - The change in x coordinate.
+     * @param deltaY - The change in y coordinate.
+     * @return Whether the mouse was dragged.
+     */
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         return false;
+    }
+
+    /**
+     * Whether the current window is being dragged.
+     *
+     * @return True if the current window is being dragged.
+     */
+    public boolean isDragging() {
+        return dragging;
+    }
+
+    /**
+     * Sets whether the current window is being dragged.
+     *
+     * @param dragging - Whether the current window is being dragged.
+     */
+    public void setDragging(boolean dragging) {
+        this.dragging = dragging;
     }
 }
