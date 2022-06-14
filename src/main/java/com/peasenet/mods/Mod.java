@@ -3,6 +3,7 @@ package com.peasenet.mods;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.mixinterface.IMinecraftClient;
 import com.peasenet.util.KeyBindUtils;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.Text;
 
@@ -58,6 +59,17 @@ public abstract class Mod implements IMod {
     public Mod(Type type, Type.Category category) {
         this.type = type;
         this.category = category;
+        this.keyBinding = KeyBindUtils.registerEmptyKeyBind(type);
+    }
+
+    /**
+     * Creates a new mod with an empty keybinding.
+     *
+     * @param type - The type of the mod.
+     */
+    public Mod(Type type) {
+        this.type = type;
+        this.category = type.getModCategory();
         this.keyBinding = KeyBindUtils.registerEmptyKeyBind(type);
     }
 
@@ -141,5 +153,10 @@ public abstract class Mod implements IMod {
 
     public Type getType() {
         return type;
+    }
+
+    @Override
+    public ClientPlayerEntity getPlayer() {
+        return getClient().getPlayer();
     }
 }

@@ -34,11 +34,12 @@ public enum Type {
     MOB_TRACER("Mob Tracer", "key.gavinsmod.mobtracer", "category.gavinsmod.test", RENDER, "mobtracer"),
     ANTI_HURT("Anti Hurt", "key.gavinsmod.antihurt", "category.gavinsmod.test", RENDER, "antihurt"),
     ANTI_PUMPKIN("Anti Pumpkin", "key.gavinsmod.antipumpkin", "category.gavinsmod.test", RENDER, "antipumpkin"),
+    NO_RAIN("No Rain", "key.gavinsmod.norain", "category.gavinsmod.test", RENDER, "norain"),
     MOD_HPTAG("HP Tags", "key.gavinsmod.hptag", "category.gavinsmod.test", RENDER, "hptag"),
     MOD_FPS_COUNTER("FPS Counter", "key.gavinsmod.fpscounter", "category.gavinsmod.test", MISC, "fpscounter"),
     MOD_GUI("GUI", "key.gavinsmod.gui", "category.gavinsmod.test", GLFW.GLFW_KEY_I, GUI, "gui"),
-    MOD_GUI_TEXT_OVERLAY("GUI Text Overlay", "key.gavinsmod.guitextoverlay", "category.gavinsmod.test", MISC, "textoverlay");
 
+    MOD_GUI_TEXT_OVERLAY("GUI Text Overlay", "key.gavinsmod.guitextoverlay", "category.gavinsmod.test", MISC, "textoverlay");
 
     private final String translationKey;
     private final String name;

@@ -12,6 +12,8 @@ import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.biome.Biome;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -134,5 +136,10 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Override
     public Window getWindow() {
         return window;
+    }
+
+    @Override
+    public Biome getBiomeAtPos(BlockPos pos) {
+        return world.getBiome(pos).value();
     }
 }

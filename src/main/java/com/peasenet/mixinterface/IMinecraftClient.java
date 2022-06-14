@@ -8,6 +8,8 @@ import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.biome.Biome;
 
 public interface IMinecraftClient {
     int getAttackCooldown();
@@ -37,4 +39,8 @@ public interface IMinecraftClient {
     void setChunkCulling(boolean b);
 
     Window getWindow();
+
+    Biome getBiomeAtPos(BlockPos pos);
+
+
 }

@@ -1,5 +1,7 @@
 package com.peasenet.mods;
 
+import net.minecraft.client.network.ClientPlayerEntity;
+
 /**
  * @author gt3ch1
  * The interface of the base mod class.
@@ -80,4 +82,11 @@ public interface IMod {
      * @return The type of the mod.
      */
     Type getType();
+
+    /**
+     * Gets the player.
+     *
+     * @return The client player.
+     */
+    ClientPlayerEntity getPlayer();
 }

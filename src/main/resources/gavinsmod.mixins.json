@@ -16,6 +16,7 @@
         "MixinMinecraftClient",
         "MixinPlayerEntity",
         "MixinSimpleOption",
+        "MixinBiome",
         "WorldRendererInvoker"
     ],
     "injectors": {
