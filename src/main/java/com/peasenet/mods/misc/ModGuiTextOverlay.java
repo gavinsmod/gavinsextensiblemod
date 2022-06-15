@@ -18,7 +18,10 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.misc;
+
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 
 /**
  * @author gt3ch1

@@ -18,15 +18,18 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.render;
+
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
- * A mod that allows the client to see an esp (a box) around chests.
+ * A mod that disables the pumpkin overlay.
  */
-public class ModChestEsp extends Mod {
-    public ModChestEsp() {
-        super(Type.CHEST_ESP);
+public class ModAntiPumpkin extends Mod {
+    public ModAntiPumpkin() {
+        super(Type.ANTI_PUMPKIN);
     }
 }

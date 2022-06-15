@@ -18,15 +18,18 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.tracer;
+
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
- * A mod that allows the client to see lines, called tracers, towards mobs.
+ * A mod that allows the player to see tracers towards items.
  */
-public class ModMobTracer extends Mod {
-    public ModMobTracer() {
-        super(Type.MOB_TRACER);
+public class ModEntityItemTracer extends Mod {
+    public ModEntityItemTracer() {
+        super(Type.ENTITY_ITEM_TRACER);
     }
 }

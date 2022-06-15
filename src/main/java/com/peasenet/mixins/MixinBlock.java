@@ -20,7 +20,7 @@
 
 package com.peasenet.mixins;
 
-import com.peasenet.mods.ModXray;
+import com.peasenet.mods.render.ModXray;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;

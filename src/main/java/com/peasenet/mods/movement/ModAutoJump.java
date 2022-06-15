@@ -18,15 +18,18 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.movement;
+
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
- * A mod that allows the player to see tracers towards items.
+ * A mod that allows the player to jump as if they were pressing the jump key.
  */
-public class ModEntityItemTracer extends Mod {
-    public ModEntityItemTracer() {
-        super(Type.ENTITY_ITEM_TRACER);
+public class ModAutoJump extends Mod {
+    public ModAutoJump() {
+        super(Type.AUTO_JUMP);
     }
 }

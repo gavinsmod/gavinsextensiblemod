@@ -18,15 +18,18 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.combat;
+
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
- * A mod that disables the view bob when the player is damaged.
+ * A mod that makes the player face and attack the nearest mob.
  */
-public class ModAntiHurt extends Mod {
-    public ModAntiHurt() {
-        super(Type.ANTI_HURT);
+public class ModKillAura extends Mod {
+    public ModKillAura() {
+        super(Type.KILL_AURA, Type.Category.COMBAT);
     }
 }

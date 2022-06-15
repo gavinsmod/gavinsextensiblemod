@@ -18,15 +18,17 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.movement;
+
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
- * A mod that allows the player to see an esp (a box) around items.
+ * A mod that allows the player to fly.
  */
-public class ModEntityItemEsp extends Mod {
-    public ModEntityItemEsp() {
-        super(Type.ENTITY_ITEM_ESP);
+public class ModFly extends Mod {
+    public ModFly() {
+        super(Type.FLY);
     }
 }

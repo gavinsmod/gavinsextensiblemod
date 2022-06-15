@@ -18,15 +18,30 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.movement;
+
+import com.peasenet.main.GavinsModClient;
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
+import net.minecraft.item.BlockItem;
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
- * A mod that prevents the player from taking fall damage.
+ * A mod that allows the player to place blocks really fast.
  */
-public class ModNoFall extends Mod {
-    public ModNoFall() {
-        super(Type.NO_FALL);
+public class ModFastPlace extends Mod {
+    public ModFastPlace() {
+        super(Type.FAST_PLACE);
+    }
+
+    @Override
+    public void onTick() {
+        super.onTick();
+        if (GavinsModClient.getPlayer() != null) {
+            var item = GavinsModClient.getPlayer().getMainHandStack().getItem() instanceof BlockItem;
+            if (isEnabled && item)
+                getClient().setItemUseCooldown(0);
+        }
     }
 }

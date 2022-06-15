@@ -18,15 +18,18 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.render;
+
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
- * A mod that shows entity's health as a tag above their head.
+ * A mod that disables rain.
  */
-public class ModHealthTag extends Mod {
-    public ModHealthTag() {
-        super(Type.MOD_HPTAG);
+public class ModNoRain extends Mod {
+    public ModNoRain() {
+        super(Type.NO_RAIN);
     }
 }

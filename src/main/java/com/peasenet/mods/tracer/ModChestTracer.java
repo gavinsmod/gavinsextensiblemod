@@ -18,15 +18,18 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.tracer;
+
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
- * A mod that allows the player to jump as if they were pressing the jump key.
+ * A mod that allows the player to see tracers towards chests.
  */
-public class ModAutoJump extends Mod {
-    public ModAutoJump() {
-        super(Type.AUTO_JUMP);
+public class ModChestTracer extends Mod {
+    public ModChestTracer() {
+        super(Type.CHEST_TRACER);
     }
 }

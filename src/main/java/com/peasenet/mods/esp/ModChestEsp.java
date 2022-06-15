@@ -18,16 +18,18 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.esp;
+
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
- * A mod for allowing the printer to noclip (move through blocks)
+ * A mod that allows the client to see an esp (a box) around chests.
  */
-public class ModNoClip extends Mod {
-
-    public ModNoClip() {
-        super(Type.NO_CLIP);
+public class ModChestEsp extends Mod {
+    public ModChestEsp() {
+        super(Type.CHEST_ESP);
     }
 }

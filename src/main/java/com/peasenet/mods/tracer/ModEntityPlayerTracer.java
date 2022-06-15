@@ -18,15 +18,18 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.tracer;
+
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
- * A mod that allows the player to mine very quickly.
+ * A mod that allows the player to see a tracer to other players.
  */
-public class ModFastMine extends Mod {
-    public ModFastMine() {
-        super(Type.FAST_MINE);
+public class ModEntityPlayerTracer extends Mod {
+    public ModEntityPlayerTracer() {
+        super(Type.ENTITY_PLAYER_TRACER);
     }
 }

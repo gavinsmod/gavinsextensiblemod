@@ -18,15 +18,18 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.misc;
+
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
- * A mod that makes the player face and attack the nearest mob.
+ * A mod that renders the current frames per second in the top right corner of the screen.
  */
-public class ModKillAura extends Mod {
-    public ModKillAura() {
-        super(Type.KILL_AURA, Type.Category.COMBAT);
+public class ModFpsCounter extends Mod {
+    public ModFpsCounter() {
+        super(Type.MOD_FPS_COUNTER);
     }
 }

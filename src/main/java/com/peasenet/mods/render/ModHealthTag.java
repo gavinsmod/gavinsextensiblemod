@@ -18,15 +18,18 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.render;
+
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
- * A mod that allows the player to see a tracer to other players.
+ * A mod that shows entity's health as a tag above their head.
  */
-public class ModEntityPlayerTracer extends Mod {
-    public ModEntityPlayerTracer() {
-        super(Type.ENTITY_PLAYER_TRACER);
+public class ModHealthTag extends Mod {
+    public ModHealthTag() {
+        super(Type.MOD_HPTAG);
     }
 }

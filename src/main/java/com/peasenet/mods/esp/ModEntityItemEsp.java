@@ -18,15 +18,18 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.esp;
+
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
- * A mod that disables the pumpkin overlay.
+ * A mod that allows the player to see an esp (a box) around items.
  */
-public class ModAntiPumpkin extends Mod {
-    public ModAntiPumpkin() {
-        super(Type.ANTI_PUMPKIN);
+public class ModEntityItemEsp extends Mod {
+    public ModEntityItemEsp() {
+        super(Type.ENTITY_ITEM_ESP);
     }
 }

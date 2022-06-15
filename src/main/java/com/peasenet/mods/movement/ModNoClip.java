@@ -18,32 +18,19 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.movement;
 
-import com.peasenet.main.GavinsMod;
-import com.peasenet.util.RenderUtils;
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
- * A mod that allows the client to see very clearly in the absence of a light source.
+ * A mod for allowing the printer to noclip (move through blocks)
  */
-public class ModFullBright extends Mod {
+public class ModNoClip extends Mod {
 
-    public ModFullBright() {
-        super(Type.FULL_BRIGHT);
-    }
-
-    @Override
-    public void activate() {
-        RenderUtils.setHighGamma();
-        super.activate();
-    }
-
-    @Override
-    public void deactivate() {
-        if (!GavinsMod.isEnabled(Type.XRAY))
-            RenderUtils.resetGamma();
-        super.deactivate();
+    public ModNoClip() {
+        super(Type.NO_CLIP);
     }
 }

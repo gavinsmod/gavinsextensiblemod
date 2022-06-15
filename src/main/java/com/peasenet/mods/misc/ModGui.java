@@ -18,15 +18,31 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.misc;
+
+import com.peasenet.main.GavinsMod;
+import com.peasenet.main.GavinsModClient;
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
+import com.peasenet.util.KeyBindUtils;
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
- * A mod that allows the player to see tracers towards chests.
+ * A mod that allows the player to see a menu of all the mods by pressing the keybind.
  */
-public class ModChestTracer extends Mod {
-    public ModChestTracer() {
-        super(Type.CHEST_TRACER);
+public class ModGui extends Mod {
+    public ModGui() {
+        super(Type.MOD_GUI, KeyBindUtils.registerKeyBindForType(Type.MOD_GUI));
+    }
+
+    @Override
+    public void onEnable() {
+        GavinsModClient.getMinecraftClient().setScreen(GavinsMod.gui);
+    }
+
+    @Override
+    public void onDisable() {
+
     }
 }

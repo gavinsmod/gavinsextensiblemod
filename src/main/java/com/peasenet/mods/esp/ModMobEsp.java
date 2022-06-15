@@ -18,15 +18,18 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.esp;
+
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
- * A mod that allows the player to climb up walls despite a lack of ladders.
+ * A mod that allows the client to see boxes around mobs.
  */
-public class ModClimb extends Mod {
-    public ModClimb() {
-        super(Type.CLIMB);
+public class ModMobEsp extends Mod {
+    public ModMobEsp() {
+        super(Type.MOB_ESP);
     }
 }

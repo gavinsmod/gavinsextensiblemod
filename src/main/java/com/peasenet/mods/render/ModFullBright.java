@@ -18,15 +18,34 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.render;
+
+import com.peasenet.main.GavinsMod;
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
+import com.peasenet.util.RenderUtils;
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
- * A mod that renders the current frames per second in the top right corner of the screen.
+ * A mod that allows the client to see very clearly in the absence of a light source.
  */
-public class ModFpsCounter extends Mod {
-    public ModFpsCounter() {
-        super(Type.MOD_FPS_COUNTER);
+public class ModFullBright extends Mod {
+
+    public ModFullBright() {
+        super(Type.FULL_BRIGHT);
+    }
+
+    @Override
+    public void activate() {
+        RenderUtils.setHighGamma();
+        super.activate();
+    }
+
+    @Override
+    public void deactivate() {
+        if (!GavinsMod.isEnabled(Type.XRAY))
+            RenderUtils.resetGamma();
+        super.deactivate();
     }
 }

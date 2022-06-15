@@ -22,7 +22,23 @@ package com.peasenet.main;
 
 import com.peasenet.gui.GuiMainMenu;
 import com.peasenet.gui.mod.*;
-import com.peasenet.mods.*;
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
+import com.peasenet.mods.combat.ModAutoCrit;
+import com.peasenet.mods.combat.ModKillAura;
+import com.peasenet.mods.esp.ModChestEsp;
+import com.peasenet.mods.esp.ModEntityItemEsp;
+import com.peasenet.mods.esp.ModEntityPlayerEsp;
+import com.peasenet.mods.esp.ModMobEsp;
+import com.peasenet.mods.misc.ModFpsCounter;
+import com.peasenet.mods.misc.ModGui;
+import com.peasenet.mods.misc.ModGuiTextOverlay;
+import com.peasenet.mods.movement.*;
+import com.peasenet.mods.render.*;
+import com.peasenet.mods.tracer.ModChestTracer;
+import com.peasenet.mods.tracer.ModEntityItemTracer;
+import com.peasenet.mods.tracer.ModEntityPlayerTracer;
+import com.peasenet.mods.tracer.ModMobTracer;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +84,7 @@ public class GavinsMod implements ModInitializer {
     // GUI
     private static final ModGui Gui = new ModGui();
     // MISC
-    private static final ModGuiTextOverlay ModGuiTextOverlay = new ModGuiTextOverlay();
+    private static final com.peasenet.mods.misc.ModGuiTextOverlay ModGuiTextOverlay = new ModGuiTextOverlay();
     private static final ModFpsCounter FpsCounter = new ModFpsCounter();
     // The main menu gui
     public static GuiMainMenu gui;

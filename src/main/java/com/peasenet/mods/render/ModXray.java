@@ -18,9 +18,11 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.render;
 
 import com.peasenet.main.GavinsMod;
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 import com.peasenet.util.RenderUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

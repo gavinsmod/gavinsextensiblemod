@@ -18,14 +18,18 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods;
+package com.peasenet.mods.esp;
+
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 
 /**
  * @author gt3ch1
- * A mod that allows the player to fly.
+ * @version 6/14/2022
+ * A mod that allows the player to see an ESP to other players.
  */
-public class ModFly extends Mod {
-    public ModFly() {
-        super(Type.FLY);
+public class ModEntityPlayerEsp extends Mod {
+    public ModEntityPlayerEsp() {
+        super(Type.ENTITY_PLAYER_ESP);
     }
 }
