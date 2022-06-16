@@ -21,6 +21,7 @@
 package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
+import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -34,6 +35,15 @@ public class MixinGameRender {
     @Inject(method = "bobViewWhenHurt(Lnet/minecraft/client/util/math/MatrixStack;F)V", at = @At("HEAD"), cancellable = true)
     public void checkAntiHurt(MatrixStack stack, float f, CallbackInfo ci) {
         if (GavinsMod.isEnabled(Type.ANTI_HURT)) {
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "bobView", at = @At("HEAD"), cancellable = true)
+    public void checkTracersAndEsps(MatrixStack stack, float f, CallbackInfo ci) {
+        // disable bobbing when any tracers are enabled.
+        var tracerCount = GavinsMod.getModsInCategory(Type.Category.TRACERS).stream().filter(Mod::isActive).count();
+        if (tracerCount > 0) {
             ci.cancel();
         }
     }
