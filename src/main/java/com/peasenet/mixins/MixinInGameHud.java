@@ -109,13 +109,13 @@ public class MixinInGameHud {
         var xCoordinate = GavinsModClient.getMinecraftClient().getWindow().getScaledWidth() - (fpsString.length() * 5 + 2);
         var box = new BoxD(new PointD(xCoordinate - 2, 0), fpsString.length() * 5 + 4, 12);
 
-        var color = 0xFFFFFF;
+        var color = Colors.WHITE.getAsInt();
         if (fps >= 60)
-            color = 0x00FF00;
+            color = Colors.GREEN.getAsInt();
         else if (fps >= 30)
-            color = 0xFFFF00;
+            color = Colors.YELLOW.getAsInt();
         else
-            color = 0xFF0000;
+            color = Colors.RED.getAsInt();
 
         RenderUtils.drawBox(Colors.BLACK.getAsFloatArray(), box, matrixStack);
         textRenderer.draw(matrixStack, Text.literal(fpsString), xCoordinate, 2, color);

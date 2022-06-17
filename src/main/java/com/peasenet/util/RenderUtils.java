@@ -78,9 +78,9 @@ public class RenderUtils {
         normal.normalize();
         Matrix4f matrix4f = stack.peek().getPositionMatrix();
         Matrix3f matrix3f = stack.peek().getNormalMatrix();
-        buffer.vertex(matrix4f, playerPos.getX(), playerPos.getY(), playerPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
+        buffer.vertex(matrix4f, playerPos.getX(), playerPos.getY(), playerPos.getZ()).color(color.getAsInt(true))
                 .normal(matrix3f, normal.getX(), normal.getY(), normal.getZ()).next();
-        buffer.vertex(matrix4f, boxPos.getX(), boxPos.getY(), boxPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
+        buffer.vertex(matrix4f, boxPos.getX(), boxPos.getY(), boxPos.getZ()).color(color.getAsInt(true))
                 .normal(matrix3f, normal.getX(), normal.getY(), normal.getZ()).next();
     }
 
