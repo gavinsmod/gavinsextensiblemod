@@ -214,16 +214,11 @@ public class RenderUtils {
             Color c = Colors.PURPLE;
 
             if (type == EntityType.ITEM) {
-                c = Colors.DARK_CYAN;
                 Item i = ((ItemEntity) e).getStack().getItem();
-                //TODO: This will be a list of rare items.
-                if (i.asItem() == Items.CREEPER_SPAWN_EGG) {
-                    c = Colors.WHITE;
-                }
                 if (GavinsMod.isEnabled(Type.ENTITY_ITEM_ESP))
-                    drawBox(stack, buffer, aabb, c);
+                    drawBox(stack, buffer, aabb, Settings.ItemEspColor);
                 if (GavinsMod.isEnabled(Type.ENTITY_ITEM_TRACER))
-                    renderSingleLine(stack, buffer, playerPos, boxPos, c);
+                    renderSingleLine(stack, buffer, playerPos, boxPos, Settings.ItemTracerColor);
                 return;
             }
 

@@ -73,7 +73,7 @@ public class MixinInGameHud {
         int currX = (int) (startingPoint.x() + 2);
         AtomicInteger currY = new AtomicInteger((int) (startingPoint.y() + 2));
         drawFpsOverlay(matrixStack, textRenderer);
-        if (GavinsMod.isEnabled(Type.MOD_GUI) || !GavinsMod.isEnabled(Type.MOD_GUI_TEXT_OVERLAY))
+        if (GavinsMod.isEnabled(Type.MOD_GUI) || !GavinsMod.isEnabled(Type.MOD_GUI_TEXT_OVERLAY) || GavinsMod.isEnabled(Type.SETTINGS))
             return;
         // only get active mods, and mods that are not gui type.
         var mods = GavinsMod.getModsForTextOverlay();
