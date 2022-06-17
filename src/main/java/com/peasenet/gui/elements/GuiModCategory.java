@@ -2,7 +2,10 @@ package com.peasenet.gui.elements;
 
 import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Type;
+import com.peasenet.util.color.Colors;
 import com.peasenet.util.math.PointD;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 public class GuiModCategory extends GuiDropdown {
@@ -16,17 +19,15 @@ public class GuiModCategory extends GuiDropdown {
      *
      * @param mouseX - The x coordinate of the mouse.
      * @param mouseY - The y coordinate of the mouse.
-     * @param button - The button that was clicked.
      * @return Whether the mouse was clicked on a mod.
      */
-    private boolean toggleSelectedMod(double mouseX, double mouseY, int button) {
-        if (!isOpen())
-            return false;
+    private boolean toggleSelectedMod(double mouseX, double mouseY) {
+        if (!isOpen()) return false;
         var mods = GavinsMod.getModsInCategory(getCategory());
         for (int i = 0; i < mods.size(); i++) {
             var mod = mods.get(i);
             var gui = buttons.get(i);
-            if (gui.mouseClicked(mouseX, mouseY, button)) {
+            if (gui.mouseWithinGui(mouseX, mouseY)) {
                 mod.toggle();
                 return true;
             }
@@ -36,8 +37,13 @@ public class GuiModCategory extends GuiDropdown {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (super.mouseClicked(mouseX, mouseY, button))
-            return toggleSelectedMod(mouseX, mouseY, button);
+        if (super.mouseClicked(mouseX, mouseY, button)) {
+            if (button == 0)
+                return toggleSelectedMod(mouseX, mouseY);
+            else
+                //TODO: implement options screen on right click.
+                return false;
+        }
         return false;
     }
 
@@ -53,7 +59,18 @@ public class GuiModCategory extends GuiDropdown {
             var mod = mods.get(i);
             var x = getX();
             var y = getY2() + i * 10;
-            buttons.add(new GuiClick(new PointD(x, y + 2), (int) getWidth(), (int) getHeight(), Text.translatable(mod.getTranslationKey())));
+            addElement(new GuiToggle(new PointD(x, y + 2), (int) getWidth(), (int) getHeight(), Text.translatable(mod.getTranslationKey())));
+        }
+    }
+
+    @Override
+    public void render(MatrixStack matrices, TextRenderer tr) {
+        super.render(matrices, tr);
+        var mods = GavinsMod.getModsInCategory(getCategory());
+        for (int i = 0; i < mods.size(); i++) {
+            var mod = mods.get(i);
+            var gui = buttons.get(i);
+            gui.setBackground(mod.isActive() ? Colors.GREEN : Colors.BLACK);
         }
     }
 }

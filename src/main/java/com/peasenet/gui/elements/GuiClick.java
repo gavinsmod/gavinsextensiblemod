@@ -33,9 +33,10 @@ public class GuiClick extends Gui {
     /**
      * Creates a new GUI menu.
      *
-     * @param width  - The width of the gui.
-     * @param height - The height of the gui.
-     * @param title  - The title of the gui.
+     * @param position - The position of the menu.
+     * @param width    - The width of the gui.
+     * @param height   - The height of the gui.
+     * @param title    - The title of the gui.
      */
     public GuiClick(PointD position, int width, int height, Text title) {
         super(position, width, height, title);

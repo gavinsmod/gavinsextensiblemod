@@ -20,9 +20,7 @@
 
 package com.peasenet.gui.elements;
 
-import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Type;
-import com.peasenet.util.color.Colors;
 import com.peasenet.util.math.PointD;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -40,22 +38,15 @@ public class GuiDropdown extends GuiDraggable {
     /**
      * The list of buttons(mods) in this dropdown.
      */
-    protected final ArrayList<GuiClick> buttons = new ArrayList<>();
-    /**
-     * Whether the dropdown is open.
-     */
-    private boolean isOpen;
+    protected final ArrayList<Gui> buttons = new ArrayList<>();
     /**
      * The category of the dropdown.
      */
     protected Type.Category category;
-
     /**
-     * Gets whether the dropdown is open.
+     * Whether the dropdown is open.
      */
-    public boolean isOpen() {
-        return isOpen;
-    }
+    private boolean isOpen;
 
     /**
      * Creates a new dropdown like UI element.
@@ -67,6 +58,27 @@ public class GuiDropdown extends GuiDraggable {
      */
     public GuiDropdown(PointD position, int width, int height, Text title) {
         super(position, width, height, title);
+    }
+
+    public void addElement(Gui button) {
+        if (buttons.isEmpty()) {
+            button.setPosition(new PointD(getX(), getY2() + 1));
+            buttons.add(button);
+            return;
+        }
+        // get last button
+        Gui lastButton = buttons.get(buttons.size() - 1);
+        var lastY = lastButton.getY2();
+        // set new button position
+        button.setPosition(new PointD(getX(), lastY + 1));
+        buttons.add(button);
+    }
+
+    /**
+     * Gets whether the dropdown is open.
+     */
+    public boolean isOpen() {
+        return isOpen;
     }
 
     /**
@@ -84,16 +96,7 @@ public class GuiDropdown extends GuiDraggable {
         super.render(matrices, tr);
         if (!isOpen())
             return;
-        for (int i = 0; i < buttons.size(); i++) {
-            var button = buttons.get(i);
-            var mod = GavinsMod.getModsInCategory(category).get(i);
-            if (mod.isActive())
-                button.setBackground(Colors.GREEN);
-            else
-                button.setBackground(Colors.BLACK);
-            button.render(matrices, tr);
-        }
-
+        buttons.forEach(button -> button.render(matrices, tr));
     }
 
     @Override
@@ -106,12 +109,11 @@ public class GuiDropdown extends GuiDraggable {
         }
         if (isOpen()) {
             // If the dropdown is open, check if the mouse is within the bounds of any of the buttons.
-            for (var button1 : buttons) {
-                if (button1.mouseClicked(mouseX, mouseY, button))
+            for (Gui g : buttons) {
+                if (g.mouseWithinGui(mouseX, mouseY) && g.mouseClicked(mouseX, mouseY, button))
                     return true;
             }
         }
-        // Check if the mouse is within the bounds of the mods.
         return false;
     }
 
@@ -127,7 +129,7 @@ public class GuiDropdown extends GuiDraggable {
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         // calculate the offset between the mouse position and the top left corner of the gui
         if (super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
-            resetDropdownsLocation(getPosition());
+            resetDropdownsLocation();
             return true;
         }
         return false;
@@ -136,21 +138,17 @@ public class GuiDropdown extends GuiDraggable {
     @Override
     public void resetPosition() {
         super.resetPosition();
+        resetDropdownsLocation();
         isOpen = false;
-        resetDropdownsLocation(defaultPosition.getTopLeft());
     }
 
     /**
      * Resets the position of all the mods in the dropdown.
-     *
-     * @param newPoint - The new position of the dropdown.
      */
-    private void resetDropdownsLocation(PointD newPoint) {
-        for (int i = 0; i < buttons.size(); i++) {
-            var gui = buttons.get(i);
-            var x = newPoint.x();
-            var y = newPoint.y() + (i + 1) * 10 + 4;
-            gui.setPosition(new PointD(x, y));
-        }
+    private void resetDropdownsLocation() {
+        // copy buttons to a new array
+        ArrayList<Gui> newButtons = new ArrayList<>(buttons);
+        buttons.clear();
+        newButtons.forEach(this::addElement);
     }
 }

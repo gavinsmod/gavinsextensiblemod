@@ -76,6 +76,17 @@ public class Gui {
     }
 
     /**
+     * Creates a new GUI at poisition (0, 0).
+     *
+     * @param width  - The width of the gui.
+     * @param height - The height of the gui.
+     * @param title  - The title of the gui.
+     */
+    public Gui(int width, int height, Text title) {
+        this(new PointD(0, 0), width, height, title);
+    }
+
+    /**
      * Sets the background color to the given color.
      *
      * @param color - The color to set the background to.
