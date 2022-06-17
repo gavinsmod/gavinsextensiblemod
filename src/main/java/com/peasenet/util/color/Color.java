@@ -120,5 +120,26 @@ public class Color {
         return new float[]{getRed(), getGreen(), getBlue(), getAlpha()};
     }
 
+    /**
+     * Gets the int value of this color, will be converted to its hex equivalent.
+     *
+     * @param a - whether to include the alpha value
+     * @return int value of color
+     */
+    public int getAsInt(boolean a) {
+        if (a) {
+            return (alpha << 24) | (red << 16) | (green << 8) | blue;
+        } else {
+            return (red << 16) | (green << 8) | blue;
+        }
+    }
 
+    /**
+     * Gets the integer representation of this color without the alpha value.
+     *
+     * @return int value of color
+     */
+    public int getAsInt() {
+        return getAsInt(false);
+    }
 }
