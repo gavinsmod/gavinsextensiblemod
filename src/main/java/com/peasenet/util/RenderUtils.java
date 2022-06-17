@@ -285,6 +285,13 @@ public class RenderUtils {
         }
     }
 
+    /**
+     * Draws a box within the area of the given BoxD.
+     *
+     * @param acColor     The color of the box.
+     * @param box         The box to draw.
+     * @param matrixStack The matrix stack.
+     */
     public static void drawBox(float[] acColor, BoxD box, MatrixStack matrixStack) {
         drawBox(acColor, (int) box.getTopLeft().x(), (int) box.getTopLeft().y(), (int) box.getBottomRight().x(), (int) box.getBottomRight().y(), matrixStack);
     }
