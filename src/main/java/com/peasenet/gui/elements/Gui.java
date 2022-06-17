@@ -219,4 +219,15 @@ public class Gui {
     public void setPosition(PointD position) {
         this.box.setTopLeft(position);
     }
+
+    /**
+     * Gets whether the mouse coordinates are within the bounds of the gui.
+     *
+     * @param mouseX - The x coordinate of the mouse.
+     * @param mouseY - The y coordinate of the mouse.
+     * @return Whether the mouse coordinates are within the bounds of the gui.
+     */
+    public boolean mouseWithinGui(double mouseX, double mouseY) {
+        return mouseX >= getX() && mouseX <= getX2() && mouseY >= getY() && mouseY <= getY2();
+    }
 }

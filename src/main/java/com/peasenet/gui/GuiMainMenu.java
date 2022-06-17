@@ -90,15 +90,11 @@ public class GuiMainMenu extends Screen {
                 gui.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
                 return true;
             }
-            if (!gui.isDragging() && mouseWithinGui(mouseX, mouseY, gui)) {
+            if (!gui.isDragging() && gui.mouseWithinGui(mouseX, mouseY)) {
                 gui.setDragging(true);
             }
         }
         return false;
-    }
-
-    private boolean mouseWithinGui(double mouseX, double mouseY, Gui gui) {
-        return mouseX >= gui.getX() && mouseX <= gui.getX2() && mouseY >= gui.getY() && mouseY <= gui.getY2();
     }
 
     @Override

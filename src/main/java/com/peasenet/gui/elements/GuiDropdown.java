@@ -21,6 +21,7 @@
 package com.peasenet.gui.elements;
 
 import com.peasenet.main.GavinsMod;
+import com.peasenet.mods.Type;
 import com.peasenet.util.color.Colors;
 import com.peasenet.util.math.PointD;
 import net.minecraft.client.font.TextRenderer;
@@ -28,8 +29,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
-
-import static com.peasenet.mods.Type.Category;
 
 /**
  * @author gt3ch1
@@ -41,7 +40,7 @@ public class GuiDropdown extends GuiDraggable {
     /**
      * The list of buttons(mods) in this dropdown.
      */
-    private final ArrayList<GuiClick> buttons = new ArrayList<>();
+    protected final ArrayList<GuiClick> buttons = new ArrayList<>();
     /**
      * Whether the dropdown is open.
      */
@@ -49,21 +48,7 @@ public class GuiDropdown extends GuiDraggable {
     /**
      * The category of the dropdown.
      */
-    private Category category;
-
-    /**
-     * Creates a new dropdown like UI element.
-     *
-     * @param position - The position of the dropdown.
-     * @param width    - The width of the dropdown.
-     * @param height   - The height of the dropdown.
-     * @param title    - The title of the dropdown.
-     * @param category - The category of the dropdown.
-     */
-    public GuiDropdown(PointD position, int width, int height, Text title, Category category) {
-        super(position, width, height, title);
-        setCategory(category);
-    }
+    protected Type.Category category;
 
     /**
      * Gets whether the dropdown is open.
@@ -73,28 +58,24 @@ public class GuiDropdown extends GuiDraggable {
     }
 
     /**
+     * Creates a new dropdown like UI element.
+     *
+     * @param position - The position of the dropdown.
+     * @param width    - The width of the dropdown.
+     * @param height   - The height of the dropdown.
+     * @param title    - The title of the dropdown.
+     */
+    public GuiDropdown(PointD position, int width, int height, Text title) {
+        super(position, width, height, title);
+    }
+
+    /**
      * Gets the category of the dropdown
      *
      * @return The category of the dropdown
      */
-    public Category getCategory() {
+    public Type.Category getCategory() {
         return category;
-    }
-
-    /**
-     * Sets the category of the dropdown
-     */
-    public void setCategory(Category category) {
-        this.category = category;
-        var mods = GavinsMod.getModsInCategory(category);
-        if (mods == null)
-            return;
-        for (int i = 0; i < mods.size(); i++) {
-            var mod = mods.get(i);
-            var x = getX();
-            var y = getY2() + i * 10;
-            buttons.add(new GuiClick(new PointD(x, y + 2), (int) getWidth(), (int) getHeight(), Text.translatable(mod.getTranslationKey())));
-        }
     }
 
     @Override
@@ -117,37 +98,16 @@ public class GuiDropdown extends GuiDraggable {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button != 0) return false;
         // Check if the mouse is within the bounds of the dropdown.
-        if (mouseX >= getX() && mouseX <= getX2() && mouseY >= getY() && mouseY <= getY2()) {
+        if (super.mouseClicked(mouseX, mouseY, button)) {
             // If the dropdown is open, close it.
             toggleMenu();
             return true;
         }
         // Check if the mouse is within the bounds of the mods.
-        return toggleSelectedMod(mouseX, mouseY, button);
-    }
-
-    /**
-     * Toggles the mod that the mouse is currently hovering over, if applicable.
-     *
-     * @param mouseX - The x coordinate of the mouse.
-     * @param mouseY - The y coordinate of the mouse.
-     * @param button - The button that was clicked.
-     * @return Whether the mouse was clicked on a mod.
-     */
-    private boolean toggleSelectedMod(double mouseX, double mouseY, int button) {
-        var mods = GavinsMod.getModsInCategory(category);
-        for (int i = 0; i < mods.size(); i++) {
-            var mod = mods.get(i);
-            var gui = buttons.get(i);
-            if (isOpen && gui.mouseClicked(mouseX, mouseY, button)) {
-                mod.toggle();
-                return true;
-            }
-        }
         return false;
     }
+
 
     /**
      * Toggles the dropdown.

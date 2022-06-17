@@ -52,6 +52,6 @@ public class GuiClick extends Gui {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button != 0) return false;
         // check if mouseX and mouseY are within the bounds of the gui.
-        return (mouseX >= getX() && mouseX <= getX2() && mouseY >= getY() && mouseY <= getY2());
+        return (mouseWithinGui(mouseX, mouseY));
     }
 }
