@@ -104,6 +104,13 @@ public class GuiDropdown extends GuiDraggable {
             toggleMenu();
             return true;
         }
+        if (isOpen()) {
+            // If the dropdown is open, check if the mouse is within the bounds of any of the buttons.
+            for (var button1 : buttons) {
+                if (button1.mouseClicked(mouseX, mouseY, button))
+                    return true;
+            }
+        }
         // Check if the mouse is within the bounds of the mods.
         return false;
     }
