@@ -165,7 +165,8 @@ public enum Type {
         MISC("key.gavinsmod.gui.misc"),
         ESPS("key.gavinsmod.gui.esps"),
         TRACERS("key.gavinsmod.gui.tracers"),
-        GUI("key.gavinsmod.gui.gui");
+        GUI("key.gavinsmod.gui.gui"),
+        NONE("none");
 
         public final String translationKey;
 
