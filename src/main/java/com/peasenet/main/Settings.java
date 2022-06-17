@@ -18,31 +18,24 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods.misc;
+package com.peasenet.main;
 
-import com.peasenet.main.GavinsMod;
-import com.peasenet.main.GavinsModClient;
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.util.KeyBindUtils;
+import com.peasenet.util.color.Color;
+import com.peasenet.util.color.Colors;
 
-/**
- * @author gt3ch1
- * @version 6/14/2022
- * A mod that allows the player to see a menu of all the mods by pressing the keybind.
- */
-public class ModGui extends Mod {
-    public ModGui() {
-        super(Type.MOD_GUI, KeyBindUtils.registerKeyBindForType(Type.MOD_GUI));
-    }
+public class Settings {
+    public static Color ChestEspColor = Colors.PURPLE;
+    public static Color ChestTracerColor = Colors.PURPLE;
 
-    @Override
-    public void onEnable() {
-        GavinsModClient.getMinecraftClient().setScreen(GavinsMod.gui);
-    }
+    public static Color HostileMobEspColor = Colors.RED;
+    public static Color HostileMobTracerColor = Colors.RED;
 
-    @Override
-    public void onDisable() {
+    public static Color PeacefulMobEspColor = Colors.GREEN;
+    public static Color PeacefulMobTracerColor = Colors.GREEN;
 
-    }
+    public static Color PlayerEspColor = Colors.GOLD;
+    public static Color PlayerTracerColor = Colors.GOLD;
+    public static Color ItemEspColor = Colors.CYAN;
+    public static Color ItemTracerColor = Colors.CYAN;
+
 }

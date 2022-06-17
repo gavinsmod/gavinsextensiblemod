@@ -23,6 +23,7 @@ package com.peasenet.util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
+import com.peasenet.main.Settings;
 import com.peasenet.mixinterface.ISimpleOption;
 import com.peasenet.mods.Type;
 import com.peasenet.util.color.Color;
@@ -165,9 +166,9 @@ public class RenderUtils {
                                         Box aabb = new Box(blockPos);
                                         Vec3f boxPos = new Vec3f(aabb.getCenter());
                                         if (GavinsMod.isEnabled(Type.CHEST_ESP))
-                                            drawBox(stack, buffer, aabb, Colors.PURPLE);
+                                            drawBox(stack, buffer, aabb, Settings.ChestEspColor);
                                         if (GavinsMod.isEnabled(Type.CHEST_TRACER)) {
-                                            renderSingleLine(stack, buffer, playerPos, boxPos, Colors.PURPLE);
+                                            renderSingleLine(stack, buffer, playerPos, boxPos, Settings.ChestTracerColor);
                                         }
                                     }
                                 }
@@ -228,21 +229,18 @@ public class RenderUtils {
 
             if (type == EntityType.PLAYER) {
                 if (GavinsMod.isEnabled(Type.ENTITY_PLAYER_ESP))
-                    drawBox(stack, buffer, aabb, c);
+                    drawBox(stack, buffer, aabb, Settings.PlayerEspColor);
                 if (GavinsMod.isEnabled(Type.ENTITY_PLAYER_TRACER))
-                    renderSingleLine(stack, buffer, playerPos, boxPos, c);
+                    renderSingleLine(stack, buffer, playerPos, boxPos, Settings.PlayerTracerColor);
                 return;
             }
 
-            if (type.getSpawnGroup().isPeaceful())
-                c = Colors.GREEN;
-            if (!type.getSpawnGroup().isPeaceful())
-                c = Colors.RED;
-
+            var espColor = type.getSpawnGroup().isPeaceful() ? Settings.PeacefulMobEspColor : Settings.HostileMobEspColor;
+            var tracerColor = type.getSpawnGroup().isPeaceful() ? Settings.PeacefulMobTracerColor : Settings.HostileMobTracerColor;
             if (GavinsMod.isEnabled(Type.MOB_ESP))
-                drawBox(stack, buffer, aabb, c);
+                drawBox(stack, buffer, aabb, espColor);
             if (GavinsMod.isEnabled(Type.MOB_TRACER))
-                renderSingleLine(stack, buffer, playerPos, boxPos, c);
+                renderSingleLine(stack, buffer, playerPos, boxPos, tracerColor);
         });
     }
 

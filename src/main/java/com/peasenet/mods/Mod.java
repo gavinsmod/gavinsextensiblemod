@@ -26,6 +26,7 @@ import com.peasenet.util.KeyBindUtils;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.text.Text;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * @author gt3ch1
@@ -99,7 +100,11 @@ public abstract class Mod implements IMod {
     public Mod(Type type) {
         this.type = type;
         this.category = type.getModCategory();
-        this.keyBinding = KeyBindUtils.registerEmptyKeyBind(type);
+        if (type.getKeyBinding() == GLFW.GLFW_KEY_UNKNOWN) {
+            this.keyBinding = KeyBindUtils.registerEmptyKeyBind(type);
+        } else {
+            this.keyBinding = KeyBindUtils.registerKeyBindForType(type);
+        }
     }
 
     /**

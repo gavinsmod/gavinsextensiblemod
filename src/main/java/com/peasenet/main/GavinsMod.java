@@ -21,6 +21,7 @@
 package com.peasenet.main;
 
 import com.peasenet.gui.GuiMainMenu;
+import com.peasenet.gui.GuiSettings;
 import com.peasenet.gui.mod.*;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
@@ -30,8 +31,9 @@ import com.peasenet.mods.esp.ModChestEsp;
 import com.peasenet.mods.esp.ModEntityItemEsp;
 import com.peasenet.mods.esp.ModEntityPlayerEsp;
 import com.peasenet.mods.esp.ModMobEsp;
+import com.peasenet.mods.gui.ModGui;
+import com.peasenet.mods.gui.ModGuiSettings;
 import com.peasenet.mods.misc.ModFpsCounter;
-import com.peasenet.mods.misc.ModGui;
 import com.peasenet.mods.misc.ModGuiTextOverlay;
 import com.peasenet.mods.movement.*;
 import com.peasenet.mods.render.*;
@@ -39,6 +41,8 @@ import com.peasenet.mods.tracer.ModChestTracer;
 import com.peasenet.mods.tracer.ModEntityItemTracer;
 import com.peasenet.mods.tracer.ModEntityPlayerTracer;
 import com.peasenet.mods.tracer.ModMobTracer;
+import com.peasenet.util.color.Color;
+import com.peasenet.util.color.Colors;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +57,7 @@ import java.util.stream.Stream;
  * @version 5/24/2022
  */
 public class GavinsMod implements ModInitializer {
+    private static final ModGuiSettings GuiSettings = new ModGuiSettings();
     public static final Logger LOGGER = LoggerFactory.getLogger("gavinsmod");
     public static final String VERSION = "v1.2.1";
     // MOVEMENT
@@ -83,11 +88,14 @@ public class GavinsMod implements ModInitializer {
     private static final ModNoRain NoRain = new ModNoRain();
     // GUI
     private static final ModGui Gui = new ModGui();
+    public static Color ChestTracerColor = Colors.PURPLE;
     // MISC
     private static final com.peasenet.mods.misc.ModGuiTextOverlay ModGuiTextOverlay = new ModGuiTextOverlay();
     private static final ModFpsCounter FpsCounter = new ModFpsCounter();
+
     // The main menu gui
     public static GuiMainMenu gui;
+    public static GuiSettings guiSettings;
     public static ArrayList<Mod> mods;
 
     public static boolean isEnabled(Type mod) {
@@ -162,6 +170,7 @@ public class GavinsMod implements ModInitializer {
 
                 //GUI
                 add(Gui);
+                add(GuiSettings);
                 // MISC
                 add(ModGuiTextOverlay);
                 add(FpsCounter);
@@ -175,6 +184,7 @@ public class GavinsMod implements ModInitializer {
         guiList.add(new GuiRender());
         guiList.add(new GuiTracers());
         gui = new GuiMainMenu(guiList);
+        guiSettings = new GuiSettings();
     }
 
 }
