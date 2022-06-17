@@ -20,6 +20,8 @@
 
 package com.peasenet.gui.elements;
 
+import com.peasenet.SettingsCallback;
+import com.peasenet.main.Settings;
 import com.peasenet.util.color.Colors;
 import com.peasenet.util.math.PointD;
 import net.minecraft.client.font.TextRenderer;
@@ -33,10 +35,20 @@ import net.minecraft.text.Text;
  */
 public class GuiToggle extends GuiClick {
 
+    public void setState(boolean on) {
+        isOn = on;
+    }
+
     /**
      * Gets whether the toggle is on.
      */
     private boolean isOn;
+
+    public void setCallback(SettingsCallback callback) {
+        this.callback = callback;
+    }
+
+    private SettingsCallback callback;
 
     /**
      * Creates a new GUI menu.
@@ -63,6 +75,9 @@ public class GuiToggle extends GuiClick {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (super.mouseClicked(mouseX, mouseY, button)) {
             isOn = !isOn;
+            if (callback != null) {
+                callback.callback();
+            }
             return true;
         }
         return false;
@@ -71,9 +86,9 @@ public class GuiToggle extends GuiClick {
     @Override
     public void render(MatrixStack matrixStack, TextRenderer tr) {
         if (isOn())
-            setBackground(Colors.GREEN);
+            setBackground(Settings.EnabledColor);
         else
-            setBackground(Colors.BLACK);
+            setBackground(Settings.BackgroundColor);
         super.render(matrixStack, tr);
     }
 }

@@ -36,6 +36,9 @@ import java.util.ArrayList;
  * A mod for xray like feature, allowing the player to see through certain blocks.
  */
 public class ModXray extends Mod {
+
+    private boolean deactivating = true;
+
     /**
      * A list of blocks that SHOULD be visible (coal, iron, gold, diamond, lapis, redstone, etc.)
      */
@@ -82,19 +85,33 @@ public class ModXray extends Mod {
 
     @Override
     public void activate() {
-        RenderUtils.setHighGamma();
+        if (!GavinsMod.isEnabled(Type.FULL_BRIGHT))
+            RenderUtils.setLastGamma();
         getClient().setChunkCulling(false);
         getClient().getWorldRenderer().reload();
         super.activate();
     }
 
     @Override
+    public void onTick() {
+        if (isActive() && !RenderUtils.isHighGamma())
+            RenderUtils.setHighGamma();
+        else if (!GavinsMod.isEnabled(Type.FULL_BRIGHT) && !RenderUtils.isLastGamma() && deactivating) {
+            RenderUtils.setLowGamma();
+            deactivating = !RenderUtils.isLastGamma();
+        }
+        super.onTick();
+    }
+
+    @Override
     public void deactivate() {
         // check if full bright is disabled, if it is, reset gamma back to LAST_GAMMA
         if (!GavinsMod.isEnabled(Type.FULL_BRIGHT))
-            RenderUtils.resetGamma();
+            RenderUtils.setLowGamma();
         getClient().setChunkCulling(true);
         getClient().getWorldRenderer().reload();
+        deactivating = true;
+        RenderUtils.setGamma(4);
         super.deactivate();
     }
 }

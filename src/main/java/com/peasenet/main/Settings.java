@@ -24,18 +24,29 @@ import com.peasenet.util.color.Color;
 import com.peasenet.util.color.Colors;
 
 public class Settings {
+
+    public static boolean FullbrightFade = false;
+    public static boolean FpsColors = true;
+
+    /*
+     * Colors
+     */
     public static Color ChestEspColor = Colors.PURPLE;
     public static Color ChestTracerColor = Colors.PURPLE;
-
     public static Color HostileMobEspColor = Colors.RED;
     public static Color HostileMobTracerColor = Colors.RED;
-
     public static Color PeacefulMobEspColor = Colors.GREEN;
     public static Color PeacefulMobTracerColor = Colors.GREEN;
-
     public static Color PlayerEspColor = Colors.GOLD;
     public static Color PlayerTracerColor = Colors.GOLD;
     public static Color ItemEspColor = Colors.CYAN;
     public static Color ItemTracerColor = Colors.CYAN;
+    public static Color SlowFpsColor = Colors.RED;
+    public static Color OkFpsColor = Colors.YELLOW;
+    public static Color FastFpsColor = Colors.GREEN;
+    public static Color BackgroundColor = Colors.BLACK;
+    public static Color ForegroundColor = Colors.WHITE;
+    public static Color EnabledColor = Colors.GREEN;
+
 
 }

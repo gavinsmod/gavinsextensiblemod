@@ -22,6 +22,7 @@ package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
+import com.peasenet.main.Settings;
 import com.peasenet.mods.Type;
 import com.peasenet.util.RenderUtils;
 import com.peasenet.util.color.Colors;
@@ -82,13 +83,13 @@ public class MixinInGameHud {
         // get the mod with the longest name.
         var longestModName = mods.max(Comparator.comparingInt(mod -> mod.getName().length())).get().getName().length();
         var box = new BoxD(startingPoint, longestModName * 6 + 6, modsCount * 12);
-        RenderUtils.drawBox(Colors.BLACK.getAsFloatArray(), box, matrixStack);
+        RenderUtils.drawBox(Settings.BackgroundColor.getAsFloatArray(), box, matrixStack);
         mods = GavinsMod.getModsForTextOverlay();
         AtomicInteger modCounter = new AtomicInteger();
         mods.forEach(mod -> {
             textRenderer.drawWithShadow(matrixStack, Text.translatable(mod.getTranslationKey()), currX, currY.get(), 0xFFFFFF);
             if (modsCount > 1 && modCounter.get() < modsCount - 1) {
-                RenderUtils.drawSingleLine(Colors.WHITE.getAsFloatArray(), currX - 1, currY.get() + 9, longestModName * 6 + 5, currY.get() + 9, matrixStack);
+                RenderUtils.drawSingleLine(Settings.ForegroundColor.getAsFloatArray(), currX - 1, currY.get() + 9, longestModName * 6 + 5, currY.get() + 9, matrixStack);
             }
             currY.addAndGet(12);
             modCounter.getAndIncrement();
@@ -108,16 +109,19 @@ public class MixinInGameHud {
         var fpsString = "FPS: " + fps;
         var xCoordinate = GavinsModClient.getMinecraftClient().getWindow().getScaledWidth() - (fpsString.length() * 5 + 2);
         var box = new BoxD(new PointD(xCoordinate - 2, 0), fpsString.length() * 5 + 4, 12);
-
+        var maximumFps = GavinsModClient.getMinecraftClient().getOptions().getMaxFps().getValue();
         var color = Colors.WHITE.getAsInt();
-        if (fps >= 60)
-            color = Colors.GREEN.getAsInt();
-        else if (fps >= 30)
-            color = Colors.YELLOW.getAsInt();
+        // if fps is within 5% of the maximum, use green.
+        if (fps > maximumFps * 0.95)
+            color = Settings.FastFpsColor.getAsInt();
+        else if (fps > maximumFps * 0.45 && fps < maximumFps * 0.75)
+            color = Settings.OkFpsColor.getAsInt();
         else
-            color = Colors.RED.getAsInt();
+            color = Settings.SlowFpsColor.getAsInt();
+        if (!Settings.FpsColors)
+            color = Colors.WHITE.getAsInt();
 
-        RenderUtils.drawBox(Colors.BLACK.getAsFloatArray(), box, matrixStack);
+        RenderUtils.drawBox(Settings.BackgroundColor.getAsFloatArray(), box, matrixStack);
         textRenderer.draw(matrixStack, Text.literal(fpsString), xCoordinate, 2, color);
     }
 }

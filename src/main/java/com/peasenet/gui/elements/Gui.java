@@ -20,6 +20,7 @@
 
 package com.peasenet.gui.elements;
 
+import com.peasenet.main.Settings;
 import com.peasenet.util.RenderUtils;
 import com.peasenet.util.color.Color;
 import com.peasenet.util.color.Colors;
@@ -72,7 +73,7 @@ public class Gui {
         this.box = new BoxD(topLeft, width, height);
         this.defaultPosition = BoxD.copy(box);
         this.title = title;
-        backgroundColor = Colors.BLACK;
+        backgroundColor = Settings.BackgroundColor;
     }
 
     /**
@@ -157,7 +158,7 @@ public class Gui {
      */
     public void render(MatrixStack matrixStack, TextRenderer tr) {
         RenderUtils.drawBox(backgroundColor.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2(), matrixStack);
-        tr.draw(matrixStack, title, (int) getX() + 2, (int) getY() + 2, 0xFFFFFF);
+        tr.draw(matrixStack, title, (int) getX() + 2, (int) getY() + 2, Settings.ForegroundColor.getAsInt());
         RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2(), matrixStack);
     }
 
@@ -233,6 +234,7 @@ public class Gui {
 
     /**
      * Sets the middle of the gui element to the given point.
+     *
      * @param position - The point to set the middle of the gui element to.
      */
     public void setMidPoint(PointD position) {

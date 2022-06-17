@@ -32,20 +32,34 @@ import com.peasenet.util.RenderUtils;
  */
 public class ModFullBright extends Mod {
 
+    private boolean deactivating = false;
+
     public ModFullBright() {
         super(Type.FULL_BRIGHT);
     }
 
     @Override
     public void activate() {
-        RenderUtils.setHighGamma();
+        if(!GavinsMod.isEnabled(Type.XRAY))
+            RenderUtils.setLastGamma();
         super.activate();
     }
 
     @Override
+    public void onTick() {
+        if (isActive() && !RenderUtils.isHighGamma()) {
+            RenderUtils.setHighGamma();
+        } else if (!GavinsMod.isEnabled(Type.XRAY) && !RenderUtils.isLastGamma() && deactivating) {
+            RenderUtils.setLowGamma();
+            deactivating = !RenderUtils.isLastGamma();
+        }
+        super.onTick();
+    }
+
+    @Override
     public void deactivate() {
-        if (!GavinsMod.isEnabled(Type.XRAY))
-            RenderUtils.resetGamma();
+        deactivating = true;
+        RenderUtils.setGamma(4);
         super.deactivate();
     }
 }

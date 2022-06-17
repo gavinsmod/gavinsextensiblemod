@@ -35,5 +35,18 @@
     "key.gavinsmod.gui.misc": "Misc",
     "key.gavinsmod.gui.esps": "ESPs",
     "key.gavinsmod.gui.tracers": "Tracers",
-    "category.gavinsmod.test": "Gavin's Mod"
+    "key.gavinsmod.settings.esps": "ESP Colors",
+    "key.gavinsmod.settings.tracers": "Tracer Colors",
+    "key.gavinsmod.settings.gammafade": "Gamma Fade",
+    "key.gavinsmod.settings.render": "Render Settings",
+    "key.gavinsmod.settings.fpscolors": "FPS Colors",
+    "key.gavinsmod.settings.fps.color": "FPS Color",
+    "key.gavinsmod.settings.slowfps": "Slow FPS Color",
+    "key.gavinsmod.settings.okfps": "OK FPS Color",
+    "key.gavinsmod.settings.fastfps": "Fast FPS Color",
+    "key.gavinsmod.settings.backgroundcolor": "Background Color",
+    "key.gavinsmod.settings.foregroundcolor": "Foreground Color",
+    "key.gavinsmod.settings.enabledcolor": "Enabled Color",
+    "category.gavinsmod.test": "Gavin's Mod",
+    "key.gavinsmod.gui.settings": "Settings"
 }

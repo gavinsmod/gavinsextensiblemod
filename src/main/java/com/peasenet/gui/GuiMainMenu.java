@@ -23,6 +23,7 @@ package com.peasenet.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.peasenet.gui.elements.Gui;
 import com.peasenet.main.GavinsMod;
+import com.peasenet.main.Settings;
 import com.peasenet.mods.Type;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;

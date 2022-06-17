@@ -263,24 +263,94 @@ public class RenderUtils {
      * Sets the gamma of the game to the full bright value of 10000.0 while storing the last gamma value.
      */
     public static void setHighGamma() {
-        var gamma = GavinsModClient.getMinecraftClient().getOptions().getGamma();
-        if (gamma.getValue() != 10000.0)
-            LAST_GAMMA = gamma.getValue();
-        @SuppressWarnings("unchecked")
-        var newGamma = (ISimpleOption<Double>) (Object) gamma;
-        newGamma.forceSetValue(10000.0);
+        if (Settings.FullbrightFade) {
+            fadeGammaUp();
+        } else {
+            setGamma(64.0);
+        }
     }
 
     /**
      * Resets the gamma to the players last configured value.
      */
-    public static void resetGamma() {
-        var gamma = GavinsModClient.getMinecraftClient().getOptions().getGamma();
-        if (gamma.getValue() != LAST_GAMMA) {
-            @SuppressWarnings("unchecked")
-            var newGamma = (ISimpleOption<Double>) (Object) gamma;
-            newGamma.forceSetValue(LAST_GAMMA);
+    public static void setLowGamma() {
+        if (Settings.FullbrightFade) {
+            fadeGammaDown();
+        } else {
+            setGamma(LAST_GAMMA);
         }
+    }
+
+    /**
+     * Gets the current game gamma.
+     * @return The current game gamma.
+     */
+    public static double getGamma() {
+        return GavinsModClient.getMinecraftClient().getOptions().getGamma().getValue();
+    }
+
+    /**
+     * Whether the gamma is set to its full bright value.
+     * @return Whether the gamma is set to its full bright value.
+     */
+    public static boolean isHighGamma() {
+        return getGamma() == 64;
+    }
+
+    /**
+     * Whether the gamma is currently at its last user configured value.
+     * @return Whether the gamma is currently at its last user configured value.
+     */
+    public static boolean isLastGamma() {
+        return getGamma() <= LAST_GAMMA;
+    }
+
+    /**
+     * Sets the gamma to the last user configured value.
+     */
+    public static void setLastGamma() {
+        LAST_GAMMA = getGamma();
+    }
+
+    /**
+     * Gets the last user configured value of the gamma.
+     * @return The last user configured value of the gamma.
+     */
+    public static double getLastGamma() {
+        return LAST_GAMMA;
+    }
+
+    /**
+     * Sets the gamma to the given value.
+     * @param gamma The value to set the gamma to.
+     */
+    public static void setGamma(double gamma) {
+        if (gamma < 0.0)
+            gamma = 0.0;
+        if (gamma > 64.0)
+            return;
+        var newGamma = GavinsModClient.getMinecraftClient().getOptions().getGamma();
+        if (newGamma.getValue() != gamma) {
+            @SuppressWarnings("unchecked")
+            var newGamma2 = (ISimpleOption<Double>) (Object) newGamma;
+            newGamma2.forceSetValue(gamma);
+        }
+    }
+
+    /**
+     * Fades the gamma up to the full bright value.
+     */
+    public static void fadeGammaUp() {
+        setGamma(getGamma() + 0.2f);
+    }
+
+    /**
+     * Fades the gamma down to the last user configured value.
+     */
+    public static void fadeGammaDown() {
+        setGamma(getGamma() - 0.2f);
+        if (getGamma() < getLastGamma())
+            setGamma(getLastGamma());
     }
 
     /**
