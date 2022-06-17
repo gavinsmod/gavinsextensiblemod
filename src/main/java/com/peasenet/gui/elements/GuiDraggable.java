@@ -44,7 +44,7 @@ public class GuiDraggable extends GuiClick {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        setPosition(new PointD(mouseX - (getWidth() / 2), mouseY - (getHeight() / 2)));
+        setMidPoint(new PointD(mouseX, mouseY));
         return true;
     }
 }

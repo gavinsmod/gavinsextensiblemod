@@ -47,4 +47,14 @@ public record PointD(double x, double y) {
     public PointD add(PointD other) {
         return new PointD(x + other.x, y + other.y);
     }
+
+    /**
+     * Subtracts two points together
+     *
+     * @param other - The other point to subtract.
+     * @return A point with the difference of the two points.
+     */
+    public PointD subtract(PointD other) {
+        return new PointD(x - other.x, y - other.y);
+    }
 }

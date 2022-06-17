@@ -232,6 +232,14 @@ public class Gui {
     }
 
     /**
+     * Sets the middle of the gui element to the given point.
+     * @param position - The point to set the middle of the gui element to.
+     */
+    public void setMidPoint(PointD position) {
+        this.box.setMiddle(position);
+    }
+
+    /**
      * Gets whether the mouse coordinates are within the bounds of the gui.
      *
      * @param mouseX - The x coordinate of the mouse.
