@@ -25,7 +25,7 @@ public class Colors {
     public static final Color RED = new Color(255, 0, 0);
     public static final Color DARK_RED = new Color(90, 50, 50);
     public static final Color GREEN = new Color(0, 255, 0);
-    public static final Color DARK_GREEN = new Color(50, 90, 50);
+    public static final Color DARK_GREEN = new Color(0, 127, 0);
     public static final Color BLUE = new Color(0, 0, 255);
     public static final Color YELLOW = new Color(255, 255, 0);
     public static final Color PURPLE = new Color(255, 0, 255);
@@ -36,4 +36,23 @@ public class Colors {
     public static final Color DARK_GRAY = new Color(16, 16, 16);
     public static final Color DARK_CYAN = new Color(0, 128, 255);
     public static final Color GOLD = new Color(255, 215, 0);
+
+    public static final Color[] COLORS = {
+            RED, DARK_RED, GREEN, DARK_GREEN, BLUE, YELLOW, PURPLE, CYAN, WHITE, BLACK, GRAY, DARK_GRAY, DARK_CYAN, GOLD
+    };
+
+    /**
+     * Returns the color with the given index.
+     *
+     * @param color - the index of the color to return
+     * @return the color with the given index, -1 if the search failed.
+     */
+    public static int getColorIndex(Color color) {
+        for (int i = 0; i < COLORS.length; i++) {
+            if (COLORS[i].equals(color)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }
