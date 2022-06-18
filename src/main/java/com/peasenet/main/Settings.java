@@ -23,10 +23,16 @@ package com.peasenet.main;
 import com.peasenet.util.color.Color;
 import com.peasenet.util.color.Colors;
 
+/**
+ * @author gt3ch1
+ * @version 6/18/2022
+ * A class that contains all the settings for the mod.
+ */
 public class Settings {
 
     public static boolean FullbrightFade = false;
     public static boolean FpsColors = true;
+    public static boolean ChatMessage = true;
 
     /*
      * Colors
@@ -44,9 +50,10 @@ public class Settings {
     public static Color SlowFpsColor = Colors.RED;
     public static Color OkFpsColor = Colors.YELLOW;
     public static Color FastFpsColor = Colors.GREEN;
-    public static Color BackgroundColor = Colors.BLACK;
+    public static Color BackgroundColor = Colors.INDIGO;
     public static Color ForegroundColor = Colors.WHITE;
-    public static Color EnabledColor = Colors.GREEN;
+    public static Color EnabledColor = Colors.SHADOW_BLUE;
+    public static Color CategoryColor = Colors.MEDIUM_SEA_GREEN;
 
 
 }

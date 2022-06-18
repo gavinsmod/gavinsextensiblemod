@@ -47,6 +47,8 @@
     "key.gavinsmod.settings.backgroundcolor": "Background Color",
     "key.gavinsmod.settings.foregroundcolor": "Foreground Color",
     "key.gavinsmod.settings.enabledcolor": "Enabled Color",
+    "key.gavinsmod.settings.categorycolor": "Category Color",
+    "key.gavinsmod.settings.togglemessage": "Toggle Messages",
     "category.gavinsmod.test": "Gavin's Mod",
     "key.gavinsmod.gui.settings": "Settings"
 }

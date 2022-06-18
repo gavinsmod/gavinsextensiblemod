@@ -26,6 +26,7 @@ import static com.peasenet.mods.Type.Category.*;
 
 /**
  * @author gt3ch1
+ * @version 6/18/2022
  * An enum containing all the mods.
  */
 public enum Type {
@@ -61,11 +62,34 @@ public enum Type {
     SETTINGS("Settings", "key.gavinsmod.settings", "category.gavinsmod.test", GLFW.GLFW_KEY_O, GUI, "settings"),
     MOD_GUI_TEXT_OVERLAY("GUI Text Overlay", "key.gavinsmod.guitextoverlay", "category.gavinsmod.test", MISC, "textoverlay");
 
+    /**
+     * The translation key for the name of the mod.
+     */
     private final String translationKey;
+
+    /**
+     * The literal name of the mod.
+     */
     private final String name;
-    private final String category;
+
+    /**
+     * The keybinding category of the mod.
+     */
+    private final String keybindingCategory;
+
+    /**
+     * The chat command for the mod.
+     */
     private final String chatCommand;
+
+    /**
+     * The keybinding for the mod.
+     */
     private final int keyBinding;
+
+    /**
+     * The category that the mod belongs to.
+     */
     private final Category modCategory;
 
 
@@ -80,7 +104,7 @@ public enum Type {
      */
     Type(String name, String translationKey, String category, int key, Category modCategory, String chatCommand) {
         this.name = name;
-        this.category = category;
+        this.keybindingCategory = category;
         this.translationKey = translationKey;
         this.keyBinding = key;
         this.modCategory = modCategory;
@@ -123,7 +147,7 @@ public enum Type {
      * @return The settings category of the mod.
      */
     public String getCategory() {
-        return category;
+        return keybindingCategory;
     }
 
     /**

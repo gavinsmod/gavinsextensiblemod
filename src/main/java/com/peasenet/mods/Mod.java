@@ -21,6 +21,7 @@
 package com.peasenet.mods;
 
 import com.peasenet.main.GavinsModClient;
+import com.peasenet.main.Settings;
 import com.peasenet.mixinterface.IMinecraftClient;
 import com.peasenet.util.KeyBindUtils;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -36,19 +37,27 @@ import org.lwjgl.glfw.GLFW;
  */
 public abstract class Mod implements IMod {
 
+    /**
+     * The string shown in the chat window when the player toggles the mod.
+     */
+
     public static final String GAVINS_MOD_STRING = "§d§l[ §b§lGavinsMod §d§l] §9";
+
     /**
      * The keybind for this mod.
      */
     protected final KeyBinding keyBinding;
+
     /**
      * The type of the mod.
      */
     private final Type type;
+
     /**
      * The category of this mod.
      */
     private final Type.Category category;
+
     /**
      * Whether the mod is enabled.
      */
@@ -69,7 +78,7 @@ public abstract class Mod implements IMod {
     }
 
     /**
-     * Creats a new mod with an empty keybinding.
+     * Creates a new mod with an empty keybinding.
      *
      * @param type     The type of the mod.
      * @param category The category of this mod.
@@ -84,7 +93,7 @@ public abstract class Mod implements IMod {
      * Creates a new mod with the given type and keybinding.
      *
      * @param type       - The type of the mod.
-     * @param keyBinding - The keybind for this mod.
+     * @param keyBinding - The keybinding for this mod.
      */
     public Mod(Type type, KeyBinding keyBinding) {
         this.type = type;
@@ -113,7 +122,8 @@ public abstract class Mod implements IMod {
      * @param message The message to send.
      */
     public static void sendMessage(String message) {
-        GavinsModClient.getPlayer().sendMessage(Text.literal(message), false);
+        if (Settings.ChatMessage)
+            GavinsModClient.getPlayer().sendMessage(Text.literal(message), false);
     }
 
     /**

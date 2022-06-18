@@ -36,7 +36,7 @@ public class GuiMovement extends GuiModCategory {
      * Creates a new movement dropdown.
      */
     public GuiMovement() {
-        this(new PointD(10, 10), 60, 10, Text.translatable("key.gavinsmod.gui.movement"));
+        this(new PointD(10, 20), 60, 10, Text.translatable("key.gavinsmod.gui.movement"));
     }
 
     /**

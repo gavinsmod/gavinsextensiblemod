@@ -36,7 +36,7 @@ public class GuiCombat extends GuiModCategory {
      * Creates a new combat dropdown.
      */
     public GuiCombat() {
-        this(new PointD(80, 10), 50, 10, Text.translatable("key.gavinsmod.gui.combat"));
+        this(new PointD(80, 20), 50, 10, Text.translatable("key.gavinsmod.gui.combat"));
     }
 
     /**

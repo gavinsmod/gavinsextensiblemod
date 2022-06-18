@@ -44,27 +44,6 @@ public class Color {
     private final int blue;
 
     /**
-     * The alpha value of this color.
-     */
-    private final int alpha;
-
-    /**
-     * Creates a new RGBA color. Must be between 0 and 255.
-     * 0 being completely "off" and 255 being completely "on".
-     *
-     * @param red   Red value.
-     * @param green Green value.
-     * @param blue  Blue value.
-     * @param alpha (optional) - defaults to 255
-     */
-    public Color(int red, int green, int blue, int alpha) {
-        this.red = red % 256;
-        this.green = green % 256;
-        this.blue = blue % 256;
-        this.alpha = alpha % 256;
-    }
-
-    /**
      * Creates a new RGBA color. Must be between 0 and 255.
      *
      * @param red   Red value.
@@ -72,7 +51,9 @@ public class Color {
      * @param blue  Blue value.
      */
     public Color(int red, int green, int blue) {
-        this(red, green, blue, 255);
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
     }
 
     /**
@@ -103,12 +84,13 @@ public class Color {
     }
 
     /**
-     * Gets the alpha value of this color. Will be within 0 and 1.
+     * Gets a color from an int value.
      *
-     * @return alpha value
+     * @param i - the int value
+     * @return the color
      */
-    public float getAlpha() {
-        return alpha / 255f;
+    public static Color fromInt(int i) {
+        return new Color(i >> 16 & 0xFF, i >> 8 & 0xFF, i & 0xFF);
     }
 
     /**
@@ -117,29 +99,15 @@ public class Color {
      * @return float array of color values
      */
     public float[] getAsFloatArray() {
-        return new float[]{getRed(), getGreen(), getBlue(), getAlpha()};
+        return new float[]{getRed(), getGreen(), getBlue(), 1};
     }
 
     /**
      * Gets the int value of this color, will be converted to its hex equivalent.
      *
-     * @param a - whether to include the alpha value
-     * @return int value of color
-     */
-    public int getAsInt(boolean a) {
-        if (a) {
-            return (alpha << 24) | (red << 16) | (green << 8) | blue;
-        } else {
-            return (red << 16) | (green << 8) | blue;
-        }
-    }
-
-    /**
-     * Gets the integer representation of this color without the alpha value.
-     *
      * @return int value of color
      */
     public int getAsInt() {
-        return getAsInt(false);
+        return (red << 16) | (green << 8) | blue;
     }
 }

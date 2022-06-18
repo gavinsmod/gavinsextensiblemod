@@ -26,6 +26,7 @@ import com.peasenet.gui.elements.GuiDropdown;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.Settings;
 import com.peasenet.mods.Type;
+import com.peasenet.util.math.PointD;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -55,6 +56,10 @@ public class GuiMainMenu extends Screen {
     public GuiMainMenu(ArrayList<Gui> guis) {
         super(Text.literal("Gavin's Mod " + VERSION));
         this.guis = guis;
+        // Create a plain gui at the top right corner
+        var width = getTitle().getString().length() * 5;
+        Gui g = new Gui(new PointD(10, 1), width + 2, 10, getTitle());
+        guis.add(g);
     }
 
     @Override
@@ -70,7 +75,7 @@ public class GuiMainMenu extends Screen {
         RenderSystem.enableBlend();
         for (var gui : guis) {
             if (gui instanceof GuiDropdown) {
-                gui.setBackground(Settings.BackgroundColor);
+                gui.setBackground(Settings.CategoryColor);
             }
             gui.render(matrixStack, tr);
         }

@@ -36,7 +36,7 @@ public class GuiESP extends GuiModCategory {
      * Creates a new ESP dropdown.
      */
     public GuiESP() {
-        this(new PointD(10, 110), 60, 10, Text.translatable("key.gavinsmod.gui.esps"));
+        this(new PointD(10, 120), 60, 10, Text.translatable("key.gavinsmod.gui.esps"));
     }
 
     /**

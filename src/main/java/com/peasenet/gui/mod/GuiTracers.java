@@ -36,7 +36,7 @@ public class GuiTracers extends GuiModCategory {
      * Creates a new tracer dropdown.
      */
     public GuiTracers() {
-        this(new PointD(80, 110), 82, 10, Text.translatable("key.gavinsmod.gui.tracers"));
+        this(new PointD(80, 120), 82, 10, Text.translatable("key.gavinsmod.gui.tracers"));
     }
 
     /**

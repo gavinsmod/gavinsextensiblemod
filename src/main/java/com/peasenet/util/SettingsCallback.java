@@ -20,6 +20,13 @@
 
 package com.peasenet.util;
 
+/**
+ * @author gt3ch1
+ * A callback interface for when settings are changed.
+ */
 public interface SettingsCallback {
+    /**
+     * Called when settings are changed.
+     */
     void callback();
 }

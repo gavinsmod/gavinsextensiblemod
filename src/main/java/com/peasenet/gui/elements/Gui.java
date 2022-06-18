@@ -157,9 +157,9 @@ public class Gui {
      * @param tr          The text render to use to draw text
      */
     public void render(MatrixStack matrixStack, TextRenderer tr) {
-        RenderUtils.drawBox(backgroundColor.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2(), matrixStack);
+        RenderUtils.drawBox(backgroundColor.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrixStack);
         tr.draw(matrixStack, title, (int) getX() + 2, (int) getY() + 2, Settings.ForegroundColor.getAsInt());
-        RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2(), matrixStack);
+        RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrixStack);
     }
 
 

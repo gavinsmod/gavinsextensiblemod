@@ -20,6 +20,12 @@
 
 package com.peasenet.util.color;
 
+/**
+ * @author gt3ch1
+ * @version 6/18/2022
+ * A class containing pre-defined colors.
+ * Note: Use this site to generate color names: <a href="https://www.color-name.com/hex/">color-name.com</a>
+ */
 public class Colors {
 
     public static final Color RED = new Color(255, 0, 0);
@@ -36,9 +42,18 @@ public class Colors {
     public static final Color DARK_GRAY = new Color(16, 16, 16);
     public static final Color DARK_CYAN = new Color(0, 128, 255);
     public static final Color GOLD = new Color(255, 215, 0);
+    public static final Color INDIGO = Color.fromInt(0x273859);
+    public static final Color SHADOW_BLUE = Color.fromInt(0x7686A6);
+    public static final Color DARK_SPRING_GREEN = Color.fromInt(0x1D734B);
+    public static final Color MEDIUM_SEA_GREEN = Color.fromInt(0x32a670);
+    public static final Color DESERT_SAND = Color.fromInt(0xD9D2B0);
 
+    /**
+     * The list of all colors.
+     */
     public static final Color[] COLORS = {
-            RED, DARK_RED, GREEN, DARK_GREEN, BLUE, YELLOW, PURPLE, CYAN, WHITE, BLACK, GRAY, DARK_GRAY, DARK_CYAN, GOLD
+            RED, DARK_RED, GREEN, DARK_GREEN, BLUE, YELLOW, PURPLE, CYAN, WHITE, BLACK, GRAY, DARK_GRAY, DARK_CYAN, GOLD,
+            INDIGO, SHADOW_BLUE, DARK_SPRING_GREEN, MEDIUM_SEA_GREEN, DESERT_SAND
     };
 
     /**

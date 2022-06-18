@@ -1,15 +1,12 @@
 /*
  * Copyright (c) 2022. Gavin Pease and contributors.
- *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
- *
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
- *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
  * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
  * PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
@@ -25,6 +22,12 @@ import com.peasenet.util.SettingsCallback;
 import com.peasenet.util.math.PointD;
 import net.minecraft.text.Text;
 
+/**
+ * @author gt3ch1
+ * @version 6/18/2022
+ * A gui element that cycles through a list of settings when clicked on.
+ * A callback is called when clicked on.
+ */
 public class GuiCycle extends GuiClick {
 
     /**
@@ -60,8 +63,16 @@ public class GuiCycle extends GuiClick {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        int increment = button == 0 ? 1 : -1;
         if (mouseWithinGui(mouseX, mouseY)) {
-            currentIndex = (currentIndex + 1) % cycleSize;
+            // move the cycle index by the increment, wrapping around if necessary
+            currentIndex = (currentIndex + increment);
+            // y is modulo not working
+            if (currentIndex < 0) {
+                currentIndex = cycleSize - 1;
+            } else if (currentIndex >= cycleSize) {
+                currentIndex = 0;
+            }
             callback.callback();
             return true;
         }

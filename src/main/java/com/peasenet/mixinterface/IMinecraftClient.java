@@ -28,39 +28,89 @@ import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.biome.Biome;
 
+/**
+ * @author gt3ch1
+ * @version 6/13/2022
+ * A mixin interface for the Minecraft client to allow access for certain members that are not public.
+ */
 public interface IMinecraftClient {
-    int getAttackCooldown();
 
-    void setAttackCooldown(int cooldown);
-
-    int getItemUseCooldown();
-
+    /**
+     * Sets the cooldown time for using any item.
+     *
+     * @param cooldown - The cooldown time.
+     */
     void setItemUseCooldown(int cooldown);
 
+
+    /**
+     * The current frames per second.
+     *
+     * @return The current frames per second.
+     */
     int getFps();
 
+    /**
+     * Gets the current options for the game.
+     *
+     * @return The current options for the game.
+     */
     GameOptions getOptions();
 
+    /**
+     * Gets the player.
+     *
+     * @return The player
+     */
     ClientPlayerEntity getPlayer();
 
+    /**
+     * Gets the player interaction manager.
+     *
+     * @return The player interaction manager.
+     */
     ClientPlayerInteractionManager getPlayerInteractionManager();
 
+    /**
+     * Gets the text renderer of the client.
+     *
+     * @return The text renderer.
+     */
     TextRenderer getTextRenderer();
 
+    /**
+     * Gets the world that the player is currently in.
+     *
+     * @return The current world.
+     */
     ClientWorld getWorld();
 
+    /**
+     * Sets the current in game screen to the given parameter
+     *
+     * @param s - The screen to change to.
+     */
     void setScreen(Screen s);
 
+    /**
+     * Gets the current world renderer.
+     *
+     * @return The world renderer.
+     */
     WorldRenderer getWorldRenderer();
 
+    /**
+     * Enables or disables chunk culling (rendering only chunks that are in the viewport).
+     *
+     * @param b - Whether to enable or disable chunk culling.
+     */
     void setChunkCulling(boolean b);
 
+    /**
+     * Gets the current game window.
+     *
+     * @return The game window.
+     */
     Window getWindow();
-
-    Biome getBiomeAtPos(BlockPos pos);
-
-
 }

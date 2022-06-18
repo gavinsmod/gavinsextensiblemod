@@ -40,7 +40,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 import net.minecraft.util.math.*;
 import org.lwjgl.opengl.GL11;
 
@@ -79,9 +78,9 @@ public class RenderUtils {
         normal.normalize();
         Matrix4f matrix4f = stack.peek().getPositionMatrix();
         Matrix3f matrix3f = stack.peek().getNormalMatrix();
-        buffer.vertex(matrix4f, playerPos.getX(), playerPos.getY(), playerPos.getZ()).color(color.getAsInt(true))
+        buffer.vertex(matrix4f, playerPos.getX(), playerPos.getY(), playerPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), 0.5f)
                 .normal(matrix3f, normal.getX(), normal.getY(), normal.getZ()).next();
-        buffer.vertex(matrix4f, boxPos.getX(), boxPos.getY(), boxPos.getZ()).color(color.getAsInt(true))
+        buffer.vertex(matrix4f, boxPos.getX(), boxPos.getY(), boxPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), 0.5f)
                 .normal(matrix3f, normal.getX(), normal.getY(), normal.getZ()).next();
     }
 
@@ -188,7 +187,7 @@ public class RenderUtils {
      * @param c      The color to draw the box in.
      */
     private static void drawBox(MatrixStack stack, BufferBuilder buffer, Box aabb, Color c) {
-        WorldRenderer.drawBox(stack, buffer, aabb, c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
+        WorldRenderer.drawBox(stack, buffer, aabb, c.getRed(), c.getGreen(), c.getBlue(), 1f);
     }
 
     /**

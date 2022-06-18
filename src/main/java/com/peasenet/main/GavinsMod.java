@@ -59,7 +59,7 @@ import java.util.stream.Stream;
 public class GavinsMod implements ModInitializer {
     private static final ModGuiSettings GuiSettings = new ModGuiSettings();
     public static final Logger LOGGER = LoggerFactory.getLogger("gavinsmod");
-    public static final String VERSION = "v1.2.1";
+    public static final String VERSION = "v1.2.2";
     // MOVEMENT
     private static final ModXray XRay = new ModXray();
     private static final ModFly Fly = new ModFly();

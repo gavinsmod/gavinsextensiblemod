@@ -36,7 +36,7 @@ public class GuiRender extends GuiModCategory {
      * Creates a new render dropdown.
      */
     public GuiRender() {
-        this(new PointD(220, 10), 62, 10, Text.translatable("key.gavinsmod.gui.render"));
+        this(new PointD(220, 20), 62, 10, Text.translatable("key.gavinsmod.gui.render"));
     }
 
     /**

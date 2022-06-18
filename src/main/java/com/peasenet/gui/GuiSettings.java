@@ -39,7 +39,7 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 6/17/2022
+ * @version 6/18/2022
  * A settings gui to control certain features of the mod.
  */
 public class GuiSettings extends Screen {
@@ -65,9 +65,11 @@ public class GuiSettings extends Screen {
     private final GuiCycle backgroundColor;
     private final GuiCycle foregroundColor;
     private final GuiCycle enabledColor;
-    private final GuiToggle fullbrightFade;
-    private final GuiToggle fpsColors;
+    private final GuiCycle categoryColor;
 
+    /**
+     * Creates a new GUI settings screen.
+     */
     public GuiSettings() {
         super(Text.translatable("key.gavinsmod.gui.settings"));
         GuiDropdown tracerDropdown = new GuiDropdown(new PointD(110, 110), 110, 10, Text.translatable("key.gavinsmod.settings.tracers"));
@@ -75,9 +77,9 @@ public class GuiSettings extends Screen {
         GuiDropdown espDropdown = new GuiDropdown(new PointD(10, 110), 90, 10, Text.translatable("key.gavinsmod.settings.esps"));
         GuiDropdown renderDropdown = new GuiDropdown(new PointD(10, 10), 90, 10, Text.translatable("key.gavinsmod.settings.render"));
         GuiDropdown miscDropdown = new GuiDropdown(new PointD(110, 10), 95, 10, Text.translatable("key.gavinsmod.gui.misc"));
-        GuiDropdown fpsColorDropdown = new GuiDropdown(new PointD(172, 21), 95, 10, Text.translatable("key.gavinsmod.settings.fps.color"));
+        GuiDropdown fpsColorDropdown = new GuiDropdown(new PointD(210, 21), 95, 10, Text.translatable("key.gavinsmod.settings.fps.color"));
 
-        /**
+        /*
          * TRACERS AND ESPS
          */
         // Chest tracers
@@ -172,7 +174,7 @@ public class GuiSettings extends Screen {
         /*
          * RENDER SETTINGS
          */
-        fullbrightFade = new GuiToggle(new PointD(10, 10), 90, 10, Text.translatable("key.gavinsmod.settings.gammafade"));
+        GuiToggle fullbrightFade = new GuiToggle(new PointD(10, 10), 90, 10, Text.translatable("key.gavinsmod.settings.gammafade"));
         fullbrightFade.setCallback(() -> Settings.FullbrightFade = !Settings.FullbrightFade);
         fullbrightFade.setState(Settings.FullbrightFade);
 
@@ -200,7 +202,7 @@ public class GuiSettings extends Screen {
             fastFps.setBackground(Settings.FastFpsColor);
         });
 
-        fpsColors = new GuiToggle(new PointD(10, 10), 95, 10, Text.translatable("key.gavinsmod.settings.fpscolors"));
+        GuiToggle fpsColors = new GuiToggle(new PointD(10, 10), 95, 10, Text.translatable("key.gavinsmod.settings.fpscolors"));
         fpsColors.setCallback(() -> Settings.FpsColors = !Settings.FpsColors);
         fpsColors.setState(Settings.FpsColors);
 
@@ -227,6 +229,18 @@ public class GuiSettings extends Screen {
             enabledColor.setBackground(Settings.EnabledColor);
         });
         enabledColor.setCurrentIndex(Colors.getColorIndex(Settings.EnabledColor));
+
+        categoryColor = new GuiCycle(95, 10, Text.translatable("key.gavinsmod.settings.categorycolor"), Colors.COLORS.length);
+        categoryColor.setBackground(Settings.CategoryColor);
+        categoryColor.setCallback(() -> {
+            Settings.CategoryColor = Colors.COLORS[categoryColor.getCurrentIndex()];
+            categoryColor.setBackground(Settings.CategoryColor);
+        });
+        categoryColor.setCurrentIndex(Colors.getColorIndex(Settings.CategoryColor));
+
+        GuiToggle chatMessage = new GuiToggle(new PointD(10, 10), 95, 10, Text.translatable("key.gavinsmod.settings.togglemessage"));
+        chatMessage.setCallback(() -> Settings.ChatMessage = !Settings.ChatMessage);
+        chatMessage.setState(Settings.ChatMessage);
 
         guis = new ArrayList<>();
         guis.add(tracerDropdown);
@@ -255,6 +269,8 @@ public class GuiSettings extends Screen {
         miscDropdown.addElement(backgroundColor);
         miscDropdown.addElement(foregroundColor);
         miscDropdown.addElement(enabledColor);
+        miscDropdown.addElement(categoryColor);
+        miscDropdown.addElement(chatMessage);
     }
 
     @Override
@@ -263,7 +279,7 @@ public class GuiSettings extends Screen {
         var tr = this.client.textRenderer;
         RenderSystem.setShader(GameRenderer::getPositionShader);
         RenderSystem.enableBlend();
-        tr.draw(matrixStack, Text.translatable("key.gavinsmod.gui.settings"), 10, 0, 0xFFFFFF);
+        tr.draw(matrixStack, Text.translatable("key.gavinsmod.gui.settings"), 10, 1, Settings.ForegroundColor.getAsInt());
         // Draw a gui button to cycle through colors for tracers
         guis.forEach(gui -> {
             gui.setBackground(Settings.BackgroundColor);

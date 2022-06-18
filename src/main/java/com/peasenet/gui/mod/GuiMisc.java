@@ -36,7 +36,7 @@ public class GuiMisc extends GuiModCategory {
      * Creates a new misc dropdown.
      */
     public GuiMisc() {
-        this(new PointD(140, 10), 70, 10, Text.translatable("key.gavinsmod.gui.misc"));
+        this(new PointD(140, 20), 70, 10, Text.translatable("key.gavinsmod.gui.misc"));
     }
 
     /**

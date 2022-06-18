@@ -32,8 +32,6 @@ import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.biome.Biome;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -42,8 +40,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * @author gt3ch1, ate47
- * Credit: <a href="https://github.com/ate47/Xray/">https://github.com/ate47/Xray/</a>
+ * @author gt3ch1
  * @version 5/18/2022
  */
 @Mixin(MinecraftClient.class)
@@ -84,25 +81,10 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     private Window window;
 
     @Inject(at = @At(value = "HEAD"), method = "isAmbientOcclusionEnabled()Z", cancellable = true)
-    private static void ixXrayOrFullbright(CallbackInfoReturnable<Boolean> ci) {
+    private static void isXrayOrFullBright(CallbackInfoReturnable<Boolean> ci) {
         boolean disabled = GavinsMod.isEnabled(Type.XRAY) || GavinsMod.isEnabled(Type.FULL_BRIGHT);
         ci.setReturnValue(!disabled);
         ci.cancel();
-    }
-
-    @Override
-    public int getAttackCooldown() {
-        return attackCooldown;
-    }
-
-    @Override
-    public void setAttackCooldown(int cooldown) {
-        attackCooldown = cooldown;
-    }
-
-    @Override
-    public int getItemUseCooldown() {
-        return itemUseCooldown;
     }
 
     @Override
@@ -158,8 +140,4 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
         return window;
     }
 
-    @Override
-    public Biome getBiomeAtPos(BlockPos pos) {
-        return world.getBiome(pos).value();
-    }
 }

@@ -25,6 +25,11 @@ import com.peasenet.main.GavinsModClient;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 
+/**
+ * @author gt3ch1
+ * @version 6/17/2022
+ * A mod that allows the player to configure certain settings of gavinsmod.
+ */
 public class ModGuiSettings extends Mod {
     public ModGuiSettings() {
         super(Type.SETTINGS);
