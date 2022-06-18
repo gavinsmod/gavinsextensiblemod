@@ -21,7 +21,7 @@
 
 package com.peasenet.gui.elements;
 
-import com.peasenet.SettingsCallback;
+import com.peasenet.util.SettingsCallback;
 import com.peasenet.util.math.PointD;
 import net.minecraft.text.Text;
 

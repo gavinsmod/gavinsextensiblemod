@@ -20,9 +20,8 @@
 
 package com.peasenet.gui.elements;
 
-import com.peasenet.SettingsCallback;
 import com.peasenet.main.Settings;
-import com.peasenet.util.color.Colors;
+import com.peasenet.util.SettingsCallback;
 import com.peasenet.util.math.PointD;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
