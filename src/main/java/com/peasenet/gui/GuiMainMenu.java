@@ -22,6 +22,7 @@ package com.peasenet.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.peasenet.gui.elements.Gui;
+import com.peasenet.gui.elements.GuiDropdown;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.Settings;
 import com.peasenet.mods.Type;
@@ -68,6 +69,9 @@ public class GuiMainMenu extends Screen {
         RenderSystem.setShader(GameRenderer::getPositionShader);
         RenderSystem.enableBlend();
         for (var gui : guis) {
+            if (gui instanceof GuiDropdown) {
+                gui.setBackground(Settings.BackgroundColor);
+            }
             gui.render(matrixStack, tr);
         }
 

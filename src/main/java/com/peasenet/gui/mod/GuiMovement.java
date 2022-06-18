@@ -22,7 +22,6 @@ package com.peasenet.gui.mod;
 
 import com.peasenet.gui.elements.GuiModCategory;
 import com.peasenet.mods.Type;
-import com.peasenet.util.color.Colors;
 import com.peasenet.util.math.PointD;
 import net.minecraft.text.Text;
 
@@ -50,6 +49,5 @@ public class GuiMovement extends GuiModCategory {
      */
     public GuiMovement(PointD position, int width, int height, Text title) {
         super(position, width, height, title, Type.Category.MOVEMENT);
-        setBackground(Colors.BLUE);
     }
 }
