@@ -1,0 +1,24 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "com.peasenet.mixins",
+    "compatibilityLevel": "JAVA_17",
+    "mixins": [
+    ],
+    "client": [
+        "EntityRendererMixin",
+        "MixinBlock",
+        "MixinClientPlayerEntity",
+        "MixinGameRender",
+        "MixinInGameHud",
+        "MixinLivingEntity",
+        "MixinMinecraftClient",
+        "MixinPlayerEntity",
+        "MixinSimpleOption",
+        "MixinBiome",
+        "WorldRendererInvoker"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

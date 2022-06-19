@@ -1,12 +1,34 @@
+/*
+ * Copyright (c) 2022. Gavin Pease and contributors.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ *  following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial
+ * portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ * PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT
+ * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package com.peasenet.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
+import com.peasenet.main.Settings;
 import com.peasenet.mixinterface.ISimpleOption;
 import com.peasenet.mods.Type;
 import com.peasenet.util.color.Color;
 import com.peasenet.util.color.Colors;
+import com.peasenet.util.math.BoxD;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -18,7 +40,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 import net.minecraft.util.math.*;
 import org.lwjgl.opengl.GL11;
 
@@ -31,7 +52,8 @@ public class RenderUtils {
     /**
      * How many chunks away to render things.
      */
-    private static int CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.getViewDistance().getValue();
+    private static int CHUNK_RADIUS = GavinsModClient.getMinecraftClient().getOptions().getViewDistance().getValue();
+
 
     /**
      * The last player configured gamma.
@@ -56,12 +78,11 @@ public class RenderUtils {
         normal.normalize();
         Matrix4f matrix4f = stack.peek().getPositionMatrix();
         Matrix3f matrix3f = stack.peek().getNormalMatrix();
-        buffer.vertex(matrix4f, playerPos.getX(), playerPos.getY(), playerPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
+        buffer.vertex(matrix4f, playerPos.getX(), playerPos.getY(), playerPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), 0.5f)
                 .normal(matrix3f, normal.getX(), normal.getY(), normal.getZ()).next();
-        buffer.vertex(matrix4f, boxPos.getX(), boxPos.getY(), boxPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
+        buffer.vertex(matrix4f, boxPos.getX(), boxPos.getY(), boxPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), 0.5f)
                 .normal(matrix3f, normal.getX(), normal.getY(), normal.getZ()).next();
     }
-
 
     /**
      * Processes events for rendering player, chest, item, and mob tracers or esp's in the world.
@@ -69,7 +90,7 @@ public class RenderUtils {
      * @param context The render context.
      */
     public static void afterEntities(WorldRenderContext context) {
-        CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.getViewDistance().getValue() / 2;
+        CHUNK_RADIUS = GavinsModClient.getMinecraftClient().getOptions().getViewDistance().getValue() / 2;
         // this helps with lag
         MinecraftClient minecraft = MinecraftClient.getInstance();
         ClientWorld level = minecraft.world;
@@ -133,20 +154,25 @@ public class RenderUtils {
      */
     private static void drawChestMods(ClientWorld level, MatrixStack stack, BufferBuilder buffer, Vec3f playerPos, int chunk_x, int chunk_z) {
         if (GavinsMod.isEnabled(Type.CHEST_ESP) || GavinsMod.isEnabled(Type.CHEST_TRACER)) {
-            for (int x = chunk_x - CHUNK_RADIUS; x <= chunk_x + CHUNK_RADIUS; x++) {
-                for (int z = chunk_z - CHUNK_RADIUS; z <= chunk_z + CHUNK_RADIUS; z++) {
-                    level.getChunk(chunk_x, chunk_z).getBlockEntities().forEach((blockPos, blockEntity) -> {
-                        if (!(blockEntity instanceof ChestBlockEntity))
-                            return;
-
-                        Box aabb = new Box(blockPos);
-                        Vec3f boxPos = new Vec3f(aabb.getCenter());
-                        if (GavinsMod.isEnabled(Type.CHEST_ESP))
-                            drawBox(stack, buffer, aabb, Colors.PURPLE);
-
-                        if (GavinsMod.isEnabled(Type.CHEST_TRACER))
-                            renderSingleLine(stack, buffer, playerPos, boxPos, Colors.PURPLE);
-                    });
+            // For each chunk in the CHUNK_RADIUS centered around chunk_x and chunk_z, draw a chest ESP or tracer.
+            for (int x = -CHUNK_RADIUS; x <= CHUNK_RADIUS; x++) {
+                for (int z = -CHUNK_RADIUS; z <= CHUNK_RADIUS; z++) {
+                    int chunk_x_ = chunk_x + x;
+                    int chunk_z_ = chunk_z + z;
+                    if (level.getChunk(chunk_x_, chunk_z_) != null) {
+                        level.getChunk(chunk_x_, chunk_z_).getBlockEntities().forEach((blockPos, blockEntity) -> {
+                                    if (blockEntity instanceof ChestBlockEntity) {
+                                        Box aabb = new Box(blockPos);
+                                        Vec3f boxPos = new Vec3f(aabb.getCenter());
+                                        if (GavinsMod.isEnabled(Type.CHEST_ESP))
+                                            drawBox(stack, buffer, aabb, Settings.ChestEspColor);
+                                        if (GavinsMod.isEnabled(Type.CHEST_TRACER)) {
+                                            renderSingleLine(stack, buffer, playerPos, boxPos, Settings.ChestTracerColor);
+                                        }
+                                    }
+                                }
+                        );
+                    }
                 }
             }
         }
@@ -161,7 +187,7 @@ public class RenderUtils {
      * @param c      The color to draw the box in.
      */
     private static void drawBox(MatrixStack stack, BufferBuilder buffer, Box aabb, Color c) {
-        WorldRenderer.drawBox(stack, buffer, aabb, c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
+        WorldRenderer.drawBox(stack, buffer, aabb, c.getRed(), c.getGreen(), c.getBlue(), 1f);
     }
 
     /**
@@ -187,36 +213,28 @@ public class RenderUtils {
             Color c = Colors.PURPLE;
 
             if (type == EntityType.ITEM) {
-                c = Colors.DARK_CYAN;
                 Item i = ((ItemEntity) e).getStack().getItem();
-                //TODO: This will be a list of rare items.
-                if (i.asItem() == Items.CREEPER_SPAWN_EGG) {
-                    c = Colors.WHITE;
-                }
                 if (GavinsMod.isEnabled(Type.ENTITY_ITEM_ESP))
-                    drawBox(stack, buffer, aabb, c);
+                    drawBox(stack, buffer, aabb, Settings.ItemEspColor);
                 if (GavinsMod.isEnabled(Type.ENTITY_ITEM_TRACER))
-                    renderSingleLine(stack, buffer, playerPos, boxPos, c);
+                    renderSingleLine(stack, buffer, playerPos, boxPos, Settings.ItemTracerColor);
                 return;
             }
 
             if (type == EntityType.PLAYER) {
                 if (GavinsMod.isEnabled(Type.ENTITY_PLAYER_ESP))
-                    drawBox(stack, buffer, aabb, c);
+                    drawBox(stack, buffer, aabb, Settings.PlayerEspColor);
                 if (GavinsMod.isEnabled(Type.ENTITY_PLAYER_TRACER))
-                    renderSingleLine(stack, buffer, playerPos, boxPos, c);
+                    renderSingleLine(stack, buffer, playerPos, boxPos, Settings.PlayerTracerColor);
                 return;
             }
 
-            if (type.getSpawnGroup().isPeaceful())
-                c = Colors.GREEN;
-            if (!type.getSpawnGroup().isPeaceful())
-                c = Colors.RED;
-
+            var espColor = type.getSpawnGroup().isPeaceful() ? Settings.PeacefulMobEspColor : Settings.HostileMobEspColor;
+            var tracerColor = type.getSpawnGroup().isPeaceful() ? Settings.PeacefulMobTracerColor : Settings.HostileMobTracerColor;
             if (GavinsMod.isEnabled(Type.MOB_ESP))
-                drawBox(stack, buffer, aabb, c);
+                drawBox(stack, buffer, aabb, espColor);
             if (GavinsMod.isEnabled(Type.MOB_TRACER))
-                renderSingleLine(stack, buffer, playerPos, boxPos, c);
+                renderSingleLine(stack, buffer, playerPos, boxPos, tracerColor);
         });
     }
 
@@ -239,24 +257,176 @@ public class RenderUtils {
      * Sets the gamma of the game to the full bright value of 10000.0 while storing the last gamma value.
      */
     public static void setHighGamma() {
-        var gamma = GavinsModClient.getMinecraftClient().options.getGamma();
-        if (gamma.getValue() != 10000.0)
-            LAST_GAMMA = gamma.getValue();
-        @SuppressWarnings("unchecked")
-        var newGamma = (ISimpleOption<Double>) (Object) gamma;
-        newGamma.forceSetValue(10000.0);
+        if (Settings.GammaFade) {
+            fadeGammaUp();
+        } else {
+            setGamma(64.0);
+        }
     }
 
     /**
      * Resets the gamma to the players last configured value.
      */
-    public static void resetGamma() {
-        var gamma = GavinsModClient.getMinecraftClient().options.getGamma();
-        if (gamma.getValue() != LAST_GAMMA) {
-            @SuppressWarnings("unchecked")
-            var newGamma = (ISimpleOption<Double>) (Object) gamma;
-            newGamma.forceSetValue(LAST_GAMMA);
+    public static void setLowGamma() {
+        if (Settings.GammaFade) {
+            fadeGammaDown();
+        } else {
+            setGamma(LAST_GAMMA);
         }
+    }
+
+    /**
+     * Gets the current game gamma.
+     * @return The current game gamma.
+     */
+    public static double getGamma() {
+        return GavinsModClient.getMinecraftClient().getOptions().getGamma().getValue();
+    }
+
+    /**
+     * Whether the gamma is set to its full bright value.
+     * @return Whether the gamma is set to its full bright value.
+     */
+    public static boolean isHighGamma() {
+        return getGamma() == 64;
+    }
+
+    /**
+     * Whether the gamma is currently at its last user configured value.
+     * @return Whether the gamma is currently at its last user configured value.
+     */
+    public static boolean isLastGamma() {
+        return getGamma() <= LAST_GAMMA;
+    }
+
+    /**
+     * Sets the gamma to the last user configured value.
+     */
+    public static void setLastGamma() {
+        LAST_GAMMA = getGamma();
+    }
+
+    /**
+     * Gets the last user configured value of the gamma.
+     * @return The last user configured value of the gamma.
+     */
+    public static double getLastGamma() {
+        return LAST_GAMMA;
+    }
+
+    /**
+     * Sets the gamma to the given value.
+     * @param gamma The value to set the gamma to.
+     */
+    public static void setGamma(double gamma) {
+        if (gamma < 0.0)
+            gamma = 0.0;
+        if (gamma > 64.0)
+            return;
+        var newGamma = GavinsModClient.getMinecraftClient().getOptions().getGamma();
+        if (newGamma.getValue() != gamma) {
+            @SuppressWarnings("unchecked")
+            var newGamma2 = (ISimpleOption<Double>) (Object) newGamma;
+            newGamma2.forceSetValue(gamma);
+        }
+    }
+
+    /**
+     * Fades the gamma up to the full bright value.
+     */
+    public static void fadeGammaUp() {
+        setGamma(getGamma() + 0.2f);
+    }
+
+    /**
+     * Fades the gamma down to the last user configured value.
+     */
+    public static void fadeGammaDown() {
+        setGamma(getGamma() - 0.2f);
+        if (getGamma() < getLastGamma())
+            setGamma(getLastGamma());
+    }
+
+    /**
+     * Draws a box within the area of the given BoxD.
+     *
+     * @param acColor     The color of the box.
+     * @param box         The box to draw.
+     * @param matrixStack The matrix stack.
+     */
+    public static void drawBox(float[] acColor, BoxD box, MatrixStack matrixStack) {
+        drawBox(acColor, (int) box.getTopLeft().x(), (int) box.getTopLeft().y(), (int) box.getBottomRight().x(), (int) box.getBottomRight().y(), matrixStack);
+    }
+
+    /**
+     * Draws a box on screen.
+     *
+     * @param acColor     The color of the box as a 4 point float array.
+     * @param xt1         The x coordinate of the top left corner of the box.
+     * @param yt1         The y coordinate of the top left corner of the box.
+     * @param xt2         The x coordinate of the bottom right corner of the box.
+     * @param yt2         The y coordinate of the bottom right corner of the box.
+     * @param matrixStack The matrix stack used to draw boxes on screen.
+     */
+    public static void drawBox(float[] acColor, int xt1, int yt1, int xt2, int yt2, MatrixStack matrixStack) {
+        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.enableBlend();
+        var matrix = matrixStack.peek().getPositionMatrix();
+        var bufferBuilder = Tessellator.getInstance().getBuffer();
+        RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 0.5f);
+        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+        bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
+        bufferBuilder.vertex(matrix, xt1, yt2, 0).next();
+        bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
+        bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
+        Tessellator.getInstance().draw();
+    }
+
+    /**
+     * Draws a line on screen.
+     *
+     * @param accColor    - The color of the line as a 4 point float array.
+     * @param xt1         - The x coordinate of the first point of the line.
+     * @param yt1         - The y coordinate of the first point of the line.
+     * @param xt2         - The x coordinate of the second point of the line.
+     * @param yt2         - The y coordinate of the second point of the line.
+     * @param matrixStack - The matrix stack used to draw lines on screen.
+     */
+    public static void drawSingleLine(float[] accColor, int xt1, int yt1, int xt2, int yt2, MatrixStack matrixStack) {
+        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.enableBlend();
+        var matrix = matrixStack.peek().getPositionMatrix();
+        var bufferBuilder = Tessellator.getInstance().getBuffer();
+        RenderSystem.setShaderColor(accColor[0], accColor[1], accColor[2], 1f);
+        bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
+        bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
+        bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
+        Tessellator.getInstance().draw();
+    }
+
+    /**
+     * Draws a box outline on screen.
+     *
+     * @param acColor     The color of the box as a 4 point float array.
+     * @param xt1         The x coordinate of the top left corner of the box.
+     * @param yt1         The y coordinate of the top left corner of the box.
+     * @param xt2         The x coordinate of the bottom right corner of the box.
+     * @param yt2         The y coordinate of the bottom right corner of the box.
+     * @param matrixStack The matrix stack used to draw boxes on screen.
+     */
+    public static void drawOutline(float[] acColor, int xt1, int yt1, int xt2, int yt2, MatrixStack matrixStack) {
+        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.enableBlend();
+        var matrix = matrixStack.peek().getPositionMatrix();
+        var bufferBuilder = Tessellator.getInstance().getBuffer();
+        RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 1.0F);
+        bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
+        bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
+        bufferBuilder.vertex(matrix, xt1, yt2, 0).next();
+        bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
+        bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
+        bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
+        Tessellator.getInstance().draw();
     }
 
 }

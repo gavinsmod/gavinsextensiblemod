@@ -1,3 +1,23 @@
+/*
+ * Copyright (c) 2022. Gavin Pease and contributors.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+ *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ *  following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial
+ * portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ * PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT
+ * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package com.peasenet.mods;
 
 import org.lwjgl.glfw.GLFW;
@@ -6,6 +26,7 @@ import static com.peasenet.mods.Type.Category.*;
 
 /**
  * @author gt3ch1
+ * @version 6/18/2022
  * An enum containing all the mods.
  */
 public enum Type {
@@ -24,25 +45,51 @@ public enum Type {
     //RENDER
     XRAY("Xray", "key.gavinsmod.xray", "category.gavinsmod.test", RENDER, "xray"),
     FULL_BRIGHT("Full Bright", "key.gavinsmod.fullbright", "category.gavinsmod.test", RENDER, "fullbright"),
-    CHEST_ESP("Chest ESP", "key.gavinsmod.chestesp", "category.gavinsmod.test", RENDER, "chestesp"),
-    CHEST_TRACER("Chest Tracer", "key.gavinsmod.chesttracer", "category.gavinsmod.test", RENDER, "chesttracer"),
-    ENTITY_ITEM_TRACER("Item Tracer", "key.gavinsmod.entityitemtracer", "category.gavinsmod.test", RENDER, "itemtracer"),
-    ENTITY_ITEM_ESP("Item ESP", "key.gavinsmod.entityitemesp", "category.gavinsmod.test", RENDER, "itemesp"),
-    ENTITY_PLAYER_ESP("Player ESP", "key.gavinsmod.entityplayeresp", "category.gavinsmod.test", RENDER, "playeresp"),
-    ENTITY_PLAYER_TRACER("Player Tracer", "key.gavinsmod.entityplayertracer", "category.gavinsmod.test", RENDER, "playertracer"),
-    MOB_ESP("Mob ESP", "key.gavinsmod.mobesp", "category.gavinsmod.test", RENDER, "mobesp"),
-    MOB_TRACER("Mob Tracer", "key.gavinsmod.mobtracer", "category.gavinsmod.test", RENDER, "mobtracer"),
+    CHEST_ESP("Chest ESP", "key.gavinsmod.chestesp", "category.gavinsmod.test", ESPS, "chestesp"),
+    CHEST_TRACER("Chest Tracer", "key.gavinsmod.chesttracer", "category.gavinsmod.test", TRACERS, "chesttracer"),
+    ENTITY_ITEM_TRACER("Item Tracer", "key.gavinsmod.entityitemtracer", "category.gavinsmod.test", TRACERS, "itemtracer"),
+    ENTITY_ITEM_ESP("Item ESP", "key.gavinsmod.entityitemesp", "category.gavinsmod.test", ESPS, "itemesp"),
+    ENTITY_PLAYER_ESP("Player ESP", "key.gavinsmod.entityplayeresp", "category.gavinsmod.test", ESPS, "playeresp"),
+    ENTITY_PLAYER_TRACER("Player Tracer", "key.gavinsmod.entityplayertracer", "category.gavinsmod.test", TRACERS, "playertracer"),
+    MOB_ESP("Mob ESP", "key.gavinsmod.mobesp", "category.gavinsmod.test", ESPS, "mobesp"),
+    MOB_TRACER("Mob Tracer", "key.gavinsmod.mobtracer", "category.gavinsmod.test", TRACERS, "mobtracer"),
     ANTI_HURT("Anti Hurt", "key.gavinsmod.antihurt", "category.gavinsmod.test", RENDER, "antihurt"),
     ANTI_PUMPKIN("Anti Pumpkin", "key.gavinsmod.antipumpkin", "category.gavinsmod.test", RENDER, "antipumpkin"),
+    NO_RAIN("No Rain", "key.gavinsmod.norain", "category.gavinsmod.test", RENDER, "norain"),
+    MOD_HPTAG("HP Tags", "key.gavinsmod.hptag", "category.gavinsmod.test", RENDER, "hptag"),
+    MOD_FPS_COUNTER("FPS Counter", "key.gavinsmod.fpscounter", "category.gavinsmod.test", MISC, "fpscounter"),
     MOD_GUI("GUI", "key.gavinsmod.gui", "category.gavinsmod.test", GLFW.GLFW_KEY_I, GUI, "gui"),
-    MOD_GUI_TEXT_OVERLAY("GUI Text Overlay", "key.gavinsmod.guitextoverlay", "category.gavinsmod.test", GUI, "guitextoverlay");
-    
+    SETTINGS("Settings", "key.gavinsmod.settings", "category.gavinsmod.test", GLFW.GLFW_KEY_O, GUI, "settings"),
+    MOD_GUI_TEXT_OVERLAY("GUI Text Overlay", "key.gavinsmod.guitextoverlay", "category.gavinsmod.test", MISC, "textoverlay");
 
+    /**
+     * The translation key for the name of the mod.
+     */
     private final String translationKey;
+
+    /**
+     * The literal name of the mod.
+     */
     private final String name;
-    private final String category;
+
+    /**
+     * The keybinding category of the mod.
+     */
+    private final String keybindingCategory;
+
+    /**
+     * The chat command for the mod.
+     */
     private final String chatCommand;
+
+    /**
+     * The keybinding for the mod.
+     */
     private final int keyBinding;
+
+    /**
+     * The category that the mod belongs to.
+     */
     private final Category modCategory;
 
 
@@ -57,7 +104,7 @@ public enum Type {
      */
     Type(String name, String translationKey, String category, int key, Category modCategory, String chatCommand) {
         this.name = name;
-        this.category = category;
+        this.keybindingCategory = category;
         this.translationKey = translationKey;
         this.keyBinding = key;
         this.modCategory = modCategory;
@@ -100,7 +147,7 @@ public enum Type {
      * @return The settings category of the mod.
      */
     public String getCategory() {
-        return category;
+        return keybindingCategory;
     }
 
     /**
@@ -139,7 +186,11 @@ public enum Type {
         MOVEMENT("key.gavinsmod.gui.movement"),
         RENDER("key.gavinsmod.gui.render"),
         COMBAT("key.gavinsmod.gui.combat"),
-        GUI("key.gavinsmod.gui.gui");
+        MISC("key.gavinsmod.gui.misc"),
+        ESPS("key.gavinsmod.gui.esps"),
+        TRACERS("key.gavinsmod.gui.tracers"),
+        GUI("key.gavinsmod.gui.gui"),
+        NONE("none");
 
         public final String translationKey;
 

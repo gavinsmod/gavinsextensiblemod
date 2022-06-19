@@ -19,17 +19,25 @@ A "mod" that actually contains hacks/cheats for Minecraft.
 - Fly
 - Fast Mine
 - Fast Place
-- Anti Pumpkin Shadow
+- Anti Pumpkin Overlay
 - Auto Jump
 - Wall Climb
 - Kill Aura
 - Auto Crit
 - No Fall
 - No Clip
-- In Game GUI (example below - may be outdated)
-  ![img.png](src/main/resources/assets/gavinsmod/screenshots/gui.png)
-  - Also a text-based HUD
+- In Game GUI, featuring draggable drop-down menus with clickable elements.
+  ![](src/main/resources/assets/gavinsmod/screenshots/gui.png)
+  - There is also a text-based overlay that will show you what mods are currently active
+- Settings UI, allowing YOU to change certain elements of the mod.
+  ![](src/main/resources/assets/gavinsmod/screenshots/settings.png)
+  - You can configure what colors are for what part of the mod. Almost every color is configurable.
 - Anti Camera Bob
+- FPS counter
+  - Colors based off of what percentage of your frames you are getting
+- HP tags
+- NoRain
+- All the colors seen are fully customizable via the settings screen.
 ---
 
 ## Installation
@@ -44,7 +52,7 @@ A "mod" that actually contains hacks/cheats for Minecraft.
 
 ## License
 
-This project is licensed under the [MIT license](LICENSE.md).
+This project is licensed under the [MIT license](LICENSE).
 
 ---
 
