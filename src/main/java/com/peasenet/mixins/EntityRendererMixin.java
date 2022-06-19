@@ -70,11 +70,12 @@ public abstract class EntityRendererMixin<T extends Entity> {
                 int j = (int) (g * 255.0F) << 24;
                 float h = (float) (-textRenderer.getWidth(text) / 2);
                 int color = 0x00ff00;
-                if (currHealth < 0.75)
+                var percentHealth = (int) (currHealth / livingEntity.getMaxHealth());
+                if (percentHealth < 0.75)
                     color = 0xffff00;
-                if (currHealth < 0.5)
+                if (percentHealth < 0.5)
                     color = 0xffa500;
-                if (currHealth < 0.25)
+                if (percentHealth < 0.25)
                     color = 0xff0000;
                 textRenderer.draw(text, h, (float) 0, color, false, matrix4f, vertexConsumers, bl, j, light);
                 if (bl) {

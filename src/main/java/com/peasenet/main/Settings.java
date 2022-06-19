@@ -22,6 +22,7 @@ package com.peasenet.main;
 
 import com.peasenet.util.color.Color;
 import com.peasenet.util.color.Colors;
+import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
 
 import java.io.File;
@@ -63,15 +64,7 @@ public class Settings {
 
     public static void save() {
         // open the mods folder
-        var runDir = GavinsModClient.getMinecraftClient().getRunDirectory().getAbsolutePath();
-        var modsDir = runDir + "/mods";
-        // ensure the gavinsmod folder exists
-        var gavinsmodDir = modsDir + "/gavinsmod";
-        var cfgFile = new File(gavinsmodDir + "/settings.json");
-        var gavinsModFile = new File(gavinsmodDir);
-        if (!gavinsModFile.exists()) {
-            gavinsModFile.mkdir();
-        }
+        File cfgFile = getFile();
         // ensure the settings file exists
         if (!cfgFile.exists()) {
             try {
@@ -111,8 +104,8 @@ public class Settings {
         }
     }
 
-    public static void load() {
-        // open the mods folder
+    @NotNull
+    private static File getFile() {
         var runDir = GavinsModClient.getMinecraftClient().getRunDirectory().getAbsolutePath();
         var modsDir = runDir + "/mods";
         // ensure the gavinsmod folder exists
@@ -122,6 +115,12 @@ public class Settings {
         if (!gavinsModFile.exists()) {
             gavinsModFile.mkdir();
         }
+        return cfgFile;
+    }
+
+    public static void load() {
+        // open the mods folder
+        File cfgFile = getFile();
         // ensure the settings file exists
         if (!cfgFile.exists()) {
             try {

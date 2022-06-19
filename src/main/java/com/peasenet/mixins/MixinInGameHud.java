@@ -24,7 +24,6 @@ import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Settings;
 import com.peasenet.mods.Type;
 import com.peasenet.util.RenderUtils;
-import com.peasenet.util.color.Colors;
 import com.peasenet.util.math.BoxD;
 import com.peasenet.util.math.PointD;
 import net.minecraft.client.font.TextRenderer;
@@ -86,7 +85,7 @@ public class MixinInGameHud {
         mods = GavinsMod.getModsForTextOverlay();
         AtomicInteger modCounter = new AtomicInteger();
         mods.forEach(mod -> {
-            textRenderer.drawWithShadow(matrixStack, Text.translatable(mod.getTranslationKey()), currX, currY.get(), 0xFFFFFF);
+            textRenderer.draw(matrixStack, Text.translatable(mod.getTranslationKey()), currX, currY.get(), Settings.ForegroundColor.getAsInt());
             if (modsCount > 1 && modCounter.get() < modsCount - 1) {
                 RenderUtils.drawSingleLine(Settings.ForegroundColor.getAsFloatArray(), currX - 1, currY.get() + 9, longestModName * 6 + 5, currY.get() + 9, matrixStack);
             }
@@ -109,18 +108,16 @@ public class MixinInGameHud {
         var xCoordinate = GavinsModClient.getMinecraftClient().getWindow().getScaledWidth() - (fpsString.length() * 5 + 2);
         var box = new BoxD(new PointD(xCoordinate - 2, 0), fpsString.length() * 5 + 4, 12);
         var maximumFps = GavinsModClient.getMinecraftClient().getOptions().getMaxFps().getValue();
-        var color = Colors.WHITE.getAsInt();
+        var color = Settings.ForegroundColor;
         // if fps is within 5% of the maximum, use green.
         if (fps > maximumFps * 0.95)
-            color = Settings.FastFpsColor.getAsInt();
+            color = Settings.FastFpsColor;
         else if (fps > maximumFps * 0.45 && fps < maximumFps * 0.75)
-            color = Settings.OkFpsColor.getAsInt();
+            color = Settings.OkFpsColor;
         else
-            color = Settings.SlowFpsColor.getAsInt();
-        if (!Settings.FpsColors)
-            color = Colors.WHITE.getAsInt();
+            color = Settings.SlowFpsColor;
 
         RenderUtils.drawBox(Settings.BackgroundColor.getAsFloatArray(), box, matrixStack);
-        textRenderer.draw(matrixStack, Text.literal(fpsString), xCoordinate, 2, color);
+        textRenderer.draw(matrixStack, Text.literal(fpsString), xCoordinate, 2, color.getAsInt());
     }
 }

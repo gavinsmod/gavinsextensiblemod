@@ -7,7 +7,6 @@
     ],
     "client": [
         "EntityRendererMixin",
-        "MinecraftClientAccessor",
         "MixinBlock",
         "MixinClientPlayerEntity",
         "MixinGameRender",
