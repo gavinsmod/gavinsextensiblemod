@@ -99,8 +99,8 @@ public class Settings {
             writer.println(json.toJSONString());
             writer.close();
         } catch (Exception e) {
-            System.err.println("Error writing settings to file.");
-            e.printStackTrace();
+            GavinsMod.LOGGER.error("Error writing settings to file.");
+            GavinsMod.LOGGER.error(e.getMessage());
         }
     }
 
@@ -113,6 +113,7 @@ public class Settings {
         var cfgFile = new File(gavinsmodDir + "/settings.json");
         var gavinsModFile = new File(gavinsmodDir);
         if (!gavinsModFile.exists()) {
+            GavinsMod.LOGGER.info("Creating gavinsmod folder.");
             gavinsModFile.mkdir();
         }
         return cfgFile;
@@ -125,20 +126,16 @@ public class Settings {
         if (!cfgFile.exists()) {
             try {
                 cfgFile.createNewFile();
+                GavinsMod.LOGGER.info("Created settings file.");
                 save();
                 return;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-        JSONObject json = new JSONObject();
+        JSONObject json;
         try {
             json = (JSONObject) org.json.simple.JSONValue.parse(new FileReader(cfgFile));
-        } catch (Exception e) {
-            System.err.println("Error reading settings from file.");
-            e.printStackTrace();
-        }
-        try {
             GammaFade = (boolean) json.get("gammaFade");
             FpsColors = (boolean) json.get("fpsColors");
             ChatMessage = (boolean) json.get("chatMessage");
@@ -160,8 +157,8 @@ public class Settings {
             EnabledColor = Colors.COLORS[((Long) json.get("enabledColor")).intValue()];
             CategoryColor = Colors.COLORS[((Long) json.get("categoryColor")).intValue()];
         } catch (Exception e) {
-            System.err.println("Error reading settings from file.");
-            e.printStackTrace();
+            GavinsMod.LOGGER.error("Error reading settings from file. Saving defaults.");
+            save();
         }
     }
 }
