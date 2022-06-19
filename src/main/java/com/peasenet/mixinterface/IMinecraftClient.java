@@ -29,6 +29,8 @@ import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 
+import java.io.File;
+
 /**
  * @author gt3ch1
  * @version 6/13/2022
@@ -113,4 +115,6 @@ public interface IMinecraftClient {
      * @return The game window.
      */
     Window getWindow();
+
+    File getRunDirectory();
 }

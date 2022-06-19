@@ -88,6 +88,7 @@ public class GuiSettings extends Screen {
         chestTracer.setCallback(() -> {
             Settings.ChestTracerColor = Colors.COLORS[chestTracer.getCurrentIndex()];
             chestTracer.setBackground(Settings.ChestTracerColor);
+            Settings.save();
         });
         chestTracer.setCurrentIndex(Colors.getColorIndex(Settings.ChestTracerColor));
 
@@ -97,6 +98,7 @@ public class GuiSettings extends Screen {
         chestEsp.setCallback(() -> {
             Settings.ChestEspColor = Colors.COLORS[chestEsp.getCurrentIndex()];
             chestEsp.setBackground(Settings.ChestEspColor);
+            Settings.save();
         });
         chestEsp.setCurrentIndex(Colors.getColorIndex(Settings.ChestEspColor));
 
@@ -106,6 +108,7 @@ public class GuiSettings extends Screen {
         hostileMobTracer.setCallback(() -> {
             Settings.HostileMobTracerColor = Colors.COLORS[hostileMobTracer.getCurrentIndex()];
             hostileMobTracer.setBackground(Settings.HostileMobTracerColor);
+            Settings.save();
         });
         hostileMobTracer.setCurrentIndex(Colors.getColorIndex(Settings.HostileMobTracerColor));
 
@@ -115,6 +118,7 @@ public class GuiSettings extends Screen {
         hostileMobEsp.setCallback(() -> {
             Settings.HostileMobEspColor = Colors.COLORS[hostileMobEsp.getCurrentIndex()];
             hostileMobEsp.setBackground(Settings.HostileMobEspColor);
+            Settings.save();
         });
         hostileMobEsp.setCurrentIndex(Colors.getColorIndex(Settings.HostileMobEspColor));
 
@@ -124,6 +128,7 @@ public class GuiSettings extends Screen {
         peacefulMobTracer.setCallback(() -> {
             Settings.PeacefulMobTracerColor = Colors.COLORS[peacefulMobTracer.getCurrentIndex()];
             peacefulMobTracer.setBackground(Settings.PeacefulMobTracerColor);
+            Settings.save();
         });
         peacefulMobTracer.setCurrentIndex(Colors.getColorIndex(Settings.PeacefulMobTracerColor));
 
@@ -133,6 +138,7 @@ public class GuiSettings extends Screen {
         peacefulMobEsp.setCallback(() -> {
             Settings.PeacefulMobEspColor = Colors.COLORS[peacefulMobEsp.getCurrentIndex()];
             peacefulMobEsp.setBackground(Settings.PeacefulMobEspColor);
+            Settings.save();
         });
         peacefulMobEsp.setCurrentIndex(Colors.getColorIndex(Settings.PeacefulMobEspColor));
 
@@ -142,6 +148,7 @@ public class GuiSettings extends Screen {
         itemTracer.setCallback(() -> {
             Settings.ItemTracerColor = Colors.COLORS[itemTracer.getCurrentIndex()];
             itemTracer.setBackground(Settings.ItemTracerColor);
+            Settings.save();
         });
         itemTracer.setCurrentIndex(Colors.getColorIndex(Settings.ItemTracerColor));
 
@@ -151,6 +158,7 @@ public class GuiSettings extends Screen {
         itemEsp.setCallback(() -> {
             Settings.ItemEspColor = Colors.COLORS[itemEsp.getCurrentIndex()];
             itemEsp.setBackground(Settings.ItemEspColor);
+            Settings.save();
         });
         itemEsp.setCurrentIndex(Colors.getColorIndex(Settings.ItemEspColor));
 
@@ -160,6 +168,7 @@ public class GuiSettings extends Screen {
         playerTracer.setCallback(() -> {
             Settings.PlayerTracerColor = Colors.COLORS[playerTracer.getCurrentIndex()];
             playerTracer.setBackground(Settings.PlayerTracerColor);
+            Settings.save();
         });
         playerTracer.setCurrentIndex(Colors.getColorIndex(Settings.PlayerTracerColor));
 
@@ -169,14 +178,18 @@ public class GuiSettings extends Screen {
         playerEsp.setCallback(() -> {
             Settings.PlayerEspColor = Colors.COLORS[playerEsp.getCurrentIndex()];
             playerEsp.setBackground(Settings.PlayerEspColor);
+            Settings.save();
         });
 
         /*
          * RENDER SETTINGS
          */
         GuiToggle fullbrightFade = new GuiToggle(new PointD(10, 10), 90, 10, Text.translatable("key.gavinsmod.settings.gammafade"));
-        fullbrightFade.setCallback(() -> Settings.FullbrightFade = !Settings.FullbrightFade);
-        fullbrightFade.setState(Settings.FullbrightFade);
+        fullbrightFade.setCallback(() -> {
+            Settings.GammaFade = !Settings.GammaFade;
+            Settings.save();
+        });
+        fullbrightFade.setState(Settings.GammaFade);
 
         /*
          * Misc settings
@@ -186,6 +199,7 @@ public class GuiSettings extends Screen {
         slowFps.setCallback(() -> {
             Settings.SlowFpsColor = Colors.COLORS[slowFps.getCurrentIndex()];
             slowFps.setBackground(Settings.SlowFpsColor);
+            Settings.save();
         });
 
         okFps = new GuiCycle(90, 10, Text.translatable("key.gavinsmod.settings.okfps"), Colors.COLORS.length);
@@ -193,6 +207,7 @@ public class GuiSettings extends Screen {
         okFps.setCallback(() -> {
             Settings.OkFpsColor = Colors.COLORS[okFps.getCurrentIndex()];
             okFps.setBackground(Settings.OkFpsColor);
+            Settings.save();
         });
 
         fastFps = new GuiCycle(90, 10, Text.translatable("key.gavinsmod.settings.fastfps"), Colors.COLORS.length);
@@ -200,10 +215,14 @@ public class GuiSettings extends Screen {
         fastFps.setCallback(() -> {
             Settings.FastFpsColor = Colors.COLORS[fastFps.getCurrentIndex()];
             fastFps.setBackground(Settings.FastFpsColor);
+            Settings.save();
         });
 
         GuiToggle fpsColors = new GuiToggle(new PointD(10, 10), 95, 10, Text.translatable("key.gavinsmod.settings.fpscolors"));
-        fpsColors.setCallback(() -> Settings.FpsColors = !Settings.FpsColors);
+        fpsColors.setCallback(() -> {
+            Settings.FpsColors = !Settings.FpsColors;
+            Settings.save();
+        });
         fpsColors.setState(Settings.FpsColors);
 
         backgroundColor = new GuiCycle(95, 10, Text.translatable("key.gavinsmod.settings.backgroundcolor"), Colors.COLORS.length);
@@ -211,6 +230,7 @@ public class GuiSettings extends Screen {
         backgroundColor.setCallback(() -> {
             Settings.BackgroundColor = Colors.COLORS[backgroundColor.getCurrentIndex()];
             backgroundColor.setBackground(Settings.BackgroundColor);
+            Settings.save();
         });
         backgroundColor.setCurrentIndex(Colors.getColorIndex(Settings.BackgroundColor));
 
@@ -219,6 +239,7 @@ public class GuiSettings extends Screen {
         foregroundColor.setCallback(() -> {
             Settings.ForegroundColor = Colors.COLORS[foregroundColor.getCurrentIndex()];
             foregroundColor.setBackground(Settings.ForegroundColor);
+            Settings.save();
         });
         foregroundColor.setCurrentIndex(Colors.getColorIndex(Settings.ForegroundColor));
 
@@ -227,6 +248,7 @@ public class GuiSettings extends Screen {
         enabledColor.setCallback(() -> {
             Settings.EnabledColor = Colors.COLORS[enabledColor.getCurrentIndex()];
             enabledColor.setBackground(Settings.EnabledColor);
+            Settings.save();
         });
         enabledColor.setCurrentIndex(Colors.getColorIndex(Settings.EnabledColor));
 
@@ -235,11 +257,15 @@ public class GuiSettings extends Screen {
         categoryColor.setCallback(() -> {
             Settings.CategoryColor = Colors.COLORS[categoryColor.getCurrentIndex()];
             categoryColor.setBackground(Settings.CategoryColor);
+            Settings.save();
         });
         categoryColor.setCurrentIndex(Colors.getColorIndex(Settings.CategoryColor));
 
         GuiToggle chatMessage = new GuiToggle(new PointD(10, 10), 95, 10, Text.translatable("key.gavinsmod.settings.togglemessage"));
-        chatMessage.setCallback(() -> Settings.ChatMessage = !Settings.ChatMessage);
+        chatMessage.setCallback(() -> {
+            Settings.ChatMessage = !Settings.ChatMessage;
+            Settings.save();
+        });
         chatMessage.setState(Settings.ChatMessage);
 
         guis = new ArrayList<>();

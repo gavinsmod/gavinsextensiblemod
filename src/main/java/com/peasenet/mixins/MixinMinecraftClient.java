@@ -39,13 +39,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.io.File;
+
 /**
  * @author gt3ch1
  * @version 5/18/2022
  */
 @Mixin(MinecraftClient.class)
 public abstract class MixinMinecraftClient implements IMinecraftClient {
-
     @Shadow
     private static int currentFps;
 
@@ -79,6 +80,10 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Final
     @Shadow
     private Window window;
+
+    @Shadow
+    @Final
+    public File runDirectory;
 
     @Inject(at = @At(value = "HEAD"), method = "isAmbientOcclusionEnabled()Z", cancellable = true)
     private static void isXrayOrFullBright(CallbackInfoReturnable<Boolean> ci) {
@@ -138,6 +143,11 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Override
     public Window getWindow() {
         return window;
+    }
+
+    @Override
+    public File getRunDirectory() {
+        return runDirectory;
     }
 
 }

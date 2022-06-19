@@ -22,6 +22,12 @@ package com.peasenet.main;
 
 import com.peasenet.util.color.Color;
 import com.peasenet.util.color.Colors;
+import org.json.simple.JSONObject;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * @author gt3ch1
@@ -30,7 +36,7 @@ import com.peasenet.util.color.Colors;
  */
 public class Settings {
 
-    public static boolean FullbrightFade = false;
+    public static boolean GammaFade = false;
     public static boolean FpsColors = true;
     public static boolean ChatMessage = true;
 
@@ -55,5 +61,108 @@ public class Settings {
     public static Color EnabledColor = Colors.SHADOW_BLUE;
     public static Color CategoryColor = Colors.MEDIUM_SEA_GREEN;
 
+    public static void save() {
+        // open the mods folder
+        var runDir = GavinsModClient.getMinecraftClient().getRunDirectory().getAbsolutePath();
+        var modsDir = runDir + "/mods";
+        // ensure the gavinsmod folder exists
+        var gavinsmodDir = modsDir + "/gavinsmod";
+        var cfgFile = new File(gavinsmodDir + "/settings.json");
+        var gavinsModFile = new File(gavinsmodDir);
+        if (!gavinsModFile.exists()) {
+            gavinsModFile.mkdir();
+        }
+        // ensure the settings file exists
+        if (!cfgFile.exists()) {
+            try {
+                cfgFile.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        JSONObject json = new JSONObject();
+        json.put("gammaFade", GammaFade);
+        json.put("fpsColors", FpsColors);
+        json.put("chatMessage", ChatMessage);
+        json.put("chestEspColor", Colors.getColorIndex(ChestEspColor));
+        json.put("chestTracerColor", Colors.getColorIndex(ChestTracerColor));
+        json.put("hostileMobEspColor", Colors.getColorIndex(HostileMobEspColor));
+        json.put("hostileMobTracerColor", Colors.getColorIndex(HostileMobTracerColor));
+        json.put("peacefulMobEspColor", Colors.getColorIndex(PeacefulMobEspColor));
+        json.put("peacefulMobTracerColor", Colors.getColorIndex(PeacefulMobTracerColor));
+        json.put("playerEspColor", Colors.getColorIndex(PlayerEspColor));
+        json.put("playerTracerColor", Colors.getColorIndex(PlayerTracerColor));
+        json.put("itemEspColor", Colors.getColorIndex(ItemEspColor));
+        json.put("itemTracerColor", Colors.getColorIndex(ItemTracerColor));
+        json.put("slowFpsColor", Colors.getColorIndex(SlowFpsColor));
+        json.put("okFpsColor", Colors.getColorIndex(OkFpsColor));
+        json.put("fastFpsColor", Colors.getColorIndex(FastFpsColor));
+        json.put("backgroundColor", Colors.getColorIndex(BackgroundColor));
+        json.put("foregroundColor", Colors.getColorIndex(ForegroundColor));
+        json.put("enabledColor", Colors.getColorIndex(EnabledColor));
+        json.put("categoryColor", Colors.getColorIndex(CategoryColor));
+        try {
+            PrintWriter writer = new PrintWriter(cfgFile, "UTF-8");
+            writer.println(json.toJSONString());
+            writer.close();
+        } catch (Exception e) {
+            System.err.println("Error writing settings to file.");
+            e.printStackTrace();
+        }
+    }
 
+    public static void load() {
+        // open the mods folder
+        var runDir = GavinsModClient.getMinecraftClient().getRunDirectory().getAbsolutePath();
+        var modsDir = runDir + "/mods";
+        // ensure the gavinsmod folder exists
+        var gavinsmodDir = modsDir + "/gavinsmod";
+        var cfgFile = new File(gavinsmodDir + "/settings.json");
+        var gavinsModFile = new File(gavinsmodDir);
+        if (!gavinsModFile.exists()) {
+            gavinsModFile.mkdir();
+        }
+        // ensure the settings file exists
+        if (!cfgFile.exists()) {
+            try {
+                cfgFile.createNewFile();
+                save();
+                return;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        JSONObject json = new JSONObject();
+        try {
+            json = (JSONObject) org.json.simple.JSONValue.parse(new FileReader(cfgFile));
+        } catch (Exception e) {
+            System.err.println("Error reading settings from file.");
+            e.printStackTrace();
+        }
+        try {
+            GammaFade = (boolean) json.get("gammaFade");
+            FpsColors = (boolean) json.get("fpsColors");
+            ChatMessage = (boolean) json.get("chatMessage");
+            ChestEspColor = Colors.COLORS[((Long) json.get("chestEspColor")).intValue()];
+            ChestTracerColor = Colors.COLORS[((Long) json.get("chestTracerColor")).intValue()];
+            HostileMobEspColor = Colors.COLORS[((Long) json.get("hostileMobEspColor")).intValue()];
+            HostileMobTracerColor = Colors.COLORS[((Long) json.get("hostileMobTracerColor")).intValue()];
+            PeacefulMobEspColor = Colors.COLORS[((Long) json.get("peacefulMobEspColor")).intValue()];
+            PeacefulMobTracerColor = Colors.COLORS[((Long) json.get("peacefulMobTracerColor")).intValue()];
+            PlayerEspColor = Colors.COLORS[((Long) json.get("playerEspColor")).intValue()];
+            PlayerTracerColor = Colors.COLORS[((Long) json.get("playerTracerColor")).intValue()];
+            ItemEspColor = Colors.COLORS[((Long) json.get("itemEspColor")).intValue()];
+            ItemTracerColor = Colors.COLORS[((Long) json.get("itemTracerColor")).intValue()];
+            SlowFpsColor = Colors.COLORS[((Long) json.get("slowFpsColor")).intValue()];
+            OkFpsColor = Colors.COLORS[((Long) json.get("okFpsColor")).intValue()];
+            FastFpsColor = Colors.COLORS[((Long) json.get("fastFpsColor")).intValue()];
+            BackgroundColor = Colors.COLORS[((Long) json.get("backgroundColor")).intValue()];
+            ForegroundColor = Colors.COLORS[((Long) json.get("foregroundColor")).intValue()];
+            EnabledColor = Colors.COLORS[((Long) json.get("enabledColor")).intValue()];
+            CategoryColor = Colors.COLORS[((Long) json.get("categoryColor")).intValue()];
+        } catch (Exception e) {
+            System.err.println("Error reading settings from file.");
+            e.printStackTrace();
+        }
+    }
 }

@@ -176,6 +176,11 @@ public class GavinsMod implements ModInitializer {
                 add(FpsCounter);
             }
         };
+
+        LOGGER.info("Loading settings");
+        Settings.load();
+        LOGGER.info("Settings loaded");
+
         ArrayList<com.peasenet.gui.elements.Gui> guiList = new ArrayList<>();
         guiList.add(new GuiMovement());
         guiList.add(new GuiCombat());
@@ -183,6 +188,7 @@ public class GavinsMod implements ModInitializer {
         guiList.add(new GuiMisc());
         guiList.add(new GuiRender());
         guiList.add(new GuiTracers());
+
         gui = new GuiMainMenu(guiList);
         guiSettings = new GuiSettings();
     }
