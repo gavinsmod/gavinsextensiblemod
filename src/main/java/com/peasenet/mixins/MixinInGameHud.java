@@ -109,14 +109,14 @@ public class MixinInGameHud {
         var box = new BoxD(new PointD(xCoordinate - 2, 0), fpsString.length() * 5 + 4, 12);
         var maximumFps = GavinsModClient.getMinecraftClient().getOptions().getMaxFps().getValue();
         var color = Settings.ForegroundColor;
-        // if fps is within 5% of the maximum, use green.
-        if (fps > maximumFps * 0.95)
-            color = Settings.FastFpsColor;
-        else if (fps > maximumFps * 0.45 && fps < maximumFps * 0.75)
-            color = Settings.OkFpsColor;
-        else
-            color = Settings.SlowFpsColor;
-
+        if (Settings.FpsColors) {
+            if (fps > maximumFps * 0.95)
+                color = Settings.FastFpsColor;
+            else if (fps > maximumFps * 0.45 && fps < maximumFps * 0.75)
+                color = Settings.OkFpsColor;
+            else
+                color = Settings.SlowFpsColor;
+        }
         RenderUtils.drawBox(Settings.BackgroundColor.getAsFloatArray(), box, matrixStack);
         textRenderer.draw(matrixStack, Text.literal(fpsString), xCoordinate, 2, color.getAsInt());
     }
