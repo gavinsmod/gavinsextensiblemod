@@ -104,7 +104,8 @@ public class PlayerUtils {
     public static void attackEntity(Entity entity) {
         var player = GavinsModClient.getPlayer();
         assert GavinsModClient.getMinecraftClient().getPlayerInteractionManager() != null;
-        if (onGround() && !player.noClip && lastAttackTime % 20 == 0) {
+        if (onGround() && !player.noClip && player.getAttackCooldownProgress(0.5f) > 0.90f) {
+            doJump();
             GavinsModClient.getMinecraftClient().getPlayerInteractionManager().attackEntity(player, entity);
             player.tryAttack(entity);
             player.swingHand(Hand.MAIN_HAND);
