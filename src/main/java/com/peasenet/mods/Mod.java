@@ -86,9 +86,8 @@ public abstract class Mod implements IMod {
      * @param category The category of this mod.
      */
     public Mod(Type type, Type.Category category) {
-        this.type = type;
-        this.category = category;
-        this.keyBinding = KeyBindUtils.registerEmptyKeyBind(type);
+        this(type, category, (type.getKeyBinding() != GLFW.GLFW_KEY_UNKNOWN) ?
+                KeyBindUtils.registerKeyBindForType(type) : KeyBindUtils.registerEmptyKeyBind(type));
     }
 
     /**
@@ -98,9 +97,7 @@ public abstract class Mod implements IMod {
      * @param keyBinding - The keybinding for this mod.
      */
     public Mod(Type type, KeyBinding keyBinding) {
-        this.type = type;
-        this.category = type.getModCategory();
-        this.keyBinding = keyBinding;
+        this(type, type.getModCategory(), keyBinding);
     }
 
     /**
@@ -109,13 +106,7 @@ public abstract class Mod implements IMod {
      * @param type - The type of the mod.
      */
     public Mod(Type type) {
-        this.type = type;
-        this.category = type.getModCategory();
-        if (type.getKeyBinding() == GLFW.GLFW_KEY_UNKNOWN) {
-            this.keyBinding = KeyBindUtils.registerEmptyKeyBind(type);
-        } else {
-            this.keyBinding = KeyBindUtils.registerKeyBindForType(type);
-        }
+        this(type, type.getModCategory());
     }
 
     /**
