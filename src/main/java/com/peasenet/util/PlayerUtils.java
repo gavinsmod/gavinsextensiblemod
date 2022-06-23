@@ -105,7 +105,6 @@ public class PlayerUtils {
         var player = GavinsModClient.getPlayer();
         assert GavinsModClient.getMinecraftClient().getPlayerInteractionManager() != null;
         if (onGround() && !player.noClip && player.getAttackCooldownProgress(0.5f) > 0.90f) {
-            doJump();
             GavinsModClient.getMinecraftClient().getPlayerInteractionManager().attackEntity(player, entity);
             player.tryAttack(entity);
             player.swingHand(Hand.MAIN_HAND);
