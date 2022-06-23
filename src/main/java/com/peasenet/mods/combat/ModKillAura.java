@@ -20,8 +20,15 @@
 
 package com.peasenet.mods.combat;
 
+import com.peasenet.main.GavinsModClient;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.util.PlayerUtils;
+import com.peasenet.util.math.MathUtils;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.mob.MobEntity;
+
+import java.util.stream.StreamSupport;
 
 /**
  * @author gt3ch1
@@ -30,6 +37,23 @@ import com.peasenet.mods.Type;
  */
 public class ModKillAura extends Mod {
     public ModKillAura() {
-        super(Type.KILL_AURA, Type.Category.COMBAT);
+        super(Type.KILL_AURA);
+    }
+
+    @Override
+    public void onTick() {
+        if (GavinsModClient.getMinecraftClient().getWorld() != null && isActive()) {
+            var stream = StreamSupport.stream(GavinsModClient.getMinecraftClient().getWorld().getEntities().spliterator(), false)
+                    .filter(e -> e instanceof MobEntity)
+                    .filter(Entity::isAlive)
+                    .filter(e -> PlayerUtils.distanceToEntity(e) <= 16)
+                    .sorted((e1, e2) -> (int) ((int) PlayerUtils.distanceToEntity(e1) - PlayerUtils.distanceToEntity(e2)))
+                    .map(e -> (MobEntity) e);
+
+            stream.forEach(entity -> {
+                PlayerUtils.setRotation(MathUtils.getRotationToEntity(entity));
+                PlayerUtils.attackEntity(entity);
+            });
+        }
     }
 }

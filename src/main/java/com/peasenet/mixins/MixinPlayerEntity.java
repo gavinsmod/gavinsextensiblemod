@@ -21,13 +21,11 @@
 package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
-import com.peasenet.main.GavinsModClient;
+import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.util.PlayerUtils;
-import com.peasenet.util.math.MathUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import org.objectweb.asm.Opcodes;
@@ -37,8 +35,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.stream.StreamSupport;
 
 @Mixin(PlayerEntity.class)
 public class MixinPlayerEntity {
@@ -74,23 +70,5 @@ public class MixinPlayerEntity {
     public void checkAutoCrit(Entity entity, CallbackInfo info) {
         if (GavinsMod.isEnabled(Type.AUTO_CRIT))
             PlayerUtils.doJump();
-    }
-
-    @Inject(method = "tick", at = @At("HEAD"))
-    public void checkKillAura(CallbackInfo ci) {
-        if (GavinsModClient.getMinecraftClient().getWorld() != null && GavinsMod.isEnabled(Type.KILL_AURA)) {
-            // Sort entities by distance
-            var stream = StreamSupport.stream(GavinsModClient.getMinecraftClient().getWorld().getEntities().spliterator(), false)
-                    .filter(e -> e instanceof MobEntity)
-                    .filter(Entity::isAlive)
-                    .filter(e -> PlayerUtils.distanceToEntity(e) <= 12)
-                    .sorted((e1, e2) -> (int) ((int) PlayerUtils.distanceToEntity(e1) - PlayerUtils.distanceToEntity(e2)))
-                    .map(e -> (MobEntity) e);
-
-            stream.forEach(entity -> {
-                PlayerUtils.setRotation(MathUtils.getRotationToEntity(entity));
-                PlayerUtils.attackEntity(entity);
-            });
-        }
     }
 }
