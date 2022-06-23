@@ -25,24 +25,6 @@ import com.peasenet.gui.GuiSettings;
 import com.peasenet.gui.mod.*;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
-import com.peasenet.mods.combat.ModAutoCrit;
-import com.peasenet.mods.combat.ModKillAura;
-import com.peasenet.mods.esp.ModChestEsp;
-import com.peasenet.mods.esp.ModEntityItemEsp;
-import com.peasenet.mods.esp.ModEntityPlayerEsp;
-import com.peasenet.mods.esp.ModMobEsp;
-import com.peasenet.mods.gui.ModGui;
-import com.peasenet.mods.gui.ModGuiSettings;
-import com.peasenet.mods.misc.ModFpsCounter;
-import com.peasenet.mods.misc.ModGuiTextOverlay;
-import com.peasenet.mods.movement.*;
-import com.peasenet.mods.render.*;
-import com.peasenet.mods.tracer.ModChestTracer;
-import com.peasenet.mods.tracer.ModEntityItemTracer;
-import com.peasenet.mods.tracer.ModEntityPlayerTracer;
-import com.peasenet.mods.tracer.ModMobTracer;
-import com.peasenet.util.color.Color;
-import com.peasenet.util.color.Colors;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,55 +39,23 @@ import java.util.stream.Stream;
  * @version 5/24/2022
  */
 public class GavinsMod implements ModInitializer {
-    private static final ModGuiSettings GuiSettings = new ModGuiSettings();
     public static final Logger LOGGER = LoggerFactory.getLogger("gavinsmod");
     public static final String VERSION = "v1.2.2";
-    // MOVEMENT
-    private static final ModXray XRay = new ModXray();
-    private static final ModFly Fly = new ModFly();
-    private static final ModAutoJump AutoJump = new ModAutoJump();
-    private static final ModClimb Climb = new ModClimb();
-    private static final ModNoClip NoClip = new ModNoClip();
-    private static final ModNoFall NoFall = new ModNoFall();
-    private static final ModFastMine FastMine = new ModFastMine();
-    private static final ModFastPlace FastPlace = new ModFastPlace();
-    // COMBAT
-    private static final ModKillAura KillAura = new ModKillAura();
-    private static final ModAutoCrit AutoCrit = new ModAutoCrit();
-    // RENDER
-    private static final ModAntiHurt AntiHurt = new ModAntiHurt();
-    private static final ModFullBright FullBright = new ModFullBright();
-    private static final ModChestEsp ChestEsp = new ModChestEsp();
-    private static final ModChestTracer ChestTracer = new ModChestTracer();
-    private static final ModMobEsp MobEsp = new ModMobEsp();
-    private static final ModMobTracer MobTracer = new ModMobTracer();
-    private static final ModEntityItemTracer EntityItemTracer = new ModEntityItemTracer();
-    private static final ModEntityItemEsp EntityItemEsp = new ModEntityItemEsp();
-    private static final ModEntityPlayerTracer EntityPlayerTracer = new ModEntityPlayerTracer();
-    private static final ModEntityPlayerEsp EntityPlayerEsp = new ModEntityPlayerEsp();
-    private static final ModAntiPumpkin AntiPumpkin = new ModAntiPumpkin();
-    private static final ModHealthTag HealthTag = new ModHealthTag();
-    private static final ModNoRain NoRain = new ModNoRain();
-    // GUI
-    private static final ModGui Gui = new ModGui();
-    public static Color ChestTracerColor = Colors.PURPLE;
-    // MISC
-    private static final com.peasenet.mods.misc.ModGuiTextOverlay ModGuiTextOverlay = new ModGuiTextOverlay();
-    private static final ModFpsCounter FpsCounter = new ModFpsCounter();
-
-    // The main menu gui
     public static GuiMainMenu gui;
     public static GuiSettings guiSettings;
-    public static ArrayList<Mod> mods;
 
     public static boolean isEnabled(Type mod) {
         // find mod via stream and check if it is enabled.
-        return mods.stream().filter(m -> m.getType() == mod).findFirst().get().isActive();
+        if (mod == Type.AUTO_CRIT) {
+            var num = 0;
+        }
+        var activate = Mods.getMods().stream().filter(m -> m.getType() == mod).findFirst().get().isActive();
+        return activate;
     }
 
     public static void setEnabled(Type mod, boolean enabled) {
         // find mod via stream and set it to enabled.
-        var theMod = mods.stream().filter(m -> m.getType() == mod).findFirst().get();
+        var theMod = Mods.getMods().stream().filter(m -> m.getType() == mod).findFirst().get();
         if (enabled)
             theMod.activate();
         else
@@ -120,62 +70,21 @@ public class GavinsMod implements ModInitializer {
      */
     public static ArrayList<Mod> getModsInCategory(Type.Category category) {
         // use stream to filter by category and sort by mod name
-        return mods.stream()
+        return Mods.getMods().stream()
                 .filter(mod -> mod.getCategory() == category)
                 .sorted(Comparator.comparing(Mod::getName))
                 .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
     public static Stream<Mod> getModsForTextOverlay() {
-        return mods.stream().filter(mod -> mod.isActive() && mod.getCategory() != Type.Category.GUI
+        return Mods.getMods().stream().filter(mod -> mod.isActive() && mod.getCategory() != Type.Category.GUI
                 && mod.getType() != Type.MOD_GUI_TEXT_OVERLAY).sorted(Comparator.comparing(Mod::getName));
     }
 
     @Override
     public void onInitialize() {
+        new Mods();
         LOGGER.info("GavinsMod initialized");
-        mods = new ArrayList<>() {
-            {
-                // MOVEMENT
-                add(Fly);
-                add(FastMine);
-                add(FastPlace);
-                add(AutoJump);
-                add(Climb);
-                add(NoClip);
-                add(NoFall);
-                // COMBAT
-                add(KillAura);
-                add(AutoCrit);
-
-                // RENDER
-                add(AntiHurt);
-                add(XRay);
-                add(FullBright);
-                add(ChestEsp);
-                add(ChestTracer);
-
-                add(MobEsp);
-                add(MobTracer);
-
-                add(EntityItemEsp);
-                add(EntityItemTracer);
-
-                add(EntityPlayerEsp);
-                add(EntityPlayerTracer);
-
-                add(AntiPumpkin);
-                add(HealthTag);
-                add(NoRain);
-
-                //GUI
-                add(Gui);
-                add(GuiSettings);
-                // MISC
-                add(ModGuiTextOverlay);
-                add(FpsCounter);
-            }
-        };
 
         LOGGER.info("Loading settings");
         Settings.load();

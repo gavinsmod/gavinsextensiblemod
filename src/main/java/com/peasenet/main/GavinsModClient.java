@@ -46,7 +46,7 @@ public class GavinsModClient implements ClientModInitializer {
     public void onInitializeClient() {
         GavinsMod.LOGGER.info("GavinsMod keybinding initialized");
         ClientTickEvents.START_CLIENT_TICK.register((client) -> {
-            for (Mod m : GavinsMod.mods) {
+            for (Mod m : Mods.getMods()) {
                 m.onTick();
             }
         });

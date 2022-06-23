@@ -21,6 +21,7 @@
 package com.peasenet.mods;
 
 import com.peasenet.main.GavinsModClient;
+import com.peasenet.main.Mods;
 import com.peasenet.main.Settings;
 import com.peasenet.mixinterface.IMinecraftClient;
 import com.peasenet.util.KeyBindUtils;
@@ -75,6 +76,7 @@ public abstract class Mod implements IMod {
         this.type = type;
         this.category = category;
         this.keyBinding = keyBinding;
+        Mods.addMod(this);
     }
 
     /**

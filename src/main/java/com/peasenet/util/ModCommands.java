@@ -21,6 +21,7 @@
 package com.peasenet.util;
 
 import com.peasenet.main.GavinsMod;
+import com.peasenet.main.Mods;
 import com.peasenet.mods.Mod;
 
 /**
@@ -40,7 +41,7 @@ public class ModCommands {
     public static boolean handleCommand(String message) {
         // remove the . from the message
         message = message.substring(1);
-        for (Mod mod : GavinsMod.mods) {
+        for (Mod mod : Mods.getMods()) {
             if (message.equals(mod.getChatCommand())) {
                 mod.toggle();
                 return true;
