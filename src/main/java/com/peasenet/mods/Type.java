@@ -42,6 +42,7 @@ public enum Type {
     //COMBAT
     KILL_AURA("Kill Aura", "key.gavinsmod.killaura", "category.gavinsmod.test", COMBAT, "killaura"),
     AUTO_CRIT("Auto Crit", "key.gavinsmod.autocrit", "category.gavinsmod.test", COMBAT, "autocrit"),
+    AUTO_ATTACK("Auto Attack", "key.gavinsmod.autoattack", "category.gavinsmod.test", COMBAT, "autoattack"),
     //RENDER
     XRAY("Xray", "key.gavinsmod.xray", "category.gavinsmod.test", RENDER, "xray"),
     FULL_BRIGHT("Full Bright", "key.gavinsmod.fullbright", "category.gavinsmod.test", RENDER, "fullbright"),
