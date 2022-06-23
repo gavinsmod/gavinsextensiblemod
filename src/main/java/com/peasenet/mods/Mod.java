@@ -62,7 +62,7 @@ public abstract class Mod implements IMod {
     /**
      * Whether the mod is enabled.
      */
-    protected boolean isEnabled = false;
+    private boolean isEnabled = false;
 
     /**
      * Creates a new mod.
