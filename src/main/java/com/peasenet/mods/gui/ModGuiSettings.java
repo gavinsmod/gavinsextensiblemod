@@ -36,12 +36,13 @@ public class ModGuiSettings extends Mod {
     }
 
     @Override
-    public void onEnable() {
+    public void activate() {
         GavinsModClient.getMinecraftClient().setScreen(GavinsMod.guiSettings);
     }
 
     @Override
-    public void onDisable() {
-
+    public void deactivate() {
     }
+
+
 }
