@@ -28,6 +28,7 @@ import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.hit.HitResult;
 
 import java.io.File;
 
@@ -117,4 +118,6 @@ public interface IMinecraftClient {
     Window getWindow();
 
     File getRunDirectory();
+
+    HitResult crosshairTarget();
 }
