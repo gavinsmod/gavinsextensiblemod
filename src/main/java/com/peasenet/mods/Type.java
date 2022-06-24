@@ -39,6 +39,7 @@ public enum Type {
     CLIMB("Climb", "key.gavinsmod.climb", "category.gavinsmod.test", MOVEMENT, "climb"),
     NO_CLIP("No Clip", "key.gavinsmod.noclip", "category.gavinsmod.test", MOVEMENT, "noclip"),
     NO_FALL("No Fall", "key.gavinsmod.nofall", "category.gavinsmod.test", MOVEMENT, "nofall"),
+    DOLPHIN("Dolphin", "key.gavinsmod.dolphin", "category.gavinsmod.test", MOVEMENT, "dolphin"),
     //COMBAT
     KILL_AURA("Kill Aura", "key.gavinsmod.killaura", "category.gavinsmod.test", COMBAT, "killaura"),
     AUTO_CRIT("Auto Crit", "key.gavinsmod.autocrit", "category.gavinsmod.test", COMBAT, "autocrit"),

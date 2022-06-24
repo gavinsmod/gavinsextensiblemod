@@ -21,7 +21,7 @@
 package com.peasenet.main;
 
 import com.peasenet.mods.Mod;
-import com.peasenet.mods.combat.AutoAttack;
+import com.peasenet.mods.combat.ModAutoAttack;
 import com.peasenet.mods.combat.ModAutoCrit;
 import com.peasenet.mods.combat.ModKillAura;
 import com.peasenet.mods.esp.ModChestEsp;
@@ -57,10 +57,11 @@ public class Mods {
         new ModNoFall();
         new ModFastMine();
         new ModFastPlace();
+        new ModDolphin();
         // COMBAT
         new ModKillAura();
         new ModAutoCrit();
-        new AutoAttack();
+        new ModAutoAttack();
         // RENDER
         new ModAntiHurt();
         new ModFullBright();
