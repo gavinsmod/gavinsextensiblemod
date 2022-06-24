@@ -20,36 +20,32 @@
 
 package com.peasenet.gui.mod;
 
-import com.peasenet.gui.elements.GuiScroll;
+import com.peasenet.gui.elements.Gui;
+import com.peasenet.gui.elements.GuiToggle;
+import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Type;
 import com.peasenet.util.math.BoxD;
 import com.peasenet.util.math.PointD;
 import net.minecraft.text.Text;
 
+import java.util.ArrayList;
+
 /**
  * @author gt3ch1
- * @version 6/13/2022
- * Creates a new gui for combat mods as a dropdown.
+ * @version 6/24/2022
  */
-public class GuiCombat extends GuiScroll {
-
-    /**
-     * Creates a new combat dropdown.
-     */
-    public GuiCombat() {
-        this(new PointD(80, 20), 50, 10, Text.translatable("key.gavinsmod.gui.combat"));
-    }
-
-    /**
-     * Creates a new combat dropdown.
-     *
-     * @param position - The position of the dropdown.
-     * @param width    - The width of the dropdown.
-     * @param height   - The height of the dropdown.
-     * @param title    - The title of the dropdown.
-     */
-    public GuiCombat(PointD position, int width, int height, Text title) {
-        super(position, width, height, title, 4, ModGuiUtil.getGuiToggleFromCategory(Type.Category.COMBAT,
-                new BoxD(position, width, height)));
+public class ModGuiUtil {
+    public static ArrayList<Gui> getGuiToggleFromCategory(Type.Category category, BoxD box) {
+        var guis = new ArrayList<Gui>();
+        var mods = GavinsMod.getModsInCategory(category);
+        for (int i = 0; i < mods.size(); i++) {
+            var mod = mods.get(i);
+            var x = box.getTopLeft().x();
+            var y = box.getBottomRight().y() + i * 10;
+            var gui = new GuiToggle(new PointD(x, y + 2), (int) box.getWidth(), (int) box.getHeight(), Text.translatable(mod.getTranslationKey()));
+            gui.setCallback(mod::toggle);
+            guis.add(gui);
+        }
+        return guis;
     }
 }

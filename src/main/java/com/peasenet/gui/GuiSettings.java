@@ -21,10 +21,7 @@
 package com.peasenet.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.peasenet.gui.elements.Gui;
-import com.peasenet.gui.elements.GuiCycle;
-import com.peasenet.gui.elements.GuiDropdown;
-import com.peasenet.gui.elements.GuiToggle;
+import com.peasenet.gui.elements.*;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.Settings;
 import com.peasenet.mods.Type;
@@ -72,11 +69,10 @@ public class GuiSettings extends Screen {
      */
     public GuiSettings() {
         super(Text.translatable("key.gavinsmod.gui.settings"));
-        GuiDropdown tracerDropdown = new GuiDropdown(new PointD(110, 110), 110, 10, Text.translatable("key.gavinsmod.settings.tracers"));
-
-        GuiDropdown espDropdown = new GuiDropdown(new PointD(10, 110), 90, 10, Text.translatable("key.gavinsmod.settings.esps"));
-        GuiDropdown renderDropdown = new GuiDropdown(new PointD(10, 10), 90, 10, Text.translatable("key.gavinsmod.settings.render"));
-        GuiDropdown miscDropdown = new GuiDropdown(new PointD(110, 10), 95, 10, Text.translatable("key.gavinsmod.gui.misc"));
+        GuiScroll tracerDropdown = new GuiScroll(new PointD(120, 110), 115, 10, Text.translatable("key.gavinsmod.settings.tracers"));
+        GuiScroll espDropdown = new GuiScroll(new PointD(10, 110), 100, 10, Text.translatable("key.gavinsmod.settings.esps"));
+        GuiScroll renderDropdown = new GuiScroll(new PointD(10, 10), 90, 10, Text.translatable("key.gavinsmod.settings.render"));
+        GuiScroll miscDropdown = new GuiScroll(new PointD(110, 10), 105, 10, Text.translatable("key.gavinsmod.gui.misc"));
         GuiDropdown fpsColorDropdown = new GuiDropdown(new PointD(210, 21), 95, 10, Text.translatable("key.gavinsmod.settings.fps.color"));
 
         /*
@@ -322,6 +318,16 @@ public class GuiSettings extends Screen {
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseScrolled(double x, double y, double scroll) {
+        for (Gui g : guis) {
+            if (g.mouseScrolled(x, y, scroll)) {
+                return true;
+            }
+        }
+        return super.mouseScrolled(x, y, scroll);
     }
 
     @Override

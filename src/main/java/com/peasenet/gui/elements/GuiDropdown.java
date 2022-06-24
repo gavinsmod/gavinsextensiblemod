@@ -36,12 +36,9 @@ import java.util.ArrayList;
 public class GuiDropdown extends GuiDraggable {
 
     /**
-     * The list of buttons(mods) in this dropdown.
-     */
-    protected final ArrayList<Gui> buttons = new ArrayList<>();
-    /**
      * The category of the dropdown.
      */
+
     protected Type.Category category;
     /**
      * Whether the dropdown is open.
@@ -60,19 +57,6 @@ public class GuiDropdown extends GuiDraggable {
         super(position, width, height, title);
     }
 
-    public void addElement(Gui button) {
-        if (buttons.isEmpty()) {
-            button.setPosition(new PointD(getX(), getY2() + 1));
-            buttons.add(button);
-            return;
-        }
-        // get last button
-        Gui lastButton = buttons.get(buttons.size() - 1);
-        var lastY = lastButton.getY2();
-        // set new button position
-        button.setPosition(new PointD(getX(), lastY + 1));
-        buttons.add(button);
-    }
 
     /**
      * Gets whether the dropdown is open.
@@ -96,7 +80,7 @@ public class GuiDropdown extends GuiDraggable {
         super.render(matrices, tr);
         if (!isOpen())
             return;
-        buttons.forEach(button -> button.render(matrices, tr));
+        children.stream().filter(child -> !child.isHidden()).forEach(child -> child.render(matrices, tr));
     }
 
     @Override
@@ -104,7 +88,7 @@ public class GuiDropdown extends GuiDraggable {
 
         if (isOpen()) {
             // If the dropdown is open, check if the mouse is within the bounds of any of the buttons.
-            for (Gui g : buttons) {
+            for (Gui g : children) {
                 if (g.mouseClicked(mouseX, mouseY, button))
                     return true;
             }
@@ -122,7 +106,7 @@ public class GuiDropdown extends GuiDraggable {
     public boolean mouseWithinGui(double mouseX, double mouseY) {
         var inMain = super.mouseWithinGui(mouseX, mouseY);
         if (isOpen()) {
-            for (Gui g : buttons) {
+            for (Gui g : children) {
                 if (g.mouseWithinGui(mouseX, mouseY))
                     return true;
             }
@@ -160,8 +144,8 @@ public class GuiDropdown extends GuiDraggable {
      */
     private void resetDropdownsLocation() {
         // copy buttons to a new array
-        ArrayList<Gui> newButtons = new ArrayList<>(buttons);
-        buttons.clear();
+        ArrayList<Gui> newButtons = new ArrayList<>(children);
+        children.clear();
         newButtons.forEach(this::addElement);
     }
 }

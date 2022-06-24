@@ -20,8 +20,9 @@
 
 package com.peasenet.gui.mod;
 
-import com.peasenet.gui.elements.GuiModScroll;
+import com.peasenet.gui.elements.GuiScroll;
 import com.peasenet.mods.Type;
+import com.peasenet.util.math.BoxD;
 import com.peasenet.util.math.PointD;
 import net.minecraft.text.Text;
 
@@ -30,7 +31,7 @@ import net.minecraft.text.Text;
  * @version 6/13/2022
  * Creates a new gui for render mods as a dropdown.
  */
-public class GuiRender extends GuiModScroll {
+public class GuiRender extends GuiScroll {
 
     /**
      * Creates a new render dropdown.
@@ -48,6 +49,7 @@ public class GuiRender extends GuiModScroll {
      * @param title    - The title of the dropdown.
      */
     public GuiRender(PointD position, int width, int height, Text title) {
-        super(position, width, height, title, Type.Category.RENDER);
+        super(position, width, height, title, 4, ModGuiUtil.getGuiToggleFromCategory(Type.Category.RENDER,
+                new BoxD(position, width, height)));
     }
 }

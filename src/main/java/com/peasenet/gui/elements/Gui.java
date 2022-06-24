@@ -30,6 +30,8 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
+import java.util.ArrayList;
+
 /**
  * @author gt3ch1
  * @version 6/13/2022
@@ -57,24 +59,69 @@ public class Gui {
      */
     private Color backgroundColor;
 
+
+    /**
+     * The list of buttons(mods) in this dropdown.
+     */
+    protected final ArrayList<Gui> children = new ArrayList<>();
+
+    /**
+     * Adds an child element to this gui.
+     *
+     * @param child - The child element to add.
+     */
+    public void addElement(Gui child) {
+        if (children.isEmpty()) {
+            child.setPosition(new PointD(getX(), getY2() + 1));
+            children.add(child);
+            return;
+        }
+        // get last gui
+        Gui lastButton = children.get(children.size() - 1);
+        var lastY = lastButton.getY2();
+        // set new gui position
+        child.setPosition(new PointD(getX(), lastY + 2));
+        children.add(child);
+    }
+
     /**
      * Whether this gui is currently being dragged.
      */
     private boolean dragging;
+
+    /**
+     * Whether this gui is currently hidden.
+     */
     private boolean hidden;
 
+    /**
+     * Gets whether this gui is currently hidden.
+     *
+     * @return Whether this gui is currently hidden.
+     */
     public boolean isHidden() {
         return hidden;
     }
 
+    /**
+     * Hides this gui.
+     */
     public void hide() {
         hidden = true;
     }
 
+    /**
+     * Shows this gui.
+     */
     public void show() {
         hidden = false;
     }
 
+    /**
+     * Sets the width of the gui.
+     *
+     * @param width - The width of the gui.
+     */
     public void setWidth(double width) {
         box = new BoxD(box.getTopLeft(), width, box.getHeight());
     }
@@ -91,17 +138,7 @@ public class Gui {
         this.defaultPosition = BoxD.copy(box);
         this.title = title;
         backgroundColor = Settings.BackgroundColor;
-    }
-
-    /**
-     * Creates a new GUI at poisition (0, 0).
-     *
-     * @param width  - The width of the gui.
-     * @param height - The height of the gui.
-     * @param title  - The title of the gui.
-     */
-    public Gui(int width, int height, Text title) {
-        this(new PointD(0, 0), width, height, title);
+        dragging = false;
     }
 
     /**
@@ -281,6 +318,11 @@ public class Gui {
         return mouseX >= getX() && mouseX <= getX2() && mouseY >= getY() && mouseY <= getY2();
     }
 
+    /**
+     * Gets the background color of the gui.
+     *
+     * @return The background color of the gui.
+     */
     public Color getBackgroundColor() {
         return backgroundColor;
     }
