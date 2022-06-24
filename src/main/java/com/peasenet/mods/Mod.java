@@ -153,7 +153,6 @@ public abstract class Mod implements IMod {
     public boolean isActive() {
         return isEnabled;
     }
-
     public void activate() {
         isEnabled = true;
         onEnable();
@@ -170,6 +169,10 @@ public abstract class Mod implements IMod {
         } else {
             activate();
         }
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
     }
 
     public Type.Category getCategory() {

@@ -15,6 +15,7 @@ public class GuiModScroll extends GuiModCategory {
 
     private final int maxButtons;
     private final int numPages;
+    private int page;
     private int scrollIndex;
 
     public GuiModScroll(PointD position, int width, int height, Text title, Type.Category category) {
@@ -32,7 +33,8 @@ public class GuiModScroll extends GuiModCategory {
     public GuiModScroll(PointD position, int width, int height, Text title, Type.Category category, int maxButtons) {
         super(position, width, height, title, category);
         this.maxButtons = Math.min(buttons.size(), maxButtons);
-        this.numPages = buttons.size() - maxButtons;
+        this.numPages = (int) Math.ceil((double) buttons.size() / (double) maxButtons);
+        this.page = 0;
     }
 
     @Override
@@ -57,15 +59,17 @@ public class GuiModScroll extends GuiModCategory {
         // render mods between scroll index and max  buttons
         var mods = GavinsMod.getModsInCategory(category);
         buttons.forEach(Gui::hide);
-        for (int i = scrollIndex; i < scrollIndex + maxButtons; i++) {
+        int modIndex = 0;
+        for (int i = page * maxButtons; i < page * maxButtons + maxButtons; i++) {
             if (i >= buttons.size())
                 break;
+            modIndex++;
             buttons.get(i).render(matrices, tr);
             var mod = mods.get(i);
             var gui = buttons.get(i);
             gui.show();
             // update location of gui
-            gui.setPosition(new PointD(getX(), (gui.getHeight() + 2) * (i - scrollIndex) + (getY() + getHeight()) + 2));
+            gui.setPosition(new PointD(getX(), (gui.getHeight() + 2) * (modIndex - 1) + (getY() + getHeight()) + 2));
             if (shouldDrawScrollBar())
                 gui.setWidth(getWidth() - 5.5);
             if (gui instanceof GuiToggle)
@@ -93,11 +97,11 @@ public class GuiModScroll extends GuiModCategory {
 
     private void drawScrollBar(MatrixStack matrices) {
         var scrollBoxHeight = getScrollBoxHeight();
-        // set scrollbarY to 1/maxButtons of the scrollBoxHeight
-        var scrollBarY = (int) (scrollBoxHeight * (scrollIndex / (double) numPages)) + getY2() + 3;
+        // set scrollbarY to (1/page) * scrollBoxHeight
+        var scrollBarY = (scrollBoxHeight * (page / (double) numPages)) + getY2() + 3;
         var scrollBarX = getX() + getWidth() - 2;
-        int scrollBarY2 = (int) ((scrollBarY) + (scrollBoxHeight / numPages));
-        RenderUtils.drawBox(Colors.WHITE.getAsFloatArray(), (int) scrollBarX - 1, (int) scrollBarY, (int) scrollBarX + 1, scrollBarY2 - 2, matrices);
+        var scrollBarY2 = ((scrollBarY) + (scrollBoxHeight / (numPages)));
+        RenderUtils.drawBox(Colors.WHITE.getAsFloatArray(), (int) scrollBarX - 1, (int) scrollBarY, (int) scrollBarX + 1, (int) scrollBarY2 - 2, matrices);
     }
 
     private double getScrollBoxHeight() {
@@ -105,14 +109,14 @@ public class GuiModScroll extends GuiModCategory {
     }
 
     protected void scrollUp() {
-        if (scrollIndex > 0) {
-            scrollIndex--;
+        if (page > 0) {
+            page--;
         }
     }
 
     protected void scrollDown() {
-        if (scrollIndex < buttons.size() - 1 - maxButtons) {
-            scrollIndex++;
+        if (page < numPages - 1) {
+            page++;
         }
     }
 }
