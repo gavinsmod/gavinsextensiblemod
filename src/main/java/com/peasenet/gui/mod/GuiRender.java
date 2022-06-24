@@ -20,7 +20,7 @@
 
 package com.peasenet.gui.mod;
 
-import com.peasenet.gui.elements.GuiModCategory;
+import com.peasenet.gui.elements.GuiModScroll;
 import com.peasenet.mods.Type;
 import com.peasenet.util.math.PointD;
 import net.minecraft.text.Text;
@@ -30,13 +30,13 @@ import net.minecraft.text.Text;
  * @version 6/13/2022
  * Creates a new gui for render mods as a dropdown.
  */
-public class GuiRender extends GuiModCategory {
+public class GuiRender extends GuiModScroll {
 
     /**
      * Creates a new render dropdown.
      */
     public GuiRender() {
-        this(new PointD(220, 20), 62, 10, Text.translatable("key.gavinsmod.gui.render"));
+        this(new PointD(220, 20), 75, 10, Text.translatable("key.gavinsmod.gui.render"));
     }
 
     /**

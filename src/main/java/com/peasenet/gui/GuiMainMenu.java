@@ -94,6 +94,12 @@ public class GuiMainMenu extends Screen {
     }
 
     @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
+        guis.forEach(gui -> gui.mouseScrolled(mouseX, mouseY, scroll));
+        return super.mouseScrolled(mouseX, mouseY, scroll);
+    }
+
+    @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         for (var gui : guis) {
             if (gui.isDragging()) {

@@ -101,12 +101,7 @@ public class GuiDropdown extends GuiDraggable {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        // Check if the mouse is within the bounds of the dropdown.
-        if (super.mouseClicked(mouseX, mouseY, button)) {
-            // If the dropdown is open, close it.
-            toggleMenu();
-            return true;
-        }
+
         if (isOpen()) {
             // If the dropdown is open, check if the mouse is within the bounds of any of the buttons.
             for (Gui g : buttons) {
@@ -114,9 +109,26 @@ public class GuiDropdown extends GuiDraggable {
                     return true;
             }
         }
+        // Check if the mouse is within the bounds of the dropdown.
+        if (super.mouseClicked(mouseX, mouseY, button)) {
+            // If the dropdown is open, close it.
+            toggleMenu();
+            return true;
+        }
         return false;
     }
 
+    @Override
+    public boolean mouseWithinGui(double mouseX, double mouseY) {
+        var inMain = super.mouseWithinGui(mouseX, mouseY);
+        if (isOpen()) {
+            for (Gui g : buttons) {
+                if (g.mouseWithinGui(mouseX, mouseY))
+                    return true;
+            }
+        }
+        return inMain;
+    }
 
     /**
      * Toggles the dropdown.
@@ -129,6 +141,7 @@ public class GuiDropdown extends GuiDraggable {
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         // calculate the offset between the mouse position and the top left corner of the gui
         if (super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
+            isOpen = false;
             resetDropdownsLocation();
             return true;
         }

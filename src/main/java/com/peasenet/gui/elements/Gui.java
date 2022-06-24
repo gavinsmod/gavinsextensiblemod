@@ -45,7 +45,7 @@ public class Gui {
     /**
      * The title of the gui.
      */
-    private final Text title;
+    protected final Text title;
 
     /**
      * The box that contains the gui.
@@ -61,6 +61,23 @@ public class Gui {
      * Whether this gui is currently being dragged.
      */
     private boolean dragging;
+    private boolean hidden;
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void hide() {
+        hidden = true;
+    }
+
+    public void show() {
+        hidden = false;
+    }
+
+    public void setWidth(double width) {
+        box = new BoxD(box.getTopLeft(), width, box.getHeight());
+    }
 
     /**
      * Creates a new GUI menu.
@@ -190,7 +207,19 @@ public class Gui {
     }
 
     /**
-     * Whether the current window is being dragged.
+     * Checks whether the mouse was scrolled
+     *
+     * @param mouseX - The x coordinate of the mouse.
+     * @param mouseY - The y coordinate of the mouse.
+     * @param amount - The amount of scroll.
+     * @return Whether the mouse was scrolled.
+     */
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+        return false;
+    }
+
+    /**
+     * Whether the current window is being dragged.`
      *
      * @return True if the current window is being dragged.
      */
@@ -250,5 +279,9 @@ public class Gui {
      */
     public boolean mouseWithinGui(double mouseX, double mouseY) {
         return mouseX >= getX() && mouseX <= getX2() && mouseY >= getY() && mouseY <= getY2();
+    }
+
+    public Color getBackgroundColor() {
+        return backgroundColor;
     }
 }

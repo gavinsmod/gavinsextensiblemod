@@ -405,6 +405,18 @@ public class RenderUtils {
     }
 
     /**
+     * Draws an outline on screen.
+     *
+     * @param acColor     The color of the box.
+     * @param box         The box to draw.
+     * @param matrixStack The matrix stack.
+     */
+    public static void drawOutline(float[] acColor, BoxD box, MatrixStack matrixStack) {
+        drawOutline(acColor, (int) box.getTopLeft().x(), (int) box.getTopLeft().y(), (int) box.getBottomRight().x(), (int) box.getBottomRight().y(), matrixStack);
+    }
+
+
+    /**
      * Draws a box outline on screen.
      *
      * @param acColor     The color of the box as a 4 point float array.

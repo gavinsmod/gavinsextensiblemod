@@ -105,7 +105,6 @@ public class BoxD {
      */
     public void setMiddle(PointD middle) {
         setTopLeft(middle.subtract(new PointD(width / 2, height / 2)));
-
     }
 
 }

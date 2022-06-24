@@ -72,7 +72,7 @@ public class GuiToggle extends GuiClick {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (super.mouseClicked(mouseX, mouseY, button)) {
+        if (super.mouseClicked(mouseX, mouseY, button) && !isHidden()) {
             isOn = !isOn;
             if (callback != null) {
                 callback.callback();

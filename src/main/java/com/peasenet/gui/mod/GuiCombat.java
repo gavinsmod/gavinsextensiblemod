@@ -20,7 +20,7 @@
 
 package com.peasenet.gui.mod;
 
-import com.peasenet.gui.elements.GuiModCategory;
+import com.peasenet.gui.elements.GuiModScroll;
 import com.peasenet.mods.Type;
 import com.peasenet.util.math.PointD;
 import net.minecraft.text.Text;
@@ -30,7 +30,7 @@ import net.minecraft.text.Text;
  * @version 6/13/2022
  * Creates a new gui for combat mods as a dropdown.
  */
-public class GuiCombat extends GuiModCategory {
+public class GuiCombat extends GuiModScroll {
 
     /**
      * Creates a new combat dropdown.
