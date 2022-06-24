@@ -37,6 +37,8 @@ public class ModAutoAttack extends Mod {
 
     @Override
     public void onTick() {
+        if (!isActive())
+            return;
         var target = getClient().crosshairTarget();
         if (!(target instanceof EntityHitResult))
             return;
