@@ -107,7 +107,7 @@ public class GuiDropdown extends GuiDraggable {
         var inMain = super.mouseWithinGui(mouseX, mouseY);
         if (isOpen()) {
             for (Gui g : children) {
-                if (g.mouseWithinGui(mouseX, mouseY))
+                if (g.mouseWithinGui(mouseX, mouseY) && !g.isHidden())
                     return true;
             }
         }
@@ -117,7 +117,7 @@ public class GuiDropdown extends GuiDraggable {
     /**
      * Toggles the dropdown.
      */
-    private void toggleMenu() {
+    protected void toggleMenu() {
         isOpen = !isOpen;
     }
 

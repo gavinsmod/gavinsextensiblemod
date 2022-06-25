@@ -47,7 +47,11 @@ public class GavinsModClient implements ClientModInitializer {
         GavinsMod.LOGGER.info("GavinsMod keybinding initialized");
         ClientTickEvents.START_CLIENT_TICK.register((client) -> {
             for (Mod m : Mods.getMods()) {
-                m.onTick();
+                if (getPlayer() == null || getMinecraftClient() == null)
+                    return;
+                m.checkKeybinding();
+                if (m.isActive())
+                    m.onTick();
             }
         });
         WorldRenderEvents.AFTER_ENTITIES.register(RenderUtils::afterEntities);

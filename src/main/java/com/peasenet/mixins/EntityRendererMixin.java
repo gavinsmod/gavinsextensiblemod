@@ -46,13 +46,12 @@ public abstract class EntityRendererMixin<T extends Entity> {
 
     @Shadow
     @Final
-    protected TextRenderer textRenderer;
+    private TextRenderer textRenderer;
 
-    @Inject(at = @At("HEAD"), method = "render", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "render")
     private void renderHealth(T entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
         double d = this.dispatcher.getSquaredDistanceToCamera(entity);
-        if (entity instanceof LivingEntity && GavinsMod.isEnabled(Type.MOD_HPTAG)) {
-            LivingEntity livingEntity = (LivingEntity) entity;
+        if (entity instanceof LivingEntity livingEntity && GavinsMod.isEnabled(Type.MOD_HPTAG)) {
             double currHealth = livingEntity.getHealth();
             currHealth = Math.round(currHealth * 2) / 2.0;
 
@@ -70,7 +69,7 @@ public abstract class EntityRendererMixin<T extends Entity> {
                 int j = (int) (g * 255.0F) << 24;
                 float h = (float) (-textRenderer.getWidth(text) / 2);
                 int color = 0x00ff00;
-                var percentHealth = (int) (currHealth / livingEntity.getMaxHealth());
+                var percentHealth = (int) (livingEntity.getHealth() / livingEntity.getMaxHealth());
                 if (percentHealth < 0.75)
                     color = 0xffff00;
                 if (percentHealth < 0.5)

@@ -73,7 +73,7 @@ public class GuiSettings extends Screen {
         GuiScroll espDropdown = new GuiScroll(new PointD(10, 110), 100, 10, Text.translatable("key.gavinsmod.settings.esps"));
         GuiScroll renderDropdown = new GuiScroll(new PointD(10, 10), 90, 10, Text.translatable("key.gavinsmod.settings.render"));
         GuiScroll miscDropdown = new GuiScroll(new PointD(110, 10), 105, 10, Text.translatable("key.gavinsmod.gui.misc"));
-        GuiDropdown fpsColorDropdown = new GuiDropdown(new PointD(210, 21), 95, 10, Text.translatable("key.gavinsmod.settings.fps.color"));
+        GuiDropdown fpsColorDropdown = new GuiDropdown(new PointD(220, 23), 95, 10, Text.translatable("key.gavinsmod.settings.fps.color"));
 
         /*
          * TRACERS AND ESPS

@@ -100,7 +100,7 @@ public class ModXray extends Mod {
             RenderUtils.setLowGamma();
             deactivating = !RenderUtils.isLastGamma();
         }
-        super.onTick();
+
     }
 
     @Override

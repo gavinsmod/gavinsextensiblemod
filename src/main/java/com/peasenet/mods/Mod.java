@@ -27,6 +27,8 @@ import com.peasenet.mixinterface.IMinecraftClient;
 import com.peasenet.util.KeyBindUtils;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
@@ -137,7 +139,6 @@ public abstract class Mod implements IMod {
     }
 
     public void onTick() {
-        checkKeybinding();
     }
 
     public void checkKeybinding() {
@@ -153,6 +154,7 @@ public abstract class Mod implements IMod {
     public boolean isActive() {
         return isEnabled;
     }
+
     public void activate() {
         isEnabled = true;
         onEnable();
@@ -195,8 +197,13 @@ public abstract class Mod implements IMod {
         return type;
     }
 
-    @Override
     public ClientPlayerEntity getPlayer() {
         return getClient().getPlayer();
+    }
+
+    public void onRenderInGameHud(MatrixStack stack, float delta) {
+    }
+
+    public void onAttack(Entity target) {
     }
 }

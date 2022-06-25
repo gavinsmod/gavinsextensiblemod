@@ -21,9 +21,12 @@
 package com.peasenet.mods;
 
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
 
 /**
  * @author gt3ch1
+ * @version 6/24/2022
  * The interface of the base mod class.
  */
 public interface IMod {
@@ -111,4 +114,19 @@ public interface IMod {
      * @return The client player.
      */
     ClientPlayerEntity getPlayer();
+
+    /**
+     * Called when the in game hud is rendered.
+     *
+     * @param stack - The matrix stack.
+     * @param delta - The delta time.
+     */
+    void onRenderInGameHud(MatrixStack stack, float delta);
+
+    /**
+     * Called when attacking another entity.
+     *
+     * @param target - The target entity.
+     */
+    void onAttack(Entity target);
 }

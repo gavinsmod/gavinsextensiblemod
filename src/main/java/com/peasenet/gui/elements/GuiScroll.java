@@ -182,4 +182,26 @@ public class GuiScroll extends GuiDropdown {
         this.numPages = (int) Math.ceil((double) children.size() / (double) maxChildren);
     }
 
+    @Override
+    public boolean mouseClicked(double x, double y, int button) {
+        // check if the mouse is within bounds of the dropdown
+        if (mouseWithinGui(x, y)) {
+            toggleMenu();
+            return true;
+        }
+        for (int i = page * maxChildren; i < page * maxChildren + maxChildren; i++) {
+            if (i >= children.size())
+                break;
+            var gui = children.get(i);
+            if (gui.mouseClicked(x, y, button))
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean mouseWithinGui(double mouseX, double mouseY) {
+        return mouseX >= getX() && mouseX <= getX2() && mouseY >= getY() && mouseY <= getY2();
+    }
+
 }

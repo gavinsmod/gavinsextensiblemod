@@ -22,14 +22,21 @@ package com.peasenet.mods.combat;
 
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import net.minecraft.entity.Entity;
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 6/24/2022
  * A combat mod to make the player jump automatically when attacking an entity.
  */
 public class ModAutoCrit extends Mod {
+
     public ModAutoCrit() {
         super(Type.AUTO_CRIT);
+    }
+
+    @Override
+    public void onAttack(Entity target) {
+        getPlayer().jump();
     }
 }

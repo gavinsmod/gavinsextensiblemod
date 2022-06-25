@@ -30,7 +30,7 @@ public class ModDolphin extends Mod {
 
     @Override
     public void onTick() {
-        super.onTick();
+
         if (getPlayer() == null)
             return;
         // check if the player is swimming
