@@ -61,7 +61,7 @@ public enum Type {
     MOD_HPTAG("HP Tags", "key.gavinsmod.hptag", "category.gavinsmod.test", RENDER, "hptag"),
     MOD_FPS_COUNTER("FPS Counter", "key.gavinsmod.fpscounter", "category.gavinsmod.test", MISC, "fpscounter"),
     MOD_GUI("GUI", "key.gavinsmod.gui", "category.gavinsmod.test", GLFW.GLFW_KEY_I, GUI, "gui"),
-    SETTINGS("Settings", "key.gavinsmod.settings", "category.gavinsmod.test", GLFW.GLFW_KEY_O, GUI, "settings"),
+    SETTINGS("Settings", "key.gavinsmod.gui.settings", "category.gavinsmod.test", GLFW.GLFW_KEY_O, GUI, "settings"),
     MOD_GUI_TEXT_OVERLAY("GUI Text Overlay", "key.gavinsmod.guitextoverlay", "category.gavinsmod.test", MISC, "textoverlay");
 
     /**
