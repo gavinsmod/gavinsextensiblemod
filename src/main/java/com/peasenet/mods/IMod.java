@@ -129,4 +129,11 @@ public interface IMod {
      * @param target - The target entity.
      */
     void onAttack(Entity target);
+
+    /**
+     * Whether the mod is in a deactivation state (where the mod is disabled, but there still needs work to be done).
+     *
+     * @return True if the mod is in a deactivation state.
+     */
+    boolean isDeactivating();
 }

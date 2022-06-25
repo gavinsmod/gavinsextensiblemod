@@ -50,7 +50,7 @@ public class GavinsModClient implements ClientModInitializer {
                 if (getPlayer() == null || getMinecraftClient() == null)
                     return;
                 m.checkKeybinding();
-                if (m.isActive())
+                if (m.isActive() || m.isDeactivating())
                     m.onTick();
             }
         });

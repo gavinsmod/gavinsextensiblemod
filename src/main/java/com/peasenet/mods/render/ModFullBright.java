@@ -53,7 +53,11 @@ public class ModFullBright extends Mod {
             RenderUtils.setLowGamma();
             deactivating = !RenderUtils.isLastGamma();
         }
+    }
 
+    @Override
+    public boolean isDeactivating() {
+        return deactivating;
     }
 
     @Override

@@ -206,4 +206,8 @@ public abstract class Mod implements IMod {
 
     public void onAttack(Entity target) {
     }
+
+    public boolean isDeactivating() {
+        return false;
+    }
 }
