@@ -20,15 +20,18 @@
 
 package com.peasenet.main;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.peasenet.util.color.Color;
 import com.peasenet.util.color.Colors;
 import org.jetbrains.annotations.NotNull;
-import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
 
 /**
  * @author gt3ch1
@@ -64,39 +67,34 @@ public class Settings {
 
     public static void save() {
         // open the mods folder
-        File cfgFile = getFile();
+        var cfgFile = getFilePath();
         // ensure the settings file exists
-        if (!cfgFile.exists()) {
-            try {
-                cfgFile.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        JSONObject json = new JSONObject();
-        json.put("gammaFade", GammaFade);
-        json.put("fpsColors", FpsColors);
-        json.put("chatMessage", ChatMessage);
-        json.put("chestEspColor", Colors.getColorIndex(ChestEspColor));
-        json.put("chestTracerColor", Colors.getColorIndex(ChestTracerColor));
-        json.put("hostileMobEspColor", Colors.getColorIndex(HostileMobEspColor));
-        json.put("hostileMobTracerColor", Colors.getColorIndex(HostileMobTracerColor));
-        json.put("peacefulMobEspColor", Colors.getColorIndex(PeacefulMobEspColor));
-        json.put("peacefulMobTracerColor", Colors.getColorIndex(PeacefulMobTracerColor));
-        json.put("playerEspColor", Colors.getColorIndex(PlayerEspColor));
-        json.put("playerTracerColor", Colors.getColorIndex(PlayerTracerColor));
-        json.put("itemEspColor", Colors.getColorIndex(ItemEspColor));
-        json.put("itemTracerColor", Colors.getColorIndex(ItemTracerColor));
-        json.put("slowFpsColor", Colors.getColorIndex(SlowFpsColor));
-        json.put("okFpsColor", Colors.getColorIndex(OkFpsColor));
-        json.put("fastFpsColor", Colors.getColorIndex(FastFpsColor));
-        json.put("backgroundColor", Colors.getColorIndex(BackgroundColor));
-        json.put("foregroundColor", Colors.getColorIndex(ForegroundColor));
-        json.put("enabledColor", Colors.getColorIndex(EnabledColor));
-        json.put("categoryColor", Colors.getColorIndex(CategoryColor));
+        ensureCfgCreated(cfgFile);
+        var map = new HashMap<String, Object>();
+        var json = new GsonBuilder().setPrettyPrinting().create();
+        map.put("gammaFade", GammaFade);
+        map.put("fpsColors", FpsColors);
+        map.put("chatMessage", ChatMessage);
+        map.put("chestEspColor", Colors.getColorIndex(ChestEspColor));
+        map.put("chestTracerColor", Colors.getColorIndex(ChestTracerColor));
+        map.put("hostileMobEspColor", Colors.getColorIndex(HostileMobEspColor));
+        map.put("hostileMobTracerColor", Colors.getColorIndex(HostileMobTracerColor));
+        map.put("peacefulMobEspColor", Colors.getColorIndex(PeacefulMobEspColor));
+        map.put("peacefulMobTracerColor", Colors.getColorIndex(PeacefulMobTracerColor));
+        map.put("playerEspColor", Colors.getColorIndex(PlayerEspColor));
+        map.put("playerTracerColor", Colors.getColorIndex(PlayerTracerColor));
+        map.put("itemEspColor", Colors.getColorIndex(ItemEspColor));
+        map.put("itemTracerColor", Colors.getColorIndex(ItemTracerColor));
+        map.put("slowFpsColor", Colors.getColorIndex(SlowFpsColor));
+        map.put("okFpsColor", Colors.getColorIndex(OkFpsColor));
+        map.put("fastFpsColor", Colors.getColorIndex(FastFpsColor));
+        map.put("backgroundColor", Colors.getColorIndex(BackgroundColor));
+        map.put("foregroundColor", Colors.getColorIndex(ForegroundColor));
+        map.put("enabledColor", Colors.getColorIndex(EnabledColor));
+        map.put("categoryColor", Colors.getColorIndex(CategoryColor));
         try {
-            PrintWriter writer = new PrintWriter(cfgFile, "UTF-8");
-            writer.println(json.toJSONString());
+            var writer = Files.newBufferedWriter(Paths.get(cfgFile));
+            json.toJson(map, writer);
             writer.close();
         } catch (Exception e) {
             GavinsMod.LOGGER.error("Error writing settings to file.");
@@ -104,13 +102,23 @@ public class Settings {
         }
     }
 
+    private static void ensureCfgCreated(String cfgFile) {
+        if (!Files.exists(Paths.get(cfgFile))) {
+            try {
+                Files.createFile(Paths.get(cfgFile));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     @NotNull
-    private static File getFile() {
+    private static String getFilePath() {
         var runDir = GavinsModClient.getMinecraftClient().getRunDirectory().getAbsolutePath();
         var modsDir = runDir + "/mods";
         // ensure the gavinsmod folder exists
         var gavinsmodDir = modsDir + "/gavinsmod";
-        var cfgFile = new File(gavinsmodDir + "/settings.json");
+        var cfgFile = gavinsmodDir + "/settings.json";
         var gavinsModFile = new File(gavinsmodDir);
         if (!gavinsModFile.exists()) {
             GavinsMod.LOGGER.info("Creating gavinsmod folder.");
@@ -121,41 +129,32 @@ public class Settings {
 
     public static void load() {
         // open the mods folder
-        File cfgFile = getFile();
+        var cfgFile = getFilePath();
         // ensure the settings file exists
-        if (!cfgFile.exists()) {
-            try {
-                cfgFile.createNewFile();
-                GavinsMod.LOGGER.info("Created settings file.");
-                save();
-                return;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        JSONObject json;
+        ensureCfgCreated(cfgFile);
+        Gson gson = new Gson();
         try {
-            json = (JSONObject) org.json.simple.JSONValue.parse(new FileReader(cfgFile));
-            GammaFade = (boolean) json.get("gammaFade");
-            FpsColors = (boolean) json.get("fpsColors");
-            ChatMessage = (boolean) json.get("chatMessage");
-            ChestEspColor = Colors.COLORS[((Long) json.get("chestEspColor")).intValue()];
-            ChestTracerColor = Colors.COLORS[((Long) json.get("chestTracerColor")).intValue()];
-            HostileMobEspColor = Colors.COLORS[((Long) json.get("hostileMobEspColor")).intValue()];
-            HostileMobTracerColor = Colors.COLORS[((Long) json.get("hostileMobTracerColor")).intValue()];
-            PeacefulMobEspColor = Colors.COLORS[((Long) json.get("peacefulMobEspColor")).intValue()];
-            PeacefulMobTracerColor = Colors.COLORS[((Long) json.get("peacefulMobTracerColor")).intValue()];
-            PlayerEspColor = Colors.COLORS[((Long) json.get("playerEspColor")).intValue()];
-            PlayerTracerColor = Colors.COLORS[((Long) json.get("playerTracerColor")).intValue()];
-            ItemEspColor = Colors.COLORS[((Long) json.get("itemEspColor")).intValue()];
-            ItemTracerColor = Colors.COLORS[((Long) json.get("itemTracerColor")).intValue()];
-            SlowFpsColor = Colors.COLORS[((Long) json.get("slowFpsColor")).intValue()];
-            OkFpsColor = Colors.COLORS[((Long) json.get("okFpsColor")).intValue()];
-            FastFpsColor = Colors.COLORS[((Long) json.get("fastFpsColor")).intValue()];
-            BackgroundColor = Colors.COLORS[((Long) json.get("backgroundColor")).intValue()];
-            ForegroundColor = Colors.COLORS[((Long) json.get("foregroundColor")).intValue()];
-            EnabledColor = Colors.COLORS[((Long) json.get("enabledColor")).intValue()];
-            CategoryColor = Colors.COLORS[((Long) json.get("categoryColor")).intValue()];
+            var map = gson.fromJson(new FileReader(cfgFile), HashMap.class);
+            GammaFade = (boolean) map.get("gammaFade");
+            FpsColors = (boolean) map.get("fpsColors");
+            ChatMessage = (boolean) map.get("chatMessage");
+            ChestEspColor = Colors.COLORS[((Double) map.get("chestEspColor")).intValue()];
+            ChestTracerColor = Colors.COLORS[((Double) map.get("chestTracerColor")).intValue()];
+            HostileMobEspColor = Colors.COLORS[((Double) map.get("hostileMobEspColor")).intValue()];
+            HostileMobTracerColor = Colors.COLORS[((Double) map.get("hostileMobTracerColor")).intValue()];
+            PeacefulMobEspColor = Colors.COLORS[((Double) map.get("peacefulMobEspColor")).intValue()];
+            PeacefulMobTracerColor = Colors.COLORS[((Double) map.get("peacefulMobTracerColor")).intValue()];
+            PlayerEspColor = Colors.COLORS[((Double) map.get("playerEspColor")).intValue()];
+            PlayerTracerColor = Colors.COLORS[((Double) map.get("playerTracerColor")).intValue()];
+            ItemEspColor = Colors.COLORS[((Double) map.get("itemEspColor")).intValue()];
+            ItemTracerColor = Colors.COLORS[((Double) map.get("itemTracerColor")).intValue()];
+            SlowFpsColor = Colors.COLORS[((Double) map.get("slowFpsColor")).intValue()];
+            OkFpsColor = Colors.COLORS[((Double) map.get("okFpsColor")).intValue()];
+            FastFpsColor = Colors.COLORS[((Double) map.get("fastFpsColor")).intValue()];
+            BackgroundColor = Colors.COLORS[((Double) map.get("backgroundColor")).intValue()];
+            ForegroundColor = Colors.COLORS[((Double) map.get("foregroundColor")).intValue()];
+            EnabledColor = Colors.COLORS[((Double) map.get("enabledColor")).intValue()];
+            CategoryColor = Colors.COLORS[((Double) map.get("categoryColor")).intValue()];
         } catch (Exception e) {
             GavinsMod.LOGGER.error("Error reading settings from file. Saving defaults.");
             save();
