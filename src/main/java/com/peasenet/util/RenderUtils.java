@@ -303,6 +303,8 @@ public class RenderUtils {
      * Sets the gamma to the last user configured value.
      */
     public static void setLastGamma() {
+        if (getGamma() > 100)
+            return;
         LAST_GAMMA = getGamma();
     }
 
