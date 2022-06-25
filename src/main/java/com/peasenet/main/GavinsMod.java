@@ -44,13 +44,15 @@ public class GavinsMod implements ModInitializer {
     public static GuiMainMenu gui;
     public static GuiSettings guiSettings;
 
+    /**
+     * Gets whether the given mod is enabled.
+     *
+     * @param mod - The mod type to check.
+     * @return Whether th emod is enabled.
+     */
+    //TODO: Make this into a String based check and not Mod.
     public static boolean isEnabled(Type mod) {
-        // find mod via stream and check if it is enabled.
-        if (mod == Type.AUTO_CRIT) {
-            var num = 0;
-        }
-        var activate = Mods.getMods().stream().filter(m -> m.getType() == mod).findFirst().get().isActive();
-        return activate;
+        return Mods.getMod(mod.getChatCommand()).isActive();
     }
 
     public static void setEnabled(Type mod, boolean enabled) {

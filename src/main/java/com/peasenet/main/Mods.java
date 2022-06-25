@@ -40,16 +40,16 @@ import com.peasenet.mods.tracer.ModEntityPlayerTracer;
 import com.peasenet.mods.tracer.ModMobTracer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A placeholder class that initializes all the mods, and contains a few methods for adding/getting to that list.
  */
 public class Mods {
-    private static final ArrayList<Mod> mods = new ArrayList<>();
+    private static final HashMap<String, Mod> modMap = new HashMap<>();
 
     public Mods() {
         // MOVEMENT
-        new ModXray();
         new ModFly();
         new ModAutoJump();
         new ModClimb();
@@ -63,6 +63,7 @@ public class Mods {
         new ModAutoCrit();
         new ModAutoAttack();
         // RENDER
+        new ModXray();
         new ModAntiHurt();
         new ModFullBright();
         new ModChestEsp();
@@ -91,15 +92,27 @@ public class Mods {
      * @return The list of mods.
      */
     public static ArrayList<Mod> getMods() {
-        return mods;
+        // get all values from the map and add them to the list
+        var values = modMap.values();
+        return new ArrayList<>(values);
     }
 
     /**
-     * Adds a mod to the list
+     * Gets a mod from the given name.
+     *
+     * @param name - The name of the mod
+     * @return The mod with the given name.
+     */
+    public static Mod getMod(String name) {
+        return modMap.get(name);
+    }
+
+    /**
+     * Adds a mod to the mod hashmap using the mod chat command as the key, and the mod as the value.
      *
      * @param m - The mod to add.
      */
     public static void addMod(Mod m) {
-        mods.add(m);
+        modMap.put(m.getChatCommand(), m);
     }
 }
