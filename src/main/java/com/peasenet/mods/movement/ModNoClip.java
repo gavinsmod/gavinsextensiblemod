@@ -34,9 +34,4 @@ public class ModNoClip extends Mod {
         super(Type.NO_CLIP);
     }
 
-    @Override
-    public void onTick() {
-
-        getPlayer().noClip = isActive();
-    }
 }
