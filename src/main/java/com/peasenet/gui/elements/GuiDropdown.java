@@ -20,10 +20,13 @@
 
 package com.peasenet.gui.elements;
 
+import com.peasenet.main.GavinsModClient;
+import com.peasenet.main.Settings;
 import com.peasenet.mods.Type;
 import com.peasenet.util.math.PointD;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -119,6 +122,13 @@ public class GuiDropdown extends GuiDraggable {
      */
     protected void toggleMenu() {
         isOpen = !isOpen;
+        if (Settings.GuiSounds) {
+            if (isOpen)
+                GavinsModClient.getPlayer().playSound(SoundEvents.BLOCK_CHEST_OPEN, 0.5f, 1);
+            else
+                GavinsModClient.getPlayer().playSound(SoundEvents.BLOCK_CHEST_CLOSE, 0.5f, 1);
+        }
+
     }
 
     @Override

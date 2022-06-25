@@ -18,8 +18,11 @@
 
 package com.peasenet.gui.elements;
 
+import com.peasenet.main.GavinsModClient;
+import com.peasenet.main.Settings;
 import com.peasenet.util.SettingsCallback;
 import com.peasenet.util.math.PointD;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 
 /**
@@ -73,7 +76,12 @@ public class GuiCycle extends GuiClick {
             } else if (currentIndex >= cycleSize) {
                 currentIndex = 0;
             }
+            if (Settings.GuiSounds) {
+                GavinsModClient.getMinecraftClient().getPlayer().playSound(SoundEvents.UI_BUTTON_CLICK, 1.0F, 1.0F);
+            }
             callback.callback();
+            // play button click sound
+
             return true;
         }
         return false;

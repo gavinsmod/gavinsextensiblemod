@@ -272,6 +272,14 @@ public class GuiSettings extends Screen {
         });
         chatMessage.setState(Settings.ChatMessage);
 
+        // gui sounds
+        GuiToggle guiSounds = new GuiToggle(new PointD(10, 10), 95, 10, Text.translatable("key.gavinsmod.settings.guisounds"));
+        guiSounds.setCallback(() -> {
+            Settings.GuiSounds = !Settings.GuiSounds;
+            Settings.save();
+        });
+        guiSounds.setState(Settings.GuiSounds);
+
         guis = new ArrayList<>();
         guis.add(tracerDropdown);
         guis.add(espDropdown);

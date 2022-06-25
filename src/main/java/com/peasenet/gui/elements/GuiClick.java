@@ -20,7 +20,10 @@
 
 package com.peasenet.gui.elements;
 
+import com.peasenet.main.GavinsModClient;
+import com.peasenet.main.Settings;
 import com.peasenet.util.math.PointD;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 
 /**
@@ -53,6 +56,9 @@ public class GuiClick extends Gui {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button != 0) return false;
         // check if mouseX and mouseY are within the bounds of the gui.
-        return (mouseWithinGui(mouseX, mouseY));
+        var inGui = mouseWithinGui(mouseX, mouseY);
+        if (inGui && Settings.GuiSounds)
+            GavinsModClient.getPlayer().playSound(SoundEvents.UI_BUTTON_CLICK, 0.5f, 1);
+        return inGui;
     }
 }

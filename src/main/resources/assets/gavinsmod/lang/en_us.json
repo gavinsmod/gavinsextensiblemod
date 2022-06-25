@@ -51,6 +51,8 @@
     "key.gavinsmod.settings.enabledcolor": "Enabled Color",
     "key.gavinsmod.settings.categorycolor": "Category Color",
     "key.gavinsmod.settings.togglemessage": "Toggle Messages",
+    "key.gavinsmod.settings.autofullbright": "Auto Full Bright",
+    "key.gavinsmod.settings.guisounds": "GUI Sounds",
     "category.gavinsmod.test": "Gavin's Mod",
     "key.gavinsmod.gui.settings": "Settings"
 }
