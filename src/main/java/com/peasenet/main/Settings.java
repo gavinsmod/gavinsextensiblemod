@@ -43,6 +43,8 @@ public class Settings {
     public static boolean GammaFade = false;
     public static boolean FpsColors = true;
     public static boolean ChatMessage = true;
+    public static boolean AutoFullBright = true;
+    public static boolean GuiSounds = true;
 
     /*
      * Colors
@@ -65,6 +67,9 @@ public class Settings {
     public static Color EnabledColor = Colors.SHADOW_BLUE;
     public static Color CategoryColor = Colors.MEDIUM_SEA_GREEN;
 
+    /**
+     * Saves the current settings to mods/gavinsmod/settings.json
+     */
     public static void save() {
         // open the mods folder
         var cfgFile = getFilePath();
@@ -92,6 +97,8 @@ public class Settings {
         map.put("foregroundColor", Colors.getColorIndex(ForegroundColor));
         map.put("enabledColor", Colors.getColorIndex(EnabledColor));
         map.put("categoryColor", Colors.getColorIndex(CategoryColor));
+        map.put("autoFullBright", AutoFullBright);
+        map.put("guiSounds", GuiSounds);
         try {
             var writer = Files.newBufferedWriter(Paths.get(cfgFile));
             json.toJson(map, writer);
@@ -102,6 +109,11 @@ public class Settings {
         }
     }
 
+    /**
+     * Ensures that the configuration file is created.
+     *
+     * @param cfgFile - The path to the configuration file.
+     */
     private static void ensureCfgCreated(String cfgFile) {
         if (!Files.exists(Paths.get(cfgFile))) {
             try {
@@ -112,6 +124,9 @@ public class Settings {
         }
     }
 
+    /**
+     * Gets the file path to the settings file.
+     */
     @NotNull
     private static String getFilePath() {
         var runDir = GavinsModClient.getMinecraftClient().getRunDirectory().getAbsolutePath();
@@ -127,6 +142,9 @@ public class Settings {
         return cfgFile;
     }
 
+    /**
+     * Loads the settings from the settings file.
+     */
     public static void load() {
         // open the mods folder
         var cfgFile = getFilePath();
@@ -155,6 +173,8 @@ public class Settings {
             ForegroundColor = Colors.COLORS[((Double) map.get("foregroundColor")).intValue()];
             EnabledColor = Colors.COLORS[((Double) map.get("enabledColor")).intValue()];
             CategoryColor = Colors.COLORS[((Double) map.get("categoryColor")).intValue()];
+            AutoFullBright = (boolean) map.get("autoFullBright");
+            GuiSounds = (boolean) map.get("guiSounds");
         } catch (Exception e) {
             GavinsMod.LOGGER.error("Error reading settings from file. Saving defaults.");
             save();
