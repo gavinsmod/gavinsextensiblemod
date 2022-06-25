@@ -28,6 +28,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.world.LightType;
 
 /**
  * @author gt3ch1
@@ -46,14 +47,29 @@ public class GavinsModClient implements ClientModInitializer {
     public void onInitializeClient() {
         GavinsMod.LOGGER.info("GavinsMod keybinding initialized");
         ClientTickEvents.START_CLIENT_TICK.register((client) -> {
+            if (getPlayer() == null || getMinecraftClient() == null)
+                return;
             for (Mod m : Mods.getMods()) {
-                if (getPlayer() == null || getMinecraftClient() == null)
-                    return;
                 m.checkKeybinding();
                 if (m.isActive() || m.isDeactivating())
                     m.onTick();
             }
+            checkAutoFullBright();
         });
         WorldRenderEvents.AFTER_ENTITIES.register(RenderUtils::afterEntities);
+    }
+
+    private void checkAutoFullBright() {
+        if (!Settings.AutoFullBright)
+            return;
+        var skyBrightness = getMinecraftClient().getWorld().getLightLevel(LightType.SKY, getPlayer().getBlockPos().up());
+        var blockBrightness = getMinecraftClient().getWorld().getLightLevel(LightType.BLOCK, getPlayer().getBlockPos().up());
+        var currTime = getMinecraftClient().getWorld().getTimeOfDay();
+        var shouldBeFullBright = (currTime > 13000 || currTime < 1000 || skyBrightness <= 2) && blockBrightness <= 2;
+        if (shouldBeFullBright && !Mods.getMod("fullbright").isActive())
+            Mods.getMod("fullbright").activate();
+        else if (Mods.getMod("fullbright").isActive() && !shouldBeFullBright)
+            Mods.getMod("fullbright").deactivate();
+        GavinsMod.LOGGER.info("Brightness: " + skyBrightness);
     }
 }

@@ -180,12 +180,20 @@ public class GuiSettings extends Screen {
         /*
          * RENDER SETTINGS
          */
+        // gamma fade
         GuiToggle fullbrightFade = new GuiToggle(new PointD(10, 10), 90, 10, Text.translatable("key.gavinsmod.settings.gammafade"));
         fullbrightFade.setCallback(() -> {
             Settings.GammaFade = !Settings.GammaFade;
             Settings.save();
         });
         fullbrightFade.setState(Settings.GammaFade);
+        // auto fullbright
+        GuiToggle autoFullbright = new GuiToggle(new PointD(10, 10), 90, 10, Text.translatable("key.gavinsmod.settings.autofullbright"));
+        autoFullbright.setCallback(() -> {
+            Settings.AutoFullBright = !Settings.AutoFullBright;
+            Settings.save();
+        });
+        autoFullbright.setState(Settings.AutoFullBright);
 
         /*
          * Misc settings
@@ -283,16 +291,20 @@ public class GuiSettings extends Screen {
         espDropdown.addElement(playerEsp);
 
         renderDropdown.addElement(fullbrightFade);
+        renderDropdown.addElement(autoFullbright);
+
         miscDropdown.addElement(fpsColors);
         fpsColorDropdown.addElement(slowFps);
         fpsColorDropdown.addElement(okFps);
         fpsColorDropdown.addElement(fastFps);
+
         miscDropdown.addElement(fpsColorDropdown);
         miscDropdown.addElement(backgroundColor);
         miscDropdown.addElement(foregroundColor);
         miscDropdown.addElement(enabledColor);
         miscDropdown.addElement(categoryColor);
         miscDropdown.addElement(chatMessage);
+        miscDropdown.addElement(guiSounds);
     }
 
     @Override
