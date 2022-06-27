@@ -22,14 +22,19 @@ package com.peasenet.mods.esp;
 
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.settings.ColorSetting;
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 6/27/2022
  * A mod that allows the client to see boxes around mobs.
  */
 public class ModMobEsp extends Mod {
     public ModMobEsp() {
         super(Type.MOB_ESP);
+        ColorSetting hostileEspColor = new ColorSetting("hostileMobEspColor", "The color of the mob esp.", "key.gavinsmod.hostilemobesp");
+        addSetting(hostileEspColor);
+        ColorSetting peacefulMobEsp = new ColorSetting("peacefulMobEspColor", "The color of the mob esp.", "key.gavinsmod.peacefulmobesp");
+        addSetting(peacefulMobEsp);
     }
 }

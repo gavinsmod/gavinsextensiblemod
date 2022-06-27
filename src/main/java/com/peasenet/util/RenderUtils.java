@@ -45,7 +45,7 @@ import org.lwjgl.opengl.GL11;
 
 /**
  * @author gt3ch1
- * @version 5/23/2022
+ * @version 6/27/2022
  * A utility class for rendering tracers and esp's.
  */
 public class RenderUtils {
@@ -165,9 +165,9 @@ public class RenderUtils {
                                         Box aabb = new Box(blockPos);
                                         Vec3f boxPos = new Vec3f(aabb.getCenter());
                                         if (GavinsMod.isEnabled(Type.CHEST_ESP))
-                                            drawBox(stack, buffer, aabb, Settings.ChestEspColor);
+                                            drawBox(stack, buffer, aabb, Settings.getColor("chestEspColor"));
                                         if (GavinsMod.isEnabled(Type.CHEST_TRACER)) {
-                                            renderSingleLine(stack, buffer, playerPos, boxPos, Settings.ChestTracerColor);
+                                            renderSingleLine(stack, buffer, playerPos, boxPos, Settings.getColor("chestTracerColor"));
                                         }
                                     }
                                 }
@@ -215,22 +215,22 @@ public class RenderUtils {
             if (type == EntityType.ITEM) {
                 Item i = ((ItemEntity) e).getStack().getItem();
                 if (GavinsMod.isEnabled(Type.ENTITY_ITEM_ESP))
-                    drawBox(stack, buffer, aabb, Settings.ItemEspColor);
+                    drawBox(stack, buffer, aabb, Settings.getColor("itemEspColor"));
                 if (GavinsMod.isEnabled(Type.ENTITY_ITEM_TRACER))
-                    renderSingleLine(stack, buffer, playerPos, boxPos, Settings.ItemTracerColor);
+                    renderSingleLine(stack, buffer, playerPos, boxPos, Settings.getColor("itemTracerColor"));
                 return;
             }
 
             if (type == EntityType.PLAYER) {
                 if (GavinsMod.isEnabled(Type.ENTITY_PLAYER_ESP))
-                    drawBox(stack, buffer, aabb, Settings.PlayerEspColor);
+                    drawBox(stack, buffer, aabb, Settings.getColor("playerEspColor"));
                 if (GavinsMod.isEnabled(Type.ENTITY_PLAYER_TRACER))
-                    renderSingleLine(stack, buffer, playerPos, boxPos, Settings.PlayerTracerColor);
+                    renderSingleLine(stack, buffer, playerPos, boxPos, Settings.getColor("playerTracerColor"));
                 return;
             }
 
-            var espColor = type.getSpawnGroup().isPeaceful() ? Settings.PeacefulMobEspColor : Settings.HostileMobEspColor;
-            var tracerColor = type.getSpawnGroup().isPeaceful() ? Settings.PeacefulMobTracerColor : Settings.HostileMobTracerColor;
+            var espColor = type.getSpawnGroup().isPeaceful() ? Settings.getColor("peacefulMobEspColor") : Settings.getColor("hostileMobEspColor");
+            var tracerColor = type.getSpawnGroup().isPeaceful() ? Settings.getColor("peacefulMobTracerColor") : Settings.getColor("hostileMobTracerColor");
             if (GavinsMod.isEnabled(Type.MOB_ESP))
                 drawBox(stack, buffer, aabb, espColor);
             if (GavinsMod.isEnabled(Type.MOB_TRACER))
@@ -257,7 +257,7 @@ public class RenderUtils {
      * Sets the gamma of the game to the full bright value of 10000.0 while storing the last gamma value.
      */
     public static void setHighGamma() {
-        if (Settings.GammaFade) {
+        if (Settings.getBool("gammaFade")) {
             fadeGammaUp();
         } else {
             setGamma(64.0);
@@ -268,7 +268,7 @@ public class RenderUtils {
      * Resets the gamma to the players last configured value.
      */
     public static void setLowGamma() {
-        if (Settings.GammaFade) {
+        if (Settings.getBool("gammaFade")) {
             fadeGammaDown();
         } else {
             setGamma(LAST_GAMMA);
@@ -277,6 +277,7 @@ public class RenderUtils {
 
     /**
      * Gets the current game gamma.
+     *
      * @return The current game gamma.
      */
     public static double getGamma() {
@@ -284,7 +285,26 @@ public class RenderUtils {
     }
 
     /**
+     * Sets the gamma to the given value.
+     *
+     * @param gamma The value to set the gamma to.
+     */
+    public static void setGamma(double gamma) {
+        if (gamma < 0.0)
+            gamma = 0.0;
+        if (gamma > 64.0)
+            return;
+        var newGamma = GavinsModClient.getMinecraftClient().getOptions().getGamma();
+        if (newGamma.getValue() != gamma) {
+            @SuppressWarnings("unchecked")
+            var newGamma2 = (ISimpleOption<Double>) (Object) newGamma;
+            newGamma2.forceSetValue(gamma);
+        }
+    }
+
+    /**
      * Whether the gamma is set to its full bright value.
+     *
      * @return Whether the gamma is set to its full bright value.
      */
     public static boolean isHighGamma() {
@@ -293,6 +313,7 @@ public class RenderUtils {
 
     /**
      * Whether the gamma is currently at its last user configured value.
+     *
      * @return Whether the gamma is currently at its last user configured value.
      */
     public static boolean isLastGamma() {
@@ -310,27 +331,11 @@ public class RenderUtils {
 
     /**
      * Gets the last user configured value of the gamma.
+     *
      * @return The last user configured value of the gamma.
      */
     public static double getLastGamma() {
         return LAST_GAMMA;
-    }
-
-    /**
-     * Sets the gamma to the given value.
-     * @param gamma The value to set the gamma to.
-     */
-    public static void setGamma(double gamma) {
-        if (gamma < 0.0)
-            gamma = 0.0;
-        if (gamma > 64.0)
-            return;
-        var newGamma = GavinsModClient.getMinecraftClient().getOptions().getGamma();
-        if (newGamma.getValue() != gamma) {
-            @SuppressWarnings("unchecked")
-            var newGamma2 = (ISimpleOption<Double>) (Object) newGamma;
-            newGamma2.forceSetValue(gamma);
-        }
     }
 
     /**

@@ -27,7 +27,7 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/18/2022
+ * @version 6/27/2022
  * A gui element that cycles through a list of settings when clicked on.
  * A callback is called when clicked on.
  */
@@ -76,7 +76,7 @@ public class GuiCycle extends GuiClick {
             } else if (currentIndex >= cycleSize) {
                 currentIndex = 0;
             }
-            if (Settings.GuiSounds) {
+            if (Settings.getBool("guiSounds")) {
                 GavinsModClient.getMinecraftClient().getPlayer().playSound(SoundEvents.UI_BUTTON_CLICK, 1.0F, 1.0F);
             }
             callback.callback();

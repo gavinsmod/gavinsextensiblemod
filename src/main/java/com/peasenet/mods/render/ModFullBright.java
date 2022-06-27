@@ -23,11 +23,12 @@ package com.peasenet.mods.render;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.RenderUtils;
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 6/27/2022
  * A mod that allows the client to see very clearly in the absence of a light source.
  */
 public class ModFullBright extends Mod {
@@ -36,6 +37,10 @@ public class ModFullBright extends Mod {
 
     public ModFullBright() {
         super(Type.FULL_BRIGHT);
+        ToggleSetting gammaFade = new ToggleSetting("gammaFade", "key.gavinsmod.settings.gammafade");
+        ToggleSetting autoFullBright = new ToggleSetting("autoFullBright", "key.gavinsmod.settings.autofullbright");
+        addSetting(gammaFade);
+        addSetting(autoFullBright);
     }
 
     @Override

@@ -36,7 +36,8 @@ import java.util.stream.Stream;
 
 /**
  * @author gt3ch1
- * @version 5/24/2022
+ * @version 6/27/2022
+ * The main initializer of the mod.
  */
 public class GavinsMod implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("gavinsmod");
@@ -58,10 +59,8 @@ public class GavinsMod implements ModInitializer {
     public static void setEnabled(Type mod, boolean enabled) {
         // find mod via stream and set it to enabled.
         var theMod = Mods.getMods().stream().filter(m -> m.getType() == mod).findFirst().get();
-        if (enabled)
-            theMod.activate();
-        else
-            theMod.deactivate();
+        if (enabled) theMod.activate();
+        else theMod.deactivate();
     }
 
     /**
@@ -72,26 +71,20 @@ public class GavinsMod implements ModInitializer {
      */
     public static ArrayList<Mod> getModsInCategory(Type.Category category) {
         // use stream to filter by category and sort by mod name
-        return Mods.getMods().stream()
-                .filter(mod -> mod.getCategory() == category)
-                .sorted(Comparator.comparing(Mod::getName))
-                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        return Mods.getMods().stream().filter(mod -> mod.getCategory() == category).sorted(Comparator.comparing(Mod::getName)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
     public static Stream<Mod> getModsForTextOverlay() {
-        return Mods.getMods().stream().filter(mod -> mod.isActive() && mod.getCategory() != Type.Category.GUI
-                && mod.getType() != Type.MOD_GUI_TEXT_OVERLAY).sorted(Comparator.comparing(Mod::getName));
+        return Mods.getMods().stream().filter(mod -> mod.isActive() && mod.getCategory() != Type.Category.GUI && mod.getType() != Type.MOD_GUI_TEXT_OVERLAY).sorted(Comparator.comparing(Mod::getName));
     }
 
     @Override
     public void onInitialize() {
-        new Mods();
-        LOGGER.info("GavinsMod initialized");
-
         LOGGER.info("Loading settings");
         Settings.load();
         LOGGER.info("Settings loaded");
-
+        new Mods();
+        LOGGER.info("GavinsMod initialized");
         ArrayList<com.peasenet.gui.elements.Gui> guiList = new ArrayList<>();
         guiList.add(new GuiMovement());
         guiList.add(new GuiCombat());

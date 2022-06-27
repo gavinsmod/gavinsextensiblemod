@@ -22,14 +22,18 @@ package com.peasenet.mods.esp;
 
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.settings.ColorSetting;
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 6/27/2022
  * A mod that allows the player to see an esp (a box) around items.
  */
 public class ModEntityItemEsp extends Mod {
     public ModEntityItemEsp() {
         super(Type.ENTITY_ITEM_ESP);
+        ColorSetting colorSetting = new ColorSetting("itemEspColor",
+                "The color of the entity item esp.", "key.gavinsmod.entityitemesp");
+        addSetting(colorSetting);
     }
 }

@@ -29,25 +29,51 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/17/2022
+ * @version 6/27/2022
  * A simple toggleable gui element.
  */
 public class GuiToggle extends GuiClick {
 
-    public void setState(boolean on) {
-        isOn = on;
-    }
+    /**
+     * The callback method to be called when the element is clicked.
+     */
+    private SettingsCallback callback;
 
     /**
      * Gets whether the toggle is on.
      */
     private boolean isOn;
+    /**
+     * The callback method to be called when the element is rendered.
+     */
+    private SettingsCallback renderCallback;
 
+    /**
+     * Sets the current state of this toggle element.
+     *
+     * @param on - the new state of this toggle element.
+     */
+    public void setState(boolean on) {
+        isOn = on;
+    }
+
+    /**
+     * Sets the callback method to be called when the toggle is clicked.
+     *
+     * @param callback - The callback method.
+     */
     public void setCallback(SettingsCallback callback) {
         this.callback = callback;
     }
 
-    private SettingsCallback callback;
+    /**
+     * The callback method to be called when the element is rendered.
+     *
+     * @param callback - The callback method.
+     */
+    public void setRenderCallback(SettingsCallback callback) {
+        this.renderCallback = callback;
+    }
 
     /**
      * Creates a new GUI menu.
@@ -84,10 +110,12 @@ public class GuiToggle extends GuiClick {
 
     @Override
     public void render(MatrixStack matrixStack, TextRenderer tr) {
+        if (renderCallback != null)
+            renderCallback.callback();
         if (isOn())
-            setBackground(Settings.EnabledColor);
+            setBackground(Settings.getColor("enabledColor"));
         else
-            setBackground(Settings.BackgroundColor);
+            setBackground(Settings.getColor("backgroundColor"));
         super.render(matrixStack, tr);
     }
 }

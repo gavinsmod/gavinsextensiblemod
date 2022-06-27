@@ -20,13 +20,16 @@
 
 package com.peasenet.mods;
 
+import com.peasenet.settings.Setting;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 
+import java.util.ArrayList;
+
 /**
  * @author gt3ch1
- * @version 6/24/2022
+ * @version 6/27/2022
  * The interface of the base mod class.
  */
 public interface IMod {
@@ -136,4 +139,25 @@ public interface IMod {
      * @return True if the mod is in a deactivation state.
      */
     boolean isDeactivating();
+
+    /**
+     * Whether the mod has settings.
+     *
+     * @return True if the mod has settings.
+     */
+    boolean hasSettings();
+
+    /**
+     * Gets the settings of the mod.
+     *
+     * @return The settings of the mod.
+     */
+    ArrayList<Setting> getSettings();
+
+    /**
+     * Adds a setting to the mod.
+     *
+     * @param setting - The setting to add.
+     */
+    void addSetting(Setting setting);
 }

@@ -22,14 +22,18 @@ package com.peasenet.mods.esp;
 
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.settings.ColorSetting;
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 6/27/2022
  * A mod that allows the player to see an ESP to other players.
  */
 public class ModEntityPlayerEsp extends Mod {
     public ModEntityPlayerEsp() {
         super(Type.ENTITY_PLAYER_ESP);
+        ColorSetting colorSetting = new ColorSetting("playerEspColor",
+                "The color of the entity player esp.", "key.gavinsmod.entityplayeresp");
+        addSetting(colorSetting);
     }
 }

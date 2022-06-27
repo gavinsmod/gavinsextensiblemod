@@ -24,15 +24,28 @@ import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.settings.ColorSetting;
+import com.peasenet.settings.ToggleSetting;
 
 /**
  * @author gt3ch1
- * @version 6/17/2022
+ * @version 6/27/2022
  * A mod that allows the player to configure certain settings of gavinsmod.
  */
 public class ModGuiSettings extends Mod {
     public ModGuiSettings() {
         super(Type.SETTINGS);
+        ColorSetting foregroundColorSetting = new ColorSetting("foregroundColor", "The color of the foreground.", "key.gavinsmod.settings.foregroundcolor");
+        ColorSetting backgroundColorSetting = new ColorSetting("backgroundColor", "The color of the background.", "key.gavinsmod.settings.backgroundcolor");
+        ColorSetting categoryColorSetting = new ColorSetting("categoryColor", "The color of the category.", "key.gavinsmod.settings.categorycolor");
+        ColorSetting enabledColorSetting = new ColorSetting("enabledColor", "The color of the enabled.", "key.gavinsmod.settings.enabledcolor");
+        ToggleSetting guiSounds = new ToggleSetting("guiSounds", "key.gavinsmod.settings.guisounds");
+
+        addSetting(backgroundColorSetting);
+        addSetting(foregroundColorSetting);
+        addSetting(categoryColorSetting);
+        addSetting(enabledColorSetting);
+        addSetting(guiSounds);
     }
 
     @Override

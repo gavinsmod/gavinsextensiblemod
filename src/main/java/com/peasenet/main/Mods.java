@@ -40,6 +40,7 @@ import com.peasenet.mods.tracer.ModEntityPlayerTracer;
 import com.peasenet.mods.tracer.ModMobTracer;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 
 /**
@@ -94,7 +95,10 @@ public class Mods {
     public static ArrayList<Mod> getMods() {
         // get all values from the map and add them to the list
         var values = modMap.values();
-        return new ArrayList<>(values);
+        // sort the list by name
+        var list = new ArrayList<>(values);
+        list.sort(Comparator.comparing(Mod::getName));
+        return list;
     }
 
     /**

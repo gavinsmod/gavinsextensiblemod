@@ -35,37 +35,16 @@ import java.util.HashMap;
 
 /**
  * @author gt3ch1
- * @version 6/18/2022
+ * @version 6/27/2022
  * A class that contains all the settings for the mod.
+ * Note: Retrieving a setting that does not exist will cause the game to crash.
  */
 public class Settings {
 
-    public static boolean GammaFade = false;
-    public static boolean FpsColors = true;
-    public static boolean ChatMessage = true;
-    public static boolean AutoFullBright = true;
-    public static boolean GuiSounds = true;
-
-    /*
-     * Colors
+    /**
+     * The list of all settings and their values.
      */
-    public static Color ChestEspColor = Colors.PURPLE;
-    public static Color ChestTracerColor = Colors.PURPLE;
-    public static Color HostileMobEspColor = Colors.RED;
-    public static Color HostileMobTracerColor = Colors.RED;
-    public static Color PeacefulMobEspColor = Colors.GREEN;
-    public static Color PeacefulMobTracerColor = Colors.GREEN;
-    public static Color PlayerEspColor = Colors.GOLD;
-    public static Color PlayerTracerColor = Colors.GOLD;
-    public static Color ItemEspColor = Colors.CYAN;
-    public static Color ItemTracerColor = Colors.CYAN;
-    public static Color SlowFpsColor = Colors.RED;
-    public static Color OkFpsColor = Colors.YELLOW;
-    public static Color FastFpsColor = Colors.GREEN;
-    public static Color BackgroundColor = Colors.INDIGO;
-    public static Color ForegroundColor = Colors.WHITE;
-    public static Color EnabledColor = Colors.SHADOW_BLUE;
-    public static Color CategoryColor = Colors.MEDIUM_SEA_GREEN;
+    private static final HashMap<String, Object> settings = new HashMap<>();
 
     /**
      * Saves the current settings to mods/gavinsmod/settings.json
@@ -75,30 +54,8 @@ public class Settings {
         var cfgFile = getFilePath();
         // ensure the settings file exists
         ensureCfgCreated(cfgFile);
-        var map = new HashMap<String, Object>();
         var json = new GsonBuilder().setPrettyPrinting().create();
-        map.put("gammaFade", GammaFade);
-        map.put("fpsColors", FpsColors);
-        map.put("chatMessage", ChatMessage);
-        map.put("chestEspColor", Colors.getColorIndex(ChestEspColor));
-        map.put("chestTracerColor", Colors.getColorIndex(ChestTracerColor));
-        map.put("hostileMobEspColor", Colors.getColorIndex(HostileMobEspColor));
-        map.put("hostileMobTracerColor", Colors.getColorIndex(HostileMobTracerColor));
-        map.put("peacefulMobEspColor", Colors.getColorIndex(PeacefulMobEspColor));
-        map.put("peacefulMobTracerColor", Colors.getColorIndex(PeacefulMobTracerColor));
-        map.put("playerEspColor", Colors.getColorIndex(PlayerEspColor));
-        map.put("playerTracerColor", Colors.getColorIndex(PlayerTracerColor));
-        map.put("itemEspColor", Colors.getColorIndex(ItemEspColor));
-        map.put("itemTracerColor", Colors.getColorIndex(ItemTracerColor));
-        map.put("slowFpsColor", Colors.getColorIndex(SlowFpsColor));
-        map.put("okFpsColor", Colors.getColorIndex(OkFpsColor));
-        map.put("fastFpsColor", Colors.getColorIndex(FastFpsColor));
-        map.put("backgroundColor", Colors.getColorIndex(BackgroundColor));
-        map.put("foregroundColor", Colors.getColorIndex(ForegroundColor));
-        map.put("enabledColor", Colors.getColorIndex(EnabledColor));
-        map.put("categoryColor", Colors.getColorIndex(CategoryColor));
-        map.put("autoFullBright", AutoFullBright);
-        map.put("guiSounds", GuiSounds);
+        var map = new HashMap<>(settings);
         try {
             var writer = Files.newBufferedWriter(Paths.get(cfgFile));
             json.toJson(map, writer);
@@ -153,31 +110,101 @@ public class Settings {
         Gson gson = new Gson();
         try {
             var map = gson.fromJson(new FileReader(cfgFile), HashMap.class);
-            GammaFade = (boolean) map.get("gammaFade");
-            FpsColors = (boolean) map.get("fpsColors");
-            ChatMessage = (boolean) map.get("chatMessage");
-            ChestEspColor = Colors.COLORS[((Double) map.get("chestEspColor")).intValue()];
-            ChestTracerColor = Colors.COLORS[((Double) map.get("chestTracerColor")).intValue()];
-            HostileMobEspColor = Colors.COLORS[((Double) map.get("hostileMobEspColor")).intValue()];
-            HostileMobTracerColor = Colors.COLORS[((Double) map.get("hostileMobTracerColor")).intValue()];
-            PeacefulMobEspColor = Colors.COLORS[((Double) map.get("peacefulMobEspColor")).intValue()];
-            PeacefulMobTracerColor = Colors.COLORS[((Double) map.get("peacefulMobTracerColor")).intValue()];
-            PlayerEspColor = Colors.COLORS[((Double) map.get("playerEspColor")).intValue()];
-            PlayerTracerColor = Colors.COLORS[((Double) map.get("playerTracerColor")).intValue()];
-            ItemEspColor = Colors.COLORS[((Double) map.get("itemEspColor")).intValue()];
-            ItemTracerColor = Colors.COLORS[((Double) map.get("itemTracerColor")).intValue()];
-            SlowFpsColor = Colors.COLORS[((Double) map.get("slowFpsColor")).intValue()];
-            OkFpsColor = Colors.COLORS[((Double) map.get("okFpsColor")).intValue()];
-            FastFpsColor = Colors.COLORS[((Double) map.get("fastFpsColor")).intValue()];
-            BackgroundColor = Colors.COLORS[((Double) map.get("backgroundColor")).intValue()];
-            ForegroundColor = Colors.COLORS[((Double) map.get("foregroundColor")).intValue()];
-            EnabledColor = Colors.COLORS[((Double) map.get("enabledColor")).intValue()];
-            CategoryColor = Colors.COLORS[((Double) map.get("categoryColor")).intValue()];
-            AutoFullBright = (boolean) map.get("autoFullBright");
-            GuiSounds = (boolean) map.get("guiSounds");
+            settings.put("gammaFade", map.get("gammaFade"));
+            settings.put("fpsColors", map.get("fpsColors"));
+            settings.put("chatMessage", map.get("chatMessage"));
+            settings.put("chestEspColor", map.get("chestEspColor"));
+            settings.put("chestTracerColor", map.get("chestTracerColor"));
+            settings.put("hostileMobEspColor", map.get("hostileMobEspColor"));
+            settings.put("hostileMobTracerColor", map.get("hostileMobTracerColor"));
+            settings.put("peacefulMobEspColor", map.get("peacefulMobEspColor"));
+            settings.put("peacefulMobTracerColor", map.get("peacefulMobTracerColor"));
+            settings.put("playerEspColor", map.get("playerEspColor"));
+            settings.put("playerTracerColor", map.get("playerTracerColor"));
+            settings.put("itemEspColor", map.get("itemEspColor"));
+            settings.put("itemTracerColor", map.get("itemTracerColor"));
+            settings.put("slowFpsColor", map.get("slowFpsColor"));
+            settings.put("okFpsColor", map.get("okFpsColor"));
+            settings.put("fastFpsColor", map.get("fastFpsColor"));
+            settings.put("backgroundColor", map.get("backgroundColor"));
+            settings.put("foregroundColor", map.get("foregroundColor"));
+            settings.put("enabledColor", map.get("enabledColor"));
+            settings.put("categoryColor", map.get("categoryColor"));
+            settings.put("autoFullBright", map.get("autoFullBright"));
+            settings.put("guiSounds", map.get("guiSounds"));
+
         } catch (Exception e) {
             GavinsMod.LOGGER.error("Error reading settings from file. Saving defaults.");
+            loadDefault();
             save();
         }
+    }
+
+    /**
+     * Gets the boolean value of the given setting.
+     *
+     * @param key - The key of the setting.
+     * @return The boolean value of the setting.
+     */
+    public static boolean getBool(String key) {
+        return (boolean) settings.get(key);
+    }
+
+    /**
+     * Gets the color for the given key.
+     *
+     * @param key - The key of the color.
+     * @return The color.
+     */
+    public static Color getColor(String key) {
+        var item = settings.get(key);
+        if (item instanceof Color) {
+            return (Color) item;
+        } else {
+            try {
+                return Colors.COLORS[((Double) settings.get(key)).intValue()];
+            } catch (Exception e) {
+                return Colors.COLORS[(Integer) settings.get(key)];
+            }
+        }
+
+    }
+
+    /**
+     * Loads the default configuration.
+     */
+    public static void loadDefault() {
+        settings.put("gammaFade", false);
+        settings.put("fpsColors", false);
+        settings.put("chatMessage", true);
+        settings.put("chestEspColor", 6);
+        settings.put("chestTracerColor", 6);
+        settings.put("hostileMobEspColor", 0);
+        settings.put("hostileMobTracerColor", 0);
+        settings.put("peacefulMobEspColor", 2);
+        settings.put("peacefulMobTracerColor", 2);
+        settings.put("playerEspColor", 13);
+        settings.put("playerTracerColor", 13);
+        settings.put("itemEspColor", 7);
+        settings.put("itemTracerColor", 7);
+        settings.put("slowFpsColor", 0);
+        settings.put("okFpsColor", 5);
+        settings.put("fastFpsColor", 2);
+        settings.put("backgroundColor", 14);
+        settings.put("foregroundColor", 8);
+        settings.put("enabledColor", 15);
+        settings.put("categoryColor", 17);
+        settings.put("autoFullBright", false);
+        settings.put("guiSounds", false);
+    }
+
+    /**
+     * Adds a new setting to the settings list.
+     *
+     * @param key   - The key of the setting.
+     * @param value - The value of the setting.
+     */
+    public static void add(String key, Object value) {
+        settings.put(key, value);
     }
 }

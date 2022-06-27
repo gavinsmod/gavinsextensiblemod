@@ -33,7 +33,8 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 6/24/2022
+ * @version 6/27/2022
+ * A gui element that allows the user to drag, drop, and scroll through a list of items.
  */
 public class GuiScroll extends GuiDropdown {
 
@@ -78,7 +79,7 @@ public class GuiScroll extends GuiDropdown {
     @Override
     public void render(MatrixStack matrices, TextRenderer tr) {
         RenderUtils.drawBox(getBackgroundColor().getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrices);
-        tr.draw(matrices, this.title, (int) getX() + 2, (int) getY() + 2, Settings.ForegroundColor.getAsInt());
+        tr.draw(matrices, this.title, (int) getX() + 2, (int) getY() + 2, (Settings.getColor("foregroundColor")).getAsInt());
         RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrices);
         children.forEach(Gui::hide);
         if (!isOpen())
@@ -136,7 +137,7 @@ public class GuiScroll extends GuiDropdown {
      * @return Whether the scrollbar should be drawn.
      */
     private boolean shouldDrawScrollBar() {
-        return children.size() > maxChildren;
+        return children.size() > maxChildren && children.size() != maxChildren;
     }
 
     /**
@@ -149,7 +150,7 @@ public class GuiScroll extends GuiDropdown {
         var scrollBoxY = (getY2()) + 2;
         var scrollBoxHeight = getScrollBoxHeight();
         RenderUtils.drawBox(Colors.BLACK.getAsFloatArray(), new BoxD(new PointD(scrollBoxX, scrollBoxY), 4, scrollBoxHeight), matrices);
-        RenderUtils.drawOutline(Settings.ForegroundColor.getAsFloatArray(), new BoxD(new PointD(scrollBoxX, scrollBoxY), 4, scrollBoxHeight), matrices);
+        RenderUtils.drawOutline((Settings.getColor("foregroundColor")).getAsFloatArray(), new BoxD(new PointD(scrollBoxX, scrollBoxY), 4, scrollBoxHeight), matrices);
     }
 
     /**
@@ -189,6 +190,8 @@ public class GuiScroll extends GuiDropdown {
             toggleMenu();
             return true;
         }
+        if (!isOpen())
+            return false;
         for (int i = page * maxChildren; i < page * maxChildren + maxChildren; i++) {
             if (i >= children.size())
                 break;

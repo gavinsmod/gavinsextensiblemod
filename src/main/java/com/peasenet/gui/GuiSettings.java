@@ -21,11 +21,14 @@
 package com.peasenet.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.peasenet.gui.elements.*;
+import com.peasenet.gui.elements.Gui;
+import com.peasenet.gui.elements.GuiScroll;
 import com.peasenet.main.GavinsMod;
+import com.peasenet.main.Mods;
 import com.peasenet.main.Settings;
+import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
-import com.peasenet.util.color.Colors;
+import com.peasenet.settings.Setting;
 import com.peasenet.util.math.PointD;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
@@ -36,7 +39,7 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 6/26/2022
+ * @version 6/27/2022
  * A settings gui to control certain features of the mod.
  */
 public class GuiSettings extends Screen {
@@ -45,32 +48,31 @@ public class GuiSettings extends Screen {
      * A list of gui children to render.
      */
     private final ArrayList<Gui> guis;
+
+    /**
+     * The tracer dropdown
+     */
     GuiScroll tracerDropdown;
+
+    /**
+     * The esp dropdown
+     */
     GuiScroll espDropdown;
+
+    /**
+     * The render dropdown
+     */
     GuiScroll renderDropdown;
+
+    /**
+     * The miscellaneous dropdown
+     */
     GuiScroll miscDropdown;
-    GuiToggle fpsColors;
-    GuiToggle chatMessage;
-    GuiToggle guiSounds;
-    GuiCycle chestTracer;
-    GuiCycle chestEsp;
-    GuiCycle hostileMobTracer;
-    GuiCycle hostileMobEsp;
-    GuiCycle peacefulMobTracer;
-    GuiCycle peacefulMobEsp;
-    GuiCycle itemTracer;
-    GuiCycle itemEsp;
-    GuiCycle playerTracer;
-    GuiCycle playerEsp;
-    GuiCycle slowFps;
-    GuiCycle okFps;
-    GuiCycle fastFps;
-    GuiCycle backgroundColor;
-    GuiCycle foregroundColor;
-    GuiCycle enabledColor;
-    GuiCycle categoryColor;
-    GuiToggle gammaFade;
-    GuiToggle autoFullBright;
+
+    /**
+     * The dropdown containing gui settings.
+     */
+    GuiScroll guiDropdown;
 
     /**
      * Creates a new GUI settings screen.
@@ -80,41 +82,20 @@ public class GuiSettings extends Screen {
         tracerDropdown = new GuiScroll(new PointD(120, 110), 115, 10, Text.translatable("key.gavinsmod.settings.tracers"));
         espDropdown = new GuiScroll(new PointD(10, 110), 100, 10, Text.translatable("key.gavinsmod.settings.esps"));
         renderDropdown = new GuiScroll(new PointD(10, 10), 90, 10, Text.translatable("key.gavinsmod.settings.render"));
-        GuiDropdown fpsColorDropdown = new GuiDropdown(new PointD(220, 23), 95, 10, Text.translatable("key.gavinsmod.settings.fps.color"));
-
-        setupTracers();
-        setupEsps();
-        setupRender();
-        setupMiscSettings();
+        miscDropdown = new GuiScroll(new PointD(110, 10), 105, 10, Text.translatable("key.gavinsmod.gui.misc"));
+        guiDropdown = new GuiScroll(new PointD(245, 110), 100, 10, Text.translatable("key.gavinsmod.gui"));
+        addSettings(tracerDropdown, Type.Category.TRACERS);
+        addSettings(espDropdown, Type.Category.ESPS);
+        addSettings(renderDropdown, Type.Category.RENDER);
+        addSettings(miscDropdown, Type.Category.MISC);
+        addSettings(guiDropdown, Type.Category.GUI);
 
         guis = new ArrayList<>();
         guis.add(tracerDropdown);
         guis.add(espDropdown);
         guis.add(renderDropdown);
         guis.add(miscDropdown);
-
-
-        espDropdown.addElement(chestEsp);
-        espDropdown.addElement(itemEsp);
-        espDropdown.addElement(hostileMobEsp);
-        espDropdown.addElement(peacefulMobEsp);
-        espDropdown.addElement(playerEsp);
-
-        renderDropdown.addElement(gammaFade);
-        renderDropdown.addElement(autoFullBright);
-
-        miscDropdown.addElement(fpsColors);
-        fpsColorDropdown.addElement(slowFps);
-        fpsColorDropdown.addElement(okFps);
-        fpsColorDropdown.addElement(fastFps);
-
-        miscDropdown.addElement(fpsColorDropdown);
-        miscDropdown.addElement(backgroundColor);
-        miscDropdown.addElement(foregroundColor);
-        miscDropdown.addElement(enabledColor);
-        miscDropdown.addElement(categoryColor);
-        miscDropdown.addElement(chatMessage);
-        miscDropdown.addElement(guiSounds);
+        guis.add(guiDropdown);
     }
 
     @Override
@@ -123,9 +104,9 @@ public class GuiSettings extends Screen {
         var tr = this.client.textRenderer;
         RenderSystem.setShader(GameRenderer::getPositionShader);
         RenderSystem.enableBlend();
-        tr.draw(matrixStack, Text.translatable("key.gavinsmod.gui.settings"), 10, 1, Settings.ForegroundColor.getAsInt());
+        tr.draw(matrixStack, Text.translatable("key.gavinsmod.gui.settings"), 10, 1, (Settings.getColor("foregroundColor")).getAsInt());
         guis.forEach(gui -> {
-            gui.setBackground(Settings.BackgroundColor);
+            gui.setBackground(Settings.getColor("categoryColor"));
             gui.render(matrixStack, tr);
         });
         super.render(matrixStack, mouseX, mouseY, delta);
@@ -163,222 +144,20 @@ public class GuiSettings extends Screen {
 
     /**
      * Creates the esp settings scroll gui.
+     *
+     * @param parent   - The parent gui.
+     * @param category - The category of mod types to add to the parent gui.
      */
-    private void setupEsps() {
-        // Chest Esps
-        chestEsp = new GuiCycle(90, 10, Text.translatable("key.gavinsmod.chestesp"), Colors.COLORS.length);
-        chestEsp.setBackground(Settings.ChestEspColor);
-        chestEsp.setCallback(() -> {
-            Settings.ChestEspColor = Colors.COLORS[chestEsp.getCurrentIndex()];
-            chestEsp.setBackground(Settings.ChestEspColor);
-            Settings.save();
-        });
-        chestEsp.setCurrentIndex(Colors.getColorIndex(Settings.ChestEspColor));
-
-        // Hostile Mob Esps
-        hostileMobEsp = new GuiCycle(90, 10, Text.translatable("key.gavinsmod.hostilemobesp"), Colors.COLORS.length);
-        hostileMobEsp.setBackground(Settings.HostileMobEspColor);
-        hostileMobEsp.setCallback(() -> {
-            Settings.HostileMobEspColor = Colors.COLORS[hostileMobEsp.getCurrentIndex()];
-            hostileMobEsp.setBackground(Settings.HostileMobEspColor);
-            Settings.save();
-        });
-        hostileMobEsp.setCurrentIndex(Colors.getColorIndex(Settings.HostileMobEspColor));
-
-        // Peaceful Mob Esps
-        peacefulMobEsp = new GuiCycle(90, 10, Text.translatable("key.gavinsmod.peacefulmobesp"), Colors.COLORS.length);
-        peacefulMobEsp.setBackground(Settings.PeacefulMobEspColor);
-        peacefulMobEsp.setCallback(() -> {
-            Settings.PeacefulMobEspColor = Colors.COLORS[peacefulMobEsp.getCurrentIndex()];
-            peacefulMobEsp.setBackground(Settings.PeacefulMobEspColor);
-            Settings.save();
-        });
-        peacefulMobEsp.setCurrentIndex(Colors.getColorIndex(Settings.PeacefulMobEspColor));
-
-        // Item Esps
-        itemEsp = new GuiCycle(90, 10, Text.translatable("key.gavinsmod.entityitemesp"), Colors.COLORS.length);
-        itemEsp.setBackground(Settings.ItemEspColor);
-        itemEsp.setCallback(() -> {
-            Settings.ItemEspColor = Colors.COLORS[itemEsp.getCurrentIndex()];
-            itemEsp.setBackground(Settings.ItemEspColor);
-            Settings.save();
-        });
-        itemEsp.setCurrentIndex(Colors.getColorIndex(Settings.ItemEspColor));
-
-        // Player Esps
-        playerEsp = new GuiCycle(90, 10, Text.translatable("key.gavinsmod.entityplayeresp"), Colors.COLORS.length);
-        playerEsp.setBackground(Settings.PlayerEspColor);
-        playerEsp.setCallback(() -> {
-            Settings.PlayerEspColor = Colors.COLORS[playerEsp.getCurrentIndex()];
-            playerEsp.setBackground(Settings.PlayerEspColor);
-            Settings.save();
-        });
+    private void addSettings(Gui parent, Type.Category category) {
+        var modList = new ArrayList<Mod>();
+        // get all mods in esp category and have settings then add them to espDropdown
+        Mods.getMods().stream().filter(m -> m.getCategory() == category && m.hasSettings()).forEach(modList::add);
+        for (Mod m : modList) {
+            var modSettings = m.getSettings();
+            for (Setting s : modSettings) {
+                s.getGui().setWidth(parent.getWidth());
+                parent.addElement(s.getGui());
+            }
+        }
     }
-
-    /**
-     * Creates the tracer settings scroll gui.
-     */
-    private void setupTracers() {
-        chestTracer = new GuiCycle(110, 10, Text.translatable("key.gavinsmod.chesttracer"), Colors.COLORS.length);
-        chestTracer.setBackground(Settings.ChestTracerColor);
-        chestTracer.setCallback(() -> {
-            Settings.ChestTracerColor = Colors.COLORS[chestTracer.getCurrentIndex()];
-            chestTracer.setBackground(Settings.ChestTracerColor);
-            Settings.save();
-        });
-
-        chestTracer.setCurrentIndex(Colors.getColorIndex(Settings.ChestTracerColor));
-        playerTracer = new GuiCycle(110, 10, Text.translatable("key.gavinsmod.entityplayertracer"), Colors.COLORS.length);
-        playerTracer.setBackground(Settings.PlayerTracerColor);
-        playerTracer.setCallback(() -> {
-            Settings.PlayerTracerColor = Colors.COLORS[playerTracer.getCurrentIndex()];
-            playerTracer.setBackground(Settings.PlayerTracerColor);
-            Settings.save();
-        });
-        playerTracer.setCurrentIndex(Colors.getColorIndex(Settings.PlayerTracerColor));
-
-        // Hostile Mob Tracers
-        hostileMobTracer = new GuiCycle(110, 10, Text.translatable("key.gavinsmod.hostilemobtracer"), Colors.COLORS.length);
-        hostileMobTracer.setBackground(Settings.HostileMobTracerColor);
-        hostileMobTracer.setCallback(() -> {
-            Settings.HostileMobTracerColor = Colors.COLORS[hostileMobTracer.getCurrentIndex()];
-            hostileMobTracer.setBackground(Settings.HostileMobTracerColor);
-            Settings.save();
-        });
-        hostileMobTracer.setCurrentIndex(Colors.getColorIndex(Settings.HostileMobTracerColor));
-
-        // Peaceful Mob Tracers
-        peacefulMobTracer = new GuiCycle(110, 10, Text.translatable("key.gavinsmod.peacefulmobtracer"), Colors.COLORS.length);
-        peacefulMobTracer.setBackground(Settings.PeacefulMobTracerColor);
-        peacefulMobTracer.setCallback(() -> {
-            Settings.PeacefulMobTracerColor = Colors.COLORS[peacefulMobTracer.getCurrentIndex()];
-            peacefulMobTracer.setBackground(Settings.PeacefulMobTracerColor);
-            Settings.save();
-        });
-        peacefulMobTracer.setCurrentIndex(Colors.getColorIndex(Settings.PeacefulMobTracerColor));
-
-        // Item Tracers
-        itemTracer = new GuiCycle(110, 10, Text.translatable("key.gavinsmod.entityitemtracer"), Colors.COLORS.length);
-        itemTracer.setBackground(Settings.ItemTracerColor);
-        itemTracer.setCallback(() -> {
-            Settings.ItemTracerColor = Colors.COLORS[itemTracer.getCurrentIndex()];
-            itemTracer.setBackground(Settings.ItemTracerColor);
-            Settings.save();
-        });
-        itemTracer.setCurrentIndex(Colors.getColorIndex(Settings.ItemTracerColor));
-
-        tracerDropdown.addElement(chestTracer);
-        tracerDropdown.addElement(itemTracer);
-        tracerDropdown.addElement(hostileMobTracer);
-        tracerDropdown.addElement(peacefulMobTracer);
-        tracerDropdown.addElement(playerTracer);
-    }
-
-    /**
-     * Creates the miscellaneous settings scroll gui.
-     */
-    private void setupMiscSettings() {
-        slowFps = new GuiCycle(90, 10, Text.translatable("key.gavinsmod.settings.slowfps"), Colors.COLORS.length);
-        slowFps.setBackground(Settings.SlowFpsColor);
-        slowFps.setCallback(() -> {
-            Settings.SlowFpsColor = Colors.COLORS[slowFps.getCurrentIndex()];
-            slowFps.setBackground(Settings.SlowFpsColor);
-            Settings.save();
-        });
-
-        okFps = new GuiCycle(90, 10, Text.translatable("key.gavinsmod.settings.okfps"), Colors.COLORS.length);
-        okFps.setBackground(Settings.OkFpsColor);
-        okFps.setCallback(() -> {
-            Settings.OkFpsColor = Colors.COLORS[okFps.getCurrentIndex()];
-            okFps.setBackground(Settings.OkFpsColor);
-            Settings.save();
-        });
-
-        fastFps = new GuiCycle(90, 10, Text.translatable("key.gavinsmod.settings.fastfps"), Colors.COLORS.length);
-        fastFps.setBackground(Settings.FastFpsColor);
-        fastFps.setCallback(() -> {
-            Settings.FastFpsColor = Colors.COLORS[fastFps.getCurrentIndex()];
-            fastFps.setBackground(Settings.FastFpsColor);
-            Settings.save();
-        });
-
-        fpsColors = new GuiToggle(new PointD(10, 10), 95, 10, Text.translatable("key.gavinsmod.settings.fpscolors"));
-        fpsColors.setCallback(() -> {
-            Settings.FpsColors = !Settings.FpsColors;
-            Settings.save();
-        });
-        fpsColors.setState(Settings.FpsColors);
-
-        backgroundColor = new GuiCycle(95, 10, Text.translatable("key.gavinsmod.settings.backgroundcolor"), Colors.COLORS.length);
-        backgroundColor.setBackground(Settings.BackgroundColor);
-        backgroundColor.setCallback(() -> {
-            Settings.BackgroundColor = Colors.COLORS[backgroundColor.getCurrentIndex()];
-            backgroundColor.setBackground(Settings.BackgroundColor);
-            Settings.save();
-        });
-        backgroundColor.setCurrentIndex(Colors.getColorIndex(Settings.BackgroundColor));
-
-        foregroundColor = new GuiCycle(95, 10, Text.translatable("key.gavinsmod.settings.foregroundcolor"), Colors.COLORS.length);
-        foregroundColor.setBackground(Settings.ForegroundColor);
-        foregroundColor.setCallback(() -> {
-            Settings.ForegroundColor = Colors.COLORS[foregroundColor.getCurrentIndex()];
-            foregroundColor.setBackground(Settings.ForegroundColor);
-            Settings.save();
-        });
-        foregroundColor.setCurrentIndex(Colors.getColorIndex(Settings.ForegroundColor));
-
-        enabledColor = new GuiCycle(95, 10, Text.translatable("key.gavinsmod.settings.enabledcolor"), Colors.COLORS.length);
-        enabledColor.setBackground(Settings.EnabledColor);
-        enabledColor.setCallback(() -> {
-            Settings.EnabledColor = Colors.COLORS[enabledColor.getCurrentIndex()];
-            enabledColor.setBackground(Settings.EnabledColor);
-            Settings.save();
-        });
-        enabledColor.setCurrentIndex(Colors.getColorIndex(Settings.EnabledColor));
-
-        categoryColor = new GuiCycle(95, 10, Text.translatable("key.gavinsmod.settings.categorycolor"), Colors.COLORS.length);
-        categoryColor.setBackground(Settings.CategoryColor);
-        categoryColor.setCallback(() -> {
-            Settings.CategoryColor = Colors.COLORS[categoryColor.getCurrentIndex()];
-            categoryColor.setBackground(Settings.CategoryColor);
-            Settings.save();
-        });
-        categoryColor.setCurrentIndex(Colors.getColorIndex(Settings.CategoryColor));
-
-        chatMessage = new GuiToggle(new PointD(10, 10), 95, 10, Text.translatable("key.gavinsmod.settings.togglemessage"));
-        chatMessage.setCallback(() -> {
-            Settings.ChatMessage = !Settings.ChatMessage;
-            Settings.save();
-        });
-        chatMessage.setState(Settings.ChatMessage);
-
-        // gui sounds
-        guiSounds = new GuiToggle(new PointD(10, 10), 95, 10, Text.translatable("key.gavinsmod.settings.guisounds"));
-        guiSounds.setCallback(() -> {
-            Settings.GuiSounds = !Settings.GuiSounds;
-            Settings.save();
-        });
-        guiSounds.setState(Settings.GuiSounds);
-    }
-
-    /**
-     * Creates the render settings scroll gui.
-     */
-    private void setupRender() {
-        // gamma fade
-        gammaFade = new GuiToggle(new PointD(10, 10), 90, 10, Text.translatable("key.gavinsmod.settings.gammafade"));
-        gammaFade.setCallback(() -> {
-            Settings.GammaFade = !Settings.GammaFade;
-            Settings.save();
-        });
-        gammaFade.setState(Settings.GammaFade);
-        // auto fullbright
-        autoFullBright = new GuiToggle(new PointD(10, 10), 90, 10, Text.translatable("key.gavinsmod.settings.autofullbright"));
-        autoFullBright.setCallback(() -> {
-            Settings.AutoFullBright = !Settings.AutoFullBright;
-            Settings.save();
-        });
-        autoFullBright.setState(Settings.AutoFullBright);
-    }
-
 }

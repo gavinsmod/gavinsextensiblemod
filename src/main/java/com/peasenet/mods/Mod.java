@@ -24,6 +24,7 @@ import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Mods;
 import com.peasenet.main.Settings;
 import com.peasenet.mixinterface.IMinecraftClient;
+import com.peasenet.settings.Setting;
 import com.peasenet.util.KeyBindUtils;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
@@ -32,6 +33,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
+
 /**
  * @author gt3ch1
  * @version 6/14/2022
@@ -39,6 +42,8 @@ import org.lwjgl.glfw.GLFW;
  * and a gui button based off of the given category.
  */
 public abstract class Mod implements IMod {
+
+    private final ArrayList<Setting> modSettings = new ArrayList<>();
 
     /**
      * The string shown in the chat window when the player toggles the mod.
@@ -117,7 +122,7 @@ public abstract class Mod implements IMod {
      * @param message The message to send.
      */
     public static void sendMessage(String message) {
-        if (Settings.ChatMessage)
+        if (Settings.getBool("chatMessage"))
             GavinsModClient.getPlayer().sendMessage(Text.literal(message), false);
     }
 
@@ -209,5 +214,17 @@ public abstract class Mod implements IMod {
 
     public boolean isDeactivating() {
         return false;
+    }
+
+    public void addSetting(Setting setting) {
+        modSettings.add(setting);
+    }
+
+    public ArrayList<Setting> getSettings() {
+        return modSettings;
+    }
+
+    public boolean hasSettings() {
+        return !modSettings.isEmpty();
     }
 }

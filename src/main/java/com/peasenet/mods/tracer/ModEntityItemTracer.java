@@ -22,14 +22,18 @@ package com.peasenet.mods.tracer;
 
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.settings.ColorSetting;
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 6/27/2022
  * A mod that allows the player to see tracers towards items.
  */
 public class ModEntityItemTracer extends Mod {
     public ModEntityItemTracer() {
         super(Type.ENTITY_ITEM_TRACER);
+        ColorSetting colorSetting = new ColorSetting("itemTracerColor",
+                "The color of the entity item tracer.", "key.gavinsmod.entityitemtracer");
+        addSetting(colorSetting);
     }
 }

@@ -18,47 +18,66 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.gui.elements;
+package com.peasenet.settings;
 
-import com.peasenet.main.GavinsModClient;
+import com.peasenet.gui.elements.GuiToggle;
 import com.peasenet.main.Settings;
 import com.peasenet.util.math.PointD;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
  * @version 6/27/2022
- * Creates a GUI that allows the user to toggle mods on and off by clicking.
+ * A setting that contains one of two finite states - on or off.
  */
-public class GuiClick extends Gui {
+public class ToggleSetting extends Setting {
 
     /**
-     * Creates a new GUI menu.
-     *
-     * @param position - The position of the menu.
-     * @param width    - The width of the gui.
-     * @param height   - The height of the gui.
-     * @param title    - The title of the gui.
+     * The gui element that is used to display this toggle setting.
      */
-    public GuiClick(PointD position, int width, int height, Text title) {
-        super(position, width, height, title);
+    GuiToggle gui;
+
+    /**
+     * The current value of this toggle setting.
+     */
+    private boolean value;
+
+    /**
+     * Creates a new toggle setting.
+     *
+     * @param name - The name of this toggle setting.
+     * @param key  - The key of this toggle setting.
+     */
+    public ToggleSetting(String name, String key) {
+        super(name);
+        this.value = Settings.getBool(name);
+        gui = new GuiToggle(new PointD(0, 0), 90, 10, Text.translatable(key));
+        gui.setState(this.value);
+        gui.setCallback(() -> {
+            onClick();
+            Settings.add(name, this.value);
+            Settings.save();
+        });
     }
 
     /**
-     * Handles clicks on the gui.
+     * Sets the value of this toggle setting.
      *
-     * @param mouseX The x coordinate of the mouse.
-     * @param mouseY The y coordinate of the mouse.
-     * @param button The mouse button that was clicked.
+     * @param value - The value to set this toggle setting to.
      */
+    public void setValue(boolean value) {
+        this.value = value;
+        gui.setBackground(value ? Settings.getColor("foregroundColor") : Settings.getColor("backgroundColor"));
+    }
+
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button != 0) return false;
-        // check if mouseX and mouseY are within the bounds of the gui.
-        var inGui = mouseWithinGui(mouseX, mouseY);
-        if (inGui && Settings.getBool("guiSounds"))
-            GavinsModClient.getPlayer().playSound(SoundEvents.UI_BUTTON_CLICK, 0.5f, 1);
-        return inGui;
+    public void onClick() {
+        setValue(!value);
+        super.onClick();
+    }
+
+    @Override
+    public GuiToggle getGui() {
+        return gui;
     }
 }

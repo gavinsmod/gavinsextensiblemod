@@ -32,13 +32,25 @@ import net.minecraft.world.LightType;
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 6/27/2022
+ * The main part of the mod that handles checking mods.
  */
 public class GavinsModClient implements ClientModInitializer {
+
+    /**
+     * Gets the minecraft client.
+     *
+     * @return The minecraft client.
+     */
     public static IMinecraftClient getMinecraftClient() {
         return (IMinecraftClient) MinecraftClient.getInstance();
     }
 
+    /**
+     * Gets the minecraft client player.
+     *
+     * @return The minecraft client player.
+     */
     public static ClientPlayerEntity getPlayer() {
         return getMinecraftClient().getPlayer();
     }
@@ -47,29 +59,26 @@ public class GavinsModClient implements ClientModInitializer {
     public void onInitializeClient() {
         GavinsMod.LOGGER.info("GavinsMod keybinding initialized");
         ClientTickEvents.START_CLIENT_TICK.register((client) -> {
-            if (getPlayer() == null || getMinecraftClient() == null)
-                return;
+            if (getPlayer() == null || getMinecraftClient() == null) return;
             for (Mod m : Mods.getMods()) {
                 m.checkKeybinding();
-                if (m.isActive() || m.isDeactivating())
-                    m.onTick();
+                if (m.isActive() || m.isDeactivating()) m.onTick();
             }
             checkAutoFullBright();
         });
         WorldRenderEvents.AFTER_ENTITIES.register(RenderUtils::afterEntities);
     }
 
+    /**
+     * Checks if the auto full bright feature is enabled.
+     */
     private void checkAutoFullBright() {
-        if (!Settings.AutoFullBright)
-            return;
+        if (!Settings.getBool("autoFullBright")) return;
         var skyBrightness = getMinecraftClient().getWorld().getLightLevel(LightType.SKY, getPlayer().getBlockPos().up());
         var blockBrightness = getMinecraftClient().getWorld().getLightLevel(LightType.BLOCK, getPlayer().getBlockPos().up());
         var currTime = getMinecraftClient().getWorld().getTimeOfDay();
-        var shouldBeFullBright = (currTime > 13000 || currTime < 1000 || skyBrightness <= 2) && blockBrightness <= 2;
-        if (shouldBeFullBright && !Mods.getMod("fullbright").isActive())
-            Mods.getMod("fullbright").activate();
-        else if (Mods.getMod("fullbright").isActive() && !shouldBeFullBright)
-            Mods.getMod("fullbright").deactivate();
-        GavinsMod.LOGGER.info("Brightness: " + skyBrightness);
+        var shouldBeFullBright = (currTime >= 13000 || currTime <= 100 || skyBrightness <= 2) && blockBrightness <= 2;
+        if (shouldBeFullBright && !Mods.getMod("fullbright").isActive()) Mods.getMod("fullbright").activate();
+        else if (Mods.getMod("fullbright").isActive() && !shouldBeFullBright) Mods.getMod("fullbright").deactivate();
     }
 }

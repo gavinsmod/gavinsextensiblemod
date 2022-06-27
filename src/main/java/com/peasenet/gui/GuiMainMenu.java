@@ -38,7 +38,7 @@ import static com.peasenet.main.GavinsMod.VERSION;
 
 /**
  * @author gt3ch1
- * @version 6/13/2022
+ * @version 6/27/2022
  * The main menu for the mod.
  */
 public class GuiMainMenu extends Screen {
@@ -75,7 +75,7 @@ public class GuiMainMenu extends Screen {
         RenderSystem.enableBlend();
         for (var gui : guis) {
             if (gui instanceof GuiDropdown) {
-                gui.setBackground(Settings.CategoryColor);
+                gui.setBackground(Settings.getColor("categoryColor"));
             }
             gui.render(matrixStack, tr);
         }

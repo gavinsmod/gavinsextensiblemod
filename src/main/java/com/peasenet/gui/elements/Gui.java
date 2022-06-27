@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 6/13/2022
+ * @version 6/27/2022
  * The base class for all gui elements.
  */
 public class Gui {
@@ -137,7 +137,7 @@ public class Gui {
         this.box = new BoxD(topLeft, width, height);
         this.defaultPosition = BoxD.copy(box);
         this.title = title;
-        backgroundColor = Settings.BackgroundColor;
+        backgroundColor = Settings.getColor("backgroundColor");
         dragging = false;
     }
 
@@ -212,7 +212,7 @@ public class Gui {
      */
     public void render(MatrixStack matrixStack, TextRenderer tr) {
         RenderUtils.drawBox(backgroundColor.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrixStack);
-        tr.draw(matrixStack, title, (int) getX() + 2, (int) getY() + 2, Settings.ForegroundColor.getAsInt());
+        tr.draw(matrixStack, title, (int) getX() + 2, (int) getY() + 2, (Settings.getColor("foregroundColor")).getAsInt());
         RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrixStack);
     }
 

@@ -33,7 +33,7 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 6/13/2022
+ * @version 6/27/2022
  * A simple dropdown gui element
  */
 public class GuiDropdown extends GuiDraggable {
@@ -81,8 +81,7 @@ public class GuiDropdown extends GuiDraggable {
     public void render(MatrixStack matrices, TextRenderer tr) {
         // For each mod in the category, render it right below the title.
         super.render(matrices, tr);
-        if (!isOpen())
-            return;
+        if (!isOpen()) return;
         children.stream().filter(child -> !child.isHidden()).forEach(child -> child.render(matrices, tr));
     }
 
@@ -92,8 +91,7 @@ public class GuiDropdown extends GuiDraggable {
         if (isOpen()) {
             // If the dropdown is open, check if the mouse is within the bounds of any of the buttons.
             for (Gui g : children) {
-                if (g.mouseClicked(mouseX, mouseY, button))
-                    return true;
+                if (g.mouseClicked(mouseX, mouseY, button)) return true;
             }
         }
         // Check if the mouse is within the bounds of the dropdown.
@@ -110,8 +108,7 @@ public class GuiDropdown extends GuiDraggable {
         var inMain = super.mouseWithinGui(mouseX, mouseY);
         if (isOpen()) {
             for (Gui g : children) {
-                if (g.mouseWithinGui(mouseX, mouseY) && !g.isHidden())
-                    return true;
+                if (g.mouseWithinGui(mouseX, mouseY) && !g.isHidden()) return true;
             }
         }
         return inMain;
@@ -122,11 +119,9 @@ public class GuiDropdown extends GuiDraggable {
      */
     protected void toggleMenu() {
         isOpen = !isOpen;
-        if (Settings.GuiSounds) {
-            if (isOpen)
-                GavinsModClient.getPlayer().playSound(SoundEvents.BLOCK_CHEST_OPEN, 0.5f, 1);
-            else
-                GavinsModClient.getPlayer().playSound(SoundEvents.BLOCK_CHEST_CLOSE, 0.5f, 1);
+        if (Settings.getBool("guiSounds")) {
+            if (isOpen) GavinsModClient.getPlayer().playSound(SoundEvents.BLOCK_CHEST_OPEN, 0.5f, 1);
+            else GavinsModClient.getPlayer().playSound(SoundEvents.BLOCK_CHEST_CLOSE, 0.5f, 1);
         }
 
     }

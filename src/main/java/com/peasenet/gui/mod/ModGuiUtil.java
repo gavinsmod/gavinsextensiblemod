@@ -32,9 +32,17 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 6/24/2022
+ * @version 6/27/2022
+ * A utility class used to get the gui elements that are needed for each gui category.
  */
 public class ModGuiUtil {
+    /**
+     * Gets a list of toggleable gui elements from the given mod category.
+     *
+     * @param category - The mod category we want to get the toggleable elements for.
+     * @param box      - The box that contains the gui.
+     * @return A list of toggleable gui elements.
+     */
     public static ArrayList<Gui> getGuiToggleFromCategory(Type.Category category, BoxD box) {
         var guis = new ArrayList<Gui>();
         var mods = GavinsMod.getModsInCategory(category);
@@ -44,6 +52,7 @@ public class ModGuiUtil {
             var y = box.getBottomRight().y() + i * 10;
             var gui = new GuiToggle(new PointD(x, y + 2), (int) box.getWidth(), (int) box.getHeight(), Text.translatable(mod.getTranslationKey()));
             gui.setCallback(mod::toggle);
+            gui.setRenderCallback(() -> gui.setState(mod.isActive()));
             guis.add(gui);
         }
         return guis;

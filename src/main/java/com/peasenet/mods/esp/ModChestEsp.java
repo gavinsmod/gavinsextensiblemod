@@ -22,14 +22,18 @@ package com.peasenet.mods.esp;
 
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.settings.ColorSetting;
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 6/27/2022
  * A mod that allows the client to see an esp (a box) around chests.
  */
 public class ModChestEsp extends Mod {
     public ModChestEsp() {
         super(Type.CHEST_ESP);
+        ColorSetting colorSetting = new ColorSetting("chestEspColor", "The color of the chest esp.",
+                "key.gavinsmod.chestesp");
+        addSetting(colorSetting);
     }
 }
