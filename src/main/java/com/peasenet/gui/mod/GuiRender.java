@@ -28,7 +28,7 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/13/2022
+ * @version 6/28/2022
  * Creates a new gui for render mods as a dropdown.
  */
 public class GuiRender extends GuiScroll {
@@ -37,7 +37,7 @@ public class GuiRender extends GuiScroll {
      * Creates a new render dropdown.
      */
     public GuiRender() {
-        this(new PointD(230, 20), 75, 10, Text.translatable("key.gavinsmod.gui.render"));
+        this(new PointD(270, 20), 90, 10, Text.translatable("key.gavinsmod.gui.render"));
     }
 
     /**

@@ -28,7 +28,7 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/13/2022
+ * @version 6/28/2022
  * Creates a new gui for miscellaneous mods as a dropdown.
  */
 public class GuiMisc extends GuiScroll {
@@ -37,7 +37,7 @@ public class GuiMisc extends GuiScroll {
      * Creates a new misc dropdown.
      */
     public GuiMisc() {
-        this(new PointD(150, 20), 70, 10, Text.translatable("key.gavinsmod.gui.misc"));
+        this(new PointD(170, 20), 95, 10, Text.translatable("key.gavinsmod.gui.misc"));
     }
 
     /**

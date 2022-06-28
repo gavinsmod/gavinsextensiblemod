@@ -28,7 +28,7 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/13/2022
+ * @version 6/28/2022
  * Creates a new gui for ESP mods as a drop down.
  */
 public class GuiESP extends GuiScroll {
@@ -37,7 +37,7 @@ public class GuiESP extends GuiScroll {
      * Creates a new ESP dropdown.
      */
     public GuiESP() {
-        this(new PointD(10, 120), 60, 10, Text.translatable("key.gavinsmod.gui.esps"));
+        this(new PointD(10, 120), 70, 10, Text.translatable("key.gavinsmod.gui.esps"));
     }
 
     /**

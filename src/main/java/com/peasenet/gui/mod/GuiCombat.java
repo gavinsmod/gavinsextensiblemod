@@ -28,7 +28,7 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/13/2022
+ * @version 6/28/2022
  * Creates a new gui for combat mods as a dropdown.
  */
 public class GuiCombat extends GuiScroll {
@@ -37,7 +37,7 @@ public class GuiCombat extends GuiScroll {
      * Creates a new combat dropdown.
      */
     public GuiCombat() {
-        this(new PointD(80, 20), 60, 10, Text.translatable("key.gavinsmod.gui.combat"));
+        this(new PointD(90, 20), 75, 10, Text.translatable("key.gavinsmod.gui.combat"));
     }
 
     /**

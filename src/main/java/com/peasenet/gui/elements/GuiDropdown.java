@@ -33,7 +33,7 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 6/28/2022
  * A simple dropdown gui element
  */
 public class GuiDropdown extends GuiDraggable {
@@ -41,12 +41,13 @@ public class GuiDropdown extends GuiDraggable {
     /**
      * The category of the dropdown.
      */
-
     protected Type.Category category;
+
     /**
      * Whether the dropdown is open.
      */
     private boolean isOpen;
+    private Direction direction = Direction.DOWN;
 
     /**
      * Creates a new dropdown like UI element.
@@ -59,7 +60,6 @@ public class GuiDropdown extends GuiDraggable {
     public GuiDropdown(PointD position, int width, int height, Text title) {
         super(position, width, height, title);
     }
-
 
     /**
      * Gets whether the dropdown is open.
@@ -79,10 +79,21 @@ public class GuiDropdown extends GuiDraggable {
 
     @Override
     public void render(MatrixStack matrices, TextRenderer tr) {
-        // For each mod in the category, render it right below the title.
+        updateSymbol();
+        tr.draw(matrices, String.valueOf(symbol), (int) getX2() + symbolOffsetX, (int) getY() + symbolOffsetY, (Settings.getColor("foregroundColor")).getAsInt());
         super.render(matrices, tr);
         if (!isOpen()) return;
-        children.stream().filter(child -> !child.isHidden()).forEach(child -> child.render(matrices, tr));
+        var toRender = children.stream().filter(child -> !child.isHidden());
+        // convert toRender to ArrayList
+        var toRenderList = new ArrayList<>(toRender.toList());
+        for (int i = 0; i < toRenderList.size(); i++) {
+            var child = toRenderList.get(i);
+            switch (getDirection()) {
+                case DOWN -> child.setPosition(new PointD(getX(), getY2() + 2 + (i * 12)));
+                case RIGHT -> child.setPosition(new PointD(getX2() + 2, getY() + (i * 12)));
+            }
+            child.render(matrices, tr);
+        }
     }
 
     @Override
@@ -91,7 +102,7 @@ public class GuiDropdown extends GuiDraggable {
         if (isOpen()) {
             // If the dropdown is open, check if the mouse is within the bounds of any of the buttons.
             for (Gui g : children) {
-                if (g.mouseClicked(mouseX, mouseY, button)) return true;
+                if (g.mouseClicked(mouseX, mouseY, button) && !g.isHidden()) return true;
             }
         }
         // Check if the mouse is within the bounds of the dropdown.
@@ -123,6 +134,10 @@ public class GuiDropdown extends GuiDraggable {
             if (isOpen) GavinsModClient.getPlayer().playSound(SoundEvents.BLOCK_CHEST_OPEN, 0.5f, 1);
             else GavinsModClient.getPlayer().playSound(SoundEvents.BLOCK_CHEST_CLOSE, 0.5f, 1);
         }
+        for (Gui g : children) {
+            if (!isOpen) g.hide();
+            else g.show();
+        }
 
     }
 
@@ -131,6 +146,7 @@ public class GuiDropdown extends GuiDraggable {
         // calculate the offset between the mouse position and the top left corner of the gui
         if (super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
             isOpen = false;
+            children.forEach(Gui::hide);
             resetDropdownsLocation();
             return true;
         }
@@ -151,6 +167,62 @@ public class GuiDropdown extends GuiDraggable {
         // copy buttons to a new array
         ArrayList<Gui> newButtons = new ArrayList<>(children);
         children.clear();
+        // check if newbuttons contains any children
         newButtons.forEach(this::addElement);
+    }
+
+    /**
+     * Gets the direction that this dropdown will be displayed in.
+     *
+     * @return The direction that this dropdown will be displayed in.
+     */
+    public Direction getDirection() {
+        return direction;
+    }
+
+    /**
+     * Sets the direction that this dropdown will be displayed in.
+     *
+     * @param direction - The direction.
+     */
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    @Override
+    public void addElement(Gui element) {
+        children.add(element);
+        if (getDirection() == Direction.RIGHT) {
+            element.setPosition(new PointD(getX2() + 12, getY2() + (children.size()) * 12));
+        }
+    }
+
+    /**
+     * Sets the symbol for the dropdown based off of what direction it is displayed in.
+     */
+    protected void updateSymbol() {
+        symbol = '\u2612';
+        symbolOffsetX = -10;
+        symbolOffsetY = 2;
+        if (!isOpen()) {
+            switch (getDirection()) {
+                case RIGHT -> {
+                    symbol = '\u25B6';
+                    symbolOffsetX = -8;
+                }
+                case DOWN -> {
+                    symbol = '\u25BC';
+                    symbolOffsetY = 3;
+                    symbolOffsetX = -8;
+                }
+            }
+        }
+    }
+
+    /**
+     * A direction that represents which way the dropdown will be displayed.
+     */
+    public enum Direction {
+        DOWN, RIGHT
     }
 }

@@ -28,7 +28,7 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/13/2022
+ * @version 6/28/2022
  * Creates a new gui for tracer mods as a dropdown.
  */
 public class GuiTracers extends GuiScroll {
@@ -37,7 +37,7 @@ public class GuiTracers extends GuiScroll {
      * Creates a new tracer dropdown.
      */
     public GuiTracers() {
-        this(new PointD(80, 120), 82, 10, Text.translatable("key.gavinsmod.gui.tracers"));
+        this(new PointD(85, 120), 95, 10, Text.translatable("key.gavinsmod.gui.tracers"));
     }
 
     /**

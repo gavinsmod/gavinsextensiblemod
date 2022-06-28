@@ -20,12 +20,14 @@
 
 package com.peasenet.mods.misc;
 
+import com.peasenet.gui.elements.GuiDropdown;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Settings;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
+import com.peasenet.settings.SubSetting;
 import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.RenderUtils;
 import com.peasenet.util.math.BoxD;
@@ -35,20 +37,24 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 6/28/2022
  * A mod that renders the current frames per second in the top right corner of the screen.
  */
 public class ModFpsCounter extends Mod {
     public ModFpsCounter() {
         super(Type.MOD_FPS_COUNTER);
+        SubSetting fpsSetting = new SubSetting(50, 10, "key.gavinsmod.settings.fpscolors");
         ToggleSetting fpsColors = new ToggleSetting("fpsColors", "key.gavinsmod.settings.fpscolors");
         ColorSetting fpsSlowColor = new ColorSetting("slowFpsColor", "The color of the FPS counter when it is below the slow threshold.", "key.gavinsmod.settings.slowfps");
         ColorSetting fpsOkColor = new ColorSetting("okFpsColor", "The color of the FPS counter when it is between the slow and fast thresholds.", "key.gavinsmod.settings.okfps");
         ColorSetting fpsFastColor = new ColorSetting("fastFpsColor", "The color of the FPS counter when it is above the fast threshold.", "key.gavinsmod.settings.fastfps");
-        addSetting(fpsColors);
-        addSetting(fpsSlowColor);
-        addSetting(fpsOkColor);
-        addSetting(fpsFastColor);
+        fpsSetting.add(fpsColors);
+        fpsSetting.add(fpsSlowColor);
+        fpsSetting.add(fpsOkColor);
+        fpsSetting.add(fpsFastColor);
+        fpsSetting.getGui().setDirection(GuiDropdown.Direction.RIGHT);
+        addSetting(fpsSetting);
+
     }
 
     @Override
@@ -72,8 +78,7 @@ public class ModFpsCounter extends Mod {
         var color = Settings.getColor("foregroundColor");
         if (Settings.getBool("fpsColors")) {
             if (fps >= maximumFps * 0.85) color = Settings.getColor("fastFpsColor");
-            else if (fps > maximumFps * 0.45 && fps < maximumFps * 0.85)
-                color = Settings.getColor("okFpsColor");
+            else if (fps > maximumFps * 0.45 && fps < maximumFps * 0.85) color = Settings.getColor("okFpsColor");
             else color = Settings.getColor("slowFpsColor");
         }
         RenderUtils.drawBox((Settings.getColor("backgroundColor")).getAsFloatArray(), box, matrixStack);

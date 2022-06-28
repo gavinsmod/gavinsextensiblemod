@@ -28,7 +28,7 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/13/2022
+ * @version 6/28/2022
  * Creates a new gui for movement mods as a dropdown.
  */
 public class GuiMovement extends GuiScroll {
@@ -37,7 +37,7 @@ public class GuiMovement extends GuiScroll {
      * Creates a new movement dropdown.
      */
     public GuiMovement() {
-        this(new PointD(10, 20), 60, 10, Text.translatable("key.gavinsmod.gui.movement"));
+        this(new PointD(10, 20), 75, 10, Text.translatable("key.gavinsmod.gui.movement"));
     }
 
     /**

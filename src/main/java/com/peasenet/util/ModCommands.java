@@ -26,7 +26,7 @@ import com.peasenet.mods.Mod;
 
 /**
  * @author gt3ch1
- * @version 5/24/2022
+ * @version 6/28/2022
  * A class that handles chat commands for all mods.
  */
 public class ModCommands {
@@ -62,6 +62,7 @@ public class ModCommands {
         }
         if (message.startsWith("resetgui")) {
             GavinsMod.gui.reset();
+            GavinsMod.guiSettings.reset();
             return true;
         }
         return false;

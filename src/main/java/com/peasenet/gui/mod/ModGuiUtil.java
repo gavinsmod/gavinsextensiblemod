@@ -32,7 +32,7 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 6/28/2022
  * A utility class used to get the gui elements that are needed for each gui category.
  */
 public class ModGuiUtil {

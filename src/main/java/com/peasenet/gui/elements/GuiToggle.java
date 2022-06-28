@@ -29,7 +29,7 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 6/28/2022
  * A simple toggleable gui element.
  */
 public class GuiToggle extends GuiClick {
@@ -47,6 +47,18 @@ public class GuiToggle extends GuiClick {
      * The callback method to be called when the element is rendered.
      */
     private SettingsCallback renderCallback;
+
+    /**
+     * Creates a new GUI menu.
+     *
+     * @param position - The position of the menu.
+     * @param width    - The width of the gui.
+     * @param height   - The height of the gui.
+     * @param title    - The title of the gui.
+     */
+    public GuiToggle(PointD position, int width, int height, Text title) {
+        super(position, width, height, title);
+    }
 
     /**
      * Sets the current state of this toggle element.
@@ -76,18 +88,6 @@ public class GuiToggle extends GuiClick {
     }
 
     /**
-     * Creates a new GUI menu.
-     *
-     * @param position - The position of the menu.
-     * @param width    - The width of the gui.
-     * @param height   - The height of the gui.
-     * @param title    - The title of the gui.
-     */
-    public GuiToggle(PointD position, int width, int height, Text title) {
-        super(position, width, height, title);
-    }
-
-    /**
      * Gets whether the toggle is on.
      *
      * @return Whether the toggle is on.
@@ -98,24 +98,21 @@ public class GuiToggle extends GuiClick {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (super.mouseClicked(mouseX, mouseY, button) && !isHidden()) {
-            isOn = !isOn;
-            if (callback != null) {
-                callback.callback();
-            }
-            return true;
-        }
-        return false;
+        if (!super.mouseClicked(mouseX, mouseY, button) || isHidden()) return false;
+
+        isOn = !isOn;
+        if (callback != null) callback.callback();
+        return true;
     }
 
     @Override
     public void render(MatrixStack matrixStack, TextRenderer tr) {
-        if (renderCallback != null)
-            renderCallback.callback();
-        if (isOn())
-            setBackground(Settings.getColor("enabledColor"));
-        else
-            setBackground(Settings.getColor("backgroundColor"));
+        if (isHidden()) return;
+        symbol = isOn ? '\u2611' : '\u2610';
+        if (renderCallback != null) renderCallback.callback();
+        if (isOn()) setBackground(Settings.getColor("enabledColor"));
+        else setBackground(Settings.getColor("backgroundColor"));
         super.render(matrixStack, tr);
+        tr.draw(matrixStack, String.valueOf(symbol), (int) getX2() + symbolOffsetX, (int) getY() + symbolOffsetY, (Settings.getColor("foregroundColor")).getAsInt());
     }
 }

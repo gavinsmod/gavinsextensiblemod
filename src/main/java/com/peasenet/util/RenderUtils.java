@@ -27,7 +27,6 @@ import com.peasenet.main.Settings;
 import com.peasenet.mixinterface.ISimpleOption;
 import com.peasenet.mods.Type;
 import com.peasenet.util.color.Color;
-import com.peasenet.util.color.Colors;
 import com.peasenet.util.math.BoxD;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.entity.ChestBlockEntity;
@@ -38,8 +37,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.item.Item;
 import net.minecraft.util.math.*;
 import org.lwjgl.opengl.GL11;
 
@@ -210,10 +207,7 @@ public class RenderUtils {
 
             Box aabb = getEntityBox(delta, e, type);
             Vec3f boxPos = new Vec3f(aabb.getCenter());
-            Color c = Colors.PURPLE;
-
             if (type == EntityType.ITEM) {
-                Item i = ((ItemEntity) e).getStack().getItem();
                 if (GavinsMod.isEnabled(Type.ENTITY_ITEM_ESP))
                     drawBox(stack, buffer, aabb, Settings.getColor("itemEspColor"));
                 if (GavinsMod.isEnabled(Type.ENTITY_ITEM_TRACER))
@@ -382,11 +376,25 @@ public class RenderUtils {
         var bufferBuilder = Tessellator.getInstance().getBuffer();
         RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 0.5f);
         bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+        drawBox(xt1, yt1, xt2, yt2, matrix, bufferBuilder);
+        Tessellator.getInstance().draw();
+    }
+
+    /**
+     * Draws a box from the given points
+     *
+     * @param xt1           - The x coordinate of the top left corner of the box.
+     * @param yt1           - The y coordinate of the top left corner of the box.
+     * @param xt2           - The x coordinate of the bottom right corner of the box.
+     * @param yt2           - The y coordinate of the bottom right corner of the box.
+     * @param matrix        - The matrix stack used to draw boxes on screen.
+     * @param bufferBuilder - The buffer builder used to draw boxes on screen.
+     */
+    private static void drawBox(int xt1, int yt1, int xt2, int yt2, Matrix4f matrix, BufferBuilder bufferBuilder) {
         bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
         bufferBuilder.vertex(matrix, xt1, yt2, 0).next();
         bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
         bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
-        Tessellator.getInstance().draw();
     }
 
     /**
@@ -440,10 +448,7 @@ public class RenderUtils {
         var bufferBuilder = Tessellator.getInstance().getBuffer();
         RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 1.0F);
         bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
-        bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
-        bufferBuilder.vertex(matrix, xt1, yt2, 0).next();
-        bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
-        bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
+        drawBox(xt1, yt1, xt2, yt2, matrix, bufferBuilder);
         bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
         Tessellator.getInstance().draw();
     }

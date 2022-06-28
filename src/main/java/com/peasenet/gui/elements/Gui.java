@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 6/28/2022
  * The base class for all gui elements.
  */
 public class Gui {
@@ -48,22 +48,53 @@ public class Gui {
      * The title of the gui.
      */
     protected final Text title;
-
-    /**
-     * The box that contains the gui.
-     */
-    private BoxD box;
-
-    /**
-     * The background color of the gui.
-     */
-    private Color backgroundColor;
-
-
     /**
      * The list of buttons(mods) in this dropdown.
      */
     protected final ArrayList<Gui> children = new ArrayList<>();
+    /**
+     * The symbol to be drawn to the left of the end of the box (like a checkbox, empty box, or arrow).
+     */
+    char symbol = '\u2612';
+    /**
+     * The offset used for the symbol (x).
+     */
+    int symbolOffsetX = -10;
+    /**
+     * The offset used for the symbol (y).
+     */
+    int symbolOffsetY = 2;
+    /**
+     * The box that contains the gui.
+     */
+    private BoxD box;
+    /**
+     * The background color of the gui.
+     */
+    private Color backgroundColor;
+    /**
+     * Whether this gui is currently being dragged.
+     */
+    private boolean dragging;
+    /**
+     * Whether this gui is currently hidden.
+     */
+    private boolean hidden;
+
+    /**
+     * Creates a new GUI menu.
+     *
+     * @param width  - The width of the gui.
+     * @param height - The height of the gui.
+     * @param title  - The title of the gui.
+     */
+    public Gui(PointD topLeft, int width, int height, Text title) {
+        this.box = new BoxD(topLeft, width, height);
+        this.defaultPosition = BoxD.copy(box);
+        this.title = title;
+        backgroundColor = Settings.getColor("backgroundColor");
+        dragging = false;
+    }
 
     /**
      * Adds an child element to this gui.
@@ -72,7 +103,7 @@ public class Gui {
      */
     public void addElement(Gui child) {
         if (children.isEmpty()) {
-            child.setPosition(new PointD(getX(), getY2() + 1));
+            child.setPosition(new PointD(getX2() + 100, getY2() + 1));
             children.add(child);
             return;
         }
@@ -83,16 +114,6 @@ public class Gui {
         child.setPosition(new PointD(getX(), lastY + 2));
         children.add(child);
     }
-
-    /**
-     * Whether this gui is currently being dragged.
-     */
-    private boolean dragging;
-
-    /**
-     * Whether this gui is currently hidden.
-     */
-    private boolean hidden;
 
     /**
      * Gets whether this gui is currently hidden.
@@ -115,30 +136,6 @@ public class Gui {
      */
     public void show() {
         hidden = false;
-    }
-
-    /**
-     * Sets the width of the gui.
-     *
-     * @param width - The width of the gui.
-     */
-    public void setWidth(double width) {
-        box = new BoxD(box.getTopLeft(), width, box.getHeight());
-    }
-
-    /**
-     * Creates a new GUI menu.
-     *
-     * @param width  - The width of the gui.
-     * @param height - The height of the gui.
-     * @param title  - The title of the gui.
-     */
-    public Gui(PointD topLeft, int width, int height, Text title) {
-        this.box = new BoxD(topLeft, width, height);
-        this.defaultPosition = BoxD.copy(box);
-        this.title = title;
-        backgroundColor = Settings.getColor("backgroundColor");
-        dragging = false;
     }
 
     /**
@@ -196,6 +193,15 @@ public class Gui {
     }
 
     /**
+     * Sets the width of the gui.
+     *
+     * @param width - The width of the gui.
+     */
+    public void setWidth(double width) {
+        box = new BoxD(box.getTopLeft(), width, box.getHeight());
+    }
+
+    /**
      * Gets the height of the dropdown.
      *
      * @return The height of the dropdown.
@@ -211,6 +217,7 @@ public class Gui {
      * @param tr          The text render to use to draw text
      */
     public void render(MatrixStack matrixStack, TextRenderer tr) {
+        if (isHidden()) return;
         RenderUtils.drawBox(backgroundColor.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrixStack);
         tr.draw(matrixStack, title, (int) getX() + 2, (int) getY() + 2, (Settings.getColor("foregroundColor")).getAsInt());
         RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrixStack);
@@ -325,5 +332,14 @@ public class Gui {
      */
     public Color getBackgroundColor() {
         return backgroundColor;
+    }
+
+    /**
+     * Whether this element has children.
+     *
+     * @return True if this element has children.
+     */
+    public boolean hasChildren() {
+        return !children.isEmpty();
     }
 }

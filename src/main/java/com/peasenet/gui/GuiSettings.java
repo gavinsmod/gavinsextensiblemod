@@ -20,34 +20,24 @@
 
 package com.peasenet.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.peasenet.gui.elements.Gui;
 import com.peasenet.gui.elements.GuiScroll;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.Mods;
-import com.peasenet.main.Settings;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.Setting;
 import com.peasenet.util.math.PointD;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 6/28/2022
  * A settings gui to control certain features of the mod.
  */
-public class GuiSettings extends Screen {
-
-    /**
-     * A list of gui children to render.
-     */
-    private final ArrayList<Gui> guis;
+public class GuiSettings extends GuiElement {
 
     /**
      * The tracer dropdown
@@ -79,61 +69,29 @@ public class GuiSettings extends Screen {
      */
     public GuiSettings() {
         super(Text.translatable("key.gavinsmod.gui.settings"));
+        guis = new ArrayList<>();
         tracerDropdown = new GuiScroll(new PointD(120, 110), 115, 10, Text.translatable("key.gavinsmod.settings.tracers"));
         espDropdown = new GuiScroll(new PointD(10, 110), 100, 10, Text.translatable("key.gavinsmod.settings.esps"));
-        renderDropdown = new GuiScroll(new PointD(10, 10), 90, 10, Text.translatable("key.gavinsmod.settings.render"));
-        miscDropdown = new GuiScroll(new PointD(110, 10), 105, 10, Text.translatable("key.gavinsmod.gui.misc"));
+        renderDropdown = new GuiScroll(new PointD(10, 20), 100, 10, Text.translatable("key.gavinsmod.settings.render"));
+        miscDropdown = new GuiScroll(new PointD(120, 20), 105, 10, Text.translatable("key.gavinsmod.gui.misc"));
         guiDropdown = new GuiScroll(new PointD(245, 110), 100, 10, Text.translatable("key.gavinsmod.gui"));
+        // Create a plain gui at the top right corner
         addSettings(tracerDropdown, Type.Category.TRACERS);
         addSettings(espDropdown, Type.Category.ESPS);
         addSettings(renderDropdown, Type.Category.RENDER);
         addSettings(miscDropdown, Type.Category.MISC);
         addSettings(guiDropdown, Type.Category.GUI);
 
-        guis = new ArrayList<>();
         guis.add(tracerDropdown);
         guis.add(espDropdown);
         guis.add(renderDropdown);
         guis.add(miscDropdown);
         guis.add(guiDropdown);
-    }
-
-    @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
-        assert this.client != null;
-        var tr = this.client.textRenderer;
-        RenderSystem.setShader(GameRenderer::getPositionShader);
-        RenderSystem.enableBlend();
-        tr.draw(matrixStack, Text.translatable("key.gavinsmod.gui.settings"), 10, 1, (Settings.getColor("foregroundColor")).getAsInt());
-        guis.forEach(gui -> {
-            gui.setBackground(Settings.getColor("categoryColor"));
-            gui.render(matrixStack, tr);
-        });
-        super.render(matrixStack, mouseX, mouseY, delta);
-    }
-
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        for (Gui g : guis)
-            if (g.mouseClicked(mouseX, mouseY, button)) return true;
-        return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    @Override
-    public boolean mouseScrolled(double x, double y, double scroll) {
-        for (Gui g : guis)
-            if (g.mouseScrolled(x, y, scroll)) return true;
-        return super.mouseScrolled(x, y, scroll);
-    }
-
-    @Override
-    public void init() {
-        super.init();
-    }
-
-    @Override
-    public boolean shouldPause() {
-        return false;
+        tracerDropdown.setFrozen(true);
+        espDropdown.setFrozen(true);
+        renderDropdown.setFrozen(true);
+        miscDropdown.setFrozen(true);
+        guiDropdown.setFrozen(true);
     }
 
     @Override

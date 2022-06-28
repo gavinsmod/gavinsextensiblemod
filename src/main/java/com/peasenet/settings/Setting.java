@@ -48,9 +48,6 @@ public abstract class Setting {
      */
     public Setting(String name) {
         this.name = name;
-        /**
-         * The description of the setting.
-         */
     }
 
     /**

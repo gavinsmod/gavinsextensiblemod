@@ -18,37 +18,48 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.gui;
+package com.peasenet.settings;
 
-import com.peasenet.gui.elements.Gui;
-import com.peasenet.main.GavinsMod;
-import com.peasenet.mods.Type;
+import com.peasenet.gui.elements.GuiDropdown;
+import com.peasenet.gui.elements.GuiScroll;
 import net.minecraft.text.Text;
-
-import java.util.ArrayList;
-
-import static com.peasenet.main.GavinsMod.VERSION;
 
 /**
  * @author gt3ch1
  * @version 6/28/2022
- * The main menu for the mod.
+ * A setting that contains multiple sub settings within a dropdown element.
  */
-public class GuiMainMenu extends GuiElement {
+public class SubSetting extends Setting {
 
     /**
-     * Creates a new main menu with a list of guis to display.
-     *
-     * @param guis - The list of guis to display.
+     * The dropdown menu that contains the sub settings.
      */
-    public GuiMainMenu(ArrayList<Gui> guis) {
-        super(Text.literal("Gavin's Mod " + VERSION));
-        this.guis = guis;
+    private final GuiScroll dropdown;
+
+    /**
+     * Creates a new subsetting element. You can call #add(Setting) to add subsettings to this element.
+     *
+     * @param width          - The width of the dropdown element.
+     * @param height         - The height of the dropdown element.
+     * @param translationKey - The translation key.
+     */
+    public SubSetting(int width, int height, String translationKey) {
+        super("none");
+        dropdown = new GuiScroll(width, height, Text.translatable(translationKey));
+        dropdown.setDirection(GuiDropdown.Direction.RIGHT);
+    }
+
+    /**
+     * Adds a new subsetting to this element.
+     *
+     * @param setting - The setting to add.
+     */
+    public void add(Setting setting) {
+        dropdown.addElement(setting.getGui());
     }
 
     @Override
-    public void close() {
-        GavinsMod.setEnabled(Type.MOD_GUI, false);
-        super.close();
+    public GuiScroll getGui() {
+        return dropdown;
     }
 }

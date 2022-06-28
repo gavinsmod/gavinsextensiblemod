@@ -28,7 +28,7 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 6/28/2022
  * Creates a GUI that allows the user to toggle mods on and off by clicking.
  */
 public class GuiClick extends Gui {
@@ -59,6 +59,6 @@ public class GuiClick extends Gui {
         var inGui = mouseWithinGui(mouseX, mouseY);
         if (inGui && Settings.getBool("guiSounds"))
             GavinsModClient.getPlayer().playSound(SoundEvents.UI_BUTTON_CLICK, 0.5f, 1);
-        return inGui;
+        return inGui && !isHidden();
     }
 }
