@@ -69,6 +69,7 @@ public class GuiSettings extends GuiElement {
      */
     public GuiSettings() {
         super(Text.translatable("key.gavinsmod.gui.settings"));
+        titleBox.setWidth(45);
         guis = new ArrayList<>();
         tracerDropdown = new GuiScroll(new PointD(120, 110), 115, 10, Text.translatable("key.gavinsmod.settings.tracers"));
         espDropdown = new GuiScroll(new PointD(10, 110), 100, 10, Text.translatable("key.gavinsmod.settings.esps"));

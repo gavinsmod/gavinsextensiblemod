@@ -46,11 +46,11 @@ public class GuiElement extends Screen {
     /**
      * The box that contains the menu title in the top left corner of the screen.
      */
-    private final Gui titleBox;
+    public final Gui titleBox;
 
     public GuiElement(Text title) {
         super(title);
-        titleBox = new Gui(new PointD(10, 1), title.getString().length() * 4 + 5, 10, title);
+        titleBox = new Gui(new PointD(10, 1), title.getContent().toString().length() * 2, 10, title);
     }
 
     @Override

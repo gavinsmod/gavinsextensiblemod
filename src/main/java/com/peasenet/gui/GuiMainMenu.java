@@ -44,6 +44,7 @@ public class GuiMainMenu extends GuiElement {
     public GuiMainMenu(ArrayList<Gui> guis) {
         super(Text.literal("Gavin's Mod " + VERSION));
         this.guis = guis;
+        titleBox.setWidth(95);
     }
 
     @Override
