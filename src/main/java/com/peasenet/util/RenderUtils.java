@@ -30,6 +30,8 @@ import com.peasenet.util.color.Color;
 import com.peasenet.util.math.BoxD;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.block.entity.EnderChestBlockEntity;
+import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
@@ -158,7 +160,8 @@ public class RenderUtils {
                     int chunk_z_ = chunk_z + z;
                     if (level.getChunk(chunk_x_, chunk_z_) != null) {
                         level.getChunk(chunk_x_, chunk_z_).getBlockEntities().forEach((blockPos, blockEntity) -> {
-                                    if (blockEntity instanceof ChestBlockEntity) {
+                                    if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity ||
+                                            blockEntity instanceof ShulkerBoxBlockEntity) {
                                         Box aabb = new Box(blockPos);
                                         Vec3f boxPos = new Vec3f(aabb.getCenter());
                                         if (GavinsMod.isEnabled(Type.CHEST_ESP))
