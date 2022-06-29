@@ -201,7 +201,7 @@ public class GuiDropdown extends GuiDraggable {
      * Sets the symbol for the dropdown based off of what direction it is displayed in.
      */
     protected void updateSymbol() {
-        symbol = '\u2612';
+        symbol = ' ';
         symbolOffsetX = -10;
         symbolOffsetY = 2;
         if (!isOpen()) {
@@ -218,6 +218,7 @@ public class GuiDropdown extends GuiDraggable {
             }
         }
     }
+
 
     /**
      * A direction that represents which way the dropdown will be displayed.
