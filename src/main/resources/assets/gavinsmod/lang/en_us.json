@@ -53,6 +53,7 @@
     "key.gavinsmod.settings.togglemessage": "Toggle Messages",
     "key.gavinsmod.settings.autofullbright": "Auto Full Bright",
     "key.gavinsmod.settings.guisounds": "GUI Sounds",
+    "key.gavinsmod.settings.chatmessage": "Chat Message",
     "category.gavinsmod.test": "Gavin's Mod",
     "key.gavinsmod.gui.settings": "Settings"
 }

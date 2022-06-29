@@ -269,6 +269,8 @@ public class GuiScroll extends GuiDropdown {
         for (int i = page * maxChildren; i < page * maxChildren + maxChildren; i++) {
             if (i >= children.size()) break;
             var gui = children.get(i);
+            if (gui.isHidden())
+                return false;
             if (gui.mouseClicked(x, y, button)) return true;
         }
         return false;

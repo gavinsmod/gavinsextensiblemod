@@ -46,7 +46,7 @@ public class ToggleSetting extends Setting {
      * Creates a new toggle setting.
      *
      * @param name - The name of this toggle setting.
-     * @param key  - The key of this toggle setting.
+     * @param key  - The translation key of this toggle setting.
      */
     public ToggleSetting(String name, String key) {
         super(name);

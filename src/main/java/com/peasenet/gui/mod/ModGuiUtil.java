@@ -53,6 +53,7 @@ public class ModGuiUtil {
             var gui = new GuiToggle(new PointD(x, y + 2), (int) box.getWidth(), (int) box.getHeight(), Text.translatable(mod.getTranslationKey()));
             gui.setCallback(mod::toggle);
             gui.setRenderCallback(() -> gui.setState(mod.isActive()));
+            gui.hide();
             guis.add(gui);
         }
         return guis;

@@ -25,6 +25,7 @@ import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Settings;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.RenderUtils;
 import com.peasenet.util.math.BoxD;
 import com.peasenet.util.math.PointD;
@@ -36,12 +37,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 6/28/2022
  * A mod that shows the currently active mods in the top left screen.
  */
 public class ModGuiTextOverlay extends Mod {
     public ModGuiTextOverlay() {
         super(Type.MOD_GUI_TEXT_OVERLAY);
+
+        //NOTE: This isn't really the best place for this, but it works for now. this is for chat message toggles.
+        ToggleSetting chatMessage = new ToggleSetting("chatMessage", "key.gavinsmod.settings.chatmessage");
+        chatMessage.setValue(Settings.getBool("chatMessage"));
+        addSetting(chatMessage);
     }
 
     @Override
