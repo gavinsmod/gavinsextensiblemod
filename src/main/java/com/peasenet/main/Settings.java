@@ -147,6 +147,8 @@ public class Settings {
      * @return The boolean value of the setting.
      */
     public static boolean getBool(String key) {
+        if (!settings.containsKey(key))
+            return false;
         return (boolean) settings.get(key);
     }
 
@@ -157,6 +159,8 @@ public class Settings {
      * @return The color.
      */
     public static Color getColor(String key) {
+        if (!settings.containsKey(key))
+            return Colors.WHITE;
         var item = settings.get(key);
         if (item instanceof Color) {
             return (Color) item;
