@@ -32,37 +32,46 @@ import static com.peasenet.mods.Type.Category.*;
 public enum Type {
 
     // MOVEMENT
-    FLY("Fly", "key.gavinsmod.fly", "category.gavinsmod.test", MOVEMENT, "fly"),
-    FAST_MINE("Fast Mine", "key.gavinsmod.fastmine", "category.gavinsmod.test", MOVEMENT, "fastmine"),
-    FAST_PLACE("Fast Place", "key.gavinsmod.fastplace", "category.gavinsmod.test", MOVEMENT, "fastplace"),
-    AUTO_JUMP("Auto Jump", "key.gavinsmod.autojump", "category.gavinsmod.test", MOVEMENT, "autojump"),
-    CLIMB("Climb", "key.gavinsmod.climb", "category.gavinsmod.test", MOVEMENT, "climb"),
-    NO_CLIP("No Clip", "key.gavinsmod.noclip", "category.gavinsmod.test", MOVEMENT, "noclip"),
-    NO_FALL("No Fall", "key.gavinsmod.nofall", "category.gavinsmod.test", MOVEMENT, "nofall"),
-    DOLPHIN("Dolphin", "key.gavinsmod.dolphin", "category.gavinsmod.test", MOVEMENT, "dolphin"),
+    FLY("Fly", "gavinsmod.mod.movement.fly", "gavinsmod.keybinds.movement", MOVEMENT, "fly"),
+    FAST_MINE("Fast Mine", "gavinsmod.mod.movement.fastmine", "gavinsmod.keybinds.movement", MOVEMENT, "fastmine"),
+    FAST_PLACE("Fast Place", "gavinsmod.mod.movement.fastplace", "gavinsmod.keybinds.movement", MOVEMENT, "fastplace"),
+    AUTO_JUMP("Auto Jump", "gavinsmod.mod.movement.autojump", "gavinsmod.keybinds.movement", MOVEMENT, "autojump"),
+    CLIMB("Climb", "gavinsmod.mod.movement.climb", "gavinsmod.keybinds.movement", MOVEMENT, "climb"),
+    NO_CLIP("No Clip", "gavinsmod.mod.movement.noclip", "gavinsmod.keybinds.movement", MOVEMENT, "noclip"),
+    NO_FALL("No Fall", "gavinsmod.mod.movement.nofall", "gavinsmod.keybinds.movement", MOVEMENT, "nofall"),
+    DOLPHIN("Dolphin", "gavinsmod.mod.movement.dolphin", "gavinsmod.keybinds.movement", MOVEMENT, "dolphin"),
     //COMBAT
-    KILL_AURA("Kill Aura", "key.gavinsmod.killaura", "category.gavinsmod.test", COMBAT, "killaura"),
-    AUTO_CRIT("Auto Crit", "key.gavinsmod.autocrit", "category.gavinsmod.test", COMBAT, "autocrit"),
-    AUTO_ATTACK("Auto Attack", "key.gavinsmod.autoattack", "category.gavinsmod.test", COMBAT, "autoattack"),
+    KILL_AURA("Kill Aura", "gavinsmod.mod.combat.killaura", "gavinsmod.keybinds.combat", COMBAT, "killaura"),
+    AUTO_CRIT("Auto Crit", "gavinsmod.mod.combat.autocrit", "gavinsmod.keybinds.combat", COMBAT, "autocrit"),
+    AUTO_ATTACK("Auto Attack", "gavinsmod.mod.combat.autoattack", "gavinsmod.keybinds.combat", COMBAT, "autoattack"),
     //RENDER
-    XRAY("Xray", "key.gavinsmod.xray", "category.gavinsmod.test", RENDER, "xray"),
-    FULL_BRIGHT("Full Bright", "key.gavinsmod.fullbright", "category.gavinsmod.test", RENDER, "fullbright"),
-    CHEST_ESP("Chest ESP", "key.gavinsmod.chestesp", "category.gavinsmod.test", ESPS, "chestesp"),
-    CHEST_TRACER("Chest Tracer", "key.gavinsmod.chesttracer", "category.gavinsmod.test", TRACERS, "chesttracer"),
-    ENTITY_ITEM_TRACER("Item Tracer", "key.gavinsmod.entityitemtracer", "category.gavinsmod.test", TRACERS, "itemtracer"),
-    ENTITY_ITEM_ESP("Item ESP", "key.gavinsmod.entityitemesp", "category.gavinsmod.test", ESPS, "itemesp"),
-    ENTITY_PLAYER_ESP("Player ESP", "key.gavinsmod.entityplayeresp", "category.gavinsmod.test", ESPS, "playeresp"),
-    ENTITY_PLAYER_TRACER("Player Tracer", "key.gavinsmod.entityplayertracer", "category.gavinsmod.test", TRACERS, "playertracer"),
-    MOB_ESP("Mob ESP", "key.gavinsmod.mobesp", "category.gavinsmod.test", ESPS, "mobesp"),
-    MOB_TRACER("Mob Tracer", "key.gavinsmod.mobtracer", "category.gavinsmod.test", TRACERS, "mobtracer"),
-    ANTI_HURT("Anti Hurt", "key.gavinsmod.antihurt", "category.gavinsmod.test", RENDER, "antihurt"),
-    ANTI_PUMPKIN("Anti Pumpkin", "key.gavinsmod.antipumpkin", "category.gavinsmod.test", RENDER, "antipumpkin"),
-    NO_RAIN("No Rain", "key.gavinsmod.norain", "category.gavinsmod.test", RENDER, "norain"),
-    MOD_HPTAG("HP Tags", "key.gavinsmod.hptag", "category.gavinsmod.test", RENDER, "hptag"),
-    MOD_FPS_COUNTER("FPS Counter", "key.gavinsmod.fpscounter", "category.gavinsmod.test", MISC, "fpscounter"),
-    MOD_GUI("GUI", "key.gavinsmod.gui", "category.gavinsmod.test", GLFW.GLFW_KEY_I, GUI, "gui"),
-    SETTINGS("Settings", "key.gavinsmod.gui.settings", "category.gavinsmod.test", GLFW.GLFW_KEY_O, GUI, "settings"),
-    MOD_GUI_TEXT_OVERLAY("GUI Text Overlay", "key.gavinsmod.guitextoverlay", "category.gavinsmod.test", MISC, "textoverlay");
+    XRAY("Xray", "gavinsmod.mod.render.xray", "gavinsmod.keybinds.render", RENDER, "xray"),
+    FULL_BRIGHT("Full Bright", "gavinsmod.mod.render.fullbright", "gavinsmod.keybinds.render", RENDER, "fullbright"),
+    ANTI_HURT("Anti Hurt", "gavinsmod.mod.render.antihurt", "gavinsmod.keybinds.render", RENDER, "antihurt"),
+    ANTI_PUMPKIN("Anti Pumpkin", "gavinsmod.mod.render.antipumpkin", "gavinsmod.keybinds.render", RENDER, "antipumpkin"),
+    NO_RAIN("No Rain", "gavinsmod.mod.render.norain", "gavinsmod.keybinds.render", RENDER, "norain"),
+    MOD_HPTAG("HP Tags", "gavinsmod.mod.render.hptags", "gavinsmod.keybinds.render", RENDER, "hptags"),
+
+    // ESP
+    CHEST_ESP("Chest ESP", "gavinsmod.mod.esp.chest", "gavinsmod.keybinds.esp", ESPS, "chestesp"),
+    ENTITY_ITEM_ESP("Item ESP", "gavinsmod.mod.esp.item", "gavinsmod.keybinds.esp", ESPS, "itemesp"),
+    ENTITY_PLAYER_ESP("Player ESP", "gavinsmod.mod.esp.player", "gavinsmod.keybinds.esp", ESPS, "playeresp"),
+    MOB_ESP("Mob ESP", "gavinsmod.mod.esp.mob", "gavinsmod.keybinds.esp", ESPS, "mobesp"),
+
+    // TRACER
+    CHEST_TRACER("Chest Tracer", "gavinsmod.mod.tracer.chest", "gavinsmod.keybinds.tracers", TRACERS, "chesttracer"),
+    ENTITY_ITEM_TRACER("Item Tracer", "gavinsmod.mod.tracer.item", "gavinsmod.keybinds.tracers", TRACERS, "itemtracer"),
+    ENTITY_PLAYER_TRACER("Player Tracer", "gavinsmod.mod.tracer.player", "gavinsmod.keybinds.tracers", TRACERS, "playertracer"),
+    MOB_TRACER("Mob Tracer", "gavinsmod.mod.tracer.mob", "gavinsmod.keybinds.tracers", TRACERS, "mobtracer"),
+
+    // MISC
+    MOD_FPS_COUNTER("FPS Counter", "gavinsmod.mod.misc.fpscounter", "gavinsmod.keybinds.misc", MISC, "fpscounter"),
+    MOD_GUI_TEXT_OVERLAY("GUI Text Overlay", "gavinsmod.mod.misc.textoverlay", "gavinsmod.keybinds.misc", MISC, "textoverlay"),
+
+    // GUI (translation key not needed)
+    MOD_GUI("GUI", "gavinsmod.gui", "gavinsmod.keybinds.gui", GLFW.GLFW_KEY_I, GUI, "gui"),
+    SETTINGS("Settings", "gavinsmod.gui.settings", "gavinsmod.keybinds.gui", GLFW.GLFW_KEY_O, GUI, "settings");
+
 
     /**
      * The translation key for the name of the mod.
@@ -106,9 +115,9 @@ public enum Type {
      */
     Type(String name, String translationKey, String category, int key, Category modCategory, String chatCommand) {
         this.name = name;
-        this.keybindingCategory = category;
+        keybindingCategory = category;
         this.translationKey = translationKey;
-        this.keyBinding = key;
+        keyBinding = key;
         this.modCategory = modCategory;
         this.chatCommand = chatCommand;
     }
@@ -185,13 +194,13 @@ public enum Type {
      * A list of different mod categories.
      */
     public enum Category {
-        MOVEMENT("key.gavinsmod.gui.movement"),
-        RENDER("key.gavinsmod.gui.render"),
-        COMBAT("key.gavinsmod.gui.combat"),
-        MISC("key.gavinsmod.gui.misc"),
-        ESPS("key.gavinsmod.gui.esps"),
-        TRACERS("key.gavinsmod.gui.tracers"),
-        GUI("key.gavinsmod.gui.gui"),
+        MOVEMENT("gavinsmod.mod.gui.movement"),
+        RENDER("gavinsmod.mod.gui.render"),
+        COMBAT("gavinsmod.mod.gui.combat"),
+        MISC("gavinsmod.mod.gui.misc"),
+        ESPS("gavinsmod.mod.gui.esps"),
+        TRACERS("gavinsmod.mod.gui.tracers"),
+        GUI("gavinsmod.mod.gui.gui"),
         NONE("none");
 
         public final String translationKey;

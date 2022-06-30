@@ -68,8 +68,8 @@ public class GuiScroll extends GuiDropdown {
         super(position, width, height, title);
         children.forEach(this::addElement);
         this.maxChildren = Math.min(children.size(), maxChildren);
-        this.numPages = (int) Math.ceil((double) children.size() / (double) maxChildren);
-        this.page = 0;
+        numPages = (int) Math.ceil((double) children.size() / (double) maxChildren);
+        page = 0;
     }
 
 
@@ -83,9 +83,9 @@ public class GuiScroll extends GuiDropdown {
      */
     public GuiScroll(PointD position, int width, int height, Text title) {
         super(position, width, height, title);
-        this.maxChildren = 4;
-        this.numPages = (int) Math.ceil((double) children.size() / (double) maxChildren);
-        this.page = 0;
+        maxChildren = 4;
+        numPages = (int) Math.ceil((double) children.size() / (double) maxChildren);
+        page = 0;
     }
 
     /**
@@ -103,7 +103,7 @@ public class GuiScroll extends GuiDropdown {
     public void render(MatrixStack matrices, TextRenderer tr) {
         if (isHidden()) return;
         RenderUtils.drawBox(getBackgroundColor().getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrices);
-        tr.draw(matrices, this.title, (int) getX() + 2, (int) getY() + 2, (Settings.getColor("foregroundColor")).getAsInt());
+        tr.draw(matrices, title, (int) getX() + 2, (int) getY() + 2, (Settings.getColor("foregroundColor")).getAsInt());
         updateSymbol();
         tr.draw(matrices, String.valueOf(symbol), (int) getX2() + symbolOffsetX, (int) getY() + symbolOffsetY, (Settings.getColor("foregroundColor")).getAsInt());
         RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrices);
@@ -122,7 +122,7 @@ public class GuiScroll extends GuiDropdown {
         if (hasChildren()) {
             for (var gui : children) {
                 if (!gui.isHidden() && gui.mouseWithinGui(x, y) && gui instanceof GuiScroll scrollGui) {
-                    scrollGui.doScroll(scroll);
+                    gui.mouseScrolled(x, y, scroll);
                     return true;
                 }
             }
@@ -241,8 +241,8 @@ public class GuiScroll extends GuiDropdown {
     @Override
     public void addElement(Gui gui) {
         super.addElement(gui);
-        this.maxChildren = Math.min(children.size(), 4);
-        this.numPages = (int) Math.ceil((double) children.size() / (double) maxChildren);
+        maxChildren = Math.min(children.size(), 4);
+        numPages = (int) Math.ceil((double) children.size() / (double) maxChildren);
     }
 
     @Override
@@ -269,8 +269,7 @@ public class GuiScroll extends GuiDropdown {
         for (int i = page * maxChildren; i < page * maxChildren + maxChildren; i++) {
             if (i >= children.size()) break;
             var gui = children.get(i);
-            if (gui.isHidden())
-                return false;
+            if (gui.isHidden()) return false;
             if (gui.mouseClicked(x, y, button)) return true;
         }
         return false;
