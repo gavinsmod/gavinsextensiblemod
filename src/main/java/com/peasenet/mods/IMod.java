@@ -84,6 +84,11 @@ public interface IMod {
     Type.Category getCategory();
 
     /**
+     * Reloads this mod by calling #deactivate and #activate.
+     */
+    void reload();
+
+    /**
      * Gets the translation key for the mod.
      *
      * @return The translation key for the mod.

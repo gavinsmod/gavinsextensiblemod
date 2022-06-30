@@ -77,7 +77,7 @@ public class ModXray extends Mod {
         culling.setCallback(this::reloadRenderer);
         ToggleSetting chests = new ToggleSetting("xray.chests", "gavinsmod.settings.xray.chests");
         chests.setWidth(dropdownWidth);
-        culling.setCallback(this::reloadRenderer);
+        culling.setCallback(this::reload);
         chests.setCallback(() -> {
             if (chests.getValue()) addChests();
             else removeChests();
@@ -89,6 +89,7 @@ public class ModXray extends Mod {
         xraySubSetting.add(chests);
         addSetting(xraySubSetting);
     }
+
 
     /**
      * Checks if a block is visible
@@ -151,8 +152,8 @@ public class ModXray extends Mod {
     public void activate() {
         if (!GavinsMod.isEnabled(Type.FULL_BRIGHT)) RenderUtils.setLastGamma();
         if (Settings.getBool("xray.disable_culling")) getClient().setChunkCulling(false);
-        reloadRenderer();
         super.activate();
+        reloadRenderer();
     }
 
     /**

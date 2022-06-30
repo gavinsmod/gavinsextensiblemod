@@ -227,4 +227,9 @@ public abstract class Mod implements IMod {
     public boolean hasSettings() {
         return !modSettings.isEmpty();
     }
+
+    public void reload() {
+        deactivate();
+        activate();
+    }
 }
