@@ -32,8 +32,8 @@ import com.peasenet.settings.ColorSetting;
 public class ModMobTracer extends Mod {
     public ModMobTracer() {
         super(Type.MOB_TRACER);
-        ColorSetting peacefulColor = new ColorSetting("peacefulMobTracerColor", "gavinsmod.settings.tracer.mob.peaceful.color");
-        ColorSetting hostileColor = new ColorSetting("hostileMobTracerColor", "gavinsmod.settings.tracer.mob.hostile.color");
+        ColorSetting peacefulColor = new ColorSetting("tracer.mob.peaceful.color", "gavinsmod.settings.tracer.mob.peaceful.color");
+        ColorSetting hostileColor = new ColorSetting("tracer.mob.hostile.color", "gavinsmod.settings.tracer.mob.hostile.color");
         addSetting(hostileColor);
         addSetting(peacefulColor);
     }

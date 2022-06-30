@@ -165,9 +165,9 @@ public class RenderUtils {
                                         Box aabb = new Box(blockPos);
                                         Vec3f boxPos = new Vec3f(aabb.getCenter());
                                         if (GavinsMod.isEnabled(Type.CHEST_ESP))
-                                            drawBox(stack, buffer, aabb, Settings.getColor("chestEspColor"));
+                                            drawBox(stack, buffer, aabb, Settings.getColor("esp.chest.color"));
                                         if (GavinsMod.isEnabled(Type.CHEST_TRACER)) {
-                                            renderSingleLine(stack, buffer, playerPos, boxPos, Settings.getColor("chestTracerColor"));
+                                            renderSingleLine(stack, buffer, playerPos, boxPos, Settings.getColor("tracer.chest.color"));
                                         }
                                     }
                                 }
@@ -212,22 +212,22 @@ public class RenderUtils {
             Vec3f boxPos = new Vec3f(aabb.getCenter());
             if (type == EntityType.ITEM) {
                 if (GavinsMod.isEnabled(Type.ENTITY_ITEM_ESP))
-                    drawBox(stack, buffer, aabb, Settings.getColor("itemEspColor"));
+                    drawBox(stack, buffer, aabb, Settings.getColor("esp.item.color"));
                 if (GavinsMod.isEnabled(Type.ENTITY_ITEM_TRACER))
-                    renderSingleLine(stack, buffer, playerPos, boxPos, Settings.getColor("itemTracerColor"));
+                    renderSingleLine(stack, buffer, playerPos, boxPos, Settings.getColor("tracer.item.color"));
                 return;
             }
 
             if (type == EntityType.PLAYER) {
                 if (GavinsMod.isEnabled(Type.ENTITY_PLAYER_ESP))
-                    drawBox(stack, buffer, aabb, Settings.getColor("playerEspColor"));
+                    drawBox(stack, buffer, aabb, Settings.getColor("esp.player.color"));
                 if (GavinsMod.isEnabled(Type.ENTITY_PLAYER_TRACER))
-                    renderSingleLine(stack, buffer, playerPos, boxPos, Settings.getColor("playerTracerColor"));
+                    renderSingleLine(stack, buffer, playerPos, boxPos, Settings.getColor("tracer.player.color"));
                 return;
             }
 
-            var espColor = type.getSpawnGroup().isPeaceful() ? Settings.getColor("peacefulMobEspColor") : Settings.getColor("hostileMobEspColor");
-            var tracerColor = type.getSpawnGroup().isPeaceful() ? Settings.getColor("peacefulMobTracerColor") : Settings.getColor("hostileMobTracerColor");
+            var espColor = type.getSpawnGroup().isPeaceful() ? Settings.getColor("esp.mob.peaceful.color") : Settings.getColor("esp.mob.hostile.color");
+            var tracerColor = type.getSpawnGroup().isPeaceful() ? Settings.getColor("tracer.mob.peaceful.color") : Settings.getColor("tracer.mob.hostile.color");
             if (GavinsMod.isEnabled(Type.MOB_ESP))
                 drawBox(stack, buffer, aabb, espColor);
             if (GavinsMod.isEnabled(Type.MOB_TRACER))
@@ -254,7 +254,7 @@ public class RenderUtils {
      * Sets the gamma of the game to the full bright value of 10000.0 while storing the last gamma value.
      */
     public static void setHighGamma() {
-        if (Settings.getBool("gammaFade")) {
+        if (Settings.getBool("render.fullbright.gammafade")) {
             fadeGammaUp();
         } else {
             setGamma(64.0);
@@ -265,7 +265,7 @@ public class RenderUtils {
      * Resets the gamma to the players last configured value.
      */
     public static void setLowGamma() {
-        if (Settings.getBool("gammaFade")) {
+        if (Settings.getBool("render.fullbright.gammafade")) {
             fadeGammaDown();
         } else {
             setGamma(LAST_GAMMA);

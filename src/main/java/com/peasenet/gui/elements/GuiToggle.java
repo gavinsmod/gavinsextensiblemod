@@ -110,9 +110,9 @@ public class GuiToggle extends GuiClick {
         if (isHidden()) return;
         symbol = isOn ? '\u2611' : '\u2610';
         if (renderCallback != null) renderCallback.callback();
-        if (isOn()) setBackground(Settings.getColor("enabledColor"));
-        else setBackground(Settings.getColor("backgroundColor"));
+        if (isOn()) setBackground(Settings.getColor("gui.color.enabled"));
+        else setBackground(Settings.getColor("gui.color.background"));
         super.render(matrixStack, tr);
-        tr.draw(matrixStack, String.valueOf(symbol), (int) getX2() + symbolOffsetX, (int) getY() + symbolOffsetY, (Settings.getColor("foregroundColor")).getAsInt());
+        tr.draw(matrixStack, String.valueOf(symbol), (int) getX2() + symbolOffsetX, (int) getY() + symbolOffsetY, (Settings.getColor("gui.color.foreground")).getAsInt());
     }
 }

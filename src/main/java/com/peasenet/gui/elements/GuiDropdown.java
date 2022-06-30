@@ -130,7 +130,7 @@ public class GuiDropdown extends GuiDraggable {
      */
     protected void toggleMenu() {
         isOpen = !isOpen;
-        if (Settings.getBool("guiSounds")) {
+        if (Settings.getBool("gui.sound")) {
             if (isOpen) GavinsModClient.getPlayer().playSound(SoundEvents.BLOCK_CHEST_OPEN, 0.5f, 1);
             else GavinsModClient.getPlayer().playSound(SoundEvents.BLOCK_CHEST_CLOSE, 0.5f, 1);
         }

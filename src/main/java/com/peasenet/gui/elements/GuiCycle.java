@@ -76,12 +76,10 @@ public class GuiCycle extends GuiClick {
             } else if (currentIndex >= cycleSize) {
                 currentIndex = 0;
             }
-            if (Settings.getBool("guiSounds")) {
+            if (Settings.getBool("gui.sound")) {
                 GavinsModClient.getMinecraftClient().getPlayer().playSound(SoundEvents.UI_BUTTON_CLICK, 1.0F, 1.0F);
             }
             callback.callback();
-            // play button click sound
-
             return true;
         }
         return false;

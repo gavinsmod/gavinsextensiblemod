@@ -102,7 +102,7 @@ public class Gui {
         this.box = new BoxD(topLeft, width, height);
         this.defaultPosition = BoxD.copy(box);
         this.title = title;
-        backgroundColor = Settings.getColor("backgroundColor");
+        backgroundColor = Settings.getColor("gui.color.background");
         dragging = false;
     }
 

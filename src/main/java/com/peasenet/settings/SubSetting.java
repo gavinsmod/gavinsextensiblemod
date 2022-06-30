@@ -47,6 +47,7 @@ public class SubSetting extends Setting {
         super("none");
         dropdown = new GuiScroll(width, height, Text.translatable(translationKey));
         dropdown.setDirection(GuiDropdown.Direction.RIGHT);
+        dropdown.hide();
     }
 
     /**
@@ -56,6 +57,7 @@ public class SubSetting extends Setting {
      */
     public void add(Setting setting) {
         dropdown.addElement(setting.getGui());
+        setting.getGui().hide();
     }
 
     /**

@@ -57,7 +57,7 @@ public class GuiClick extends Gui {
         if (button != 0) return false;
         // check if mouseX and mouseY are within the bounds of the gui.
         var inGui = mouseWithinGui(mouseX, mouseY) && !isHidden();
-        if (inGui && Settings.getBool("guiSounds"))
+        if (inGui && Settings.getBool("gui.sound"))
             GavinsModClient.getPlayer().playSound(SoundEvents.UI_BUTTON_CLICK, 0.5f, 1);
         return inGui;
     }

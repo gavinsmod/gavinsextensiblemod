@@ -81,7 +81,7 @@ public class GavinsMod implements ModInitializer {
     @Override
     public void onInitialize() {
         LOGGER.info("Loading settings");
-        Settings.load();
+        Settings.initialize();
         LOGGER.info("Settings loaded");
         new Mods();
         LOGGER.info("GavinsMod initialized");

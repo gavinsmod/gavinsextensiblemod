@@ -59,7 +59,10 @@ public class ToggleSetting extends Setting {
      */
     public ToggleSetting(String name, String key) {
         super(name);
-        value = Settings.getBool(name);
+        if (!name.equals("none"))
+            value = Settings.getBool(name);
+        else
+            value = false;
         gui = new GuiToggle(new PointD(0, 0), 90, 10, Text.translatable(key));
         gui.setState(value);
         gui.setCallback(() -> {
@@ -67,6 +70,7 @@ public class ToggleSetting extends Setting {
             Settings.add(name, value);
             Settings.save();
         });
+        gui.hide();
     }
 
     /**
@@ -76,7 +80,9 @@ public class ToggleSetting extends Setting {
      */
     public void setValue(boolean value) {
         this.value = value;
-        gui.setBackground(value ? Settings.getColor("foregroundColor") : Settings.getColor("backgroundColor"));
+        gui.setBackground(value ? Settings.getColor("gui.color.enabled") : Settings.getColor("gui.color.background"));
+        gui.setState(value);
+        Settings.setBool(this.getName(), value);
     }
 
     @Override

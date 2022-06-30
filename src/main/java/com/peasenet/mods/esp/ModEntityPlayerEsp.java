@@ -32,7 +32,7 @@ import com.peasenet.settings.ColorSetting;
 public class ModEntityPlayerEsp extends Mod {
     public ModEntityPlayerEsp() {
         super(Type.ENTITY_PLAYER_ESP);
-        ColorSetting colorSetting = new ColorSetting("playerEspColor",
+        ColorSetting colorSetting = new ColorSetting("esp.player.color",
                 "gavinsmod.settings.esp.player.color");
         addSetting(colorSetting);
     }

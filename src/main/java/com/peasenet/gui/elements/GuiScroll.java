@@ -103,9 +103,9 @@ public class GuiScroll extends GuiDropdown {
     public void render(MatrixStack matrices, TextRenderer tr) {
         if (isHidden()) return;
         RenderUtils.drawBox(getBackgroundColor().getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrices);
-        tr.draw(matrices, title, (int) getX() + 2, (int) getY() + 2, (Settings.getColor("foregroundColor")).getAsInt());
+        tr.draw(matrices, title, (int) getX() + 2, (int) getY() + 2, (Settings.getColor("gui.color.foreground")).getAsInt());
         updateSymbol();
-        tr.draw(matrices, String.valueOf(symbol), (int) getX2() + symbolOffsetX, (int) getY() + symbolOffsetY, (Settings.getColor("foregroundColor")).getAsInt());
+        tr.draw(matrices, String.valueOf(symbol), (int) getX2() + symbolOffsetX, (int) getY() + symbolOffsetY, (Settings.getColor("gui.color.foreground")).getAsInt());
         RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrices);
 
         if (!isOpen()) return;

@@ -32,7 +32,7 @@ import com.peasenet.settings.ColorSetting;
 public class ModChestTracer extends Mod {
     public ModChestTracer() {
         super(Type.CHEST_TRACER);
-        ColorSetting colorSetting = new ColorSetting("chestTracerColor",
+        ColorSetting colorSetting = new ColorSetting("tracer.chest.color",
                 "gavinsmod.settings.tracer.chest.color");
         addSetting(colorSetting);
     }

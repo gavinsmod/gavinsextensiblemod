@@ -44,10 +44,10 @@ public class ModFpsCounter extends Mod {
     public ModFpsCounter() {
         super(Type.MOD_FPS_COUNTER);
         SubSetting fpsSetting = new SubSetting(50, 10, "gavinsmod.settings.misc.fpscolors");
-        ToggleSetting fpsColors = new ToggleSetting("fpsColors", "gavinsmod.settings.misc.fpscolors.enabled");
-        ColorSetting fpsSlowColor = new ColorSetting("slowFpsColor", "gavinsmod.settings.misc.fps.color.slow");
-        ColorSetting fpsOkColor = new ColorSetting("okFpsColor", "gavinsmod.settings.misc.fps.color.ok");
-        ColorSetting fpsFastColor = new ColorSetting("fastFpsColor", "gavinsmod.settings.misc.fps.color.fast");
+        ToggleSetting fpsColors = new ToggleSetting("misc.fps.color.enabled", "gavinsmod.settings.misc.fpscolors.enabled");
+        ColorSetting fpsSlowColor = new ColorSetting("misc.fps.color.slow", "gavinsmod.settings.misc.fps.color.slow");
+        ColorSetting fpsOkColor = new ColorSetting("misc.fps.color.ok", "gavinsmod.settings.misc.fps.color.ok");
+        ColorSetting fpsFastColor = new ColorSetting("misc.fps.color.fast", "gavinsmod.settings.misc.fps.color.fast");
         fpsSetting.add(fpsColors);
         fpsSetting.add(fpsSlowColor);
         fpsSetting.add(fpsOkColor);
@@ -75,13 +75,13 @@ public class ModFpsCounter extends Mod {
         var xCoordinate = GavinsModClient.getMinecraftClient().getWindow().getScaledWidth() - (fpsString.length() * 5 + 2);
         var box = new BoxD(new PointD(xCoordinate - 2, 0), fpsString.length() * 5 + 4, 12);
         var maximumFps = GavinsModClient.getMinecraftClient().getOptions().getMaxFps().getValue();
-        var color = Settings.getColor("foregroundColor");
-        if (Settings.getBool("fpsColors")) {
-            if (fps >= maximumFps * 0.85) color = Settings.getColor("fastFpsColor");
-            else if (fps > maximumFps * 0.45 && fps < maximumFps * 0.85) color = Settings.getColor("okFpsColor");
-            else color = Settings.getColor("slowFpsColor");
+        var color = Settings.getColor("gui.color.foreground");
+        if (Settings.getBool("misc.fps.color.enabled")) {
+            if (fps >= maximumFps * 0.85) color = Settings.getColor("misc.fps.color.fast");
+            else if (fps > maximumFps * 0.45 && fps < maximumFps * 0.85) color = Settings.getColor("misc.fps.color.ok");
+            else color = Settings.getColor("misc.fps.color.slow");
         }
-        RenderUtils.drawBox((Settings.getColor("backgroundColor")).getAsFloatArray(), box, matrixStack);
+        RenderUtils.drawBox((Settings.getColor("gui.color.background")).getAsFloatArray(), box, matrixStack);
         textRenderer.draw(matrixStack, Text.literal(fpsString), xCoordinate, 2, color.getAsInt());
     }
 }

@@ -32,7 +32,7 @@ import com.peasenet.settings.ColorSetting;
 public class ModChestEsp extends Mod {
     public ModChestEsp() {
         super(Type.CHEST_ESP);
-        ColorSetting colorSetting = new ColorSetting("chestEspColor",
+        ColorSetting colorSetting = new ColorSetting("esp.chest.color",
                 "gavinsmod.settings.esp.chest.color");
         addSetting(colorSetting);
     }

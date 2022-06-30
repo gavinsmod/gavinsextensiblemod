@@ -32,7 +32,7 @@ import com.peasenet.settings.ColorSetting;
 public class ModEntityItemTracer extends Mod {
     public ModEntityItemTracer() {
         super(Type.ENTITY_ITEM_TRACER);
-        ColorSetting colorSetting = new ColorSetting("itemTracerColor",
+        ColorSetting colorSetting = new ColorSetting("tracer.item.color",
                 "gavinsmod.settings.tracer.item.color");
         addSetting(colorSetting);
     }
