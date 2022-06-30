@@ -46,12 +46,11 @@ public class ColorSetting extends Setting {
      * Creates a new color setting.
      *
      * @param name           - The name of the setting (ie, "foregroundColor").
-     * @param description    - The description of the setting.
      * @param translationKey - The translation key of the setting.
      */
-    public ColorSetting(String name, String description, String translationKey) {
+    public ColorSetting(String name, String translationKey) {
         super(name);
-        this.color = Settings.getColor(name);
+        color = Settings.getColor(name);
         guiCycle = new GuiCycle(90, 10, Text.translatable(translationKey), Colors.COLORS.length);
         guiCycle.setBackground(color);
         guiCycle.setCallback(() -> {

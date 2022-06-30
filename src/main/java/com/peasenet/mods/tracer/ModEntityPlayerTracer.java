@@ -33,7 +33,7 @@ public class ModEntityPlayerTracer extends Mod {
     public ModEntityPlayerTracer() {
         super(Type.ENTITY_PLAYER_TRACER);
         ColorSetting colorSetting = new ColorSetting("playerTracerColor",
-                "The color of the entity player tracer.", "key.gavinsmod.entityplayertracer");
+                "gavinsmod.settings.tracer.player.color");
         addSetting(colorSetting);
     }
 }

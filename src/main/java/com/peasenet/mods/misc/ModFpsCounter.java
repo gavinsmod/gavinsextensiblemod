@@ -43,11 +43,11 @@ import net.minecraft.text.Text;
 public class ModFpsCounter extends Mod {
     public ModFpsCounter() {
         super(Type.MOD_FPS_COUNTER);
-        SubSetting fpsSetting = new SubSetting(50, 10, "key.gavinsmod.settings.fpscolors");
-        ToggleSetting fpsColors = new ToggleSetting("fpsColors", "key.gavinsmod.settings.fpscolors");
-        ColorSetting fpsSlowColor = new ColorSetting("slowFpsColor", "The color of the FPS counter when it is below the slow threshold.", "key.gavinsmod.settings.slowfps");
-        ColorSetting fpsOkColor = new ColorSetting("okFpsColor", "The color of the FPS counter when it is between the slow and fast thresholds.", "key.gavinsmod.settings.okfps");
-        ColorSetting fpsFastColor = new ColorSetting("fastFpsColor", "The color of the FPS counter when it is above the fast threshold.", "key.gavinsmod.settings.fastfps");
+        SubSetting fpsSetting = new SubSetting(50, 10, "gavinsmod.settings.misc.fpscolors");
+        ToggleSetting fpsColors = new ToggleSetting("fpsColors", "gavinsmod.settings.misc.fpscolors.enabled");
+        ColorSetting fpsSlowColor = new ColorSetting("slowFpsColor", "gavinsmod.settings.misc.fps.color.slow");
+        ColorSetting fpsOkColor = new ColorSetting("okFpsColor", "gavinsmod.settings.misc.fps.color.ok");
+        ColorSetting fpsFastColor = new ColorSetting("fastFpsColor", "gavinsmod.settings.misc.fps.color.fast");
         fpsSetting.add(fpsColors);
         fpsSetting.add(fpsSlowColor);
         fpsSetting.add(fpsOkColor);

@@ -82,4 +82,13 @@ public abstract class Setting {
         this.callback = callback;
     }
 
+    /**
+     * Sets the width of the GUI element.
+     *
+     * @param width - The wanted width.
+     */
+    public void setWidth(int width) {
+        getGui().setWidth(width);
+    }
+
 }

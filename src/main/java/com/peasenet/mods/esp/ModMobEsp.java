@@ -32,9 +32,9 @@ import com.peasenet.settings.ColorSetting;
 public class ModMobEsp extends Mod {
     public ModMobEsp() {
         super(Type.MOB_ESP);
-        ColorSetting hostileEspColor = new ColorSetting("hostileMobEspColor", "The color of the mob esp.", "key.gavinsmod.hostilemobesp");
+        ColorSetting hostileEspColor = new ColorSetting("hostileMobEspColor", "gavinsmod.settings.esp.mob.hostile.color");
         addSetting(hostileEspColor);
-        ColorSetting peacefulMobEsp = new ColorSetting("peacefulMobEspColor", "The color of the mob esp.", "key.gavinsmod.peacefulmobesp");
+        ColorSetting peacefulMobEsp = new ColorSetting("peacefulMobEspColor", "gavinsmod.settings.esp.mob.peaceful.color");
         addSetting(peacefulMobEsp);
     }
 }

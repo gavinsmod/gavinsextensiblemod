@@ -33,7 +33,7 @@ public class ModChestTracer extends Mod {
     public ModChestTracer() {
         super(Type.CHEST_TRACER);
         ColorSetting colorSetting = new ColorSetting("chestTracerColor",
-                "The color of the chest tracer.", "key.gavinsmod.chesttracer");
+                "gavinsmod.settings.tracer.chest.color");
         addSetting(colorSetting);
     }
 }

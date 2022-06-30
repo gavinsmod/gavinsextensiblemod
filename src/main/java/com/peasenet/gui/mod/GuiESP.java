@@ -37,7 +37,7 @@ public class GuiESP extends GuiScroll {
      * Creates a new ESP dropdown.
      */
     public GuiESP() {
-        this(new PointD(10, 120), 70, 10, Text.translatable("key.gavinsmod.gui.esps"));
+        this(new PointD(10, 120), 70, 10, Text.translatable("gavinsmod.gui.esps"));
     }
 
     /**

@@ -37,7 +37,7 @@ public class GuiMovement extends GuiScroll {
      * Creates a new movement dropdown.
      */
     public GuiMovement() {
-        this(new PointD(10, 20), 75, 10, Text.translatable("key.gavinsmod.gui.movement"));
+        this(new PointD(10, 20), 75, 10, Text.translatable("gavinsmod.gui.movement"));
     }
 
     /**

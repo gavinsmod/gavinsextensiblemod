@@ -33,7 +33,7 @@ public class ModEntityItemEsp extends Mod {
     public ModEntityItemEsp() {
         super(Type.ENTITY_ITEM_ESP);
         ColorSetting colorSetting = new ColorSetting("itemEspColor",
-                "The color of the entity item esp.", "key.gavinsmod.entityitemesp");
+                "gavinsmod.settings.esp.item.color");
         addSetting(colorSetting);
     }
 }

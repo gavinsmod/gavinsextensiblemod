@@ -33,7 +33,7 @@ public class ModEntityItemTracer extends Mod {
     public ModEntityItemTracer() {
         super(Type.ENTITY_ITEM_TRACER);
         ColorSetting colorSetting = new ColorSetting("itemTracerColor",
-                "The color of the entity item tracer.", "key.gavinsmod.entityitemtracer");
+                "gavinsmod.settings.tracer.item.color");
         addSetting(colorSetting);
     }
 }

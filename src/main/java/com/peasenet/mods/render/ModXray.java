@@ -21,14 +21,21 @@
 package com.peasenet.mods.render;
 
 import com.peasenet.main.GavinsMod;
+import com.peasenet.main.Mods;
+import com.peasenet.main.Settings;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.settings.SubSetting;
+import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.RenderUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.ChestBlock;
+import net.minecraft.block.OreBlock;
+import net.minecraft.util.registry.Registry;
 
-import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 
 /**
  * @author gt3ch1
@@ -37,38 +44,49 @@ import java.util.ArrayList;
  */
 public class ModXray extends Mod {
 
-    private boolean deactivating = true;
-
     /**
      * A list of blocks that SHOULD be visible (coal, iron, gold, diamond, lapis, redstone, etc.)
      */
-    public static final ArrayList<Block> blocks = new ArrayList<>() {
-        {
-            add(Blocks.COAL_ORE);
-            add(Blocks.IRON_ORE);
-            add(Blocks.GOLD_ORE);
-            add(Blocks.DIAMOND_ORE);
-            add(Blocks.LAPIS_ORE);
-            add(Blocks.REDSTONE_ORE);
-            add(Blocks.EMERALD_ORE);
-            add(Blocks.DEEPSLATE_COAL_ORE);
-            add(Blocks.DEEPSLATE_IRON_ORE);
-            add(Blocks.DEEPSLATE_GOLD_ORE);
-            add(Blocks.DEEPSLATE_DIAMOND_ORE);
-            add(Blocks.DEEPSLATE_LAPIS_ORE);
-            add(Blocks.DEEPSLATE_REDSTONE_ORE);
-            add(Blocks.DEEPSLATE_EMERALD_ORE);
-            add(Blocks.END_PORTAL_FRAME);
-            add(Blocks.END_PORTAL);
-            add(Blocks.ENDER_CHEST);
-            add(Blocks.SPAWNER);
-            add(Blocks.NETHERITE_BLOCK);
-            add(Blocks.NETHER_GOLD_ORE);
-        }
-    };
+    public static HashSet<Block> blocks;
+    private boolean deactivating = true;
 
     public ModXray() {
         super(Type.XRAY);
+        var dropdownWidth = 80;
+        SubSetting xraySubSetting = new SubSetting(100, 10, getTranslationKey());
+        SubSetting blockSubSetting = new SubSetting(dropdownWidth, 10, "gavinsmod.settings.xray.blocks");
+        setupBlocks();
+        for (Block block : blocks.stream().sorted(Comparator.comparing(Block::getTranslationKey)).toArray(Block[]::new)) {
+            var blockId = block.getLootTableId().toString();
+            var blockSettingKey = "xray.block." + blockId;
+            ToggleSetting toggleSetting = new ToggleSetting(blockSettingKey, block.getTranslationKey());
+            toggleSetting.setCallback(() -> {
+                if (!toggleSetting.getValue()) {
+                    ModXray.removeFromBlocks(block);
+                } else {
+                    ModXray.addToBlocks(block);
+                }
+                if (Mods.getMod("xray").isActive()) reloadRenderer();
+            });
+            toggleSetting.setWidth(155);
+            toggleSetting.setValue(Settings.getBool(blockSettingKey));
+            blockSubSetting.add(toggleSetting);
+        }
+        ToggleSetting culling = new ToggleSetting("xray.disable_culling", "gavinsmod.settings.xray.culling");
+        culling.setWidth(dropdownWidth);
+        culling.setCallback(this::reloadRenderer);
+        ToggleSetting chests = new ToggleSetting("xray.chests", "gavinsmod.settings.xray.chests");
+        chests.setWidth(dropdownWidth);
+        culling.setCallback(this::reloadRenderer);
+        chests.setCallback(() -> {
+            if (chests.getValue()) addChests();
+            else removeChests();
+            reloadRenderer();
+        });
+        xraySubSetting.add(culling);
+        xraySubSetting.add(blockSubSetting);
+        xraySubSetting.add(chests);
+        addSetting(xraySubSetting);
     }
 
     /**
@@ -78,24 +96,74 @@ public class ModXray extends Mod {
      * @return True if visible, false if not
      */
     public static boolean shouldDrawFace(BlockState block) {
-        if (GavinsMod.isEnabled(Type.XRAY))
-            return blocks.contains(block.getBlock());
+        if (GavinsMod.isEnabled(Type.XRAY)) return blocks.contains(block.getBlock());
         return true;
+    }
+
+    /**
+     * Removes the given block from the blocks that should be visible.
+     *
+     * @param block - Block to add
+     */
+    public static void removeFromBlocks(Block block) {
+        blocks.remove(block);
+    }
+
+    /**
+     * Adds the given block to the blocks that should be visible.
+     *
+     * @param block - Block to add
+     */
+    public static void addToBlocks(Block block) {
+        blocks.add(block);
+    }
+
+    private void addChests() {
+        for (Block block : Registry.BLOCK) {
+            if (block instanceof ChestBlock) {
+                addToBlocks(block);
+            }
+        }
+    }
+
+    private void removeChests() {
+        for (Block block : Registry.BLOCK) {
+            if (block instanceof ChestBlock) {
+                removeFromBlocks(block);
+            }
+        }
+    }
+
+    /**
+     * Initializes the blocks that should be visible.
+     */
+    private void setupBlocks() {
+        blocks = new HashSet<>();
+        for (Block block : Registry.BLOCK.stream().filter(b -> b instanceof OreBlock || b instanceof ChestBlock).toList()) {
+            if (block instanceof OreBlock) {
+                blocks.add(block);
+            }
+        }
     }
 
     @Override
     public void activate() {
-        if (!GavinsMod.isEnabled(Type.FULL_BRIGHT))
-            RenderUtils.setLastGamma();
-        getClient().setChunkCulling(false);
-        getClient().getWorldRenderer().reload();
+        if (!GavinsMod.isEnabled(Type.FULL_BRIGHT)) RenderUtils.setLastGamma();
+        if (Settings.getBool("xray.disable_culling")) getClient().setChunkCulling(false);
+        reloadRenderer();
         super.activate();
+    }
+
+    /**
+     * Reloads the renderer if and only if the setting "xray.forcereload" is true.
+     */
+    private void reloadRenderer() {
+        if (Mods.getMod("xray").isActive()) getClient().getWorldRenderer().reload();
     }
 
     @Override
     public void onTick() {
-        if (isActive() && !RenderUtils.isHighGamma())
-            RenderUtils.setHighGamma();
+        if (isActive() && !RenderUtils.isHighGamma()) RenderUtils.setHighGamma();
         else if (!GavinsMod.isEnabled(Type.FULL_BRIGHT) && !RenderUtils.isLastGamma() && deactivating) {
             RenderUtils.setLowGamma();
             deactivating = !RenderUtils.isLastGamma();
@@ -110,10 +178,9 @@ public class ModXray extends Mod {
     @Override
     public void deactivate() {
         // check if full bright is disabled, if it is, reset gamma back to LAST_GAMMA
-        if (!GavinsMod.isEnabled(Type.FULL_BRIGHT))
-            RenderUtils.setLowGamma();
+        if (!GavinsMod.isEnabled(Type.FULL_BRIGHT)) RenderUtils.setLowGamma();
         getClient().setChunkCulling(true);
-        getClient().getWorldRenderer().reload();
+        reloadRenderer();
         deactivating = true;
         RenderUtils.setGamma(4);
         super.deactivate();

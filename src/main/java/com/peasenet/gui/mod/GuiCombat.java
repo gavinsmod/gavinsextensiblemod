@@ -37,7 +37,7 @@ public class GuiCombat extends GuiScroll {
      * Creates a new combat dropdown.
      */
     public GuiCombat() {
-        this(new PointD(90, 20), 75, 10, Text.translatable("key.gavinsmod.gui.combat"));
+        this(new PointD(90, 20), 75, 10, Text.translatable("gavinsmod.gui.combat"));
     }
 
     /**

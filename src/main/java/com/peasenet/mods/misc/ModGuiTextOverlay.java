@@ -45,7 +45,7 @@ public class ModGuiTextOverlay extends Mod {
         super(Type.MOD_GUI_TEXT_OVERLAY);
 
         //NOTE: This isn't really the best place for this, but it works for now. this is for chat message toggles.
-        ToggleSetting chatMessage = new ToggleSetting("chatMessage", "key.gavinsmod.settings.chatmessage");
+        ToggleSetting chatMessage = new ToggleSetting("chatMessage", "gavinsmod.settings.misc.messages");
         chatMessage.setValue(Settings.getBool("chatMessage"));
         addSetting(chatMessage);
     }

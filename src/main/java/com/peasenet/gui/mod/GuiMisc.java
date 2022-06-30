@@ -37,7 +37,7 @@ public class GuiMisc extends GuiScroll {
      * Creates a new misc dropdown.
      */
     public GuiMisc() {
-        this(new PointD(170, 20), 95, 10, Text.translatable("key.gavinsmod.gui.misc"));
+        this(new PointD(170, 20), 95, 10, Text.translatable("gavinsmod.gui.misc"));
     }
 
     /**

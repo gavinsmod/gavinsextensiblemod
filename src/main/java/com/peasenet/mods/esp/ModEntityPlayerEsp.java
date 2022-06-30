@@ -33,7 +33,7 @@ public class ModEntityPlayerEsp extends Mod {
     public ModEntityPlayerEsp() {
         super(Type.ENTITY_PLAYER_ESP);
         ColorSetting colorSetting = new ColorSetting("playerEspColor",
-                "The color of the entity player esp.", "key.gavinsmod.entityplayeresp");
+                "gavinsmod.settings.esp.player.color");
         addSetting(colorSetting);
     }
 }

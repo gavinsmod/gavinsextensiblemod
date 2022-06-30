@@ -68,14 +68,17 @@ public class GuiSettings extends GuiElement {
      * Creates a new GUI settings screen.
      */
     public GuiSettings() {
-        super(Text.translatable("key.gavinsmod.gui.settings"));
+        super(Text.translatable("gavinsmod.gui.settings"));
         titleBox.setWidth(45);
         guis = new ArrayList<>();
-        tracerDropdown = new GuiScroll(new PointD(120, 110), 115, 10, Text.translatable("key.gavinsmod.settings.tracers"));
-        espDropdown = new GuiScroll(new PointD(10, 110), 100, 10, Text.translatable("key.gavinsmod.settings.esps"));
-        renderDropdown = new GuiScroll(new PointD(10, 20), 100, 10, Text.translatable("key.gavinsmod.settings.render"));
-        miscDropdown = new GuiScroll(new PointD(120, 20), 105, 10, Text.translatable("key.gavinsmod.gui.misc"));
-        guiDropdown = new GuiScroll(new PointD(245, 110), 100, 10, Text.translatable("key.gavinsmod.gui"));
+
+        renderDropdown = new GuiScroll(new PointD(10, 20), 100, 10, Text.translatable("gavinsmod.settings.render"));
+        miscDropdown = new GuiScroll(new PointD(115, 20), 105, 10, Text.translatable("gavinsmod.settings.misc"));
+        guiDropdown = new GuiScroll(new PointD(225, 20), 100, 10, Text.translatable("gavinsmod.settings.gui"));
+
+        espDropdown = new GuiScroll(new PointD(10, 110), 110, 10, Text.translatable("gavinsmod.settings.esp"));
+        tracerDropdown = new GuiScroll(new PointD(125, 110), 115, 10, Text.translatable("gavinsmod.settings.tracer"));
+
         // Create a plain gui at the top right corner
         addSettings(tracerDropdown, Type.Category.TRACERS);
         addSettings(espDropdown, Type.Category.ESPS);

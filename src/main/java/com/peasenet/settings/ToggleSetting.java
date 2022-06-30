@@ -38,6 +38,15 @@ public class ToggleSetting extends Setting {
     GuiToggle gui;
 
     /**
+     * Get the current state of this setting.
+     *
+     * @return The current state of this setting.
+     */
+    public boolean getValue() {
+        return value;
+    }
+
+    /**
      * The current value of this toggle setting.
      */
     private boolean value;
@@ -50,12 +59,12 @@ public class ToggleSetting extends Setting {
      */
     public ToggleSetting(String name, String key) {
         super(name);
-        this.value = Settings.getBool(name);
+        value = Settings.getBool(name);
         gui = new GuiToggle(new PointD(0, 0), 90, 10, Text.translatable(key));
-        gui.setState(this.value);
+        gui.setState(value);
         gui.setCallback(() -> {
             onClick();
-            Settings.add(name, this.value);
+            Settings.add(name, value);
             Settings.save();
         });
     }
