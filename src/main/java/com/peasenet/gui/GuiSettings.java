@@ -76,8 +76,8 @@ public class GuiSettings extends GuiElement {
         miscDropdown = new GuiScroll(new PointD(115, 20), 105, 10, Text.translatable("gavinsmod.settings.misc"));
         guiDropdown = new GuiScroll(new PointD(225, 20), 100, 10, Text.translatable("gavinsmod.settings.gui"));
 
-        espDropdown = new GuiScroll(new PointD(10, 110), 110, 10, Text.translatable("gavinsmod.settings.esp"));
-        tracerDropdown = new GuiScroll(new PointD(125, 110), 115, 10, Text.translatable("gavinsmod.settings.tracer"));
+        espDropdown = new GuiScroll(new PointD(10, 130), 110, 10, Text.translatable("gavinsmod.settings.esp"));
+        tracerDropdown = new GuiScroll(new PointD(125, 130), 115, 10, Text.translatable("gavinsmod.settings.tracer"));
 
         // Create a plain gui at the top right corner
         addSettings(tracerDropdown, Type.Category.TRACERS);
