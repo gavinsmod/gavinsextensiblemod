@@ -58,6 +58,15 @@ public class SubSetting extends Setting {
         dropdown.addElement(setting.getGui());
     }
 
+    /**
+     * Sets the width of all the subsettings.
+     *
+     * @param width - The width of the subsettings.
+     */
+    public void setChildrenWidth(int width) {
+        dropdown.getChildren().forEach(child -> child.setWidth(width));
+    }
+
     @Override
     public GuiScroll getGui() {
         return dropdown;

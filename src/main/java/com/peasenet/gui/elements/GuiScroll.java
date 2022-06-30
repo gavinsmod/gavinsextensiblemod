@@ -121,7 +121,7 @@ public class GuiScroll extends GuiDropdown {
     public boolean mouseScrolled(double x, double y, double scroll) {
         if (hasChildren()) {
             for (var gui : children) {
-                if (!gui.isHidden() && gui.mouseWithinGui(x, y) && gui instanceof GuiScroll scrollGui) {
+                if (!gui.isHidden() && gui.mouseWithinGui(x, y) && gui instanceof GuiScroll) {
                     gui.mouseScrolled(x, y, scroll);
                     return true;
                 }
@@ -161,7 +161,7 @@ public class GuiScroll extends GuiDropdown {
                 case DOWN -> gui.setPosition(new PointD(getX(), getY2() + 2 + (modIndex * 12)));
                 case RIGHT -> gui.setPosition(new PointD(getX2() + 10, getY() + (modIndex * 12)));
             }
-            if (shouldDrawScrollBar()) gui.setWidth(getWidth() - 5.5);
+            if (shouldDrawScrollBar()) gui.shrinkForScrollbar();
             gui.show();
             modIndex++;
         }

@@ -48,6 +48,16 @@ public class Gui {
      * The title of the gui.
      */
     protected final Text title;
+
+    /**
+     * Gets the children of this gui.
+     *
+     * @return The children of this gui.
+     */
+    public ArrayList<Gui> getChildren() {
+        return children;
+    }
+
     /**
      * The list of buttons(mods) in this dropdown.
      */
@@ -199,6 +209,20 @@ public class Gui {
      */
     public void setWidth(double width) {
         box = new BoxD(box.getTopLeft(), width, box.getHeight());
+    }
+
+    /**
+     * Whether this gui has been shrunk to fit a scrollbar.
+     */
+    private boolean shrunkForScroll = false;
+
+    /**
+     * Shrinks this gui by 5.5 pixels to fit a scrollbar.
+     */
+    public void shrinkForScrollbar() {
+        if (!shrunkForScroll)
+            setWidth(getWidth() - 5.5);
+        shrunkForScroll = true;
     }
 
     /**

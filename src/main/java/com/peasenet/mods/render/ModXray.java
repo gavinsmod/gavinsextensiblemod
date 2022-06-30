@@ -84,6 +84,7 @@ public class ModXray extends Mod {
             reloadRenderer();
         });
         xraySubSetting.add(culling);
+        blockSubSetting.setChildrenWidth(155);
         xraySubSetting.add(blockSubSetting);
         xraySubSetting.add(chests);
         addSetting(xraySubSetting);
