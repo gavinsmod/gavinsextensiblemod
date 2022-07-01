@@ -22,6 +22,7 @@ package com.peasenet.gui.elements;
 
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Settings;
+import com.peasenet.util.SettingsCallback;
 import com.peasenet.util.math.PointD;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -32,6 +33,13 @@ import net.minecraft.text.Text;
  * Creates a GUI that allows the user to toggle mods on and off by clicking.
  */
 public class GuiClick extends Gui {
+
+
+    private SettingsCallback callback;
+
+    public void setCallback(SettingsCallback callback) {
+        this.callback = callback;
+    }
 
     /**
      * Creates a new GUI menu.
@@ -59,6 +67,8 @@ public class GuiClick extends Gui {
         var inGui = mouseWithinGui(mouseX, mouseY) && !isHidden();
         if (inGui && Settings.getBool("gui.sound"))
             GavinsModClient.getPlayer().playSound(SoundEvents.UI_BUTTON_CLICK, 0.5f, 1);
+        if (inGui && callback != null) callback.callback();
+
         return inGui;
     }
 }

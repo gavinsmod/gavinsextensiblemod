@@ -85,6 +85,7 @@ public class Mods {
         // MISC
         new ModGuiTextOverlay();
         new ModFpsCounter();
+        new ModWaypoint();
     }
 
     /**

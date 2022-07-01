@@ -23,9 +23,11 @@ package com.peasenet.util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
+import com.peasenet.main.Mods;
 import com.peasenet.main.Settings;
 import com.peasenet.mixinterface.ISimpleOption;
 import com.peasenet.mods.Type;
+import com.peasenet.mods.render.waypoints.Waypoint;
 import com.peasenet.util.color.Color;
 import com.peasenet.util.math.BoxD;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -116,10 +118,21 @@ public class RenderUtils {
 
         drawChestMods(level, stack, buffer, playerPos, chunk_x, chunk_z);
         drawEntityMods(level, player, stack, delta, buffer, playerPos);
+        drawWaypoint(stack, buffer, playerPos);
         tessellator.draw();
         stack.pop();
 
         resetRenderSystem();
+    }
+
+    private static void drawWaypoint(MatrixStack stack, VertexConsumer buffer, Vec3f playerPos) {
+        if (!Mods.getMod("waypoint").isActive())
+            return;
+        Settings.getWaypoints().stream().filter(Waypoint::isEnabled).forEach(w -> {
+            Box aabb = new Box(new BlockPos(w.getX(), w.getY(), w.getZ()));
+            Vec3f boxPos = new Vec3f(aabb.getCenter());
+            renderSingleLine(stack, buffer, playerPos, boxPos, Settings.getColor("tracer.chest.color"));
+        });
     }
 
     /**

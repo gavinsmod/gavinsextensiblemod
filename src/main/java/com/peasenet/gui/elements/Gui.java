@@ -44,32 +44,30 @@ public class Gui {
      */
     protected final BoxD defaultPosition;
 
+    public void setTitle(Text title) {
+        this.title = title;
+    }
+
     /**
      * The title of the gui.
      */
-    protected final Text title;
-
-    /**
-     * Gets the children of this gui.
-     *
-     * @return The children of this gui.
-     */
-    public ArrayList<Gui> getChildren() {
-        return children;
-    }
+    protected Text title;
 
     /**
      * The list of buttons(mods) in this dropdown.
      */
     protected final ArrayList<Gui> children = new ArrayList<>();
+
     /**
      * The symbol to be drawn to the left of the end of the box (like a checkbox, empty box, or arrow).
      */
     char symbol = '\u2612';
+
     /**
      * The offset used for the symbol (x).
      */
     int symbolOffsetX = -10;
+
     /**
      * The offset used for the symbol (y).
      */
@@ -90,6 +88,10 @@ public class Gui {
      * Whether this gui is currently hidden.
      */
     private boolean hidden;
+    /**
+     * Whether this gui has been shrunk to fit a scrollbar.
+     */
+    private boolean shrunkForScroll = false;
 
     /**
      * Creates a new GUI menu.
@@ -99,11 +101,20 @@ public class Gui {
      * @param title  - The title of the gui.
      */
     public Gui(PointD topLeft, int width, int height, Text title) {
-        this.box = new BoxD(topLeft, width, height);
-        this.defaultPosition = BoxD.copy(box);
+        box = new BoxD(topLeft, width, height);
+        defaultPosition = BoxD.copy(box);
         this.title = title;
         backgroundColor = Settings.getColor("gui.color.background");
         dragging = false;
+    }
+
+    /**
+     * Gets the children of this gui.
+     *
+     * @return The children of this gui.
+     */
+    public ArrayList<Gui> getChildren() {
+        return children;
     }
 
     /**
@@ -212,16 +223,10 @@ public class Gui {
     }
 
     /**
-     * Whether this gui has been shrunk to fit a scrollbar.
-     */
-    private boolean shrunkForScroll = false;
-
-    /**
      * Shrinks this gui by 5.5 pixels to fit a scrollbar.
      */
     public void shrinkForScrollbar() {
-        if (!shrunkForScroll)
-            setWidth(getWidth() - 5.5);
+        if (!shrunkForScroll) setWidth(getWidth() - 5.5);
         shrunkForScroll = true;
     }
 
@@ -308,7 +313,7 @@ public class Gui {
      * Resets the position to the default position.
      */
     public void resetPosition() {
-        this.box = BoxD.copy(defaultPosition);
+        box = BoxD.copy(defaultPosition);
     }
 
     /**
@@ -326,7 +331,7 @@ public class Gui {
      * @param position - The point to set the top left corner of the gui element to.
      */
     public void setPosition(PointD position) {
-        this.box.setTopLeft(position);
+        box.setTopLeft(position);
     }
 
     /**
@@ -335,7 +340,7 @@ public class Gui {
      * @param position - The point to set the middle of the gui element to.
      */
     public void setMidPoint(PointD position) {
-        this.box.setMiddle(position);
+        box.setMiddle(position);
     }
 
     /**

@@ -22,6 +22,9 @@ package com.peasenet.main;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.ToNumberPolicy;
+import com.google.gson.internal.LinkedTreeMap;
+import com.peasenet.mods.render.waypoints.Waypoint;
 import com.peasenet.util.color.Color;
 import com.peasenet.util.color.Colors;
 import net.minecraft.block.Block;
@@ -36,6 +39,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * @author gt3ch1
@@ -83,6 +87,8 @@ public class Settings {
 
         default_settings.put("xray.disable_culling", true);
         default_settings.put("xray.blocks", new ArrayList<String>());
+        default_settings.put("waypoint.locations", new ArrayList<Waypoint>());
+        default_settings.put("waypoint.locations.enabled", new HashSet<Integer>());
         load();
     }
 
@@ -98,7 +104,7 @@ public class Settings {
         var cfgFile = getFilePath();
         // ensure the settings file exists
         ensureCfgCreated(cfgFile);
-        var json = new GsonBuilder().setPrettyPrinting().create();
+        var json = new GsonBuilder().setPrettyPrinting().setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE).create();
         var map = new HashMap<>(settings);
         try {
             var writer = Files.newBufferedWriter(Paths.get(cfgFile));
@@ -151,7 +157,7 @@ public class Settings {
         var cfgFile = getFilePath();
         // ensure the settings file exists
         ensureCfgCreated(cfgFile);
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE).create();
         try {
             var map = gson.fromJson(new FileReader(cfgFile), HashMap.class);
             default_settings.forEach((k, _v) -> settings.put(k, map.get(k)));
@@ -211,6 +217,8 @@ public class Settings {
         save();
     }
 
+
+    //TODO: Doc comments
     private static void loadDefaultXrayBlocks() {
         var list = new ArrayList<String>();
         Registry.BLOCK.stream().filter(b -> b instanceof OreBlock).toList().forEach(b -> list.add(b.getLootTableId().toString()));
@@ -221,18 +229,75 @@ public class Settings {
         var currList = (ArrayList<String>) settings.get("xray.blocks");
         currList.add(b.getLootTableId().toString());
         settings.put("xray.blocks", currList);
+        save();
     }
 
     public static void removeXrayBlock(Block b) {
         var currList = (ArrayList<String>) settings.get("xray.blocks");
         currList.remove(b.getLootTableId().toString());
         settings.put("xray.blocks", currList);
+        save();
     }
 
     public static boolean isXrayBlock(Block b) {
-        var currList = (ArrayList<String>) settings.get("xray.blocks");
+        var currList = (ArrayList<Waypoint>) settings.get("xray.blocks");
+        if (currList == null) return false;
         var isInList = currList.contains(b.getLootTableId().toString());
         return isInList;
+    }
+
+    public static void addWaypoint(Waypoint w) {
+        var currList = (ArrayList<Waypoint>) settings.get("waypoint.locations");
+        if (currList == null) currList = new ArrayList<>();
+        currList.add(w);
+        settings.put("waypoint.locations", currList);
+        save();
+    }
+
+    public static Waypoint getWaypoint(Waypoint w) {
+        return getWaypoints().stream().filter(w2 -> w2.hashCode() == w.hashCode()).findFirst().orElse(null);
+    }
+
+    public static void removeWaypoint(Waypoint w) {
+        var currList = (ArrayList<Waypoint>) settings.get("waypoint.locations");
+        if (currList == null) return;
+        currList.remove(w);
+        settings.put("waypoint.locations", currList);
+        save();
+    }
+
+    public static ArrayList<Waypoint> getWaypoints() {
+        // note : need to figurte out way to convert from LinkedTreeMap to ArrayList<Waypoint> nicer.
+        try {
+            var list = (ArrayList<LinkedTreeMap>) settings.get("waypoint.locations");
+            var wpList = new ArrayList<Waypoint>();
+            list.forEach(l -> {
+                        var x = ((Long) l.get("x")).intValue();
+                        var y = ((Long) l.get("y")).intValue();
+                        var z = ((Long) l.get("z")).intValue();
+                        var w = new Waypoint(x, y, z);
+                        w.setEnabled((Boolean) l.get("enabled"));
+                        wpList.add(w);
+                    }
+            );
+            return wpList;
+        } catch (ClassCastException e) {
+            return (ArrayList<Waypoint>) settings.get("waypoint.locations");
+        }
+    }
+
+    public static void setWaypointState(Waypoint w, boolean state) {
+        w.setEnabled(state);
+        var currList = getWaypoints();
+        // find the waypoint in the list and set it's state
+        for (int i = 0; i < currList.size(); i++) {
+            if (currList.get(i).hashCode() == w.hashCode()) {
+                currList.get(i).setEnabled(state);
+                break;
+            }
+        }
+        settings.put("waypoint.locations", currList);
+        save();
     }
 
     public static void setBool(String key, boolean value) {
@@ -248,4 +313,6 @@ public class Settings {
     public static void add(String key, Object value) {
         settings.put(key, value);
     }
+
+
 }

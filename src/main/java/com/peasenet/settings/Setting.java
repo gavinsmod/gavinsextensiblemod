@@ -23,6 +23,7 @@ package com.peasenet.settings;
 
 import com.peasenet.gui.elements.Gui;
 import com.peasenet.util.SettingsCallback;
+import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
@@ -89,6 +90,10 @@ public abstract class Setting {
      */
     public void setWidth(int width) {
         getGui().setWidth(width);
+    }
+
+    public void setTitle(Text text) {
+        getGui().setTitle(text);
     }
 
 }

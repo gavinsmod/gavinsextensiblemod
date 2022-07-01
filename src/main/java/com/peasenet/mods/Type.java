@@ -51,6 +51,7 @@ public enum Type {
     ANTI_PUMPKIN("Anti Pumpkin", "gavinsmod.mod.render.antipumpkin", "gavinsmod.keybinds.render", RENDER, "antipumpkin"),
     NO_RAIN("No Rain", "gavinsmod.mod.render.norain", "gavinsmod.keybinds.render", RENDER, "norain"),
     MOD_HPTAG("HP Tags", "gavinsmod.mod.render.hptags", "gavinsmod.keybinds.render", RENDER, "hptags"),
+    WAYPOINT("Waypoint", "gavinsmod.mod.render.waypoint", "gavinsmod.keybinds.render", RENDER, "waypoint"),
 
     // ESP
     CHEST_ESP("Chest ESP", "gavinsmod.mod.esp.chest", "gavinsmod.keybinds.esp", ESPS, "chestesp"),

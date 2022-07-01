@@ -67,6 +67,8 @@ public class ToggleSetting extends Setting {
         gui.setState(value);
         gui.setCallback(() -> {
             onClick();
+            if (name.equals("none"))
+                return;
             Settings.add(name, value);
             Settings.save();
         });
@@ -82,7 +84,9 @@ public class ToggleSetting extends Setting {
         this.value = value;
         gui.setBackground(value ? Settings.getColor("gui.color.enabled") : Settings.getColor("gui.color.background"));
         gui.setState(value);
-        Settings.setBool(this.getName(), value);
+        if (getName().equals("none"))
+            return;
+        Settings.setBool(getName(), value);
     }
 
     @Override
