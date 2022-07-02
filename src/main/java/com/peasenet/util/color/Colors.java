@@ -20,6 +20,8 @@
 
 package com.peasenet.util.color;
 
+import java.util.Random;
+
 /**
  * @author gt3ch1
  * @version 6/18/2022
@@ -69,5 +71,10 @@ public class Colors {
             }
         }
         return -1;
+    }
+
+    public static int getRandomColor() {
+        var num = new Random(System.currentTimeMillis()).nextInt(COLORS.length);
+        return num;
     }
 }

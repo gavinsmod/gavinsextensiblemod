@@ -39,14 +39,13 @@ import java.util.ArrayList;
 public class GuiElement extends Screen {
 
     /**
-     * A list of gui children to render.
-     */
-    public ArrayList<Gui> guis;
-
-    /**
      * The box that contains the menu title in the top left corner of the screen.
      */
     public final Gui titleBox;
+    /**
+     * A list of gui children to render.
+     */
+    public ArrayList<Gui> guis = new ArrayList<>();
 
     public GuiElement(Text title) {
         super(title);
@@ -97,23 +96,25 @@ public class GuiElement extends Screen {
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
-
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
-        assert this.client != null;
-        var tr = this.client.textRenderer;
+        assert client != null;
+        var tr = client.textRenderer;
         RenderSystem.setShader(GameRenderer::getPositionShader);
         RenderSystem.enableBlend();
         guis.forEach(gui -> {
             gui.setBackground(Settings.getColor("gui.color.category"));
-            gui.render(matrixStack, tr);
+            gui.render(matrixStack, tr, mouseX, mouseY, delta);
         });
-        titleBox.render(matrixStack, tr);
         super.render(matrixStack, mouseX, mouseY, delta);
     }
 
 
     public void reset() {
         guis.forEach(Gui::resetPosition);
+    }
+
+    public void addChild(Gui gui) {
+        guis.add(gui);
     }
 }

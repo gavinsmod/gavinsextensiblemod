@@ -78,10 +78,10 @@ public class GuiDropdown extends GuiDraggable {
     }
 
     @Override
-    public void render(MatrixStack matrices, TextRenderer tr) {
+    public void render(MatrixStack matrixStack, TextRenderer tr, int mouseX, int mouseY, float delta) {
         updateSymbol();
-        tr.draw(matrices, String.valueOf(symbol), (int) getX2() + symbolOffsetX, (int) getY() + symbolOffsetY, (Settings.getColor("foregroundColor")).getAsInt());
-        super.render(matrices, tr);
+        tr.draw(matrixStack, String.valueOf(symbol), (int) getX2() + symbolOffsetX, (int) getY() + symbolOffsetY, (Settings.getColor("foregroundColor")).getAsInt());
+        super.render(matrixStack, tr, mouseX, mouseY, delta);
         if (!isOpen()) return;
         var toRender = children.stream().filter(child -> !child.isHidden());
         // convert toRender to ArrayList
@@ -92,7 +92,7 @@ public class GuiDropdown extends GuiDraggable {
                 case DOWN -> child.setPosition(new PointD(getX(), getY2() + 2 + (i * 12)));
                 case RIGHT -> child.setPosition(new PointD(getX2() + 2, getY() + (i * 12)));
             }
-            child.render(matrices, tr);
+            child.render(matrixStack, tr, mouseX, mouseY, delta);
         }
     }
 

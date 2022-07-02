@@ -20,6 +20,7 @@
 
 package com.peasenet.mods.render;
 
+import com.peasenet.gui.mod.waypoint.GuiWaypoint;
 import com.peasenet.main.Settings;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
@@ -29,6 +30,8 @@ import com.peasenet.settings.SubSetting;
 import com.peasenet.settings.ToggleSetting;
 import net.minecraft.text.Text;
 
+import java.util.Comparator;
+
 /**
  * @author gt3ch1
  * @version 6/30/2022
@@ -36,30 +39,31 @@ import net.minecraft.text.Text;
 public class ModWaypoint extends Mod {
     public ModWaypoint() {
         super(Type.WAYPOINT);
-        SubSetting subSetting = new SubSetting(50, 10, getTranslationKey());
-        ClickSetting addWaypoint = new ClickSetting("none");
-        addWaypoint.setCallback(() -> {
-            var pos = getPlayer().getPos().add(0, 1, 0);
-            var waypoint = new Waypoint(pos);
-            waypoint.setEnabled(true);
-            Settings.addWaypoint(waypoint);
-            createWaypoint(subSetting, waypoint);
-        });
-        subSetting.add(addWaypoint);
-        Settings.getWaypoints().forEach(waypoint -> createWaypoint(subSetting, waypoint));
-        addSetting(subSetting);
+        reloadSettings();
+    }
+
+    @Override
+    public void reloadSettings() {
+        modSettings.clear();
+        SubSetting setting = new SubSetting(100, 10, "gavinsmod.mod.render.waypoints");
+        ClickSetting openMenu = new ClickSetting("Open Menu", "gavinsmod.settings.render.waypoints.add");
+        openMenu.setCallback(() -> getClient().setScreen(new GuiWaypoint()));
+        openMenu.getGui().setSymbol('\u002b');
+        setting.add(openMenu);
+
+        // get all waypoints and add them to the menu
+        Settings.getWaypoints().stream().sorted(Comparator.comparing(Waypoint::getName)).forEach(waypoint -> createWaypoint(setting, waypoint));
+        addSetting(setting);
     }
 
     private void createWaypoint(SubSetting subSetting, Waypoint waypoint) {
-        ToggleSetting toggleSetting = new ToggleSetting("none", "gavinsmod.settings.waypoint.toggle");
-        toggleSetting.setWidth(50);
-        subSetting.add(toggleSetting);
-        toggleSetting.setCallback(() ->
-        {
-            Settings.setWaypointState(waypoint, !waypoint.isEnabled());
-            toggleSetting.setValue(Settings.getWaypoint(waypoint).isEnabled());
+        ToggleSetting clickSetting = new ToggleSetting("none", Text.literal(waypoint.getName()), true);
+        clickSetting.setWidth(100);
+        subSetting.add(clickSetting);
+        clickSetting.setCallback(() -> {
+            getClient().setScreen(new GuiWaypoint(waypoint));
+            clickSetting.setValue(waypoint.isEnabled());
         });
-        toggleSetting.setValue(Settings.getWaypoint(waypoint).isEnabled());
-        toggleSetting.setTitle(Text.literal(waypoint.toString()));
+        clickSetting.setValue(waypoint.isEnabled());
     }
 }

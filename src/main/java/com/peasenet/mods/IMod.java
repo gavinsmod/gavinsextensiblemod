@@ -165,4 +165,6 @@ public interface IMod {
      * @param setting - The setting to add.
      */
     void addSetting(Setting setting);
+
+    void reloadSettings();
 }

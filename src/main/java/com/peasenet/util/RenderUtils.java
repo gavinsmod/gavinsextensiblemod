@@ -125,13 +125,16 @@ public class RenderUtils {
         resetRenderSystem();
     }
 
-    private static void drawWaypoint(MatrixStack stack, VertexConsumer buffer, Vec3f playerPos) {
-        if (!Mods.getMod("waypoint").isActive())
+    private static void drawWaypoint(MatrixStack stack, BufferBuilder buffer, Vec3f playerPos) {
+        if (!Mods.getMod("waypoints").isActive())
             return;
         Settings.getWaypoints().stream().filter(Waypoint::isEnabled).forEach(w -> {
-            Box aabb = new Box(new BlockPos(w.getX(), w.getY(), w.getZ()));
+            Box aabb = new Box(new BlockPos(w.getX() - 1, w.getY(), w.getZ() - 1));
             Vec3f boxPos = new Vec3f(aabb.getCenter());
-            renderSingleLine(stack, buffer, playerPos, boxPos, Settings.getColor("tracer.chest.color"));
+            if (w.isTracerEnabled())
+                renderSingleLine(stack, buffer, playerPos, boxPos, w.getColor());
+            if (w.isEspEnabled())
+                drawBox(stack, buffer, aabb, w.getColor());
         });
     }
 

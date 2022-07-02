@@ -22,7 +22,7 @@
 package com.peasenet.settings;
 
 import com.peasenet.gui.elements.Gui;
-import com.peasenet.util.SettingsCallback;
+import com.peasenet.util.callbacks.SettingsCallback;
 import net.minecraft.text.Text;
 
 /**

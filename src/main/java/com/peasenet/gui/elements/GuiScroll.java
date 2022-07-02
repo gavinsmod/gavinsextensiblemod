@@ -100,20 +100,20 @@ public class GuiScroll extends GuiDropdown {
     }
 
     @Override
-    public void render(MatrixStack matrices, TextRenderer tr) {
+    public void render(MatrixStack matrixStack, TextRenderer tr, int mouseX, int mouseY, float delta) {
         if (isHidden()) return;
-        RenderUtils.drawBox(getBackgroundColor().getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrices);
-        tr.draw(matrices, title, (int) getX() + 2, (int) getY() + 2, (Settings.getColor("gui.color.foreground")).getAsInt());
+        RenderUtils.drawBox(getBackgroundColor().getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrixStack);
+        tr.draw(matrixStack, title, (int) getX() + 2, (int) getY() + 2, (Settings.getColor("gui.color.foreground")).getAsInt());
         updateSymbol();
-        tr.draw(matrices, String.valueOf(symbol), (int) getX2() + symbolOffsetX, (int) getY() + symbolOffsetY, (Settings.getColor("gui.color.foreground")).getAsInt());
-        RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrices);
+        tr.draw(matrixStack, String.valueOf(symbol), (int) getX2() + symbolOffsetX, (int) getY() + symbolOffsetY, (Settings.getColor("gui.color.foreground")).getAsInt());
+        RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrixStack);
 
         if (!isOpen()) return;
         resetChildPos();
-        children.forEach(child -> child.render(matrices, tr));
+        children.forEach(child -> child.render(matrixStack, tr, mouseX, mouseY, delta));
         if (shouldDrawScrollBar()) {
-            drawScrollBox(matrices);
-            drawScrollBar(matrices);
+            drawScrollBox(matrixStack);
+            drawScrollBar(matrixStack);
         }
     }
 
@@ -193,9 +193,9 @@ public class GuiScroll extends GuiDropdown {
     /**
      * Draws the box that contains the scrollbar.
      *
-     * @param matrices - The matrix stack.
+     * @param matrixStack - The matrix stack.
      */
-    private void drawScrollBox(MatrixStack matrices) {
+    private void drawScrollBox(MatrixStack matrixStack) {
         var scrollBoxX = getX() + getWidth() - 4;
         var scrollBoxY = (getY2()) + 2;
         var scrollBoxHeight = getScrollBoxHeight();
@@ -204,16 +204,16 @@ public class GuiScroll extends GuiDropdown {
             scrollBoxX = firstChild.getX2() + 2;
             scrollBoxY = firstChild.getY();
         }
-        RenderUtils.drawBox(Colors.BLACK.getAsFloatArray(), new BoxD(new PointD(scrollBoxX, scrollBoxY), 4, scrollBoxHeight), matrices);
-        RenderUtils.drawOutline((Settings.getColor("foregroundColor")).getAsFloatArray(), new BoxD(new PointD(scrollBoxX, scrollBoxY), 4, scrollBoxHeight), matrices);
+        RenderUtils.drawBox(Colors.BLACK.getAsFloatArray(), new BoxD(new PointD(scrollBoxX, scrollBoxY), 4, scrollBoxHeight), matrixStack);
+        RenderUtils.drawOutline((Settings.getColor("foregroundColor")).getAsFloatArray(), new BoxD(new PointD(scrollBoxX, scrollBoxY), 4, scrollBoxHeight), matrixStack);
     }
 
     /**
      * Draws the scrollbar.
      *
-     * @param matrices - The matrix stack.
+     * @param matrixStack - The matrix stack.
      */
-    private void drawScrollBar(MatrixStack matrices) {
+    private void drawScrollBar(MatrixStack matrixStack) {
         var scrollBoxHeight = getScrollBoxHeight();
         var scrollBarY = (scrollBoxHeight * (page / (double) numPages)) + getY2() + 3;
         var scrollBarX = getX2() - 2;
@@ -225,7 +225,7 @@ public class GuiScroll extends GuiDropdown {
             scrollBarX = firstChild.getX2() + 4;
             scrollBarY2 = ((scrollBarY) + (scrollBoxHeight / (numPages)));
         }
-        RenderUtils.drawBox(Colors.WHITE.getAsFloatArray(), (int) scrollBarX - 1, (int) scrollBarY, (int) scrollBarX + 1, (int) scrollBarY2 - 2, matrices);
+        RenderUtils.drawBox(Colors.WHITE.getAsFloatArray(), (int) scrollBarX - 1, (int) scrollBarY, (int) scrollBarX + 1, (int) scrollBarY2 - 2, matrixStack);
 
     }
 

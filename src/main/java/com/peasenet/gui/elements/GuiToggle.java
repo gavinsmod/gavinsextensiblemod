@@ -21,7 +21,7 @@
 package com.peasenet.gui.elements;
 
 import com.peasenet.main.Settings;
-import com.peasenet.util.SettingsCallback;
+import com.peasenet.util.callbacks.SettingsCallback;
 import com.peasenet.util.math.PointD;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -84,7 +84,7 @@ public class GuiToggle extends GuiClick {
      * @param callback - The callback method.
      */
     public void setRenderCallback(SettingsCallback callback) {
-        this.renderCallback = callback;
+        renderCallback = callback;
     }
 
     /**
@@ -106,13 +106,12 @@ public class GuiToggle extends GuiClick {
     }
 
     @Override
-    public void render(MatrixStack matrixStack, TextRenderer tr) {
+    public void render(MatrixStack matrixStack, TextRenderer tr, int mouseX, int mouseY, float delta) {
         if (isHidden()) return;
         symbol = isOn ? '\u2611' : '\u2610';
         if (renderCallback != null) renderCallback.callback();
         if (isOn()) setBackground(Settings.getColor("gui.color.enabled"));
         else setBackground(Settings.getColor("gui.color.background"));
-        super.render(matrixStack, tr);
-        tr.draw(matrixStack, String.valueOf(symbol), (int) getX2() + symbolOffsetX, (int) getY() + symbolOffsetY, (Settings.getColor("gui.color.foreground")).getAsInt());
+        super.render(matrixStack, tr, mouseX, mouseY, delta);
     }
 }

@@ -52,7 +52,6 @@ public class Gui {
      * The title of the gui.
      */
     protected Text title;
-
     /**
      * The list of buttons(mods) in this dropdown.
      */
@@ -61,13 +60,20 @@ public class Gui {
     /**
      * The symbol to be drawn to the left of the end of the box (like a checkbox, empty box, or arrow).
      */
-    char symbol = '\u2612';
+    char symbol;
+
+    public void setSymbol(char symbol) {
+        this.symbol = symbol;
+    }
+
+    public void clearChildren() {
+        children.clear();
+    }
 
     /**
      * The offset used for the symbol (x).
      */
     int symbolOffsetX = -10;
-
     /**
      * The offset used for the symbol (y).
      */
@@ -245,13 +251,14 @@ public class Gui {
      * @param matrixStack The matrix stack used to draw boxes on screen.
      * @param tr          The text render to use to draw text
      */
-    public void render(MatrixStack matrixStack, TextRenderer tr) {
+    public void render(MatrixStack matrixStack, TextRenderer tr, int mouseX, int mouseY, float delta) {
         if (isHidden()) return;
         RenderUtils.drawBox(backgroundColor.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrixStack);
         tr.draw(matrixStack, title, (int) getX() + 2, (int) getY() + 2, (Settings.getColor("foregroundColor")).getAsInt());
+        if (symbol != '\0')
+            tr.draw(matrixStack, String.valueOf(symbol), (int) getX2() + symbolOffsetX, (int) getY() + symbolOffsetY, (Settings.getColor("gui.color.foreground")).getAsInt());
         RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrixStack);
     }
-
 
     /**
      * Checks whether the mouse is clicked.

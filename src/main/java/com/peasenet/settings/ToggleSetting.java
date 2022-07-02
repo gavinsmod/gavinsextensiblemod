@@ -46,6 +46,8 @@ public class ToggleSetting extends Setting {
         return value;
     }
 
+    private boolean noToggle = false;
+
     /**
      * The current value of this toggle setting.
      */
@@ -75,6 +77,25 @@ public class ToggleSetting extends Setting {
         gui.hide();
     }
 
+    public ToggleSetting(String name, Text literal, boolean noToggle) {
+        super(name);
+        this.noToggle = noToggle;
+        if (!name.equals("none"))
+            value = Settings.getBool(name);
+        else
+            value = false;
+        gui = new GuiToggle(new PointD(0, 0), 90, 10, literal);
+        gui.setState(value);
+        gui.setCallback(() -> {
+            onClick();
+            if (name.equals("none"))
+                return;
+            Settings.add(name, value);
+            Settings.save();
+        });
+        gui.hide();
+    }
+
     /**
      * Sets the value of this toggle setting.
      *
@@ -91,7 +112,8 @@ public class ToggleSetting extends Setting {
 
     @Override
     public void onClick() {
-        setValue(!value);
+        if (!noToggle)
+            setValue(!value);
         super.onClick();
     }
 

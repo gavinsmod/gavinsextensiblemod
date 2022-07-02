@@ -18,7 +18,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.util;
+package com.peasenet.util.callbacks;
 
 /**
  * @author gt3ch1
@@ -29,4 +29,5 @@ public interface SettingsCallback {
      * Called when settings are changed.
      */
     void callback();
+
 }

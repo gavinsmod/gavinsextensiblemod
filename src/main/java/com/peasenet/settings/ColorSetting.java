@@ -37,6 +37,11 @@ public class ColorSetting extends Setting {
      * The cycle element that allows the user to change the color value.
      */
     private final GuiCycle guiCycle;
+
+    public GuiCycle getGuiCycle() {
+        return guiCycle;
+    }
+
     /**
      * The color value of the setting.
      */
@@ -61,6 +66,11 @@ public class ColorSetting extends Setting {
             onClick();
         });
         guiCycle.setCurrentIndex(Colors.getColorIndex(color));
+    }
+
+    public void setColorIndex(int index) {
+        guiCycle.setCurrentIndex(index);
+        guiCycle.setBackground(Colors.COLORS[index]);
     }
 
     @Override

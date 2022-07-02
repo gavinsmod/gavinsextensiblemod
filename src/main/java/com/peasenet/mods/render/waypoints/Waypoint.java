@@ -20,6 +20,8 @@
 
 package com.peasenet.mods.render.waypoints;
 
+import com.peasenet.util.color.Color;
+import com.peasenet.util.color.Colors;
 import net.minecraft.util.math.Vec3d;
 
 /**
@@ -28,20 +30,37 @@ import net.minecraft.util.math.Vec3d;
  * A waypoint is a three-dimensional integer coordinate.
  */
 public class Waypoint {
-    private int x, y, z, hash;
+    private final int hash;
+    private int x;
+    private int y;
+    private int z;
+    private String name;
+    private int color;
+    private boolean enabled;
+    private boolean tracerEnabled;
+    private boolean espEnabled;
 
-    public boolean isEnabled() {
-        return enabled;
+    public boolean isTracerEnabled() {
+        return tracerEnabled;
     }
 
-    private boolean enabled;
+    public void setTracerEnabled(boolean tracerEnabled) {
+        this.tracerEnabled = tracerEnabled;
+    }
+
+    public boolean isEspEnabled() {
+        return espEnabled;
+    }
+
+    public void setEspEnabled(boolean espEnabled) {
+        this.espEnabled = espEnabled;
+    }
 
     public Waypoint(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
         hash = (x * 31) ^ (y * 31) ^ (z * 31);
-//        worldName = w.na
     }
 
     public Waypoint(Vec3d vec) {
@@ -49,6 +68,30 @@ public class Waypoint {
         y = (int) vec.y;
         z = (int) vec.z;
         hash = (x * 31) ^ (y * 31) ^ (z * 31);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getColorIndex() {
+        return color;
+    }
+
+    public Color getColor() {
+        return Colors.COLORS[color];
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
     }
 
     public void setEnabled(boolean enabled) {
@@ -96,11 +139,7 @@ public class Waypoint {
     }
 
     public boolean equals(Waypoint w) {
-        return x == w.x && y == w.y && z == w.z;
-    }
-
-    public boolean equals(int x, int y, int z) {
-        return this.x == x && this.y == y && this.z == z;
+        return name.hashCode() == w.name.hashCode() && x == w.x && y == w.y && z == w.z;
     }
 
     public String toString() {
@@ -109,6 +148,10 @@ public class Waypoint {
 
     @Override
     public int hashCode() {
-        return hash;
+        return name.hashCode();
+    }
+
+    public Vec3d getVec() {
+        return new Vec3d(x, y, z);
     }
 }

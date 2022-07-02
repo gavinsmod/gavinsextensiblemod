@@ -247,21 +247,19 @@ public class Settings {
     }
 
     public static void addWaypoint(Waypoint w) {
-        var currList = (ArrayList<Waypoint>) settings.get("waypoint.locations");
+        var currList = getWaypoints();
         if (currList == null) currList = new ArrayList<>();
+        currList.removeIf(wp -> wp.equals(w));
         currList.add(w);
         settings.put("waypoint.locations", currList);
         save();
     }
 
-    public static Waypoint getWaypoint(Waypoint w) {
-        return getWaypoints().stream().filter(w2 -> w2.hashCode() == w.hashCode()).findFirst().orElse(null);
-    }
-
-    public static void removeWaypoint(Waypoint w) {
-        var currList = (ArrayList<Waypoint>) settings.get("waypoint.locations");
-        if (currList == null) return;
-        currList.remove(w);
+    public static void deleteWaypoint(Waypoint w) {
+        var currList = getWaypoints();
+        if (currList == null) currList = new ArrayList<>();
+        // remove from currList where the waypoint is the same as w
+        currList.removeIf(wp -> wp.equals(w));
         settings.put("waypoint.locations", currList);
         save();
     }
@@ -275,8 +273,17 @@ public class Settings {
                         var x = ((Long) l.get("x")).intValue();
                         var y = ((Long) l.get("y")).intValue();
                         var z = ((Long) l.get("z")).intValue();
+                        var name = (String) l.get("name");
+                        var color = ((Long) l.get("color")).intValue();
+                        var enabled = (boolean) l.get("enabled");
+                        var tracerEnabled = (boolean) l.get("tracerEnabled");
+                        var espEnabled = (boolean) l.get("espEnabled");
                         var w = new Waypoint(x, y, z);
-                        w.setEnabled((Boolean) l.get("enabled"));
+                        w.setName(name);
+                        w.setColor(color);
+                        w.setEnabled(enabled);
+                        w.setTracerEnabled(tracerEnabled);
+                        w.setEspEnabled(espEnabled);
                         wpList.add(w);
                     }
             );
@@ -284,20 +291,6 @@ public class Settings {
         } catch (ClassCastException e) {
             return (ArrayList<Waypoint>) settings.get("waypoint.locations");
         }
-    }
-
-    public static void setWaypointState(Waypoint w, boolean state) {
-        w.setEnabled(state);
-        var currList = getWaypoints();
-        // find the waypoint in the list and set it's state
-        for (int i = 0; i < currList.size(); i++) {
-            if (currList.get(i).hashCode() == w.hashCode()) {
-                currList.get(i).setEnabled(state);
-                break;
-            }
-        }
-        settings.put("waypoint.locations", currList);
-        save();
     }
 
     public static void setBool(String key, boolean value) {

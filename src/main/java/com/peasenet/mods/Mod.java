@@ -43,7 +43,7 @@ import java.util.ArrayList;
  */
 public abstract class Mod implements IMod {
 
-    private final ArrayList<Setting> modSettings = new ArrayList<>();
+    protected ArrayList<Setting> modSettings = new ArrayList<>();
 
     /**
      * The string shown in the chat window when the player toggles the mod.
@@ -231,5 +231,11 @@ public abstract class Mod implements IMod {
     public void reload() {
         deactivate();
         activate();
+    }
+
+    public void reloadSettings() {
+        var tmpSettings = new ArrayList<>(getSettings());
+        getSettings().clear();
+        modSettings.addAll(tmpSettings);
     }
 }

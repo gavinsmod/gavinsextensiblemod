@@ -44,7 +44,6 @@ public class GavinsMod implements ModInitializer {
     public static final String VERSION = "v1.2.2";
     public static GuiMainMenu gui;
     public static GuiSettings guiSettings;
-
     /**
      * Gets whether the given mod is enabled.
      *

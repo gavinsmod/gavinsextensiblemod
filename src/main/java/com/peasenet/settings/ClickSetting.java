@@ -31,11 +31,23 @@ import net.minecraft.text.Text;
  */
 public class ClickSetting extends Setting {
 
-    private GuiClick gui;
+    private final GuiClick gui;
 
     public ClickSetting(String name) {
         super(name);
-        gui = new GuiClick(new PointD(0, 0), 100, 10, Text.literal("test"));
+        gui = new GuiClick(new PointD(0, 0), 100, 10, Text.literal(""));
+        gui.setCallback(this::onClick);
+    }
+
+    public ClickSetting(String name, String translationKey) {
+        super(name);
+        gui = new GuiClick(new PointD(0, 0), 100, 10, Text.translatable(translationKey));
+        gui.setCallback(this::onClick);
+    }
+
+    public ClickSetting(String name, Text text) {
+        super(name);
+        gui = new GuiClick(new PointD(0, 0), 100, 10, text);
         gui.setCallback(this::onClick);
     }
 

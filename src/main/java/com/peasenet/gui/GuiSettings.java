@@ -79,13 +79,26 @@ public class GuiSettings extends GuiElement {
         espDropdown = new GuiScroll(new PointD(10, 130), 110, 10, Text.translatable("gavinsmod.settings.esp"));
         tracerDropdown = new GuiScroll(new PointD(125, 130), 115, 10, Text.translatable("gavinsmod.settings.tracer"));
 
+
+        reloadGui();
+
+    }
+
+    @Override
+    public void close() {
+        GavinsMod.setEnabled(Type.SETTINGS, false);
+        super.close();
+    }
+
+    public void reloadGui() {
+        guis.forEach(Gui::clearChildren);
+        guis.clear();
         // Create a plain gui at the top right corner
         addSettings(tracerDropdown, Type.Category.TRACERS);
         addSettings(espDropdown, Type.Category.ESPS);
         addSettings(renderDropdown, Type.Category.RENDER);
         addSettings(miscDropdown, Type.Category.MISC);
         addSettings(guiDropdown, Type.Category.GUI);
-
         guis.add(tracerDropdown);
         guis.add(espDropdown);
         guis.add(renderDropdown);
@@ -96,12 +109,6 @@ public class GuiSettings extends GuiElement {
         renderDropdown.setFrozen(true);
         miscDropdown.setFrozen(true);
         guiDropdown.setFrozen(true);
-    }
-
-    @Override
-    public void close() {
-        GavinsMod.setEnabled(Type.SETTINGS, false);
-        super.close();
     }
 
     /**
