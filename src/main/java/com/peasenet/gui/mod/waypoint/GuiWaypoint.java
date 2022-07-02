@@ -40,25 +40,89 @@ import net.minecraft.text.Text;
 /**
  * @author gt3ch1
  * @version 7/1/2022
+ * A gui that allows the user to add, delete, or modify a waypoint.
  */
 public class GuiWaypoint extends GuiElement {
 
+    /**
+     * The parent screen.
+     */
     Screen parent;
+
+    /**
+     * The text field used to name the waypoint.
+     */
     TextFieldWidget textField;
+
+    /**
+     * The button used to save the waypoint.
+     */
     ClickSetting saveSettings = new ClickSetting("none", "gavinsmod.settings.save");
+
+    /**
+     * The button used to cancel the waypoint.
+     */
     ClickSetting cancelSettings = new ClickSetting("none", "gavinsmod.settings.cancel");
+
+    /**
+     * The button used to delete the waypoint.
+     */
     ClickSetting deleteSettings = new ClickSetting("none", "gavinsmod.settings.delete");
+
+    /**
+     * The button used to toggle the waypoint's visibility.
+     */
     ToggleSetting waypointToggle = new ToggleSetting("none", "gavinsmod.settings.enabled");
+
+    /**
+     * The button used to toggle the waypoint's esp.
+     */
     ToggleSetting espToggle = new ToggleSetting("none", "gavinsmod.settings.esp");
+
+    /**
+     * The button used to toggle the waypoint's tracer.
+     */
     ToggleSetting tracerToggle = new ToggleSetting("none", "gavinsmod.settings.tracer");
+
+    /**
+     * The background box.
+     */
     Gui box;
+
+    /**
+     * The button that is used to change the waypoints color.
+     */
     ColorSetting colorCycle = new ColorSetting("waypoint.color", "gavinsmod.settings.render.waypoints.color");
+
+    /**
+     * The width of the gui.
+     */
     int width = 145;
+
+    /**
+     * The height of the gui.
+     */
     int height = 100;
+
+    /**
+     * The padding of each element.
+     */
     int padding = 5;
+
+
+    /**
+     * The offset and padding in the x and y planes.
+     */
     int offsetX, paddingX, offsetY, paddingY;
+
+    /**
+     * The waypoint that is being edited.
+     */
     private Waypoint w;
 
+    /**
+     * Creates a gui that allows the user to add a new waypoint.
+     */
     public GuiWaypoint() {
         super(Text.literal("Waypoint"));
         parent = GavinsMod.guiSettings;
@@ -91,6 +155,11 @@ public class GuiWaypoint extends GuiElement {
         guis.add(tracerToggle.getGui());
     }
 
+    /**
+     * Creates a gui that allows the user to edit or delete an existing waypoint.
+     *
+     * @param w - The waypoint to edit.
+     */
     public GuiWaypoint(Waypoint w) {
         super(Text.literal("Waypoint"));
         this.w = w;

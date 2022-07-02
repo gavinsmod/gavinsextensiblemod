@@ -29,7 +29,7 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/28/2022
+ * @version 7/1/2022
  * A simple toggleable gui element.
  */
 public class GuiToggle extends GuiClick {

@@ -29,14 +29,21 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/28/2022
+ * @version 7/1/2022
  * Creates a GUI that allows the user to toggle mods on and off by clicking.
  */
 public class GuiClick extends Gui {
 
+    /**
+     * The callback used when the user clicks on the GUI.
+     */
+    protected SettingsCallback callback;
 
-    private SettingsCallback callback;
-
+    /**
+     * Sets the callback of this gui.
+     *
+     * @param callback - The callback.
+     */
     public void setCallback(SettingsCallback callback) {
         this.callback = callback;
     }

@@ -24,7 +24,7 @@ import java.util.Random;
 
 /**
  * @author gt3ch1
- * @version 6/18/2022
+ * @version 7/1/2022
  * A class containing pre-defined colors.
  * Note: Use this site to generate color names: <a href="https://www.color-name.com/hex/">color-name.com</a>
  */
@@ -73,6 +73,11 @@ public class Colors {
         return -1;
     }
 
+    /**
+     * Gets a random color index from the list of all colors. See #COLORS.
+     *
+     * @return A random color index.
+     */
     public static int getRandomColor() {
         var num = new Random(System.currentTimeMillis()).nextInt(COLORS.length);
         return num;

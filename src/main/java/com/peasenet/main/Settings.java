@@ -43,9 +43,8 @@ import java.util.HashSet;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 7/1/2022
  * A class that contains all the settings for the mod.
- * Note: Retrieving a setting that does not exist will cause the game to crash.
  */
 public class Settings {
 
@@ -54,8 +53,15 @@ public class Settings {
      */
     private static final HashMap<String, Object> settings = new HashMap<>();
 
+    /**
+     * The collection of default settings.
+     */
     private static final HashMap<String, Object> default_settings = new HashMap<>();
 
+    /**
+     * Initializes and loads the configuration file. If the file does not exist, it will be created.
+     * If the load fails, the default settings will be used.
+     */
     private Settings() {
         default_settings.put("esp.mob.hostile.color", Colors.getColorIndex(Colors.RED));
         default_settings.put("esp.mob.peaceful.color", Colors.getColorIndex(Colors.GREEN));
@@ -92,6 +98,9 @@ public class Settings {
         load();
     }
 
+    /**
+     * Initializes the settings.
+     */
     public static void initialize() {
         new Settings();
     }
@@ -218,13 +227,20 @@ public class Settings {
     }
 
 
-    //TODO: Doc comments
+    /**
+     * Loads the default xray blocks into the settings.
+     */
     private static void loadDefaultXrayBlocks() {
         var list = new ArrayList<String>();
         Registry.BLOCK.stream().filter(b -> b instanceof OreBlock).toList().forEach(b -> list.add(b.getLootTableId().toString()));
         default_settings.put("xray.blocks", list);
     }
 
+    /**
+     * Adds the given block to the list of blocks used for xray.
+     *
+     * @param b - The block to add.
+     */
     public static void addXrayBlock(Block b) {
         var currList = (ArrayList<String>) settings.get("xray.blocks");
         currList.add(b.getLootTableId().toString());
@@ -232,6 +248,11 @@ public class Settings {
         save();
     }
 
+    /**
+     * Removes the given block from the list of blocks used for xray.
+     *
+     * @param b - The block to remove.
+     */
     public static void removeXrayBlock(Block b) {
         var currList = (ArrayList<String>) settings.get("xray.blocks");
         currList.remove(b.getLootTableId().toString());
@@ -239,6 +260,12 @@ public class Settings {
         save();
     }
 
+    /**
+     * Gets whether the given block is in the list of blocks used for xray.
+     *
+     * @param b - The block to check.
+     * @return Whether the block is in the list.
+     */
     public static boolean isXrayBlock(Block b) {
         var currList = (ArrayList<Waypoint>) settings.get("xray.blocks");
         if (currList == null) return false;
@@ -246,6 +273,11 @@ public class Settings {
         return isInList;
     }
 
+    /**
+     * Adds the given waypoint to the list of waypoints.
+     *
+     * @param w - The waypoint to add.
+     */
     public static void addWaypoint(Waypoint w) {
         var currList = getWaypoints();
         if (currList == null) currList = new ArrayList<>();
@@ -255,6 +287,11 @@ public class Settings {
         save();
     }
 
+    /**
+     * Removes the given waypoint from the list of waypoints.
+     *
+     * @param w - The waypoint to remove.
+     */
     public static void deleteWaypoint(Waypoint w) {
         var currList = getWaypoints();
         if (currList == null) currList = new ArrayList<>();
@@ -264,35 +301,45 @@ public class Settings {
         save();
     }
 
+    /**
+     * Gets the list of waypoints.
+     *
+     * @return The list of waypoints.
+     */
     public static ArrayList<Waypoint> getWaypoints() {
         // note : need to figurte out way to convert from LinkedTreeMap to ArrayList<Waypoint> nicer.
         try {
             var list = (ArrayList<LinkedTreeMap>) settings.get("waypoint.locations");
             var wpList = new ArrayList<Waypoint>();
             list.forEach(l -> {
-                        var x = ((Long) l.get("x")).intValue();
-                        var y = ((Long) l.get("y")).intValue();
-                        var z = ((Long) l.get("z")).intValue();
-                        var name = (String) l.get("name");
-                        var color = ((Long) l.get("color")).intValue();
-                        var enabled = (boolean) l.get("enabled");
-                        var tracerEnabled = (boolean) l.get("tracerEnabled");
-                        var espEnabled = (boolean) l.get("espEnabled");
-                        var w = new Waypoint(x, y, z);
-                        w.setName(name);
-                        w.setColor(color);
-                        w.setEnabled(enabled);
-                        w.setTracerEnabled(tracerEnabled);
-                        w.setEspEnabled(espEnabled);
-                        wpList.add(w);
-                    }
-            );
+                var x = ((Long) l.get("x")).intValue();
+                var y = ((Long) l.get("y")).intValue();
+                var z = ((Long) l.get("z")).intValue();
+                var name = (String) l.get("name");
+                var color = ((Long) l.get("color")).intValue();
+                var enabled = (boolean) l.get("enabled");
+                var tracerEnabled = (boolean) l.get("tracerEnabled");
+                var espEnabled = (boolean) l.get("espEnabled");
+                var w = new Waypoint(x, y, z);
+                w.setName(name);
+                w.setColor(color);
+                w.setEnabled(enabled);
+                w.setTracerEnabled(tracerEnabled);
+                w.setEspEnabled(espEnabled);
+                wpList.add(w);
+            });
             return wpList;
         } catch (ClassCastException e) {
             return (ArrayList<Waypoint>) settings.get("waypoint.locations");
         }
     }
 
+    /**
+     * Sets the given key to the given value.
+     *
+     * @param key   - The key to set.
+     * @param value - The value to set.
+     */
     public static void setBool(String key, boolean value) {
         settings.put(key, value);
     }

@@ -90,6 +90,9 @@ public class GuiSettings extends GuiElement {
         super.close();
     }
 
+    /**
+     * Reloads this gui by clearing all children, and recreating them.
+     */
     public void reloadGui() {
         guis.forEach(Gui::clearChildren);
         guis.clear();

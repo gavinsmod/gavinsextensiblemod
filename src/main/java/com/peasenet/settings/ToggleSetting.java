@@ -27,7 +27,7 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 7/1/2022
  * A setting that contains one of two finite states - on or off.
  */
 public class ToggleSetting extends Setting {
@@ -36,18 +36,11 @@ public class ToggleSetting extends Setting {
      * The gui element that is used to display this toggle setting.
      */
     GuiToggle gui;
-
     /**
-     * Get the current state of this setting.
-     *
-     * @return The current state of this setting.
+     * Whether the value of this setting is determined by a click, or by callback.
+     * Setting this to true will cause the value to be determined by a callback.
      */
-    public boolean getValue() {
-        return value;
-    }
-
     private boolean noToggle = false;
-
     /**
      * The current value of this toggle setting.
      */
@@ -56,7 +49,7 @@ public class ToggleSetting extends Setting {
     /**
      * Creates a new toggle setting.
      *
-     * @param name - The name of this toggle setting.
+     * @param name - the name of this setting. Setting this to none will not cause the setting to be fetched from the settings file.
      * @param key  - The translation key of this toggle setting.
      */
     public ToggleSetting(String name, String key) {
@@ -77,6 +70,14 @@ public class ToggleSetting extends Setting {
         gui.hide();
     }
 
+    /**
+     * Creates a new toggleable setting.
+     *
+     * @param name     - the name of this setting. Setting this to none will not cause the setting to be fetched from the settings file.
+     * @param literal  - The text to display.
+     * @param noToggle - Whether the value of this setting is determined by a click, or by callback.
+     *                 Setting this to true will cause the value to be determined by a callback.
+     */
     public ToggleSetting(String name, Text literal, boolean noToggle) {
         super(name);
         this.noToggle = noToggle;
@@ -94,6 +95,15 @@ public class ToggleSetting extends Setting {
             Settings.save();
         });
         gui.hide();
+    }
+
+    /**
+     * Get the current state of this setting.
+     *
+     * @return The current state of this setting.
+     */
+    public boolean getValue() {
+        return value;
     }
 
     /**

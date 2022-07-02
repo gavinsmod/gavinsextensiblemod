@@ -22,6 +22,7 @@ package com.peasenet.util.callbacks;
 
 /**
  * @author gt3ch1
+ * @version 7/1/2022
  * A callback interface for when settings are changed.
  */
 public interface SettingsCallback {
@@ -29,5 +30,4 @@ public interface SettingsCallback {
      * Called when settings are changed.
      */
     void callback();
-
 }

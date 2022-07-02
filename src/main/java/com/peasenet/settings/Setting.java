@@ -27,7 +27,7 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 7/1/2022
  * A class that represents a mod setting. This class should not be instantiated directly.
  */
 public abstract class Setting {
@@ -92,6 +92,11 @@ public abstract class Setting {
         getGui().setWidth(width);
     }
 
+    /**
+     * Sets the title of the gui for this setting.
+     *
+     * @param text - The title of the gui.
+     */
     public void setTitle(Text text) {
         getGui().setTitle(text);
     }

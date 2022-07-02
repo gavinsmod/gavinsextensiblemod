@@ -33,7 +33,7 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 6/28/2022
+ * @version 7/1/2022
  * A gui element that allows the user to drag, drop, and scroll through a list of items.
  * By default, this element will show four children at once. There are (totalChildren/toBeShown) pages of children.
  */

@@ -28,7 +28,7 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 7/1/2022
  * A setting that allows the user to change a color value.
  */
 public class ColorSetting extends Setting {
@@ -37,10 +37,6 @@ public class ColorSetting extends Setting {
      * The cycle element that allows the user to change the color value.
      */
     private final GuiCycle guiCycle;
-
-    public GuiCycle getGuiCycle() {
-        return guiCycle;
-    }
 
     /**
      * The color value of the setting.
@@ -68,6 +64,11 @@ public class ColorSetting extends Setting {
         guiCycle.setCurrentIndex(Colors.getColorIndex(color));
     }
 
+    /**
+     * Sets the color and color index to the given value.
+     *
+     * @param index - The color index.
+     */
     public void setColorIndex(int index) {
         guiCycle.setCurrentIndex(index);
         guiCycle.setBackground(Colors.COLORS[index]);

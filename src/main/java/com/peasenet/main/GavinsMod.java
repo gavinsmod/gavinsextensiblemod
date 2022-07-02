@@ -36,25 +36,48 @@ import java.util.stream.Stream;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 7/1/2022
  * The main initializer of the mod.
  */
 public class GavinsMod implements ModInitializer {
+
+    /**
+     * The logger of the mod.
+     */
     public static final Logger LOGGER = LoggerFactory.getLogger("gavinsmod");
+
+    /**
+     * The current version of the mod.
+     */
     public static final String VERSION = "v1.2.2";
+
+    /**
+     * The gui used to display the main mod menu.
+     */
     public static GuiMainMenu gui;
+
+    /**
+     * The gui used to display the settings menu.
+     */
     public static GuiSettings guiSettings;
+
     /**
      * Gets whether the given mod is enabled.
      *
      * @param mod - The mod type to check.
-     * @return Whether th emod is enabled.
+     * @return Whether the mod is enabled.
      */
     //TODO: Make this into a String based check and not Mod.
     public static boolean isEnabled(Type mod) {
         return Mods.getMod(mod.getChatCommand()).isActive();
     }
 
+    /**
+     * Sets whether the given mod is enabled.
+     *
+     * @param mod     - The mod type to set.
+     * @param enabled - Whether the mod should be enabled.
+     */
     public static void setEnabled(Type mod, boolean enabled) {
         // find mod via stream and set it to enabled.
         var theMod = Mods.getMods().stream().filter(m -> m.getType() == mod).findFirst().get();
@@ -63,7 +86,7 @@ public class GavinsMod implements ModInitializer {
     }
 
     /**
-     * Gets all of the mods in the given category.
+     * Gets all the mods in the given category.
      *
      * @param category The category to get the mods from.
      * @return The mods in the given category.
@@ -73,6 +96,11 @@ public class GavinsMod implements ModInitializer {
         return Mods.getMods().stream().filter(mod -> mod.getCategory() == category).sorted(Comparator.comparing(Mod::getName)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
+    /**
+     * Gets a stream of all the mods that are active and are not in the "GUI" category.
+     *
+     * @return A list of mods used for the text overlay.
+     */
     public static Stream<Mod> getModsForTextOverlay() {
         return Mods.getMods().stream().filter(mod -> mod.isActive() && mod.getCategory() != Type.Category.GUI && mod.getType() != Type.MOD_GUI_TEXT_OVERLAY).sorted(Comparator.comparing(Mod::getName));
     }

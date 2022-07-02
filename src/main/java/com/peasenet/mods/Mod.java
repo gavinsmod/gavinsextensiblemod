@@ -37,35 +37,33 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 7/1/2022
  * The base class for mods. Inheriting this class will allow for creating different mods that have a keybinding,
  * and a gui button based off of the given category.
  */
 public abstract class Mod implements IMod {
-
-    protected ArrayList<Setting> modSettings = new ArrayList<>();
 
     /**
      * The string shown in the chat window when the player toggles the mod.
      */
 
     public static final String GAVINS_MOD_STRING = "§d§l[ §b§lGavinsMod §d§l] §9";
-
     /**
      * The keybind for this mod.
      */
     protected final KeyBinding keyBinding;
-
     /**
      * The type of the mod.
      */
     private final Type type;
-
     /**
      * The category of this mod.
      */
     private final Type.Category category;
-
+    /**
+     * The settings of the mod.
+     */
+    protected ArrayList<Setting> modSettings = new ArrayList<>();
     /**
      * Whether the mod is enabled.
      */

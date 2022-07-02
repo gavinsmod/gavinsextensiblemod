@@ -33,7 +33,7 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 6/28/2022
+ * @version 7/1/2022
  * A simple dropdown gui element
  */
 public class GuiDropdown extends GuiDraggable {
@@ -47,6 +47,10 @@ public class GuiDropdown extends GuiDraggable {
      * Whether the dropdown is open.
      */
     private boolean isOpen;
+
+    /**
+     * The direction in which this element will "drop" to.
+     */
     private Direction direction = Direction.DOWN;
 
     /**

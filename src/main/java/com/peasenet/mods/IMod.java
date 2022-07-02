@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 7/1/2022
  * The interface of the base mod class.
  */
 public interface IMod {
@@ -166,5 +166,8 @@ public interface IMod {
      */
     void addSetting(Setting setting);
 
+    /**
+     * Reloads the settings of the mod.
+     */
     void reloadSettings();
 }

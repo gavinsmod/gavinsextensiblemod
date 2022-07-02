@@ -27,27 +27,25 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/30/2022
+ * @version 7/1/2022
+ * A setting that can be clicked. This is purely dependant on the given callback.
  */
 public class ClickSetting extends Setting {
 
+    /**
+     * The gui used to display the setting.
+     */
     private final GuiClick gui;
 
-    public ClickSetting(String name) {
-        super(name);
-        gui = new GuiClick(new PointD(0, 0), 100, 10, Text.literal(""));
-        gui.setCallback(this::onClick);
-    }
-
+    /**
+     * Creates a new click setting with the given name (?) and translation key.
+     *
+     * @param name           - The name of the setting.
+     * @param translationKey - The translation key of the setting.
+     */
     public ClickSetting(String name, String translationKey) {
         super(name);
         gui = new GuiClick(new PointD(0, 0), 100, 10, Text.translatable(translationKey));
-        gui.setCallback(this::onClick);
-    }
-
-    public ClickSetting(String name, Text text) {
-        super(name);
-        gui = new GuiClick(new PointD(0, 0), 100, 10, text);
         gui.setCallback(this::onClick);
     }
 
@@ -55,6 +53,4 @@ public class ClickSetting extends Setting {
     public Gui getGui() {
         return gui;
     }
-
-
 }

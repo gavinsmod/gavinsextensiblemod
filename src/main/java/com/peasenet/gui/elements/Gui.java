@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 6/28/2022
+ * @version 7/1/2022
  * The base class for all gui elements.
  */
 public class Gui {
@@ -43,33 +43,18 @@ public class Gui {
      * The original position of the gui.
      */
     protected final BoxD defaultPosition;
-
-    public void setTitle(Text title) {
-        this.title = title;
-    }
-
+    /**
+     * The list of buttons(mods) in this dropdown.
+     */
+    protected final ArrayList<Gui> children = new ArrayList<>();
     /**
      * The title of the gui.
      */
     protected Text title;
     /**
-     * The list of buttons(mods) in this dropdown.
-     */
-    protected final ArrayList<Gui> children = new ArrayList<>();
-
-    /**
      * The symbol to be drawn to the left of the end of the box (like a checkbox, empty box, or arrow).
      */
     char symbol;
-
-    public void setSymbol(char symbol) {
-        this.symbol = symbol;
-    }
-
-    public void clearChildren() {
-        children.clear();
-    }
-
     /**
      * The offset used for the symbol (x).
      */
@@ -98,7 +83,6 @@ public class Gui {
      * Whether this gui has been shrunk to fit a scrollbar.
      */
     private boolean shrunkForScroll = false;
-
     /**
      * Creates a new GUI menu.
      *
@@ -112,6 +96,31 @@ public class Gui {
         this.title = title;
         backgroundColor = Settings.getColor("gui.color.background");
         dragging = false;
+    }
+
+    /**
+     * Sets the title of the gui.
+     *
+     * @param title - The title of the gui.
+     */
+    public void setTitle(Text title) {
+        this.title = title;
+    }
+
+    /**
+     * Sets the symbol that should be drawn on the right side of the gui.
+     *
+     * @param symbol - The symbol to draw.
+     */
+    public void setSymbol(char symbol) {
+        this.symbol = symbol;
+    }
+
+    /**
+     * Clears all children from this gui.
+     */
+    public void clearChildren() {
+        children.clear();
     }
 
     /**

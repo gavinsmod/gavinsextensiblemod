@@ -35,6 +35,7 @@ import java.util.Comparator;
 /**
  * @author gt3ch1
  * @version 6/30/2022
+ * Creates a new mod to control waypoints.
  */
 public class ModWaypoint extends Mod {
     public ModWaypoint() {
@@ -56,6 +57,12 @@ public class ModWaypoint extends Mod {
         addSetting(setting);
     }
 
+    /**
+     * Creates a new setting to edit the given waypoint and adds it to the given setting.
+     *
+     * @param subSetting - The setting to add the waypoint to.
+     * @param waypoint   - The waypoint to edit.
+     */
     private void createWaypoint(SubSetting subSetting, Waypoint waypoint) {
         ToggleSetting clickSetting = new ToggleSetting("none", Text.literal(waypoint.getName()), true);
         clickSetting.setWidth(100);

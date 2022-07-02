@@ -204,14 +204,18 @@ public enum Type {
         GUI("gavinsmod.mod.gui.gui"),
         NONE("none");
 
+        /**
+         * The translation key for the category.
+         */
         public final String translationKey;
 
+        /**
+         * A mod category that contains a translation key. This is used to separate the mods within the guis.
+         *
+         * @param translationKey - The translation key for the category.
+         */
         Category(String translationKey) {
             this.translationKey = translationKey;
-        }
-
-        public String getTranslationKey() {
-            return translationKey;
         }
     }
 }

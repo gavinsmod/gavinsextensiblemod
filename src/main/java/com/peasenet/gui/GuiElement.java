@@ -33,7 +33,7 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 6/28/2022
+ * @version 7/1/2022
  * A parent class that holds all that is needed to render an in game gui.
  */
 public class GuiElement extends Screen {
@@ -47,6 +47,11 @@ public class GuiElement extends Screen {
      */
     public ArrayList<Gui> guis = new ArrayList<>();
 
+    /**
+     * Creates a new GUI menu with the given title.
+     *
+     * @param title - The title.
+     */
     public GuiElement(Text title) {
         super(title);
         titleBox = new Gui(new PointD(10, 1), title.getContent().toString().length() * 2, 10, title);
@@ -109,12 +114,10 @@ public class GuiElement extends Screen {
         super.render(matrixStack, mouseX, mouseY, delta);
     }
 
-
+    /**
+     * Resets all child guis to their default positions.
+     */
     public void reset() {
         guis.forEach(Gui::resetPosition);
-    }
-
-    public void addChild(Gui gui) {
-        guis.add(gui);
     }
 }

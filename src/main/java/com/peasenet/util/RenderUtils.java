@@ -46,7 +46,7 @@ import org.lwjgl.opengl.GL11;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 7/1/2022
  * A utility class for rendering tracers and esp's.
  */
 public class RenderUtils {
@@ -125,6 +125,13 @@ public class RenderUtils {
         resetRenderSystem();
     }
 
+    /**
+     * Draws the waypoint.
+     *
+     * @param stack     - The matrix stack to use.
+     * @param buffer    - The buffer to write to.
+     * @param playerPos - The position of the player.
+     */
     private static void drawWaypoint(MatrixStack stack, BufferBuilder buffer, Vec3f playerPos) {
         if (!Mods.getMod("waypoints").isActive())
             return;
