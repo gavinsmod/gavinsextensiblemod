@@ -15,7 +15,8 @@
         "MixinLivingEntity",
         "MixinMinecraftClient",
         "MixinPlayerEntity",
-        "MixinSimpleOption"
+        "MixinSimpleOption",
+        "MixinSodiumblockOcclusionCache"
     ],
     "injectors": {
         "defaultRequire": 1
