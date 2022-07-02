@@ -209,9 +209,13 @@ public class Settings {
             return (Color) item;
         } else {
             try {
-                return Colors.COLORS[((Double) settings.get(key)).intValue()];
-            } catch (Exception e) {
-                return Colors.COLORS[(Integer) settings.get(key)];
+                return Colors.COLORS[((Long) settings.get(key)).intValue()];
+            } catch (ClassCastException e) {
+                try {
+                    return Colors.COLORS[((Double) settings.get(key)).intValue()];
+                } catch (ClassCastException e2) {
+                    return Colors.COLORS[((Integer) settings.get(key))];
+                }
             }
         }
 
