@@ -22,11 +22,11 @@ package com.peasenet.mods.render.waypoints;
 
 import com.peasenet.util.color.Color;
 import com.peasenet.util.color.Colors;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 
 /**
  * @author gt3ch1
- * @version 6/30/2022
+ * @version 7/2/2022
  * A waypoint is a three-dimensional integer coordinate with a name, color, and can either have
  * an ESP, a tracer, or both.
  */
@@ -86,47 +86,45 @@ public class Waypoint {
     }
 
     /**
-     * Creates a new waypoint at the given Vec3d.
+     * Creates a new waypoint at the given Vec3i coordinate.
      *
-     * @param vec - The Vec3d containing the position of the waypoint.
+     * @param vec - The positional vector.
      */
-    public Waypoint(Vec3d vec) {
-        x = (int) vec.x;
-        y = (int) vec.y;
-        z = (int) vec.z;
+    public Waypoint(Vec3i vec) {
+        x = vec.getX();
+        y = vec.getY();
+        z = vec.getZ();
     }
 
     /**
-     * Gets whether the tracer for this waypoint is enabled.
+     * Gets whether the tracer is enabled.
      *
-     * @return True if the tracer should be drawn.
+     * @return True if the tracer is enabled.
      */
     public boolean isTracerEnabled() {
         return tracerEnabled;
     }
 
     /**
-     * Sets whether the tracer should be enabled for this waypoint.
+     * Sets whether the tracer should be enabled.
      *
-     * @param tracerEnabled - Whether the tracer should be enabled.
+     * @param tracerEnabled - Whether the tracer is enabled.
      */
     public void setTracerEnabled(boolean tracerEnabled) {
         this.tracerEnabled = tracerEnabled;
     }
 
     /**
-     * Gets whether the ESP for this waypoint is enabled.
-     *
-     * @return True if the ESP should be drawn.
+     * Gets whether the ESP is enabled.
+     * @return True if the ESP is enabled.
      */
     public boolean isEspEnabled() {
         return espEnabled;
     }
 
     /**
-     * Sets whether the ESP should be enabled for this waypoint.
-     *
-     * @param espEnabled - Whether the ESP should be enabled.
+     * Sets whether the waypoint esp is enabled.
+     * @param espEnabled - Whether to enable the esp.
      */
     public void setEspEnabled(boolean espEnabled) {
         this.espEnabled = espEnabled;
@@ -204,6 +202,14 @@ public class Waypoint {
         return x;
     }
 
+    /**
+     * Sets the X coordinate.
+     *
+     * @param x - The X coordinate.
+     */
+    public void setX(int x) {
+        this.x = x;
+    }
 
     /**
      * Gets the y coordinate of the waypoint.
@@ -215,12 +221,30 @@ public class Waypoint {
     }
 
     /**
+     * Sets the Y coordinate.
+     *
+     * @param y - The Y coordinate.
+     */
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    /**
      * Gets the z coordinate of the waypoint.
      *
      * @return The z coordinate.
      */
     public int getZ() {
         return z;
+    }
+
+    /**
+     * Sets the z coordinate.
+     *
+     * @param z - The z coordinate.
+     */
+    public void setZ(int z) {
+        this.z = z;
     }
 
     /**
@@ -239,12 +263,4 @@ public class Waypoint {
         return name.hashCode();
     }
 
-    /**
-     * Gets the location of this waypoint as a vector.
-     *
-     * @return The waypoint as a Vec3d.
-     */
-    public Vec3d getVec() {
-        return new Vec3d(x, y, z);
-    }
 }
