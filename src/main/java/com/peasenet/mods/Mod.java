@@ -120,7 +120,7 @@ public abstract class Mod implements IMod {
      * @param message The message to send.
      */
     public static void sendMessage(String message) {
-        if (Settings.getBool("chatMessage"))
+        if (Settings.getBool("misc.messages"))
             GavinsModClient.getPlayer().sendMessage(Text.literal(message), false);
     }
 
