@@ -72,8 +72,9 @@ public class ModXray extends Mod {
         }
         ToggleSetting culling = new ToggleSetting("xray.disable_culling", "gavinsmod.settings.xray.culling");
         culling.setWidth(dropdownWidth);
-//        culling.setCallback(this::reloadRenderer);
-        culling.setCallback(this::reload);
+        culling.setCallback(() -> {
+            if (isActive()) reload();
+        });
         xraySubSetting.add(culling);
         blockSubSetting.setChildrenWidth(155);
         xraySubSetting.add(blockSubSetting);
