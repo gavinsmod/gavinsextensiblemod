@@ -30,6 +30,7 @@ import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.RenderUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.OreBlock;
 import net.minecraft.util.registry.Registry;
 
@@ -118,11 +119,8 @@ public class ModXray extends Mod {
      */
     private void setupBlocks() {
         blocks = new HashSet<>();
-        for (Block block : Registry.BLOCK.stream().filter(b -> b instanceof OreBlock).toList()) {
-            if (block instanceof OreBlock) {
-                blocks.add(block);
-            }
-        }
+        blocks.addAll(Registry.BLOCK.stream().filter(b -> b instanceof OreBlock).toList());
+        blocks.add(Blocks.ANCIENT_DEBRIS);
     }
 
     @Override
