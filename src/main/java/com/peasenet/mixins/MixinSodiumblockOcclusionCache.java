@@ -33,12 +33,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * @author gt3ch1
- * @version 5/15/2022
+ * @version 7/5/2022
  */
 @Pseudo
 @Mixin(targets = "me.jellysquid.mods.sodium.client.render.occlusion.BlockOcclusionCache")
 public class MixinSodiumblockOcclusionCache {
-    @Inject(at = @At("HEAD"), method = "shouldDrawSide*", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "shouldDrawSide", cancellable = true, remap = false)
     private boolean xray(BlockState state, BlockView world, BlockPos pos, Direction side, CallbackInfoReturnable<Boolean> cir) {
         boolean blockVisible = ModXray.shouldDrawFace(state);
         cir.setReturnValue(blockVisible);
