@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +44,7 @@ import java.util.HashSet;
 
 /**
  * @author gt3ch1
- * @version 7/1/2022
+ * @version 7/5/2022
  * A class that contains all the settings for the mod.
  */
 public class Settings {
@@ -131,9 +132,10 @@ public class Settings {
      * @param cfgFile - The path to the configuration file.
      */
     private static void ensureCfgCreated(String cfgFile) {
-        if (!Files.exists(Paths.get(cfgFile))) {
+        Path cfg = Path.of(cfgFile);
+        if (!Files.exists(cfg)) {
             try {
-                Files.createFile(Paths.get(cfgFile));
+                Files.createFile(cfg);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -172,6 +174,18 @@ public class Settings {
             default_settings.forEach((k, _v) -> settings.put(k, map.get(k)));
         } catch (Exception e) {
             GavinsMod.LOGGER.error("Error reading settings from file. Saving defaults.");
+            // rename settings file to settings.bak
+            var bakFile = cfgFile + ".bak";
+            int bakCount = 1;
+            while (Files.exists(Paths.get(bakFile))) {
+                bakFile = cfgFile + ".bak" + bakCount;
+            }
+            try {
+                Files.move(Paths.get(cfgFile), Paths.get(bakFile));
+            } catch (IOException e1) {
+                GavinsMod.LOGGER.error("Error renaming settings file.");
+                GavinsMod.LOGGER.error(e1.getMessage());
+            }
             loadDefault();
             save();
         }
