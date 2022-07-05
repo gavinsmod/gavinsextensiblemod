@@ -20,65 +20,39 @@
 
 package com.peasenet.mods.render;
 
+import com.peasenet.gui.mod.xray.GuiXray;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.Mods;
 import com.peasenet.main.Settings;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.settings.ClickSetting;
 import com.peasenet.settings.SubSetting;
 import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.RenderUtils;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.OreBlock;
-import net.minecraft.util.registry.Registry;
-
-import java.util.Comparator;
-import java.util.HashSet;
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 7/5/2022
  * A mod for xray like feature, allowing the player to see through certain blocks.
  */
 public class ModXray extends Mod {
-
-    /**
-     * A list of blocks that SHOULD be visible (coal, iron, gold, diamond, lapis, redstone, etc.)
-     */
-    public static HashSet<Block> blocks;
-    private boolean deactivating = true;
 
     public ModXray() {
         super(Type.XRAY);
         var dropdownWidth = 80;
         SubSetting xraySubSetting = new SubSetting(100, 10, getTranslationKey());
-        SubSetting blockSubSetting = new SubSetting(dropdownWidth, 10, "gavinsmod.settings.xray.blocks");
-        setupBlocks();
-        for (Block block : blocks.stream().sorted(Comparator.comparing(Block::getTranslationKey)).toArray(Block[]::new)) {
-            ToggleSetting toggleSetting = new ToggleSetting("none", block.getTranslationKey());
-            toggleSetting.setCallback(() -> {
-                if (!toggleSetting.getValue()) {
-                    ModXray.removeFromBlocks(block);
-                } else {
-                    ModXray.addToBlocks(block);
-                }
-                toggleSetting.setValue(Settings.isXrayBlock(block));
-                if (Mods.getMod("xray").isActive()) reloadRenderer();
-            });
-            toggleSetting.setWidth(155);
-            toggleSetting.setValue(Settings.isXrayBlock(block));
-            blockSubSetting.add(toggleSetting);
-        }
         ToggleSetting culling = new ToggleSetting("xray.disable_culling", "gavinsmod.settings.xray.culling");
         culling.setWidth(dropdownWidth);
         culling.setCallback(() -> {
             if (isActive()) reload();
         });
+        ClickSetting menu = new ClickSetting("xray.menu", "gavinsmod.settings.xray.blocks");
+        menu.setCallback(() -> getClient().setScreen(new GuiXray()));
+        xraySubSetting.add(menu);
+        menu.setWidth(dropdownWidth);
         xraySubSetting.add(culling);
-        blockSubSetting.setChildrenWidth(155);
-        xraySubSetting.add(blockSubSetting);
         addSetting(xraySubSetting);
     }
 
@@ -92,35 +66,6 @@ public class ModXray extends Mod {
     public static boolean shouldDrawFace(BlockState block) {
         if (GavinsMod.isEnabled(Type.XRAY)) return Settings.isXrayBlock(block.getBlock());
         return true;
-    }
-
-    /**
-     * Removes the given block from the blocks that should be visible.
-     *
-     * @param block - Block to add
-     */
-    public static void removeFromBlocks(Block block) {
-        blocks.remove(block);
-        Settings.removeXrayBlock(block);
-    }
-
-    /**
-     * Adds the given block to the blocks that should be visible.
-     *
-     * @param block - Block to add
-     */
-    public static void addToBlocks(Block block) {
-        blocks.add(block);
-        Settings.addXrayBlock(block);
-    }
-
-    /**
-     * Initializes the blocks that should be visible.
-     */
-    private void setupBlocks() {
-        blocks = new HashSet<>();
-        blocks.addAll(Registry.BLOCK.stream().filter(b -> b instanceof OreBlock).toList());
-        blocks.add(Blocks.ANCIENT_DEBRIS);
     }
 
     @Override
