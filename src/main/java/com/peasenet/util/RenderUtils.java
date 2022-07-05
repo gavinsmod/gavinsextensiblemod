@@ -46,7 +46,7 @@ import org.lwjgl.opengl.GL11;
 
 /**
  * @author gt3ch1
- * @version 7/1/2022
+ * @version 7/5/2022
  * A utility class for rendering tracers and esp's.
  */
 public class RenderUtils {
@@ -136,7 +136,7 @@ public class RenderUtils {
         if (!Mods.getMod("waypoints").isActive())
             return;
         Settings.getWaypoints().stream().filter(Waypoint::isEnabled).forEach(w -> {
-            Box aabb = new Box(new BlockPos(w.getX() - 1, w.getY(), w.getZ() - 1));
+            Box aabb = new Box(new BlockPos(w.getX(), w.getY(), w.getZ()));
             Vec3f boxPos = new Vec3f(aabb.getCenter());
             if (w.isTracerEnabled())
                 renderSingleLine(stack, buffer, playerPos, boxPos, w.getColor());
