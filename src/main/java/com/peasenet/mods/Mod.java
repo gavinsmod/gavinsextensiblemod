@@ -37,7 +37,7 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 7/1/2022
+ * @version 7/5/2022
  * The base class for mods. Inheriting this class will allow for creating different mods that have a keybinding,
  * and a gui button based off of the given category.
  */
@@ -61,9 +61,17 @@ public abstract class Mod implements IMod {
      */
     private final Type.Category category;
     /**
+     * Whether this mod is currently deactivating.
+     */
+    protected boolean deactivating = true;
+    /**
      * The settings of the mod.
      */
     protected ArrayList<Setting> modSettings = new ArrayList<>();
+    /**
+     * Whether the mod is currently reloading.
+     */
+    private boolean reloading = false;
     /**
      * Whether the mod is enabled.
      */
@@ -115,22 +123,22 @@ public abstract class Mod implements IMod {
     }
 
     /**
-     * Sends a message to the player.
-     *
-     * @param message The message to send.
-     */
-    public static void sendMessage(String message) {
-        if (Settings.getBool("misc.messages"))
-            GavinsModClient.getPlayer().sendMessage(Text.literal(message), false);
-    }
-
-    /**
      * Gets the minecraft client.
      *
      * @return The minecraft client.
      */
     protected static IMinecraftClient getClient() {
         return GavinsModClient.getMinecraftClient();
+    }
+
+    /**
+     * Sends a message to the player.
+     *
+     * @param message The message to send.
+     */
+    public void sendMessage(String message) {
+        if (Settings.getBool("misc.messages") && !reloading)
+            GavinsModClient.getPlayer().sendMessage(Text.literal(message), false);
     }
 
     public void onEnable() {
@@ -227,8 +235,13 @@ public abstract class Mod implements IMod {
     }
 
     public void reload() {
+        var prevState = isActive();
+        if (!prevState)
+            return;
+        reloading = true;
         deactivate();
         activate();
+        reloading = false;
     }
 
     public void reloadSettings() {
