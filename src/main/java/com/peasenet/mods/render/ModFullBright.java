@@ -28,12 +28,10 @@ import com.peasenet.util.RenderUtils;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 7/5/2022
  * A mod that allows the client to see very clearly in the absence of a light source.
  */
 public class ModFullBright extends Mod {
-
-    private boolean deactivating = false;
 
     public ModFullBright() {
         super(Type.FULL_BRIGHT);
@@ -45,7 +43,7 @@ public class ModFullBright extends Mod {
 
     @Override
     public void activate() {
-        if(!GavinsMod.isEnabled(Type.XRAY))
+        if (!GavinsMod.isEnabled(Type.XRAY))
             RenderUtils.setLastGamma();
         super.activate();
     }
