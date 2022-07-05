@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 7/1/2022
+ * @version 7/5/2022
  * The base class for all gui elements.
  */
 public class Gui {
@@ -263,7 +263,7 @@ public class Gui {
     public void render(MatrixStack matrixStack, TextRenderer tr, int mouseX, int mouseY, float delta) {
         if (isHidden()) return;
         RenderUtils.drawBox(backgroundColor.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrixStack);
-        tr.draw(matrixStack, title, (int) getX() + 2, (int) getY() + 2, (Settings.getColor("foregroundColor")).getAsInt());
+        tr.draw(matrixStack, title, (int) getX() + 2, (int) getY() + 2, (Settings.getColor("gui.color.foreground")).getAsInt());
         if (symbol != '\0')
             tr.draw(matrixStack, String.valueOf(symbol), (int) getX2() + symbolOffsetX, (int) getY() + symbolOffsetY, (Settings.getColor("gui.color.foreground")).getAsInt());
         RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrixStack);
