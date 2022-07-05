@@ -32,7 +32,6 @@ import com.peasenet.settings.ColorSetting;
 import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.color.Colors;
 import com.peasenet.util.math.PointD;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -49,16 +48,23 @@ import java.util.function.Predicate;
 public class GuiWaypoint extends GuiElement {
 
     /**
-     * The parent screen.
-     */
-    Screen parent;
-
-    /**
      * The text field used to name the waypoint.
      */
     TextFieldWidget textField;
+
+    /**
+     * The x coordinate text field.
+     */
     TextFieldWidget xCoordinate;
+
+    /**
+     * The y coordinate text field.
+     */
     TextFieldWidget yCoordinate;
+
+    /**
+     * The z coordinate text field.
+     */
     TextFieldWidget zCoordinate;
 
     /**
@@ -314,10 +320,5 @@ public class GuiWaypoint extends GuiElement {
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    @Override
-    public void close() {
-        client.setScreen(parent);
     }
 }
