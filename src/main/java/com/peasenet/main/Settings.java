@@ -41,6 +41,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 /**
  * @author gt3ch1
@@ -244,13 +245,12 @@ public class Settings {
         save();
     }
 
-
     /**
      * Loads the default xray blocks into the settings.
      */
     private static void loadDefaultXrayBlocks() {
-        var list = new ArrayList<String>();
-        Registry.BLOCK.stream().filter(b -> b instanceof OreBlock).toList().forEach(b -> list.add(b.getLootTableId().toString()));
+        var list = new LinkedHashSet<>();
+        Registry.BLOCK.stream().filter(b -> b instanceof OreBlock).forEach((b -> list.add(b.toString())));
         default_settings.put("xray.blocks", list);
     }
 
@@ -260,10 +260,26 @@ public class Settings {
      * @param b - The block to add.
      */
     public static void addXrayBlock(Block b) {
-        var currList = (ArrayList<String>) settings.get("xray.blocks");
-        currList.add(b.getLootTableId().toString());
+        var currList = getXrayBlocks();
+        currList.add(b.toString());
         settings.put("xray.blocks", currList);
         save();
+    }
+
+    /**
+     * Gets the list of blocks currently used for xray.
+     *
+     * @return The list of blocks.
+     */
+    public static LinkedHashSet<String> getXrayBlocks() {
+        LinkedHashSet<String> list = new LinkedHashSet<>();
+        try {
+            list = (LinkedHashSet<String>) settings.get("xray.blocks");
+        } catch (ClassCastException e) {
+            var arrList = (ArrayList<String>) settings.get("xray.blocks");
+            list.addAll(arrList);
+        }
+        return list;
     }
 
     /**
@@ -272,8 +288,8 @@ public class Settings {
      * @param b - The block to remove.
      */
     public static void removeXrayBlock(Block b) {
-        var currList = (ArrayList<String>) settings.get("xray.blocks");
-        currList.remove(b.getLootTableId().toString());
+        var currList = getXrayBlocks();
+        currList.remove(b.toString());
         settings.put("xray.blocks", currList);
         save();
     }
@@ -285,9 +301,8 @@ public class Settings {
      * @return Whether the block is in the list.
      */
     public static boolean isXrayBlock(Block b) {
-        var currList = (ArrayList<Waypoint>) settings.get("xray.blocks");
-        if (currList == null) return false;
-        var isInList = currList.contains(b.getLootTableId().toString());
+        var currList = getXrayBlocks();
+        var isInList = currList.contains(b.toString());
         return isInList;
     }
 
@@ -368,9 +383,7 @@ public class Settings {
      * @param key   - The key of the setting.
      * @param value - The value of the setting.
      */
-    public static void add(String key, Object value) {
+    public static void add(String key, java.io.Serializable value) {
         settings.put(key, value);
     }
-
-
 }
