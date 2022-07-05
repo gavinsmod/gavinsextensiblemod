@@ -33,10 +33,15 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 7/1/2022
+ * @version 7/5/2022
  * A parent class that holds all that is needed to render an in game gui.
  */
 public class GuiElement extends Screen {
+
+    /**
+     * The screen to go back to when this screen is closed.
+     */
+    protected Screen parent;
 
     /**
      * The box that contains the menu title in the top left corner of the screen.
@@ -74,6 +79,7 @@ public class GuiElement extends Screen {
             if (g.mouseClicked(mouseX, mouseY, button)) return true;
         return super.mouseClicked(mouseX, mouseY, button);
     }
+
 
     @Override
     public boolean shouldPause() {
@@ -119,5 +125,10 @@ public class GuiElement extends Screen {
      */
     public void reset() {
         guis.forEach(Gui::resetPosition);
+    }
+
+    @Override
+    public void close() {
+        client.setScreen(parent);
     }
 }
