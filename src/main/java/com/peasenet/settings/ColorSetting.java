@@ -60,7 +60,7 @@ public class ColorSetting extends Setting {
         guiCycle.setCallback(() -> {
             color = Colors.COLORS[guiCycle.getCurrentIndex()];
             guiCycle.setBackground(color);
-            Settings.add(name, Colors.getColorIndex(color));
+            Settings.add(name, color);
             Settings.save();
             onClick();
         });
