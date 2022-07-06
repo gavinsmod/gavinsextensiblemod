@@ -51,7 +51,10 @@ public class ColorSetting extends Setting {
      */
     public ColorSetting(String name, String translationKey) {
         super(name);
-        color = Settings.getColor(name);
+        if (!name.equals("none"))
+            color = Settings.getColor(name);
+        else
+            color = Colors.WHITE;
         guiCycle = new GuiCycle(90, 10, Text.translatable(translationKey), Colors.COLORS.length);
         guiCycle.setBackground(color);
         guiCycle.setCallback(() -> {
@@ -72,6 +75,12 @@ public class ColorSetting extends Setting {
     public void setColorIndex(int index) {
         guiCycle.setCurrentIndex(index);
         guiCycle.setBackground(Colors.COLORS[index]);
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+        guiCycle.setBackground(color);
+        guiCycle.setCurrentIndex(Colors.getColorIndex(color));
     }
 
     @Override
