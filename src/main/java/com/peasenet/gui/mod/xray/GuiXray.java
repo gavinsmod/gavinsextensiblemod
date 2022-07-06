@@ -212,11 +212,11 @@ public class GuiXray extends GuiElement {
             var blockY = (i / blocksPerRow) * 18 + y + 5;
 
             if (Settings.isXrayBlock(block)) {
-                fill(matrixStack, blockX, blockY, blockX + 16, blockY + 16, Colors.GREEN.getAsInt(0.5f));
+                fill(matrixStack, blockX, blockY, blockX + 16, blockY + 16, Settings.getColor("gui.color.enabled").getAsInt(0.5f));
                 RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), blockX, blockY, blockX + 16, blockY + 16, matrixStack);
             }
             if (mouseX > blockX && mouseX < blockX + 16 && mouseY > blockY && mouseY < blockY + 16) {
-                fill(matrixStack, blockX, blockY, blockX + 16, blockY + 16, Colors.WHITE.getAsInt(0.5f));
+                fill(matrixStack, blockX, blockY, blockX + 16, blockY + 16, Settings.getColor("gui.color.foreground").getAsInt(0.5f));
                 RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), blockX, blockY, blockX + 16, blockY + 16, matrixStack);
                 renderTooltip(matrixStack, Text.translatable(stack.getTranslationKey()), mouseX, mouseY);
             }
