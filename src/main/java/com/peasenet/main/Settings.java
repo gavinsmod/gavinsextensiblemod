@@ -35,6 +35,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -375,6 +377,7 @@ public class Settings {
      */
     public static void setBool(String key, boolean value) {
         settings.put(key, value);
+        save();
     }
 
     /**
@@ -383,7 +386,8 @@ public class Settings {
      * @param key   - The key of the setting.
      * @param value - The value of the setting.
      */
-    public static void add(String key, java.io.Serializable value) {
+    public static void add(String key, Serializable value) {
         settings.put(key, value);
+        save();
     }
 }
