@@ -105,7 +105,7 @@ public class GuiWaypoint extends GuiElement {
     /**
      * The button that is used to change the waypoints color.
      */
-    ColorSetting colorCycle = new ColorSetting("waypoint.color", "gavinsmod.settings.render.waypoints.color");
+    ColorSetting colorCycle = new ColorSetting("none", "gavinsmod.settings.render.waypoints.color");
 
     /**
      * The width of the gui.
@@ -144,7 +144,7 @@ public class GuiWaypoint extends GuiElement {
             Vec3i flooredPos = getFlooredPlayerPos();
             w = new Waypoint(flooredPos);
             w.setName(textField.getText());
-            w.setColor(Colors.getColorIndex(colorCycle.getColor()));
+            w.setColor(colorCycle.getColor());
             w.setEnabled(waypointToggle.getValue());
             w.setEspEnabled(espToggle.getValue());
             w.setTracerEnabled(tracerToggle.getValue());
@@ -180,10 +180,10 @@ public class GuiWaypoint extends GuiElement {
         super(Text.literal("Waypoint"));
         this.w = w;
         waypointToggle.setValue(w.isEnabled());
-        colorCycle.setColorIndex(w.getColorIndex());
+        colorCycle.setColor(w.getColor());
         saveSettings.setCallback(() -> {
             w.setName(textField.getText());
-            w.setColor(Colors.getColorIndex(colorCycle.getColor()));
+            w.setColor(colorCycle.getColor());
             w.setEnabled(waypointToggle.getValue());
             w.setEspEnabled(espToggle.getValue());
             w.setTracerEnabled(tracerToggle.getValue());
