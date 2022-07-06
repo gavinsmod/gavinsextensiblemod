@@ -137,7 +137,7 @@ public class GuiWaypoint extends GuiElement {
      * Creates a gui that allows the user to add a new waypoint.
      */
     public GuiWaypoint() {
-        super(Text.literal("Waypoint"));
+        super(Text.translatable("gavinsmod.mod.render.waypoints"));
         parent = GavinsMod.guiSettings;
         w = null;
         saveSettings.setCallback(() -> {
@@ -177,7 +177,7 @@ public class GuiWaypoint extends GuiElement {
      * @param w - The waypoint to edit.
      */
     public GuiWaypoint(Waypoint w) {
-        super(Text.literal("Waypoint"));
+        super(Text.translatable("gavinsmod.mod.render.waypoints"));
         this.w = w;
         waypointToggle.setValue(w.isEnabled());
         colorCycle.setColor(w.getColor());
@@ -273,6 +273,7 @@ public class GuiWaypoint extends GuiElement {
         espToggle.getGui().setWidth(wholeButtonWidth / 2 - padding / 2);
         tracerToggle.getGui().setPosition(new PointD(offsetX + padding + padding / 2 + wholeButtonWidth / 2, offsetY + 62 + padding));
         tracerToggle.getGui().setWidth(wholeButtonWidth / 2 - padding / 2);
+        super.init();
     }
 
     @NotNull
@@ -297,10 +298,7 @@ public class GuiWaypoint extends GuiElement {
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
         box.render(matrixStack, client.textRenderer, mouseX, mouseY, delta);
-        for (Gui g : guis) {
-            g.show();
-            g.render(matrixStack, client.textRenderer, mouseX, mouseY, delta);
-        }
+
         client.textRenderer.draw(matrixStack, Text.literal("Name: "), paddingX, offsetY + 11, Settings.getColor("gui.color.foregorund").getAsInt());
         client.textRenderer.draw(matrixStack, Text.literal("X:"), paddingX + 1, offsetY + 82 + padding, Settings.getColor("gui.color.foregorund").getAsInt());
         client.textRenderer.draw(matrixStack, Text.literal("Y:"), paddingX + 46, offsetY + 82 + padding, Settings.getColor("gui.color.foregorund").getAsInt());
@@ -309,6 +307,7 @@ public class GuiWaypoint extends GuiElement {
         xCoordinate.render(matrixStack, mouseX, mouseY, delta);
         yCoordinate.render(matrixStack, mouseX, mouseY, delta);
         zCoordinate.render(matrixStack, mouseX, mouseY, delta);
+        super.render(matrixStack, mouseX, mouseY, delta);
     }
 
     @Override

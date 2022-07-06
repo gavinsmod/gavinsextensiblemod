@@ -110,7 +110,7 @@ public class GuiXray extends GuiElement {
      * Creates a new GUI menu with the given title.
      */
     public GuiXray() {
-        super(Text.literal("Xray"));
+        super(Text.translatable("gavinsmod.mod.render.xray"));
     }
 
     /**
@@ -167,6 +167,7 @@ public class GuiXray extends GuiElement {
         });
         addSelectableChild(search);
         updateBlockList();
+        super.init();
     }
 
     /**
@@ -230,6 +231,7 @@ public class GuiXray extends GuiElement {
         enabledOnly.render(matrixStack, textRenderer, mouseX, mouseY, delta);
         textRenderer.draw(matrixStack, Text.literal(String.valueOf('\u25c0')), x + width / 2 - 86, y - 13, Colors.WHITE.getAsInt());
         textRenderer.draw(matrixStack, Text.literal(String.valueOf('\u25b6')), x + width / 2 + 80, y - 13, Colors.WHITE.getAsInt());
+        super.render(matrixStack, mouseX, mouseY, delta);
     }
 
     @Override
