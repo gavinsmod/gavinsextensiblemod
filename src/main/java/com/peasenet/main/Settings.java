@@ -23,7 +23,7 @@ package com.peasenet.main;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.ToNumberPolicy;
-import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
 import com.peasenet.mods.render.waypoints.Waypoint;
 import com.peasenet.util.color.Color;
 import com.peasenet.util.color.Colors;
@@ -67,28 +67,28 @@ public class Settings {
      * If the load fails, the default settings will be used.
      */
     private Settings() {
-        default_settings.put("esp.mob.hostile.color", Colors.getColorIndex(Colors.RED));
-        default_settings.put("esp.mob.peaceful.color", Colors.getColorIndex(Colors.GREEN));
-        default_settings.put("esp.player.color", Colors.getColorIndex(Colors.YELLOW));
-        default_settings.put("esp.chest.color", Colors.getColorIndex(Colors.PURPLE));
-        default_settings.put("esp.item.color", Colors.getColorIndex(Colors.CYAN));
+        default_settings.put("esp.mob.hostile.color", (Colors.RED));
+        default_settings.put("esp.mob.peaceful.color", (Colors.GREEN));
+        default_settings.put("esp.player.color", (Colors.YELLOW));
+        default_settings.put("esp.chest.color", (Colors.PURPLE));
+        default_settings.put("esp.item.color", (Colors.CYAN));
 
-        default_settings.put("tracer.mob.hostile.color", Colors.getColorIndex(Colors.RED));
-        default_settings.put("tracer.mob.peaceful.color", Colors.getColorIndex(Colors.GREEN));
-        default_settings.put("tracer.player.color", Colors.getColorIndex(Colors.YELLOW));
-        default_settings.put("tracer.chest.color", Colors.getColorIndex(Colors.PURPLE));
-        default_settings.put("tracer.item.color", Colors.getColorIndex(Colors.CYAN));
+        default_settings.put("tracer.mob.hostile.color", (Colors.RED));
+        default_settings.put("tracer.mob.peaceful.color", (Colors.GREEN));
+        default_settings.put("tracer.player.color", (Colors.YELLOW));
+        default_settings.put("tracer.chest.color", (Colors.PURPLE));
+        default_settings.put("tracer.item.color", (Colors.CYAN));
 
-        default_settings.put("gui.color.background", Colors.getColorIndex(Colors.INDIGO));
-        default_settings.put("gui.color.foreground", Colors.getColorIndex(Colors.WHITE));
-        default_settings.put("gui.color.category", Colors.getColorIndex(Colors.DARK_SPRING_GREEN));
-        default_settings.put("gui.color.enabled", Colors.getColorIndex(Colors.MEDIUM_SEA_GREEN));
+        default_settings.put("gui.color.background", (Colors.INDIGO));
+        default_settings.put("gui.color.foreground", (Colors.WHITE));
+        default_settings.put("gui.color.category", (Colors.DARK_SPRING_GREEN));
+        default_settings.put("gui.color.enabled", (Colors.MEDIUM_SEA_GREEN));
         default_settings.put("gui.sound", false);
 
         default_settings.put("misc.fps.color.enabled", false);
-        default_settings.put("misc.fps.color.slow", Colors.getColorIndex(Colors.RED));
-        default_settings.put("misc.fps.color.ok", Colors.getColorIndex(Colors.YELLOW));
-        default_settings.put("misc.fps.color.fast", Colors.getColorIndex(Colors.GREEN));
+        default_settings.put("misc.fps.color.slow", (Colors.RED));
+        default_settings.put("misc.fps.color.ok", (Colors.YELLOW));
+        default_settings.put("misc.fps.color.fast", (Colors.GREEN));
 
         default_settings.put("misc.messages", true);
 
@@ -127,6 +127,7 @@ public class Settings {
             GavinsMod.LOGGER.error("Error writing settings to file.");
             GavinsMod.LOGGER.error(e.getMessage());
         }
+        load();
     }
 
     /**
@@ -217,25 +218,11 @@ public class Settings {
      */
     public static Color getColor(String key) {
         if (!settings.containsKey(key)) return Colors.WHITE;
-        if (settings.get(key) == null) {
-            settings.put(key, Colors.WHITE);
-            return Colors.WHITE;
-        }
-        var item = settings.get(key);
-        if (item instanceof Color) {
-            return (Color) item;
-        } else {
-            try {
-                return Colors.COLORS[((Long) settings.get(key)).intValue()];
-            } catch (ClassCastException e) {
-                try {
-                    return Colors.COLORS[((Double) settings.get(key)).intValue()];
-                } catch (ClassCastException e2) {
-                    return Colors.COLORS[((Integer) settings.get(key))];
-                }
-            }
-        }
-
+        Gson gson = new Gson();
+        Type colorListType = new TypeToken<Color>() {
+        }.getType();
+        Color c = gson.fromJson(settings.get(key).toString(), colorListType);
+        return c;
     }
 
     /**
@@ -281,6 +268,8 @@ public class Settings {
             var arrList = (ArrayList<String>) settings.get("xray.blocks");
             list.addAll(arrList);
         }
+        if (list == null)
+            return new LinkedHashSet<>();
         return list;
     }
 
@@ -304,6 +293,7 @@ public class Settings {
      */
     public static boolean isXrayBlock(Block b) {
         var currList = getXrayBlocks();
+
         var isInList = currList.contains(b.toString());
         return isInList;
     }
@@ -342,31 +332,14 @@ public class Settings {
      * @return The list of waypoints.
      */
     public static ArrayList<Waypoint> getWaypoints() {
-        // note : need to figurte out way to convert from LinkedTreeMap to ArrayList<Waypoint> nicer.
-        try {
-            var list = (ArrayList<LinkedTreeMap>) settings.get("waypoint.locations");
-            var wpList = new ArrayList<Waypoint>();
-            list.forEach(l -> {
-                var x = ((Long) l.get("x")).intValue();
-                var y = ((Long) l.get("y")).intValue();
-                var z = ((Long) l.get("z")).intValue();
-                var name = (String) l.get("name");
-                var color = ((Long) l.get("color")).intValue();
-                var enabled = (boolean) l.get("enabled");
-                var tracerEnabled = (boolean) l.get("tracerEnabled");
-                var espEnabled = (boolean) l.get("espEnabled");
-                var w = new Waypoint(x, y, z);
-                w.setName(name);
-                w.setColor(color);
-                w.setEnabled(enabled);
-                w.setTracerEnabled(tracerEnabled);
-                w.setEspEnabled(espEnabled);
-                wpList.add(w);
-            });
-            return wpList;
-        } catch (ClassCastException e) {
-            return (ArrayList<Waypoint>) settings.get("waypoint.locations");
-        }
+
+        Gson gson = new Gson();
+        Type waypointType = new TypeToken<ArrayList<Waypoint>>() {
+        }.getType();
+        ArrayList<Waypoint> waypoints = gson.fromJson(settings.get("waypoint.locations").toString(), waypointType);
+        if (waypoints == null)
+            return new ArrayList<>();
+        return waypoints;
     }
 
     /**
