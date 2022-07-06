@@ -20,12 +20,14 @@
 
 package com.peasenet.util.color;
 
+import java.io.Serializable;
+
 /**
  * @author gt3ch1
  * @version 7/5/2022
  * A representation of a color. The maximum value for each channel is 255, and the minimum is 0.
  */
-public class Color {
+public class Color implements Serializable {
 
     /**
      * The red value of this color.
