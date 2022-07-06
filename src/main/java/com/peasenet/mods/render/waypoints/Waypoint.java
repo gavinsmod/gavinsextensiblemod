@@ -247,7 +247,7 @@ public class Waypoint {
      * @return True if the waypoints are equal.
      */
     public boolean equals(Waypoint w) {
-        return name.hashCode() == w.name.hashCode() && x == w.x && y == w.y && z == w.z;
+        return x == w.x && y == w.y && z == w.z;
     }
 
     @Override
