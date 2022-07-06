@@ -21,7 +21,6 @@
 package com.peasenet.mods.render.waypoints;
 
 import com.peasenet.util.color.Color;
-import com.peasenet.util.color.Colors;
 import net.minecraft.util.math.Vec3i;
 
 /**
@@ -55,7 +54,7 @@ public class Waypoint {
     /**
      * The color index of the waypoint.
      */
-    private int color;
+    private Color color;
 
     /**
      * Whether the waypoint is currently enabled, meaning it can be rendered.
@@ -145,16 +144,9 @@ public class Waypoint {
      * @param name - The name to set.
      */
     public void setName(String name) {
+        if (name.isEmpty())
+            name = "Waypoint";
         this.name = name;
-    }
-
-    /**
-     * The color index of the waypoint.
-     *
-     * @return The index of the color.
-     */
-    public int getColorIndex() {
-        return color;
     }
 
     /**
@@ -163,7 +155,7 @@ public class Waypoint {
      * @return The color.
      */
     public Color getColor() {
-        return Colors.COLORS[color];
+        return color;
     }
 
     /**
@@ -171,7 +163,7 @@ public class Waypoint {
      *
      * @param color - The color index to set the color of the waypoint to.
      */
-    public void setColor(int color) {
+    public void setColor(Color color) {
         this.color = color;
     }
 
