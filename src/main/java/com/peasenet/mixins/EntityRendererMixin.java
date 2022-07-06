@@ -65,11 +65,11 @@ public abstract class EntityRendererMixin<T extends Entity> {
                 matrices.multiply(this.dispatcher.getRotation());
                 matrices.scale(-0.025F, -0.025F, 0.025F);
                 Matrix4f matrix4f = matrices.peek().getPositionMatrix();
-                float g = MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25F);
+                float g = MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.5f);
                 int j = (int) (g * 255.0F) << 24;
                 float h = (float) (-textRenderer.getWidth(text) / 2);
                 int color = 0x00ff00;
-                var percentHealth = (int) (livingEntity.getHealth() / livingEntity.getMaxHealth());
+                var percentHealth = (double) (livingEntity.getHealth() / livingEntity.getMaxHealth());
                 if (percentHealth < 0.75)
                     color = 0xffff00;
                 if (percentHealth < 0.5)
