@@ -46,7 +46,7 @@ public class GuiElement extends Screen {
     /**
      * The box that contains the menu title in the top left corner of the screen.
      */
-    public final Gui titleBox;
+    public Gui titleBox;
     /**
      * A list of gui children to render.
      */
@@ -59,12 +59,12 @@ public class GuiElement extends Screen {
      */
     public GuiElement(Text title) {
         super(title);
-        titleBox = new Gui(new PointD(10, 1), title.getContent().toString().length() * 2, 10, title);
     }
 
     @Override
     public void init() {
         super.init();
+        titleBox = new Gui(new PointD(10, 1), textRenderer.getWidth(title) + 4, 10, title);
     }
 
     @Override
@@ -117,6 +117,8 @@ public class GuiElement extends Screen {
             gui.setBackground(Settings.getColor("gui.color.category"));
             gui.render(matrixStack, tr, mouseX, mouseY, delta);
         });
+        if (titleBox != null)
+            titleBox.render(matrixStack, tr, mouseX, mouseY, delta);
         super.render(matrixStack, mouseX, mouseY, delta);
     }
 
