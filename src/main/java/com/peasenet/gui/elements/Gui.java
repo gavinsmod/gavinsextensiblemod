@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 7/5/2022
+ * @version 7/6/2022
  * The base class for all gui elements.
  */
 public class Gui {
@@ -63,6 +63,10 @@ public class Gui {
      * The offset used for the symbol (y).
      */
     int symbolOffsetY = 2;
+    /**
+     * Whether this element is a parent.
+     */
+    private boolean isParent = false;
     /**
      * The box that contains the gui.
      */
@@ -96,6 +100,24 @@ public class Gui {
         this.title = title;
         backgroundColor = Settings.getColor("gui.color.background");
         dragging = false;
+    }
+
+    /**
+     * Whether this element is a parent element.
+     *
+     * @return True if this element is a parent.
+     */
+    public boolean isParent() {
+        return isParent;
+    }
+
+    /**
+     * Sets whether this element is a parent.
+     *
+     * @param parent - True if we want this element to be a parent.
+     */
+    public void setParent(boolean parent) {
+        isParent = parent;
     }
 
     /**
