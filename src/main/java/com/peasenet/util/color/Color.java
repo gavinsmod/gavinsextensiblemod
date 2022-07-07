@@ -125,4 +125,14 @@ public class Color implements Serializable {
             alpha = 1;
         return (int) (alpha * 255) << 24 | (red << 16) | (green << 8) | blue;
     }
+
+    /**
+     * Checks if two colors are equal. This is determined if the red, blue, and green channels are the same values.
+     *
+     * @param other - The other color.
+     * @return True if the RGB channels match.
+     */
+    public boolean equals(Color other) {
+        return red == other.red && green == other.green && blue == other.blue;
+    }
 }
