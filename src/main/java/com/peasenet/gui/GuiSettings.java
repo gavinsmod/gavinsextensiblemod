@@ -70,7 +70,6 @@ public class GuiSettings extends GuiElement {
     public GuiSettings() {
         super(Text.translatable("gavinsmod.gui.settings"));
         guis = new ArrayList<>();
-
         renderDropdown = new GuiScroll(new PointD(10, 20), 100, 10, Text.translatable("gavinsmod.settings.render"));
         miscDropdown = new GuiScroll(new PointD(115, 20), 105, 10, Text.translatable("gavinsmod.settings.misc"));
         guiDropdown = new GuiScroll(new PointD(225, 20), 100, 10, Text.translatable("gavinsmod.settings.gui"));
@@ -108,6 +107,10 @@ public class GuiSettings extends GuiElement {
         renderDropdown.setFrozen(true);
         miscDropdown.setFrozen(true);
         guiDropdown.setFrozen(true);
+        guis.forEach(g -> {
+            g.setParent(true);
+        });
+
     }
 
     /**

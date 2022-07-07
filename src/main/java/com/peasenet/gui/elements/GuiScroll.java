@@ -102,6 +102,10 @@ public class GuiScroll extends GuiDropdown {
     @Override
     public void render(MatrixStack matrixStack, TextRenderer tr, int mouseX, int mouseY, float delta) {
         if (isHidden()) return;
+        if (isParent())
+            setBackground(Settings.getColor("gui.color.category"));
+        else
+            setBackground(Settings.getColor("gui.color.background"));
         RenderUtils.drawBox(getBackgroundColor().getAsFloatArray(), (int) getX(), (int) getY(), (int) getX2(), (int) getY2() + 1, matrixStack);
         tr.draw(matrixStack, title, (int) getX() + 2, (int) getY() + 2, (Settings.getColor("gui.color.foreground")).getAsInt());
         updateSymbol();
@@ -110,7 +114,11 @@ public class GuiScroll extends GuiDropdown {
 
         if (!isOpen()) return;
         resetChildPos();
-        children.forEach(child -> child.render(matrixStack, tr, mouseX, mouseY, delta));
+        children.forEach(child -> {
+            if (!child.isParent() && !(child instanceof GuiCycle))
+                child.setBackground(Settings.getColor("gui.color.background"));
+            child.render(matrixStack, tr, mouseX, mouseY, delta);
+        });
         if (shouldDrawScrollBar()) {
             drawScrollBox(matrixStack);
             drawScrollBar(matrixStack);
@@ -159,7 +167,7 @@ public class GuiScroll extends GuiDropdown {
             gui.setPosition(new PointD(getX(), (gui.getHeight() + 2) * (modIndex - 1) + (getY() + getHeight()) + 2));
             switch (getDirection()) {
                 case DOWN -> gui.setPosition(new PointD(getX(), getY2() + 2 + (modIndex * 12)));
-                case RIGHT -> gui.setPosition(new PointD(getX2() + 10, getY() + (modIndex * 12)));
+                case RIGHT -> gui.setPosition(new PointD(getX2() + 5, getY() + (modIndex * 12)));
             }
             if (shouldDrawScrollBar()) gui.shrinkForScrollbar();
             gui.show();
