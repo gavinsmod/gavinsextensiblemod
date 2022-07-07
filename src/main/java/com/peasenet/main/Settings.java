@@ -22,6 +22,7 @@ package com.peasenet.main;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.ToNumberPolicy;
 import com.google.gson.reflect.TypeToken;
 import com.peasenet.gavui.color.Color;
@@ -171,24 +172,6 @@ public class Settings {
             default_settings.forEach((k, _v) -> settings.put(k, map.get(k)));
         } catch (Exception e) {
             GavinsMod.LOGGER.error("Error reading settings from file. Saving defaults.");
-            // rename settings file to settings.bak
-            var bakFile = cfgFile + ".bak";
-            int bakCount = 1;
-            // check if the backup file exists
-            if (!Files.exists(Paths.get(bakFile))) {
-                loadDefault();
-                save();
-                return;
-            }
-            while (Files.exists(Paths.get(bakFile))) {
-                bakFile = cfgFile + ".bak" + bakCount;
-            }
-            try {
-                Files.move(Paths.get(cfgFile), Paths.get(bakFile));
-            } catch (IOException e1) {
-                GavinsMod.LOGGER.error("Error renaming settings file.");
-                GavinsMod.LOGGER.error(e1.getMessage());
-            }
             loadDefault();
             save();
         }
@@ -220,7 +203,12 @@ public class Settings {
         Gson gson = new Gson();
         Type colorListType = new TypeToken<Color>() {
         }.getType();
-        Color c = gson.fromJson(settings.get(key).toString(), colorListType);
+        Color c = Colors.WHITE;
+        try {
+            c = gson.fromJson(settings.get(key).toString(), colorListType);
+        } catch (JsonSyntaxException e) {
+            loadDefault();
+        }
         return c;
     }
 
@@ -232,6 +220,25 @@ public class Settings {
      * Loads the default configuration.
      */
     public static void loadDefault() {
+        var cfgFile = getFilePath();
+        // rename settings file to settings.bak
+        var bakFile = cfgFile + ".bak";
+        int bakCount = 1;
+        // check if the backup file exists
+        if (!Files.exists(Paths.get(bakFile))) {
+            loadDefault();
+            save();
+            return;
+        }
+        while (Files.exists(Paths.get(bakFile))) {
+            bakFile = cfgFile + ".bak" + bakCount;
+        }
+        try {
+            Files.move(Paths.get(cfgFile), Paths.get(bakFile));
+        } catch (IOException e1) {
+            GavinsMod.LOGGER.error("Error renaming settings file.");
+            GavinsMod.LOGGER.error(e1.getMessage());
+        }
         loadDefaultXrayBlocks();
         settings.putAll(default_settings);
         save();
