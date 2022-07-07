@@ -114,7 +114,8 @@ public class GuiElement extends Screen {
         RenderSystem.setShader(GameRenderer::getPositionShader);
         RenderSystem.enableBlend();
         guis.forEach(gui -> {
-            gui.setBackground(Settings.getColor("gui.color.category"));
+            if (gui.isParent())
+                gui.setBackground(Settings.getColor("gui.color.category"));
             gui.render(matrixStack, tr, mouseX, mouseY, delta);
         });
         if (titleBox != null)

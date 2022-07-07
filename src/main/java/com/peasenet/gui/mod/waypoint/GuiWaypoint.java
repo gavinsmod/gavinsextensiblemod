@@ -307,6 +307,7 @@ public class GuiWaypoint extends GuiElement {
         xCoordinate.render(matrixStack, mouseX, mouseY, delta);
         yCoordinate.render(matrixStack, mouseX, mouseY, delta);
         zCoordinate.render(matrixStack, mouseX, mouseY, delta);
+        guis.forEach(Gui::show);
         super.render(matrixStack, mouseX, mouseY, delta);
     }
 
