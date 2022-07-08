@@ -20,12 +20,9 @@
 
 package com.peasenet.settings;
 
-import com.peasenet.gui.elements.Gui;
 import com.peasenet.gui.elements.GuiDropdown;
 import com.peasenet.gui.elements.GuiScroll;
 import net.minecraft.text.Text;
-
-import java.util.ArrayList;
 
 /**
  * @author gt3ch1
@@ -38,8 +35,6 @@ public class SubSetting extends Setting {
      * The dropdown menu that contains the sub settings.
      */
     private final GuiScroll dropdown;
-
-    private ArrayList<Gui> children = new ArrayList<>();
 
     /**
      * Creates a new subsetting element. You can call #add(Setting) to add subsettings to this element.
@@ -62,17 +57,7 @@ public class SubSetting extends Setting {
      */
     public void add(Setting setting) {
         dropdown.addElement(setting.getGui());
-        children.add(setting.getGui());
         setting.getGui().hide();
-    }
-
-    /**
-     * Sets the width of all the subsettings.
-     *
-     * @param width - The width of the subsettings.
-     */
-    public void setChildrenWidth(int width) {
-        dropdown.getChildren().forEach(child -> child.setWidth(width));
     }
 
     @Override
