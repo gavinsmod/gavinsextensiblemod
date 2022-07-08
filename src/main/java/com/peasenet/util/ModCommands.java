@@ -21,11 +21,12 @@
 package com.peasenet.util;
 
 import com.peasenet.main.GavinsMod;
+import com.peasenet.main.Mods;
 import com.peasenet.mods.Mod;
 
 /**
  * @author gt3ch1
- * @version 5/24/2022
+ * @version 6/28/2022
  * A class that handles chat commands for all mods.
  */
 public class ModCommands {
@@ -40,7 +41,7 @@ public class ModCommands {
     public static boolean handleCommand(String message) {
         // remove the . from the message
         message = message.substring(1);
-        for (Mod mod : GavinsMod.mods) {
+        for (Mod mod : Mods.getMods()) {
             if (message.equals(mod.getChatCommand())) {
                 mod.toggle();
                 return true;
@@ -61,6 +62,7 @@ public class ModCommands {
         }
         if (message.startsWith("resetgui")) {
             GavinsMod.gui.reset();
+            GavinsMod.guiSettings.reset();
             return true;
         }
         return false;

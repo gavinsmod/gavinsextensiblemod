@@ -24,24 +24,40 @@ import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.settings.ColorSetting;
+import com.peasenet.settings.ToggleSetting;
 
 /**
  * @author gt3ch1
- * @version 6/17/2022
+ * @version 6/27/2022
  * A mod that allows the player to configure certain settings of gavinsmod.
  */
 public class ModGuiSettings extends Mod {
     public ModGuiSettings() {
         super(Type.SETTINGS);
+        ColorSetting foregroundColorSetting = new ColorSetting("gui.color.foreground", "gavinsmod.settings.gui.color.foreground");
+        ColorSetting backgroundColorSetting = new ColorSetting("gui.color.background", "gavinsmod.settings.gui.color.background");
+        ColorSetting categoryColorSetting = new ColorSetting("gui.color.category", "gavinsmod.settings.gui.color.category");
+        ColorSetting enabledColorSetting = new ColorSetting("gui.color.enabled", "gavinsmod.settings.gui.color.enabled");
+        ToggleSetting guiSounds = new ToggleSetting("gui.sound", "gavinsmod.settings.gui.sound");
+
+        addSetting(backgroundColorSetting);
+        addSetting(foregroundColorSetting);
+        addSetting(categoryColorSetting);
+        addSetting(enabledColorSetting);
+        addSetting(guiSounds);
     }
 
     @Override
-    public void onEnable() {
+    public void activate() {
         GavinsModClient.getMinecraftClient().setScreen(GavinsMod.guiSettings);
+        setEnabled(true);
     }
 
     @Override
-    public void onDisable() {
-
+    public void deactivate() {
+        setEnabled(false);
     }
+
+
 }

@@ -21,17 +21,23 @@
 package com.peasenet.mods;
 
 import com.peasenet.main.GavinsModClient;
+import com.peasenet.main.Mods;
 import com.peasenet.main.Settings;
 import com.peasenet.mixinterface.IMinecraftClient;
+import com.peasenet.settings.Setting;
 import com.peasenet.util.KeyBindUtils;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
+
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 7/5/2022
  * The base class for mods. Inheriting this class will allow for creating different mods that have a keybinding,
  * and a gui button based off of the given category.
  */
@@ -42,26 +48,34 @@ public abstract class Mod implements IMod {
      */
 
     public static final String GAVINS_MOD_STRING = "§d§l[ §b§lGavinsMod §d§l] §9";
-
     /**
      * The keybind for this mod.
      */
     protected final KeyBinding keyBinding;
-
     /**
      * The type of the mod.
      */
     private final Type type;
-
     /**
      * The category of this mod.
      */
     private final Type.Category category;
-
+    /**
+     * Whether this mod is currently deactivating.
+     */
+    protected boolean deactivating = true;
+    /**
+     * The settings of the mod.
+     */
+    protected ArrayList<Setting> modSettings = new ArrayList<>();
+    /**
+     * Whether the mod is currently reloading.
+     */
+    private boolean reloading = false;
     /**
      * Whether the mod is enabled.
      */
-    protected boolean isEnabled = false;
+    private boolean isEnabled = false;
 
     /**
      * Creates a new mod.
@@ -75,6 +89,7 @@ public abstract class Mod implements IMod {
         this.type = type;
         this.category = category;
         this.keyBinding = keyBinding;
+        Mods.addMod(this);
     }
 
     /**
@@ -84,9 +99,8 @@ public abstract class Mod implements IMod {
      * @param category The category of this mod.
      */
     public Mod(Type type, Type.Category category) {
-        this.type = type;
-        this.category = category;
-        this.keyBinding = KeyBindUtils.registerEmptyKeyBind(type);
+        this(type, category, (type.getKeyBinding() != GLFW.GLFW_KEY_UNKNOWN) ?
+                KeyBindUtils.registerKeyBindForType(type) : KeyBindUtils.registerEmptyKeyBind(type));
     }
 
     /**
@@ -96,9 +110,7 @@ public abstract class Mod implements IMod {
      * @param keyBinding - The keybinding for this mod.
      */
     public Mod(Type type, KeyBinding keyBinding) {
-        this.type = type;
-        this.category = type.getModCategory();
-        this.keyBinding = keyBinding;
+        this(type, type.getModCategory(), keyBinding);
     }
 
     /**
@@ -107,23 +119,7 @@ public abstract class Mod implements IMod {
      * @param type - The type of the mod.
      */
     public Mod(Type type) {
-        this.type = type;
-        this.category = type.getModCategory();
-        if (type.getKeyBinding() == GLFW.GLFW_KEY_UNKNOWN) {
-            this.keyBinding = KeyBindUtils.registerEmptyKeyBind(type);
-        } else {
-            this.keyBinding = KeyBindUtils.registerKeyBindForType(type);
-        }
-    }
-
-    /**
-     * Sends a message to the player.
-     *
-     * @param message The message to send.
-     */
-    public static void sendMessage(String message) {
-        if (Settings.ChatMessage)
-            GavinsModClient.getPlayer().sendMessage(Text.literal(message), false);
+        this(type, type.getModCategory());
     }
 
     /**
@@ -135,6 +131,16 @@ public abstract class Mod implements IMod {
         return GavinsModClient.getMinecraftClient();
     }
 
+    /**
+     * Sends a message to the player.
+     *
+     * @param message The message to send.
+     */
+    public void sendMessage(String message) {
+        if (Settings.getBool("misc.messages") && !reloading)
+            GavinsModClient.getPlayer().sendMessage(Text.literal(message), false);
+    }
+
     public void onEnable() {
         sendMessage(GAVINS_MOD_STRING + type.getName() + " §a§lenabled§r!");
     }
@@ -144,7 +150,6 @@ public abstract class Mod implements IMod {
     }
 
     public void onTick() {
-        checkKeybinding();
     }
 
     public void checkKeybinding() {
@@ -179,6 +184,10 @@ public abstract class Mod implements IMod {
         }
     }
 
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
     public Type.Category getCategory() {
         return category;
     }
@@ -199,8 +208,45 @@ public abstract class Mod implements IMod {
         return type;
     }
 
-    @Override
     public ClientPlayerEntity getPlayer() {
         return getClient().getPlayer();
+    }
+
+    public void onRenderInGameHud(MatrixStack stack, float delta) {
+    }
+
+    public void onAttack(Entity target) {
+    }
+
+    public boolean isDeactivating() {
+        return false;
+    }
+
+    public void addSetting(Setting setting) {
+        modSettings.add(setting);
+    }
+
+    public ArrayList<Setting> getSettings() {
+        return modSettings;
+    }
+
+    public boolean hasSettings() {
+        return !modSettings.isEmpty();
+    }
+
+    public void reload() {
+        var prevState = isActive();
+        if (!prevState)
+            return;
+        reloading = true;
+        deactivate();
+        activate();
+        reloading = false;
+    }
+
+    public void reloadSettings() {
+        var tmpSettings = new ArrayList<>(getSettings());
+        getSettings().clear();
+        modSettings.addAll(tmpSettings);
     }
 }

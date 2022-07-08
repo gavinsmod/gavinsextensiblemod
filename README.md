@@ -1,6 +1,11 @@
-# Gavin's Mod v1.2
+# Gavin's Mod v1.3
 
-A "mod" that actually contains hacks/cheats for Minecraft.
+## -- NOTE --
+
+If you are upgrading from v1.2 or before, you may need to delete/rename your
+settings file located in `.minecraft/mods/gavinsmod/settings.json`. This *should* be done
+automatically, but since I cannot guarantee I have tested loading the update with your
+config, it may not be.
 
 ---
 
@@ -8,10 +13,13 @@ A "mod" that actually contains hacks/cheats for Minecraft.
 
 - X-Ray
   ![](src/main/resources/assets/gavinsmod/screenshots/xray.png)
+  - With a fully configurable X-Ray filter (inspired by ate47's Xray)
+    ![](src/main/resources/assets/gavinsmod/screenshots/xray-menu.png)
 - Full Bright
   ![](src/main/resources/assets/gavinsmod/screenshots/fullbright.png)
 - Chest ESP & Tracers (both configured individually)
   ![](src/main/resources/assets/gavinsmod/screenshots/chests.png)
+- Dolphin
 - Mob ESP & Tracers
   ![](src/main/resources/assets/gavinsmod/screenshots/mobs.png)
 - Item ESP & Tracers
@@ -26,7 +34,7 @@ A "mod" that actually contains hacks/cheats for Minecraft.
 - Auto Crit
 - No Fall
 - No Clip
-- In Game GUI, featuring draggable drop-down menus with clickable elements.
+- In Game GUI, featuring draggable, dropdown, and scrollable elements with clickable elements.
   ![](src/main/resources/assets/gavinsmod/screenshots/gui.png)
   - There is also a text-based overlay that will show you what mods are currently active
 - Settings UI, allowing YOU to change certain elements of the mod.
@@ -37,6 +45,9 @@ A "mod" that actually contains hacks/cheats for Minecraft.
   - Colors based off of what percentage of your frames you are getting
 - HP tags
 - NoRain
+- Waypoints
+  - Fully configurable, including color, location, tracer, and esp.
+    ![](src/main/resources/assets/gavinsmod/screenshots/waypoint.png)
 - All the colors seen are fully customizable via the settings screen.
 ---
 
@@ -65,4 +76,6 @@ Please see the [Contributing Guide](CONTRIBUTING.md) and the [Code of Conduct](C
 ## Issues and Pull Requests
 
 Please use only the templates provided. Any other templates will be automatically dismissed.
+If you have a suggestion for a new template, please open an issue or pull request. This does not
+need to follow the templates.
 

@@ -101,11 +101,11 @@ public class BoxD {
 
     /**
      * Sets the mid-point of the box.
+     *
      * @param middle - The new mid-point of the box.
      */
     public void setMiddle(PointD middle) {
         setTopLeft(middle.subtract(new PointD(width / 2, height / 2)));
-
     }
 
 }

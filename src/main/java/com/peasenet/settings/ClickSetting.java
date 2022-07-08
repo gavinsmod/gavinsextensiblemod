@@ -18,24 +18,39 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mixins;
+package com.peasenet.settings;
 
-import net.minecraft.client.render.LightmapTextureManager;
-import org.spongepowered.asm.mixin.Mixin;
+import com.peasenet.gui.elements.Gui;
+import com.peasenet.gui.elements.GuiClick;
+import com.peasenet.util.math.PointD;
+import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * Credit: <a href="https://github.com/ate47/Xray/">https://github.com/ate47/Xray/</a>
- * @version 5/16/2022
+ * @version 7/1/2022
+ * A setting that can be clicked. This is purely dependant on the given callback.
  */
-@Mixin(value = LightmapTextureManager.class)
-public class MixinLightmapTextureManager {
-//    @Redirect(at = @At(value = "FIELD", target = "Lnet/minecraft/client/option/GameOptions;getGamma*:Lnet/minecraft/client/option/SimpleOption;", opcode = Opcodes.GETFIELD), method = "update(F)V")
-//    private double getFieldValue(SimpleOption<Double> gamma) {
-//        if (GavinsMod.isEnabled(Type.XRAY) || GavinsMod.isEnabled(Type.FULL_BRIGHT))
-//            return 10000;
-//        else {
-//            return gamma.getValue();
-//        }
-//    }
+public class ClickSetting extends Setting {
+
+    /**
+     * The gui used to display the setting.
+     */
+    private final GuiClick gui;
+
+    /**
+     * Creates a new click setting with the given name (?) and translation key.
+     *
+     * @param name           - The name of the setting.
+     * @param translationKey - The translation key of the setting.
+     */
+    public ClickSetting(String name, String translationKey) {
+        super(name);
+        gui = new GuiClick(new PointD(0, 0), 100, 10, Text.translatable(translationKey));
+        gui.setCallback(this::onClick);
+    }
+
+    @Override
+    public Gui getGui() {
+        return gui;
+    }
 }

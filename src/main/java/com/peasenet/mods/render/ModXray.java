@@ -20,56 +20,42 @@
 
 package com.peasenet.mods.render;
 
+import com.peasenet.gui.mod.xray.GuiXray;
 import com.peasenet.main.GavinsMod;
+import com.peasenet.main.Mods;
+import com.peasenet.main.Settings;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.settings.ClickSetting;
+import com.peasenet.settings.SubSetting;
+import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.RenderUtils;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-
-import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 7/5/2022
  * A mod for xray like feature, allowing the player to see through certain blocks.
  */
 public class ModXray extends Mod {
 
-    private boolean deactivating = true;
-
-    /**
-     * A list of blocks that SHOULD be visible (coal, iron, gold, diamond, lapis, redstone, etc.)
-     */
-    public static final ArrayList<Block> blocks = new ArrayList<>() {
-        {
-            add(Blocks.COAL_ORE);
-            add(Blocks.IRON_ORE);
-            add(Blocks.GOLD_ORE);
-            add(Blocks.DIAMOND_ORE);
-            add(Blocks.LAPIS_ORE);
-            add(Blocks.REDSTONE_ORE);
-            add(Blocks.EMERALD_ORE);
-            add(Blocks.DEEPSLATE_COAL_ORE);
-            add(Blocks.DEEPSLATE_IRON_ORE);
-            add(Blocks.DEEPSLATE_GOLD_ORE);
-            add(Blocks.DEEPSLATE_DIAMOND_ORE);
-            add(Blocks.DEEPSLATE_LAPIS_ORE);
-            add(Blocks.DEEPSLATE_REDSTONE_ORE);
-            add(Blocks.DEEPSLATE_EMERALD_ORE);
-            add(Blocks.END_PORTAL_FRAME);
-            add(Blocks.END_PORTAL);
-            add(Blocks.ENDER_CHEST);
-            add(Blocks.SPAWNER);
-            add(Blocks.NETHERITE_BLOCK);
-            add(Blocks.NETHER_GOLD_ORE);
-        }
-    };
-
     public ModXray() {
         super(Type.XRAY);
+        var dropdownWidth = 80;
+        SubSetting xraySubSetting = new SubSetting(100, 10, getTranslationKey());
+        ToggleSetting culling = new ToggleSetting("xray.disable_culling", "gavinsmod.settings.xray.culling");
+        culling.setWidth(dropdownWidth);
+        culling.setCallback(() -> {
+            if (isActive()) reload();
+        });
+        ClickSetting menu = new ClickSetting("xray.menu", "gavinsmod.settings.xray.blocks");
+        menu.setCallback(() -> getClient().setScreen(new GuiXray()));
+        xraySubSetting.add(menu);
+        menu.setWidth(dropdownWidth);
+        xraySubSetting.add(culling);
+        addSetting(xraySubSetting);
     }
+
 
     /**
      * Checks if a block is visible
@@ -78,38 +64,45 @@ public class ModXray extends Mod {
      * @return True if visible, false if not
      */
     public static boolean shouldDrawFace(BlockState block) {
-        if (GavinsMod.isEnabled(Type.XRAY))
-            return blocks.contains(block.getBlock());
+        if (GavinsMod.isEnabled(Type.XRAY)) return Settings.isXrayBlock(block.getBlock());
         return true;
     }
 
     @Override
     public void activate() {
-        if (!GavinsMod.isEnabled(Type.FULL_BRIGHT))
-            RenderUtils.setLastGamma();
-        getClient().setChunkCulling(false);
-        getClient().getWorldRenderer().reload();
+        if (!GavinsMod.isEnabled(Type.FULL_BRIGHT)) RenderUtils.setLastGamma();
+        getClient().setChunkCulling(Settings.getBool("xray.disable_culling"));
         super.activate();
+        reloadRenderer();
+    }
+
+    /**
+     * Reloads the renderer if and only if the setting "xray.forcereload" is true.
+     */
+    private void reloadRenderer() {
+        if (Mods.getMod("xray").isActive()) getClient().getWorldRenderer().reload();
     }
 
     @Override
     public void onTick() {
-        if (isActive() && !RenderUtils.isHighGamma())
-            RenderUtils.setHighGamma();
+        if (isActive() && !RenderUtils.isHighGamma()) RenderUtils.setHighGamma();
         else if (!GavinsMod.isEnabled(Type.FULL_BRIGHT) && !RenderUtils.isLastGamma() && deactivating) {
             RenderUtils.setLowGamma();
             deactivating = !RenderUtils.isLastGamma();
         }
-        super.onTick();
+    }
+
+    @Override
+    public boolean isDeactivating() {
+        return deactivating;
     }
 
     @Override
     public void deactivate() {
         // check if full bright is disabled, if it is, reset gamma back to LAST_GAMMA
-        if (!GavinsMod.isEnabled(Type.FULL_BRIGHT))
-            RenderUtils.setLowGamma();
+        if (!GavinsMod.isEnabled(Type.FULL_BRIGHT)) RenderUtils.setLowGamma();
         getClient().setChunkCulling(true);
-        getClient().getWorldRenderer().reload();
+        reloadRenderer();
         deactivating = true;
         RenderUtils.setGamma(4);
         super.deactivate();

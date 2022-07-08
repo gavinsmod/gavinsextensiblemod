@@ -23,24 +23,27 @@ package com.peasenet.mods.render;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.RenderUtils;
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 7/5/2022
  * A mod that allows the client to see very clearly in the absence of a light source.
  */
 public class ModFullBright extends Mod {
 
-    private boolean deactivating = false;
-
     public ModFullBright() {
         super(Type.FULL_BRIGHT);
+        ToggleSetting gammaFade = new ToggleSetting("render.fullbright.gammafade", "gavinsmod.settings.render.gammafade");
+        ToggleSetting autoFullBright = new ToggleSetting("render.fullbright.autofullbright", "gavinsmod.settings.render.autofullbright");
+        addSetting(gammaFade);
+        addSetting(autoFullBright);
     }
 
     @Override
     public void activate() {
-        if(!GavinsMod.isEnabled(Type.XRAY))
+        if (!GavinsMod.isEnabled(Type.XRAY))
             RenderUtils.setLastGamma();
         super.activate();
     }
@@ -53,7 +56,11 @@ public class ModFullBright extends Mod {
             RenderUtils.setLowGamma();
             deactivating = !RenderUtils.isLastGamma();
         }
-        super.onTick();
+    }
+
+    @Override
+    public boolean isDeactivating() {
+        return deactivating;
     }
 
     @Override

@@ -22,6 +22,7 @@ package com.peasenet.mods.movement;
 
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.util.PlayerUtils;
 
 /**
  * @author gt3ch1
@@ -31,5 +32,11 @@ import com.peasenet.mods.Type;
 public class ModNoFall extends Mod {
     public ModNoFall() {
         super(Type.NO_FALL);
+    }
+
+    @Override
+    public void onTick() {
+
+        PlayerUtils.handleNoFall();
     }
 }

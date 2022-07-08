@@ -22,14 +22,19 @@ package com.peasenet.mods.tracer;
 
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.settings.ColorSetting;
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 6/27/2022
  * A mod that allows the client to see lines, called tracers, towards mobs.
  */
 public class ModMobTracer extends Mod {
     public ModMobTracer() {
         super(Type.MOB_TRACER);
+        ColorSetting peacefulColor = new ColorSetting("tracer.mob.peaceful.color", "gavinsmod.settings.tracer.mob.peaceful.color");
+        ColorSetting hostileColor = new ColorSetting("tracer.mob.hostile.color", "gavinsmod.settings.tracer.mob.hostile.color");
+        addSetting(hostileColor);
+        addSetting(peacefulColor);
     }
 }

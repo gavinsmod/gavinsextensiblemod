@@ -20,10 +20,16 @@
 
 package com.peasenet.mods;
 
+import com.peasenet.settings.Setting;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
+
+import java.util.ArrayList;
 
 /**
  * @author gt3ch1
+ * @version 7/1/2022
  * The interface of the base mod class.
  */
 public interface IMod {
@@ -78,6 +84,11 @@ public interface IMod {
     Type.Category getCategory();
 
     /**
+     * Reloads this mod by calling #deactivate and #activate.
+     */
+    void reload();
+
+    /**
      * Gets the translation key for the mod.
      *
      * @return The translation key for the mod.
@@ -111,4 +122,52 @@ public interface IMod {
      * @return The client player.
      */
     ClientPlayerEntity getPlayer();
+
+    /**
+     * Called when the in game hud is rendered.
+     *
+     * @param stack - The matrix stack.
+     * @param delta - The delta time.
+     */
+    void onRenderInGameHud(MatrixStack stack, float delta);
+
+    /**
+     * Called when attacking another entity.
+     *
+     * @param target - The target entity.
+     */
+    void onAttack(Entity target);
+
+    /**
+     * Whether the mod is in a deactivation state (where the mod is disabled, but there still needs work to be done).
+     *
+     * @return True if the mod is in a deactivation state.
+     */
+    boolean isDeactivating();
+
+    /**
+     * Whether the mod has settings.
+     *
+     * @return True if the mod has settings.
+     */
+    boolean hasSettings();
+
+    /**
+     * Gets the settings of the mod.
+     *
+     * @return The settings of the mod.
+     */
+    ArrayList<Setting> getSettings();
+
+    /**
+     * Adds a setting to the mod.
+     *
+     * @param setting - The setting to add.
+     */
+    void addSetting(Setting setting);
+
+    /**
+     * Reloads the settings of the mod.
+     */
+    void reloadSettings();
 }

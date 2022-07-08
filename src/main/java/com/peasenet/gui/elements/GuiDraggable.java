@@ -25,10 +25,15 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/13/2022
+ * @version 6/28/2022
  * A draggable ui element.
  */
 public class GuiDraggable extends GuiClick {
+
+    /**
+     * Whether this element is frozen.
+     */
+    private boolean frozen = false;
 
     /**
      * Creates a new GUI draggable object.
@@ -42,8 +47,28 @@ public class GuiDraggable extends GuiClick {
         super(position, width, height, title);
     }
 
+    /**
+     * Gets whether the dropdown is frozen, meaning it cannot be moved.
+     *
+     * @return Whether the dropdown is frozen.
+     */
+    public boolean frozen() {
+        return frozen;
+    }
+
+    /**
+     * Sets whether the dropdown is frozen, meaning it cannot be moved.
+     *
+     * @param frozen Whether the dropdown is frozen.
+     */
+    public void setFrozen(boolean frozen) {
+        this.frozen = frozen;
+    }
+
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (frozen())
+            return false;
         setMidPoint(new PointD(mouseX, mouseY));
         return true;
     }

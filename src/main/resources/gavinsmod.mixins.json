@@ -7,6 +7,7 @@
     ],
     "client": [
         "EntityRendererMixin",
+        "MixinBiome",
         "MixinBlock",
         "MixinClientPlayerEntity",
         "MixinGameRender",
@@ -15,8 +16,7 @@
         "MixinMinecraftClient",
         "MixinPlayerEntity",
         "MixinSimpleOption",
-        "MixinBiome",
-        "WorldRendererInvoker"
+        "MixinSodiumblockOcclusionCache"
     ],
     "injectors": {
         "defaultRequire": 1

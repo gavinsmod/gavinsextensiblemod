@@ -25,24 +25,6 @@ import com.peasenet.gui.GuiSettings;
 import com.peasenet.gui.mod.*;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
-import com.peasenet.mods.combat.ModAutoCrit;
-import com.peasenet.mods.combat.ModKillAura;
-import com.peasenet.mods.esp.ModChestEsp;
-import com.peasenet.mods.esp.ModEntityItemEsp;
-import com.peasenet.mods.esp.ModEntityPlayerEsp;
-import com.peasenet.mods.esp.ModMobEsp;
-import com.peasenet.mods.gui.ModGui;
-import com.peasenet.mods.gui.ModGuiSettings;
-import com.peasenet.mods.misc.ModFpsCounter;
-import com.peasenet.mods.misc.ModGuiTextOverlay;
-import com.peasenet.mods.movement.*;
-import com.peasenet.mods.render.*;
-import com.peasenet.mods.tracer.ModChestTracer;
-import com.peasenet.mods.tracer.ModEntityItemTracer;
-import com.peasenet.mods.tracer.ModEntityPlayerTracer;
-import com.peasenet.mods.tracer.ModMobTracer;
-import com.peasenet.util.color.Color;
-import com.peasenet.util.color.Colors;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,133 +36,82 @@ import java.util.stream.Stream;
 
 /**
  * @author gt3ch1
- * @version 5/24/2022
+ * @version 7/1/2022
+ * The main initializer of the mod.
  */
 public class GavinsMod implements ModInitializer {
-    private static final ModGuiSettings GuiSettings = new ModGuiSettings();
+
+    /**
+     * The logger of the mod.
+     */
     public static final Logger LOGGER = LoggerFactory.getLogger("gavinsmod");
-    public static final String VERSION = "v1.2.2";
-    // MOVEMENT
-    private static final ModXray XRay = new ModXray();
-    private static final ModFly Fly = new ModFly();
-    private static final ModAutoJump AutoJump = new ModAutoJump();
-    private static final ModClimb Climb = new ModClimb();
-    private static final ModNoClip NoClip = new ModNoClip();
-    private static final ModNoFall NoFall = new ModNoFall();
-    private static final ModFastMine FastMine = new ModFastMine();
-    private static final ModFastPlace FastPlace = new ModFastPlace();
-    // COMBAT
-    private static final ModKillAura KillAura = new ModKillAura();
-    private static final ModAutoCrit AutoCrit = new ModAutoCrit();
-    // RENDER
-    private static final ModAntiHurt AntiHurt = new ModAntiHurt();
-    private static final ModFullBright FullBright = new ModFullBright();
-    private static final ModChestEsp ChestEsp = new ModChestEsp();
-    private static final ModChestTracer ChestTracer = new ModChestTracer();
-    private static final ModMobEsp MobEsp = new ModMobEsp();
-    private static final ModMobTracer MobTracer = new ModMobTracer();
-    private static final ModEntityItemTracer EntityItemTracer = new ModEntityItemTracer();
-    private static final ModEntityItemEsp EntityItemEsp = new ModEntityItemEsp();
-    private static final ModEntityPlayerTracer EntityPlayerTracer = new ModEntityPlayerTracer();
-    private static final ModEntityPlayerEsp EntityPlayerEsp = new ModEntityPlayerEsp();
-    private static final ModAntiPumpkin AntiPumpkin = new ModAntiPumpkin();
-    private static final ModHealthTag HealthTag = new ModHealthTag();
-    private static final ModNoRain NoRain = new ModNoRain();
-    // GUI
-    private static final ModGui Gui = new ModGui();
-    public static Color ChestTracerColor = Colors.PURPLE;
-    // MISC
-    private static final com.peasenet.mods.misc.ModGuiTextOverlay ModGuiTextOverlay = new ModGuiTextOverlay();
-    private static final ModFpsCounter FpsCounter = new ModFpsCounter();
 
-    // The main menu gui
+    /**
+     * The current version of the mod.
+     */
+    public static final String VERSION = "v1.3";
+
+    /**
+     * The gui used to display the main mod menu.
+     */
     public static GuiMainMenu gui;
+
+    /**
+     * The gui used to display the settings menu.
+     */
     public static GuiSettings guiSettings;
-    public static ArrayList<Mod> mods;
 
+    /**
+     * Gets whether the given mod is enabled.
+     *
+     * @param mod - The mod type to check.
+     * @return Whether the mod is enabled.
+     */
+    //TODO: Make this into a String based check and not Mod.
     public static boolean isEnabled(Type mod) {
-        // find mod via stream and check if it is enabled.
-        return mods.stream().filter(m -> m.getType() == mod).findFirst().get().isActive();
-    }
-
-    public static void setEnabled(Type mod, boolean enabled) {
-        // find mod via stream and set it to enabled.
-        var theMod = mods.stream().filter(m -> m.getType() == mod).findFirst().get();
-        if (enabled)
-            theMod.activate();
-        else
-            theMod.deactivate();
+        return Mods.getMod(mod.getChatCommand()).isActive();
     }
 
     /**
-     * Gets all of the mods in the given category.
+     * Sets whether the given mod is enabled.
+     *
+     * @param mod     - The mod type to set.
+     * @param enabled - Whether the mod should be enabled.
+     */
+    public static void setEnabled(Type mod, boolean enabled) {
+        // find mod via stream and set it to enabled.
+        var theMod = Mods.getMods().stream().filter(m -> m.getType() == mod).findFirst().get();
+        if (enabled) theMod.activate();
+        else theMod.deactivate();
+    }
+
+    /**
+     * Gets all the mods in the given category.
      *
      * @param category The category to get the mods from.
      * @return The mods in the given category.
      */
     public static ArrayList<Mod> getModsInCategory(Type.Category category) {
         // use stream to filter by category and sort by mod name
-        return mods.stream()
-                .filter(mod -> mod.getCategory() == category)
-                .sorted(Comparator.comparing(Mod::getName))
-                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        return Mods.getMods().stream().filter(mod -> mod.getCategory() == category).sorted(Comparator.comparing(Mod::getName)).collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
+    /**
+     * Gets a stream of all the mods that are active and are not in the "GUI" category.
+     *
+     * @return A list of mods used for the text overlay.
+     */
     public static Stream<Mod> getModsForTextOverlay() {
-        return mods.stream().filter(mod -> mod.isActive() && mod.getCategory() != Type.Category.GUI
-                && mod.getType() != Type.MOD_GUI_TEXT_OVERLAY).sorted(Comparator.comparing(Mod::getName));
+        return Mods.getMods().stream().filter(mod -> mod.isActive() && mod.getCategory() != Type.Category.GUI && mod.getType() != Type.MOD_GUI_TEXT_OVERLAY).sorted(Comparator.comparing(Mod::getName));
     }
 
     @Override
     public void onInitialize() {
-        LOGGER.info("GavinsMod initialized");
-        mods = new ArrayList<>() {
-            {
-                // MOVEMENT
-                add(Fly);
-                add(FastMine);
-                add(FastPlace);
-                add(AutoJump);
-                add(Climb);
-                add(NoClip);
-                add(NoFall);
-                // COMBAT
-                add(KillAura);
-                add(AutoCrit);
-
-                // RENDER
-                add(AntiHurt);
-                add(XRay);
-                add(FullBright);
-                add(ChestEsp);
-                add(ChestTracer);
-
-                add(MobEsp);
-                add(MobTracer);
-
-                add(EntityItemEsp);
-                add(EntityItemTracer);
-
-                add(EntityPlayerEsp);
-                add(EntityPlayerTracer);
-
-                add(AntiPumpkin);
-                add(HealthTag);
-                add(NoRain);
-
-                //GUI
-                add(Gui);
-                add(GuiSettings);
-                // MISC
-                add(ModGuiTextOverlay);
-                add(FpsCounter);
-            }
-        };
-
         LOGGER.info("Loading settings");
-        Settings.load();
+        Settings.initialize();
         LOGGER.info("Settings loaded");
-
+        new Mods();
+        LOGGER.info("GavinsMod initialized");
         ArrayList<com.peasenet.gui.elements.Gui> guiList = new ArrayList<>();
         guiList.add(new GuiMovement());
         guiList.add(new GuiCombat());

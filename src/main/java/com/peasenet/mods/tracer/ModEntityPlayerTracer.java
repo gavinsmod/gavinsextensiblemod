@@ -22,14 +22,18 @@ package com.peasenet.mods.tracer;
 
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.settings.ColorSetting;
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 6/27/2022
  * A mod that allows the player to see a tracer to other players.
  */
 public class ModEntityPlayerTracer extends Mod {
     public ModEntityPlayerTracer() {
         super(Type.ENTITY_PLAYER_TRACER);
+        ColorSetting colorSetting = new ColorSetting("tracer.player.color",
+                "gavinsmod.settings.tracer.player.color");
+        addSetting(colorSetting);
     }
 }

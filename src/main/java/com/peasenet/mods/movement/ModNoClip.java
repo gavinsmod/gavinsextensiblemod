@@ -25,7 +25,7 @@ import com.peasenet.mods.Type;
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 7/6/2022
  * A mod for allowing the printer to noclip (move through blocks)
  */
 public class ModNoClip extends Mod {
@@ -33,4 +33,11 @@ public class ModNoClip extends Mod {
     public ModNoClip() {
         super(Type.NO_CLIP);
     }
+
+    @Override
+    public void onTick() {
+        getPlayer().getAbilities().flying = true;
+        getPlayer().airStrafingSpeed = 0.2f;
+    }
+
 }

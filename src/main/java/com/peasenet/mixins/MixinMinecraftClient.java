@@ -32,6 +32,7 @@ import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.hit.HitResult;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -70,20 +71,16 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     @Shadow
     public ClientWorld world;
-
-    @Shadow
-    protected int attackCooldown;
-
-    @Shadow
-    private int itemUseCooldown;
-
-    @Final
-    @Shadow
-    private Window window;
-
     @Shadow
     @Final
     public File runDirectory;
+    @Shadow
+    HitResult crosshairTarget;
+    @Shadow
+    private int itemUseCooldown;
+    @Final
+    @Shadow
+    private Window window;
 
     @Inject(at = @At(value = "HEAD"), method = "isAmbientOcclusionEnabled()Z", cancellable = true)
     private static void isXrayOrFullBright(CallbackInfoReturnable<Boolean> ci) {
@@ -148,6 +145,11 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Override
     public File getRunDirectory() {
         return runDirectory;
+    }
+
+    @Override
+    public HitResult crosshairTarget() {
+        return crosshairTarget;
     }
 
 }

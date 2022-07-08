@@ -21,7 +21,7 @@
 package com.peasenet.gui.elements;
 
 import com.peasenet.main.Settings;
-import com.peasenet.util.SettingsCallback;
+import com.peasenet.util.callbacks.SettingsCallback;
 import com.peasenet.util.math.PointD;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -29,25 +29,24 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/17/2022
+ * @version 7/1/2022
  * A simple toggleable gui element.
  */
 public class GuiToggle extends GuiClick {
 
-    public void setState(boolean on) {
-        isOn = on;
-    }
+    /**
+     * The callback method to be called when the element is clicked.
+     */
+    private SettingsCallback callback;
 
     /**
      * Gets whether the toggle is on.
      */
     private boolean isOn;
-
-    public void setCallback(SettingsCallback callback) {
-        this.callback = callback;
-    }
-
-    private SettingsCallback callback;
+    /**
+     * The callback method to be called when the element is rendered.
+     */
+    private SettingsCallback renderCallback;
 
     /**
      * Creates a new GUI menu.
@@ -62,6 +61,33 @@ public class GuiToggle extends GuiClick {
     }
 
     /**
+     * Sets the current state of this toggle element.
+     *
+     * @param on - the new state of this toggle element.
+     */
+    public void setState(boolean on) {
+        isOn = on;
+    }
+
+    /**
+     * Sets the callback method to be called when the toggle is clicked.
+     *
+     * @param callback - The callback method.
+     */
+    public void setCallback(SettingsCallback callback) {
+        this.callback = callback;
+    }
+
+    /**
+     * The callback method to be called when the element is rendered.
+     *
+     * @param callback - The callback method.
+     */
+    public void setRenderCallback(SettingsCallback callback) {
+        renderCallback = callback;
+    }
+
+    /**
      * Gets whether the toggle is on.
      *
      * @return Whether the toggle is on.
@@ -72,22 +98,20 @@ public class GuiToggle extends GuiClick {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (super.mouseClicked(mouseX, mouseY, button)) {
-            isOn = !isOn;
-            if (callback != null) {
-                callback.callback();
-            }
-            return true;
-        }
-        return false;
+        if (!super.mouseClicked(mouseX, mouseY, button) || isHidden()) return false;
+
+        isOn = !isOn;
+        if (callback != null) callback.callback();
+        return true;
     }
 
     @Override
-    public void render(MatrixStack matrixStack, TextRenderer tr) {
-        if (isOn())
-            setBackground(Settings.EnabledColor);
-        else
-            setBackground(Settings.BackgroundColor);
-        super.render(matrixStack, tr);
+    public void render(MatrixStack matrixStack, TextRenderer tr, int mouseX, int mouseY, float delta) {
+        if (isHidden()) return;
+        symbol = isOn ? '\u2611' : '\u2610';
+        if (renderCallback != null) renderCallback.callback();
+        if (isOn()) setBackground(Settings.getColor("gui.color.enabled"));
+        else setBackground(Settings.getColor("gui.color.background"));
+        super.render(matrixStack, tr, mouseX, mouseY, delta);
     }
 }

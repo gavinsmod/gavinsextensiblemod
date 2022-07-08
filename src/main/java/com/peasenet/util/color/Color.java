@@ -20,13 +20,14 @@
 
 package com.peasenet.util.color;
 
+import java.io.Serializable;
+
 /**
  * @author gt3ch1
- * @version 5/24/2022
- * <p>
+ * @version 7/5/2022
  * A representation of a color. The maximum value for each channel is 255, and the minimum is 0.
  */
-public class Color {
+public class Color implements Serializable {
 
     /**
      * The red value of this color.
@@ -57,6 +58,16 @@ public class Color {
     }
 
     /**
+     * Gets a color from an int value.
+     *
+     * @param i - the int value
+     * @return the color
+     */
+    public static Color fromInt(int i) {
+        return new Color(i >> 16 & 0xFF, i >> 8 & 0xFF, i & 0xFF);
+    }
+
+    /**
      * Gets the red value of this color. Will be within 0 and 1.
      *
      * @return red value
@@ -84,16 +95,6 @@ public class Color {
     }
 
     /**
-     * Gets a color from an int value.
-     *
-     * @param i - the int value
-     * @return the color
-     */
-    public static Color fromInt(int i) {
-        return new Color(i >> 16 & 0xFF, i >> 8 & 0xFF, i & 0xFF);
-    }
-
-    /**
      * Gets the float array value of this color. values range from 0 to 1.
      *
      * @return float array of color values
@@ -109,5 +110,29 @@ public class Color {
      */
     public int getAsInt() {
         return (red << 16) | (green << 8) | blue;
+    }
+
+    /**
+     * Gets the int value of this color, will be converted to its hex equivalent.
+     *
+     * @param alpha - the alpha value
+     * @return int value of color
+     */
+    public int getAsInt(float alpha) {
+        if (alpha > 1)
+            alpha = alpha / 255f;
+        if (alpha < 0)
+            alpha = 1;
+        return (int) (alpha * 255) << 24 | (red << 16) | (green << 8) | blue;
+    }
+
+    /**
+     * Checks if two colors are equal. This is determined if the red, blue, and green channels are the same values.
+     *
+     * @param other - The other color.
+     * @return True if the RGB channels match.
+     */
+    public boolean equals(Color other) {
+        return red == other.red && green == other.green && blue == other.blue;
     }
 }

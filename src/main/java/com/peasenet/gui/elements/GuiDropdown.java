@@ -20,33 +20,38 @@
 
 package com.peasenet.gui.elements;
 
+import com.peasenet.main.GavinsModClient;
+import com.peasenet.main.Settings;
 import com.peasenet.mods.Type;
 import com.peasenet.util.math.PointD;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 6/13/2022
+ * @version 7/1/2022
  * A simple dropdown gui element
  */
 public class GuiDropdown extends GuiDraggable {
 
     /**
-     * The list of buttons(mods) in this dropdown.
-     */
-    protected final ArrayList<Gui> buttons = new ArrayList<>();
-    /**
      * The category of the dropdown.
      */
     protected Type.Category category;
+
     /**
      * Whether the dropdown is open.
      */
     private boolean isOpen;
+
+    /**
+     * The direction in which this element will "drop" to.
+     */
+    private Direction direction = Direction.DOWN;
 
     /**
      * Creates a new dropdown like UI element.
@@ -58,20 +63,6 @@ public class GuiDropdown extends GuiDraggable {
      */
     public GuiDropdown(PointD position, int width, int height, Text title) {
         super(position, width, height, title);
-    }
-
-    public void addElement(Gui button) {
-        if (buttons.isEmpty()) {
-            button.setPosition(new PointD(getX(), getY2() + 1));
-            buttons.add(button);
-            return;
-        }
-        // get last button
-        Gui lastButton = buttons.get(buttons.size() - 1);
-        var lastY = lastButton.getY2();
-        // set new button position
-        button.setPosition(new PointD(getX(), lastY + 1));
-        buttons.add(button);
     }
 
     /**
@@ -91,44 +82,83 @@ public class GuiDropdown extends GuiDraggable {
     }
 
     @Override
-    public void render(MatrixStack matrices, TextRenderer tr) {
-        // For each mod in the category, render it right below the title.
-        super.render(matrices, tr);
-        if (!isOpen())
-            return;
-        buttons.forEach(button -> button.render(matrices, tr));
+    public void render(MatrixStack matrixStack, TextRenderer tr, int mouseX, int mouseY, float delta) {
+        updateSymbol();
+        tr.draw(matrixStack, String.valueOf(symbol), (int) getX2() + symbolOffsetX, (int) getY() + symbolOffsetY, (Settings.getColor("foregroundColor")).getAsInt());
+        super.render(matrixStack, tr, mouseX, mouseY, delta);
+        if (!isOpen()) return;
+        var toRender = children.stream().filter(child -> !child.isHidden());
+        // convert toRender to ArrayList
+        var toRenderList = new ArrayList<>(toRender.toList());
+        for (int i = 0; i < toRenderList.size(); i++) {
+            var child = toRenderList.get(i);
+            switch (getDirection()) {
+                case DOWN -> child.setPosition(new PointD(getX(), getY2() + 2 + (i * 12)));
+                case RIGHT -> child.setPosition(new PointD(getX2() + 2, getY() + (i * 12)));
+            }
+            child.render(matrixStack, tr, mouseX, mouseY, delta);
+        }
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+
+        if (isOpen()) {
+            // If the dropdown is open, check if the mouse is within the bounds of any of the buttons.
+            for (Gui g : children) {
+                if (g.mouseClicked(mouseX, mouseY, button) && !g.isHidden()) {
+                    for (Gui child : children) {
+                        if (child instanceof GuiDropdown dropdown && !child.equals(g))
+                            if (dropdown.isOpen())
+                                dropdown.toggleMenu();
+                    }
+                    g.show();
+                    return true;
+                }
+            }
+        }
         // Check if the mouse is within the bounds of the dropdown.
         if (super.mouseClicked(mouseX, mouseY, button)) {
             // If the dropdown is open, close it.
             toggleMenu();
             return true;
         }
-        if (isOpen()) {
-            // If the dropdown is open, check if the mouse is within the bounds of any of the buttons.
-            for (Gui g : buttons) {
-                if (g.mouseClicked(mouseX, mouseY, button))
-                    return true;
-            }
-        }
         return false;
     }
 
+    @Override
+    public boolean mouseWithinGui(double mouseX, double mouseY) {
+        var inMain = super.mouseWithinGui(mouseX, mouseY);
+        if (isOpen()) {
+            for (Gui g : children) {
+                if (g.mouseWithinGui(mouseX, mouseY) && !g.isHidden()) return true;
+            }
+        }
+        return inMain;
+    }
 
     /**
      * Toggles the dropdown.
      */
-    private void toggleMenu() {
+    protected void toggleMenu() {
         isOpen = !isOpen;
+        if (Settings.getBool("gui.sound")) {
+            if (isOpen) GavinsModClient.getPlayer().playSound(SoundEvents.BLOCK_CHEST_OPEN, 0.5f, 1);
+            else GavinsModClient.getPlayer().playSound(SoundEvents.BLOCK_CHEST_CLOSE, 0.5f, 1);
+        }
+        for (Gui g : children) {
+            if (!isOpen) g.hide();
+            else g.show();
+        }
+
     }
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         // calculate the offset between the mouse position and the top left corner of the gui
         if (super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
+            isOpen = false;
+            children.forEach(Gui::hide);
             resetDropdownsLocation();
             return true;
         }
@@ -147,8 +177,65 @@ public class GuiDropdown extends GuiDraggable {
      */
     private void resetDropdownsLocation() {
         // copy buttons to a new array
-        ArrayList<Gui> newButtons = new ArrayList<>(buttons);
-        buttons.clear();
+        ArrayList<Gui> newButtons = new ArrayList<>(children);
+        children.clear();
+        // check if newbuttons contains any children
         newButtons.forEach(this::addElement);
+    }
+
+    /**
+     * Gets the direction that this dropdown will be displayed in.
+     *
+     * @return The direction that this dropdown will be displayed in.
+     */
+    public Direction getDirection() {
+        return direction;
+    }
+
+    /**
+     * Sets the direction that this dropdown will be displayed in.
+     *
+     * @param direction - The direction.
+     */
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    @Override
+    public void addElement(Gui element) {
+        children.add(element);
+        if (getDirection() == Direction.RIGHT) {
+            element.setPosition(new PointD(getX2() + 12, getY2() + (children.size()) * 12));
+        }
+    }
+
+    /**
+     * Sets the symbol for the dropdown based off of what direction it is displayed in.
+     */
+    protected void updateSymbol() {
+        symbol = ' ';
+        symbolOffsetX = -10;
+        symbolOffsetY = 2;
+        if (!isOpen()) {
+            switch (getDirection()) {
+                case RIGHT -> {
+                    symbol = '\u25B6';
+                    symbolOffsetX = -8;
+                }
+                case DOWN -> {
+                    symbol = '\u25BC';
+                    symbolOffsetY = 3;
+                    symbolOffsetX = -8;
+                }
+            }
+        }
+    }
+
+
+    /**
+     * A direction that represents which way the dropdown will be displayed.
+     */
+    public enum Direction {
+        DOWN, RIGHT
     }
 }

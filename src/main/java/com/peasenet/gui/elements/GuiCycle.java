@@ -18,13 +18,15 @@
 
 package com.peasenet.gui.elements;
 
-import com.peasenet.util.SettingsCallback;
+import com.peasenet.main.GavinsModClient;
+import com.peasenet.main.Settings;
 import com.peasenet.util.math.PointD;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/18/2022
+ * @version 6/27/2022
  * A gui element that cycles through a list of settings when clicked on.
  * A callback is called when clicked on.
  */
@@ -40,21 +42,14 @@ public class GuiCycle extends GuiClick {
      */
     private int currentIndex;
 
-    private SettingsCallback callback;
-
     /**
-     * Creates a new GUI menu.
+     * Creates a new gui that can go through a given amount of cycles.
      *
-     * @param position - The position of the menu.
-     * @param width    - The width of the gui.
-     * @param height   - The height of the gui.
-     * @param title    - The title of the gui.
+     * @param width     - The width of the gui.
+     * @param height    - The height of the gui.
+     * @param title     - The title of the gui.
+     * @param cycleSize - The size of the cycle.
      */
-    public GuiCycle(PointD position, int width, int height, Text title, int cycleSize) {
-        super(position, width, height, title);
-        setCycleSize(cycleSize);
-    }
-
     public GuiCycle(int width, int height, Text title, int cycleSize) {
         super(new PointD(0, 0), width, height, title);
         setCycleSize(cycleSize);
@@ -73,29 +68,39 @@ public class GuiCycle extends GuiClick {
             } else if (currentIndex >= cycleSize) {
                 currentIndex = 0;
             }
+            if (Settings.getBool("gui.sound")) {
+                GavinsModClient.getMinecraftClient().getPlayer().playSound(SoundEvents.UI_BUTTON_CLICK, 1.0F, 1.0F);
+            }
             callback.callback();
             return true;
         }
         return false;
     }
 
-    public int getCycleSize() {
-        return cycleSize;
-    }
-
+    /**
+     * Sets the maximum amount of times this element can be clicked before wrapping around.
+     *
+     * @param cycleSize - The size of the cycle.
+     */
     public void setCycleSize(int cycleSize) {
         this.cycleSize = cycleSize;
     }
 
+    /**
+     * Gets the current index of the cycle.
+     *
+     * @return The current index of the cycle.
+     */
     public int getCurrentIndex() {
         return currentIndex;
     }
 
+    /**
+     * Sets the index of the cycle.
+     *
+     * @param currentIndex - The index of the cycle.
+     */
     public void setCurrentIndex(int currentIndex) {
         this.currentIndex = currentIndex;
-    }
-
-    public void setCallback(SettingsCallback callback) {
-        this.callback = callback;
     }
 }

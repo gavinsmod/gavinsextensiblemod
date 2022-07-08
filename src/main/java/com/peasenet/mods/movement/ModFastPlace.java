@@ -37,10 +37,10 @@ public class ModFastPlace extends Mod {
 
     @Override
     public void onTick() {
-        super.onTick();
+
         if (GavinsModClient.getPlayer() != null) {
             var item = GavinsModClient.getPlayer().getMainHandStack().getItem() instanceof BlockItem;
-            if (isEnabled && item)
+            if (isActive() && item)
                 getClient().setItemUseCooldown(0);
         }
     }

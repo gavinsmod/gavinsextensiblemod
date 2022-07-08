@@ -37,7 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(Block.class)
 public class MixinBlock {
-    @Inject(at = @At("RETURN"), method = "shouldDrawSide(" + "Lnet/minecraft/block/BlockState;" + // state
+    @Inject(at = @At("HEAD"), method = "shouldDrawSide(" + "Lnet/minecraft/block/BlockState;" + // state
             "Lnet/minecraft/world/BlockView;" + // reader
             "Lnet/minecraft/util/math/BlockPos;" + // pos
             "Lnet/minecraft/util/math/Direction;" + // face

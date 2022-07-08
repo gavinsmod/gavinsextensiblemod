@@ -20,23 +20,24 @@
 
 package com.peasenet.gui.mod;
 
-import com.peasenet.gui.elements.GuiModCategory;
+import com.peasenet.gui.elements.GuiScroll;
 import com.peasenet.mods.Type;
+import com.peasenet.util.math.BoxD;
 import com.peasenet.util.math.PointD;
 import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/13/2022
+ * @version 6/28/2022
  * Creates a new gui for tracer mods as a dropdown.
  */
-public class GuiTracers extends GuiModCategory {
+public class GuiTracers extends GuiScroll {
 
     /**
      * Creates a new tracer dropdown.
      */
     public GuiTracers() {
-        this(new PointD(80, 120), 82, 10, Text.translatable("key.gavinsmod.gui.tracers"));
+        this(new PointD(85, 120), 95, 10, Text.translatable("gavinsmod.gui.tracers"));
     }
 
     /**
@@ -48,6 +49,7 @@ public class GuiTracers extends GuiModCategory {
      * @param title    - The title of the dropdown.
      */
     public GuiTracers(PointD position, int width, int height, Text title) {
-        super(position, width, height, title, Type.Category.TRACERS);
+        super(position, width, height, title, 4, ModGuiUtil.getGuiToggleFromCategory(Type.Category.TRACERS,
+                new BoxD(position, width, height)));
     }
 }
