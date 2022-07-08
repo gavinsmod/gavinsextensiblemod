@@ -87,6 +87,7 @@ public class Gui {
      * Whether this gui has been shrunk to fit a scrollbar.
      */
     private boolean shrunkForScroll = false;
+
     /**
      * Creates a new GUI menu.
      *

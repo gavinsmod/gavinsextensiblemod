@@ -101,6 +101,7 @@ public class BoxD {
 
     /**
      * Sets the mid-point of the box.
+     *
      * @param middle - The new mid-point of the box.
      */
     public void setMiddle(PointD middle) {

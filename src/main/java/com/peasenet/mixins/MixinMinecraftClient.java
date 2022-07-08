@@ -71,23 +71,16 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     @Shadow
     public ClientWorld world;
-
-    @Shadow
-    protected int attackCooldown;
-
-    @Shadow
-    private int itemUseCooldown;
-
-    @Final
-    @Shadow
-    private Window window;
-
     @Shadow
     @Final
     public File runDirectory;
-
     @Shadow
     HitResult crosshairTarget;
+    @Shadow
+    private int itemUseCooldown;
+    @Final
+    @Shadow
+    private Window window;
 
     @Inject(at = @At(value = "HEAD"), method = "isAmbientOcclusionEnabled()Z", cancellable = true)
     private static void isXrayOrFullBright(CallbackInfoReturnable<Boolean> ci) {

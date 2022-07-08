@@ -115,6 +115,7 @@ public class Waypoint {
 
     /**
      * Gets whether the ESP is enabled.
+     *
      * @return True if the ESP is enabled.
      */
     public boolean isEspEnabled() {
@@ -123,6 +124,7 @@ public class Waypoint {
 
     /**
      * Sets whether the waypoint esp is enabled.
+     *
      * @param espEnabled - Whether to enable the esp.
      */
     public void setEspEnabled(boolean espEnabled) {

@@ -109,7 +109,7 @@ public class GuiDropdown extends GuiDraggable {
                 if (g.mouseClicked(mouseX, mouseY, button) && !g.isHidden()) {
                     for (Gui child : children) {
                         if (child instanceof GuiDropdown dropdown && !child.equals(g))
-                            if(dropdown.isOpen())
+                            if (dropdown.isOpen())
                                 dropdown.toggleMenu();
                     }
                     g.show();

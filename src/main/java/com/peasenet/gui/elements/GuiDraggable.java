@@ -31,6 +31,23 @@ import net.minecraft.text.Text;
 public class GuiDraggable extends GuiClick {
 
     /**
+     * Whether this element is frozen.
+     */
+    private boolean frozen = false;
+
+    /**
+     * Creates a new GUI draggable object.
+     *
+     * @param position - The position of the draggable object.
+     * @param width    - The width of the gui.
+     * @param height   - The height of the gui.
+     * @param title    - The title of the gui.
+     */
+    public GuiDraggable(PointD position, int width, int height, Text title) {
+        super(position, width, height, title);
+    }
+
+    /**
      * Gets whether the dropdown is frozen, meaning it cannot be moved.
      *
      * @return Whether the dropdown is frozen.
@@ -46,23 +63,6 @@ public class GuiDraggable extends GuiClick {
      */
     public void setFrozen(boolean frozen) {
         this.frozen = frozen;
-    }
-
-    /**
-     * Whether this element is frozen.
-     */
-    private boolean frozen = false;
-
-    /**
-     * Creates a new GUI draggable object.
-     *
-     * @param position - The position of the draggable object.
-     * @param width    - The width of the gui.
-     * @param height   - The height of the gui.
-     * @param title    - The title of the gui.
-     */
-    public GuiDraggable(PointD position, int width, int height, Text title) {
-        super(position, width, height, title);
     }
 
     @Override

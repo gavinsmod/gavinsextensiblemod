@@ -40,15 +40,6 @@ public class GuiClick extends Gui {
     protected SettingsCallback callback;
 
     /**
-     * Sets the callback of this gui.
-     *
-     * @param callback - The callback.
-     */
-    public void setCallback(SettingsCallback callback) {
-        this.callback = callback;
-    }
-
-    /**
      * Creates a new GUI menu.
      *
      * @param position - The position of the menu.
@@ -58,6 +49,15 @@ public class GuiClick extends Gui {
      */
     public GuiClick(PointD position, int width, int height, Text title) {
         super(position, width, height, title);
+    }
+
+    /**
+     * Sets the callback of this gui.
+     *
+     * @param callback - The callback.
+     */
+    public void setCallback(SettingsCallback callback) {
+        this.callback = callback;
     }
 
     /**

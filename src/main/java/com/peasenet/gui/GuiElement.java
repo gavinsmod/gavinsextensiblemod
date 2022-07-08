@@ -39,11 +39,6 @@ import java.util.ArrayList;
 public class GuiElement extends Screen {
 
     /**
-     * The screen to go back to when this screen is closed.
-     */
-    protected Screen parent;
-
-    /**
      * The box that contains the menu title in the top left corner of the screen.
      */
     public Gui titleBox;
@@ -51,6 +46,10 @@ public class GuiElement extends Screen {
      * A list of gui children to render.
      */
     public ArrayList<Gui> guis = new ArrayList<>();
+    /**
+     * The screen to go back to when this screen is closed.
+     */
+    protected Screen parent;
 
     /**
      * Creates a new GUI menu with the given title.
