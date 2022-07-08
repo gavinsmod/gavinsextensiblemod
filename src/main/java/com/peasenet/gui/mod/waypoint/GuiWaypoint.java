@@ -182,6 +182,7 @@ public class GuiWaypoint extends GuiElement {
         waypointToggle.setValue(w.isEnabled());
         colorCycle.setColor(w.getColor());
         saveSettings.setCallback(() -> {
+            Settings.deleteWaypoint(w);
             w.setName(textField.getText());
             w.setColor(colorCycle.getColor());
             w.setEnabled(waypointToggle.getValue());
