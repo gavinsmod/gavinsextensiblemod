@@ -77,6 +77,11 @@ public class ColorSetting extends Setting {
         guiCycle.setBackground(Colors.COLORS[index]);
     }
 
+    /**
+     * Sets the background color of this setting.
+     *
+     * @param color - The color of the background.
+     */
     public void setColor(Color color) {
         this.color = color;
         guiCycle.setBackground(color);
