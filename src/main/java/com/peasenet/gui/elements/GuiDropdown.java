@@ -106,7 +106,15 @@ public class GuiDropdown extends GuiDraggable {
         if (isOpen()) {
             // If the dropdown is open, check if the mouse is within the bounds of any of the buttons.
             for (Gui g : children) {
-                if (g.mouseClicked(mouseX, mouseY, button) && !g.isHidden()) return true;
+                if (g.mouseClicked(mouseX, mouseY, button) && !g.isHidden()) {
+                    for (Gui child : children) {
+                        if (child instanceof GuiDropdown dropdown && !child.equals(g))
+                            if(dropdown.isOpen())
+                                dropdown.toggleMenu();
+                    }
+                    g.show();
+                    return true;
+                }
             }
         }
         // Check if the mouse is within the bounds of the dropdown.
