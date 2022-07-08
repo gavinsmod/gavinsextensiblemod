@@ -118,8 +118,10 @@ public class GuiElement extends Screen {
                 gui.setBackground(Settings.getColor("gui.color.category"));
             gui.render(matrixStack, tr, mouseX, mouseY, delta);
         });
-        if (titleBox != null)
+        if (titleBox != null) {
+            titleBox.setBackground(Settings.getColor("gui.color.background"));
             titleBox.render(matrixStack, tr, mouseX, mouseY, delta);
+        }
         super.render(matrixStack, mouseX, mouseY, delta);
     }
 
