@@ -98,7 +98,6 @@ public class Settings {
         default_settings.put("xray.disable_culling", true);
         default_settings.put("xray.blocks", new ArrayList<String>());
         default_settings.put("waypoint.locations", new ArrayList<Waypoint>());
-        default_settings.put("waypoint.locations.enabled", new HashSet<Integer>());
         load();
     }
 
@@ -313,6 +312,7 @@ public class Settings {
         var currList = getWaypoints();
         if (currList == null) currList = new ArrayList<>();
         currList.removeIf(wp -> wp.equals(w));
+        w.setName(w.getName().replace(' ', '_'));
         currList.add(w);
         settings.put("waypoint.locations", currList);
         save();
