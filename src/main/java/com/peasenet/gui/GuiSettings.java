@@ -102,15 +102,7 @@ public class GuiSettings extends GuiElement {
         guis.add(renderDropdown);
         guis.add(miscDropdown);
         guis.add(guiDropdown);
-        tracerDropdown.setFrozen(true);
-        espDropdown.setFrozen(true);
-        renderDropdown.setFrozen(true);
-        miscDropdown.setFrozen(true);
-        guiDropdown.setFrozen(true);
-        guis.forEach(g -> {
-            g.setParent(true);
-        });
-
+        guis.forEach(g -> g.setParent(true));
     }
 
     /**
