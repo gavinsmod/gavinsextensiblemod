@@ -78,13 +78,13 @@ public class ModGuiTextOverlay extends Mod {
         // get the mod with the longest name.
         var longestModName = mods.max(Comparator.comparingInt(mod -> mod.getName().length())).get().getName().length();
         var box = new BoxD(startingPoint, longestModName * 6 + 6, modsCount * 12);
-        RenderUtils.drawBox((Settings.getColor("backgroundColor")).getAsFloatArray(), box, matrixStack);
+        RenderUtils.drawBox((Settings.getColor("gui.color.background")).getAsFloatArray(), box, matrixStack);
         mods = GavinsMod.getModsForTextOverlay();
         AtomicInteger modCounter = new AtomicInteger();
         mods.forEach(mod -> {
-            textRenderer.draw(matrixStack, Text.translatable(mod.getTranslationKey()), currX, currY.get(), (Settings.getColor("foregroundColor")).getAsInt());
+            textRenderer.draw(matrixStack, Text.translatable(mod.getTranslationKey()), currX, currY.get(), (Settings.getColor("gui.color.foreground")).getAsInt());
             if (modsCount > 1 && modCounter.get() < modsCount - 1) {
-                RenderUtils.drawSingleLine((Settings.getColor("foregroundColor")).getAsFloatArray(), currX - 1, currY.get() + 9, longestModName * 6 + 5, currY.get() + 9, matrixStack);
+                RenderUtils.drawSingleLine((Settings.getColor("gui.color.foreground")).getAsFloatArray(), currX - 1, currY.get() + 9, longestModName * 6 + 5, currY.get() + 9, matrixStack);
             }
             currY.addAndGet(12);
             modCounter.getAndIncrement();
