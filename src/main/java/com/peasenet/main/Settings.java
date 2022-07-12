@@ -24,9 +24,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.ToNumberPolicy;
 import com.google.gson.reflect.TypeToken;
+import com.peasenet.gavui.color.Color;
+import com.peasenet.gavui.color.Colors;
+import com.peasenet.gavui.util.GavUISettings;
 import com.peasenet.mods.render.waypoints.Waypoint;
-import com.peasenet.util.color.Color;
-import com.peasenet.util.color.Colors;
 import net.minecraft.block.Block;
 import net.minecraft.block.OreBlock;
 import net.minecraft.util.registry.Registry;
@@ -77,12 +78,6 @@ public class Settings {
         default_settings.put("tracer.player.color", (Colors.YELLOW));
         default_settings.put("tracer.chest.color", (Colors.PURPLE));
         default_settings.put("tracer.item.color", (Colors.CYAN));
-
-        default_settings.put("gui.color.background", (Colors.INDIGO));
-        default_settings.put("gui.color.foreground", (Colors.WHITE));
-        default_settings.put("gui.color.category", (Colors.DARK_SPRING_GREEN));
-        default_settings.put("gui.color.enabled", (Colors.MEDIUM_SEA_GREEN));
-        default_settings.put("gui.sound", false);
 
         default_settings.put("misc.fps.color.enabled", false);
         default_settings.put("misc.fps.color.slow", (Colors.RED));
@@ -227,6 +222,10 @@ public class Settings {
         }.getType();
         Color c = gson.fromJson(settings.get(key).toString(), colorListType);
         return c;
+    }
+
+    public static Color getUiColor(String key) {
+        return GavUISettings.getColor(key);
     }
 
     /**

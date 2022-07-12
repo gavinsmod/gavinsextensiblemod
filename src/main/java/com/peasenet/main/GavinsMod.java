@@ -20,6 +20,7 @@
 
 package com.peasenet.main;
 
+import com.peasenet.gavui.GavUI;
 import com.peasenet.gui.GuiMainMenu;
 import com.peasenet.gui.GuiSettings;
 import com.peasenet.gui.mod.*;
@@ -107,19 +108,20 @@ public class GavinsMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        GavUI.initialize();
         LOGGER.info("Loading settings");
         Settings.initialize();
         LOGGER.info("Settings loaded");
         new Mods();
         LOGGER.info("GavinsMod initialized");
-        ArrayList<com.peasenet.gui.elements.Gui> guiList = new ArrayList<>();
+        ArrayList<com.peasenet.gavui.Gui> guiList = new ArrayList<>();
         guiList.add(new GuiMovement());
         guiList.add(new GuiCombat());
         guiList.add(new GuiESP());
         guiList.add(new GuiMisc());
         guiList.add(new GuiRender());
         guiList.add(new GuiTracers());
-
+        guiList.forEach(g -> g.setParent(true));
         gui = new GuiMainMenu(guiList);
         guiSettings = new GuiSettings();
     }

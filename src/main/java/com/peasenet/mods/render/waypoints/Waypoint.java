@@ -20,7 +20,7 @@
 
 package com.peasenet.mods.render.waypoints;
 
-import com.peasenet.util.color.Color;
+import com.peasenet.gavui.color.Color;
 import net.minecraft.util.math.Vec3i;
 
 /**

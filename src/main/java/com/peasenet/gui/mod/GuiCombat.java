@@ -20,10 +20,10 @@
 
 package com.peasenet.gui.mod;
 
-import com.peasenet.gui.elements.GuiScroll;
+import com.peasenet.gavui.GuiScroll;
+import com.peasenet.gavui.math.BoxD;
+import com.peasenet.gavui.math.PointD;
 import com.peasenet.mods.Type;
-import com.peasenet.util.math.BoxD;
-import com.peasenet.util.math.PointD;
 import net.minecraft.text.Text;
 
 /**

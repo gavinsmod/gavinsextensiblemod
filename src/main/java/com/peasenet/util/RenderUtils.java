@@ -21,6 +21,8 @@
 package com.peasenet.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.peasenet.gavui.color.Color;
+import com.peasenet.gavui.math.BoxD;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Mods;
@@ -28,8 +30,6 @@ import com.peasenet.main.Settings;
 import com.peasenet.mixinterface.ISimpleOption;
 import com.peasenet.mods.Type;
 import com.peasenet.mods.render.waypoints.Waypoint;
-import com.peasenet.util.color.Color;
-import com.peasenet.util.math.BoxD;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.EnderChestBlockEntity;

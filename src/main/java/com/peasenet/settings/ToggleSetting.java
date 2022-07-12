@@ -20,9 +20,10 @@
 
 package com.peasenet.settings;
 
-import com.peasenet.gui.elements.GuiToggle;
+import com.peasenet.gavui.GuiToggle;
+import com.peasenet.gavui.math.PointD;
+import com.peasenet.gavui.util.GavUISettings;
 import com.peasenet.main.Settings;
-import com.peasenet.util.math.PointD;
 import net.minecraft.text.Text;
 
 /**
@@ -45,6 +46,7 @@ public class ToggleSetting extends Setting {
      * The current value of this toggle setting.
      */
     private boolean value;
+    private boolean isGavUi;
 
     /**
      * Creates a new toggle setting.
@@ -54,17 +56,26 @@ public class ToggleSetting extends Setting {
      */
     public ToggleSetting(String name, String key) {
         super(name);
-        if (!name.equals("none"))
+        if (name.contains("gavui")) {
+            name = name.replace("gavui.", "");
+            isGavUi = true;
+        } else if (!name.equals("none"))
             value = Settings.getBool(name);
         else
             value = false;
         gui = new GuiToggle(new PointD(0, 0), 90, 10, Text.translatable(key));
         gui.setState(value);
+        String finalName = name;
         gui.setCallback(() -> {
             onClick();
-            if (name.equals("none"))
+            if (finalName.equals("none"))
                 return;
-            Settings.add(name, value);
+            if (isGavUi) {
+                GavUISettings.add(finalName, value);
+                GavUISettings.save();
+                return;
+            }
+            Settings.add(finalName, value);
             Settings.save();
         });
         gui.hide();

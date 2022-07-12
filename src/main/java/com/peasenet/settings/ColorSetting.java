@@ -20,10 +20,11 @@
 
 package com.peasenet.settings;
 
-import com.peasenet.gui.elements.GuiCycle;
+import com.peasenet.gavui.GuiCycle;
+import com.peasenet.gavui.color.Color;
+import com.peasenet.gavui.color.Colors;
+import com.peasenet.gavui.util.GavUISettings;
 import com.peasenet.main.Settings;
-import com.peasenet.util.color.Color;
-import com.peasenet.util.color.Colors;
 import net.minecraft.text.Text;
 
 /**
@@ -43,6 +44,8 @@ public class ColorSetting extends Setting {
      */
     private Color color;
 
+    private boolean isGavUi;
+
     /**
      * Creates a new color setting.
      *
@@ -51,17 +54,25 @@ public class ColorSetting extends Setting {
      */
     public ColorSetting(String name, String translationKey) {
         super(name);
-        if (!name.equals("none"))
-            color = Settings.getColor(name);
-        else
-            color = Colors.WHITE;
+        if (name.contains("gavui")) {
+            name = name.replace("gavui.", "");
+            isGavUi = true;
+            color = GavUISettings.getColor(name);
+        } else if (!name.equals("none")) color = Settings.getColor(name);
+        else color = Colors.WHITE;
         guiCycle = new GuiCycle(90, 10, Text.translatable(translationKey), Colors.COLORS.length);
         guiCycle.setBackground(color);
+        String finalName = name;
         guiCycle.setCallback(() -> {
             color = Colors.COLORS[guiCycle.getCurrentIndex()];
             guiCycle.setBackground(color);
-            Settings.add(name, color);
-            Settings.save();
+            if (isGavUi) {
+                GavUISettings.add(finalName, color);
+                GavUISettings.save();
+            } else {
+                Settings.add(finalName, color);
+                Settings.save();
+            }
             onClick();
         });
         guiCycle.setCurrentIndex(Colors.getColorIndex(color));

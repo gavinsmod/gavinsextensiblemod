@@ -19,9 +19,10 @@
  */
 
 package com.peasenet.gui.mod.waypoint;
-
+import com.peasenet.gavui.Gui;
+import com.peasenet.gavui.color.Colors;
+import com.peasenet.gavui.math.PointD;
 import com.peasenet.gui.GuiElement;
-import com.peasenet.gui.elements.Gui;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Mods;
@@ -30,8 +31,6 @@ import com.peasenet.mods.render.waypoints.Waypoint;
 import com.peasenet.settings.ClickSetting;
 import com.peasenet.settings.ColorSetting;
 import com.peasenet.settings.ToggleSetting;
-import com.peasenet.util.color.Colors;
-import com.peasenet.util.math.PointD;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;

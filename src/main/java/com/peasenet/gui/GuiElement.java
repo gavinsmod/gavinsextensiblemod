@@ -21,9 +21,9 @@
 package com.peasenet.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.peasenet.gui.elements.Gui;
-import com.peasenet.main.Settings;
-import com.peasenet.util.math.PointD;
+import com.peasenet.gavui.Gui;
+import com.peasenet.gavui.math.PointD;
+import com.peasenet.gavui.util.GavUISettings;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -114,11 +114,11 @@ public class GuiElement extends Screen {
         RenderSystem.enableBlend();
         guis.forEach(gui -> {
             if (gui.isParent())
-                gui.setBackground(Settings.getColor("gui.color.category"));
+                gui.setBackground(GavUISettings.getColor("gui.color.category"));
             gui.render(matrixStack, tr, mouseX, mouseY, delta);
         });
         if (titleBox != null) {
-            titleBox.setBackground(Settings.getColor("gui.color.background"));
+            titleBox.setBackground(GavUISettings.getColor("gui.color.background"));
             titleBox.render(matrixStack, tr, mouseX, mouseY, delta);
         }
         super.render(matrixStack, mouseX, mouseY, delta);

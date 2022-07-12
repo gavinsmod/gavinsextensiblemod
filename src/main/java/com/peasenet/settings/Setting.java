@@ -21,7 +21,7 @@
 
 package com.peasenet.settings;
 
-import com.peasenet.gui.elements.Gui;
+import com.peasenet.gavui.Gui;
 import com.peasenet.util.callbacks.SettingsCallback;
 import net.minecraft.text.Text;
 

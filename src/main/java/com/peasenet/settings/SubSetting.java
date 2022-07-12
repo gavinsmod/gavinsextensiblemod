@@ -20,8 +20,8 @@
 
 package com.peasenet.settings;
 
-import com.peasenet.gui.elements.GuiDropdown;
-import com.peasenet.gui.elements.GuiScroll;
+import com.peasenet.gavui.GuiDropdown;
+import com.peasenet.gavui.GuiScroll;
 import net.minecraft.text.Text;
 
 /**

@@ -20,14 +20,14 @@
 
 package com.peasenet.gui;
 
-import com.peasenet.gui.elements.Gui;
-import com.peasenet.gui.elements.GuiScroll;
+import com.peasenet.gavui.Gui;
+import com.peasenet.gavui.GuiScroll;
+import com.peasenet.gavui.math.PointD;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.Mods;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.Setting;
-import com.peasenet.util.math.PointD;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;

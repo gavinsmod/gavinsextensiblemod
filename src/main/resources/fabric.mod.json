@@ -31,7 +31,8 @@
         "fabric": "*",
         "minecraft": "~1.19",
         "java": ">=17",
-        "fabric-key-binding-api-v1": "*"
+        "fabric-key-binding-api-v1": "*",
+        "gavui": "*"
     },
     "suggests": {
         "another-mod": "*"

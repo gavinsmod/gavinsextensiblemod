@@ -20,12 +20,12 @@
 
 package com.peasenet.gui.mod;
 
-import com.peasenet.gui.elements.Gui;
-import com.peasenet.gui.elements.GuiToggle;
+import com.peasenet.gavui.Gui;
+import com.peasenet.gavui.GuiToggle;
+import com.peasenet.gavui.math.BoxD;
+import com.peasenet.gavui.math.PointD;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Type;
-import com.peasenet.util.math.BoxD;
-import com.peasenet.util.math.PointD;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;

@@ -20,9 +20,9 @@
 
 package com.peasenet.settings;
 
-import com.peasenet.gui.elements.Gui;
-import com.peasenet.gui.elements.GuiClick;
-import com.peasenet.util.math.PointD;
+import com.peasenet.gavui.Gui;
+import com.peasenet.gavui.GuiClick;
+import com.peasenet.gavui.math.PointD;
 import net.minecraft.text.Text;
 
 /**

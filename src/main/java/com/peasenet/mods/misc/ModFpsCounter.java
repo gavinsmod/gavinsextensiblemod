@@ -20,7 +20,9 @@
 
 package com.peasenet.mods.misc;
 
-import com.peasenet.gui.elements.GuiDropdown;
+import com.peasenet.gavui.GuiDropdown;
+import com.peasenet.gavui.math.BoxD;
+import com.peasenet.gavui.math.PointD;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Settings;
@@ -30,8 +32,6 @@ import com.peasenet.settings.ColorSetting;
 import com.peasenet.settings.SubSetting;
 import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.RenderUtils;
-import com.peasenet.util.math.BoxD;
-import com.peasenet.util.math.PointD;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 

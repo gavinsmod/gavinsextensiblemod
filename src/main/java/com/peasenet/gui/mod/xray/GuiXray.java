@@ -20,17 +20,17 @@
 
 package com.peasenet.gui.mod.xray;
 
+import com.peasenet.gavui.Gui;
+import com.peasenet.gavui.GuiClick;
+import com.peasenet.gavui.GuiToggle;
+import com.peasenet.gavui.color.Colors;
+import com.peasenet.gavui.math.PointD;
 import com.peasenet.gui.GuiElement;
-import com.peasenet.gui.elements.Gui;
-import com.peasenet.gui.elements.GuiClick;
-import com.peasenet.gui.elements.GuiToggle;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Mods;
 import com.peasenet.main.Settings;
 import com.peasenet.util.RenderUtils;
-import com.peasenet.util.color.Colors;
-import com.peasenet.util.math.PointD;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;

@@ -35,11 +35,11 @@ import com.peasenet.settings.ToggleSetting;
 public class ModGuiSettings extends Mod {
     public ModGuiSettings() {
         super(Type.SETTINGS);
-        ColorSetting foregroundColorSetting = new ColorSetting("gui.color.foreground", "gavinsmod.settings.gui.color.foreground");
-        ColorSetting backgroundColorSetting = new ColorSetting("gui.color.background", "gavinsmod.settings.gui.color.background");
-        ColorSetting categoryColorSetting = new ColorSetting("gui.color.category", "gavinsmod.settings.gui.color.category");
-        ColorSetting enabledColorSetting = new ColorSetting("gui.color.enabled", "gavinsmod.settings.gui.color.enabled");
-        ToggleSetting guiSounds = new ToggleSetting("gui.sound", "gavinsmod.settings.gui.sound");
+        ColorSetting foregroundColorSetting = new ColorSetting("gavui.gui.color.foreground", "gavinsmod.settings.gui.color.foreground");
+        ColorSetting backgroundColorSetting = new ColorSetting("gavui.gui.color.background", "gavinsmod.settings.gui.color.background");
+        ColorSetting categoryColorSetting = new ColorSetting("gavui.gui.color.category", "gavinsmod.settings.gui.color.category");
+        ColorSetting enabledColorSetting = new ColorSetting("gavui.gui.color.enabled", "gavinsmod.settings.gui.color.enabled");
+        ToggleSetting guiSounds = new ToggleSetting("gavui.gui.sound", "gavinsmod.settings.gui.sound");
 
         addSetting(backgroundColorSetting);
         addSetting(foregroundColorSetting);

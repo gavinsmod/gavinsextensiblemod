@@ -20,7 +20,7 @@
 
 package com.peasenet.gui;
 
-import com.peasenet.gui.elements.Gui;
+import com.peasenet.gavui.Gui;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Type;
 import net.minecraft.text.Text;
