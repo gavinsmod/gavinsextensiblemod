@@ -225,11 +225,6 @@ public class Settings {
         var bakFile = cfgFile + ".bak";
         int bakCount = 1;
         // check if the backup file exists
-        if (!Files.exists(Paths.get(bakFile))) {
-            loadDefault();
-            save();
-            return;
-        }
         while (Files.exists(Paths.get(bakFile))) {
             bakFile = cfgFile + ".bak" + bakCount;
         }
