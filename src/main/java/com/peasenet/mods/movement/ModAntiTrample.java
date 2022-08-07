@@ -33,7 +33,7 @@ import net.minecraft.block.Blocks;
 public class ModAntiTrample extends Mod {
 
     private static final Block FARMLAND = Blocks.FARMLAND;
-    private static final boolean wasOnFarmland = false;
+    private static boolean wasOnFarmland = false;
 
     public ModAntiTrample() {
         super(Type.ANTI_TRAMPLE);
@@ -41,20 +41,20 @@ public class ModAntiTrample extends Mod {
 
     @Override
     public void onTick() {
-//        // check if the player is on farmland by looking at the block below the player.
-//        var playerLoc = getPlayer().getBlockPos();
-//        var playerLocDown = getPlayer().getBlockPos().down();
-//        var playerBlock = getWorld().getBlockState(playerLoc).getBlock();
-//        var playerBlockDown  = getWorld().getBlockState(playerLocDown).getBlock();
-//        var isOnFarmland = playerBlock == FARMLAND || playerBlockDown == FARMLAND;
-//        if(isOnFarmland) {
-//            getClient().getOptions().sneakKey.setPressed(true);
-//        }
-//        if(!wasOnFarmland) {
-//            getClient().getOptions().sneakKey.setPressed(false);
-//            return;
-//        }
-//        wasOnFarmland = isOnFarmland;
+        // check if the player is on farmland by looking at the block below the player.
+        var playerLoc = getPlayer().getBlockPos();
+        var playerLocDown = getPlayer().getBlockPos().down();
+        var playerBlock = getWorld().getBlockState(playerLoc).getBlock();
+        var playerBlockDown = getWorld().getBlockState(playerLocDown).getBlock();
+        var isOnFarmland = playerBlock == FARMLAND || playerBlockDown == FARMLAND;
+        if (isOnFarmland) {
+            getClient().getOptions().sneakKey.setPressed(true);
+        }
+        if (!wasOnFarmland) {
+            getClient().getOptions().sneakKey.setPressed(false);
+            return;
+        }
+        wasOnFarmland = isOnFarmland;
     }
 
 }
