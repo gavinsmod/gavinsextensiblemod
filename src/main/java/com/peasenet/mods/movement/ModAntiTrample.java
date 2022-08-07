@@ -49,12 +49,13 @@ public class ModAntiTrample extends Mod {
         var isOnFarmland = playerBlock == FARMLAND || playerBlockDown == FARMLAND;
         if (isOnFarmland) {
             getClient().getOptions().sneakKey.setPressed(true);
-        }
-        if (!wasOnFarmland) {
-            getClient().getOptions().sneakKey.setPressed(false);
+            wasOnFarmland = true;
             return;
         }
-        wasOnFarmland = isOnFarmland;
+        if (wasOnFarmland) {
+            getClient().getOptions().sneakKey.setPressed(false);
+            wasOnFarmland = false;
+        }
     }
 
 }
