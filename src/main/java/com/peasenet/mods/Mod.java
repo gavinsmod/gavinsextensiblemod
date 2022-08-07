@@ -29,6 +29,7 @@ import com.peasenet.util.KeyBindUtils;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
@@ -248,5 +249,9 @@ public abstract class Mod implements IMod {
         var tmpSettings = new ArrayList<>(getSettings());
         getSettings().clear();
         modSettings.addAll(tmpSettings);
+    }
+
+    public ClientWorld getWorld() {
+        return getClient().getWorld();
     }
 }

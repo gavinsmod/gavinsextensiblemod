@@ -23,6 +23,7 @@ package com.peasenet.mods;
 import com.peasenet.settings.Setting;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 
 import java.util.ArrayList;
@@ -170,4 +171,11 @@ public interface IMod {
      * Reloads the settings of the mod.
      */
     void reloadSettings();
+
+    /**
+     * The world that the player is in.
+     *
+     * @return The world that the player is in.
+     */
+    ClientWorld getWorld();
 }
