@@ -59,6 +59,7 @@ public class Mods {
         new ModFastMine();
         new ModFastPlace();
         new ModDolphin();
+        new ModAntiTrample();
         // COMBAT
         new ModKillAura();
         new ModAutoCrit();

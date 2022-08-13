@@ -36,10 +36,12 @@ public enum Type {
     FAST_MINE("Fast Mine", "gavinsmod.mod.movement.fastmine", "gavinsmod.keybinds.movement", MOVEMENT, "fastmine"),
     FAST_PLACE("Fast Place", "gavinsmod.mod.movement.fastplace", "gavinsmod.keybinds.movement", MOVEMENT, "fastplace"),
     AUTO_JUMP("Auto Jump", "gavinsmod.mod.movement.autojump", "gavinsmod.keybinds.movement", MOVEMENT, "autojump"),
+    ANTI_TRAMPLE("Anti Trample", "gavinsmod.mod.movement.antitrample", "gavinsmod.keybinds.movement", MOVEMENT, "antitrample"),
     CLIMB("Climb", "gavinsmod.mod.movement.climb", "gavinsmod.keybinds.movement", MOVEMENT, "climb"),
     NO_CLIP("No Clip", "gavinsmod.mod.movement.noclip", "gavinsmod.keybinds.movement", MOVEMENT, "noclip"),
     NO_FALL("No Fall", "gavinsmod.mod.movement.nofall", "gavinsmod.keybinds.movement", MOVEMENT, "nofall"),
     DOLPHIN("Dolphin", "gavinsmod.mod.movement.dolphin", "gavinsmod.keybinds.movement", MOVEMENT, "dolphin"),
+
     //COMBAT
     KILL_AURA("Kill Aura", "gavinsmod.mod.combat.killaura", "gavinsmod.keybinds.combat", COMBAT, "killaura"),
     AUTO_CRIT("Auto Crit", "gavinsmod.mod.combat.autocrit", "gavinsmod.keybinds.combat", COMBAT, "autocrit"),

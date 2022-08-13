@@ -226,7 +226,8 @@ public class Settings {
         int bakCount = 1;
         // check if the backup file exists
         if (!Files.exists(Paths.get(bakFile))) {
-            loadDefault();
+            loadDefaultXrayBlocks();
+            settings.putAll(default_settings);
             save();
             return;
         }
