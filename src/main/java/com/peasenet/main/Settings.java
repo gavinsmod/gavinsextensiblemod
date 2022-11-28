@@ -173,7 +173,6 @@ public class Settings {
         } catch (Exception e) {
             GavinsMod.LOGGER.error("Error reading settings from file. Saving defaults.");
             loadDefault();
-            save();
         }
     }
 
@@ -224,21 +223,13 @@ public class Settings {
         // rename settings file to settings.bak
         var bakFile = cfgFile + ".bak";
         int bakCount = 1;
-        // check if the backup file exists
-        if (!Files.exists(Paths.get(bakFile))) {
-            loadDefault();
-            save();
-            return;
+        // if bak file exists, rename it to settings.bak.1, settings.bak.2, etc.
+        while(new File(bakFile).exists()) {
+            bakFile = cfgFile + ".bak." + bakCount;
+            bakCount++;
         }
-        while (Files.exists(Paths.get(bakFile))) {
-            bakFile = cfgFile + ".bak" + bakCount;
-        }
-        try {
-            Files.move(Paths.get(cfgFile), Paths.get(bakFile));
-        } catch (IOException e1) {
-            GavinsMod.LOGGER.error("Error renaming settings file.");
-            GavinsMod.LOGGER.error(e1.getMessage());
-        }
+        // move the settings file to the bak file
+        new File(cfgFile).renameTo(new File(bakFile));
         loadDefaultXrayBlocks();
         settings.putAll(default_settings);
         save();

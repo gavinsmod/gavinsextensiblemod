@@ -50,7 +50,7 @@ public class GavinsMod implements ModInitializer {
     /**
      * The current version of the mod.
      */
-    public static final String VERSION = "v1.3";
+    public static final String VERSION = "v1.3.1-2";
 
     /**
      * The gui used to display the main mod menu.
