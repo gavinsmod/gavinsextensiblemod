@@ -78,7 +78,7 @@ public class ModGuiTextOverlay extends Mod {
         // get the mod with the longest name.
         var longestModName = mods.max(Comparator.comparingInt(mod -> mod.getName().length())).get().getName().length();
         var box = new BoxD(startingPoint, longestModName * 6 + 6, modsCount * 12);
-        RenderUtils.drawBox((Settings.getColor("gui.color.background")).getAsFloatArray(), box, matrixStack);
+        RenderUtils.drawBox((Settings.getColor("gui.color.background")).getAsFloatArray(), box, matrixStack, 0.5f);
         mods = GavinsMod.getModsForTextOverlay();
         AtomicInteger modCounter = new AtomicInteger();
         mods.forEach(mod -> {

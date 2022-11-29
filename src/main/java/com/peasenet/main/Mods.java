@@ -91,6 +91,19 @@ public class Mods {
         new ModRadar();
     }
 
+    public static void reload() {
+        // get the mods that are enabled
+        ArrayList<String> enabledMods = new ArrayList<>(modMap.values().stream().filter(Mod::isActive).map(Mod::getChatCommand).toList());
+        modMap.clear();
+        new Mods();
+        for (String modName : enabledMods) {
+            Mod mod = getMod(modName);
+            if (mod != null) {
+                mod.activate();
+            }
+        }
+    }
+
     /**
      * Gets the list of mods.
      *

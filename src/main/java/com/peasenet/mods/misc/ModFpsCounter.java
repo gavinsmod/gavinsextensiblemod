@@ -81,7 +81,7 @@ public class ModFpsCounter extends Mod {
             else if (fps > maximumFps * 0.45 && fps < maximumFps * 0.85) color = Settings.getColor("misc.fps.color.ok");
             else color = Settings.getColor("misc.fps.color.slow");
         }
-        RenderUtils.drawBox((Settings.getColor("gui.color.background")).getAsFloatArray(), box, matrixStack);
+        RenderUtils.drawBox((Settings.getColor("gui.color.background")).getAsFloatArray(), box, matrixStack, 0.5f);
         textRenderer.draw(matrixStack, Text.literal(fpsString), xCoordinate, 2, color.getAsInt());
     }
 }

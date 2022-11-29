@@ -31,6 +31,10 @@ import com.peasenet.gavui.util.GavUISettings;
 import com.peasenet.mods.render.waypoints.Waypoint;
 import net.minecraft.block.Block;
 import net.minecraft.block.OreBlock;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.NotNull;
 
@@ -79,6 +83,11 @@ public class Settings {
         default_settings.put("tracer.player.color", (Colors.YELLOW));
         default_settings.put("tracer.chest.color", (Colors.PURPLE));
         default_settings.put("tracer.item.color", (Colors.CYAN));
+
+        default_settings.put("radar.mob.hostile.color", (Colors.RED));
+        default_settings.put("radar.mob.peaceful.color", (Colors.GREEN));
+        default_settings.put("radar.player.color", (Colors.YELLOW));
+        default_settings.put("radar.item.color", (Colors.CYAN));
 
         default_settings.put("misc.fps.color.enabled", false);
         default_settings.put("misc.fps.color.slow", (Colors.RED));
@@ -183,7 +192,13 @@ public class Settings {
      * @return The boolean value of the setting.
      */
     public static boolean getBool(String key) {
-        if (!settings.containsKey(key)) return false;
+        if (!settings.containsKey(key)) {
+            // check if the default settings contain the key
+            if (!default_settings.containsKey(key))
+                return false;
+            // add the key to the settings
+            settings.put(key, default_settings.get(key));
+        }
         if (settings.get(key) == null) {
             settings.put(key, false);
             return false;
@@ -207,8 +222,38 @@ public class Settings {
             c = gson.fromJson(settings.get(key).toString(), colorListType);
         } catch (JsonSyntaxException e) {
             loadDefault();
+        } catch (NullPointerException e1) {
+            GavinsMod.LOGGER.error("Color not found for key: " + key);
+            // check if default settings contains the key
+            if (default_settings.containsKey(key)) {
+                GavinsMod.LOGGER.warn("Saving default color for key: " + key);
+                // set the color to the default color
+                c = (Color) default_settings.get(key);
+                // set the color in the settings
+                settings.put(key, c);
+                save();
+            } else {
+                return Colors.WHITE;
+            }
         }
         return c;
+    }
+
+
+    public static Color getColorFromEntity(Entity e, String baseKey) {
+        var key = baseKey;
+        if (e instanceof PlayerEntity) {
+            key += ".player.color";
+        } else if (e instanceof MobEntity) {
+            if ((e.getType().getSpawnGroup().isPeaceful())) {
+                key += ".mob.peaceful.color";
+            } else {
+                key += ".mob.hostile.color";
+            }
+        } else if (e instanceof ItemEntity) {
+            key += ".item.color";
+        }
+        return getColor(key);
     }
 
     public static Color getUiColor(String key) {
@@ -224,7 +269,7 @@ public class Settings {
         var bakFile = cfgFile + ".bak";
         int bakCount = 1;
         // if bak file exists, rename it to settings.bak.1, settings.bak.2, etc.
-        while(new File(bakFile).exists()) {
+        while (new File(bakFile).exists()) {
             bakFile = cfgFile + ".bak." + bakCount;
             bakCount++;
         }

@@ -381,8 +381,12 @@ public class RenderUtils {
      * @param box         The box to draw.
      * @param matrixStack The matrix stack.
      */
-    public static void drawBox(float[] acColor, BoxD box, MatrixStack matrixStack) {
-        drawBox(acColor, (int) box.getTopLeft().x(), (int) box.getTopLeft().y(), (int) box.getBottomRight().x(), (int) box.getBottomRight().y(), matrixStack);
+    public static void drawBox(float[] acColor, BoxD box, MatrixStack matrixStack, float alpha) {
+        drawBox(acColor, (int) box.getTopLeft().x(), (int) box.getTopLeft().y(), (int) box.getBottomRight().x(), (int) box.getBottomRight().y(), matrixStack, alpha);
+    }
+
+    public static void drawBox(Color c, BoxD box, MatrixStack matrixStack, float alpha) {
+        drawBox(c.getAsFloatArray(), box, matrixStack, alpha);
     }
 
     /**
@@ -394,13 +398,16 @@ public class RenderUtils {
      * @param xt2         The x coordinate of the bottom right corner of the box.
      * @param yt2         The y coordinate of the bottom right corner of the box.
      * @param matrixStack The matrix stack used to draw boxes on screen.
+     * @param alpha       The alpha value of the box.
      */
-    public static void drawBox(float[] acColor, int xt1, int yt1, int xt2, int yt2, MatrixStack matrixStack) {
+    public static void drawBox(float[] acColor, int xt1, int yt1, int xt2, int yt2, MatrixStack matrixStack, float alpha) {
+        // set alpha to be between 0 and 1
+        alpha = Math.max(0, Math.min(1, alpha));
         RenderSystem.setShader(GameRenderer::getPositionShader);
         RenderSystem.enableBlend();
         var matrix = matrixStack.peek().getPositionMatrix();
         var bufferBuilder = Tessellator.getInstance().getBuffer();
-        RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 0.5f);
+        RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], alpha);
         bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
         drawBox(xt1, yt1, xt2, yt2, matrix, bufferBuilder);
         Tessellator.getInstance().draw();
