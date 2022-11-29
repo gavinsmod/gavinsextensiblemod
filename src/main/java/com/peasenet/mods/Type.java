@@ -69,6 +69,7 @@ public enum Type {
 
     // MISC
     MOD_FPS_COUNTER("FPS Counter", "gavinsmod.mod.misc.fpscounter", "gavinsmod.keybinds.misc", MISC, "fpscounter"),
+    RADAR("Radar", "gavinsmod.mod.misc.radar", "gavinsmod.keybinds.misc", MISC, "radar"),
     MOD_GUI_TEXT_OVERLAY("GUI Text Overlay", "gavinsmod.mod.misc.textoverlay", "gavinsmod.keybinds.misc", MISC, "textoverlay"),
 
     // GUI (translation key not needed)
