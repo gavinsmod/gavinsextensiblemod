@@ -72,8 +72,6 @@ public class ModRadar extends Mod {
         color.add(peacefulMobEntityColor);
         color.add(entityItemColor);
 
-        color.getGui().getChildren().forEach(c -> color.setWidth(150));
-
         scaleSetting.setCallback(this::increaseScale);
         drawSettings.add(scaleSetting);
         drawSettings.add(peacefulMobsSetting);
