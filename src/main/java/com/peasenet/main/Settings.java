@@ -49,6 +49,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author gt3ch1
@@ -88,6 +89,15 @@ public class Settings {
         default_settings.put("radar.mob.peaceful.color", (Colors.GREEN));
         default_settings.put("radar.player.color", (Colors.YELLOW));
         default_settings.put("radar.item.color", (Colors.CYAN));
+
+        default_settings.put("radar.scale", 2);
+        default_settings.put("radar.mob.peaceful", true);
+        default_settings.put("radar.mob.hostile", true);
+        default_settings.put("radar.item", true);
+        default_settings.put("radar.waypoints", true);
+        default_settings.put("radar.player", true);
+        default_settings.put("radar.waypoint.color", (Colors.WHITE));
+        default_settings.put("radar.waypoint.usecolor", true);
 
         default_settings.put("misc.fps.color.enabled", false);
         default_settings.put("misc.fps.color.slow", (Colors.RED));
@@ -178,7 +188,17 @@ public class Settings {
         Gson gson = new GsonBuilder().setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE).create();
         try {
             var map = gson.fromJson(new FileReader(cfgFile), HashMap.class);
-            default_settings.forEach((k, _v) -> settings.put(k, map.get(k)));
+            AtomicBoolean defaultSettingLoaded = new AtomicBoolean(false);
+            default_settings.forEach((k, _v) -> {
+                if (map.containsKey(k))
+                    settings.put(k, map.get(k));
+                else {
+                    settings.put(k, _v);
+                    defaultSettingLoaded.set(true);
+                }
+            });
+            if (defaultSettingLoaded.get())
+                save();
         } catch (Exception e) {
             GavinsMod.LOGGER.error("Error reading settings from file. Saving defaults.");
             loadDefault();

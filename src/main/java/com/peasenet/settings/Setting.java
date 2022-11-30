@@ -43,12 +43,19 @@ public abstract class Setting {
     private SettingsCallback callback;
 
     /**
+     * The translation key for the name of this setting.
+     */
+    private String translationKey;
+
+    /**
      * Creates a new setting.
      *
      * @param name - The name of the setting (ie, "foregroundColor").
+     * @param translationKey - The translation key of this setting (ie, "gavinsmod.settings.xray")
      */
-    public Setting(String name) {
+    public Setting(String name, String translationKey) {
         this.name = name;
+        this.translationKey = translationKey;
     }
 
     /**
@@ -99,6 +106,14 @@ public abstract class Setting {
      */
     public void setTitle(Text text) {
         getGui().setTitle(text);
+    }
+
+    /**
+     * Gets the translation key for this setting.
+     * @return The translation key.
+     */
+    public String getTranslationKey() {
+        return translationKey;
     }
 
 }
