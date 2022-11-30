@@ -26,16 +26,19 @@ import com.peasenet.gavui.math.PointD;
 import com.peasenet.main.Settings;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.mods.render.waypoints.Waypoint;
 import com.peasenet.settings.ClickSetting;
 import com.peasenet.settings.ColorSetting;
 import com.peasenet.settings.SubSetting;
 import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.RenderUtils;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.Text;
 
 /**
  * A mod that allows for a radar-like view of the world.
@@ -50,27 +53,33 @@ public class ModRadar extends Mod {
     public static int radarSize = 96 + 1;
     public static int scale = 1;
 
+    private static ClickSetting scaleSetting;
+
     public ModRadar() {
         super(Type.RADAR);
         var playerEntityColor = new ColorSetting("radar.player.color", "gavinsmod.settings.radar.player.color");
         var hostileMobEntityColor = new ColorSetting("radar.mob.hostile.color", "gavinsmod.settings.radar.mob.hostile.color");
         var peacefulMobEntityColor = new ColorSetting("radar.mob.peaceful.color", "gavinsmod.settings.radar.mob.peaceful.color");
         var entityItemColor = new ColorSetting("radar.item.color", "gavinsmod.settings.radar.item.color");
+        var waypointColor = new ColorSetting("radar.waypoint.color", "gavinsmod.settings.radar.waypoint.color");
 
-        var scaleSetting = new ClickSetting("radar.scale", "gavinsmod.settings.radar.scale");
+        scaleSetting = new ClickSetting("radar.scale", "gavinsmod.settings.radar.scale");
         var peacefulMobsSetting = new ToggleSetting("radar.mob.peaceful", "gavinsmod.settings.radar.mob.peaceful");
         var hostileMobsSetting = new ToggleSetting("radar.mob.hostile", "gavinsmod.settings.radar.mob.hostile");
         var itemsSetting = new ToggleSetting("radar.item", "gavinsmod.settings.radar.item");
         var waypointsSetting = new ToggleSetting("radar.waypoints", "gavinsmod.settings.radar.waypoints");
         var playerSetting = new ToggleSetting("radar.player", "gavinsmod.settings.radar.player");
+        var useWaypointColorSetting = new ToggleSetting("radar.waypoint.usecolor", "gavinsmod.settings.radar.waypoint.usecolor");
 
-        var color = new SubSetting(1000, 10, "gavinsmod.settings.radar.color");
-        var drawSettings = new SubSetting(1000, 10, "gavinsmod.settings.radar.drawn");
+        var color = new SubSetting(100, 10, "gavinsmod.settings.radar.color");
+        var drawSettings = new SubSetting(100, 10, "gavinsmod.settings.radar.drawn");
 
         color.add(playerEntityColor);
         color.add(hostileMobEntityColor);
         color.add(peacefulMobEntityColor);
         color.add(entityItemColor);
+        color.add(waypointColor);
+        color.getGui().getChildren().forEach(c -> c.setWidth(115));
 
         scaleSetting.setCallback(this::increaseScale);
         drawSettings.add(scaleSetting);
@@ -79,17 +88,24 @@ public class ModRadar extends Mod {
         drawSettings.add(itemsSetting);
         drawSettings.add(waypointsSetting);
         drawSettings.add(playerSetting);
-
+        drawSettings.add(useWaypointColorSetting);
+        drawSettings.getGui().getChildren().forEach(c -> c.setWidth(115));
         addSetting(color);
         addSetting(drawSettings);
+
+    }
+
+    private static void updateScaleText() {
+        scaleSetting.setTitle(Text.of(I18n.translate(scaleSetting.getTranslationKey()) + " (%s)".formatted(scale)));
     }
 
     private void increaseScale() {
+        scale++;
         if (scale > 8) {
             scale = 1;
         }
-        scale++;
         updateRadarSize();
+        updateScaleText();
     }
 
     private void updateRadarSize() {
@@ -114,9 +130,28 @@ public class ModRadar extends Mod {
             // get entity x and z relative to player
             var point = getPointRelativeToYaw(entity, yaw);
             var color = Settings.getColorFromEntity(entity, "radar");
-            RenderUtils.drawBox(color, new BoxD(point.add(new PointD(width + radarSize / 2, radarSize / 2 + 10)), 3, 3), stack, 1f);
+            RenderUtils.drawBox(color, new BoxD(point.add(new PointD(width + radarSize / 2.0, radarSize / 2.0 + 10)), 3, 3), stack, 1f);
+        }
+        var waypoints = Settings.getWaypoints().stream().filter(Waypoint::isEnabled).toList();
+        for (Waypoint w : waypoints) {
+            var color = w.getColor();
+            if (!Settings.getBool("radar.waypoint.usecolor")) {
+                color = Settings.getColor("radar.waypoint.color");
+            }
+            if (getDistanceToPoint(new PointD(w.getX(), w.getZ())) > radarSize / 2.0) continue;
+            var location = getPointRelativeToYaw(w, yaw);
+            location = location.add(new PointD(width + radarSize / 2.0, radarSize / 2.0 + 10));
+            RenderUtils.drawBox(color, new BoxD(location, 3, 3), stack, 1f);
         }
 
+    }
+
+    private double getDistanceToPoint(PointD point) {
+        var playerX = getPlayer().getX();
+        var playerZ = getPlayer().getZ();
+        var x = point.x() - playerX;
+        var z = point.y() - playerZ;
+        return Math.sqrt(x * x + z * z);
     }
 
     private boolean canRenderEntity(Entity entity) {
@@ -144,6 +179,19 @@ public class ModRadar extends Mod {
     private PointD getPointRelativeToYaw(Entity entity, float yaw) {
         double x = entity.getX() - getPlayer().getX();
         double z = entity.getZ() - getPlayer().getZ();
+        // rotate x and z
+        var arctan = Math.atan2(z, x);
+        var angle = Math.toDegrees(arctan) - yaw;
+        var distance = Math.sqrt(x * x + z * z);
+        // convert to x and z
+        x = Math.cos(Math.toRadians(angle)) * distance * -1;
+        z = Math.sin(Math.toRadians(angle)) * distance * -1;
+        return new PointD(x, z);
+    }
+
+    private PointD getPointRelativeToYaw(Waypoint waypoint, float yaw) {
+        double x = waypoint.getX() - getPlayer().getX();
+        double z = waypoint.getZ() - getPlayer().getZ();
         // rotate x and z
         var arctan = Math.atan2(z, x);
         var angle = Math.toDegrees(arctan) - yaw;
