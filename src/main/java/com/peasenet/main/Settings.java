@@ -90,7 +90,8 @@ public class Settings {
         default_settings.put("radar.player.color", (Colors.YELLOW));
         default_settings.put("radar.item.color", (Colors.CYAN));
 
-        default_settings.put("radar.scale", 2);
+        default_settings.put("radar.scale", 4);
+        default_settings.put("radar.pointsize", 1);
         default_settings.put("radar.mob.peaceful", true);
         default_settings.put("radar.mob.hostile", true);
         default_settings.put("radar.item", true);
@@ -224,6 +225,30 @@ public class Settings {
             return false;
         }
         return (boolean) settings.get(key);
+    }
+
+    /**
+     * Gets the integer value of the given setting.
+     *
+     * @param key - The key of the setting.
+     * @return The integer value of the setting.
+     */
+    public static int getInt(String key) {
+        if (!settings.containsKey(key)) {
+            // check if the default settings contain the key
+            if (!default_settings.containsKey(key))
+                return 0;
+            // add the key to the settings
+            settings.put(key, default_settings.get(key));
+        }
+        if (settings.get(key) == null) {
+            settings.put(key, 0);
+            return 0;
+        }
+        // convert long to int
+        if (settings.get(key) instanceof Long)
+            return ((Long) settings.get(key)).intValue();
+        return (int) settings.get(key);
     }
 
     /**
