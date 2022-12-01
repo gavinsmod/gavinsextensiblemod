@@ -54,6 +54,7 @@ public enum Type {
     NO_RAIN("No Rain", "gavinsmod.mod.render.norain", "gavinsmod.keybinds.render", RENDER, "norain"),
     MOD_HPTAG("HP Tags", "gavinsmod.mod.render.hptags", "gavinsmod.keybinds.render", RENDER, "hptags"),
     WAYPOINT("Waypoint", "gavinsmod.mod.render.waypoints", "gavinsmod.keybinds.render", RENDER, "waypoints"),
+    RADAR("Radar", "gavinsmod.mod.misc.radar", "gavinsmod.keybinds.misc", RENDER, "radar"),
 
     // ESP
     CHEST_ESP("Chest ESP", "gavinsmod.mod.esp.chest", "gavinsmod.keybinds.esp", ESPS, "chestesp"),
@@ -69,7 +70,6 @@ public enum Type {
 
     // MISC
     MOD_FPS_COUNTER("FPS Counter", "gavinsmod.mod.misc.fpscounter", "gavinsmod.keybinds.misc", MISC, "fpscounter"),
-    RADAR("Radar", "gavinsmod.mod.misc.radar", "gavinsmod.keybinds.misc", MISC, "radar"),
     MOD_GUI_TEXT_OVERLAY("GUI Text Overlay", "gavinsmod.mod.misc.textoverlay", "gavinsmod.keybinds.misc", MISC, "textoverlay"),
 
     // GUI (translation key not needed)

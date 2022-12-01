@@ -32,7 +32,7 @@ import com.peasenet.mods.gui.ModGui;
 import com.peasenet.mods.gui.ModGuiSettings;
 import com.peasenet.mods.misc.ModFpsCounter;
 import com.peasenet.mods.misc.ModGuiTextOverlay;
-import com.peasenet.mods.misc.ModRadar;
+import com.peasenet.mods.render.ModRadar;
 import com.peasenet.mods.movement.*;
 import com.peasenet.mods.render.*;
 import com.peasenet.mods.tracer.ModChestTracer;

@@ -18,7 +18,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods.misc;
+package com.peasenet.mods.render;
 
 import com.peasenet.gavui.color.Colors;
 import com.peasenet.gavui.math.BoxD;
