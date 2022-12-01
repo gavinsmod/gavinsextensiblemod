@@ -132,9 +132,7 @@ public class ModRadar extends Mod {
 
         scale = Settings.getInt(RADAR_SCALE_KEY);
         pointSize = Settings.getInt(RADAR_POINT_SIZE_KEY);
-        // clamp scale to 1-8
         scale = Math.max(1, Math.min(8, scale));
-        // clamp pointsize to either 1 3 or 5
         pointSize = pointSize == 1 ? 1 : pointSize == 5 ? 5 : 3;
 
         updateScale();
@@ -222,7 +220,7 @@ public class ModRadar extends Mod {
         for (Waypoint w : waypoints) {
             var color = w.getColor();
             if (!Settings.getBool("radar.waypoint.usecolor")) color = Settings.getColor("radar.waypoint.color");
-            var location = getScaledPos(w.getPos(), getPointRelativeToYaw(w, yaw));
+            var location = getScaledPos(w.getPos(), getPointRelativeToYaw(w.getPos(), yaw));
             RenderUtils.drawBox(color, new BoxD(location, pointSize, pointSize), stack, 1f);
         }
     }
@@ -239,7 +237,7 @@ public class ModRadar extends Mod {
             if (!canRenderEntity(entity)) continue;
             // get entity x and z relative to player
             var color = Settings.getColorFromEntity(entity, "radar");
-            var point = getScaledPos(entity.getPos(), getPointRelativeToYaw(entity, yaw));
+            var point = getScaledPos(entity.getPos(), getPointRelativeToYaw(entity.getPos(), yaw));
             RenderUtils.drawBox(color, new BoxD(point, pointSize, pointSize), stack, 1f);
         }
     }
@@ -298,43 +296,25 @@ public class ModRadar extends Mod {
      * @return Whether the given entity can be rendered on the radar.
      */
     private boolean canRenderEntity(Entity entity) {
-        if (entity instanceof PlayerEntity)
-            return Settings.getBool("radar.player");
-        if (entity instanceof MobEntity)
-            if (!entity.getType().getSpawnGroup().isPeaceful())
-                return Settings.getBool("radar.mob.hostile");
-            else
-                return Settings.getBool("radar.mob.peaceful");
-        if (entity instanceof ItemEntity)
-            return Settings.getBool("radar.item");
+        if (entity instanceof PlayerEntity) return Settings.getBool("radar.player");
+        if (entity instanceof MobEntity) {
+            if (!entity.getType().getSpawnGroup().isPeaceful()) return Settings.getBool("radar.mob.hostile");
+            return Settings.getBool("radar.mob.peaceful");
+        }
+        if (entity instanceof ItemEntity) return Settings.getBool("radar.item");
         return false;
     }
 
     /**
-     * Creates a new PointD based off of the current yaw, player position, and entity position.
-     *
-     * @param entity - The entity to get the position of.
-     * @param yaw    - The yaw of the player.
-     * @return A new PointD with the x and z values.
-     */
-    private PointD getPointRelativeToYaw(Entity entity, float yaw) {
-        double x = entity.getX() - getPlayer().getX();
-        double z = entity.getZ() - getPlayer().getZ();
-        // rotate x and z
-        return calculateDistance(yaw, x, z);
-    }
-
-
-    /**
      * Gets the point relative to the waypoint and the player's yaw.
      *
-     * @param waypoint - The waypoint to get the position of.
-     * @param yaw      - The yaw of the player.
+     * @param loc - The waypoint to get the position of.
+     * @param yaw - The yaw of the player.
      * @return A new PointD with the x and z values.
      */
-    private PointD getPointRelativeToYaw(Waypoint waypoint, float yaw) {
-        double x = waypoint.getX() - getPlayer().getX();
-        double z = waypoint.getZ() - getPlayer().getZ();
+    private PointD getPointRelativeToYaw(Vec3d loc, float yaw) {
+        double x = loc.getX() - getPlayer().getX();
+        double z = loc.getZ() - getPlayer().getZ();
         return calculateDistance(yaw, x, z);
     }
 }
