@@ -20,6 +20,7 @@
 
 package com.peasenet.util;
 
+import com.peasenet.gui.GuiSettings;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.Mods;
 import com.peasenet.mods.Mod;
@@ -63,6 +64,10 @@ public class ModCommands {
         if (message.startsWith("resetgui")) {
             GavinsMod.gui.reset();
             GavinsMod.guiSettings.reset();
+            return true;
+        }
+        if (message.equals("reloadgui")) {
+            GavinsMod.guiSettings = new GuiSettings();
             return true;
         }
         return false;
