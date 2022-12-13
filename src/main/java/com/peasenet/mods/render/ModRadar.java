@@ -106,15 +106,14 @@ public class ModRadar extends Mod {
         var playerSetting = new ToggleSetting("radar.player", "gavinsmod.settings.radar.player");
         var useWaypointColorSetting = new ToggleSetting("radar.waypoint.usecolor", "gavinsmod.settings.radar.waypoint.usecolor");
 
-        var color = new SubSetting(100, 10, "gavinsmod.settings.radar.color");
-        var drawSettings = new SubSetting(100, 10, "gavinsmod.settings.radar.drawn");
+        var color = new SubSetting(140, 10, "gavinsmod.settings.radar.color");
+        var drawSettings = new SubSetting(140, 10, "gavinsmod.settings.radar.drawn");
 
         color.add(playerEntityColor);
         color.add(hostileMobEntityColor);
         color.add(peacefulMobEntityColor);
         color.add(entityItemColor);
         color.add(waypointColor);
-        color.getGui().getChildren().forEach(c -> c.setWidth(115));
 
         scaleSetting.setCallback(this::increaseScale);
         pointSizeSetting.setCallback(this::togglePointSize);
@@ -126,7 +125,6 @@ public class ModRadar extends Mod {
         drawSettings.add(waypointsSetting);
         drawSettings.add(playerSetting);
         drawSettings.add(useWaypointColorSetting);
-        drawSettings.getGui().getChildren().forEach(c -> c.setWidth(115));
         addSetting(color);
         addSetting(drawSettings);
 
