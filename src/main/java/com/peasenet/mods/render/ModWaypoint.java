@@ -38,20 +38,24 @@ import java.util.Comparator;
  * Creates a new mod to control waypoints.
  */
 public class ModWaypoint extends Mod {
+
+    private static SubSetting setting;
+    private static ClickSetting openMenu;
+
     public ModWaypoint() {
         super(Type.WAYPOINT);
+        setting = new SubSetting(100, 10, "gavinsmod.mod.render.waypoints");
+        openMenu = new ClickSetting("Open Menu", "gavinsmod.settings.render.waypoints.add");
         reloadSettings();
     }
 
     @Override
     public void reloadSettings() {
         modSettings.clear();
-        SubSetting setting = new SubSetting(100, 10, "gavinsmod.mod.render.waypoints");
-        ClickSetting openMenu = new ClickSetting("Open Menu", "gavinsmod.settings.render.waypoints.add");
+        setting = new SubSetting((int) setting.getGui().getWidth(), 10, "gavinsmod.mod.render.waypoints");
         openMenu.setCallback(() -> getClient().setScreen(new GuiWaypoint()));
         openMenu.getGui().setSymbol('\u002b');
         setting.add(openMenu);
-
         // get all waypoints and add them to the menu
         Settings.getWaypoints().stream().sorted(Comparator.comparing(Waypoint::getName)).forEach(waypoint -> createWaypoint(setting, waypoint));
         addSetting(setting);
@@ -65,12 +69,12 @@ public class ModWaypoint extends Mod {
      */
     private void createWaypoint(SubSetting subSetting, Waypoint waypoint) {
         ToggleSetting clickSetting = new ToggleSetting("none", Text.literal(waypoint.getName()), true);
-        clickSetting.setWidth(100);
-        subSetting.add(clickSetting);
+//        clickSetting.setWidth(105);
         clickSetting.setCallback(() -> {
             getClient().setScreen(new GuiWaypoint(waypoint));
             clickSetting.setValue(waypoint.isEnabled());
         });
         clickSetting.setValue(waypoint.isEnabled());
+        setting.add(clickSetting);
     }
 }

@@ -41,17 +41,14 @@ public class ModXray extends Mod {
 
     public ModXray() {
         super(Type.XRAY);
-        var dropdownWidth = 80;
         SubSetting xraySubSetting = new SubSetting(100, 10, getTranslationKey());
         ToggleSetting culling = new ToggleSetting("xray.disable_culling", "gavinsmod.settings.xray.culling");
-        culling.setWidth(dropdownWidth);
         culling.setCallback(() -> {
             if (isActive()) reload();
         });
         ClickSetting menu = new ClickSetting("xray.menu", "gavinsmod.settings.xray.blocks");
         menu.setCallback(() -> getClient().setScreen(new GuiXray()));
         xraySubSetting.add(menu);
-        menu.setWidth(dropdownWidth);
         xraySubSetting.add(culling);
         addSetting(xraySubSetting);
     }
