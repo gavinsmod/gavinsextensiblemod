@@ -246,9 +246,7 @@ public abstract class Mod implements IMod {
     }
 
     public void reloadSettings() {
-        var tmpSettings = new ArrayList<>(getSettings());
-        getSettings().clear();
-        modSettings.addAll(tmpSettings);
+        modSettings = new ArrayList<>(getSettings());
     }
 
     public ClientWorld getWorld() {
