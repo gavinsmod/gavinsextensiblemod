@@ -424,6 +424,18 @@ public class Settings {
     
     public static void saveRadar() {
         settings.put("radar", Radar.getInstance());
+        save();
+    }
+    
+    public static Radar getRadar() {
+        Gson gson = new Gson();
+        Type radarType = new TypeToken<Radar>() {
+        }.getType();
+        Radar radar = gson.fromJson(settings.get("radar").toString(), radarType);
+        if (radar == null)
+            return new Radar();
+        Radar.setInstance(radar);
+        return radar;
     }
 
     /**

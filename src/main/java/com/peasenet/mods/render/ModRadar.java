@@ -37,9 +37,7 @@ import com.peasenet.util.RenderUtils;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
@@ -53,31 +51,6 @@ import org.jetbrains.annotations.NotNull;
 public class ModRadar extends Mod {
 
     /**
-     * The key for accessing the radar scale in the settings.
-     */
-    private static final String RADAR_SCALE_KEY = "radar.scale";
-
-    /**
-     * The key for accessing the radar point size in the settings.
-     */
-    private static final String RADAR_POINT_SIZE_KEY = "radar.pointSize";
-    /**
-     * Y coordinate of the radar.
-     */
-    private static final int y = 12;
-    /**
-     * The size of the radar in pixels.
-     */
-    public static int radarSize = 0;
-    /**
-     * The current scale of the radar.
-     */
-    public static int scale = 4;
-    /**
-     * The current point size of the radar.
-     */
-    public static int pointSize = 3;
-    /**
      * The setting relating to the radar scale.
      */
     private static ClickSetting scaleSetting;
@@ -85,17 +58,13 @@ public class ModRadar extends Mod {
      * The setting relating to the radar point size.
      */
     private static ClickSetting pointSizeSetting;
-    /**
-     * X coordinate of the radar.
-     */
-    private static int x = 0;
 
     /**
      * Creates a radar overlay in the top-right corner of the screen.
      */
     public ModRadar() {
         super(Type.RADAR);
-        new Radar();
+        Settings.getRadar();
         var playerEntityColor = new ColorSetting("none", "gavinsmod.settings.radar.player.color");
         playerEntityColor.setCallback(() -> Radar.getInstance().setPlayerColor(playerEntityColor.getColor()));
         playerEntityColor.setColor(Radar.getInstance().getPlayerColor());
@@ -164,18 +133,8 @@ public class ModRadar extends Mod {
         drawSettings.add(useWaypointColorSetting);
         addSetting(color);
         addSetting(drawSettings);
-
-
-        scale = Radar.getInstance().getScale();
-        pointSize = Radar.getInstance().getPointSize();
-        scale = Math.max(1, Math.min(8, scale));
-        pointSize = Radar.getInstance().getPointSize() == 1 ? 1 : Radar.getInstance().getPointSize() == 5 ? 5 : 3;
-        Radar.getInstance().setScale(scale);
-        Radar.getInstance().setPointSize(pointSize);
-        Radar.getInstance().setSize(scale * 16 + 1);
-        updateScale();
         updateScaleText(pointSizeSetting, Radar.getInstance().getPointSize());
-
+        updateScaleText(scaleSetting, Radar.getInstance().getScale());
     }
 
     /**
@@ -188,7 +147,7 @@ public class ModRadar extends Mod {
         setting.setTitle(Text.translatable(setting.getTranslationKey()).append(Text.literal(" (%s)".formatted(value))));
     }
 
-    /**
+    /*4
      * Calculates the offset to draw the points on the radar.
      *
      * @return The offset to draw the points on the radar.
@@ -221,24 +180,13 @@ public class ModRadar extends Mod {
      */
     private void increaseScale() {
         Radar.getInstance().increaseScaleCallback();
-        Settings.add(RADAR_SCALE_KEY, Radar.getInstance().getScale());
-        Settings.save();
-        updateScale();
-    }
-
-    /**
-     * Callback method for updating the scale of the radar.
-     */
-    private void updateScale() {
-        Radar.getInstance().updateScaleCallback();
         updateScaleText(scaleSetting, Radar.getInstance().getScale());
     }
 
     @Override
     public void onRenderInGameHud(MatrixStack stack, float delta) {
         if (!isActive()) return;
-        x = getClient().getWindow().getScaledWidth() - Radar.getInstance().getSize() - 10;
-        Radar.setX(x);
+        Radar.setX(getClient().getWindow().getScaledWidth() - Radar.getInstance().getSize() - 10);
         RenderUtils.drawBox(Colors.DARK_GRAY, new BoxD(new PointD(Radar.getInstance().getX(), Radar.getInstance().getY()), Radar.getInstance().getSize(), Radar.getInstance().getSize()), stack, 0.5f);
         drawEntitiesOnRadar(stack);
         if (Radar.getInstance().isShowWaypoint()) drawWaypointsOnRadar(stack);
@@ -255,7 +203,8 @@ public class ModRadar extends Mod {
         var waypoints = Settings.getWaypoints().stream().filter(Waypoint::isEnabled).toList();
         for (Waypoint w : waypoints) {
             var color = w.getColor();
-            if (!Settings.getBool("radar.waypoint.usecolor")) color = Settings.getColor("radar.waypoint.color");
+            if (!Radar.getInstance().isUseWaypointColor())
+                color = Radar.getInstance().getWaypointColor();
             var location = getScaledPos(w.getPos(), getPointRelativeToYaw(w.getPos(), yaw));
             RenderUtils.drawBox(color, new BoxD(location, Radar.getInstance().getPointSize(), Radar.getInstance().getPointSize()), stack, 1f);
         }
@@ -295,7 +244,7 @@ public class ModRadar extends Mod {
      */
     @NotNull
     private PointD getScaledPos(Vec3d w, PointD location) {
-        if (w.distanceTo(getPlayer().getPos()) >= (Radar.getInstance().getSize() / 2) - Radar.getInstance().getPointSize())
+        if (w.distanceTo(getPlayer().getPos()) >= (Radar.getInstance().getSize() >> 1) - Radar.getInstance().getPointSize())
             location = clampPoint(location);
         location = location.add(new PointD(Radar.getInstance().getX() + Radar.getInstance().getSize() / 2.0, Radar.getInstance().getSize() / 2.0 + Radar.getInstance().getY()));
         if (Radar.getInstance().getPointSize() != 1)
@@ -310,15 +259,16 @@ public class ModRadar extends Mod {
      * @return The clamped point.
      */
     private PointD clampPoint(PointD point) {
-        if (point.x() >= (Radar.getInstance().getSize() / 2) - getPointOffset())
-            point = new PointD(Radar.getInstance().getSize() / 2 - getPointOffset(), point.y());
-        else if (point.x() <= -(Radar.getInstance().getSize() / 2) + getPointOffset())
-            point = new PointD(-Radar.getInstance().getSize() / 2 + getPointOffset(), point.y());
+        var offset = Radar.getInstance().getSize() / 2;
 
-        if (point.y() >= (Radar.getInstance().getSize() / 2) - getPointOffset())
-            point = new PointD(point.x(), Radar.getInstance().getSize() / 2 - getPointOffset());
-        else if (point.y() <= -(Radar.getInstance().getSize() / 2) + getPointOffset())
-            point = new PointD(point.x(), -Radar.getInstance().getSize() / 2 + getPointOffset());
+        if (point.x() >= (offset) - getPointOffset())
+            point = new PointD(offset - getPointOffset(), point.y());
+        else if (point.x() <= -(offset) + getPointOffset())
+            point = new PointD(-offset + getPointOffset(), point.y());
+        if (point.y() >= (offset) - getPointOffset())
+            point = new PointD(point.x(), offset - getPointOffset());
+        else if (point.y() <= -(offset) + getPointOffset())
+            point = new PointD(point.x(), -offset + getPointOffset());
         return point;
     }
 

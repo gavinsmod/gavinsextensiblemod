@@ -5,6 +5,10 @@ import com.peasenet.gavui.color.Colors;
 import com.peasenet.main.Settings;
 
 public class Radar {
+    public static void setInstance(Radar radar) {
+        INSTANCE = radar;
+    }
+
     public int getY() {
         return y;
     }
@@ -14,11 +18,11 @@ public class Radar {
     }
 
     public static void setY(int y) {
-        getInstance().y = y;
+        Radar.y = y;
     }
 
     public static void setX(int x) {
-        getInstance().x = x;
+        Radar.x = x;
     }
 
     private static int y = 12;
@@ -29,7 +33,7 @@ public class Radar {
     }
 
     public void setSize(int size) {
-        this.size = size;
+        Radar.size = size;
     }
 
     public int getScale() {
@@ -37,7 +41,8 @@ public class Radar {
     }
 
     public void setScale(int scale) {
-        this.scale = scale;
+        this.scale = Math.max(1, Math.min(8, scale));
+        this.setSize(scale * 16 + 1);
     }
 
     public int getPointSize() {
@@ -45,7 +50,8 @@ public class Radar {
     }
 
     public void setPointSize(int pointSize) {
-        this.pointSize = pointSize;
+        this.pointSize = pointSize == 1 ? 1 : pointSize == 3 ? 3 : 5;
+        Settings.saveRadar();
     }
 
     public Color getPlayerColor() {
@@ -180,10 +186,6 @@ public class Radar {
     public void increaseScaleCallback() {
         scale++;
         if (scale > 8) scale = 1;
-        updateScaleCallback();
-    }
-
-    public void updateScaleCallback() {
         size = 16 * scale + 1;
         Settings.saveRadar();
     }
