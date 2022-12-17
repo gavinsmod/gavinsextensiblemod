@@ -26,6 +26,7 @@ import com.peasenet.gavui.math.PointD;
 import com.peasenet.main.Settings;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.mods.render.radar.Radar;
 import com.peasenet.mods.render.waypoints.Waypoint;
 import com.peasenet.settings.ClickSetting;
 import com.peasenet.settings.ColorSetting;
@@ -91,6 +92,7 @@ public class ModRadar extends Mod {
      */
     public ModRadar() {
         super(Type.RADAR);
+        new Radar();
         var playerEntityColor = new ColorSetting("radar.player.color", "gavinsmod.settings.radar.player.color");
         var hostileMobEntityColor = new ColorSetting("radar.mob.hostile.color", "gavinsmod.settings.radar.mob.hostile.color");
         var peacefulMobEntityColor = new ColorSetting("radar.mob.peaceful.color", "gavinsmod.settings.radar.mob.peaceful.color");
@@ -128,13 +130,15 @@ public class ModRadar extends Mod {
         addSetting(color);
         addSetting(drawSettings);
 
+        
         scale = Settings.getInt(RADAR_SCALE_KEY);
         pointSize = Settings.getInt(RADAR_POINT_SIZE_KEY);
         scale = Math.max(1, Math.min(8, scale));
-        pointSize = pointSize == 1 ? 1 : pointSize == 5 ? 5 : 3;
-
+        pointSize = Radar.getInstance().getPointSize() == 1 ? 1 : Radar.getInstance().getPointSize() == 5 ? 5 : 3;
+        Radar.getInstance().setScale(scale);
+        Radar.getInstance().setPointSize(pointSize);
         updateScale();
-        updateScaleText(pointSizeSetting, pointSize);
+        updateScaleText(pointSizeSetting, Radar.getInstance().getPointSize());
 
     }
 
@@ -154,8 +158,8 @@ public class ModRadar extends Mod {
      * @return The offset to draw the points on the radar.
      */
     public static int getPointOffset() {
-        if (pointSize == 1) return 0;
-        return (pointSize - 1) / 2;
+        if (Radar.getInstance().getPointSize() == 1) return 0;
+        return (Radar.getInstance().getPointSize() - 1) / 2;
     }
 
     /**
@@ -180,9 +184,8 @@ public class ModRadar extends Mod {
      * Callback method for the scale setting.
      */
     private void increaseScale() {
-        scale++;
-        if (scale > 8) scale = 1;
-        Settings.add(RADAR_SCALE_KEY, scale);
+        Radar.getInstance().increaseScaleCallback();
+        Settings.add(RADAR_SCALE_KEY, Radar.getInstance().getScale());
         Settings.save();
         updateScale();
     }
@@ -191,17 +194,19 @@ public class ModRadar extends Mod {
      * Callback method for updating the scale of the radar.
      */
     private void updateScale() {
-        radarSize = 16 * scale + 1;
-        Settings.add(RADAR_SCALE_KEY, scale);
+        Radar.getInstance().updateScaleCallback();
+        Settings.add(RADAR_SCALE_KEY, Radar.getInstance().getScale());
         Settings.save();
-        updateScaleText(scaleSetting, scale);
+        updateScaleText(scaleSetting, Radar.getInstance().getScale());
     }
 
     @Override
     public void onRenderInGameHud(MatrixStack stack, float delta) {
         if (!isActive()) return;
-        x = getClient().getWindow().getScaledWidth() - radarSize - 10;
-        RenderUtils.drawBox(Colors.DARK_GRAY, new BoxD(new PointD(x, y), radarSize, radarSize), stack, 0.5f);
+        x = getClient().getWindow().getScaledWidth() - Radar.getInstance().getSize() - 10;
+        Radar.setX(x);
+        RenderUtils.drawBox(Colors.DARK_GRAY, new BoxD(new PointD(Radar.getInstance().getX(), Radar.getInstance().getY()), 
+                Radar.getInstance().getSize(), Radar.getInstance().getSize()), stack, 0.5f);
         drawEntitiesOnRadar(stack);
         drawWaypointsOnRadar(stack);
 
@@ -219,7 +224,7 @@ public class ModRadar extends Mod {
             var color = w.getColor();
             if (!Settings.getBool("radar.waypoint.usecolor")) color = Settings.getColor("radar.waypoint.color");
             var location = getScaledPos(w.getPos(), getPointRelativeToYaw(w.getPos(), yaw));
-            RenderUtils.drawBox(color, new BoxD(location, pointSize, pointSize), stack, 1f);
+            RenderUtils.drawBox(color, new BoxD(location, Radar.getInstance().getPointSize(), Radar.getInstance().getPointSize()), stack, 1f);
         }
     }
 
@@ -236,7 +241,7 @@ public class ModRadar extends Mod {
             // get entity x and z relative to player
             var color = Settings.getColorFromEntity(entity, "radar");
             var point = getScaledPos(entity.getPos(), getPointRelativeToYaw(entity.getPos(), yaw));
-            RenderUtils.drawBox(color, new BoxD(point, pointSize, pointSize), stack, 1f);
+            RenderUtils.drawBox(color, new BoxD(point, Radar.getInstance().getPointSize(), Radar.getInstance().getPointSize()), stack, 1f);
         }
     }
 
@@ -249,10 +254,11 @@ public class ModRadar extends Mod {
      */
     @NotNull
     private PointD getScaledPos(Vec3d w, PointD location) {
-        if (w.distanceTo(getPlayer().getPos()) >= (radarSize / 2) - pointSize)
+        if (w.distanceTo(getPlayer().getPos()) >= (Radar.getInstance().getSize() / 2) - Radar.getInstance().getPointSize())
             location = clampPoint(location);
-        location = location.add(new PointD(x + radarSize / 2.0, radarSize / 2.0 + y));
-        if (pointSize != 1) location = location.subtract(new PointD(getPointOffset(), getPointOffset()));
+        location = location.add(new PointD(Radar.getInstance().getX() + Radar.getInstance().getSize() / 2.0,
+                Radar.getInstance().getSize() / 2.0 + Radar.getInstance().getY()));
+        if (Radar.getInstance().getPointSize() != 1) location = location.subtract(new PointD(getPointOffset(), getPointOffset()));
         return location;
     }
 
@@ -263,15 +269,15 @@ public class ModRadar extends Mod {
      * @return The clamped point.
      */
     private PointD clampPoint(PointD point) {
-        if (point.x() >= (radarSize / 2) - getPointOffset())
-            point = new PointD(radarSize / 2 - getPointOffset(), point.y());
-        else if (point.x() <= -(radarSize / 2) + getPointOffset())
-            point = new PointD(-radarSize / 2 + getPointOffset(), point.y());
+        if (point.x() >= (Radar.getInstance().getSize() / 2) - getPointOffset())
+            point = new PointD(Radar.getInstance().getSize() / 2 - getPointOffset(), point.y());
+        else if (point.x() <= -(Radar.getInstance().getSize() / 2) + getPointOffset())
+            point = new PointD(-Radar.getInstance().getSize() / 2 + getPointOffset(), point.y());
 
-        if (point.y() >= (radarSize / 2) - getPointOffset())
-            point = new PointD(point.x(), radarSize / 2 - getPointOffset());
-        else if (point.y() <= -(radarSize / 2) + getPointOffset())
-            point = new PointD(point.x(), -radarSize / 2 + getPointOffset());
+        if (point.y() >= (Radar.getInstance().getSize() / 2) - getPointOffset())
+            point = new PointD(point.x(), Radar.getInstance().getSize() / 2 - getPointOffset());
+        else if (point.y() <= -(Radar.getInstance().getSize() / 2) + getPointOffset())
+            point = new PointD(point.x(), -Radar.getInstance().getSize() / 2 + getPointOffset());
         return point;
     }
 
@@ -279,12 +285,8 @@ public class ModRadar extends Mod {
      * Callback for the point size setting.
      */
     private void togglePointSize() {
-        if (pointSize + 2 > 5)
-            pointSize = 1;
-        else
-            pointSize += 2;
-
-        updateScaleText(pointSizeSetting, pointSize);
+        Radar.getInstance().updatePointSizeCallback();
+        updateScaleText(pointSizeSetting, Radar.getInstance().getPointSize());
     }
 
     /**
@@ -294,12 +296,12 @@ public class ModRadar extends Mod {
      * @return Whether the given entity can be rendered on the radar.
      */
     private boolean canRenderEntity(Entity entity) {
-        if (entity instanceof PlayerEntity) return Settings.getBool("radar.player");
+        if (entity instanceof PlayerEntity) return Radar.getInstance().isShowPlayer();
         if (entity instanceof MobEntity) {
-            if (!entity.getType().getSpawnGroup().isPeaceful()) return Settings.getBool("radar.mob.hostile");
-            return Settings.getBool("radar.mob.peaceful");
+            if (!entity.getType().getSpawnGroup().isPeaceful()) return Radar.getInstance().isShowHostileMob();
+            return Radar.getInstance().isShowPeacefulMob();
         }
-        if (entity instanceof ItemEntity) return Settings.getBool("radar.item");
+        if (entity instanceof ItemEntity) return Radar.getInstance().isShowItem();
         return false;
     }
 
