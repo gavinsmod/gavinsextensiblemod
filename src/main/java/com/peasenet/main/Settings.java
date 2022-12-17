@@ -28,6 +28,7 @@ import com.google.gson.reflect.TypeToken;
 import com.peasenet.gavui.color.Color;
 import com.peasenet.gavui.color.Colors;
 import com.peasenet.gavui.util.GavUISettings;
+import com.peasenet.mods.render.radar.Radar;
 import com.peasenet.mods.render.waypoints.Waypoint;
 import net.minecraft.block.Block;
 import net.minecraft.block.OreBlock;
@@ -85,21 +86,6 @@ public class Settings {
         default_settings.put("tracer.chest.color", (Colors.PURPLE));
         default_settings.put("tracer.item.color", (Colors.CYAN));
 
-        default_settings.put("radar.mob.hostile.color", (Colors.RED));
-        default_settings.put("radar.mob.peaceful.color", (Colors.GREEN));
-        default_settings.put("radar.player.color", (Colors.YELLOW));
-        default_settings.put("radar.item.color", (Colors.CYAN));
-
-        default_settings.put("radar.scale", 4);
-        default_settings.put("radar.pointsize", 1);
-        default_settings.put("radar.mob.peaceful", true);
-        default_settings.put("radar.mob.hostile", true);
-        default_settings.put("radar.item", true);
-        default_settings.put("radar.waypoints", true);
-        default_settings.put("radar.player", true);
-        default_settings.put("radar.waypoint.color", (Colors.WHITE));
-        default_settings.put("radar.waypoint.usecolor", true);
-
         default_settings.put("misc.fps.color.enabled", false);
         default_settings.put("misc.fps.color.slow", (Colors.RED));
         default_settings.put("misc.fps.color.ok", (Colors.YELLOW));
@@ -113,6 +99,7 @@ public class Settings {
         default_settings.put("xray.disable_culling", true);
         default_settings.put("xray.blocks", new ArrayList<String>());
         default_settings.put("waypoint.locations", new ArrayList<Waypoint>());
+        default_settings.put("radar", new Radar());
         load();
     }
 
@@ -432,6 +419,11 @@ public class Settings {
         if (waypoints == null)
             return new ArrayList<>();
         return waypoints;
+    }
+    
+    
+    public static void saveRadar() {
+        settings.put("radar", Radar.getInstance());
     }
 
     /**

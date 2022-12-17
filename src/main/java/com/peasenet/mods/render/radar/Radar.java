@@ -2,6 +2,7 @@ package com.peasenet.mods.render.radar;
 
 import com.peasenet.gavui.color.Color;
 import com.peasenet.gavui.color.Colors;
+import com.peasenet.main.Settings;
 
 public class Radar {
     public int getY() {
@@ -20,8 +21,8 @@ public class Radar {
         getInstance().x = x;
     }
 
-    private int y = 12;
-    private int x = 0;
+    private static int y = 12;
+    private static int x = 0;
 
     public int getSize() {
         return size;
@@ -53,6 +54,8 @@ public class Radar {
 
     public void setPlayerColor(Color playerColor) {
         this.playerColor = playerColor;
+
+        Settings.saveRadar();
     }
 
     public Color getHostileMobColor() {
@@ -61,6 +64,8 @@ public class Radar {
 
     public void setHostileMobColor(Color hostileMobColor) {
         this.hostileMobColor = hostileMobColor;
+
+        Settings.saveRadar();
     }
 
     public Color getPeacefulMobColor() {
@@ -69,6 +74,7 @@ public class Radar {
 
     public void setPeacefulMobColor(Color peacefulMobColor) {
         this.peacefulMobColor = peacefulMobColor;
+        Settings.saveRadar();
     }
 
     public Color getItemColor() {
@@ -77,6 +83,7 @@ public class Radar {
 
     public void setItemColor(Color itemColor) {
         this.itemColor = itemColor;
+        Settings.saveRadar();
     }
 
     public Color getWaypointColor() {
@@ -85,6 +92,7 @@ public class Radar {
 
     public void setWaypointColor(Color waypointColor) {
         this.waypointColor = waypointColor;
+        Settings.saveRadar();
     }
 
     public boolean isShowPlayer() {
@@ -93,6 +101,7 @@ public class Radar {
 
     public void setShowPlayer(boolean showPlayer) {
         this.showPlayer = showPlayer;
+        Settings.saveRadar();
     }
 
     public boolean isShowHostileMob() {
@@ -101,6 +110,7 @@ public class Radar {
 
     public void setShowHostileMob(boolean showHostileMob) {
         this.showHostileMob = showHostileMob;
+        Settings.saveRadar();
     }
 
     public boolean isShowPeacefulMob() {
@@ -109,6 +119,8 @@ public class Radar {
 
     public void setShowPeacefulMob(boolean showPeacefulMob) {
         this.showPeacefulMob = showPeacefulMob;
+        Settings.saveRadar();
+
     }
 
     public boolean isShowItem() {
@@ -117,6 +129,7 @@ public class Radar {
 
     public void setShowItem(boolean showItem) {
         this.showItem = showItem;
+        Settings.saveRadar();
     }
 
     public boolean isShowWaypoint() {
@@ -125,6 +138,7 @@ public class Radar {
 
     public void setShowWaypoint(boolean showWaypoint) {
         this.showWaypoint = showWaypoint;
+        Settings.saveRadar();
     }
 
     public boolean isUseWaypointColor() {
@@ -133,9 +147,10 @@ public class Radar {
 
     public void setUseWaypointColor(boolean useWaypointColor) {
         this.useWaypointColor = useWaypointColor;
+        Settings.saveRadar();
     }
 
-    private int size = 129;
+    private static int size = 129;
     private int scale = 4;
     private int pointSize = 3;
     private Color playerColor = Colors.GOLD;
@@ -170,10 +185,12 @@ public class Radar {
 
     public void updateScaleCallback() {
         size = 16 * scale + 1;
+        Settings.saveRadar();
     }
 
     public void updatePointSizeCallback() {
         if (pointSize + 2 > 5) pointSize = 1;
         else pointSize += 2;
+        Settings.saveRadar();
     }
 }

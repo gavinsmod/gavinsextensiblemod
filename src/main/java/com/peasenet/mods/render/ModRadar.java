@@ -20,6 +20,7 @@
 
 package com.peasenet.mods.render;
 
+import com.peasenet.gavui.color.Color;
 import com.peasenet.gavui.color.Colors;
 import com.peasenet.gavui.math.BoxD;
 import com.peasenet.gavui.math.PointD;
@@ -36,7 +37,9 @@ import com.peasenet.util.RenderUtils;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
@@ -93,20 +96,52 @@ public class ModRadar extends Mod {
     public ModRadar() {
         super(Type.RADAR);
         new Radar();
-        var playerEntityColor = new ColorSetting("radar.player.color", "gavinsmod.settings.radar.player.color");
-        var hostileMobEntityColor = new ColorSetting("radar.mob.hostile.color", "gavinsmod.settings.radar.mob.hostile.color");
-        var peacefulMobEntityColor = new ColorSetting("radar.mob.peaceful.color", "gavinsmod.settings.radar.mob.peaceful.color");
-        var entityItemColor = new ColorSetting("radar.item.color", "gavinsmod.settings.radar.item.color");
-        var waypointColor = new ColorSetting("radar.waypoint.color", "gavinsmod.settings.radar.waypoint.color");
+        var playerEntityColor = new ColorSetting("none", "gavinsmod.settings.radar.player.color");
+        playerEntityColor.setCallback(() -> Radar.getInstance().setPlayerColor(playerEntityColor.getColor()));
+        playerEntityColor.setColor(Radar.getInstance().getPlayerColor());
 
-        scaleSetting = new ClickSetting(RADAR_SCALE_KEY, "gavinsmod.settings.radar.scale");
-        pointSizeSetting = new ClickSetting(RADAR_POINT_SIZE_KEY, "gavinsmod.settings.radar.pointsize");
-        var peacefulMobsSetting = new ToggleSetting("radar.mob.peaceful", "gavinsmod.settings.radar.mob.peaceful");
-        var hostileMobsSetting = new ToggleSetting("radar.mob.hostile", "gavinsmod.settings.radar.mob.hostile");
-        var itemsSetting = new ToggleSetting("radar.item", "gavinsmod.settings.radar.item");
-        var waypointsSetting = new ToggleSetting("radar.waypoints", "gavinsmod.settings.radar.waypoints");
-        var playerSetting = new ToggleSetting("radar.player", "gavinsmod.settings.radar.player");
-        var useWaypointColorSetting = new ToggleSetting("radar.waypoint.usecolor", "gavinsmod.settings.radar.waypoint.usecolor");
+        var hostileMobEntityColor = new ColorSetting("none", "gavinsmod.settings.radar.mob.hostile.color");
+        hostileMobEntityColor.setCallback(() -> Radar.getInstance().setHostileMobColor(hostileMobEntityColor.getColor()));
+        hostileMobEntityColor.setColor(Radar.getInstance().getHostileMobColor());
+
+        var peacefulMobEntityColor = new ColorSetting("none", "gavinsmod.settings.radar.mob.peaceful.color");
+        peacefulMobEntityColor.setCallback(() -> Radar.getInstance().setPeacefulMobColor(peacefulMobEntityColor.getColor()));
+        peacefulMobEntityColor.setColor(Radar.getInstance().getPeacefulMobColor());
+
+        var entityItemColor = new ColorSetting("none", "gavinsmod.settings.radar.item.color");
+        entityItemColor.setCallback(() -> Radar.getInstance().setItemColor(entityItemColor.getColor()));
+        entityItemColor.setColor(Radar.getInstance().getItemColor());
+
+        var waypointColor = new ColorSetting("none", "gavinsmod.settings.radar.waypoint.color");
+        waypointColor.setCallback(() -> Radar.getInstance().setWaypointColor(waypointColor.getColor()));
+        waypointColor.setColor(Radar.getInstance().getWaypointColor());
+
+        scaleSetting = new ClickSetting("none", "gavinsmod.settings.radar.scale");
+        pointSizeSetting = new ClickSetting("none", "gavinsmod.settings.radar.pointsize");
+
+        var peacefulMobsSetting = new ToggleSetting("none", "gavinsmod.settings.radar.mob.peaceful");
+        peacefulMobsSetting.setCallback(() -> Radar.getInstance().setShowPeacefulMob(peacefulMobsSetting.getValue()));
+        peacefulMobsSetting.setValue(Radar.getInstance().isShowPeacefulMob());
+
+        var hostileMobsSetting = new ToggleSetting("none", "gavinsmod.settings.radar.mob.hostile");
+        hostileMobsSetting.setCallback(() -> Radar.getInstance().setShowHostileMob(hostileMobsSetting.getValue()));
+        hostileMobsSetting.setValue(Radar.getInstance().isShowHostileMob());
+
+        var itemsSetting = new ToggleSetting("none", "gavinsmod.settings.radar.item");
+        itemsSetting.setCallback(() -> Radar.getInstance().setShowItem(itemsSetting.getValue()));
+        itemsSetting.setValue(Radar.getInstance().isShowItem());
+
+        var waypointsSetting = new ToggleSetting("none", "gavinsmod.settings.radar.waypoints");
+        waypointsSetting.setCallback(() -> Radar.getInstance().setShowWaypoint(waypointsSetting.getValue()));
+        waypointsSetting.setValue(Radar.getInstance().isShowWaypoint());
+
+        var playerSetting = new ToggleSetting("none", "gavinsmod.settings.radar.player");
+        playerSetting.setCallback(() -> Radar.getInstance().setShowPlayer(playerSetting.getValue()));
+        playerSetting.setValue(Radar.getInstance().isShowPlayer());
+
+        var useWaypointColorSetting = new ToggleSetting("none", "gavinsmod.settings.radar.waypoint.usecolor");
+        useWaypointColorSetting.setCallback(() -> Radar.getInstance().setUseWaypointColor(useWaypointColorSetting.getValue()));
+        useWaypointColorSetting.setValue(Radar.getInstance().isUseWaypointColor());
 
         var color = new SubSetting(140, 10, "gavinsmod.settings.radar.color");
         var drawSettings = new SubSetting(140, 10, "gavinsmod.settings.radar.drawn");
@@ -130,13 +165,14 @@ public class ModRadar extends Mod {
         addSetting(color);
         addSetting(drawSettings);
 
-        
-        scale = Settings.getInt(RADAR_SCALE_KEY);
-        pointSize = Settings.getInt(RADAR_POINT_SIZE_KEY);
+
+        scale = Radar.getInstance().getScale();
+        pointSize = Radar.getInstance().getPointSize();
         scale = Math.max(1, Math.min(8, scale));
         pointSize = Radar.getInstance().getPointSize() == 1 ? 1 : Radar.getInstance().getPointSize() == 5 ? 5 : 3;
         Radar.getInstance().setScale(scale);
         Radar.getInstance().setPointSize(pointSize);
+        Radar.getInstance().setSize(scale * 16 + 1);
         updateScale();
         updateScaleText(pointSizeSetting, Radar.getInstance().getPointSize());
 
@@ -195,8 +231,6 @@ public class ModRadar extends Mod {
      */
     private void updateScale() {
         Radar.getInstance().updateScaleCallback();
-        Settings.add(RADAR_SCALE_KEY, Radar.getInstance().getScale());
-        Settings.save();
         updateScaleText(scaleSetting, Radar.getInstance().getScale());
     }
 
@@ -205,10 +239,9 @@ public class ModRadar extends Mod {
         if (!isActive()) return;
         x = getClient().getWindow().getScaledWidth() - Radar.getInstance().getSize() - 10;
         Radar.setX(x);
-        RenderUtils.drawBox(Colors.DARK_GRAY, new BoxD(new PointD(Radar.getInstance().getX(), Radar.getInstance().getY()), 
-                Radar.getInstance().getSize(), Radar.getInstance().getSize()), stack, 0.5f);
+        RenderUtils.drawBox(Colors.DARK_GRAY, new BoxD(new PointD(Radar.getInstance().getX(), Radar.getInstance().getY()), Radar.getInstance().getSize(), Radar.getInstance().getSize()), stack, 0.5f);
         drawEntitiesOnRadar(stack);
-        drawWaypointsOnRadar(stack);
+        if (Radar.getInstance().isShowWaypoint()) drawWaypointsOnRadar(stack);
 
     }
 
@@ -239,10 +272,18 @@ public class ModRadar extends Mod {
         for (Entity entity : entities) {
             if (!canRenderEntity(entity)) continue;
             // get entity x and z relative to player
-            var color = Settings.getColorFromEntity(entity, "radar");
+            var color = getColorFromEntity(entity);
             var point = getScaledPos(entity.getPos(), getPointRelativeToYaw(entity.getPos(), yaw));
             RenderUtils.drawBox(color, new BoxD(point, Radar.getInstance().getPointSize(), Radar.getInstance().getPointSize()), stack, 1f);
         }
+    }
+
+    private Color getColorFromEntity(Entity entity) {
+        if (entity instanceof PlayerEntity) return Radar.getInstance().getPlayerColor();
+        if (entity instanceof ItemEntity) return Radar.getInstance().getItemColor();
+        if (entity.getType().getSpawnGroup().isPeaceful()) return Radar.getInstance().getPeacefulMobColor();
+        if (!entity.getType().getSpawnGroup().isPeaceful()) return Radar.getInstance().getHostileMobColor();
+        return Colors.WHITE;
     }
 
     /**
@@ -256,9 +297,9 @@ public class ModRadar extends Mod {
     private PointD getScaledPos(Vec3d w, PointD location) {
         if (w.distanceTo(getPlayer().getPos()) >= (Radar.getInstance().getSize() / 2) - Radar.getInstance().getPointSize())
             location = clampPoint(location);
-        location = location.add(new PointD(Radar.getInstance().getX() + Radar.getInstance().getSize() / 2.0,
-                Radar.getInstance().getSize() / 2.0 + Radar.getInstance().getY()));
-        if (Radar.getInstance().getPointSize() != 1) location = location.subtract(new PointD(getPointOffset(), getPointOffset()));
+        location = location.add(new PointD(Radar.getInstance().getX() + Radar.getInstance().getSize() / 2.0, Radar.getInstance().getSize() / 2.0 + Radar.getInstance().getY()));
+        if (Radar.getInstance().getPointSize() != 1)
+            location = location.subtract(new PointD(getPointOffset(), getPointOffset()));
         return location;
     }
 
