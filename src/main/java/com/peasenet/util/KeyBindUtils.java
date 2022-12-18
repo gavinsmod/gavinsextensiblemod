@@ -54,9 +54,14 @@ public class KeyBindUtils {
      * @return The keybinding.
      */
     public static KeyBinding registerKeyBindForType(Type type) {
-        if (KeyBindingHelper.getBoundKeyOf(getKeyBinding(type)) != null)
+        try {
+            return KeyBindingHelper.registerKeyBinding(getKeyBinding(type));
+        } catch (Exception e) {
+            if(type.getKeyBinding() == GLFW.GLFW_KEY_UNKNOWN) {
+                return registerEmptyKeyBind(type);
+            }
             return getKeyBinding(type);
-        return KeyBindingHelper.registerKeyBinding(getKeyBinding(type));
+        }
     }
 
     /**
@@ -66,12 +71,6 @@ public class KeyBindUtils {
      * @return The keybinding.
      */
     public static KeyBinding registerEmptyKeyBind(Type type) {
-
-        // check if the keybinding is already registered
-        var keyBinding = KeyBindingHelper.getBoundKeyOf(getKeyBinding(type));
-        if (keyBinding != null) {
-            return getKeyBinding(type);
-        }
         return KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 type.getTranslationKey(),
                 InputUtil.Type.KEYSYM,
