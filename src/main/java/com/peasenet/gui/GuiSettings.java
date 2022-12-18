@@ -118,6 +118,7 @@ public class GuiSettings extends GuiElement {
         for (Mod m : modList) {
             var modSettings = m.getSettings();
             for (Setting s : modSettings) {
+                s.getGui().setShrunkForScrollbar(false);
                 parent.addElement(s.getGui());
             }
         }
