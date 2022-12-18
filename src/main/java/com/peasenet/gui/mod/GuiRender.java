@@ -37,7 +37,7 @@ public class GuiRender extends GuiScroll {
      * Creates a new render dropdown.
      */
     public GuiRender() {
-        this(new PointD(270, 20), 90, 10, Text.translatable("gavinsmod.gui.render"));
+        this(new PointD(280, 20), 90, 10, Text.translatable("gavinsmod.gui.render"));
     }
 
     /**
