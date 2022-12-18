@@ -71,8 +71,8 @@ public class GuiSettings extends GuiElement {
         super(Text.translatable("gavinsmod.gui.settings"));
         guis = new ArrayList<>();
         renderDropdown = new GuiScroll(new PointD(10, 20), 100, 10, Text.translatable("gavinsmod.settings.render"));
-        miscDropdown = new GuiScroll(new PointD(115, 20), 105, 10, Text.translatable("gavinsmod.settings.misc"));
-        guiDropdown = new GuiScroll(new PointD(225, 20), 100, 10, Text.translatable("gavinsmod.settings.gui"));
+        miscDropdown = new GuiScroll(new PointD(115, 20), 100, 10, Text.translatable("gavinsmod.settings.misc"));
+        guiDropdown = new GuiScroll(new PointD(220, 20), 100, 10, Text.translatable("gavinsmod.settings.gui"));
         espDropdown = new GuiScroll(new PointD(10, 130), 110, 10, Text.translatable("gavinsmod.settings.esp"));
         tracerDropdown = new GuiScroll(new PointD(125, 130), 115, 10, Text.translatable("gavinsmod.settings.tracer"));
         reloadGui();
@@ -118,7 +118,7 @@ public class GuiSettings extends GuiElement {
         for (Mod m : modList) {
             var modSettings = m.getSettings();
             for (Setting s : modSettings) {
-                s.getGui().setWidth(parent.getWidth());
+                s.getGui().setShrunkForScrollbar(false);
                 parent.addElement(s.getGui());
             }
         }

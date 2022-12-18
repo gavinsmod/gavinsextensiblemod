@@ -70,6 +70,10 @@ public class ModCommands {
             GavinsMod.guiSettings = new GuiSettings();
             return true;
         }
+        if (message.startsWith("reload")) {
+            Mods.reload();
+            return true;
+        }
         return false;
     }
 }

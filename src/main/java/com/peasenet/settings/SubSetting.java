@@ -44,7 +44,7 @@ public class SubSetting extends Setting {
      * @param translationKey - The translation key.
      */
     public SubSetting(int width, int height, String translationKey) {
-        super("none");
+        super("none",translationKey);
         dropdown = new GuiScroll(width, height, Text.translatable(translationKey));
         dropdown.setDirection(GuiDropdown.Direction.RIGHT);
         dropdown.hide();

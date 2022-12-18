@@ -53,7 +53,7 @@ public class ColorSetting extends Setting {
      * @param translationKey - The translation key of the setting.
      */
     public ColorSetting(String name, String translationKey) {
-        super(name);
+        super(name,translationKey);
         if (name.contains("gavui")) {
             name = name.replace("gavui.", "");
             isGavUi = true;

@@ -32,6 +32,7 @@ import com.peasenet.mods.gui.ModGui;
 import com.peasenet.mods.gui.ModGuiSettings;
 import com.peasenet.mods.misc.ModFpsCounter;
 import com.peasenet.mods.misc.ModGuiTextOverlay;
+import com.peasenet.mods.render.ModRadar;
 import com.peasenet.mods.movement.*;
 import com.peasenet.mods.render.*;
 import com.peasenet.mods.tracer.ModChestTracer;
@@ -87,6 +88,20 @@ public class Mods {
         new ModGuiTextOverlay();
         new ModFpsCounter();
         new ModWaypoint();
+        new ModRadar();
+    }
+
+    public static void reload() {
+        // get the mods that are enabled
+        ArrayList<String> enabledMods = new ArrayList<>(modMap.values().stream().filter(Mod::isActive).map(Mod::getChatCommand).toList());
+        modMap.clear();
+        new Mods();
+        for (String modName : enabledMods) {
+            Mod mod = getMod(modName);
+            if (mod != null) {
+                mod.activate();
+            }
+        }
     }
 
     /**

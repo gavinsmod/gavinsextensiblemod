@@ -1,0 +1,4 @@
+[submodule "gavui"]
+	path = gavui
+	url = https://github.com/GT3CH1/gavui
+	ignore = all

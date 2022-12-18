@@ -8,6 +8,17 @@ repositories {
 }
 
 
+
+allprojects { apply plugin: "idea" }
+
+sourceSets {
+    main {
+        java {
+            srcDirs += 'gavui/src/main/java'
+        }
+    }
+}
+
 sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 

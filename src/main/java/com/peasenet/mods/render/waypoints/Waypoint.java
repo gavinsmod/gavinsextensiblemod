@@ -21,6 +21,7 @@
 package com.peasenet.mods.render.waypoints;
 
 import com.peasenet.gavui.color.Color;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
 /**
@@ -255,6 +256,14 @@ public class Waypoint {
     @Override
     public int hashCode() {
         return name.hashCode();
+    }
+
+    /**
+     * Gets the position of the waypoint as a Vec3d.
+     * @return A Vec3d of the waypoint's position.
+     */
+    public Vec3d getPos() {
+        return new Vec3d(x, y, z);
     }
 
 }

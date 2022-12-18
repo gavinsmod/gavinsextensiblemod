@@ -28,9 +28,14 @@ import com.google.gson.reflect.TypeToken;
 import com.peasenet.gavui.color.Color;
 import com.peasenet.gavui.color.Colors;
 import com.peasenet.gavui.util.GavUISettings;
+import com.peasenet.mods.render.radar.Radar;
 import com.peasenet.mods.render.waypoints.Waypoint;
 import net.minecraft.block.Block;
 import net.minecraft.block.OreBlock;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,6 +50,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author gt3ch1
@@ -93,6 +99,7 @@ public class Settings {
         default_settings.put("xray.disable_culling", true);
         default_settings.put("xray.blocks", new ArrayList<String>());
         default_settings.put("waypoint.locations", new ArrayList<Waypoint>());
+        default_settings.put("radar", new Radar());
         load();
     }
 
@@ -169,7 +176,17 @@ public class Settings {
         Gson gson = new GsonBuilder().setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE).create();
         try {
             var map = gson.fromJson(new FileReader(cfgFile), HashMap.class);
-            default_settings.forEach((k, _v) -> settings.put(k, map.get(k)));
+            AtomicBoolean defaultSettingLoaded = new AtomicBoolean(false);
+            default_settings.forEach((k, _v) -> {
+                if (map.containsKey(k))
+                    settings.put(k, map.get(k));
+                else {
+                    settings.put(k, _v);
+                    defaultSettingLoaded.set(true);
+                }
+            });
+            if (defaultSettingLoaded.get())
+                save();
         } catch (Exception e) {
             GavinsMod.LOGGER.error("Error reading settings from file. Saving defaults.");
             loadDefault();
@@ -183,12 +200,42 @@ public class Settings {
      * @return The boolean value of the setting.
      */
     public static boolean getBool(String key) {
-        if (!settings.containsKey(key)) return false;
+        if (!settings.containsKey(key)) {
+            // check if the default settings contain the key
+            if (!default_settings.containsKey(key))
+                return false;
+            // add the key to the settings
+            settings.put(key, default_settings.get(key));
+        }
         if (settings.get(key) == null) {
             settings.put(key, false);
             return false;
         }
         return (boolean) settings.get(key);
+    }
+
+    /**
+     * Gets the integer value of the given setting.
+     *
+     * @param key - The key of the setting.
+     * @return The integer value of the setting.
+     */
+    public static int getInt(String key) {
+        if (!settings.containsKey(key)) {
+            // check if the default settings contain the key
+            if (!default_settings.containsKey(key))
+                return 0;
+            // add the key to the settings
+            settings.put(key, default_settings.get(key));
+        }
+        if (settings.get(key) == null) {
+            settings.put(key, 0);
+            return 0;
+        }
+        // convert long to int
+        if (settings.get(key) instanceof Long)
+            return ((Long) settings.get(key)).intValue();
+        return (int) settings.get(key);
     }
 
     /**
@@ -207,8 +254,38 @@ public class Settings {
             c = gson.fromJson(settings.get(key).toString(), colorListType);
         } catch (JsonSyntaxException e) {
             loadDefault();
+        } catch (NullPointerException e1) {
+            GavinsMod.LOGGER.error("Color not found for key: " + key);
+            // check if default settings contains the key
+            if (default_settings.containsKey(key)) {
+                GavinsMod.LOGGER.warn("Saving default color for key: " + key);
+                // set the color to the default color
+                c = (Color) default_settings.get(key);
+                // set the color in the settings
+                settings.put(key, c);
+                save();
+            } else {
+                return Colors.WHITE;
+            }
         }
         return c;
+    }
+
+
+    public static Color getColorFromEntity(Entity e, String baseKey) {
+        var key = baseKey;
+        if (e instanceof PlayerEntity) {
+            key += ".player.color";
+        } else if (e instanceof MobEntity) {
+            if ((e.getType().getSpawnGroup().isPeaceful())) {
+                key += ".mob.peaceful.color";
+            } else {
+                key += ".mob.hostile.color";
+            }
+        } else if (e instanceof ItemEntity) {
+            key += ".item.color";
+        }
+        return getColor(key);
     }
 
     public static Color getUiColor(String key) {
@@ -224,7 +301,7 @@ public class Settings {
         var bakFile = cfgFile + ".bak";
         int bakCount = 1;
         // if bak file exists, rename it to settings.bak.1, settings.bak.2, etc.
-        while(new File(bakFile).exists()) {
+        while (new File(bakFile).exists()) {
             bakFile = cfgFile + ".bak." + bakCount;
             bakCount++;
         }
@@ -342,6 +419,23 @@ public class Settings {
         if (waypoints == null)
             return new ArrayList<>();
         return waypoints;
+    }
+    
+    
+    public static void saveRadar() {
+        settings.put("radar", Radar.getInstance());
+        save();
+    }
+    
+    public static Radar getRadar() {
+        Gson gson = new Gson();
+        Type radarType = new TypeToken<Radar>() {
+        }.getType();
+        Radar radar = gson.fromJson(settings.get("radar").toString(), radarType);
+        if (radar == null)
+            return new Radar();
+        Radar.setInstance(radar);
+        return radar;
     }
 
     /**
