@@ -22,8 +22,13 @@ package com.peasenet.util;
 
 import com.peasenet.gui.GuiSettings;
 import com.peasenet.main.GavinsMod;
+import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Mods;
 import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
+import net.minecraft.client.resource.language.I18n;
+
+import java.util.Arrays;
 
 /**
  * @author gt3ch1
@@ -48,6 +53,27 @@ public class ModCommands {
                 return true;
             }
         }
+        if (message.equals("help")) {
+            // get all mod types
+            PlayerUtils.sendMessage("§bEach command is preceded by a period (§l.§r§b)", true);
+            var mods = Type.values();
+            // sort by category then name
+            Arrays.sort(mods, (o1, o2) -> {
+                if (o1.getCategory().equals(o2.getCategory())) {
+                    return o1.getName().compareTo(o2.getName());
+                }
+                return o1.getCategory().compareTo(o2.getCategory());
+            });
+            var previousCategory = "";
+            for(var t : mods) {
+                if (!previousCategory.equals(t.getCategory())) {
+                    PlayerUtils.sendMessage("§l" + I18n.translate(t.getModCategory().translationKey), false);
+                    previousCategory = t.getCategory();
+                }
+                PlayerUtils.sendMessage("§a" + I18n.translate(t.getTranslationKey()) + " §9-§c " + t.getChatCommand(), false);
+            }
+            return true;
+        }
         if (message.startsWith("up")) {
             // split the message from "up" and a number.
             String[] split = message.split(" ");
@@ -61,17 +87,13 @@ public class ModCommands {
                 }
             }
         }
-        if (message.startsWith("resetgui")) {
+        if (message.equals("resetgui")) {
             GavinsMod.gui.reset();
             GavinsMod.guiSettings.reset();
             return true;
         }
         if (message.equals("reloadgui")) {
             GavinsMod.guiSettings = new GuiSettings();
-            return true;
-        }
-        if (message.startsWith("reload")) {
-            Mods.reload();
             return true;
         }
         return false;

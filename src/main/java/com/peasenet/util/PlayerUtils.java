@@ -22,11 +22,14 @@ package com.peasenet.util;
 
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
+import com.peasenet.main.Settings;
+import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.util.math.Rotation;
 import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
+import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
@@ -205,5 +208,12 @@ public class PlayerUtils {
     public static void moveUp(int amount) {
         var player = GavinsModClient.getPlayer();
         setPosition(new Vec3d(player.getPos().getX(), player.getPos().getY() + amount, player.getPos().getZ()));
+    }
+    
+    public static void sendMessage(String message,boolean withPrefix) {
+        if(withPrefix)
+            message = Mod.GAVINS_MOD_STRING + message;
+        if (Settings.getBool("misc.messages"))
+            GavinsModClient.getPlayer().sendMessage(Text.literal(message), false);
     }
 }
