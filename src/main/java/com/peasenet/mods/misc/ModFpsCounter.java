@@ -43,7 +43,7 @@ import net.minecraft.text.Text;
 public class ModFpsCounter extends Mod {
     public ModFpsCounter() {
         super(Type.MOD_FPS_COUNTER);
-        SubSetting fpsSetting = new SubSetting(50, 10, "gavinsmod.settings.misc.fpscolors");
+        SubSetting fpsSetting = new SubSetting(100, 10, "gavinsmod.settings.misc.fpscolors");
         ToggleSetting fpsColors = new ToggleSetting("misc.fps.color.enabled", "gavinsmod.settings.misc.fpscolors.enabled");
         ColorSetting fpsSlowColor = new ColorSetting("misc.fps.color.slow", "gavinsmod.settings.misc.fps.color.slow");
         ColorSetting fpsOkColor = new ColorSetting("misc.fps.color.ok", "gavinsmod.settings.misc.fps.color.ok");
@@ -52,7 +52,6 @@ public class ModFpsCounter extends Mod {
         fpsSetting.add(fpsSlowColor);
         fpsSetting.add(fpsOkColor);
         fpsSetting.add(fpsFastColor);
-        fpsSetting.getGui().setDirection(GuiDropdown.Direction.RIGHT);
         addSetting(fpsSetting);
 
     }

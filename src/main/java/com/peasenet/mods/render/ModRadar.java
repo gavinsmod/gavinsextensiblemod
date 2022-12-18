@@ -112,8 +112,8 @@ public class ModRadar extends Mod {
         useWaypointColorSetting.setCallback(() -> Radar.getInstance().setUseWaypointColor(useWaypointColorSetting.getValue()));
         useWaypointColorSetting.setValue(Radar.getInstance().isUseWaypointColor());
 
-        var color = new SubSetting(140, 10, "gavinsmod.settings.radar.color");
-        var drawSettings = new SubSetting(140, 10, "gavinsmod.settings.radar.drawn");
+        var color = new SubSetting(90, 10, "gavinsmod.settings.radar.color");
+        var drawSettings = new SubSetting(90, 10, "gavinsmod.settings.radar.drawn");
 
         color.add(playerEntityColor);
         color.add(hostileMobEntityColor);
@@ -131,6 +131,10 @@ public class ModRadar extends Mod {
         drawSettings.add(waypointsSetting);
         drawSettings.add(playerSetting);
         drawSettings.add(useWaypointColorSetting);
+
+        color.getGui().getChildren().forEach(c -> c.setWidth(color.getGui().getWidth() + 20));
+        drawSettings.getGui().getChildren().forEach(c -> c.setWidth(drawSettings.getGui().getWidth() + 20));
+
         addSetting(color);
         addSetting(drawSettings);
         updateScaleText(pointSizeSetting, Radar.getInstance().getPointSize());
@@ -147,7 +151,7 @@ public class ModRadar extends Mod {
         setting.setTitle(Text.translatable(setting.getTranslationKey()).append(Text.literal(" (%s)".formatted(value))));
     }
 
-    /*4
+    /**
      * Calculates the offset to draw the points on the radar.
      *
      * @return The offset to draw the points on the radar.

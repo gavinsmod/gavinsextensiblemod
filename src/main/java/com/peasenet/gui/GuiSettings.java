@@ -118,7 +118,6 @@ public class GuiSettings extends GuiElement {
         for (Mod m : modList) {
             var modSettings = m.getSettings();
             for (Setting s : modSettings) {
-                s.getGui().setWidth(parent.getWidth());
                 parent.addElement(s.getGui());
             }
         }
