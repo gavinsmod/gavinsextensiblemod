@@ -194,17 +194,17 @@ public enum Type {
 
     /**
      * @author gt3ch1
-     * @version 5/18/2022
+     * @version 12/17/2022
      * A list of different mod categories.
      */
     public enum Category {
-        MOVEMENT("gavinsmod.mod.gui.movement"),
-        RENDER("gavinsmod.mod.gui.render"),
-        COMBAT("gavinsmod.mod.gui.combat"),
-        MISC("gavinsmod.mod.gui.misc"),
-        ESPS("gavinsmod.mod.gui.esps"),
-        TRACERS("gavinsmod.mod.gui.tracers"),
-        GUI("gavinsmod.mod.gui.gui"),
+        MOVEMENT("gavinsmod.gui.movement"),
+        RENDER("gavinsmod.gui.render"),
+        COMBAT("gavinsmod.gui.combat"),
+        MISC("gavinsmod.gui.misc"),
+        ESPS("gavinsmod.gui.esps"),
+        TRACERS("gavinsmod.gui.tracers"),
+        GUI("gavinsmod.gui.gui"),
         NONE("none");
 
         /**
