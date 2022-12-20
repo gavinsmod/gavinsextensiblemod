@@ -10,6 +10,7 @@
         "MixinBiome",
         "MixinBlock",
         "MixinClientPlayerEntity",
+        "MixinClientPlayNetworkHandler",
         "MixinGameRender",
         "MixinInGameHud",
         "MixinLivingEntity",

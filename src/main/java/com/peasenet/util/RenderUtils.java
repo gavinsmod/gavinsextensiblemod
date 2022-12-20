@@ -30,6 +30,7 @@ import com.peasenet.main.Settings;
 import com.peasenet.mixinterface.ISimpleOption;
 import com.peasenet.mods.Type;
 import com.peasenet.mods.render.waypoints.Waypoint;
+import com.peasenet.util.event.WorldRenderEvent;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.EnderChestBlockEntity;
@@ -55,6 +56,7 @@ public class RenderUtils {
      */
     private static int CHUNK_RADIUS = GavinsModClient.getMinecraftClient().getOptions().getViewDistance().getValue();
 
+    private static WorldRenderContext context;
 
     /**
      * The last player configured gamma.
@@ -91,6 +93,7 @@ public class RenderUtils {
      * @param context The render context.
      */
     public static void afterEntities(WorldRenderContext context) {
+        RenderUtils.context = context;
         CHUNK_RADIUS = GavinsModClient.getMinecraftClient().getOptions().getViewDistance().getValue() / 2;
         // this helps with lag
         MinecraftClient minecraft = MinecraftClient.getInstance();
@@ -119,6 +122,7 @@ public class RenderUtils {
         drawChestMods(level, stack, buffer, playerPos, chunk_x, chunk_z);
         drawEntityMods(level, player, stack, delta, buffer, playerPos);
         drawWaypoint(stack, buffer, playerPos);
+        WorldRenderEvent.fire(level, stack, buffer,delta);
         tessellator.draw();
         stack.pop();
 
@@ -266,7 +270,7 @@ public class RenderUtils {
      * @param type  The entity type.
      * @return The bounding box of the entity.
      */
-    private static Box getEntityBox(float delta, Entity e, EntityType<?> type) {
+    public static Box getEntityBox(float delta, Entity e, EntityType<?> type) {
         double x = e.prevX + (e.getX() - e.prevX) * delta;
         double y = e.prevY + (e.getY() - e.prevY) * delta;
         double z = e.prevZ + (e.getZ() - e.prevZ) * delta;

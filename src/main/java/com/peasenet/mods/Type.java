@@ -71,6 +71,7 @@ public enum Type {
     // MISC
     MOD_FPS_COUNTER("FPS Counter", "gavinsmod.mod.misc.fpscounter", "gavinsmod.keybinds.misc", MISC, "fpscounter"),
     MOD_GUI_TEXT_OVERLAY("GUI Text Overlay", "gavinsmod.mod.misc.textoverlay", "gavinsmod.keybinds.misc", MISC, "textoverlay"),
+    FREECAM("Freecam", "gavinsmod.mod.misc.freecam", "gavinsmod.keybinds.misc", MISC, "freecam"),
 
     // GUI (translation key not needed)
     MOD_GUI("GUI", "gavinsmod.gui", "gavinsmod.keybinds.gui", GLFW.GLFW_KEY_I, GUI, "gui"),
