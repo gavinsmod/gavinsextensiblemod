@@ -31,6 +31,7 @@ import com.peasenet.mods.esp.ModMobEsp;
 import com.peasenet.mods.gui.ModGui;
 import com.peasenet.mods.gui.ModGuiSettings;
 import com.peasenet.mods.misc.ModFpsCounter;
+import com.peasenet.mods.misc.ModFreecam;
 import com.peasenet.mods.misc.ModGuiTextOverlay;
 import com.peasenet.mods.render.ModRadar;
 import com.peasenet.mods.movement.*;
@@ -89,7 +90,7 @@ public class Mods {
         new ModFpsCounter();
         new ModWaypoint();
         new ModRadar();
-//        new ModFreecam();
+        new ModFreecam();
     }
 
     public static void reload() {
