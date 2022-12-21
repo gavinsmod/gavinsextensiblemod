@@ -32,7 +32,6 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
 
 /**
  * @author gt3ch1
@@ -70,14 +69,14 @@ public class PlayerUtils {
      * @param camera    The camera to use.
      * @return The new player position.
      */
-    public static Vec3f getNewPlayerPosition(float deltaTime, Camera camera) {
+    public static Vec3d getNewPlayerPosition(float deltaTime, Camera camera) {
         var look = camera.getHorizontalPlane();
         var player = GavinsModClient.getPlayer();
-        var px = (float) (player.prevX + (getPlayerPos().getX() - player.prevX) * deltaTime) + look.getX();
-        var py = (float) (player.prevY + (getPlayerPos().getY() - player.prevY) * deltaTime) + look.getY()
+        var px = (player.prevX + (getPlayerPos().getX() - player.prevX) * deltaTime) + look.x();
+        var py = (player.prevY + (getPlayerPos().getY() - player.prevY) * deltaTime) + look.y()
                 + player.getStandingEyeHeight();
-        var pz = (float) (player.prevZ + (getPlayerPos().getZ() - player.prevZ) * deltaTime) + look.getZ();
-        return new Vec3f(px, py, pz);
+        var pz = (player.prevZ + (getPlayerPos().getZ() - player.prevZ) * deltaTime) + look.z();
+        return new Vec3d(px, py, pz);
     }
 
     /**
@@ -209,9 +208,9 @@ public class PlayerUtils {
         var player = GavinsModClient.getPlayer();
         setPosition(new Vec3d(player.getPos().getX(), player.getPos().getY() + amount, player.getPos().getZ()));
     }
-    
-    public static void sendMessage(String message,boolean withPrefix) {
-        if(withPrefix)
+
+    public static void sendMessage(String message, boolean withPrefix) {
+        if (withPrefix)
             message = Mod.GAVINS_MOD_STRING + message;
         if (Settings.getBool("misc.messages"))
             GavinsModClient.getPlayer().sendMessage(Text.literal(message), false);

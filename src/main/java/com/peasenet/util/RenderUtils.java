@@ -43,6 +43,8 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.*;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -75,16 +77,16 @@ public class RenderUtils {
      * @param boxPos    The center of the location we want to draw a line to.
      * @param color     The color to draw the line in.
      */
-    public static void renderSingleLine(MatrixStack stack, VertexConsumer buffer, Vec3f playerPos,
-                                        Vec3f boxPos, Color color) {
-        Vec3f normal = new Vec3f(boxPos.getX() - playerPos.getX(), boxPos.getY() - playerPos.getY(), boxPos.getZ() - playerPos.getZ());
+    public static void renderSingleLine(MatrixStack stack, VertexConsumer buffer, Vec3d playerPos,
+                                        Vec3d boxPos, Color color) {
+        Vec3d normal = new Vec3d(boxPos.getX() - playerPos.getX(), boxPos.getY() - playerPos.getY(), boxPos.getZ() - playerPos.getZ());
         normal.normalize();
         Matrix4f matrix4f = stack.peek().getPositionMatrix();
         Matrix3f matrix3f = stack.peek().getNormalMatrix();
-        buffer.vertex(matrix4f, playerPos.getX(), playerPos.getY(), playerPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), 0.5f)
-                .normal(matrix3f, normal.getX(), normal.getY(), normal.getZ()).next();
-        buffer.vertex(matrix4f, boxPos.getX(), boxPos.getY(), boxPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), 0.5f)
-                .normal(matrix3f, normal.getX(), normal.getY(), normal.getZ()).next();
+        buffer.vertex(matrix4f, (float) playerPos.getX(), (float) playerPos.getY(), (float) playerPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), 0.5f)
+                .normal(matrix3f, (float) normal.getX(), (float) normal.getY(), (float) normal.getZ()).next();
+        buffer.vertex(matrix4f, (float) boxPos.getX(), (float) boxPos.getY(), (float) boxPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), 0.5f)
+                .normal(matrix3f, (float) normal.getX(), (float) normal.getY(), (float) normal.getZ()).next();
     }
 
     /**
@@ -114,7 +116,7 @@ public class RenderUtils {
         RenderSystem.applyModelViewMatrix();
         stack.translate(-camera.x, -camera.y, -camera.z);
         assert player != null;
-        Vec3f playerPos = PlayerUtils.getNewPlayerPosition(delta, mainCamera);
+        Vec3d playerPos = PlayerUtils.getNewPlayerPosition(delta, mainCamera);
         assert level != null;
         int chunk_x = player.getChunkPos().x;
         int chunk_z = player.getChunkPos().z;
@@ -122,7 +124,7 @@ public class RenderUtils {
         drawChestMods(level, stack, buffer, playerPos, chunk_x, chunk_z);
         drawEntityMods(level, player, stack, delta, buffer, playerPos);
         drawWaypoint(stack, buffer, playerPos);
-        WorldRenderEvent.fire(level, stack, buffer,delta);
+        WorldRenderEvent.fire(level, stack, buffer, delta);
         tessellator.draw();
         stack.pop();
 
@@ -136,12 +138,12 @@ public class RenderUtils {
      * @param buffer    - The buffer to write to.
      * @param playerPos - The position of the player.
      */
-    private static void drawWaypoint(MatrixStack stack, BufferBuilder buffer, Vec3f playerPos) {
+    private static void drawWaypoint(MatrixStack stack, BufferBuilder buffer, Vec3d playerPos) {
         if (!Mods.getMod("waypoints").isActive())
             return;
         Settings.getWaypoints().stream().filter(Waypoint::isEnabled).forEach(w -> {
             Box aabb = new Box(new BlockPos(w.getX(), w.getY(), w.getZ()));
-            Vec3f boxPos = new Vec3f(aabb.getCenter());
+            Vec3d boxPos = aabb.getCenter();
             if (w.isTracerEnabled())
                 renderSingleLine(stack, buffer, playerPos, boxPos, w.getColor());
             if (w.isEspEnabled())
@@ -162,7 +164,7 @@ public class RenderUtils {
      * Sets up the render system for the tracers and esps to work.
      */
     private static void setupRenderSystem() {
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableTexture();
@@ -178,7 +180,7 @@ public class RenderUtils {
      * @param chunk_x   The player's chunk x.
      * @param chunk_z   The player's chunk z.
      */
-    private static void drawChestMods(ClientWorld level, MatrixStack stack, BufferBuilder buffer, Vec3f playerPos, int chunk_x, int chunk_z) {
+    private static void drawChestMods(ClientWorld level, MatrixStack stack, BufferBuilder buffer, Vec3d playerPos, int chunk_x, int chunk_z) {
         if (GavinsMod.isEnabled(Type.CHEST_ESP) || GavinsMod.isEnabled(Type.CHEST_TRACER)) {
             // For each chunk in the CHUNK_RADIUS centered around chunk_x and chunk_z, draw a chest ESP or tracer.
             for (int x = -CHUNK_RADIUS; x <= CHUNK_RADIUS; x++) {
@@ -190,7 +192,7 @@ public class RenderUtils {
                                     if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity ||
                                             blockEntity instanceof ShulkerBoxBlockEntity) {
                                         Box aabb = new Box(blockPos);
-                                        Vec3f boxPos = new Vec3f(aabb.getCenter());
+                                        Vec3d boxPos = aabb.getCenter();
                                         if (GavinsMod.isEnabled(Type.CHEST_ESP))
                                             drawBox(stack, buffer, aabb, Settings.getColor("esp.chest.color"));
                                         if (GavinsMod.isEnabled(Type.CHEST_TRACER)) {
@@ -228,7 +230,7 @@ public class RenderUtils {
      * @param playerPos The player's position.
      */
     private static void drawEntityMods(ClientWorld level, ClientPlayerEntity player, MatrixStack stack,
-                                       float delta, BufferBuilder buffer, Vec3f playerPos) {
+                                       float delta, BufferBuilder buffer, Vec3d playerPos) {
         level.getEntities().forEach(e -> {
             if ((e.squaredDistanceTo(player) > 64 * CHUNK_RADIUS * 16) || player == e)
                 return;
@@ -236,7 +238,7 @@ public class RenderUtils {
             EntityType<?> type = e.getType();
 
             Box aabb = getEntityBox(delta, e, type);
-            Vec3f boxPos = new Vec3f(aabb.getCenter());
+            Vec3d boxPos = aabb.getCenter();
             if (type == EntityType.ITEM) {
                 if (GavinsMod.isEnabled(Type.ENTITY_ITEM_ESP))
                     drawBox(stack, buffer, aabb, Settings.getColor("esp.item.color"));
@@ -407,7 +409,7 @@ public class RenderUtils {
     public static void drawBox(float[] acColor, int xt1, int yt1, int xt2, int yt2, MatrixStack matrixStack, float alpha) {
         // set alpha to be between 0 and 1
         alpha = Math.max(0, Math.min(1, alpha));
-        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.setShader(GameRenderer::getPositionProgram);
         RenderSystem.enableBlend();
         var matrix = matrixStack.peek().getPositionMatrix();
         var bufferBuilder = Tessellator.getInstance().getBuffer();
@@ -445,7 +447,7 @@ public class RenderUtils {
      * @param matrixStack - The matrix stack used to draw lines on screen.
      */
     public static void drawSingleLine(float[] accColor, int xt1, int yt1, int xt2, int yt2, MatrixStack matrixStack) {
-        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.setShader(GameRenderer::getPositionProgram);
         RenderSystem.enableBlend();
         var matrix = matrixStack.peek().getPositionMatrix();
         var bufferBuilder = Tessellator.getInstance().getBuffer();
@@ -479,7 +481,7 @@ public class RenderUtils {
      * @param matrixStack The matrix stack used to draw boxes on screen.
      */
     public static void drawOutline(float[] acColor, int xt1, int yt1, int xt2, int yt2, MatrixStack matrixStack) {
-        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.setShader(GameRenderer::getPositionProgram);
         RenderSystem.enableBlend();
         var matrix = matrixStack.peek().getPositionMatrix();
         var bufferBuilder = Tessellator.getInstance().getBuffer();

@@ -31,12 +31,12 @@ import com.peasenet.gavui.util.GavUISettings;
 import com.peasenet.mods.render.radar.Radar;
 import com.peasenet.mods.render.waypoints.Waypoint;
 import net.minecraft.block.Block;
-import net.minecraft.block.OreBlock;
+import net.minecraft.block.ExperienceDroppingBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -317,7 +317,7 @@ public class Settings {
      */
     private static void loadDefaultXrayBlocks() {
         var list = new LinkedHashSet<>();
-        Registry.BLOCK.stream().filter(b -> b instanceof OreBlock).forEach((b -> list.add(b.toString())));
+        Registries.BLOCK.stream().filter(b -> b instanceof ExperienceDroppingBlock).forEach((b -> list.add(b.toString())));
         default_settings.put("xray.blocks", list);
     }
 

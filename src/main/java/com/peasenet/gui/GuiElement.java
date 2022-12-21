@@ -110,7 +110,7 @@ public class GuiElement extends Screen {
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
         assert client != null;
         var tr = client.textRenderer;
-        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.setShader(GameRenderer::getPositionProgram);
         RenderSystem.enableBlend();
         guis.forEach(gui -> {
             if (gui.isParent())

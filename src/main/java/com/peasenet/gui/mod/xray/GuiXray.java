@@ -32,11 +32,13 @@ import com.peasenet.main.Mods;
 import com.peasenet.main.Settings;
 import com.peasenet.util.RenderUtils;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registry;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -120,7 +122,7 @@ public class GuiXray extends GuiElement {
      */
     private static LinkedHashSet<Block> blockList() {
         var list = new ArrayList<Block>();
-        Registry.BLOCK.stream().sorted(Comparator.comparing(a -> I18n.translate(a.getTranslationKey()))).filter(b -> !b.asItem().getTranslationKey().contains("air")).forEach(list::add);
+        Registries.BLOCK.stream().sorted(Comparator.comparing(a -> I18n.translate(a.getTranslationKey()))).filter(b -> !b.asItem().getTranslationKey().contains("air")).forEach(list::add);
         return new LinkedHashSet<>(list);
     }
 

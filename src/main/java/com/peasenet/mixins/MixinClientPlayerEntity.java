@@ -34,14 +34,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(ClientPlayerEntity.class)
 public class MixinClientPlayerEntity {
-    @Inject(method = "sendChatMessage(Ljava/lang/String;Lnet/minecraft/text/Text;)V", at = @At("HEAD"), cancellable = true)
-    public void checkModCommands(String message, Text preview, CallbackInfo ci) {
-        // Checks to see if the messages starts with a . followed immediately by the name of the mod
-        if (message.startsWith(".")) {
-            // If so, it will be sent to the mod's command handler
-            var success = ModCommands.handleCommand(message);
-            // If the command was handled, the message will not be sent to the server
-            if (success) ci.cancel();
-        }
-    }
+//    @Inject(method = "sendChatMessage(Ljava/lang/String;Lnet/minecraft/text/Text;)V", at = @At("HEAD"), cancellable = true)
+//    public void checkModCommands(String message, Text preview, CallbackInfo ci) {
+//        // Checks to see if the messages starts with a . followed immediately by the name of the mod
+//        if (message.startsWith(".")) {
+//            // If so, it will be sent to the mod's command handler
+//            var success = ModCommands.handleCommand(message);
+//            // If the command was handled, the message will not be sent to the server
+//            if (success) ci.cancel();
+//        }
+//    }
 }
