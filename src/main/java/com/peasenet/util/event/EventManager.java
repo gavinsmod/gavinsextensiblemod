@@ -17,33 +17,55 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-
 package com.peasenet.util.event;
 
 import com.peasenet.util.listeners.Listener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
- * A class that manages events.
+ * The event manager. Allows adding/removing listeners and firing events.
  *
- * @param <T> The type of event to manage.
  * @author GT3CH1
  * @version 12/22/2022
  */
-public abstract class Event<T extends Listener> {
+public class EventManager {
+
+    // a list of event classes with the mod that created them
+    protected static final HashMap<Class<? extends Listener>, ArrayList<? extends Listener>> eventMap = new HashMap<>();
 
     /**
-     * Fires the event.
+     * Adds a listener to the event manager.
      *
-     * @param listeners - The listeners to fire the event to.
+     * @param event    - The event class.
+     * @param listener - The listener to add.
      */
-    public abstract void fire(ArrayList<T> listeners);
+    public <L extends Listener> void subscribe(Class<L> event, L listener) {
+        eventMap.computeIfAbsent(event, k -> new ArrayList<>());
+        ((ArrayList<L>) (eventMap.get(event))).add(listener);
+    }
 
     /**
-     * Gets the event class.
+     * Removes a listener from the event manager.
      *
-     * @return The event class.
+     * @param event    - The event class.
+     * @param listener - The listener to remove.
      */
-    public abstract Class<T> getEvent();
+    public <L extends Listener> void unsubscribe(Class<L> event, L listener) {
+        eventMap.get(event).remove(listener);
+    }
+
+    /**
+     * Calls the event to be fired.
+     *
+     * @param event - The event to fire.
+     */
+    @SuppressWarnings({"unchecked"})
+    public <L extends Listener, E extends Event<L>> void call(E event) {
+        var listeners = (ArrayList<L>) eventMap.get(event.getEvent());
+        if (listeners != null) {
+            event.fire(listeners);
+        }
+    }
 }

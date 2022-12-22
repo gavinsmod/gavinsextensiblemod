@@ -20,7 +20,6 @@
 
 package com.peasenet.mods.misc;
 
-import com.peasenet.main.GavinsMod;
 import com.peasenet.main.Settings;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
@@ -28,9 +27,8 @@ import com.peasenet.packets.OutputPacket;
 import com.peasenet.util.FakePlayer;
 import com.peasenet.util.PlayerUtils;
 import com.peasenet.util.RenderUtils;
-import com.peasenet.util.event.Event;
-import com.peasenet.util.event.PacketSendEvent;
-import com.peasenet.util.event.WorldRenderEvent;
+import com.peasenet.util.listeners.PacketSendListener;
+import com.peasenet.util.listeners.WorldRenderListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.util.math.MatrixStack;
@@ -38,7 +36,13 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.Vec3d;
 
-public class ModFreecam extends Mod {
+/**
+ * A mod that allows the camera to be moved freely.
+ *
+ * @author GT3CH1
+ * @version 12/22/2022
+ */
+public class ModFreecam extends Mod implements PacketSendListener, WorldRenderListener {
     FakePlayer fake;
 
     public ModFreecam() {
@@ -49,8 +53,8 @@ public class ModFreecam extends Mod {
     public void activate() {
         super.activate();
         fake = new FakePlayer();
-        Event.subscribe(WorldRenderEvent.class, this);
-        Event.subscribe(PacketSendEvent.class, this);
+        em.subscribe(PacketSendListener.class, this);
+        em.subscribe(WorldRenderListener.class, this);
     }
 
     @Override
@@ -58,7 +62,6 @@ public class ModFreecam extends Mod {
         super.onTick();
         if (!isActive())
             return;
-        // lock player position
         getPlayer().setVelocity(Vec3d.ZERO);
         getPlayer().airStrafingSpeed = 1;
         getPlayer().setOnGround(false);
@@ -75,21 +78,22 @@ public class ModFreecam extends Mod {
     public void onDisable() {
         super.onDisable();
         fake.remove();
-        Event.unsubscribe(WorldRenderEvent.class, this);
-        Event.unsubscribe(PacketSendEvent.class, this);
+        em.unsubscribe(PacketSendListener.class, this);
+        em.unsubscribe(WorldRenderListener.class, this);
     }
 
     @Override
     public void onWorldRender(ClientWorld world, MatrixStack stack, BufferBuilder buffer, float delta) {
         var camera = MinecraftClient.getInstance().gameRenderer.getCamera();
         var playerPos = PlayerUtils.getNewPlayerPosition(delta, camera);
-        var boxPos = fake.getPos();
-        RenderUtils.renderSingleLine(stack, buffer, playerPos, boxPos, Settings.getColor("tracer.item.color"));
+        var aabb = RenderUtils.getEntityBox(delta, fake, fake.getType());
+        RenderUtils.renderSingleLine(stack, buffer, playerPos, aabb.getCenter(), Settings.getColor("tracer.item.color"));
+        RenderUtils.drawBox(stack, buffer, aabb, Settings.getColor("tracer.item.color"));
     }
 
     @Override
     public void onPacketSend(OutputPacket packet) {
-        if(packet.getPacket() instanceof PlayerMoveC2SPacket)
+        if (packet.getPacket() instanceof PlayerMoveC2SPacket)
             packet.cancel();
     }
 }

@@ -26,6 +26,7 @@ import com.peasenet.gui.GuiSettings;
 import com.peasenet.gui.mod.*;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.util.event.EventManager;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,7 @@ import java.util.stream.Stream;
 
 /**
  * @author gt3ch1
- * @version 7/1/2022
+ * @version 12/22/2022
  * The main initializer of the mod.
  */
 public class GavinsMod implements ModInitializer {
@@ -61,6 +62,8 @@ public class GavinsMod implements ModInitializer {
      * The gui used to display the settings menu.
      */
     public static GuiSettings guiSettings;
+
+    public static EventManager eventManager;
 
     /**
      * Gets whether the given mod is enabled.
@@ -112,6 +115,7 @@ public class GavinsMod implements ModInitializer {
         LOGGER.info("Loading settings");
         Settings.initialize();
         LOGGER.info("Settings loaded");
+        eventManager = new EventManager();
         new Mods();
         LOGGER.info("GavinsMod initialized");
         ArrayList<com.peasenet.gavui.Gui> guiList = new ArrayList<>();

@@ -18,18 +18,32 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+
 package com.peasenet.util.event;
 
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.world.ClientWorld;
+import com.peasenet.util.listeners.Listener;
 
-public class WorldRenderEvent extends Event {
-    public static void fire(ClientWorld world, MatrixStack stack, BufferBuilder buffer, float delta) {
-        if (eventMap.get(WorldRenderEvent.class) == null)
-            return;
-        if (eventMap.get(WorldRenderEvent.class).size() == 0)
-            return;
-        eventMap.get(WorldRenderEvent.class).forEach(mod -> mod.onWorldRender(world, stack, buffer, delta));
+/**
+ * An event that can be cancelled.
+ *
+ * @param <T> The type of listener to manage.
+ * @author GT3CH1
+ * @version 12/22/2022
+ */
+public abstract class CancellableEvent<T extends Listener> extends Event<T> {
+    private boolean cancelled = false;
+
+    /**
+     * Whether this even is cancelled.
+     */
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    /**
+     * Cancels this event.
+     */
+    public void cancel() {
+        this.cancelled = true;
     }
 }

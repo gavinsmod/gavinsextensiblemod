@@ -17,21 +17,7 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.listeners;
 
-package com.peasenet.util.event;
-
-import com.peasenet.packets.OutputPacket;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.Packet;
-
-public class PacketSendEvent extends Event {
-    public static void fire(OutputPacket packet) {
-        if (eventMap.get(PacketSendEvent.class) == null)
-            return;
-        if (eventMap.get(PacketSendEvent.class).size() == 0)
-            return;
-        eventMap.get(PacketSendEvent.class).forEach(mod -> mod.onPacketSend(packet));
-    }
+public interface Listener {
 }

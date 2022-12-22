@@ -30,7 +30,7 @@ import com.peasenet.main.Settings;
 import com.peasenet.mixinterface.ISimpleOption;
 import com.peasenet.mods.Type;
 import com.peasenet.mods.render.waypoints.Waypoint;
-import com.peasenet.util.event.WorldRenderEvent;
+import com.peasenet.util.listeners.WorldRenderListener.WorldRenderEvent;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.EnderChestBlockEntity;
@@ -42,14 +42,16 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 /**
  * @author gt3ch1
- * @version 7/5/2022
+ * @version 12/22/2022
  * A utility class for rendering tracers and esp's.
  */
 public class RenderUtils {
@@ -58,7 +60,7 @@ public class RenderUtils {
      */
     private static int CHUNK_RADIUS = GavinsModClient.getMinecraftClient().getOptions().getViewDistance().getValue();
 
-    private static WorldRenderContext context;
+//    private static WorldRenderContext context;
 
     /**
      * The last player configured gamma.
@@ -95,7 +97,7 @@ public class RenderUtils {
      * @param context The render context.
      */
     public static void afterEntities(WorldRenderContext context) {
-        RenderUtils.context = context;
+//        RenderUtils.context = context;
         CHUNK_RADIUS = GavinsModClient.getMinecraftClient().getOptions().getViewDistance().getValue() / 2;
         // this helps with lag
         MinecraftClient minecraft = MinecraftClient.getInstance();
@@ -124,10 +126,10 @@ public class RenderUtils {
         drawChestMods(level, stack, buffer, playerPos, chunk_x, chunk_z);
         drawEntityMods(level, player, stack, delta, buffer, playerPos);
         drawWaypoint(stack, buffer, playerPos);
-        WorldRenderEvent.fire(level, stack, buffer, delta);
+        WorldRenderEvent event = new WorldRenderEvent(level, stack, buffer, delta);
+        GavinsMod.eventManager.call(event);
         tessellator.draw();
         stack.pop();
-
         resetRenderSystem();
     }
 
@@ -215,7 +217,7 @@ public class RenderUtils {
      * @param aabb   The box to draw.
      * @param c      The color to draw the box in.
      */
-    private static void drawBox(MatrixStack stack, BufferBuilder buffer, Box aabb, Color c) {
+    public static void drawBox(MatrixStack stack, BufferBuilder buffer, Box aabb, Color c) {
         WorldRenderer.drawBox(stack, buffer, aabb, c.getRed(), c.getGreen(), c.getBlue(), 1f);
     }
 
@@ -457,18 +459,6 @@ public class RenderUtils {
         bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
         Tessellator.getInstance().draw();
     }
-
-    /**
-     * Draws an outline on screen.
-     *
-     * @param acColor     The color of the box.
-     * @param box         The box to draw.
-     * @param matrixStack The matrix stack.
-     */
-    public static void drawOutline(float[] acColor, BoxD box, MatrixStack matrixStack) {
-        drawOutline(acColor, (int) box.getTopLeft().x(), (int) box.getTopLeft().y(), (int) box.getBottomRight().x(), (int) box.getBottomRight().y(), matrixStack);
-    }
-
 
     /**
      * Draws a box outline on screen.

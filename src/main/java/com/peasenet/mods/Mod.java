@@ -20,20 +20,20 @@
 
 package com.peasenet.mods;
 
+import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Mods;
 import com.peasenet.main.Settings;
 import com.peasenet.mixinterface.IMinecraftClient;
-import com.peasenet.packets.OutputPacket;
 import com.peasenet.settings.Setting;
 import com.peasenet.util.KeyBindUtils;
+import com.peasenet.util.event.EventManager;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.network.Packet;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
@@ -46,6 +46,8 @@ import java.util.ArrayList;
  * and a gui button based off of the given category.
  */
 public abstract class Mod implements IMod {
+
+    public static EventManager em = GavinsMod.eventManager;
 
     /**
      * The string shown in the chat window when the player toggles the mod.
@@ -258,9 +260,5 @@ public abstract class Mod implements IMod {
 
     public void onWorldRender(ClientWorld world, MatrixStack stack, BufferBuilder buffer, float delta) {
 
-    }
-
-    public void onPacketSend(OutputPacket packet) {
-        
     }
 }
