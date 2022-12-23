@@ -20,7 +20,7 @@
 
 package com.peasenet.mods.misc;
 
-import com.peasenet.main.Settings;
+import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.packets.OutputPacket;
@@ -87,8 +87,8 @@ public class ModFreecam extends Mod implements PacketSendListener, WorldRenderLi
         var camera = MinecraftClient.getInstance().gameRenderer.getCamera();
         var playerPos = PlayerUtils.getNewPlayerPosition(delta, camera);
         var aabb = RenderUtils.getEntityBox(delta, fake);
-        RenderUtils.renderSingleLine(stack, buffer, playerPos, aabb.getCenter(), Settings.getColor("tracer.item.color"));
-        RenderUtils.drawBox(stack, buffer, aabb, Settings.getColor("tracer.item.color"));
+        RenderUtils.renderSingleLine(stack, buffer, playerPos, aabb.getCenter(), GavinsMod.tracerConfig.getPlayerColor());
+        RenderUtils.drawBox(stack, buffer, aabb, GavinsMod.espConfig.getPlayerColor());
     }
 
     @Override
