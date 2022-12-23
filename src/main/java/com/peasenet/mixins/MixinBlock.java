@@ -41,7 +41,7 @@ public class MixinBlock {
             "Lnet/minecraft/world/BlockView;" + // reader
             "Lnet/minecraft/util/math/BlockPos;" + // pos
             "Lnet/minecraft/util/math/Direction;" + // face
-            "Lnet/minecraft/util/math/BlockPos;" + // blockPosaaa
+            "Lnet/minecraft/util/math/BlockPos;" + // blockPos
             ")Z", // ci
             cancellable = true)
     private static boolean xray(BlockState state, BlockView world, BlockPos pos, Direction side, BlockPos otherPos, CallbackInfoReturnable<Boolean> cir) {
