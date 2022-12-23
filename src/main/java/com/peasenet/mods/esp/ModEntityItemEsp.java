@@ -61,7 +61,7 @@ public class ModEntityItemEsp extends Mod implements EntityRenderListener {
     public void onEntityRender(EntityRender er) {
         if (er.getEntityType() != EntityType.ITEM)
             return;
-        var box = RenderUtils.getEntityBox(er.delta, er.entity, er.getEntityType());
+        var box = RenderUtils.getEntityBox(er.delta, er.entity);
         RenderUtils.drawBox(er.stack, er.buffer, box, GavinsMod.espConfig.getItemColor());
     }
 }

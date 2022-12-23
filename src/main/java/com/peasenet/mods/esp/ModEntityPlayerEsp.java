@@ -24,13 +24,17 @@ import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
+import com.peasenet.util.EntityRender;
+import com.peasenet.util.RenderUtils;
+import com.peasenet.util.listeners.EntityRenderListener;
+import net.minecraft.entity.player.PlayerEntity;
 
 /**
  * @author gt3ch1
  * @version 6/27/2022
  * A mod that allows the player to see an ESP to other players.
  */
-public class ModEntityPlayerEsp extends Mod {
+public class ModEntityPlayerEsp extends Mod implements EntityRenderListener {
     public ModEntityPlayerEsp() {
         super(Type.ENTITY_PLAYER_ESP);
         ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.esp.player.color");
@@ -39,5 +43,25 @@ public class ModEntityPlayerEsp extends Mod {
         });
         colorSetting.setColor(GavinsMod.espConfig.getPlayerColor());
         addSetting(colorSetting);
+    }
+
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        em.subscribe(EntityRenderListener.class, this);
+    }
+
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        em.unsubscribe(EntityRenderListener.class, this);
+    }
+
+    @Override
+    public void onEntityRender(EntityRender er) {
+        if (!(er.entity instanceof PlayerEntity))
+            return;
+        var box = RenderUtils.getEntityBox(er.delta, er.entity);
+        RenderUtils.drawBox(er.stack, er.buffer, box, GavinsMod.espConfig.getPlayerColor());
     }
 }

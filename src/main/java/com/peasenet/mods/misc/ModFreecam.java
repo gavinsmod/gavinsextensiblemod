@@ -86,7 +86,7 @@ public class ModFreecam extends Mod implements PacketSendListener, WorldRenderLi
     public void onWorldRender(ClientWorld world, MatrixStack stack, BufferBuilder buffer, float delta) {
         var camera = MinecraftClient.getInstance().gameRenderer.getCamera();
         var playerPos = PlayerUtils.getNewPlayerPosition(delta, camera);
-        var aabb = RenderUtils.getEntityBox(delta, fake, fake.getType());
+        var aabb = RenderUtils.getEntityBox(delta, fake);
         RenderUtils.renderSingleLine(stack, buffer, playerPos, aabb.getCenter(), Settings.getColor("tracer.item.color"));
         RenderUtils.drawBox(stack, buffer, aabb, Settings.getColor("tracer.item.color"));
     }

@@ -30,6 +30,7 @@ import com.peasenet.main.Settings;
 import com.peasenet.mixinterface.ISimpleOption;
 import com.peasenet.mods.Type;
 import com.peasenet.mods.render.waypoints.Waypoint;
+import com.peasenet.util.listeners.ChestEntityRenderListener.ChestEntityRenderEvent;
 import com.peasenet.util.listeners.EntityRenderListener.EntityRenderEvent;
 import com.peasenet.util.listeners.WorldRenderListener.WorldRenderEvent;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -42,7 +43,6 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -124,7 +124,7 @@ public class RenderUtils {
         int chunk_x = player.getChunkPos().x;
         int chunk_z = player.getChunkPos().z;
 
-        drawChestMods(level, stack, buffer, playerPos, chunk_x, chunk_z);
+        drawChestMods(level, stack, buffer, playerPos, chunk_x, chunk_z, delta);
         drawEntityMods(level, player, stack, delta, buffer, playerPos);
         drawWaypoint(stack, buffer, playerPos);
         WorldRenderEvent event = new WorldRenderEvent(level, stack, buffer, delta);
@@ -183,29 +183,24 @@ public class RenderUtils {
      * @param chunk_x   The player's chunk x.
      * @param chunk_z   The player's chunk z.
      */
-    private static void drawChestMods(ClientWorld level, MatrixStack stack, BufferBuilder buffer, Vec3d playerPos, int chunk_x, int chunk_z) {
-        if (GavinsMod.isEnabled(Type.CHEST_ESP) || GavinsMod.isEnabled(Type.CHEST_TRACER)) {
-            // For each chunk in the CHUNK_RADIUS centered around chunk_x and chunk_z, draw a chest ESP or tracer.
-            for (int x = -CHUNK_RADIUS; x <= CHUNK_RADIUS; x++) {
-                for (int z = -CHUNK_RADIUS; z <= CHUNK_RADIUS; z++) {
-                    int chunk_x_ = chunk_x + x;
-                    int chunk_z_ = chunk_z + z;
-                    if (level.getChunk(chunk_x_, chunk_z_) != null) {
-                        level.getChunk(chunk_x_, chunk_z_).getBlockEntities().forEach((blockPos, blockEntity) -> {
-                                    if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity ||
-                                            blockEntity instanceof ShulkerBoxBlockEntity) {
-                                        Box aabb = new Box(blockPos);
-                                        Vec3d boxPos = aabb.getCenter();
-//                                        EntityRenderEvent event = new EntityRenderEvent(blockEntity.getType(), stack, buffer, aabb,0);
-                                        if (GavinsMod.isEnabled(Type.CHEST_ESP))
-                                            drawBox(stack, buffer, aabb, GavinsMod.espConfig.getChestColor());
-                                        if (GavinsMod.isEnabled(Type.CHEST_TRACER)) {
-                                            renderSingleLine(stack, buffer, playerPos, boxPos, Settings.getColor("tracer.chest.color"));
-                                        }
-                                    }
+    private static void drawChestMods(ClientWorld level, MatrixStack stack, BufferBuilder buffer, Vec3d playerPos, int chunk_x, int chunk_z, float delta) {
+        if (!GavinsMod.isEnabled(Type.CHEST_ESP) && !GavinsMod.isEnabled(Type.CHEST_TRACER))
+            return;
+        for (int x = -CHUNK_RADIUS; x <= CHUNK_RADIUS; x++) {
+            for (int z = -CHUNK_RADIUS; z <= CHUNK_RADIUS; z++) {
+                int chunk_x_ = chunk_x + x;
+                int chunk_z_ = chunk_z + z;
+                if (level.getChunk(chunk_x_, chunk_z_) != null) {
+                    level.getChunk(chunk_x_, chunk_z_).getBlockEntities().forEach((blockPos, blockEntity) -> {
+                                if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity ||
+                                        blockEntity instanceof ShulkerBoxBlockEntity) {
+                                    Box aabb = new Box(blockPos);
+                                    Vec3d boxPos = aabb.getCenter();
+                                    ChestEntityRenderEvent event = new ChestEntityRenderEvent(blockEntity, stack, buffer, boxPos, playerPos, delta);
+                                    GavinsMod.eventManager.call(event);
                                 }
-                        );
-                    }
+                            }
+                    );
                 }
             }
         }
@@ -238,33 +233,10 @@ public class RenderUtils {
         level.getEntities().forEach(e -> {
             if ((e.squaredDistanceTo(player) > 64 * CHUNK_RADIUS * 16) || player == e)
                 return;
-
-            EntityType<?> type = e.getType();
-
-            Box aabb = getEntityBox(delta, e, type);
+            Box aabb = getEntityBox(delta, e);
             Vec3d boxPos = aabb.getCenter();
             EntityRenderEvent event = new EntityRenderEvent(e, stack, buffer, boxPos, playerPos, delta);
             GavinsMod.eventManager.call(event);
-//            if (type == EntityType.ITEM) {
-//                if (GavinsMod.isEnabled(Type.ENTITY_ITEM_ESP))
-//                    drawBox(stack, buffer, aabb, Settings.getColor("esp.item.color"));
-//                return;
-//            }
-//
-//            if (type == EntityType.PLAYER) {
-//                if (GavinsMod.isEnabled(Type.ENTITY_PLAYER_ESP))
-//                    drawBox(stack, buffer, aabb, Settings.getColor("esp.player.color"));
-//                if (GavinsMod.isEnabled(Type.ENTITY_PLAYER_TRACER))
-//                    renderSingleLine(stack, buffer, playerPos, boxPos, Settings.getColor("tracer.player.color"));
-//                return;
-//            }
-//
-//            var espColor = type.getSpawnGroup().isPeaceful() ? Settings.getColor("esp.mob.peaceful.color") : Settings.getColor("esp.mob.hostile.color");
-//            var tracerColor = type.getSpawnGroup().isPeaceful() ? Settings.getColor("tracer.mob.peaceful.color") : Settings.getColor("tracer.mob.hostile.color");
-//            if (GavinsMod.isEnabled(Type.MOB_ESP))
-//                drawBox(stack, buffer, aabb, espColor);
-//            if (GavinsMod.isEnabled(Type.MOB_TRACER))
-//                renderSingleLine(stack, buffer, playerPos, boxPos, tracerColor);
         });
     }
 
@@ -273,14 +245,13 @@ public class RenderUtils {
      *
      * @param delta The delta time.
      * @param e     The entity.
-     * @param type  The entity type.
      * @return The bounding box of the entity.
      */
-    public static Box getEntityBox(float delta, Entity e, EntityType<?> type) {
+    public static Box getEntityBox(float delta, Entity e) {
         double x = e.prevX + (e.getX() - e.prevX) * delta;
         double y = e.prevY + (e.getY() - e.prevY) * delta;
         double z = e.prevZ + (e.getZ() - e.prevZ) * delta;
-        return type.createSimpleBoundingBox(x, y, z);
+        return e.getType().createSimpleBoundingBox(x, y, z);
     }
 
     /**

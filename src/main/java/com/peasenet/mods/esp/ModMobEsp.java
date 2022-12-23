@@ -25,13 +25,16 @@ import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
 import com.peasenet.settings.ToggleSetting;
+import com.peasenet.util.EntityRender;
+import com.peasenet.util.RenderUtils;
+import com.peasenet.util.listeners.EntityRenderListener;
 
 /**
  * @author gt3ch1
  * @version 6/27/2022
  * A mod that allows the client to see boxes around mobs.
  */
-public class ModMobEsp extends Mod {
+public class ModMobEsp extends Mod implements EntityRenderListener {
     public ModMobEsp() {
         super(Type.MOB_ESP);
         ColorSetting hostileEspColor = new ColorSetting("gavinsmod.settings.esp.mob.hostile.color");
@@ -62,5 +65,27 @@ public class ModMobEsp extends Mod {
         addSetting(peacefulEspColor);
         addSetting(hostileEspToggle);
         addSetting(peacefulEspToggle);
+    }
+
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        em.subscribe(EntityRenderListener.class, this);
+    }
+
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        em.unsubscribe(EntityRenderListener.class, this);
+    }
+
+    @Override
+    public void onEntityRender(EntityRender er) {
+        var box = RenderUtils.getEntityBox(er.delta, er.entity);
+        if (GavinsMod.espConfig.isShowPeacefulMobs() && er.getEntityType().getSpawnGroup().isPeaceful()) {
+            RenderUtils.drawBox(er.stack, er.buffer, box, GavinsMod.espConfig.getPeacefulMobColor());
+        } else if (GavinsMod.espConfig.isShowHostileMobs() && !er.getEntityType().getSpawnGroup().isPeaceful()) {
+            RenderUtils.drawBox(er.stack, er.buffer, box, GavinsMod.espConfig.getHostileMobColor());
+        }
     }
 }

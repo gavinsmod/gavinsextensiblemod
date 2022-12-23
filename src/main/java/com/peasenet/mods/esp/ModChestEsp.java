@@ -24,13 +24,17 @@ import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
+import com.peasenet.util.ChestEntityRender;
+import com.peasenet.util.RenderUtils;
+import com.peasenet.util.listeners.ChestEntityRenderListener;
+import net.minecraft.util.math.Box;
 
 /**
  * @author gt3ch1
  * @version 6/27/2022
  * A mod that allows the client to see an esp (a box) around chests.
  */
-public class ModChestEsp extends Mod {
+public class ModChestEsp extends Mod implements ChestEntityRenderListener {
     public ModChestEsp() {
         super(Type.CHEST_ESP);
         ColorSetting colorSetting = new ColorSetting("none",
@@ -40,5 +44,24 @@ public class ModChestEsp extends Mod {
         });
         colorSetting.setColor(GavinsMod.espConfig.getChestColor());
         addSetting(colorSetting);
+    }
+
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        em.subscribe(ChestEntityRenderListener.class, this);
+    }
+
+    @Override
+
+    public void onDisable() {
+        super.onDisable();
+        em.unsubscribe(ChestEntityRenderListener.class, this);
+    }
+
+    @Override
+    public void onEntityRender(ChestEntityRender er) {
+        var box = new Box(er.entity.getPos());
+        RenderUtils.drawBox(er.stack, er.buffer, box, GavinsMod.espConfig.getChestColor());
     }
 }
