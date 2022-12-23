@@ -24,6 +24,8 @@ import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.packets.OutputPacket;
+import com.peasenet.settings.SubSetting;
+import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.FakePlayer;
 import com.peasenet.util.PlayerUtils;
 import com.peasenet.util.RenderUtils;
