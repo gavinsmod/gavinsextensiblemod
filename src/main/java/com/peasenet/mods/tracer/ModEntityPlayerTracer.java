@@ -20,20 +20,52 @@
 
 package com.peasenet.mods.tracer;
 
+import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
+import com.peasenet.util.EntityRender;
+import com.peasenet.util.RenderUtils;
+import com.peasenet.util.listeners.CameraBobListener;
+import com.peasenet.util.listeners.EntityRenderListener;
+import net.minecraft.entity.player.PlayerEntity;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 12/23/2022
  * A mod that allows the player to see a tracer to other players.
  */
-public class ModEntityPlayerTracer extends Mod {
+public class ModEntityPlayerTracer extends Mod implements EntityRenderListener, CameraBobListener {
     public ModEntityPlayerTracer() {
         super(Type.ENTITY_PLAYER_TRACER);
         ColorSetting colorSetting = new ColorSetting("tracer.player.color",
                 "gavinsmod.settings.tracer.player.color");
         addSetting(colorSetting);
+    }
+
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        em.subscribe(EntityRenderListener.class, this);
+        em.subscribe(CameraBobListener.class, this);
+    }
+
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        em.unsubscribe(EntityRenderListener.class, this);
+        em.unsubscribe(CameraBobListener.class, this);
+    }
+
+    @Override
+    public void onCameraViewBob(CameraBob c) {
+        c.cancel();
+    }
+
+    @Override
+    public void onEntityRender(EntityRender er) {
+        if (!(er.entity instanceof PlayerEntity))
+            return;
+        RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, GavinsMod.tracerConfig.getPlayerColor());
     }
 }

@@ -21,8 +21,7 @@
 package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
+import com.peasenet.util.listeners.CameraBobListener;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,17 +33,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinGameRender {
     @Inject(method = "bobViewWhenHurt(Lnet/minecraft/client/util/math/MatrixStack;F)V", at = @At("HEAD"), cancellable = true)
     public void checkAntiHurt(MatrixStack stack, float f, CallbackInfo ci) {
-        if (GavinsMod.isEnabled(Type.ANTI_HURT)) {
+        CameraBobListener.CameraBobEvent event = new CameraBobListener.CameraBobEvent();
+        GavinsMod.eventManager.call(event);
+        if (event.isCancelled())
             ci.cancel();
-        }
+
     }
 
     @Inject(method = "bobView", at = @At("HEAD"), cancellable = true)
     public void checkTracersAndEsps(MatrixStack stack, float f, CallbackInfo ci) {
-        // disable bobbing when any tracers are enabled.
-        var tracerCount = GavinsMod.getModsInCategory(Type.Category.TRACERS).stream().filter(Mod::isActive).count();
-        if (tracerCount > 0) {
+        CameraBobListener.CameraBobEvent event = new CameraBobListener.CameraBobEvent();
+        GavinsMod.eventManager.call(event);
+        if (event.isCancelled())
             ci.cancel();
-        }
     }
 }

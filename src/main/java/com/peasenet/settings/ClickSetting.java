@@ -44,9 +44,13 @@ public class ClickSetting extends Setting {
      * @param translationKey - The translation key of the setting.
      */
     public ClickSetting(String name, String translationKey) {
-        super(name,translationKey);
+        super(name, translationKey);
         gui = new GuiClick(new PointD(0, 0), 100, 10, Text.translatable(translationKey));
         gui.setCallback(this::onClick);
+    }
+
+    public ClickSetting(String translationKey) {
+        this("none", translationKey);
     }
 
     @Override

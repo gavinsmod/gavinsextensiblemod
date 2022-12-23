@@ -20,8 +20,8 @@
 package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
-import com.peasenet.main.Mods;
 import com.peasenet.mods.Type;
+import com.peasenet.util.listeners.InGameHudRenderListener.InGameHudRenderEvent;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
@@ -41,7 +41,8 @@ import java.util.Objects;
 public class MixinInGameHud {
     @Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/util/math/MatrixStack;F)V")
     private void mixin(MatrixStack matrixStack, float delta, CallbackInfo ci) {
-        Mods.getMods().forEach(m -> m.onRenderInGameHud(matrixStack, delta));
+        var event = new InGameHudRenderEvent(matrixStack, delta);
+        GavinsMod.eventManager.call(event);
     }
 
 

@@ -26,6 +26,7 @@ import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
 import com.peasenet.util.EntityRender;
 import com.peasenet.util.RenderUtils;
+import com.peasenet.util.listeners.CameraBobListener;
 import com.peasenet.util.listeners.EntityRenderListener;
 import net.minecraft.entity.EntityType;
 
@@ -34,7 +35,7 @@ import net.minecraft.entity.EntityType;
  * @version 6/27/2022
  * A mod that allows the player to see tracers towards items.
  */
-public class ModEntityItemTracer extends Mod implements EntityRenderListener {
+public class ModEntityItemTracer extends Mod implements EntityRenderListener, CameraBobListener {
     public ModEntityItemTracer() {
         super(Type.ENTITY_ITEM_TRACER);
         ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.tracer.item.color");
@@ -49,6 +50,8 @@ public class ModEntityItemTracer extends Mod implements EntityRenderListener {
     public void onEnable() {
         super.onEnable();
         em.subscribe(EntityRenderListener.class, this);
+        em.subscribe(CameraBobListener.class,this);
+
     }
 
     @Override
@@ -61,5 +64,10 @@ public class ModEntityItemTracer extends Mod implements EntityRenderListener {
     public void onEntityRender(EntityRender er) {
         if (er.getEntityType() != EntityType.ITEM) return;
         RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, GavinsMod.tracerConfig.getItemColor());
+    }
+
+    @Override
+    public void onCameraViewBob(CameraBob c) {
+        c.cancel();
     }
 }

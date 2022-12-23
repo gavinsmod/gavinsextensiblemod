@@ -218,9 +218,6 @@ public abstract class Mod implements IMod {
         return getClient().getPlayer();
     }
 
-    public void onRenderInGameHud(MatrixStack stack, float delta) {
-    }
-
     public void onAttack(Entity target) {
     }
 

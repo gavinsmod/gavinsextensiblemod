@@ -22,6 +22,7 @@ package com.peasenet.mods.misc;
 
 import com.peasenet.gavui.math.BoxD;
 import com.peasenet.gavui.math.PointD;
+import com.peasenet.gavui.util.GavUISettings;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Settings;
@@ -29,6 +30,7 @@ import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.RenderUtils;
+import com.peasenet.util.listeners.InGameHudRenderListener;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
@@ -40,7 +42,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version 6/28/2022
  * A mod that shows the currently active mods in the top left screen.
  */
-public class ModGuiTextOverlay extends Mod {
+public class ModGuiTextOverlay extends Mod implements InGameHudRenderListener {
     public ModGuiTextOverlay() {
         super(Type.MOD_GUI_TEXT_OVERLAY);
 
@@ -48,6 +50,17 @@ public class ModGuiTextOverlay extends Mod {
         ToggleSetting chatMessage = new ToggleSetting("misc.messages", "gavinsmod.settings.misc.messages");
         chatMessage.setValue(Settings.getBool("misc.messages"));
         addSetting(chatMessage);
+    }
+
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        em.subscribe(InGameHudRenderListener.class, this);
+    }
+
+    @Override
+    public void onDisable() {
+        em.unsubscribe(InGameHudRenderListener.class, this);
     }
 
     @Override
@@ -78,13 +91,13 @@ public class ModGuiTextOverlay extends Mod {
         // get the mod with the longest name.
         var longestModName = mods.max(Comparator.comparingInt(mod -> mod.getName().length())).get().getName().length();
         var box = new BoxD(startingPoint, longestModName * 6 + 6, modsCount * 12);
-        RenderUtils.drawBox((Settings.getColor("gui.color.background")).getAsFloatArray(), box, matrixStack, 0.5f);
+        RenderUtils.drawBox((GavUISettings.getColor("gui.color.background")).getAsFloatArray(), box, matrixStack, 0.5f);
         mods = GavinsMod.getModsForTextOverlay();
         AtomicInteger modCounter = new AtomicInteger();
         mods.forEach(mod -> {
-            textRenderer.draw(matrixStack, Text.translatable(mod.getTranslationKey()), currX, currY.get(), (Settings.getColor("gui.color.foreground")).getAsInt());
+            textRenderer.draw(matrixStack, Text.translatable(mod.getTranslationKey()), currX, currY.get(), (GavUISettings.getColor("gui.color.foreground")).getAsInt());
             if (modsCount > 1 && modCounter.get() < modsCount - 1) {
-                RenderUtils.drawSingleLine((Settings.getColor("gui.color.foreground")).getAsFloatArray(), currX - 1, currY.get() + 9, longestModName * 6 + 5, currY.get() + 9, matrixStack);
+                RenderUtils.drawSingleLine((GavUISettings.getColor("gui.color.foreground")).getAsFloatArray(), currX - 1, currY.get() + 9, longestModName * 6 + 5, currY.get() + 9, matrixStack);
             }
             currY.addAndGet(12);
             modCounter.getAndIncrement();

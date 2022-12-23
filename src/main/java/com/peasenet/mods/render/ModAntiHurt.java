@@ -22,14 +22,32 @@ package com.peasenet.mods.render;
 
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.util.listeners.CameraBobListener;
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
  * A mod that disables the view bob when the player is damaged.
  */
-public class ModAntiHurt extends Mod {
+public class ModAntiHurt extends Mod implements CameraBobListener {
     public ModAntiHurt() {
         super(Type.ANTI_HURT);
+    }
+
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        em.subscribe(CameraBobListener.class, this);
+    }
+
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        em.unsubscribe(CameraBobListener.class, this);
+    }
+
+    @Override
+    public void onCameraViewBob(CameraBob c) {
+        c.cancel();
     }
 }

@@ -125,14 +125,6 @@ public interface IMod {
     ClientPlayerEntity getPlayer();
 
     /**
-     * Called when the in game hud is rendered.
-     *
-     * @param stack - The matrix stack.
-     * @param delta - The delta time.
-     */
-    void onRenderInGameHud(MatrixStack stack, float delta);
-
-    /**
      * Called when attacking another entity.
      *
      * @param target - The target entity.

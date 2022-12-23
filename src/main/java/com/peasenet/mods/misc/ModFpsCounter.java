@@ -20,9 +20,9 @@
 
 package com.peasenet.mods.misc;
 
-import com.peasenet.gavui.GuiDropdown;
 import com.peasenet.gavui.math.BoxD;
 import com.peasenet.gavui.math.PointD;
+import com.peasenet.gavui.util.GavUISettings;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Settings;
@@ -32,6 +32,7 @@ import com.peasenet.settings.ColorSetting;
 import com.peasenet.settings.SubSetting;
 import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.RenderUtils;
+import com.peasenet.util.listeners.InGameHudRenderListener;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
@@ -40,7 +41,7 @@ import net.minecraft.text.Text;
  * @version 6/28/2022
  * A mod that renders the current frames per second in the top right corner of the screen.
  */
-public class ModFpsCounter extends Mod {
+public class ModFpsCounter extends Mod implements InGameHudRenderListener {
     public ModFpsCounter() {
         super(Type.MOD_FPS_COUNTER);
         SubSetting fpsSetting = new SubSetting(100, 10, "gavinsmod.settings.misc.fpscolors");
@@ -54,6 +55,18 @@ public class ModFpsCounter extends Mod {
         fpsSetting.add(fpsFastColor);
         addSetting(fpsSetting);
 
+    }
+
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        em.subscribe(InGameHudRenderListener.class, this);
+    }
+
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        em.unsubscribe(InGameHudRenderListener.class, this);
     }
 
     @Override
@@ -80,7 +93,7 @@ public class ModFpsCounter extends Mod {
             else if (fps > maximumFps * 0.45 && fps < maximumFps * 0.85) color = Settings.getColor("misc.fps.color.ok");
             else color = Settings.getColor("misc.fps.color.slow");
         }
-        RenderUtils.drawBox((Settings.getColor("gui.color.background")).getAsFloatArray(), box, matrixStack, 0.5f);
+        RenderUtils.drawBox((GavUISettings.getColor("gui.color.background")).getAsFloatArray(), box, matrixStack, 0.5f);
         textRenderer.draw(matrixStack, Text.literal(fpsString), xCoordinate, 2, color.getAsInt());
     }
 }

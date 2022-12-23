@@ -26,6 +26,7 @@ import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
 import com.peasenet.util.ChestEntityRender;
 import com.peasenet.util.RenderUtils;
+import com.peasenet.util.listeners.CameraBobListener;
 import com.peasenet.util.listeners.ChestEntityRenderListener;
 
 /**
@@ -33,7 +34,8 @@ import com.peasenet.util.listeners.ChestEntityRenderListener;
  * @version 6/27/2022
  * A mod that allows the player to see tracers towards chests.
  */
-public class ModChestTracer extends Mod implements ChestEntityRenderListener {
+public class ModChestTracer extends Mod implements ChestEntityRenderListener,
+        CameraBobListener {
     public ModChestTracer() {
         super(Type.CHEST_TRACER);
         ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.tracer.chest.color");
@@ -48,16 +50,23 @@ public class ModChestTracer extends Mod implements ChestEntityRenderListener {
     public void onEnable() {
         super.onEnable();
         em.subscribe(ChestEntityRenderListener.class, this);
+        em.subscribe(CameraBobListener.class,this);
     }
 
     @Override
     public void onDisable() {
         super.onDisable();
         em.unsubscribe(ChestEntityRenderListener.class, this);
+        em.unsubscribe(CameraBobListener.class,this);
     }
 
     @Override
     public void onEntityRender(ChestEntityRender er) {
         RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, GavinsMod.tracerConfig.getChestColor());
+    }
+
+    @Override
+    public void onCameraViewBob(CameraBob c) {
+        c.cancel();
     }
 }

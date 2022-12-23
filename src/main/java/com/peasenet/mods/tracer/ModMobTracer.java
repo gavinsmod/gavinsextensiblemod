@@ -27,6 +27,7 @@ import com.peasenet.settings.ColorSetting;
 import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.EntityRender;
 import com.peasenet.util.RenderUtils;
+import com.peasenet.util.listeners.CameraBobListener;
 import com.peasenet.util.listeners.EntityRenderListener;
 import net.minecraft.entity.mob.MobEntity;
 
@@ -35,7 +36,7 @@ import net.minecraft.entity.mob.MobEntity;
  * @version 6/27/2022
  * A mod that allows the client to see lines, called tracers, towards mobs.
  */
-public class ModMobTracer extends Mod implements EntityRenderListener {
+public class ModMobTracer extends Mod implements EntityRenderListener, CameraBobListener {
     public ModMobTracer() {
         super(Type.MOB_TRACER);
         ColorSetting peacefulColor = new ColorSetting("gavinsmod.settings.tracer.mob.peaceful.color");
@@ -73,12 +74,14 @@ public class ModMobTracer extends Mod implements EntityRenderListener {
     public void onEnable() {
         super.onEnable();
         em.subscribe(EntityRenderListener.class, this);
+        em.subscribe(CameraBobListener.class, this);
     }
 
     @Override
     public void onDisable() {
         super.onDisable();
         em.unsubscribe(EntityRenderListener.class, this);
+        em.unsubscribe(CameraBobListener.class, this);
     }
 
     @Override
@@ -96,5 +99,10 @@ public class ModMobTracer extends Mod implements EntityRenderListener {
         } else if (!er.getEntityType().getSpawnGroup().isPeaceful() && GavinsMod.tracerConfig.isShowHostileMobs()) {
             RenderUtils.renderSingleLine(stack, buffer, playerPos, center, GavinsMod.tracerConfig.getHostileMobColor());
         }
+    }
+
+    @Override
+    public void onCameraViewBob(CameraBob c) {
+        c.cancel();
     }
 }
