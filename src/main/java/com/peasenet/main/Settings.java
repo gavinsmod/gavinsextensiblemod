@@ -62,7 +62,7 @@ public class Settings {
     /**
      * The list of all settings and their values.
      */
-    private static final HashMap<String, Object> settings = new HashMap<>();
+    public static final HashMap<String, Object> settings = new HashMap<>();
 
     /**
      * The collection of default settings.

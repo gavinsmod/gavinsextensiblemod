@@ -20,6 +20,7 @@
 
 package com.peasenet.main;
 
+import com.peasenet.config.EspConfig;
 import com.peasenet.gavui.GavUI;
 import com.peasenet.gui.GuiMainMenu;
 import com.peasenet.gui.GuiSettings;
@@ -64,6 +65,8 @@ public class GavinsMod implements ModInitializer {
     public static GuiSettings guiSettings;
 
     public static EventManager eventManager;
+
+    public static EspConfig espConfig;
 
     /**
      * Gets whether the given mod is enabled.
@@ -115,7 +118,10 @@ public class GavinsMod implements ModInitializer {
         LOGGER.info("Loading settings");
         Settings.initialize();
         LOGGER.info("Settings loaded");
+
         eventManager = new EventManager();
+        espConfig = new EspConfig();
+
         new Mods();
         LOGGER.info("GavinsMod initialized");
         ArrayList<com.peasenet.gavui.Gui> guiList = new ArrayList<>();

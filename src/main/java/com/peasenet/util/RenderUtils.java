@@ -196,7 +196,7 @@ public class RenderUtils {
                                         Box aabb = new Box(blockPos);
                                         Vec3d boxPos = aabb.getCenter();
                                         if (GavinsMod.isEnabled(Type.CHEST_ESP))
-                                            drawBox(stack, buffer, aabb, Settings.getColor("esp.chest.color"));
+                                            drawBox(stack, buffer, aabb, GavinsMod.espConfig.getChestColor());
                                         if (GavinsMod.isEnabled(Type.CHEST_TRACER)) {
                                             renderSingleLine(stack, buffer, playerPos, boxPos, Settings.getColor("tracer.chest.color"));
                                         }

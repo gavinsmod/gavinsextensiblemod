@@ -20,6 +20,7 @@
 
 package com.peasenet.mods.esp;
 
+import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
@@ -32,8 +33,12 @@ import com.peasenet.settings.ColorSetting;
 public class ModChestEsp extends Mod {
     public ModChestEsp() {
         super(Type.CHEST_ESP);
-        ColorSetting colorSetting = new ColorSetting("esp.chest.color",
+        ColorSetting colorSetting = new ColorSetting("none",
                 "gavinsmod.settings.esp.chest.color");
+        colorSetting.setCallback(() -> {
+            GavinsMod.espConfig.setChestColor(colorSetting.getColor());
+        });
+        colorSetting.setColor(GavinsMod.espConfig.getChestColor());
         addSetting(colorSetting);
     }
 }
