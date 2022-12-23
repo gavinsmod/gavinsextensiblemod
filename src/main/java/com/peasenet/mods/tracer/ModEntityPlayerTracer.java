@@ -38,8 +38,11 @@ import net.minecraft.entity.player.PlayerEntity;
 public class ModEntityPlayerTracer extends Mod implements EntityRenderListener, CameraBobListener {
     public ModEntityPlayerTracer() {
         super(Type.ENTITY_PLAYER_TRACER);
-        ColorSetting colorSetting = new ColorSetting("tracer.player.color",
-                "gavinsmod.settings.tracer.player.color");
+        ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.tracer.player.color");
+        colorSetting.setCallback(() -> {
+            GavinsMod.tracerConfig.setPlayerColor(colorSetting.getColor());
+        });
+        colorSetting.setColor(GavinsMod.tracerConfig.getPlayerColor());
         addSetting(colorSetting);
     }
 
