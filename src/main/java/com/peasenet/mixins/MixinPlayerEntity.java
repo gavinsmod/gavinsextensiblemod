@@ -21,8 +21,6 @@
 package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
-import com.peasenet.main.Mods;
-import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -45,7 +43,7 @@ public class MixinPlayerEntity {
 
     @Inject(method = "attack", at = @At("HEAD"))
     public void handleAttack(Entity target, CallbackInfo ci) {
-        Mods.getMods().stream().filter(Mod::isActive).forEach(m -> m.onAttack(target));
+
     }
 
     @Redirect(method = "tick()V", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerEntity;noClip:Z", opcode = Opcodes.PUTFIELD))

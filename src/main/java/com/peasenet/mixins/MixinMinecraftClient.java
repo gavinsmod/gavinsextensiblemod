@@ -23,6 +23,7 @@ package com.peasenet.mixins;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.mixinterface.IMinecraftClient;
 import com.peasenet.mods.Type;
+import com.peasenet.util.listeners.PlayerAttackListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
@@ -87,6 +88,14 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
         boolean disabled = GavinsMod.isEnabled(Type.XRAY) || GavinsMod.isEnabled(Type.FULL_BRIGHT);
         ci.setReturnValue(!disabled);
         ci.cancel();
+    }
+
+    @Inject(at = @At(value = "FIELD",
+            target = "Lnet/minecraft/client/MinecraftClient;crosshairTarget:Lnet/minecraft/util/hit/HitResult;",
+            ordinal = 0), method = "doAttack()Z")
+    private void doAttack(CallbackInfoReturnable<Boolean> cir) {
+        PlayerAttackListener.PlayerAttackEvent event = new PlayerAttackListener.PlayerAttackEvent();
+        GavinsMod.eventManager.call(event);
     }
 
     @Override

@@ -25,6 +25,7 @@ import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Settings;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.util.listeners.PlayerAttackListener;
 import com.peasenet.util.math.Rotation;
 import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;
@@ -107,6 +108,8 @@ public class PlayerUtils {
         var player = GavinsModClient.getPlayer();
         assert GavinsModClient.getMinecraftClient().getPlayerInteractionManager() != null;
         if (onGround() && !player.noClip && player.getAttackCooldownProgress(0.5f) > 0.90f) {
+            PlayerAttackListener.PlayerAttackEvent event = new PlayerAttackListener.PlayerAttackEvent();
+            GavinsMod.eventManager.call(event);
             GavinsModClient.getMinecraftClient().getPlayerInteractionManager().attackEntity(player, entity);
             player.tryAttack(entity);
             player.swingHand(Hand.MAIN_HAND);

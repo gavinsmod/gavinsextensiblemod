@@ -22,9 +22,7 @@ package com.peasenet.mods;
 
 import com.peasenet.settings.Setting;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
 
 import java.util.ArrayList;
 
@@ -123,13 +121,6 @@ public interface IMod {
      * @return The client player.
      */
     ClientPlayerEntity getPlayer();
-
-    /**
-     * Called when attacking another entity.
-     *
-     * @param target - The target entity.
-     */
-    void onAttack(Entity target);
 
     /**
      * Whether the mod is in a deactivation state (where the mod is disabled, but there still needs work to be done).

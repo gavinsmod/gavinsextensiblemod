@@ -22,21 +22,46 @@ package com.peasenet.mods.combat;
 
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
-import net.minecraft.entity.Entity;
+import com.peasenet.util.listeners.PlayerAttackListener;
+import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 /**
  * @author gt3ch1
  * @version 6/24/2022
  * A combat mod to make the player jump automatically when attacking an entity.
  */
-public class ModAutoCrit extends Mod {
+public class ModAutoCrit extends Mod implements PlayerAttackListener {
 
     public ModAutoCrit() {
         super(Type.AUTO_CRIT);
     }
 
     @Override
-    public void onAttack(Entity target) {
-        getPlayer().jump();
+    public void onEnable() {
+        super.onEnable();
+        em.subscribe(PlayerAttackListener.class, this);
+    }
+
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        em.unsubscribe(PlayerAttackListener.class, this);
+    }
+
+    @Override
+    public void onAttackEntity() {
+        var x = getPlayer().getX();
+        var y = getPlayer().getY();
+        var z = getPlayer().getZ();
+
+        sendPos(x, y + 0.0625D, z, true);
+        sendPos(x, y, z, false);
+        sendPos(x, y + 1.1E-5D, z, false);
+        sendPos(x, y, z, false);
+//        getPlayer().jump();
+    }
+
+    private void sendPos(double x, double y, double z, boolean onGround) {
+        getPlayer().networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, onGround));
     }
 }
