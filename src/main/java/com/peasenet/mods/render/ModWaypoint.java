@@ -28,7 +28,14 @@ import com.peasenet.mods.render.waypoints.Waypoint;
 import com.peasenet.settings.ClickSetting;
 import com.peasenet.settings.SubSetting;
 import com.peasenet.settings.ToggleSetting;
+import com.peasenet.util.EntityRender;
+import com.peasenet.util.RenderUtils;
+import com.peasenet.util.listeners.CameraBobListener;
+import com.peasenet.util.listeners.EntityRenderListener;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.Comparator;
 
@@ -37,7 +44,7 @@ import java.util.Comparator;
  * @version 6/30/2022
  * Creates a new mod to control waypoints.
  */
-public class ModWaypoint extends Mod {
+public class ModWaypoint extends Mod implements EntityRenderListener, CameraBobListener {
 
     private static SubSetting setting;
     private static ClickSetting openMenu;
@@ -50,6 +57,20 @@ public class ModWaypoint extends Mod {
     }
 
     @Override
+    public void onEnable() {
+        super.onEnable();
+        em.subscribe(EntityRenderListener.class, this);
+        em.subscribe(CameraBobListener.class, this);
+    }
+
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        em.unsubscribe(EntityRenderListener.class, this);
+        em.unsubscribe(CameraBobListener.class, this);
+    }
+
+    @Override
     public void reloadSettings() {
         modSettings.clear();
         setting = new SubSetting((int) setting.getGui().getWidth(), 10, "gavinsmod.mod.render.waypoints");
@@ -57,24 +78,39 @@ public class ModWaypoint extends Mod {
         openMenu.getGui().setSymbol('\u002b');
         setting.add(openMenu);
         // get all waypoints and add them to the menu
-        Settings.getWaypoints().stream().sorted(Comparator.comparing(Waypoint::getName)).forEach(waypoint -> createWaypoint(setting, waypoint));
+        Settings.getWaypoints().stream().sorted(Comparator.comparing(Waypoint::getName)).forEach(waypoint -> createWaypoint(waypoint));
         addSetting(setting);
     }
 
     /**
      * Creates a new setting to edit the given waypoint and adds it to the given setting.
      *
-     * @param subSetting - The setting to add the waypoint to.
-     * @param waypoint   - The waypoint to edit.
+     * @param waypoint - The waypoint to edit.
      */
-    private void createWaypoint(SubSetting subSetting, Waypoint waypoint) {
+    private void createWaypoint(Waypoint waypoint) {
         ToggleSetting clickSetting = new ToggleSetting("none", Text.literal(waypoint.getName()), true);
-//        clickSetting.setWidth(105);
         clickSetting.setCallback(() -> {
             getClient().setScreen(new GuiWaypoint(waypoint));
             clickSetting.setValue(waypoint.isEnabled());
         });
         clickSetting.setValue(waypoint.isEnabled());
         setting.add(clickSetting);
+    }
+
+    @Override
+    public void onEntityRender(EntityRender er) {
+        Settings.getWaypoints().stream().filter(Waypoint::isEnabled).forEach(w -> {
+            Box aabb = new Box(new BlockPos(w.getX(), w.getY(), w.getZ()));
+            Vec3d boxPos = aabb.getCenter();
+            if (w.isTracerEnabled())
+                RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, boxPos, w.getColor());
+            if (w.isEspEnabled())
+                RenderUtils.drawBox(er.stack, er.buffer, aabb, w.getColor());
+        });
+    }
+
+    @Override
+    public void onCameraViewBob(CameraBob c) {
+        c.cancel();
     }
 }

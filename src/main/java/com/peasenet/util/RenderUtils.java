@@ -126,7 +126,6 @@ public class RenderUtils {
 
         drawChestMods(level, stack, buffer, playerPos, chunk_x, chunk_z, delta);
         drawEntityMods(level, player, stack, delta, buffer, playerPos);
-        drawWaypoint(stack, buffer, playerPos);
         WorldRenderEvent event = new WorldRenderEvent(level, stack, buffer, delta);
         GavinsMod.eventManager.call(event);
         tessellator.draw();
