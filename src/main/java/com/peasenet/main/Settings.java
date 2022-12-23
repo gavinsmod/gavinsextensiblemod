@@ -25,6 +25,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.ToNumberPolicy;
 import com.google.gson.reflect.TypeToken;
+import com.peasenet.config.EspConfig;
+import com.peasenet.config.TracerConfig;
 import com.peasenet.gavui.color.Color;
 import com.peasenet.gavui.color.Colors;
 import com.peasenet.gavui.util.GavUISettings;
@@ -100,6 +102,8 @@ public class Settings {
         default_settings.put("xray.blocks", new ArrayList<String>());
         default_settings.put("waypoint.locations", new ArrayList<Waypoint>());
         default_settings.put("radar", new Radar());
+        default_settings.put("esp", new EspConfig());
+        default_settings.put("tracer", new TracerConfig());
         load();
     }
 
@@ -420,13 +424,13 @@ public class Settings {
             return new ArrayList<>();
         return waypoints;
     }
-    
-    
+
+
     public static void saveRadar() {
         settings.put("radar", Radar.getInstance());
         save();
     }
-    
+
     public static Radar getRadar() {
         Gson gson = new Gson();
         Type radarType = new TypeToken<Radar>() {
@@ -436,6 +440,16 @@ public class Settings {
             return new Radar();
         Radar.setInstance(radar);
         return radar;
+    }
+
+    public static EspConfig getEspConfig() {
+        Gson gson = new Gson();
+        Type espConfigType = new TypeToken<EspConfig>() {
+        }.getType();
+        EspConfig espConfig = gson.fromJson(settings.get("esp").toString(), espConfigType);
+        if (espConfig == null)
+            return new EspConfig();
+        return espConfig;
     }
 
     /**
@@ -458,5 +472,15 @@ public class Settings {
     public static void add(String key, Serializable value) {
         settings.put(key, value);
         save();
+    }
+
+    public static TracerConfig getTracerConfig() {
+        Gson gson = new Gson();
+        Type tracerConfigType = new TypeToken<TracerConfig>() {
+        }.getType();
+        TracerConfig tracerConfig = gson.fromJson(settings.get("tracer").toString(), tracerConfigType);
+        if (tracerConfig == null)
+            return new TracerConfig();
+        return tracerConfig;
     }
 }

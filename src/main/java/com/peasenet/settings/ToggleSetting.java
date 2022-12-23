@@ -55,7 +55,7 @@ public class ToggleSetting extends Setting {
      * @param key  - The translation key of this toggle setting.
      */
     public ToggleSetting(String name, String key) {
-        super(name,key);
+        super(name, key);
         if (name.contains("gavui")) {
             name = name.replace("gavui.", "");
             isGavUi = true;
@@ -81,6 +81,10 @@ public class ToggleSetting extends Setting {
         gui.hide();
     }
 
+    public ToggleSetting(String translationKey) {
+        this("none", translationKey);
+    }
+
     /**
      * Creates a new toggleable setting.
      *
@@ -90,7 +94,7 @@ public class ToggleSetting extends Setting {
      *                 Setting this to true will cause the value to be determined by a callback.
      */
     public ToggleSetting(String name, Text literal, boolean noToggle) {
-        super(name,"");
+        super(name, "");
         this.noToggle = noToggle;
         if (!name.equals("none"))
             value = Settings.getBool(name);

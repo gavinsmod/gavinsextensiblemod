@@ -42,4 +42,9 @@ public abstract class Config<E> {
         Settings.settings.put(key, cfg);
         Settings.save();
     }
+
+    public abstract void readFromSettings();
+//    public void readFromSettings() {
+//        setInstance((E)Settings);
+//    }
 }

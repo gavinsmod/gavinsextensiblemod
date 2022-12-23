@@ -20,20 +20,46 @@
 
 package com.peasenet.mods.tracer;
 
+import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
+import com.peasenet.util.EntityRender;
+import com.peasenet.util.RenderUtils;
+import com.peasenet.util.listeners.EntityRenderListener;
+import net.minecraft.entity.EntityType;
 
 /**
  * @author gt3ch1
  * @version 6/27/2022
  * A mod that allows the player to see tracers towards items.
  */
-public class ModEntityItemTracer extends Mod {
+public class ModEntityItemTracer extends Mod implements EntityRenderListener {
     public ModEntityItemTracer() {
         super(Type.ENTITY_ITEM_TRACER);
-        ColorSetting colorSetting = new ColorSetting("tracer.item.color",
-                "gavinsmod.settings.tracer.item.color");
+        ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.tracer.item.color");
+        colorSetting.setCallback(() -> {
+            GavinsMod.tracerConfig.setItemColor(colorSetting.getColor());
+        });
+        colorSetting.setColor(GavinsMod.tracerConfig.getItemColor());
         addSetting(colorSetting);
+    }
+
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        em.subscribe(EntityRenderListener.class, this);
+    }
+
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        em.unsubscribe(EntityRenderListener.class, this);
+    }
+
+    @Override
+    public void onEntityRender(EntityRender er) {
+        if (er.getEntityType() != EntityType.ITEM) return;
+        RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, GavinsMod.tracerConfig.getItemColor());
     }
 }

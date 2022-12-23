@@ -20,21 +20,81 @@
 
 package com.peasenet.mods.tracer;
 
+import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
+import com.peasenet.settings.ToggleSetting;
+import com.peasenet.util.EntityRender;
+import com.peasenet.util.RenderUtils;
+import com.peasenet.util.listeners.EntityRenderListener;
+import net.minecraft.entity.mob.MobEntity;
 
 /**
  * @author gt3ch1
  * @version 6/27/2022
  * A mod that allows the client to see lines, called tracers, towards mobs.
  */
-public class ModMobTracer extends Mod {
+public class ModMobTracer extends Mod implements EntityRenderListener {
     public ModMobTracer() {
         super(Type.MOB_TRACER);
-        ColorSetting peacefulColor = new ColorSetting("tracer.mob.peaceful.color", "gavinsmod.settings.tracer.mob.peaceful.color");
-        ColorSetting hostileColor = new ColorSetting("tracer.mob.hostile.color", "gavinsmod.settings.tracer.mob.hostile.color");
+        ColorSetting peacefulColor = new ColorSetting("gavinsmod.settings.tracer.mob.peaceful.color");
+        peacefulColor.setCallback(() -> {
+            GavinsMod.tracerConfig.setPeacefulMobColor(peacefulColor.getColor());
+        });
+        peacefulColor.setColor(GavinsMod.tracerConfig.getPeacefulMobColor());
+
+
+        ColorSetting hostileColor = new ColorSetting("gavinsmod.settings.tracer.mob.hostile.color");
+        hostileColor.setCallback(() -> {
+            GavinsMod.tracerConfig.setHostileMobColor(hostileColor.getColor());
+        });
+        hostileColor.setColor(GavinsMod.tracerConfig.getHostileMobColor());
+
+        ToggleSetting hostile = new ToggleSetting("gavinsmod.settings.tracer.mob.hostile");
+        hostile.setCallback(() -> {
+            GavinsMod.tracerConfig.setShowHostileMobs(hostile.getValue());
+        });
+        hostile.setValue(GavinsMod.tracerConfig.isShowHostileMobs());
+
+        ToggleSetting peaceful = new ToggleSetting("gavinsmod.settings.tracer.mob.peaceful");
+        peaceful.setCallback(() -> {
+            GavinsMod.tracerConfig.setShowPeacefulMobs(peaceful.getValue());
+        });
+        peaceful.setValue(GavinsMod.tracerConfig.isShowPeacefulMobs());
+
         addSetting(hostileColor);
         addSetting(peacefulColor);
+        addSetting(hostile);
+        addSetting(peaceful);
+    }
+
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        em.subscribe(EntityRenderListener.class, this);
+    }
+
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        em.unsubscribe(EntityRenderListener.class, this);
+    }
+
+    @Override
+    public void onEntityRender(EntityRender er) {
+        // check if entity is a mob
+        var entity = er.entity;
+        var stack = er.stack;
+        var buffer = er.buffer;
+        var center = er.center;
+        var playerPos = er.playerPos;
+        if (!(entity instanceof MobEntity))
+            return;
+        if (er.getEntityType().getSpawnGroup().isPeaceful() && GavinsMod.tracerConfig.isShowPeacefulMobs()) {
+            RenderUtils.renderSingleLine(stack, buffer, playerPos, center, GavinsMod.tracerConfig.getPeacefulMobColor());
+        } else if (!er.getEntityType().getSpawnGroup().isPeaceful() && GavinsMod.tracerConfig.isShowHostileMobs()) {
+            RenderUtils.renderSingleLine(stack, buffer, playerPos, center, GavinsMod.tracerConfig.getHostileMobColor());
+        }
     }
 }

@@ -53,7 +53,7 @@ public class ColorSetting extends Setting {
      * @param translationKey - The translation key of the setting.
      */
     public ColorSetting(String name, String translationKey) {
-        super(name,translationKey);
+        super(name, translationKey);
         if (name.contains("gavui")) {
             name = name.replace("gavui.", "");
             isGavUi = true;
@@ -76,6 +76,10 @@ public class ColorSetting extends Setting {
             onClick();
         });
         guiCycle.setCurrentIndex(Colors.getColorIndex(color));
+    }
+
+    public ColorSetting(String translationKey) {
+        this("none", translationKey);
     }
 
     /**

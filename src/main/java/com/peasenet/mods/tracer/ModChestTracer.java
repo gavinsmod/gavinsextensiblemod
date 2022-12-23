@@ -23,17 +23,34 @@ package com.peasenet.mods.tracer;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
+import com.peasenet.util.EntityRender;
+import com.peasenet.util.listeners.EntityRenderListener;
 
 /**
  * @author gt3ch1
  * @version 6/27/2022
  * A mod that allows the player to see tracers towards chests.
  */
-public class ModChestTracer extends Mod {
+public class ModChestTracer extends Mod implements EntityRenderListener {
     public ModChestTracer() {
         super(Type.CHEST_TRACER);
-        ColorSetting colorSetting = new ColorSetting("tracer.chest.color",
-                "gavinsmod.settings.tracer.chest.color");
+        ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.tracer.chest.color");
         addSetting(colorSetting);
+    }
+
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        em.subscribe(EntityRenderListener.class, this);
+    }
+
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        em.unsubscribe(EntityRenderListener.class, this);
+    }
+
+    @Override
+    public void onEntityRender(EntityRender er) {
     }
 }

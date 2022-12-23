@@ -4,8 +4,8 @@ import com.peasenet.gavui.color.Color;
 import com.peasenet.gavui.color.Colors;
 import com.peasenet.main.Settings;
 
-public class EspConfig extends Config<EspConfig> {
-    private static EspConfig instance;
+public class TracerConfig extends Config<TracerConfig> {
+    private static TracerConfig instance;
     public Color chestColor = Colors.PURPLE;
     public Color hostileMobColor = Colors.RED;
     public Color peacefulMobColor = Colors.GREEN;
@@ -13,7 +13,6 @@ public class EspConfig extends Config<EspConfig> {
     public Color itemColor = Colors.CYAN;
     public boolean showHostileMobs = true;
     public boolean showPeacefulMobs = true;
-    public boolean showPlayers = true;
 
     public boolean isShowHostileMobs() {
         return getInstance().showHostileMobs;
@@ -30,15 +29,6 @@ public class EspConfig extends Config<EspConfig> {
 
     public void setShowPeacefulMobs(boolean showPeacefulMobs) {
         getInstance().showPeacefulMobs = showPeacefulMobs;
-        saveConfig();
-    }
-
-    public boolean isShowPlayers() {
-        return getInstance().showPlayers;
-    }
-
-    public void setShowPlayers(boolean showPlayers) {
-        getInstance().showPlayers = showPlayers;
         saveConfig();
     }
 
@@ -87,28 +77,28 @@ public class EspConfig extends Config<EspConfig> {
         saveConfig();
     }
 
-    public EspConfig() {
-        key = "esp";
+    public TracerConfig() {
+        key = "tracer";
         instance = this;
     }
 
     @Override
-    public void setInstance(EspConfig data) {
-        EspConfig.instance = data;
+    public void setInstance(TracerConfig data) {
+        TracerConfig.instance = data;
     }
 
-    public EspConfig getInstance() {
-        return EspConfig.instance;
+    public TracerConfig getInstance() {
+        return TracerConfig.instance;
     }
 
     @Override
     public void loadDefaultConfig() {
-        Settings.settings.put("esp", instance);
+        Settings.settings.put("tracer", instance);
         Settings.save();
     }
 
     @Override
     public void readFromSettings() {
-        setInstance(Settings.getEspConfig());
+        setInstance(Settings.getTracerConfig());
     }
 }

@@ -20,20 +20,48 @@
 
 package com.peasenet.mods.esp;
 
+import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
+import com.peasenet.util.EntityRender;
+import com.peasenet.util.RenderUtils;
+import com.peasenet.util.listeners.EntityRenderListener;
+import net.minecraft.entity.EntityType;
 
 /**
  * @author gt3ch1
  * @version 6/27/2022
  * A mod that allows the player to see an esp (a box) around items.
  */
-public class ModEntityItemEsp extends Mod {
+public class ModEntityItemEsp extends Mod implements EntityRenderListener {
     public ModEntityItemEsp() {
         super(Type.ENTITY_ITEM_ESP);
-        ColorSetting colorSetting = new ColorSetting("esp.item.color",
-                "gavinsmod.settings.esp.item.color");
+        ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.esp.item.color");
+        colorSetting.setCallback(() -> {
+            GavinsMod.espConfig.setItemColor(colorSetting.getColor());
+        });
+        colorSetting.setColor(GavinsMod.espConfig.getItemColor());
         addSetting(colorSetting);
+    }
+
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        em.subscribe(EntityRenderListener.class, this);
+    }
+
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        em.unsubscribe(EntityRenderListener.class, this);
+    }
+
+    @Override
+    public void onEntityRender(EntityRender er) {
+        if (er.getEntityType() != EntityType.ITEM)
+            return;
+        var box = RenderUtils.getEntityBox(er.delta, er.entity, er.getEntityType());
+        RenderUtils.drawBox(er.stack, er.buffer, box, GavinsMod.espConfig.getItemColor());
     }
 }

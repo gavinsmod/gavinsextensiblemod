@@ -30,6 +30,7 @@ import com.peasenet.main.Settings;
 import com.peasenet.mixinterface.ISimpleOption;
 import com.peasenet.mods.Type;
 import com.peasenet.mods.render.waypoints.Waypoint;
+import com.peasenet.util.listeners.EntityRenderListener.EntityRenderEvent;
 import com.peasenet.util.listeners.WorldRenderListener.WorldRenderEvent;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.entity.ChestBlockEntity;
@@ -195,6 +196,7 @@ public class RenderUtils {
                                             blockEntity instanceof ShulkerBoxBlockEntity) {
                                         Box aabb = new Box(blockPos);
                                         Vec3d boxPos = aabb.getCenter();
+//                                        EntityRenderEvent event = new EntityRenderEvent(blockEntity.getType(), stack, buffer, aabb,0);
                                         if (GavinsMod.isEnabled(Type.CHEST_ESP))
                                             drawBox(stack, buffer, aabb, GavinsMod.espConfig.getChestColor());
                                         if (GavinsMod.isEnabled(Type.CHEST_TRACER)) {
@@ -241,28 +243,28 @@ public class RenderUtils {
 
             Box aabb = getEntityBox(delta, e, type);
             Vec3d boxPos = aabb.getCenter();
-            if (type == EntityType.ITEM) {
-                if (GavinsMod.isEnabled(Type.ENTITY_ITEM_ESP))
-                    drawBox(stack, buffer, aabb, Settings.getColor("esp.item.color"));
-                if (GavinsMod.isEnabled(Type.ENTITY_ITEM_TRACER))
-                    renderSingleLine(stack, buffer, playerPos, boxPos, Settings.getColor("tracer.item.color"));
-                return;
-            }
-
-            if (type == EntityType.PLAYER) {
-                if (GavinsMod.isEnabled(Type.ENTITY_PLAYER_ESP))
-                    drawBox(stack, buffer, aabb, Settings.getColor("esp.player.color"));
-                if (GavinsMod.isEnabled(Type.ENTITY_PLAYER_TRACER))
-                    renderSingleLine(stack, buffer, playerPos, boxPos, Settings.getColor("tracer.player.color"));
-                return;
-            }
-
-            var espColor = type.getSpawnGroup().isPeaceful() ? Settings.getColor("esp.mob.peaceful.color") : Settings.getColor("esp.mob.hostile.color");
-            var tracerColor = type.getSpawnGroup().isPeaceful() ? Settings.getColor("tracer.mob.peaceful.color") : Settings.getColor("tracer.mob.hostile.color");
-            if (GavinsMod.isEnabled(Type.MOB_ESP))
-                drawBox(stack, buffer, aabb, espColor);
-            if (GavinsMod.isEnabled(Type.MOB_TRACER))
-                renderSingleLine(stack, buffer, playerPos, boxPos, tracerColor);
+            EntityRenderEvent event = new EntityRenderEvent(e, stack, buffer, boxPos, playerPos, delta);
+            GavinsMod.eventManager.call(event);
+//            if (type == EntityType.ITEM) {
+//                if (GavinsMod.isEnabled(Type.ENTITY_ITEM_ESP))
+//                    drawBox(stack, buffer, aabb, Settings.getColor("esp.item.color"));
+//                return;
+//            }
+//
+//            if (type == EntityType.PLAYER) {
+//                if (GavinsMod.isEnabled(Type.ENTITY_PLAYER_ESP))
+//                    drawBox(stack, buffer, aabb, Settings.getColor("esp.player.color"));
+//                if (GavinsMod.isEnabled(Type.ENTITY_PLAYER_TRACER))
+//                    renderSingleLine(stack, buffer, playerPos, boxPos, Settings.getColor("tracer.player.color"));
+//                return;
+//            }
+//
+//            var espColor = type.getSpawnGroup().isPeaceful() ? Settings.getColor("esp.mob.peaceful.color") : Settings.getColor("esp.mob.hostile.color");
+//            var tracerColor = type.getSpawnGroup().isPeaceful() ? Settings.getColor("tracer.mob.peaceful.color") : Settings.getColor("tracer.mob.hostile.color");
+//            if (GavinsMod.isEnabled(Type.MOB_ESP))
+//                drawBox(stack, buffer, aabb, espColor);
+//            if (GavinsMod.isEnabled(Type.MOB_TRACER))
+//                renderSingleLine(stack, buffer, playerPos, boxPos, tracerColor);
         });
     }
 

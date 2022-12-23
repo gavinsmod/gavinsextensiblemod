@@ -20,6 +20,7 @@
 
 package com.peasenet.mods.esp;
 
+import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
@@ -32,8 +33,11 @@ import com.peasenet.settings.ColorSetting;
 public class ModEntityPlayerEsp extends Mod {
     public ModEntityPlayerEsp() {
         super(Type.ENTITY_PLAYER_ESP);
-        ColorSetting colorSetting = new ColorSetting("esp.player.color",
-                "gavinsmod.settings.esp.player.color");
+        ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.esp.player.color");
+        colorSetting.setCallback(() -> {
+            GavinsMod.espConfig.setPlayerColor(colorSetting.getColor());
+        });
+        colorSetting.setColor(GavinsMod.espConfig.getPlayerColor());
         addSetting(colorSetting);
     }
 }
