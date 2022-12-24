@@ -28,6 +28,7 @@ import com.peasenet.gui.GuiSettings;
 import com.peasenet.gui.mod.*;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.util.ModCommands;
 import com.peasenet.util.event.EventManager;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
@@ -53,7 +54,7 @@ public class GavinsMod implements ModInitializer {
     /**
      * The current version of the mod.
      */
-    public static final String VERSION = "v1.3.1-2";
+    public static final String VERSION = "v1.4.0";
 
     /**
      * The gui used to display the main mod menu.
@@ -69,6 +70,7 @@ public class GavinsMod implements ModInitializer {
 
     public static EspConfig espConfig;
     public static TracerConfig tracerConfig;
+    private static ModCommands modCommands;
 
     /**
      * Gets whether the given mod is enabled.
@@ -137,6 +139,7 @@ public class GavinsMod implements ModInitializer {
         guiList.forEach(g -> g.setParent(true));
         gui = new GuiMainMenu(guiList);
         guiSettings = new GuiSettings();
+        modCommands = new ModCommands();
     }
 
 }

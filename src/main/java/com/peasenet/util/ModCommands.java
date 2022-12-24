@@ -22,10 +22,10 @@ package com.peasenet.util;
 
 import com.peasenet.gui.GuiSettings;
 import com.peasenet.main.GavinsMod;
-import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Mods;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.util.listeners.OnChatSendListener;
 import net.minecraft.client.resource.language.I18n;
 
 import java.util.Arrays;
@@ -35,7 +35,14 @@ import java.util.Arrays;
  * @version 6/28/2022
  * A class that handles chat commands for all mods.
  */
-public class ModCommands {
+public class ModCommands implements OnChatSendListener {
+
+    private static String lastCommand = "";
+
+    public ModCommands() {
+        GavinsMod.eventManager.subscribe(OnChatSendListener.class, this);
+    }
+
     /**
      * Checks if the command is a mod command. A mod command is a string of text that starts with the prefix "."
      * followed by the name of the mod (an example would be ".fly" to toggle the fly mod). If it is, the given mod
@@ -45,7 +52,11 @@ public class ModCommands {
      * @return True if the message is a mod command, false otherwise.
      */
     public static boolean handleCommand(String message) {
-        // remove the . from the message
+        // check if the message is a command
+        if (!message.startsWith("."))
+            return false;
+        if (message.length() == 1)
+            return false;
         message = message.substring(1);
         for (Mod mod : Mods.getMods()) {
             if (message.equals(mod.getChatCommand())) {
@@ -65,7 +76,7 @@ public class ModCommands {
                 return o1.getCategory().compareTo(o2.getCategory());
             });
             var previousCategory = "";
-            for(var t : mods) {
+            for (var t : mods) {
                 if (!previousCategory.equals(t.getCategory())) {
                     PlayerUtils.sendMessage("§l" + I18n.translate(t.getModCategory().translationKey), false);
                     previousCategory = t.getCategory();
@@ -81,11 +92,11 @@ public class ModCommands {
                 try {
                     int amount = Integer.parseInt(split[1]);
                     PlayerUtils.moveUp(amount);
-                    return true;
                 } catch (NumberFormatException e) {
                     GavinsMod.LOGGER.error("Invalid number: " + split[1]);
                 }
             }
+            return true;
         }
         if (message.equals("resetgui")) {
             GavinsMod.gui.reset();
@@ -96,6 +107,19 @@ public class ModCommands {
             GavinsMod.guiSettings = new GuiSettings();
             return true;
         }
+        if (!lastCommand.equals(message)) {
+            PlayerUtils.sendMessage("§cUnknown command: §l" + message, true);
+            PlayerUtils.sendMessage("§cSend your message again if you meant to send it.", false);
+            lastCommand = message;
+            return true;
+        }
+        lastCommand = "";
         return false;
+    }
+
+    @Override
+    public void onChatSend(ChatMessage s) {
+        if (handleCommand(s.getMessage()))
+            s.cancel();
     }
 }
