@@ -23,7 +23,6 @@ package com.peasenet.mods.render;
 import com.peasenet.gui.mod.xray.GuiXray;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.Mods;
-import com.peasenet.main.Settings;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ClickSetting;
@@ -42,11 +41,14 @@ public class ModXray extends Mod {
     public ModXray() {
         super(Type.XRAY);
         SubSetting xraySubSetting = new SubSetting(100, 10, getTranslationKey());
-        ToggleSetting culling = new ToggleSetting("xray.disable_culling", "gavinsmod.settings.xray.culling");
+        ToggleSetting culling = new ToggleSetting("gavinsmod.settings.xray.culling");
         culling.setCallback(() -> {
+//            culling.setValue(!culling.getValue());
+            GavinsMod.xrayConfig.setBlockCulling(culling.getValue());
             if (isActive()) reload();
         });
-        ClickSetting menu = new ClickSetting("xray.menu", "gavinsmod.settings.xray.blocks");
+        culling.setValue(GavinsMod.xrayConfig.isBlockCulling());
+        ClickSetting menu = new ClickSetting("gavinsmod.settings.xray.blocks");
         menu.setCallback(() -> getClient().setScreen(new GuiXray()));
         xraySubSetting.add(menu);
         xraySubSetting.add(culling);
@@ -61,14 +63,14 @@ public class ModXray extends Mod {
      * @return True if visible, false if not
      */
     public static boolean shouldDrawFace(BlockState block) {
-        if (GavinsMod.isEnabled(Type.XRAY)) return Settings.isXrayBlock(block.getBlock());
+        if (GavinsMod.isEnabled(Type.XRAY)) return GavinsMod.xrayConfig.isInList(block.getBlock());
         return true;
     }
 
     @Override
     public void activate() {
         if (!GavinsMod.isEnabled(Type.FULL_BRIGHT)) RenderUtils.setLastGamma();
-        getClient().setChunkCulling(Settings.getBool("xray.disable_culling"));
+        getClient().setChunkCulling(GavinsMod.xrayConfig.isBlockCulling());
         super.activate();
         reloadRenderer();
     }

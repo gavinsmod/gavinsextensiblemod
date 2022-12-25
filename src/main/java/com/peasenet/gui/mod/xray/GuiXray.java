@@ -32,13 +32,11 @@ import com.peasenet.main.Mods;
 import com.peasenet.main.Settings;
 import com.peasenet.util.RenderUtils;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
-import net.minecraft.registry.Registry;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -214,7 +212,7 @@ public class GuiXray extends GuiElement {
             var blockX = (i % (blocksPerRow)) * 18 + x + 2;
             var blockY = (i / blocksPerRow) * 18 + y + 5;
 
-            if (Settings.isXrayBlock(block)) {
+            if (GavinsMod.xrayConfig.isInList(block)) {
                 fill(matrixStack, blockX, blockY, blockX + 16, blockY + 16, Settings.getColor("gui.color.enabled").getAsInt(0.5f));
                 RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), blockX, blockY, blockX + 16, blockY + 16, matrixStack);
             }
@@ -264,8 +262,8 @@ public class GuiXray extends GuiElement {
 
         Block block = visibleBlocks.toArray(new Block[0])[blockIndex];
         if (block == null || button != 0) return false;
-        if (Settings.isXrayBlock(block)) Settings.removeXrayBlock(block);
-        else Settings.addXrayBlock(block);
+        if (GavinsMod.xrayConfig.isInList(block)) GavinsMod.xrayConfig.removeBlock(block);
+        else GavinsMod.xrayConfig.addBlock(block);
         Mods.getMod("xray").reload();
 
         return super.mouseClicked(mouseX, mouseY, button);
@@ -281,13 +279,13 @@ public class GuiXray extends GuiElement {
         blockList().stream().filter(block -> block.getTranslationKey().toLowerCase().contains(searchText)).forEach(tmpBlocks::add);
         // get blocks in block list that are within the page.
         var enabled = enabledOnly.isOn();
-        if (enabled) tmpBlocks = new ArrayList<>(tmpBlocks.stream().filter(Settings::isXrayBlock).toList());
+        if (enabled) tmpBlocks = new ArrayList<>(tmpBlocks.stream().filter(GavinsMod.xrayConfig::isInList).toList());
         pageCount = (int) Math.ceil((double) tmpBlocks.size() / blocksPerPage);
         for (int i = page * blocksPerPage; i < page * blocksPerPage + blocksPerPage; i++) {
             if (tmpBlocks.isEmpty() || i > tmpBlocks.size() - 1) break;
             var block = tmpBlocks.get(i);
             if (block != null && block.getTranslationKey().toLowerCase().contains(searchText)) {
-                if (enabled && !Settings.isXrayBlock(block)) continue;
+                if (enabled && !GavinsMod.xrayConfig.isInList(block)) continue;
                 visibleBlocks.add(block);
             }
         }

@@ -9,6 +9,15 @@ import java.util.HashSet;
 
 public class XrayConfig extends Config<XrayConfig> {
     private static XrayConfig instance;
+    private HashSet<String> blocks;
+    private boolean blockCulling = false;
+
+    public XrayConfig() {
+        key = "xray";
+        blocks = new HashSet<>();
+        Registries.BLOCK.stream().filter(b -> b instanceof ExperienceDroppingBlock).forEach(this::addBlock);
+        setInstance(this);
+    }
 
     public boolean isBlockCulling() {
         return blockCulling;
@@ -16,15 +25,8 @@ public class XrayConfig extends Config<XrayConfig> {
 
     public void setBlockCulling(boolean blockCulling) {
         this.blockCulling = blockCulling;
-    }
-
-    private HashSet<String> blocks;
-    private boolean blockCulling = false;
-
-    public XrayConfig() {
-        blocks = new HashSet<>();
-        Registries.BLOCK.stream().filter(b -> b instanceof ExperienceDroppingBlock).forEach(this::addBlock);
         setInstance(this);
+        saveConfig();
     }
 
     public void addBlock(Block b) {
@@ -44,23 +46,22 @@ public class XrayConfig extends Config<XrayConfig> {
     }
 
     @Override
-    public void setInstance(XrayConfig data) {
-        instance = data;
-    }
-
-    @Override
     public void loadDefaultConfig() {
         blocks = new HashSet<>();
         Registries.BLOCK.stream().filter(b -> b instanceof ExperienceDroppingBlock).forEach((b -> blocks.add(b.getLootTableId().getPath())));
         blockCulling = false;
         setInstance(this);
-        Settings.settings.put("xray", instance);
-        Settings.save();
+        saveConfig();
     }
 
     @Override
     public XrayConfig getInstance() {
         return this;
+    }
+
+    @Override
+    public void setInstance(XrayConfig data) {
+        instance = data;
     }
 
     @Override
