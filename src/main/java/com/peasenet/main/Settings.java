@@ -20,25 +20,14 @@
 
 package com.peasenet.main;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.ToNumberPolicy;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import com.peasenet.annotations.Exclude;
 import com.peasenet.config.*;
 import com.peasenet.gavui.color.Color;
 import com.peasenet.gavui.color.Colors;
-import com.peasenet.gavui.util.GavUISettings;
-import com.peasenet.mods.render.radar.Radar;
 import com.peasenet.mods.render.waypoints.Waypoint;
-import net.minecraft.block.Block;
-import net.minecraft.block.ExperienceDroppingBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.Registries;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -48,7 +37,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -73,28 +61,24 @@ public class Settings {
      * If the load fails, the default settings will be used.
      */
     private Settings() {
-        default_settings.put("misc.fps.color.enabled", false);
-        default_settings.put("misc.fps.color.slow", (Colors.RED));
-        default_settings.put("misc.fps.color.ok", (Colors.YELLOW));
-        default_settings.put("misc.fps.color.fast", (Colors.GREEN));
-
         default_settings.put("misc.messages", true);
-
-        default_settings.put("render.fullbright.gammafade", true);
-        default_settings.put("render.fullbright.autofullbright", false);
-
         default_settings.put("waypoint.locations", new ArrayList<Waypoint>());
-        default_settings.put("radar", new Radar());
+        default_settings.put("radar", new RadarConfig());
         default_settings.put("esp", new EspConfig());
         default_settings.put("tracer", new TracerConfig());
         default_settings.put("xray", new XrayConfig());
         default_settings.put("fullbright", new FullbrightConfig());
+        default_settings.put("fpsColors", new FpsColorConfig());
         load();
     }
 
+    @SuppressWarnings("rawtypes")
     public static Config getConfig(Class<? extends Config> clazz, String key) {
-        Gson gson = new Gson();
-        JsonReader reader = new JsonReader(new StringReader(settings.get(key).toString()));
+        var gson = new GsonBuilder().setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+                .setExclusionStrategies(new AnnotationExclusionStrategy())
+                .create();
+        var cfg = settings.get(key).toString();
+        JsonReader reader = new JsonReader(new StringReader(cfg));
         reader.setLenient(true);
         return gson.fromJson(reader, clazz);
     }
@@ -124,7 +108,7 @@ public class Settings {
             GavinsMod.LOGGER.error("Error writing settings to file.");
             GavinsMod.LOGGER.error(e.getMessage());
         }
-        load();
+//        load();
     }
 
     /**
@@ -146,6 +130,7 @@ public class Settings {
     /**
      * Gets the file path to the settings file.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @NotNull
     private static String getFilePath() {
         var runDir = GavinsModClient.getMinecraftClient().getRunDirectory().getAbsolutePath();
@@ -169,7 +154,12 @@ public class Settings {
         var cfgFile = getFilePath();
         // ensure the settings file exists
         ensureCfgCreated(cfgFile);
-        Gson gson = new GsonBuilder().setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE).create();
+        // https://stackoverflow.com/questions/4802887/gson-how-to-exclude-specific-fields-from-serialization-without-annotations/27986860#27986860
+
+        Gson gson = new GsonBuilder().setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+                .setExclusionStrategies(new AnnotationExclusionStrategy())
+                .create();
+        settings.clear();
         try {
             var map = gson.fromJson(new FileReader(cfgFile), HashMap.class);
             AtomicBoolean defaultSettingLoaded = new AtomicBoolean(false);
@@ -178,11 +168,16 @@ public class Settings {
                     settings.put(k, map.get(k));
                 else {
                     settings.put(k, _v);
+                    if (_v instanceof Config c) {
+                        settings.put(k, c.getInstance());
+                    }
                     defaultSettingLoaded.set(true);
                 }
             });
-            if (defaultSettingLoaded.get())
+            if (defaultSettingLoaded.get()) {
                 save();
+                load();
+            }
         } catch (Exception e) {
             GavinsMod.LOGGER.error("Error reading settings from file. Saving defaults.");
             loadDefault();
@@ -198,8 +193,7 @@ public class Settings {
     public static boolean getBool(String key) {
         if (!settings.containsKey(key)) {
             // check if the default settings contain the key
-            if (!default_settings.containsKey(key))
-                return false;
+            if (!default_settings.containsKey(key)) return false;
             // add the key to the settings
             settings.put(key, default_settings.get(key));
         }
@@ -208,30 +202,6 @@ public class Settings {
             return false;
         }
         return (boolean) settings.get(key);
-    }
-
-    /**
-     * Gets the integer value of the given setting.
-     *
-     * @param key - The key of the setting.
-     * @return The integer value of the setting.
-     */
-    public static int getInt(String key) {
-        if (!settings.containsKey(key)) {
-            // check if the default settings contain the key
-            if (!default_settings.containsKey(key))
-                return 0;
-            // add the key to the settings
-            settings.put(key, default_settings.get(key));
-        }
-        if (settings.get(key) == null) {
-            settings.put(key, 0);
-            return 0;
-        }
-        // convert long to int
-        if (settings.get(key) instanceof Long)
-            return ((Long) settings.get(key)).intValue();
-        return (int) settings.get(key);
     }
 
     /**
@@ -267,26 +237,6 @@ public class Settings {
         return c;
     }
 
-    public static Color getColorFromEntity(Entity e, String baseKey) {
-        var key = baseKey;
-        if (e instanceof PlayerEntity) {
-            key += ".player.color";
-        } else if (e instanceof MobEntity) {
-            if ((e.getType().getSpawnGroup().isPeaceful())) {
-                key += ".mob.peaceful.color";
-            } else {
-                key += ".mob.hostile.color";
-            }
-        } else if (e instanceof ItemEntity) {
-            key += ".item.color";
-        }
-        return getColor(key);
-    }
-
-    public static Color getUiColor(String key) {
-        return GavUISettings.getColor(key);
-    }
-
     /**
      * Loads the default configuration.
      */
@@ -301,74 +251,10 @@ public class Settings {
             bakCount++;
         }
         // move the settings file to the bak file
-        new File(cfgFile).renameTo(new File(bakFile));
-        loadDefaultXrayBlocks();
+        var res = new File(cfgFile).renameTo(new File(bakFile));
+        if (!res) throw new RuntimeException(String.format("Could not rename %s to %s", cfgFile, bakFile));
         settings.putAll(default_settings);
         save();
-    }
-
-    /**
-     * Loads the default xray blocks into the settings.
-     */
-    private static void loadDefaultXrayBlocks() {
-        var list = new LinkedHashSet<>();
-        Registries.BLOCK.stream().filter(b -> b instanceof ExperienceDroppingBlock).forEach((b -> list.add(b.toString())));
-        default_settings.put("xray.blocks", list);
-    }
-
-    /**
-     * Adds the given block to the list of blocks used for xray.
-     *
-     * @param b - The block to add.
-     */
-    public static void addXrayBlock(Block b) {
-        var currList = getXrayBlocks();
-        currList.add(b.toString());
-        settings.put("xray.blocks", currList);
-        save();
-    }
-
-    /**
-     * Gets the list of blocks currently used for xray.
-     *
-     * @return The list of blocks.
-     */
-    public static LinkedHashSet<String> getXrayBlocks() {
-        LinkedHashSet<String> list = new LinkedHashSet<>();
-        try {
-            list = (LinkedHashSet<String>) settings.get("xray.blocks");
-        } catch (ClassCastException e) {
-            var arrList = (ArrayList<String>) settings.get("xray.blocks");
-            list.addAll(arrList);
-        }
-        if (list == null)
-            return new LinkedHashSet<>();
-        return list;
-    }
-
-    /**
-     * Removes the given block from the list of blocks used for xray.
-     *
-     * @param b - The block to remove.
-     */
-    public static void removeXrayBlock(Block b) {
-        var currList = getXrayBlocks();
-        currList.remove(b.toString());
-        settings.put("xray.blocks", currList);
-        save();
-    }
-
-    /**
-     * Gets whether the given block is in the list of blocks used for xray.
-     *
-     * @param b - The block to check.
-     * @return Whether the block is in the list.
-     */
-    public static boolean isXrayBlock(Block b) {
-        var currList = getXrayBlocks();
-
-        var isInList = currList.contains(b.toString());
-        return isInList;
     }
 
     /**
@@ -378,7 +264,6 @@ public class Settings {
      */
     public static void addWaypoint(Waypoint w) {
         var currList = getWaypoints();
-        if (currList == null) currList = new ArrayList<>();
         currList.removeIf(wp -> wp.equals(w));
         w.setName(w.getName().replace(' ', '_'));
         currList.add(w);
@@ -393,7 +278,6 @@ public class Settings {
      */
     public static void deleteWaypoint(Waypoint w) {
         var currList = getWaypoints();
-        if (currList == null) currList = new ArrayList<>();
         // remove from currList where the waypoint is the same as w
         currList.removeIf(wp -> wp.equals(w));
         settings.put("waypoint.locations", currList);
@@ -411,37 +295,9 @@ public class Settings {
         Type waypointType = new TypeToken<ArrayList<Waypoint>>() {
         }.getType();
         ArrayList<Waypoint> waypoints = gson.fromJson(settings.get("waypoint.locations").toString(), waypointType);
-        if (waypoints == null)
-            return new ArrayList<>();
+        if (waypoints == null) return new ArrayList<>();
         return waypoints;
     }
-
-    public static void saveRadar() {
-        settings.put("radar", Radar.getInstance());
-        save();
-    }
-
-    public static Radar getRadar() {
-        Gson gson = new Gson();
-        Type radarType = new TypeToken<Radar>() {
-        }.getType();
-        Radar radar = gson.fromJson(settings.get("radar").toString(), radarType);
-        if (radar == null)
-            return new Radar();
-        Radar.setInstance(radar);
-        return radar;
-    }
-
-    public static EspConfig getEspConfig() {
-        Gson gson = new Gson();
-        Type espConfigType = new TypeToken<EspConfig>() {
-        }.getType();
-        EspConfig espConfig = gson.fromJson(settings.get("esp").toString(), espConfigType);
-        if (espConfig == null)
-            return new EspConfig();
-        return espConfig;
-    }
-
     /**
      * Sets the given key to the given value.
      *
@@ -464,20 +320,17 @@ public class Settings {
         save();
     }
 
-    public static TracerConfig getTracerConfig() {
-        Gson gson = new Gson();
-        Type tracerConfigType = new TypeToken<TracerConfig>() {
-        }.getType();
-        TracerConfig tracerConfig = gson.fromJson(settings.get("tracer").toString(), tracerConfigType);
-        if (tracerConfig == null)
-            return new TracerConfig();
-        return tracerConfig;
+    public static class AnnotationExclusionStrategy implements ExclusionStrategy {
+
+        @Override
+        public boolean shouldSkipField(FieldAttributes f) {
+            return f.getAnnotation(Exclude.class) != null;
+        }
+
+        @Override
+        public boolean shouldSkipClass(Class<?> clazz) {
+            return false;
+        }
     }
 
-    public static XrayConfig getXrayConfig() {
-        Gson gson = new Gson();
-        JsonReader reader = new JsonReader(new StringReader(settings.get("xray").toString()));
-        reader.setLenient(true);
-        return gson.fromJson(reader, XrayConfig.class);
-    }
 }

@@ -58,8 +58,7 @@ public class ColorSetting extends Setting {
             name = name.replace("gavui.", "");
             isGavUi = true;
             color = GavUISettings.getColor(name);
-        } else if (!name.equals("none")) color = Settings.getColor(name);
-        else color = Colors.WHITE;
+        } else color = Colors.WHITE;
         guiCycle = new GuiCycle(90, 10, Text.translatable(translationKey), Colors.COLORS.length);
         guiCycle.setBackground(color);
         String finalName = name;
