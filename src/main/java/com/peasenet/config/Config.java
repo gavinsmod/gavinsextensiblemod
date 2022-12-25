@@ -8,6 +8,8 @@ import java.lang.reflect.Type;
 
 public abstract class Config<E> {
 
+    static String key;
+
     public <E> E getConfig() {
         Gson gson = new Gson();
         Type type = TypeToken.of(getClass()).getType();
@@ -25,17 +27,15 @@ public abstract class Config<E> {
         return data;
     }
 
-    static String key;
-
     public void setKey(String key) {
         key = key;
     }
 
-    public abstract void setInstance(E data);
-
     public abstract void loadDefaultConfig();
 
     public abstract E getInstance();
+
+    public abstract void setInstance(E data);
 
     public void saveConfig() {
         var cfg = getInstance();
@@ -43,7 +43,12 @@ public abstract class Config<E> {
         Settings.save();
     }
 
-    public abstract void readFromSettings();
+    public E readFromSettings() {
+        var _e = Settings.getConfig(this.getClass(), key);
+        setInstance((E) _e);
+        return (E)_e;
+    }
+//    public abstract void readFromSettings();
 //    public void readFromSettings() {
 //        setInstance((E)Settings);
 //    }

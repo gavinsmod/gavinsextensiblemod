@@ -106,9 +106,4 @@ public class EspConfig extends Config<EspConfig> {
         Settings.settings.put("esp", instance);
         Settings.save();
     }
-
-    @Override
-    public void readFromSettings() {
-        setInstance(Settings.getEspConfig());
-    }
 }

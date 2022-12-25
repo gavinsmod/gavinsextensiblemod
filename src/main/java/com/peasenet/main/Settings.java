@@ -26,9 +26,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.ToNumberPolicy;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import com.peasenet.config.EspConfig;
-import com.peasenet.config.TracerConfig;
-import com.peasenet.config.XrayConfig;
+import com.peasenet.config.*;
 import com.peasenet.gavui.color.Color;
 import com.peasenet.gavui.color.Colors;
 import com.peasenet.gavui.util.GavUISettings;
@@ -75,18 +73,6 @@ public class Settings {
      * If the load fails, the default settings will be used.
      */
     private Settings() {
-        default_settings.put("esp.mob.hostile.color", (Colors.RED));
-        default_settings.put("esp.mob.peaceful.color", (Colors.GREEN));
-        default_settings.put("esp.player.color", (Colors.YELLOW));
-        default_settings.put("esp.chest.color", (Colors.PURPLE));
-        default_settings.put("esp.item.color", (Colors.CYAN));
-
-        default_settings.put("tracer.mob.hostile.color", (Colors.RED));
-        default_settings.put("tracer.mob.peaceful.color", (Colors.GREEN));
-        default_settings.put("tracer.player.color", (Colors.YELLOW));
-        default_settings.put("tracer.chest.color", (Colors.PURPLE));
-        default_settings.put("tracer.item.color", (Colors.CYAN));
-
         default_settings.put("misc.fps.color.enabled", false);
         default_settings.put("misc.fps.color.slow", (Colors.RED));
         default_settings.put("misc.fps.color.ok", (Colors.YELLOW));
@@ -97,14 +83,20 @@ public class Settings {
         default_settings.put("render.fullbright.gammafade", true);
         default_settings.put("render.fullbright.autofullbright", false);
 
-        default_settings.put("xray.disable_culling", true);
-        default_settings.put("xray.blocks", new ArrayList<String>());
         default_settings.put("waypoint.locations", new ArrayList<Waypoint>());
         default_settings.put("radar", new Radar());
         default_settings.put("esp", new EspConfig());
         default_settings.put("tracer", new TracerConfig());
         default_settings.put("xray", new XrayConfig());
+        default_settings.put("fullbright", new FullbrightConfig());
         load();
+    }
+
+    public static Config getConfig(Class<? extends Config> clazz, String key) {
+        Gson gson = new Gson();
+        JsonReader reader = new JsonReader(new StringReader(settings.get(key).toString()));
+        reader.setLenient(true);
+        return gson.fromJson(reader, clazz);
     }
 
     /**
@@ -275,7 +267,6 @@ public class Settings {
         return c;
     }
 
-
     public static Color getColorFromEntity(Entity e, String baseKey) {
         var key = baseKey;
         if (e instanceof PlayerEntity) {
@@ -425,7 +416,6 @@ public class Settings {
         return waypoints;
     }
 
-
     public static void saveRadar() {
         settings.put("radar", Radar.getInstance());
         save();
@@ -490,5 +480,4 @@ public class Settings {
         reader.setLenient(true);
         return gson.fromJson(reader, XrayConfig.class);
     }
-
 }

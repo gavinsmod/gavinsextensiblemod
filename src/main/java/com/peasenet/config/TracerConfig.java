@@ -96,9 +96,4 @@ public class TracerConfig extends Config<TracerConfig> {
         Settings.settings.put("tracer", instance);
         Settings.save();
     }
-
-    @Override
-    public void readFromSettings() {
-        setInstance(Settings.getTracerConfig());
-    }
 }

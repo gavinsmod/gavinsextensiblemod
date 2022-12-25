@@ -1,6 +1,5 @@
 package com.peasenet.config;
 
-import com.peasenet.main.Settings;
 import net.minecraft.block.Block;
 import net.minecraft.block.ExperienceDroppingBlock;
 import net.minecraft.registry.Registries;
@@ -64,8 +63,4 @@ public class XrayConfig extends Config<XrayConfig> {
         instance = data;
     }
 
-    @Override
-    public void readFromSettings() {
-        setInstance(Settings.getXrayConfig());
-    }
 }
