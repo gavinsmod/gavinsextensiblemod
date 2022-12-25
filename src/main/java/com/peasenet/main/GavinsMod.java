@@ -20,10 +20,7 @@
 
 package com.peasenet.main;
 
-import com.peasenet.config.EspConfig;
-import com.peasenet.config.FullbrightConfig;
-import com.peasenet.config.TracerConfig;
-import com.peasenet.config.XrayConfig;
+import com.peasenet.config.*;
 import com.peasenet.gavui.GavUI;
 import com.peasenet.gui.GuiMainMenu;
 import com.peasenet.gui.GuiSettings;
@@ -74,6 +71,8 @@ public class GavinsMod implements ModInitializer {
     public static TracerConfig tracerConfig = new TracerConfig();
     public static XrayConfig xrayConfig = new XrayConfig();
     public static FullbrightConfig fullbrightConfig = new FullbrightConfig();
+    public static FpsColorConfig fpsColorConfig = new FpsColorConfig();
+    public static RadarConfig radarConfig = new RadarConfig();
     private static ModCommands modCommands;
 
     /**
@@ -128,10 +127,14 @@ public class GavinsMod implements ModInitializer {
         LOGGER.info("Settings loaded");
 
         eventManager = new EventManager();
+
         espConfig = espConfig.readFromSettings();
         tracerConfig = tracerConfig.readFromSettings();
         xrayConfig = xrayConfig.readFromSettings();
         fullbrightConfig = fullbrightConfig.readFromSettings();
+        fpsColorConfig = fpsColorConfig.readFromSettings();
+        radarConfig = radarConfig.readFromSettings();
+
         new Mods();
         LOGGER.info("GavinsMod initialized");
         ArrayList<com.peasenet.gavui.Gui> guiList = new ArrayList<>();
