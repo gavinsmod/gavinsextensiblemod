@@ -22,6 +22,7 @@ package com.peasenet.gui.mod.waypoint;
 import com.peasenet.gavui.Gui;
 import com.peasenet.gavui.color.Colors;
 import com.peasenet.gavui.math.PointD;
+import com.peasenet.gavui.util.GavUISettings;
 import com.peasenet.gui.GuiElement;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
@@ -299,10 +300,10 @@ public class GuiWaypoint extends GuiElement {
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
         box.render(matrixStack, client.textRenderer, mouseX, mouseY, delta);
 
-        client.textRenderer.draw(matrixStack, Text.literal("Name: "), paddingX, offsetY + 11, Settings.getColor("gui.color.foregorund").getAsInt());
-        client.textRenderer.draw(matrixStack, Text.literal("X:"), paddingX + 1, offsetY + 82 + padding, Settings.getColor("gui.color.foregorund").getAsInt());
-        client.textRenderer.draw(matrixStack, Text.literal("Y:"), paddingX + 46, offsetY + 82 + padding, Settings.getColor("gui.color.foregorund").getAsInt());
-        client.textRenderer.draw(matrixStack, Text.literal("Z:"), paddingX + 91, offsetY + 82 + padding, Settings.getColor("gui.color.foregorund").getAsInt());
+        client.textRenderer.draw(matrixStack, Text.literal("Name: "), paddingX, offsetY + 11, GavUISettings.getColor("gui.color.foregorund").getAsInt());
+        client.textRenderer.draw(matrixStack, Text.literal("X:"), paddingX + 1, offsetY + 82 + padding, GavUISettings.getColor("gui.color.foregorund").getAsInt());
+        client.textRenderer.draw(matrixStack, Text.literal("Y:"), paddingX + 46, offsetY + 82 + padding, GavUISettings.getColor("gui.color.foregorund").getAsInt());
+        client.textRenderer.draw(matrixStack, Text.literal("Z:"), paddingX + 91, offsetY + 82 + padding, GavUISettings.getColor("gui.color.foregorund").getAsInt());
         textField.render(matrixStack, mouseX, mouseY, delta);
         xCoordinate.render(matrixStack, mouseX, mouseY, delta);
         yCoordinate.render(matrixStack, mouseX, mouseY, delta);

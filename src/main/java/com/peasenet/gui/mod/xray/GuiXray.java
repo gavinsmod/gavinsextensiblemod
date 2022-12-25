@@ -25,6 +25,7 @@ import com.peasenet.gavui.GuiClick;
 import com.peasenet.gavui.GuiToggle;
 import com.peasenet.gavui.color.Colors;
 import com.peasenet.gavui.math.PointD;
+import com.peasenet.gavui.util.GavUISettings;
 import com.peasenet.gui.GuiElement;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
@@ -213,11 +214,11 @@ public class GuiXray extends GuiElement {
             var blockY = (i / blocksPerRow) * 18 + y + 5;
 
             if (GavinsMod.xrayConfig.isInList(block)) {
-                fill(matrixStack, blockX, blockY, blockX + 16, blockY + 16, Settings.getColor("gui.color.enabled").getAsInt(0.5f));
+                fill(matrixStack, blockX, blockY, blockX + 16, blockY + 16, GavUISettings.getColor("gui.color.enabled").getAsInt(0.5f));
                 RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), blockX, blockY, blockX + 16, blockY + 16, matrixStack);
             }
             if (mouseX > blockX && mouseX < blockX + 16 && mouseY > blockY && mouseY < blockY + 16) {
-                fill(matrixStack, blockX, blockY, blockX + 16, blockY + 16, Settings.getColor("gui.color.foreground").getAsInt(0.5f));
+                fill(matrixStack, blockX, blockY, blockX + 16, blockY + 16, GavUISettings.getColor("gui.color.foreground").getAsInt(0.5f));
                 RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), blockX, blockY, blockX + 16, blockY + 16, matrixStack);
                 renderTooltip(matrixStack, Text.translatable(stack.getTranslationKey()), mouseX, mouseY);
             }
