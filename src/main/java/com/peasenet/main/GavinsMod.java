@@ -22,6 +22,7 @@ package com.peasenet.main;
 
 import com.peasenet.config.EspConfig;
 import com.peasenet.config.TracerConfig;
+import com.peasenet.config.XrayConfig;
 import com.peasenet.gavui.GavUI;
 import com.peasenet.gui.GuiMainMenu;
 import com.peasenet.gui.GuiSettings;
@@ -70,6 +71,7 @@ public class GavinsMod implements ModInitializer {
 
     public static EspConfig espConfig;
     public static TracerConfig tracerConfig;
+    public static XrayConfig xrayConfig;
     private static ModCommands modCommands;
 
     /**
@@ -126,7 +128,7 @@ public class GavinsMod implements ModInitializer {
         eventManager = new EventManager();
         espConfig = Settings.getEspConfig();
         tracerConfig = Settings.getTracerConfig();
-
+        xrayConfig = Settings.getXrayConfig();
         new Mods();
         LOGGER.info("GavinsMod initialized");
         ArrayList<com.peasenet.gavui.Gui> guiList = new ArrayList<>();

@@ -25,8 +25,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.ToNumberPolicy;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 import com.peasenet.config.EspConfig;
 import com.peasenet.config.TracerConfig;
+import com.peasenet.config.XrayConfig;
 import com.peasenet.gavui.color.Color;
 import com.peasenet.gavui.color.Colors;
 import com.peasenet.gavui.util.GavUISettings;
@@ -41,10 +43,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.Registries;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -104,6 +103,7 @@ public class Settings {
         default_settings.put("radar", new Radar());
         default_settings.put("esp", new EspConfig());
         default_settings.put("tracer", new TracerConfig());
+        default_settings.put("xray", new XrayConfig());
         load();
     }
 
@@ -483,4 +483,12 @@ public class Settings {
             return new TracerConfig();
         return tracerConfig;
     }
+
+    public static XrayConfig getXrayConfig() {
+        Gson gson = new Gson();
+        JsonReader reader = new JsonReader(new StringReader(settings.get("xray").toString()));
+        reader.setLenient(true);
+        return gson.fromJson(reader, XrayConfig.class);
+    }
+
 }
