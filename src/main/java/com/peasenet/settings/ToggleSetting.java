@@ -128,7 +128,7 @@ public class ToggleSetting extends Setting {
      */
     public void setValue(boolean value) {
         this.value = value;
-        gui.setBackground(value ? Settings.getColor("gui.color.enabled") : Settings.getColor("gui.color.background"));
+        gui.setBackground(value ? GavUISettings.getColor("gui.color.enabled") : GavUISettings.getColor("gui.color.background"));
         gui.setState(value);
         if (getName().equals("none"))
             return;

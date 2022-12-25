@@ -2,7 +2,6 @@ package com.peasenet.config;
 
 import com.peasenet.gavui.color.Color;
 import com.peasenet.gavui.color.Colors;
-import com.peasenet.main.Settings;
 
 public class TracerConfig extends Config<TracerConfig> {
     private static TracerConfig instance;
@@ -13,6 +12,11 @@ public class TracerConfig extends Config<TracerConfig> {
     public Color itemColor = Colors.CYAN;
     public boolean showHostileMobs = true;
     public boolean showPeacefulMobs = true;
+
+    public TracerConfig() {
+        setKey("tracer");
+        instance = this;
+    }
 
     public boolean isShowHostileMobs() {
         return getInstance().showHostileMobs;
@@ -77,9 +81,8 @@ public class TracerConfig extends Config<TracerConfig> {
         saveConfig();
     }
 
-    public TracerConfig() {
-        key = "tracer";
-        instance = this;
+    public TracerConfig getInstance() {
+        return TracerConfig.instance;
     }
 
     @Override
@@ -87,13 +90,4 @@ public class TracerConfig extends Config<TracerConfig> {
         TracerConfig.instance = data;
     }
 
-    public TracerConfig getInstance() {
-        return TracerConfig.instance;
-    }
-
-    @Override
-    public void loadDefaultConfig() {
-        Settings.settings.put("tracer", instance);
-        Settings.save();
-    }
 }

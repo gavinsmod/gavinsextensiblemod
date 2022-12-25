@@ -12,9 +12,11 @@ public class XrayConfig extends Config<XrayConfig> {
     private boolean blockCulling = false;
 
     public XrayConfig() {
-        key = "xray";
+        setKey("xray");
         blocks = new HashSet<>();
-        Registries.BLOCK.stream().filter(b -> b instanceof ExperienceDroppingBlock).forEach(this::addBlock);
+        Registries.BLOCK.stream().filter(b -> b instanceof ExperienceDroppingBlock).forEach(b -> blocks.add(
+                b.getLootTableId().getPath().replace("blocks/", "")
+        ));
         setInstance(this);
     }
 
@@ -42,15 +44,6 @@ public class XrayConfig extends Config<XrayConfig> {
 
     public boolean isInList(Block b) {
         return blocks.contains(b.getLootTableId().getPath().replace("blocks/", ""));
-    }
-
-    @Override
-    public void loadDefaultConfig() {
-        blocks = new HashSet<>();
-        Registries.BLOCK.stream().filter(b -> b instanceof ExperienceDroppingBlock).forEach((b -> blocks.add(b.getLootTableId().getPath())));
-        blockCulling = false;
-        setInstance(this);
-        saveConfig();
     }
 
     @Override

@@ -1,37 +1,12 @@
 package com.peasenet.config;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
+import com.peasenet.annotations.Exclude;
 import com.peasenet.main.Settings;
-
-import java.lang.reflect.Type;
 
 public abstract class Config<E> {
 
-    static String key;
-
-    public <E> E getConfig() {
-        Gson gson = new Gson();
-        Type type = TypeToken.of(getClass()).getType();
-        E data;
-        if (Settings.settings.containsKey(key)) {
-            data = gson.fromJson(Settings.settings.get(key).toString(), type);
-            if (data == null) {
-                loadDefaultConfig();
-                getInstance();
-            }
-        } else {
-            loadDefaultConfig();
-            data = (E) getInstance();
-        }
-        return data;
-    }
-
-    public void setKey(String key) {
-        key = key;
-    }
-
-    public abstract void loadDefaultConfig();
+    @Exclude
+    private transient String key;
 
     public abstract E getInstance();
 
@@ -43,13 +18,14 @@ public abstract class Config<E> {
         Settings.save();
     }
 
+
     public E readFromSettings() {
         var _e = Settings.getConfig(this.getClass(), key);
         setInstance((E) _e);
-        return (E)_e;
+        return (E) _e;
     }
-//    public abstract void readFromSettings();
-//    public void readFromSettings() {
-//        setInstance((E)Settings);
-//    }
+
+    protected void setKey(String key) {
+        this.key = key;
+    }
 }

@@ -20,15 +20,13 @@
 
 package com.peasenet.config;
 
-import com.peasenet.main.Settings;
-
 public class FullbrightConfig extends Config<FullbrightConfig> {
     private static FullbrightConfig instance;
     boolean autoFullBright = true;
     boolean gammaFade = true;
 
     public FullbrightConfig() {
-        key = "fullbright";
+        setKey("fullbright");
     }
 
     public boolean isAutoFullBright() {
@@ -47,12 +45,6 @@ public class FullbrightConfig extends Config<FullbrightConfig> {
     public void setGammaFade(boolean gammaFade) {
         this.gammaFade = gammaFade;
         setInstance(this);
-    }
-
-    @Override
-    public void loadDefaultConfig() {
-        setAutoFullBright(true);
-        setGammaFade(true);
     }
 
     @Override

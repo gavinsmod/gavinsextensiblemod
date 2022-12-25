@@ -2,7 +2,6 @@ package com.peasenet.config;
 
 import com.peasenet.gavui.color.Color;
 import com.peasenet.gavui.color.Colors;
-import com.peasenet.main.Settings;
 
 public class EspConfig extends Config<EspConfig> {
     private static EspConfig instance;
@@ -88,7 +87,7 @@ public class EspConfig extends Config<EspConfig> {
     }
 
     public EspConfig() {
-        key = "esp";
+        setKey("esp");
         instance = this;
     }
 
@@ -101,9 +100,4 @@ public class EspConfig extends Config<EspConfig> {
         return EspConfig.instance;
     }
 
-    @Override
-    public void loadDefaultConfig() {
-        Settings.settings.put("esp", instance);
-        Settings.save();
-    }
 }
