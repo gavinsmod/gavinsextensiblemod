@@ -73,7 +73,7 @@ public class GavinsModClient implements ClientModInitializer {
      * Checks if the auto full bright feature is enabled.
      */
     private void checkAutoFullBright() {
-        if (!Settings.getBool("render.fullbright.autofullbright")) return;
+        if (!GavinsMod.fullbrightConfig.isAutoFullBright()) return;
         var skyBrightness = getMinecraftClient().getWorld().getLightLevel(LightType.SKY, getPlayer().getBlockPos().up());
         var blockBrightness = getMinecraftClient().getWorld().getLightLevel(LightType.BLOCK, getPlayer().getBlockPos().up());
         var currTime = getMinecraftClient().getWorld().getTimeOfDay();

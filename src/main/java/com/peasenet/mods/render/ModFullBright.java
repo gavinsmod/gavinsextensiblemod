@@ -35,8 +35,16 @@ public class ModFullBright extends Mod {
 
     public ModFullBright() {
         super(Type.FULL_BRIGHT);
-        ToggleSetting gammaFade = new ToggleSetting("render.fullbright.gammafade", "gavinsmod.settings.render.gammafade");
-        ToggleSetting autoFullBright = new ToggleSetting("render.fullbright.autofullbright", "gavinsmod.settings.render.autofullbright");
+        ToggleSetting gammaFade = new ToggleSetting("gavinsmod.settings.render.gammafade");
+        gammaFade.setCallback(() -> {
+            GavinsMod.fullbrightConfig.setGammaFade(gammaFade.getValue());
+        });
+        gammaFade.setValue(GavinsMod.fullbrightConfig.isGammaFade());
+        ToggleSetting autoFullBright = new ToggleSetting("gavinsmod.settings.render.autofullbright");
+        autoFullBright.setCallback(() -> {
+            GavinsMod.fullbrightConfig.setAutoFullBright(gammaFade.getValue());
+        });
+        autoFullBright.setValue(GavinsMod.fullbrightConfig.isAutoFullBright());
         addSetting(gammaFade);
         addSetting(autoFullBright);
     }

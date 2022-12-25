@@ -21,6 +21,7 @@
 package com.peasenet.main;
 
 import com.peasenet.config.EspConfig;
+import com.peasenet.config.FullbrightConfig;
 import com.peasenet.config.TracerConfig;
 import com.peasenet.config.XrayConfig;
 import com.peasenet.gavui.GavUI;
@@ -69,9 +70,10 @@ public class GavinsMod implements ModInitializer {
 
     public static EventManager eventManager;
 
-    public static EspConfig espConfig;
-    public static TracerConfig tracerConfig;
-    public static XrayConfig xrayConfig;
+    public static EspConfig espConfig = new EspConfig();
+    public static TracerConfig tracerConfig = new TracerConfig();
+    public static XrayConfig xrayConfig = new XrayConfig();
+    public static FullbrightConfig fullbrightConfig = new FullbrightConfig();
     private static ModCommands modCommands;
 
     /**
@@ -126,9 +128,10 @@ public class GavinsMod implements ModInitializer {
         LOGGER.info("Settings loaded");
 
         eventManager = new EventManager();
-        espConfig = Settings.getEspConfig();
-        tracerConfig = Settings.getTracerConfig();
-        xrayConfig = Settings.getXrayConfig();
+        espConfig = espConfig.readFromSettings();
+        tracerConfig = tracerConfig.readFromSettings();
+        xrayConfig = xrayConfig.readFromSettings();
+        fullbrightConfig = fullbrightConfig.readFromSettings();
         new Mods();
         LOGGER.info("GavinsMod initialized");
         ArrayList<com.peasenet.gavui.Gui> guiList = new ArrayList<>();
