@@ -1,4 +1,4 @@
-package com.peasenet.mods.render.radar;
+package com.peasenet.config;
 
 import com.peasenet.gavui.color.Color;
 import com.peasenet.gavui.color.Colors;
@@ -10,15 +10,83 @@ import com.peasenet.main.Settings;
  * @author gt3ch1
  * @version 12/16/2022
  */
-public class Radar {
+public class RadarConfig extends Config<RadarConfig> {
 
     /**
-     * Sets the instance of the radar.
-     *
-     * @param radar The radar instance.
+     * The Y position of the radar.
      */
-    public static void setInstance(Radar radar) {
-        instance = radar;
+    private static int y = 12;
+    /**
+     * The X position of the radar.
+     */
+    private static int x = 0;
+    /**
+     * The size of the radar in pixels. scale*16+1.
+     */
+    private static int size = 129;
+    /**
+     * The current instance of the radar settings.
+     */
+    private static RadarConfig instance;
+    /**
+     * The current scale of the radar, used to determine the size of the radar.
+     */
+    private int scale = 4;
+    /**
+     * The point size of the radar. Used to draw the boxes on the radar.
+     */
+    private int pointSize = 3;
+    /**
+     * The default color used to draw players on the radar.
+     */
+    private Color playerColor = Colors.GOLD;
+    /**
+     * The default color used to draw hostile mobs on the radar.
+     */
+    private Color hostileMobColor = Colors.RED;
+    /**
+     * The default color used to draw peaceful mobs on the radar.
+     */
+    private Color peacefulMobColor = Colors.GREEN;
+    /**
+     * The default color used to draw items on the radar.
+     */
+    private Color itemColor = Colors.CYAN;
+    /**
+     * The default color used to draw waypoints on the radar.
+     */
+    private Color waypointColor = Colors.WHITE;
+    /**
+     * Whether to show players on the radar.
+     */
+    private boolean showPlayer = true;
+    /**
+     * Whether to show hostile mobs on the radar.
+     */
+    private boolean showHostileMob = true;
+    /**
+     * Whether to show peaceful mobs on the radar.
+     */
+    private boolean showPeacefulMob = true;
+    /**
+     * Whether to show items on the radar.
+     */
+    private boolean showItem = true;
+    /**
+     * Whether to show waypoints on the radar.
+     */
+    private boolean showWaypoint = true;
+    /**
+     * Whether to use the waypoint color to draw waypoints on the radar.
+     */
+    private boolean useWaypointColor = true;
+
+    /**
+     * Create a new instance of the radar settings if one does not already exist.
+     */
+    public RadarConfig() {
+        setKey("radar");
+        if (instance == null) instance = this;
     }
 
     /**
@@ -31,6 +99,15 @@ public class Radar {
     }
 
     /**
+     * Sets the Y position of the radar.
+     *
+     * @param y - The Y position of the radar.
+     */
+    public static void setY(int y) {
+        RadarConfig.y = y;
+    }
+
+    /**
      * Gets the X position of the radar.
      *
      * @return The X position of the radar.
@@ -40,32 +117,13 @@ public class Radar {
     }
 
     /**
-     * Sets the Y position of the radar.
-     *
-     * @param y - The Y position of the radar.
-     */
-    public static void setY(int y) {
-        Radar.y = y;
-    }
-
-    /**
      * Sets the X position of the radar.
      *
      * @param x - The X position of the radar.
      */
     public static void setX(int x) {
-        Radar.x = x;
+        RadarConfig.x = x;
     }
-
-    /**
-     * The Y position of the radar.
-     */
-    private static int y = 12;
-
-    /**
-     * The X position of the radar.
-     */
-    private static int x = 0;
 
     /**
      * Gets the size of the radar in pixels.
@@ -82,7 +140,7 @@ public class Radar {
      * @param size - The size of the radar in pixels.
      */
     public void setSize(int size) {
-        Radar.size = size;
+        RadarConfig.size = size;
     }
 
     /**
@@ -104,7 +162,6 @@ public class Radar {
         this.setSize(scale * 16 + 1);
     }
 
-
     /**
      * The point size of the radar. Used to draw entities/objects on the radar.
      *
@@ -123,7 +180,7 @@ public class Radar {
         if (pointSize > 5)
             pointSize = 1;
         this.pointSize = pointSize == 1 ? 1 : pointSize == 3 ? 3 : 5;
-        Settings.saveRadar();
+        saveConfig();
     }
 
     /**
@@ -143,7 +200,7 @@ public class Radar {
     public void setPlayerColor(Color playerColor) {
         this.playerColor = playerColor;
 
-        Settings.saveRadar();
+        saveConfig();
     }
 
     /**
@@ -162,7 +219,7 @@ public class Radar {
      */
     public void setHostileMobColor(Color hostileMobColor) {
         this.hostileMobColor = hostileMobColor;
-        Settings.saveRadar();
+        saveConfig();
     }
 
     /**
@@ -181,7 +238,7 @@ public class Radar {
      */
     public void setPeacefulMobColor(Color peacefulMobColor) {
         this.peacefulMobColor = peacefulMobColor;
-        Settings.saveRadar();
+        saveConfig();
     }
 
     /**
@@ -200,7 +257,7 @@ public class Radar {
      */
     public void setItemColor(Color itemColor) {
         this.itemColor = itemColor;
-        Settings.saveRadar();
+        saveConfig();
     }
 
     /**
@@ -220,7 +277,7 @@ public class Radar {
      */
     public void setWaypointColor(Color waypointColor) {
         this.waypointColor = waypointColor;
-        Settings.saveRadar();
+        saveConfig();
     }
 
     /**
@@ -239,7 +296,7 @@ public class Radar {
      */
     public void setShowPlayer(boolean showPlayer) {
         this.showPlayer = showPlayer;
-        Settings.saveRadar();
+        saveConfig();
     }
 
     /**
@@ -258,7 +315,7 @@ public class Radar {
      */
     public void setShowHostileMob(boolean showHostileMob) {
         this.showHostileMob = showHostileMob;
-        Settings.saveRadar();
+        saveConfig();
     }
 
     /**
@@ -277,7 +334,7 @@ public class Radar {
      */
     public void setShowPeacefulMob(boolean showPeacefulMob) {
         this.showPeacefulMob = showPeacefulMob;
-        Settings.saveRadar();
+        saveConfig();
 
     }
 
@@ -297,7 +354,7 @@ public class Radar {
      */
     public void setShowItem(boolean showItem) {
         this.showItem = showItem;
-        Settings.saveRadar();
+        saveConfig();
     }
 
     /**
@@ -316,7 +373,7 @@ public class Radar {
      */
     public void setShowWaypoint(boolean showWaypoint) {
         this.showWaypoint = showWaypoint;
-        Settings.saveRadar();
+        saveConfig();
     }
 
     /**
@@ -335,98 +392,25 @@ public class Radar {
      */
     public void setUseWaypointColor(boolean useWaypointColor) {
         this.useWaypointColor = useWaypointColor;
-        Settings.saveRadar();
+        saveConfig();
     }
-
-    /**
-     * The size of the radar in pixels. scale*16+1.
-     */
-    private static int size = 129;
-
-    /**
-     * The current scale of the radar, used to determine the size of the radar.
-     */
-    private int scale = 4;
-
-    /**
-     * The point size of the radar. Used to draw the boxes on the radar.
-     */
-    private int pointSize = 3;
-
-    /**
-     * The default color used to draw players on the radar.
-     */
-    private Color playerColor = Colors.GOLD;
-
-    /**
-     * The default color used to draw hostile mobs on the radar.
-     */
-    private Color hostileMobColor = Colors.RED;
-
-    /**
-     * The default color used to draw peaceful mobs on the radar.
-     */
-    private Color peacefulMobColor = Colors.GREEN;
-
-    /**
-     * The default color used to draw items on the radar.
-     */
-    private Color itemColor = Colors.CYAN;
-
-    /**
-     * The default color used to draw waypoints on the radar.
-     */
-    private Color waypointColor = Colors.WHITE;
-
-    /**
-     * Whether to show players on the radar.
-     */
-    private boolean showPlayer = true;
-
-    /**
-     * Whether to show hostile mobs on the radar.
-     */
-    private boolean showHostileMob = true;
-
-    /**
-     * Whether to show peaceful mobs on the radar.
-     */
-    private boolean showPeacefulMob = true;
-
-    /**
-     * Whether to show items on the radar.
-     */
-    private boolean showItem = true;
-
-    /**
-     * Whether to show waypoints on the radar.
-     */
-    private boolean showWaypoint = true;
-
-    /**
-     * Whether to use the waypoint color to draw waypoints on the radar.
-     */
-    private boolean useWaypointColor = true;
 
     /**
      * Gets the current instance of the radar settings.
      *
      * @return The current instance of the radar settings.
      */
-    public static Radar getInstance() {
+    public RadarConfig getInstance() {
         return instance;
     }
 
     /**
-     * The current instance of the radar settings.
+     * Sets the instance of the radar.
+     *
+     * @param radar The radar instance.
      */
-    private static Radar instance;
-
-    /**
-     * Create a new instance of the radar settings if one does not already exist.
-     */
-    public Radar() {
-        if (instance == null) instance = this;
+    public void setInstance(RadarConfig radar) {
+        instance = radar;
     }
 
     /**
@@ -436,7 +420,7 @@ public class Radar {
         scale++;
         if (scale > 8) scale = 1;
         setScale(scale);
-        Settings.saveRadar();
+        saveConfig();
     }
 
     /**
@@ -445,6 +429,6 @@ public class Radar {
     public void updatePointSizeCallback() {
         pointSize += 2;
         setPointSize(pointSize);
-        Settings.saveRadar();
+        saveConfig();
     }
 }
