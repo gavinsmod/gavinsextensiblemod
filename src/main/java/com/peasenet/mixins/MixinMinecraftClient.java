@@ -31,6 +31,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.hit.HitResult;
@@ -51,25 +52,19 @@ import java.io.File;
 public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Shadow
     private static int currentFps;
-
     @Shadow
     public ClientPlayerInteractionManager interactionManager;
-
     @Shadow
     @Final
     public GameOptions options;
-
     @Shadow
     @Final
     public TextRenderer textRenderer;
-
     @Shadow
     @Final
     public WorldRenderer worldRenderer;
-
     @Shadow
     public boolean chunkCullingEnabled;
-
     @Shadow
     public ClientWorld world;
     @Shadow
@@ -77,6 +72,9 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     public File runDirectory;
     @Shadow
     public HitResult crosshairTarget;
+    @Final
+    @Shadow
+    private EntityRenderDispatcher entityRenderDispatcher;
     @Shadow
     private int itemUseCooldown;
     @Final
@@ -159,6 +157,11 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Override
     public HitResult crosshairTarget() {
         return crosshairTarget;
+    }
+
+    @Override
+    public EntityRenderDispatcher getEntityRenderDispatcher() {
+        return entityRenderDispatcher;
     }
 
 }
