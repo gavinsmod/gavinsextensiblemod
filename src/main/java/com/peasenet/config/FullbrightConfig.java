@@ -36,6 +36,7 @@ public class FullbrightConfig extends Config<FullbrightConfig> {
     public void setAutoFullBright(boolean autoFullBright) {
         this.autoFullBright = autoFullBright;
         setInstance(this);
+        saveConfig();
     }
 
     public boolean isGammaFade() {
@@ -45,6 +46,7 @@ public class FullbrightConfig extends Config<FullbrightConfig> {
     public void setGammaFade(boolean gammaFade) {
         this.gammaFade = gammaFade;
         setInstance(this);
+        saveConfig();
     }
 
     @Override
