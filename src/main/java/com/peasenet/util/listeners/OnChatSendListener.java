@@ -19,9 +19,7 @@
  */
 package com.peasenet.util.listeners;
 
-import com.peasenet.util.event.CancellableEvent;
-
-import java.util.ArrayList;
+import com.peasenet.util.event.data.ChatMessage;
 
 /**
  * A listener for packets being sent.
@@ -35,55 +33,5 @@ public interface OnChatSendListener extends Listener {
      */
     void onChatSend(ChatMessage s);
 
-    /**
-     * An event for when a packet is sent.
-     *
-     * @author GT3CH1
-     * @version 12/22/2022
-     */
-    class OnChatSendEvent extends CancellableEvent<OnChatSendListener> {
-        ChatMessage message;
 
-        /**
-         * Creates a new PacketSendEvent.
-         */
-        public OnChatSendEvent(String msg) {
-            this.message = new ChatMessage(msg);
-        }
-
-        @Override
-        public void fire(ArrayList<OnChatSendListener> listeners) {
-            for (OnChatSendListener listener : listeners) {
-                listener.onChatSend(message);
-                if (message.isCancelled())
-                    this.cancel();
-            }
-        }
-
-        @Override
-        public Class<OnChatSendListener> getEvent() {
-            return OnChatSendListener.class;
-        }
-    }
-
-    class ChatMessage {
-        private boolean cancelled = false;
-        private final String msg;
-
-        public boolean isCancelled() {
-            return cancelled;
-        }
-
-        public void cancel() {
-            this.cancelled = true;
-        }
-
-        public ChatMessage(String msg) {
-            this.msg = msg;
-        }
-
-        public String getMessage() {
-            return msg;
-        }
-    }
 }

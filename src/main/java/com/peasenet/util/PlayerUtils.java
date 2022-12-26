@@ -25,7 +25,7 @@ import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Settings;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
-import com.peasenet.util.listeners.PlayerAttackListener;
+import com.peasenet.util.event.PlayerAttackEvent;
 import com.peasenet.util.math.Rotation;
 import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;
@@ -81,15 +81,6 @@ public class PlayerUtils {
     }
 
     /**
-     * Makes the player do a jump.
-     */
-    public static void doJump() {
-        var player = GavinsModClient.getPlayer();
-        if (onGround())
-            player.jump();
-    }
-
-    /**
      * Checks if the player is on the ground.
      *
      * @return True if the player is on the ground, false otherwise.
@@ -108,7 +99,7 @@ public class PlayerUtils {
         var player = GavinsModClient.getPlayer();
         assert GavinsModClient.getMinecraftClient().getPlayerInteractionManager() != null;
         if (onGround() && !player.noClip && player.getAttackCooldownProgress(0.5f) > 0.90f) {
-            PlayerAttackListener.PlayerAttackEvent event = new PlayerAttackListener.PlayerAttackEvent();
+            PlayerAttackEvent event = new PlayerAttackEvent();
             GavinsMod.eventManager.call(event);
             GavinsModClient.getMinecraftClient().getPlayerInteractionManager().attackEntity(player, entity);
             player.tryAttack(entity);
@@ -144,16 +135,6 @@ public class PlayerUtils {
         return player.squaredDistanceTo(entity);
     }
 
-
-    /**
-     * Gets whether the player is in creative mode.
-     *
-     * @return True if the player is in creative mode, false otherwise.
-     */
-    public static boolean isCreative() {
-        var player = GavinsModClient.getPlayer();
-        return player.getAbilities().creativeMode;
-    }
 
     /**
      * Gets whether the player is falling.

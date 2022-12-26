@@ -1,4 +1,4 @@
-package com.peasenet.util;
+package com.peasenet.util.event.data;
 
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.util.math.MatrixStack;

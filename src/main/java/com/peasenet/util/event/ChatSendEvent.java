@@ -18,25 +18,40 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mixins;
+package com.peasenet.util.event;
 
+import com.peasenet.util.event.data.ChatMessage;
+import com.peasenet.util.listeners.OnChatSendListener;
 
-import com.peasenet.main.GavinsMod;
-import com.peasenet.util.event.PacketSendEvent;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.Packet;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import java.util.ArrayList;
 
-@Mixin(ClientPlayNetworkHandler.class)
-public class MixinClientPlayNetworkHandler {
-    @Inject(at = @At("HEAD"), method = "sendPacket", cancellable = true)
-    public void sendPacket(Packet<?> packet, CallbackInfo ci) {
-        PacketSendEvent event = new PacketSendEvent(packet);
-        GavinsMod.eventManager.call(event);
-        if (event.isCancelled())
-            ci.cancel();
+/**
+ * An event for when a packet is sent.
+ *
+ * @author GT3CH1
+ * @version 12/22/2022
+ */
+public class ChatSendEvent extends CancellableEvent<OnChatSendListener> {
+    ChatMessage message;
+
+    /**
+     * Creates a new PacketSendEvent.
+     */
+    public ChatSendEvent(String msg) {
+        this.message = new ChatMessage(msg);
+    }
+
+    @Override
+    public void fire(ArrayList<OnChatSendListener> listeners) {
+        for (OnChatSendListener listener : listeners) {
+            listener.onChatSend(message);
+            if (message.isCancelled())
+                this.cancel();
+        }
+    }
+
+    @Override
+    public Class<OnChatSendListener> getEvent() {
+        return OnChatSendListener.class;
     }
 }

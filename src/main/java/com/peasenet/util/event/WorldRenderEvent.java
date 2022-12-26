@@ -17,26 +17,53 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.util.listeners;
 
+package com.peasenet.util.event;
+
+
+import com.peasenet.util.listeners.WorldRenderListener;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 
+import java.util.ArrayList;
+
 /**
- * A listener for the world render event.
+ * The event for the world render event.
  *
  * @author GT3CH1
  * @version 12/22/2022
  */
-public interface WorldRenderListener extends Listener {
+public class WorldRenderEvent extends Event<WorldRenderListener> {
+    ClientWorld level;
+    MatrixStack stack;
+    BufferBuilder buffer;
+    float delta;
+
     /**
-     * Called when the world is rendered.
+     * Creates a new world render event.
      *
-     * @param level         - The world being rendered.
-     * @param stack         - The matrix stack.
-     * @param bufferBuilder - The buffer builder.
-     * @param delta         - The delta.
+     * @param level  - The world being rendered.
+     * @param stack  - The matrix stack.
+     * @param buffer - The buffer builder.
+     * @param delta  - The delta.
      */
-    void onWorldRender(ClientWorld level, MatrixStack stack, BufferBuilder bufferBuilder, float delta);
+    public WorldRenderEvent(ClientWorld level, MatrixStack stack, BufferBuilder buffer, float delta) {
+        this.level = level;
+        this.stack = stack;
+        this.buffer = buffer;
+        this.delta = delta;
+    }
+
+    @Override
+    public void fire(ArrayList<WorldRenderListener> listeners) {
+        for (WorldRenderListener listener : listeners) {
+            listener.onWorldRender(level, stack, buffer, delta);
+        }
+    }
+
+    @Override
+    public Class<WorldRenderListener> getEvent() {
+        return WorldRenderListener.class;
+    }
 }

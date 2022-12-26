@@ -24,8 +24,9 @@ import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
-import com.peasenet.util.ChestEntityRender;
 import com.peasenet.util.RenderUtils;
+import com.peasenet.util.event.data.CameraBob;
+import com.peasenet.util.event.data.ChestEntityRender;
 import com.peasenet.util.listeners.CameraBobListener;
 import com.peasenet.util.listeners.ChestEntityRenderListener;
 
@@ -39,9 +40,7 @@ public class ModChestTracer extends Mod implements ChestEntityRenderListener,
     public ModChestTracer() {
         super(Type.CHEST_TRACER);
         ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.tracer.chest.color");
-        colorSetting.setCallback(() -> {
-            GavinsMod.tracerConfig.setChestColor(colorSetting.getColor());
-        });
+        colorSetting.setCallback(() -> GavinsMod.tracerConfig.setChestColor(colorSetting.getColor()));
         colorSetting.setColor(GavinsMod.tracerConfig.getChestColor());
         addSetting(colorSetting);
     }

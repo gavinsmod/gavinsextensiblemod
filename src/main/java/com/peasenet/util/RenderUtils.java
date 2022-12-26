@@ -25,14 +25,11 @@ import com.peasenet.gavui.color.Color;
 import com.peasenet.gavui.math.BoxD;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
-import com.peasenet.main.Mods;
-import com.peasenet.main.Settings;
 import com.peasenet.mixinterface.ISimpleOption;
 import com.peasenet.mods.Type;
-import com.peasenet.mods.render.waypoints.Waypoint;
-import com.peasenet.util.listeners.ChestEntityRenderListener.ChestEntityRenderEvent;
-import com.peasenet.util.listeners.EntityRenderListener.EntityRenderEvent;
-import com.peasenet.util.listeners.WorldRenderListener.WorldRenderEvent;
+import com.peasenet.util.event.ChestEntityRenderEvent;
+import com.peasenet.util.event.EntityRenderEvent;
+import com.peasenet.util.event.WorldRenderEvent;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.EnderChestBlockEntity;
@@ -43,7 +40,6 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix3f;
@@ -80,16 +76,13 @@ public class RenderUtils {
      * @param boxPos    The center of the location we want to draw a line to.
      * @param color     The color to draw the line in.
      */
-    public static void renderSingleLine(MatrixStack stack, VertexConsumer buffer, Vec3d playerPos,
-                                        Vec3d boxPos, Color color) {
+    public static void renderSingleLine(MatrixStack stack, VertexConsumer buffer, Vec3d playerPos, Vec3d boxPos, Color color) {
         Vec3d normal = new Vec3d(boxPos.getX() - playerPos.getX(), boxPos.getY() - playerPos.getY(), boxPos.getZ() - playerPos.getZ());
         normal.normalize();
         Matrix4f matrix4f = stack.peek().getPositionMatrix();
         Matrix3f matrix3f = stack.peek().getNormalMatrix();
-        buffer.vertex(matrix4f, (float) playerPos.getX(), (float) playerPos.getY(), (float) playerPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), 0.5f)
-                .normal(matrix3f, (float) normal.getX(), (float) normal.getY(), (float) normal.getZ()).next();
-        buffer.vertex(matrix4f, (float) boxPos.getX(), (float) boxPos.getY(), (float) boxPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), 0.5f)
-                .normal(matrix3f, (float) normal.getX(), (float) normal.getY(), (float) normal.getZ()).next();
+        buffer.vertex(matrix4f, (float) playerPos.getX(), (float) playerPos.getY(), (float) playerPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), 0.5f).normal(matrix3f, (float) normal.getX(), (float) normal.getY(), (float) normal.getZ()).next();
+        buffer.vertex(matrix4f, (float) boxPos.getX(), (float) boxPos.getY(), (float) boxPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), 0.5f).normal(matrix3f, (float) normal.getX(), (float) normal.getY(), (float) normal.getZ()).next();
     }
 
     /**
@@ -134,26 +127,6 @@ public class RenderUtils {
     }
 
     /**
-     * Draws the waypoint.
-     *
-     * @param stack     - The matrix stack to use.
-     * @param buffer    - The buffer to write to.
-     * @param playerPos - The position of the player.
-     */
-    private static void drawWaypoint(MatrixStack stack, BufferBuilder buffer, Vec3d playerPos) {
-        if (!Mods.getMod("waypoints").isActive())
-            return;
-        Settings.getWaypoints().stream().filter(Waypoint::isEnabled).forEach(w -> {
-            Box aabb = new Box(new BlockPos(w.getX(), w.getY(), w.getZ()));
-            Vec3d boxPos = aabb.getCenter();
-            if (w.isTracerEnabled())
-                renderSingleLine(stack, buffer, playerPos, boxPos, w.getColor());
-            if (w.isEspEnabled())
-                drawBox(stack, buffer, aabb, w.getColor());
-        });
-    }
-
-    /**
      * Resets the render system to the default state.
      */
     private static void resetRenderSystem() {
@@ -183,23 +156,20 @@ public class RenderUtils {
      * @param chunk_z   The player's chunk z.
      */
     private static void drawChestMods(ClientWorld level, MatrixStack stack, BufferBuilder buffer, Vec3d playerPos, int chunk_x, int chunk_z, float delta) {
-        if (!GavinsMod.isEnabled(Type.CHEST_ESP) && !GavinsMod.isEnabled(Type.CHEST_TRACER))
-            return;
+        if (!GavinsMod.isEnabled(Type.CHEST_ESP) && !GavinsMod.isEnabled(Type.CHEST_TRACER)) return;
         for (int x = -CHUNK_RADIUS; x <= CHUNK_RADIUS; x++) {
             for (int z = -CHUNK_RADIUS; z <= CHUNK_RADIUS; z++) {
                 int chunk_x_ = chunk_x + x;
                 int chunk_z_ = chunk_z + z;
                 if (level.getChunk(chunk_x_, chunk_z_) != null) {
                     level.getChunk(chunk_x_, chunk_z_).getBlockEntities().forEach((blockPos, blockEntity) -> {
-                                if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity ||
-                                        blockEntity instanceof ShulkerBoxBlockEntity) {
-                                    Box aabb = new Box(blockPos);
-                                    Vec3d boxPos = aabb.getCenter();
-                                    ChestEntityRenderEvent event = new ChestEntityRenderEvent(blockEntity, stack, buffer, boxPos, playerPos, delta);
-                                    GavinsMod.eventManager.call(event);
-                                }
-                            }
-                    );
+                        if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity || blockEntity instanceof ShulkerBoxBlockEntity) {
+                            Box aabb = new Box(blockPos);
+                            Vec3d boxPos = aabb.getCenter();
+                            ChestEntityRenderEvent event = new ChestEntityRenderEvent(blockEntity, stack, buffer, boxPos, playerPos, delta);
+                            GavinsMod.eventManager.call(event);
+                        }
+                    });
                 }
             }
         }
@@ -227,11 +197,9 @@ public class RenderUtils {
      * @param buffer    The buffer to write to.
      * @param playerPos The player's position.
      */
-    private static void drawEntityMods(ClientWorld level, ClientPlayerEntity player, MatrixStack stack,
-                                       float delta, BufferBuilder buffer, Vec3d playerPos) {
+    private static void drawEntityMods(ClientWorld level, ClientPlayerEntity player, MatrixStack stack, float delta, BufferBuilder buffer, Vec3d playerPos) {
         level.getEntities().forEach(e -> {
-            if ((e.squaredDistanceTo(player) > 64 * CHUNK_RADIUS * 16) || player == e)
-                return;
+            if ((e.squaredDistanceTo(player) > 64 * CHUNK_RADIUS * 16) || player == e) return;
             Box aabb = getEntityBox(delta, e);
             Vec3d boxPos = aabb.getCenter();
             EntityRenderEvent event = new EntityRenderEvent(e, stack, buffer, boxPos, playerPos, delta);
@@ -290,14 +258,11 @@ public class RenderUtils {
      * @param gamma The value to set the gamma to.
      */
     public static void setGamma(double gamma) {
-        if (gamma < 0.0)
-            gamma = 0.0;
-        if (gamma > 64.0)
-            return;
+        if (gamma < 0.0) gamma = 0.0;
+        if (gamma > 64.0) return;
         var newGamma = GavinsModClient.getMinecraftClient().getOptions().getGamma();
         if (newGamma.getValue() != gamma) {
-            @SuppressWarnings("unchecked")
-            var newGamma2 = (ISimpleOption<Double>) (Object) newGamma;
+            @SuppressWarnings("unchecked") var newGamma2 = (ISimpleOption<Double>) (Object) newGamma;
             newGamma2.forceSetValue(gamma);
         }
     }
@@ -307,6 +272,7 @@ public class RenderUtils {
      *
      * @return Whether the gamma is set to its full bright value.
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isHighGamma() {
         return getGamma() == 64;
     }
@@ -316,6 +282,7 @@ public class RenderUtils {
      *
      * @return Whether the gamma is currently at its last user configured value.
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isLastGamma() {
         return getGamma() <= LAST_GAMMA;
     }
@@ -324,8 +291,7 @@ public class RenderUtils {
      * Sets the gamma to the last user configured value.
      */
     public static void setLastGamma() {
-        if (getGamma() > 100)
-            return;
+        if (getGamma() > 100) return;
         LAST_GAMMA = getGamma();
     }
 
@@ -350,8 +316,7 @@ public class RenderUtils {
      */
     public static void fadeGammaDown() {
         setGamma(getGamma() - 0.2f);
-        if (getGamma() < getLastGamma())
-            setGamma(getLastGamma());
+        if (getGamma() < getLastGamma()) setGamma(getLastGamma());
     }
 
     /**

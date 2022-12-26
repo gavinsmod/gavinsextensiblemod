@@ -25,6 +25,7 @@ import com.peasenet.main.GavinsMod;
 import com.peasenet.main.Mods;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.util.event.data.ChatMessage;
 import com.peasenet.util.listeners.OnChatSendListener;
 import net.minecraft.client.resource.language.I18n;
 

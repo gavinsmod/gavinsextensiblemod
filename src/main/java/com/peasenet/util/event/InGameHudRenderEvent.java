@@ -18,25 +18,43 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mixins;
+package com.peasenet.util.event;
 
+import com.peasenet.util.listeners.InGameHudRenderListener;
+import net.minecraft.client.util.math.MatrixStack;
 
-import com.peasenet.main.GavinsMod;
-import com.peasenet.util.event.PacketSendEvent;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.Packet;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import java.util.ArrayList;
 
-@Mixin(ClientPlayNetworkHandler.class)
-public class MixinClientPlayNetworkHandler {
-    @Inject(at = @At("HEAD"), method = "sendPacket", cancellable = true)
-    public void sendPacket(Packet<?> packet, CallbackInfo ci) {
-        PacketSendEvent event = new PacketSendEvent(packet);
-        GavinsMod.eventManager.call(event);
-        if (event.isCancelled())
-            ci.cancel();
+/**
+ * The event for the world render event.
+ *
+ * @author GT3CH1
+ * @version 12/22/2022
+ */
+public class InGameHudRenderEvent extends Event<InGameHudRenderListener> {
+    MatrixStack stack;
+    float delta;
+
+    /**
+     * Creates a new world render event.
+     *
+     * @param stack - The matrix stack.
+     * @param delta - The delta.
+     */
+    public InGameHudRenderEvent(MatrixStack stack, float delta) {
+        this.stack = stack;
+        this.delta = delta;
+    }
+
+    @Override
+    public void fire(ArrayList<InGameHudRenderListener> listeners) {
+        for (InGameHudRenderListener listener : listeners) {
+            listener.onRenderInGameHud(stack, delta);
+        }
+    }
+
+    @Override
+    public Class<InGameHudRenderListener> getEvent() {
+        return InGameHudRenderListener.class;
     }
 }

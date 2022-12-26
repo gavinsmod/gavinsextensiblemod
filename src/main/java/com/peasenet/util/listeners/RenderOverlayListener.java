@@ -18,31 +18,12 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.packets;
+package com.peasenet.util.listeners;
 
-import net.minecraft.network.Packet;
+import com.peasenet.util.event.data.RenderOverlay;
 
-public class OutputPacket {
-    private Packet<?> packet;
-    private boolean cancelled;
+public interface RenderOverlayListener extends Listener {
+    void onRenderOverlay(RenderOverlay overlay);
 
-    public OutputPacket(Packet<?> packet) {
-        this.packet = packet;
-    }
 
-    public Packet<?> getPacket() {
-        return packet;
-    }
-
-    public void setPacket(Packet<?> packet) {
-        this.packet = packet;
-    }
-
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    public void cancel() {
-        this.cancelled = true;
-    }
 }

@@ -21,7 +21,7 @@
 package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
-import com.peasenet.util.listeners.CameraBobListener;
+import com.peasenet.util.event.CameraBobEvent;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,7 +33,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinGameRender {
     @Inject(method = "bobViewWhenHurt(Lnet/minecraft/client/util/math/MatrixStack;F)V", at = @At("HEAD"), cancellable = true)
     public void checkAntiHurt(MatrixStack stack, float f, CallbackInfo ci) {
-        CameraBobListener.CameraBobEvent event = new CameraBobListener.CameraBobEvent();
+        CameraBobEvent event = new CameraBobEvent();
         GavinsMod.eventManager.call(event);
         if (event.isCancelled())
             ci.cancel();
@@ -42,7 +42,7 @@ public class MixinGameRender {
 
     @Inject(method = "bobView", at = @At("HEAD"), cancellable = true)
     public void checkTracersAndEsps(MatrixStack stack, float f, CallbackInfo ci) {
-        CameraBobListener.CameraBobEvent event = new CameraBobListener.CameraBobEvent();
+        CameraBobEvent event = new CameraBobEvent();
         GavinsMod.eventManager.call(event);
         if (event.isCancelled())
             ci.cancel();

@@ -17,22 +17,48 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.util.listeners;
+
+package com.peasenet.util.event;
 
 import com.peasenet.util.event.data.EntityRender;
+import com.peasenet.util.listeners.EntityRenderListener;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Vec3d;
+
+import java.util.ArrayList;
 
 /**
- * A listener for the world render event.
+ * The event for the world render event.
  *
  * @author GT3CH1
- * @version 12/23/2022
+ * @version 12/22/2022
  */
-public interface EntityRenderListener extends Listener {
+public class EntityRenderEvent extends Event<EntityRenderListener> {
+    EntityRender entityRender;
 
     /**
-     * Called when the world is rendered.
+     * Creates a new world render event.
+     *
+     * @param stack     - The matrix stack.
+     * @param buffer    - The buffer builder.
+     * @param center    - The box.
+     * @param playerPos - The delta.
      */
-    void onEntityRender(EntityRender er);
+    public EntityRenderEvent(Entity entity, MatrixStack stack, BufferBuilder buffer, Vec3d center, Vec3d playerPos, float delta) {
+        this.entityRender = new EntityRender(entity, stack, buffer, center, playerPos, delta);
+    }
 
+    @Override
+    public void fire(ArrayList<EntityRenderListener> listeners) {
+        for (EntityRenderListener listener : listeners) {
+            listener.onEntityRender(entityRender);
+        }
+    }
 
+    @Override
+    public Class<EntityRenderListener> getEvent() {
+        return EntityRenderListener.class;
+    }
 }

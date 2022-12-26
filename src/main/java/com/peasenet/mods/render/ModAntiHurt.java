@@ -22,6 +22,7 @@ package com.peasenet.mods.render;
 
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.util.event.data.CameraBob;
 import com.peasenet.util.listeners.CameraBobListener;
 
 /**

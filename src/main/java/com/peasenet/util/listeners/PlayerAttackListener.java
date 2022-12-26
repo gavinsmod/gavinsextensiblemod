@@ -19,11 +19,7 @@
  */
 package com.peasenet.util.listeners;
 
-import com.peasenet.packets.OutputPacket;
-import com.peasenet.util.event.Event;
-import net.minecraft.entity.Entity;
-
-import java.util.ArrayList;
+import com.peasenet.util.event.data.OutputPacket;
 
 /**
  * A listener for packets being sent.
@@ -39,33 +35,5 @@ public interface PlayerAttackListener extends Listener {
      */
     void onAttackEntity();
 
-    /**
-     * An event for when a packet is sent.
-     *
-     * @author GT3CH1
-     * @version 12/22/2022
-     */
-    class PlayerAttackEvent extends Event<PlayerAttackListener> {
-        Entity entity;
 
-        /**
-         * Creates a new PacketSendEvent.
-         *
-         * @param packet - The packet being sent.
-         */
-        public PlayerAttackEvent() {
-        }
-
-        @Override
-        public void fire(ArrayList<PlayerAttackListener> listeners) {
-            for (PlayerAttackListener listener : listeners) {
-                listener.onAttackEntity();
-            }
-        }
-
-        @Override
-        public Class<PlayerAttackListener> getEvent() {
-            return PlayerAttackListener.class;
-        }
-    }
 }

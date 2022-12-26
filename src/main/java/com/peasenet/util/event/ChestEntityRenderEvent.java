@@ -17,26 +17,49 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.util.listeners;
 
+package com.peasenet.util.event;
+
+import com.peasenet.util.event.data.ChestEntityRender;
+import com.peasenet.util.listeners.ChestEntityRenderListener;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.math.Vec3d;
+
+import java.util.ArrayList;
 
 /**
- * A listener for the world render event.
+ * The event for the world render event.
  *
  * @author GT3CH1
  * @version 12/22/2022
  */
-public interface WorldRenderListener extends Listener {
+
+public class ChestEntityRenderEvent extends Event<ChestEntityRenderListener> {
+    ChestEntityRender entityRender;
+
     /**
-     * Called when the world is rendered.
+     * Creates a new world render event.
      *
-     * @param level         - The world being rendered.
-     * @param stack         - The matrix stack.
-     * @param bufferBuilder - The buffer builder.
-     * @param delta         - The delta.
+     * @param stack     - The matrix stack.
+     * @param buffer    - The buffer builder.
+     * @param center    - The box.
+     * @param playerPos - The delta.
      */
-    void onWorldRender(ClientWorld level, MatrixStack stack, BufferBuilder bufferBuilder, float delta);
+    public ChestEntityRenderEvent(BlockEntity entity, MatrixStack stack, BufferBuilder buffer, Vec3d center, Vec3d playerPos, float delta) {
+        this.entityRender = new ChestEntityRender(entity, stack, buffer, center, playerPos, delta);
+    }
+
+    @Override
+    public void fire(ArrayList<ChestEntityRenderListener> listeners) {
+        for (ChestEntityRenderListener listener : listeners) {
+            listener.onEntityRender(entityRender);
+        }
+    }
+
+    @Override
+    public Class<ChestEntityRenderListener> getEvent() {
+        return ChestEntityRenderListener.class;
+    }
 }

@@ -18,25 +18,31 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mixins;
+package com.peasenet.util.event;
 
+import com.peasenet.util.event.data.RenderOverlay;
+import com.peasenet.util.listeners.RenderOverlayListener;
 
-import com.peasenet.main.GavinsMod;
-import com.peasenet.util.event.PacketSendEvent;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.Packet;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import java.util.ArrayList;
 
-@Mixin(ClientPlayNetworkHandler.class)
-public class MixinClientPlayNetworkHandler {
-    @Inject(at = @At("HEAD"), method = "sendPacket", cancellable = true)
-    public void sendPacket(Packet<?> packet, CallbackInfo ci) {
-        PacketSendEvent event = new PacketSendEvent(packet);
-        GavinsMod.eventManager.call(event);
-        if (event.isCancelled())
-            ci.cancel();
+public class RenderOverlayEvent extends CancellableEvent<RenderOverlayListener> {
+    private final RenderOverlay overlay;
+
+    public RenderOverlayEvent(RenderOverlay overlay) {
+        this.overlay = overlay;
+    }
+
+    @Override
+    public void fire(ArrayList<RenderOverlayListener> listeners) {
+        for (RenderOverlayListener l : listeners) {
+            l.onRenderOverlay(overlay);
+            if (overlay.isCancelled())
+                this.cancel();
+        }
+    }
+
+    @Override
+    public Class<RenderOverlayListener> getEvent() {
+        return null;
     }
 }

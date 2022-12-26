@@ -19,61 +19,17 @@
  */
 package com.peasenet.util.listeners;
 
-import com.peasenet.util.event.CancellableEvent;
-
-import java.util.ArrayList;
+import com.peasenet.util.event.data.CameraBob;
 
 /**
- * A listener for packets being sent.
+ * A listener for the Camera bobbing.
  *
  * @author GT3CH1
- * @version 12/22/2022
+ * @version 12/25/2022
  */
 public interface CameraBobListener extends Listener {
     /**
-     * Called when a packet is sent.
+     * Called when the camera is moved slightly.
      */
     void onCameraViewBob(CameraBob c);
-
-    /**
-     * An event for when a packet is sent.
-     *
-     * @author GT3CH1
-     * @version 12/22/2022
-     */
-    class CameraBobEvent extends CancellableEvent<CameraBobListener> {
-        CameraBob cameraBob;
-
-        /**
-         * Creates a new PacketSendEvent.
-         */
-        public CameraBobEvent() {
-            this.cameraBob = new CameraBob();
-        }
-
-        @Override
-        public void fire(ArrayList<CameraBobListener> listeners) {
-            for (CameraBobListener listener : listeners) {
-                listener.onCameraViewBob(cameraBob);
-                if (cameraBob.isCancelled()) this.cancel();
-            }
-        }
-
-        @Override
-        public Class<CameraBobListener> getEvent() {
-            return CameraBobListener.class;
-        }
-    }
-
-    class CameraBob {
-        private boolean cancelled = false;
-
-        public boolean isCancelled() {
-            return cancelled;
-        }
-
-        public void cancel() {
-            this.cancelled = true;
-        }
-    }
 }

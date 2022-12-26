@@ -1,7 +1,6 @@
-package com.peasenet.util;
+package com.peasenet.util.event.data;
 
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
@@ -24,7 +23,4 @@ public class ChestEntityRender {
         this.delta = delta;
     }
 
-    public BlockEntityType<?> getEntityType() {
-        return entity.getType();
-    }
 }

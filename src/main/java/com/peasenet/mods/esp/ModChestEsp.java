@@ -24,8 +24,8 @@ import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
-import com.peasenet.util.ChestEntityRender;
 import com.peasenet.util.RenderUtils;
+import com.peasenet.util.event.data.ChestEntityRender;
 import com.peasenet.util.listeners.ChestEntityRenderListener;
 import net.minecraft.util.math.Box;
 
@@ -39,9 +39,7 @@ public class ModChestEsp extends Mod implements ChestEntityRenderListener {
         super(Type.CHEST_ESP);
         ColorSetting colorSetting = new ColorSetting("none",
                 "gavinsmod.settings.esp.chest.color");
-        colorSetting.setCallback(() -> {
-            GavinsMod.espConfig.setChestColor(colorSetting.getColor());
-        });
+        colorSetting.setCallback(() -> GavinsMod.espConfig.setChestColor(colorSetting.getColor()));
         colorSetting.setColor(GavinsMod.espConfig.getChestColor());
         addSetting(colorSetting);
     }

@@ -25,8 +25,9 @@ import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
 import com.peasenet.settings.ToggleSetting;
-import com.peasenet.util.EntityRender;
 import com.peasenet.util.RenderUtils;
+import com.peasenet.util.event.data.CameraBob;
+import com.peasenet.util.event.data.EntityRender;
 import com.peasenet.util.listeners.CameraBobListener;
 import com.peasenet.util.listeners.EntityRenderListener;
 import net.minecraft.entity.mob.MobEntity;
@@ -40,28 +41,20 @@ public class ModMobTracer extends Mod implements EntityRenderListener, CameraBob
     public ModMobTracer() {
         super(Type.MOB_TRACER);
         ColorSetting peacefulColor = new ColorSetting("gavinsmod.settings.tracer.mob.peaceful.color");
-        peacefulColor.setCallback(() -> {
-            GavinsMod.tracerConfig.setPeacefulMobColor(peacefulColor.getColor());
-        });
+        peacefulColor.setCallback(() -> GavinsMod.tracerConfig.setPeacefulMobColor(peacefulColor.getColor()));
         peacefulColor.setColor(GavinsMod.tracerConfig.getPeacefulMobColor());
 
 
         ColorSetting hostileColor = new ColorSetting("gavinsmod.settings.tracer.mob.hostile.color");
-        hostileColor.setCallback(() -> {
-            GavinsMod.tracerConfig.setHostileMobColor(hostileColor.getColor());
-        });
+        hostileColor.setCallback(() -> GavinsMod.tracerConfig.setHostileMobColor(hostileColor.getColor()));
         hostileColor.setColor(GavinsMod.tracerConfig.getHostileMobColor());
 
         ToggleSetting hostile = new ToggleSetting("gavinsmod.settings.tracer.mob.hostile");
-        hostile.setCallback(() -> {
-            GavinsMod.tracerConfig.setShowHostileMobs(hostile.getValue());
-        });
+        hostile.setCallback(() -> GavinsMod.tracerConfig.setShowHostileMobs(hostile.getValue()));
         hostile.setValue(GavinsMod.tracerConfig.isShowHostileMobs());
 
         ToggleSetting peaceful = new ToggleSetting("gavinsmod.settings.tracer.mob.peaceful");
-        peaceful.setCallback(() -> {
-            GavinsMod.tracerConfig.setShowPeacefulMobs(peaceful.getValue());
-        });
+        peaceful.setCallback(() -> GavinsMod.tracerConfig.setShowPeacefulMobs(peaceful.getValue()));
         peaceful.setValue(GavinsMod.tracerConfig.isShowPeacefulMobs());
 
         addSetting(hostileColor);

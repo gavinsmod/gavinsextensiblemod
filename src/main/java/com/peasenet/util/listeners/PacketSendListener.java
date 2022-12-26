@@ -19,11 +19,7 @@
  */
 package com.peasenet.util.listeners;
 
-import com.peasenet.packets.OutputPacket;
-import com.peasenet.util.event.CancellableEvent;
-import net.minecraft.network.Packet;
-
-import java.util.ArrayList;
+import com.peasenet.util.event.data.OutputPacket;
 
 /**
  * A listener for packets being sent.
@@ -39,37 +35,4 @@ public interface PacketSendListener extends Listener {
      * @see OutputPacket
      */
     void onPacketSend(OutputPacket packet);
-
-    /**
-     * An event for when a packet is sent.
-     *
-     * @author GT3CH1
-     * @version 12/22/2022
-     */
-    class PacketSendEvent extends CancellableEvent<PacketSendListener> {
-        OutputPacket packet;
-
-        /**
-         * Creates a new PacketSendEvent.
-         *
-         * @param packet - The packet being sent.
-         */
-        public PacketSendEvent(Packet<?> packet) {
-            this.packet = new OutputPacket(packet);
-        }
-
-        @Override
-        public void fire(ArrayList<PacketSendListener> listeners) {
-            for (PacketSendListener listener : listeners) {
-                listener.onPacketSend(packet);
-                if (packet.isCancelled())
-                    this.cancel();
-            }
-        }
-
-        @Override
-        public Class<PacketSendListener> getEvent() {
-            return PacketSendListener.class;
-        }
-    }
 }

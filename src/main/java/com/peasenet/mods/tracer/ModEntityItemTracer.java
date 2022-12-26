@@ -24,8 +24,9 @@ import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
-import com.peasenet.util.EntityRender;
 import com.peasenet.util.RenderUtils;
+import com.peasenet.util.event.data.CameraBob;
+import com.peasenet.util.event.data.EntityRender;
 import com.peasenet.util.listeners.CameraBobListener;
 import com.peasenet.util.listeners.EntityRenderListener;
 import net.minecraft.entity.EntityType;
@@ -39,9 +40,7 @@ public class ModEntityItemTracer extends Mod implements EntityRenderListener, Ca
     public ModEntityItemTracer() {
         super(Type.ENTITY_ITEM_TRACER);
         ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.tracer.item.color");
-        colorSetting.setCallback(() -> {
-            GavinsMod.tracerConfig.setItemColor(colorSetting.getColor());
-        });
+        colorSetting.setCallback(() -> GavinsMod.tracerConfig.setItemColor(colorSetting.getColor()));
         colorSetting.setColor(GavinsMod.tracerConfig.getItemColor());
         addSetting(colorSetting);
     }
@@ -50,7 +49,7 @@ public class ModEntityItemTracer extends Mod implements EntityRenderListener, Ca
     public void onEnable() {
         super.onEnable();
         em.subscribe(EntityRenderListener.class, this);
-        em.subscribe(CameraBobListener.class,this);
+        em.subscribe(CameraBobListener.class, this);
 
     }
 

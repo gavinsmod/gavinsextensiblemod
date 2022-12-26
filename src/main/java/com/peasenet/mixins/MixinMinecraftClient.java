@@ -23,7 +23,7 @@ package com.peasenet.mixins;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.mixinterface.IMinecraftClient;
 import com.peasenet.mods.Type;
-import com.peasenet.util.listeners.PlayerAttackListener;
+import com.peasenet.util.event.PlayerAttackEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
@@ -76,7 +76,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Final
     public File runDirectory;
     @Shadow
-    HitResult crosshairTarget;
+    public HitResult crosshairTarget;
     @Shadow
     private int itemUseCooldown;
     @Final
@@ -94,7 +94,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
             target = "Lnet/minecraft/client/MinecraftClient;crosshairTarget:Lnet/minecraft/util/hit/HitResult;",
             ordinal = 0), method = "doAttack()Z")
     private void doAttack(CallbackInfoReturnable<Boolean> cir) {
-        PlayerAttackListener.PlayerAttackEvent event = new PlayerAttackListener.PlayerAttackEvent();
+        PlayerAttackEvent event = new PlayerAttackEvent();
         GavinsMod.eventManager.call(event);
     }
 

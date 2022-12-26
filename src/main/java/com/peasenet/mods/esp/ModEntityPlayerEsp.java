@@ -24,8 +24,8 @@ import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
-import com.peasenet.util.EntityRender;
 import com.peasenet.util.RenderUtils;
+import com.peasenet.util.event.data.EntityRender;
 import com.peasenet.util.listeners.EntityRenderListener;
 import net.minecraft.entity.player.PlayerEntity;
 
@@ -38,9 +38,7 @@ public class ModEntityPlayerEsp extends Mod implements EntityRenderListener {
     public ModEntityPlayerEsp() {
         super(Type.ENTITY_PLAYER_ESP);
         ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.esp.player.color");
-        colorSetting.setCallback(() -> {
-            GavinsMod.espConfig.setPlayerColor(colorSetting.getColor());
-        });
+        colorSetting.setCallback(() -> GavinsMod.espConfig.setPlayerColor(colorSetting.getColor()));
         colorSetting.setColor(GavinsMod.espConfig.getPlayerColor());
         addSetting(colorSetting);
     }

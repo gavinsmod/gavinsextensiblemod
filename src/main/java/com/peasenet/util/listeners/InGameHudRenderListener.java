@@ -19,10 +19,7 @@
  */
 package com.peasenet.util.listeners;
 
-import com.peasenet.util.event.Event;
 import net.minecraft.client.util.math.MatrixStack;
-
-import java.util.ArrayList;
 
 /**
  * A listener for the world render event.
@@ -40,37 +37,5 @@ public interface InGameHudRenderListener extends Listener {
      */
     void onRenderInGameHud(MatrixStack stack, float delta);
 
-    /**
-     * The event for the world render event.
-     *
-     * @author GT3CH1
-     * @version 12/22/2022
-     */
-    class InGameHudRenderEvent extends Event<InGameHudRenderListener> {
-        MatrixStack stack;
-        float delta;
 
-        /**
-         * Creates a new world render event.
-         *
-         * @param stack - The matrix stack.
-         * @param delta - The delta.
-         */
-        public InGameHudRenderEvent(MatrixStack stack, float delta) {
-            this.stack = stack;
-            this.delta = delta;
-        }
-
-        @Override
-        public void fire(ArrayList<InGameHudRenderListener> listeners) {
-            for (InGameHudRenderListener listener : listeners) {
-                listener.onRenderInGameHud(stack, delta);
-            }
-        }
-
-        @Override
-        public Class<InGameHudRenderListener> getEvent() {
-            return InGameHudRenderListener.class;
-        }
-    }
 }

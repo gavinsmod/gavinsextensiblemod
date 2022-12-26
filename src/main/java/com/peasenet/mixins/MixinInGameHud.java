@@ -20,8 +20,9 @@
 package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
-import com.peasenet.mods.Type;
-import com.peasenet.util.listeners.InGameHudRenderListener.InGameHudRenderEvent;
+import com.peasenet.util.event.InGameHudRenderEvent;
+import com.peasenet.util.event.RenderOverlayEvent;
+import com.peasenet.util.event.data.RenderOverlay;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
@@ -30,11 +31,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Objects;
-
 /**
  * @author gt3ch1
- * @version 6/9/2022
+ * @version 12/25/2022
  * A mixin that allows modding of the in game hud (ie, overlays, extra text, etc.)
  */
 @Mixin(InGameHud.class)
@@ -48,9 +47,11 @@ public class MixinInGameHud {
 
     @Inject(at = @At("HEAD"), method = "renderOverlay(Lnet/minecraft/util/Identifier;F)V", cancellable = true)
     private void antiPumpkin(Identifier texture, float opacity, CallbackInfo ci) {
-        if (Objects.equals(texture, new Identifier("textures/misc/pumpkinblur.png")) && GavinsMod.isEnabled(Type.ANTI_PUMPKIN)) {
+        var overlay = new RenderOverlay(texture);
+        RenderOverlayEvent event = new RenderOverlayEvent(overlay);
+        GavinsMod.eventManager.call(event);
+        if (event.isCancelled())
             ci.cancel();
-        }
     }
 
 

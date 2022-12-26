@@ -21,15 +21,16 @@
 package com.peasenet.mods.render;
 
 import com.peasenet.gui.mod.waypoint.GuiWaypoint;
-import com.peasenet.main.Settings;
+import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.mods.render.waypoints.Waypoint;
 import com.peasenet.settings.ClickSetting;
 import com.peasenet.settings.SubSetting;
 import com.peasenet.settings.ToggleSetting;
-import com.peasenet.util.EntityRender;
 import com.peasenet.util.RenderUtils;
+import com.peasenet.util.event.data.CameraBob;
+import com.peasenet.util.event.data.EntityRender;
 import com.peasenet.util.listeners.CameraBobListener;
 import com.peasenet.util.listeners.EntityRenderListener;
 import net.minecraft.text.Text;
@@ -75,10 +76,12 @@ public class ModWaypoint extends Mod implements EntityRenderListener, CameraBobL
         modSettings.clear();
         setting = new SubSetting((int) setting.getGui().getWidth(), 10, "gavinsmod.mod.render.waypoints");
         openMenu.setCallback(() -> getClient().setScreen(new GuiWaypoint()));
-        openMenu.getGui().setSymbol('\u002b');
+        openMenu.getGui().setSymbol('+');
         setting.add(openMenu);
         // get all waypoints and add them to the menu
-        Settings.getWaypoints().stream().sorted(Comparator.comparing(Waypoint::getName)).forEach(waypoint -> createWaypoint(waypoint));
+        var waypoints = GavinsMod.waypointConfig.getWaypoints().stream().sorted(Comparator.comparing(Waypoint::getName));
+        for (var w : waypoints.toArray())
+            createWaypoint((Waypoint) w);
         addSetting(setting);
     }
 
@@ -99,7 +102,7 @@ public class ModWaypoint extends Mod implements EntityRenderListener, CameraBobL
 
     @Override
     public void onEntityRender(EntityRender er) {
-        Settings.getWaypoints().stream().filter(Waypoint::isEnabled).forEach(w -> {
+        GavinsMod.waypointConfig.getWaypoints().stream().filter(Waypoint::isEnabled).forEach(w -> {
             Box aabb = new Box(new BlockPos(w.getX(), w.getY(), w.getZ()));
             Vec3d boxPos = aabb.getCenter();
             if (w.isTracerEnabled())

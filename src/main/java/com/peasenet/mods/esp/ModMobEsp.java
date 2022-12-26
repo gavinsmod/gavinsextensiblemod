@@ -25,8 +25,8 @@ import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
 import com.peasenet.settings.ToggleSetting;
-import com.peasenet.util.EntityRender;
 import com.peasenet.util.RenderUtils;
+import com.peasenet.util.event.data.EntityRender;
 import com.peasenet.util.listeners.EntityRenderListener;
 
 /**
@@ -38,27 +38,19 @@ public class ModMobEsp extends Mod implements EntityRenderListener {
     public ModMobEsp() {
         super(Type.MOB_ESP);
         ColorSetting hostileEspColor = new ColorSetting("gavinsmod.settings.esp.mob.hostile.color");
-        hostileEspColor.setCallback(() -> {
-            GavinsMod.espConfig.setHostileMobColor(hostileEspColor.getColor());
-        });
+        hostileEspColor.setCallback(() -> GavinsMod.espConfig.setHostileMobColor(hostileEspColor.getColor()));
         hostileEspColor.setColor(GavinsMod.espConfig.getHostileMobColor());
 
         ColorSetting peacefulEspColor = new ColorSetting("gavinsmod.settings.esp.mob.peaceful.color");
-        peacefulEspColor.setCallback(() -> {
-            GavinsMod.espConfig.setPeacefulMobColor(peacefulEspColor.getColor());
-        });
+        peacefulEspColor.setCallback(() -> GavinsMod.espConfig.setPeacefulMobColor(peacefulEspColor.getColor()));
         peacefulEspColor.setColor(GavinsMod.espConfig.getPeacefulMobColor());
 
         ToggleSetting hostileEspToggle = new ToggleSetting("gavinsmod.settings.esp.mob.hostile");
-        hostileEspToggle.setCallback(() -> {
-            GavinsMod.espConfig.setShowHostileMobs(hostileEspToggle.getValue());
-        });
+        hostileEspToggle.setCallback(() -> GavinsMod.espConfig.setShowHostileMobs(hostileEspToggle.getValue()));
         hostileEspToggle.setValue(GavinsMod.espConfig.isShowHostileMobs());
 
         ToggleSetting peacefulEspToggle = new ToggleSetting("gavinsmod.settings.esp.mob.peaceful");
-        peacefulEspToggle.setCallback(() -> {
-            GavinsMod.espConfig.setShowPeacefulMobs(peacefulEspToggle.getValue());
-        });
+        peacefulEspToggle.setCallback(() -> GavinsMod.espConfig.setShowPeacefulMobs(peacefulEspToggle.getValue()));
         peacefulEspToggle.setValue(GavinsMod.espConfig.isShowPeacefulMobs());
 
         addSetting(hostileEspColor);

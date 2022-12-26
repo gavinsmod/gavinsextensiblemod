@@ -19,14 +19,7 @@
  */
 package com.peasenet.util.listeners;
 
-import com.peasenet.util.ChestEntityRender;
-import com.peasenet.util.event.Event;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Vec3d;
-
-import java.util.ArrayList;
+import com.peasenet.util.event.data.ChestEntityRender;
 
 /**
  * A listener for the world render event.
@@ -41,38 +34,6 @@ public interface ChestEntityRenderListener extends Listener {
      */
     void onEntityRender(ChestEntityRender er);
 
-    /**
-     * The event for the world render event.
-     *
-     * @author GT3CH1
-     * @version 12/22/2022
-     */
-    class ChestEntityRenderEvent extends Event<ChestEntityRenderListener> {
-        ChestEntityRender entityRender;
 
-        /**
-         * Creates a new world render event.
-         *
-         * @param stack     - The matrix stack.
-         * @param buffer    - The buffer builder.
-         * @param center    - The box.
-         * @param playerPos - The delta.
-         */
-        public ChestEntityRenderEvent(BlockEntity entity, MatrixStack stack, BufferBuilder buffer, Vec3d center, Vec3d playerPos, float delta) {
-            this.entityRender = new ChestEntityRender(entity, stack, buffer, center, playerPos, delta);
-        }
-
-        @Override
-        public void fire(ArrayList<ChestEntityRenderListener> listeners) {
-            for (ChestEntityRenderListener listener : listeners) {
-                listener.onEntityRender(entityRender);
-            }
-        }
-
-        @Override
-        public Class<ChestEntityRenderListener> getEvent() {
-            return ChestEntityRenderListener.class;
-        }
-    }
 
 }
