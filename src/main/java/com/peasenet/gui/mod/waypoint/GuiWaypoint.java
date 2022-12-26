@@ -140,6 +140,21 @@ public class GuiWaypoint extends GuiElement {
         super(Text.translatable("gavinsmod.mod.render.waypoints"));
         parent = GavinsMod.guiSettings;
         w = null;
+
+        cancelSettings.setCallback(() -> client.setScreen(parent));
+        guis.add(colorCycle.getGui());
+        var rand = Colors.getRandomColor();
+        colorCycle.setColorIndex(rand);
+        colorCycle.setColor(Colors.COLORS[rand]);
+        waypointToggle.setValue(true);
+        espToggle.setValue(true);
+        tracerToggle.setValue(true);
+        guis.add(saveSettings.getGui());
+        guis.add(cancelSettings.getGui());
+        guis.add(deleteSettings.getGui());
+        guis.add(waypointToggle.getGui());
+        guis.add(espToggle.getGui());
+        guis.add(tracerToggle.getGui());
         saveSettings.setCallback(() -> {
             Vec3i flooredPos = getFlooredPlayerPos();
             w = new Waypoint(flooredPos);
@@ -157,18 +172,6 @@ public class GuiWaypoint extends GuiElement {
             parent = GavinsMod.guiSettings;
             close();
         });
-        cancelSettings.setCallback(() -> client.setScreen(parent));
-        guis.add(colorCycle.getGui());
-        colorCycle.setColorIndex(Colors.getRandomColor());
-        waypointToggle.setValue(true);
-        espToggle.setValue(true);
-        tracerToggle.setValue(true);
-        guis.add(saveSettings.getGui());
-        guis.add(cancelSettings.getGui());
-        guis.add(deleteSettings.getGui());
-        guis.add(waypointToggle.getGui());
-        guis.add(espToggle.getGui());
-        guis.add(tracerToggle.getGui());
     }
 
     /**
