@@ -215,7 +215,7 @@ public class ModRadar extends Mod implements InGameHudRenderListener {
      */
     private void drawWaypointsOnRadar(MatrixStack stack) {
         var yaw = getPlayer().getYaw();
-        var waypoints = GavinsMod.waypointConfig.getWaypoints().stream().filter(Waypoint::isEnabled).toList();
+        var waypoints = GavinsMod.waypointConfig.getLocations().stream().filter(Waypoint::isEnabled).toList();
         for (Waypoint w : waypoints) {
             var color = w.getColor();
             if (!GavinsMod.radarConfig.getInstance().isUseWaypointColor())

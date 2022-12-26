@@ -79,7 +79,7 @@ public class ModWaypoint extends Mod implements EntityRenderListener, CameraBobL
         openMenu.getGui().setSymbol('+');
         setting.add(openMenu);
         // get all waypoints and add them to the menu
-        var waypoints = GavinsMod.waypointConfig.getWaypoints().stream().sorted(Comparator.comparing(Waypoint::getName));
+        var waypoints = GavinsMod.waypointConfig.getLocations().stream().sorted(Comparator.comparing(Waypoint::getName));
         for (var w : waypoints.toArray())
             createWaypoint((Waypoint) w);
         addSetting(setting);
@@ -102,7 +102,7 @@ public class ModWaypoint extends Mod implements EntityRenderListener, CameraBobL
 
     @Override
     public void onEntityRender(EntityRender er) {
-        GavinsMod.waypointConfig.getWaypoints().stream().filter(Waypoint::isEnabled).forEach(w -> {
+        GavinsMod.waypointConfig.getLocations().stream().filter(Waypoint::isEnabled).forEach(w -> {
             Box aabb = new Box(new BlockPos(w.getX(), w.getY(), w.getZ()));
             Vec3d boxPos = aabb.getCenter();
             if (w.isTracerEnabled())
