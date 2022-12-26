@@ -31,6 +31,7 @@ import com.peasenet.util.KeyBindUtils;
 import com.peasenet.util.event.EventManager;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
@@ -49,7 +50,7 @@ public abstract class Mod implements IMod {
      * The string shown in the chat window when the player toggles the mod.
      */
 
-    public static final String GAVINS_MOD_STRING = "§d§l[ §b§lGavinsMod §d§l] §9";
+    public static final String GAVINS_MOD_STRING = "§b§l[ §4§lGavinsMod §b§l] §7";
     protected static EventManager em = GavinsMod.eventManager;
     protected static TracerConfig tracerConfig = GavinsMod.tracerConfig;
     protected static EspConfig espConfig = GavinsMod.espConfig;
@@ -152,11 +153,11 @@ public abstract class Mod implements IMod {
     }
 
     public void onEnable() {
-        sendMessage(GAVINS_MOD_STRING + type.getName() + " §a§lenabled§r!");
+        sendMessage(GAVINS_MOD_STRING + I18n.translate(type.getTranslationKey()) + " §a§lenabled§r!");
     }
 
     public void onDisable() {
-        sendMessage(GAVINS_MOD_STRING + type.getName() + " §c§ldisabled§r!");
+        sendMessage(GAVINS_MOD_STRING + I18n.translate(type.getTranslationKey()) + " §c§ldisabled§r!");
     }
 
     public void onTick() {
