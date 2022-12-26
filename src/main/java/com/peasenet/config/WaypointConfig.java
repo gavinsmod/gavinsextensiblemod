@@ -26,28 +26,32 @@ import java.util.ArrayList;
 
 public class WaypointConfig extends Config<WaypointConfig> {
     private static WaypointConfig instance;
-    private ArrayList<Waypoint> waypoints;
+    private ArrayList<Waypoint> locations;
 
     public WaypointConfig() {
         setKey("waypoints");
-        waypoints = new ArrayList<>();
+        locations = new ArrayList<>();
         setInstance(this);
     }
 
     public void addWaypoint(Waypoint w) {
-        this.getInstance().waypoints.add(w);
+        this.getInstance().locations.add(w);
+        saveConfig();
     }
 
     public void removeWaypoint(Waypoint w) {
-        this.getInstance().waypoints.remove(w);
+        this.getInstance().locations.remove(w);
+        saveConfig();
+
     }
 
-    public ArrayList<Waypoint> getWaypoints() {
-        return this.getInstance().waypoints;
+    public ArrayList<Waypoint> getLocations() {
+        return this.getInstance().locations;
     }
 
-    public void setWaypoints(ArrayList<Waypoint> waypoints) {
-        this.getInstance().waypoints = waypoints;
+    public void setLocations(ArrayList<Waypoint> locations) {
+        this.getInstance().locations = locations;
+        saveConfig();
     }
 
     @Override
