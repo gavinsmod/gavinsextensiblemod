@@ -50,6 +50,8 @@ public enum Type {
     XRAY("Xray", "gavinsmod.mod.render.xray", "gavinsmod.keybinds.render", RENDER, "xray"),
     FULL_BRIGHT("Full Bright", "gavinsmod.mod.render.fullbright", "gavinsmod.keybinds.render", RENDER, "fullbright"),
     ANTI_HURT("Anti Hurt", "gavinsmod.mod.render.antihurt", "gavinsmod.keybinds.render", RENDER, "antihurt"),
+    ANTI_FIRE("Anti Fire", "gavinsmod.mod.render.antifire", "gavinsmod.keybinds.render", RENDER, "antifire"),
+    NO_OVERLAY("No Overlay", "gavinsmod.mod.render.nooverlay", "gavinsmod.keybinds.render", RENDER, "nooverlay"),
     ANTI_PUMPKIN("Anti Pumpkin", "gavinsmod.mod.render.antipumpkin", "gavinsmod.keybinds.render", RENDER, "antipumpkin"),
     NO_RAIN("No Rain", "gavinsmod.mod.render.norain", "gavinsmod.keybinds.render", RENDER, "norain"),
     MOD_HPTAG("HP Tags", "gavinsmod.mod.render.hptags", "gavinsmod.keybinds.render", RENDER, "hptags"),

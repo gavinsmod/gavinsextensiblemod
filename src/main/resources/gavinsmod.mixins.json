@@ -6,6 +6,7 @@
     "mixins": [
     ],
     "client": [
+        "CameraMixin",
         "EntityRendererMixin",
         "MixinBiome",
         "MixinBlock",
@@ -14,6 +15,7 @@
         "MixinClientPlayNetworkHandler",
         "MixinGameRender",
         "MixinInGameHud",
+        "MixinInGameOverlayRenderer",
         "MixinLivingEntity",
         "MixinMinecraftClient",
         "MixinPlayerEntity",

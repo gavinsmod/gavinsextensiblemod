@@ -33,7 +33,6 @@ import com.peasenet.mods.gui.ModGuiSettings;
 import com.peasenet.mods.misc.ModFpsCounter;
 import com.peasenet.mods.misc.ModFreecam;
 import com.peasenet.mods.misc.ModGuiTextOverlay;
-import com.peasenet.mods.render.ModRadar;
 import com.peasenet.mods.movement.*;
 import com.peasenet.mods.render.*;
 import com.peasenet.mods.tracer.ModChestTracer;
@@ -81,6 +80,8 @@ public class Mods {
         new ModAntiPumpkin();
         new ModHealthTag();
         new ModNoRain();
+        new ModAntiFire();
+        new ModNoOverlay();
         // GUI
         new ModGui();
         new ModGuiSettings();

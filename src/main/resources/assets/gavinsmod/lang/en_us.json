@@ -18,6 +18,8 @@
     "gavinsmod.mod.combat.autoattack": "Auto Attack",
     "gavinsmod.mod.combat.autocrit": "Auto Crit",
     "gavinsmod.mod.combat.killaura": "Kill Aura",
+    "gavinsmod.mod.render.nooverlay": "No Overlay",
+    "gavinsmod.mod.render.antifire": "Anti Fire",
     "gavinsmod.mod.esp.chest": "Chest ESP",
     "gavinsmod.mod.esp.item": "Item ESP",
     "gavinsmod.mod.esp.mob": "Mob ESP",
