@@ -40,7 +40,7 @@ public class ModEntityPlayerTracer extends Mod implements EntityRenderListener, 
     public ModEntityPlayerTracer() {
         super(Type.ENTITY_PLAYER_TRACER);
         ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.tracer.player.color");
-        colorSetting.setCallback(() -> GavinsMod.tracerConfig.setPlayerColor(colorSetting.getColor()));
+        colorSetting.setCallback(() -> tracerConfig.setPlayerColor(colorSetting.getColor()));
         colorSetting.setColor(GavinsMod.tracerConfig.getPlayerColor());
         addSetting(colorSetting);
     }
@@ -68,6 +68,6 @@ public class ModEntityPlayerTracer extends Mod implements EntityRenderListener, 
     public void onEntityRender(EntityRender er) {
         if (!(er.entity instanceof PlayerEntity))
             return;
-        RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, GavinsMod.tracerConfig.getPlayerColor());
+        RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, tracerConfig.getPlayerColor());
     }
 }

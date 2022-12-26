@@ -47,27 +47,27 @@ public class ModFpsCounter extends Mod implements InGameHudRenderListener {
 
         ToggleSetting fpsColors = new ToggleSetting("gavinsmod.settings.misc.fpscolors.enabled");
         fpsColors.setCallback(() -> {
-            GavinsMod.fpsColorConfig.setColorsEnabled(fpsColors.getValue());
+            fpsColorConfig.setColorsEnabled(fpsColors.getValue());
         });
-        fpsColors.setValue(GavinsMod.fpsColorConfig.isColorsEnabled());
+        fpsColors.setValue(fpsColorConfig.isColorsEnabled());
 
         ColorSetting fpsSlowColor = new ColorSetting("gavinsmod.settings.misc.fps.color.slow");
         fpsSlowColor.setCallback(() -> {
-            GavinsMod.fpsColorConfig.setSlowFps(fpsSlowColor.getColor());
+            fpsColorConfig.setSlowFps(fpsSlowColor.getColor());
         });
-        fpsSlowColor.setColor(GavinsMod.fpsColorConfig.getSlowFps());
+        fpsSlowColor.setColor(fpsColorConfig.getSlowFps());
 
         ColorSetting fpsOkColor = new ColorSetting("gavinsmod.settings.misc.fps.color.ok");
         fpsOkColor.setCallback(() -> {
-            GavinsMod.fpsColorConfig.setOkFps(fpsOkColor.getColor());
+            fpsColorConfig.setOkFps(fpsOkColor.getColor());
         });
-        fpsOkColor.setColor(GavinsMod.fpsColorConfig.getOkFps());
+        fpsOkColor.setColor(fpsColorConfig.getOkFps());
 
         ColorSetting fpsFastColor = new ColorSetting("gavinsmod.settings.misc.fps.color.fast");
         fpsFastColor.setCallback(() -> {
-            GavinsMod.fpsColorConfig.setFastFps(fpsFastColor.getColor());
+            fpsColorConfig.setFastFps(fpsFastColor.getColor());
         });
-        fpsFastColor.setColor(GavinsMod.fpsColorConfig.getFastFps());
+        fpsFastColor.setColor(fpsColorConfig.getFastFps());
 
         fpsSetting.add(fpsColors);
         fpsSetting.add(fpsSlowColor);
@@ -108,11 +108,10 @@ public class ModFpsCounter extends Mod implements InGameHudRenderListener {
         var box = new BoxD(new PointD(xCoordinate - 2, 0), fpsString.length() * 5 + 4, 12);
         var maximumFps = GavinsModClient.getMinecraftClient().getOptions().getMaxFps().getValue();
         var color = GavUISettings.getColor("gui.color.foreground");
-        var cfg = GavinsMod.fpsColorConfig;
-        var colorEnabled = cfg.isColorsEnabled();
-        var fastColor = cfg.getFastFps();
-        var okColor = cfg.getOkFps();
-        var slowFps = cfg.getSlowFps();
+        var colorEnabled = fpsColorConfig.isColorsEnabled();
+        var fastColor = fpsColorConfig.getFastFps();
+        var okColor = fpsColorConfig.getOkFps();
+        var slowFps = fpsColorConfig.getSlowFps();
         if (colorEnabled) {
             if (fps >= maximumFps * 0.85) color = fastColor;
             else if (fps > maximumFps * 0.45 && fps < maximumFps * 0.85) color = okColor;

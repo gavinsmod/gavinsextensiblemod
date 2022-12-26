@@ -41,20 +41,20 @@ public class ModMobTracer extends Mod implements EntityRenderListener, CameraBob
     public ModMobTracer() {
         super(Type.MOB_TRACER);
         ColorSetting peacefulColor = new ColorSetting("gavinsmod.settings.tracer.mob.peaceful.color");
-        peacefulColor.setCallback(() -> GavinsMod.tracerConfig.setPeacefulMobColor(peacefulColor.getColor()));
+        peacefulColor.setCallback(() -> tracerConfig.setPeacefulMobColor(peacefulColor.getColor()));
         peacefulColor.setColor(GavinsMod.tracerConfig.getPeacefulMobColor());
 
 
         ColorSetting hostileColor = new ColorSetting("gavinsmod.settings.tracer.mob.hostile.color");
-        hostileColor.setCallback(() -> GavinsMod.tracerConfig.setHostileMobColor(hostileColor.getColor()));
+        hostileColor.setCallback(() -> tracerConfig.setHostileMobColor(hostileColor.getColor()));
         hostileColor.setColor(GavinsMod.tracerConfig.getHostileMobColor());
 
         ToggleSetting hostile = new ToggleSetting("gavinsmod.settings.tracer.mob.hostile");
-        hostile.setCallback(() -> GavinsMod.tracerConfig.setShowHostileMobs(hostile.getValue()));
+        hostile.setCallback(() -> tracerConfig.setShowHostileMobs(hostile.getValue()));
         hostile.setValue(GavinsMod.tracerConfig.isShowHostileMobs());
 
         ToggleSetting peaceful = new ToggleSetting("gavinsmod.settings.tracer.mob.peaceful");
-        peaceful.setCallback(() -> GavinsMod.tracerConfig.setShowPeacefulMobs(peaceful.getValue()));
+        peaceful.setCallback(() -> tracerConfig.setShowPeacefulMobs(peaceful.getValue()));
         peaceful.setValue(GavinsMod.tracerConfig.isShowPeacefulMobs());
 
         addSetting(hostileColor);
@@ -87,10 +87,10 @@ public class ModMobTracer extends Mod implements EntityRenderListener, CameraBob
         var playerPos = er.playerPos;
         if (!(entity instanceof MobEntity))
             return;
-        if (er.getEntityType().getSpawnGroup().isPeaceful() && GavinsMod.tracerConfig.isShowPeacefulMobs()) {
-            RenderUtils.renderSingleLine(stack, buffer, playerPos, center, GavinsMod.tracerConfig.getPeacefulMobColor());
-        } else if (!er.getEntityType().getSpawnGroup().isPeaceful() && GavinsMod.tracerConfig.isShowHostileMobs()) {
-            RenderUtils.renderSingleLine(stack, buffer, playerPos, center, GavinsMod.tracerConfig.getHostileMobColor());
+        if (er.getEntityType().getSpawnGroup().isPeaceful() && tracerConfig.isShowPeacefulMobs()) {
+            RenderUtils.renderSingleLine(stack, buffer, playerPos, center, tracerConfig.getPeacefulMobColor());
+        } else if (!er.getEntityType().getSpawnGroup().isPeaceful() && tracerConfig.isShowHostileMobs()) {
+            RenderUtils.renderSingleLine(stack, buffer, playerPos, center, tracerConfig.getHostileMobColor());
         }
     }
 

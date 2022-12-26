@@ -20,7 +20,6 @@
 
 package com.peasenet.mods.esp;
 
-import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
@@ -38,20 +37,20 @@ public class ModMobEsp extends Mod implements EntityRenderListener {
     public ModMobEsp() {
         super(Type.MOB_ESP);
         ColorSetting hostileEspColor = new ColorSetting("gavinsmod.settings.esp.mob.hostile.color");
-        hostileEspColor.setCallback(() -> GavinsMod.espConfig.setHostileMobColor(hostileEspColor.getColor()));
-        hostileEspColor.setColor(GavinsMod.espConfig.getHostileMobColor());
+        hostileEspColor.setCallback(() -> espConfig.setHostileMobColor(hostileEspColor.getColor()));
+        hostileEspColor.setColor(espConfig.getHostileMobColor());
 
         ColorSetting peacefulEspColor = new ColorSetting("gavinsmod.settings.esp.mob.peaceful.color");
-        peacefulEspColor.setCallback(() -> GavinsMod.espConfig.setPeacefulMobColor(peacefulEspColor.getColor()));
-        peacefulEspColor.setColor(GavinsMod.espConfig.getPeacefulMobColor());
+        peacefulEspColor.setCallback(() -> espConfig.setPeacefulMobColor(peacefulEspColor.getColor()));
+        peacefulEspColor.setColor(espConfig.getPeacefulMobColor());
 
         ToggleSetting hostileEspToggle = new ToggleSetting("gavinsmod.settings.esp.mob.hostile");
-        hostileEspToggle.setCallback(() -> GavinsMod.espConfig.setShowHostileMobs(hostileEspToggle.getValue()));
-        hostileEspToggle.setValue(GavinsMod.espConfig.isShowHostileMobs());
+        hostileEspToggle.setCallback(() -> espConfig.setShowHostileMobs(hostileEspToggle.getValue()));
+        hostileEspToggle.setValue(espConfig.isShowHostileMobs());
 
         ToggleSetting peacefulEspToggle = new ToggleSetting("gavinsmod.settings.esp.mob.peaceful");
-        peacefulEspToggle.setCallback(() -> GavinsMod.espConfig.setShowPeacefulMobs(peacefulEspToggle.getValue()));
-        peacefulEspToggle.setValue(GavinsMod.espConfig.isShowPeacefulMobs());
+        peacefulEspToggle.setCallback(() -> espConfig.setShowPeacefulMobs(peacefulEspToggle.getValue()));
+        peacefulEspToggle.setValue(espConfig.isShowPeacefulMobs());
 
         addSetting(hostileEspColor);
         addSetting(peacefulEspColor);
@@ -74,10 +73,10 @@ public class ModMobEsp extends Mod implements EntityRenderListener {
     @Override
     public void onEntityRender(EntityRender er) {
         var box = RenderUtils.getEntityBox(er.delta, er.entity);
-        if (GavinsMod.espConfig.isShowPeacefulMobs() && er.getEntityType().getSpawnGroup().isPeaceful()) {
-            RenderUtils.drawBox(er.stack, er.buffer, box, GavinsMod.espConfig.getPeacefulMobColor());
-        } else if (GavinsMod.espConfig.isShowHostileMobs() && !er.getEntityType().getSpawnGroup().isPeaceful()) {
-            RenderUtils.drawBox(er.stack, er.buffer, box, GavinsMod.espConfig.getHostileMobColor());
+        if (espConfig.isShowPeacefulMobs() && er.getEntityType().getSpawnGroup().isPeaceful()) {
+            RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getPeacefulMobColor());
+        } else if (espConfig.isShowHostileMobs() && !er.getEntityType().getSpawnGroup().isPeaceful()) {
+            RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getHostileMobColor());
         }
     }
 }

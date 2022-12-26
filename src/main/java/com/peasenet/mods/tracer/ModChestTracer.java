@@ -40,7 +40,7 @@ public class ModChestTracer extends Mod implements ChestEntityRenderListener,
     public ModChestTracer() {
         super(Type.CHEST_TRACER);
         ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.tracer.chest.color");
-        colorSetting.setCallback(() -> GavinsMod.tracerConfig.setChestColor(colorSetting.getColor()));
+        colorSetting.setCallback(() -> tracerConfig.setChestColor(colorSetting.getColor()));
         colorSetting.setColor(GavinsMod.tracerConfig.getChestColor());
         addSetting(colorSetting);
     }
@@ -61,7 +61,7 @@ public class ModChestTracer extends Mod implements ChestEntityRenderListener,
 
     @Override
     public void onEntityRender(ChestEntityRender er) {
-        RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, GavinsMod.tracerConfig.getChestColor());
+        RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, tracerConfig.getChestColor());
     }
 
     @Override

@@ -20,6 +20,7 @@
 
 package com.peasenet.mods;
 
+import com.peasenet.config.*;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Mods;
@@ -44,13 +45,19 @@ import java.util.ArrayList;
  */
 public abstract class Mod implements IMod {
 
-    public static EventManager em = GavinsMod.eventManager;
-
     /**
      * The string shown in the chat window when the player toggles the mod.
      */
 
     public static final String GAVINS_MOD_STRING = "§d§l[ §b§lGavinsMod §d§l] §9";
+    protected static EventManager em = GavinsMod.eventManager;
+    protected static TracerConfig tracerConfig = GavinsMod.tracerConfig;
+    protected static EspConfig espConfig = GavinsMod.espConfig;
+    protected static FpsColorConfig fpsColorConfig = GavinsMod.fpsColorConfig;
+    protected static FullbrightConfig fullbrightConfig = GavinsMod.fullbrightConfig;
+    protected static RadarConfig radarConfig = GavinsMod.radarConfig;
+    protected static WaypointConfig waypointConfig = GavinsMod.waypointConfig;
+    protected static XrayConfig xrayConfig = GavinsMod.xrayConfig;
     /**
      * The keybind for this mod.
      */

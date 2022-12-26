@@ -20,7 +20,6 @@
 
 package com.peasenet.mods.esp;
 
-import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
@@ -38,8 +37,8 @@ public class ModEntityItemEsp extends Mod implements EntityRenderListener {
     public ModEntityItemEsp() {
         super(Type.ENTITY_ITEM_ESP);
         ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.esp.item.color");
-        colorSetting.setCallback(() -> GavinsMod.espConfig.setItemColor(colorSetting.getColor()));
-        colorSetting.setColor(GavinsMod.espConfig.getItemColor());
+        colorSetting.setCallback(() -> espConfig.setItemColor(colorSetting.getColor()));
+        colorSetting.setColor(espConfig.getItemColor());
         addSetting(colorSetting);
     }
 
@@ -60,6 +59,6 @@ public class ModEntityItemEsp extends Mod implements EntityRenderListener {
         if (er.getEntityType() != EntityType.ITEM)
             return;
         var box = RenderUtils.getEntityBox(er.delta, er.entity);
-        RenderUtils.drawBox(er.stack, er.buffer, box, GavinsMod.espConfig.getItemColor());
+        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getItemColor());
     }
 }

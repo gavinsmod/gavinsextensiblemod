@@ -20,7 +20,6 @@
 
 package com.peasenet.mods.esp;
 
-import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
@@ -39,8 +38,8 @@ public class ModChestEsp extends Mod implements ChestEntityRenderListener {
         super(Type.CHEST_ESP);
         ColorSetting colorSetting = new ColorSetting("none",
                 "gavinsmod.settings.esp.chest.color");
-        colorSetting.setCallback(() -> GavinsMod.espConfig.setChestColor(colorSetting.getColor()));
-        colorSetting.setColor(GavinsMod.espConfig.getChestColor());
+        colorSetting.setCallback(() -> espConfig.setChestColor(colorSetting.getColor()));
+        colorSetting.setColor(espConfig.getChestColor());
         addSetting(colorSetting);
     }
 
@@ -60,6 +59,6 @@ public class ModChestEsp extends Mod implements ChestEntityRenderListener {
     @Override
     public void onEntityRender(ChestEntityRender er) {
         var box = new Box(er.entity.getPos());
-        RenderUtils.drawBox(er.stack, er.buffer, box, GavinsMod.espConfig.getChestColor());
+        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getChestColor());
     }
 }

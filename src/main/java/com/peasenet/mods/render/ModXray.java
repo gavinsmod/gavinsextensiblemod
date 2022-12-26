@@ -44,10 +44,10 @@ public class ModXray extends Mod {
         ToggleSetting culling = new ToggleSetting("gavinsmod.settings.xray.culling");
         culling.setCallback(() -> {
 //            culling.setValue(!culling.getValue());
-            GavinsMod.xrayConfig.setBlockCulling(culling.getValue());
+            xrayConfig.setBlockCulling(culling.getValue());
             if (isActive()) reload();
         });
-        culling.setValue(GavinsMod.xrayConfig.isBlockCulling());
+        culling.setValue(xrayConfig.isBlockCulling());
         ClickSetting menu = new ClickSetting("gavinsmod.settings.xray.blocks");
         menu.setCallback(() -> getClient().setScreen(new GuiXray()));
         xraySubSetting.add(menu);
@@ -63,14 +63,14 @@ public class ModXray extends Mod {
      * @return True if visible, false if not
      */
     public static boolean shouldDrawFace(BlockState block) {
-        if (GavinsMod.isEnabled(Type.XRAY)) return GavinsMod.xrayConfig.isInList(block.getBlock());
+        if (GavinsMod.isEnabled(Type.XRAY)) return xrayConfig.isInList(block.getBlock());
         return true;
     }
 
     @Override
     public void activate() {
         if (!GavinsMod.isEnabled(Type.FULL_BRIGHT)) RenderUtils.setLastGamma();
-        getClient().setChunkCulling(GavinsMod.xrayConfig.isBlockCulling());
+        getClient().setChunkCulling(xrayConfig.isBlockCulling());
         super.activate();
         reloadRenderer();
     }

@@ -21,7 +21,6 @@
 package com.peasenet.mods.render;
 
 import com.peasenet.gui.mod.waypoint.GuiWaypoint;
-import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.mods.render.waypoints.Waypoint;
@@ -79,7 +78,7 @@ public class ModWaypoint extends Mod implements EntityRenderListener, CameraBobL
         openMenu.getGui().setSymbol('+');
         setting.add(openMenu);
         // get all waypoints and add them to the menu
-        var waypoints = GavinsMod.waypointConfig.getLocations().stream().sorted(Comparator.comparing(Waypoint::getName));
+        var waypoints = waypointConfig.getLocations().stream().sorted(Comparator.comparing(Waypoint::getName));
         for (var w : waypoints.toArray())
             createWaypoint((Waypoint) w);
         addSetting(setting);
@@ -102,7 +101,7 @@ public class ModWaypoint extends Mod implements EntityRenderListener, CameraBobL
 
     @Override
     public void onEntityRender(EntityRender er) {
-        GavinsMod.waypointConfig.getLocations().stream().filter(Waypoint::isEnabled).forEach(w -> {
+        waypointConfig.getLocations().stream().filter(Waypoint::isEnabled).forEach(w -> {
             Box aabb = new Box(new BlockPos(w.getX(), w.getY(), w.getZ()));
             Vec3d boxPos = aabb.getCenter();
             if (w.isTracerEnabled())

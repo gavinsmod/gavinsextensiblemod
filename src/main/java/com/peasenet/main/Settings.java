@@ -21,17 +21,13 @@
 package com.peasenet.main;
 
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.peasenet.annotations.Exclude;
 import com.peasenet.config.*;
-import com.peasenet.gavui.color.Color;
-import com.peasenet.gavui.color.Colors;
 import com.peasenet.mods.render.waypoints.Waypoint;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -206,39 +202,6 @@ public class Settings {
     }
 
     /**
-     * Gets the color for the given key.
-     *
-     * @param key - The key of the color.
-     * @return The color.
-     */
-    public static Color getColor(String key) {
-        if (!settings.containsKey(key)) return Colors.WHITE;
-        Gson gson = new Gson();
-        Type colorListType = new TypeToken<Color>() {
-        }.getType();
-        Color c = Colors.WHITE;
-        try {
-            c = gson.fromJson(settings.get(key).toString(), colorListType);
-        } catch (JsonSyntaxException e) {
-            loadDefault();
-        } catch (NullPointerException e1) {
-            GavinsMod.LOGGER.error("Color not found for key: " + key);
-            // check if default settings contains the key
-            if (default_settings.containsKey(key)) {
-                GavinsMod.LOGGER.warn("Saving default color for key: " + key);
-                // set the color to the default color
-                c = (Color) default_settings.get(key);
-                // set the color in the settings
-                settings.put(key, c);
-                save();
-            } else {
-                return Colors.WHITE;
-            }
-        }
-        return c;
-    }
-
-    /**
      * Loads the default configuration.
      */
     public static void loadDefault() {
@@ -256,53 +219,6 @@ public class Settings {
         if (!res) throw new RuntimeException(String.format("Could not rename %s to %s", cfgFile, bakFile));
         settings.putAll(default_settings);
         save();
-    }
-
-    /**
-     * Adds the given waypoint to the list of waypoints.
-     *
-     * @param w - The waypoint to add.
-     */
-    public static void addWaypoint(Waypoint w) {
-        var currList = getWaypoints();
-        currList.removeIf(wp -> wp.equals(w));
-        w.setName(w.getName().replace(' ', '_'));
-        currList.add(w);
-        settings.put("waypoint.locations", currList);
-        save();
-    }
-
-    /**
-     * Removes the given waypoint from the list of waypoints.
-     *
-     * @param w - The waypoint to remove.
-     */
-    public static void deleteWaypoint(Waypoint w) {
-        var currList = getWaypoints();
-        // remove from currList where the waypoint is the same as w
-        currList.removeIf(wp -> wp.equals(w));
-        settings.put("waypoint.locations", currList);
-        save();
-    }
-
-    /**
-     * Gets the list of waypoints.
-     *
-     * @return The list of waypoints.
-     */
-    public static ArrayList<Waypoint> getWaypoints() {
-        var gson = new GsonBuilder().setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
-                .setExclusionStrategies(new AnnotationExclusionStrategy())
-                .create();
-        var cfg = settings.get("waypoint.locations").toString();
-        Type waypointType = new TypeToken<ArrayList<Waypoint>>() {
-        }.getType();
-        ArrayList<Waypoint> waypoints = gson.fromJson(settings.get("waypoint.locations").toString(), waypointType);
-        var waypointList = new ArrayList<Waypoint>();
-        for (var v : waypoints)
-            waypointList.add((Waypoint) v);
-
-        return waypointList;
     }
 
     /**

@@ -40,7 +40,7 @@ public class ModEntityItemTracer extends Mod implements EntityRenderListener, Ca
     public ModEntityItemTracer() {
         super(Type.ENTITY_ITEM_TRACER);
         ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.tracer.item.color");
-        colorSetting.setCallback(() -> GavinsMod.tracerConfig.setItemColor(colorSetting.getColor()));
+        colorSetting.setCallback(() -> tracerConfig.setItemColor(colorSetting.getColor()));
         colorSetting.setColor(GavinsMod.tracerConfig.getItemColor());
         addSetting(colorSetting);
     }
@@ -62,7 +62,7 @@ public class ModEntityItemTracer extends Mod implements EntityRenderListener, Ca
     @Override
     public void onEntityRender(EntityRender er) {
         if (er.getEntityType() != EntityType.ITEM) return;
-        RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, GavinsMod.tracerConfig.getItemColor());
+        RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, tracerConfig.getItemColor());
     }
 
     @Override
