@@ -24,6 +24,4 @@ import com.peasenet.util.event.data.RenderOverlay;
 
 public interface RenderOverlayListener extends Listener {
     void onRenderOverlay(RenderOverlay overlay);
-
-
 }

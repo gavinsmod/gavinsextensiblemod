@@ -23,9 +23,13 @@ package com.peasenet.util.event.data;
 import net.minecraft.util.Identifier;
 
 public class RenderOverlay extends Cancellable {
-    Identifier texture;
+    private Identifier texture;
 
     public RenderOverlay(Identifier texture) {
         this.texture = texture;
+    }
+
+    public Identifier getTexture() {
+        return texture;
     }
 }

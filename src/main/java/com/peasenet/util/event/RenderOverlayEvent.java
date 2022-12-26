@@ -25,24 +25,33 @@ import com.peasenet.util.listeners.RenderOverlayListener;
 
 import java.util.ArrayList;
 
+/**
+ * An event for when a packet is sent.
+ *
+ * @author GT3CH1
+ * @version 12/26/2022
+ */
 public class RenderOverlayEvent extends CancellableEvent<RenderOverlayListener> {
-    private final RenderOverlay overlay;
+    RenderOverlay renderOverlay;
 
-    public RenderOverlayEvent(RenderOverlay overlay) {
-        this.overlay = overlay;
+    /**
+     * Creates a new PacketSendEvent.
+     */
+    public RenderOverlayEvent(RenderOverlay r) {
+        this.renderOverlay = r;
     }
 
     @Override
     public void fire(ArrayList<RenderOverlayListener> listeners) {
-        for (RenderOverlayListener l : listeners) {
-            l.onRenderOverlay(overlay);
-            if (overlay.isCancelled())
+        for (RenderOverlayListener listener : listeners) {
+            listener.onRenderOverlay(renderOverlay);
+            if (renderOverlay.isCancelled())
                 this.cancel();
         }
     }
 
     @Override
     public Class<RenderOverlayListener> getEvent() {
-        return null;
+        return RenderOverlayListener.class;
     }
 }

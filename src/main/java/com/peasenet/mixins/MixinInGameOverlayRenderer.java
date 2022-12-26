@@ -18,39 +18,25 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods.render;
+package com.peasenet.mixins;
 
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.util.event.data.RenderOverlay;
-import com.peasenet.util.listeners.RenderOverlayListener;
-import net.minecraft.util.Identifier;
+import com.peasenet.main.GavinsMod;
+import com.peasenet.util.event.RenderOverlaySubmergedEvent;
+import com.peasenet.util.event.data.RenderSubmergedOverlay;
+import net.minecraft.client.gui.hud.InGameOverlayRenderer;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/**
- * @author gt3ch1
- * @version 6/14/2022
- * A mod that disables the pumpkin overlay.
- */
-public class ModAntiPumpkin extends Mod implements RenderOverlayListener {
-    public ModAntiPumpkin() {
-        super(Type.ANTI_PUMPKIN);
-    }
+@Mixin(InGameOverlayRenderer.class)
+public class MixinInGameOverlayRenderer {
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        em.subscribe(RenderOverlayListener.class, this);
-    }
-
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        em.unsubscribe(RenderOverlayListener.class, this);
-    }
-
-    @Override
-    public void onRenderOverlay(RenderOverlay overlay) {
-        if (overlay.getTexture().equals(new Identifier("textures/misc/pumpkinblur.png")))
-            overlay.cancel();
+    @Inject(at = @At("HEAD"), method = "renderFireOverlay", cancellable = true)
+    private static void onRenderFireOverlay(CallbackInfo ci) {
+        var evt = new RenderOverlaySubmergedEvent(new RenderSubmergedOverlay(RenderSubmergedOverlay.SubmergedOverlayType.FIRE));
+        GavinsMod.eventManager.call(evt);
+        if (evt.isCancelled())
+            ci.cancel();
     }
 }
