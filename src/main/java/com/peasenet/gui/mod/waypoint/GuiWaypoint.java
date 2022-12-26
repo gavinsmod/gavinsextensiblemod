@@ -19,6 +19,7 @@
  */
 
 package com.peasenet.gui.mod.waypoint;
+
 import com.peasenet.gavui.Gui;
 import com.peasenet.gavui.color.Colors;
 import com.peasenet.gavui.math.PointD;
@@ -27,7 +28,6 @@ import com.peasenet.gui.GuiElement;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Mods;
-import com.peasenet.main.Settings;
 import com.peasenet.mods.render.waypoints.Waypoint;
 import com.peasenet.settings.ClickSetting;
 import com.peasenet.settings.ColorSetting;
@@ -151,7 +151,7 @@ public class GuiWaypoint extends GuiElement {
             w.setX(Integer.parseInt(xCoordinate.getText()));
             w.setY(Integer.parseInt(yCoordinate.getText()));
             w.setZ(Integer.parseInt(zCoordinate.getText()));
-            Settings.addWaypoint(w);
+            GavinsMod.waypointConfig.addWaypoint(w);
             Mods.getMod("waypoints").reloadSettings();
             GavinsMod.guiSettings.reloadGui();
             parent = GavinsMod.guiSettings;
@@ -182,7 +182,7 @@ public class GuiWaypoint extends GuiElement {
         waypointToggle.setValue(w.isEnabled());
         colorCycle.setColor(w.getColor());
         saveSettings.setCallback(() -> {
-            Settings.deleteWaypoint(w);
+            GavinsMod.waypointConfig.removeWaypoint(w);
             w.setName(textField.getText());
             w.setColor(colorCycle.getColor());
             w.setEnabled(waypointToggle.getValue());
@@ -191,7 +191,7 @@ public class GuiWaypoint extends GuiElement {
             w.setX(Integer.parseInt(xCoordinate.getText()));
             w.setY(Integer.parseInt(yCoordinate.getText()));
             w.setZ(Integer.parseInt(zCoordinate.getText()));
-            Settings.addWaypoint(w);
+            GavinsMod.waypointConfig.addWaypoint(w);
             Mods.getMod("waypoints").reloadSettings();
             GavinsMod.guiSettings.reloadGui();
             parent = GavinsMod.guiSettings;
@@ -199,7 +199,7 @@ public class GuiWaypoint extends GuiElement {
         });
         cancelSettings.setCallback(() -> client.setScreen(parent));
         deleteSettings.setCallback(() -> {
-            Settings.deleteWaypoint(w);
+            GavinsMod.waypointConfig.removeWaypoint(w);
             Mods.getMod("waypoints").reloadSettings();
             GavinsMod.guiSettings.reloadGui();
             close();

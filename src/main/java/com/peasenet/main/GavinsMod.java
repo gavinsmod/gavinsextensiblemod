@@ -73,6 +73,7 @@ public class GavinsMod implements ModInitializer {
     public static FullbrightConfig fullbrightConfig = new FullbrightConfig();
     public static FpsColorConfig fpsColorConfig = new FpsColorConfig();
     public static RadarConfig radarConfig = new RadarConfig();
+    public static WaypointConfig waypointConfig = new WaypointConfig();
     private static ModCommands modCommands;
 
     /**
@@ -134,6 +135,7 @@ public class GavinsMod implements ModInitializer {
         fullbrightConfig = fullbrightConfig.readFromSettings();
         fpsColorConfig = fpsColorConfig.readFromSettings();
         radarConfig = radarConfig.readFromSettings();
+        waypointConfig = waypointConfig.readFromSettings();
 
         new Mods();
         LOGGER.info("GavinsMod initialized");

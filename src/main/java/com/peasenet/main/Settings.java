@@ -69,6 +69,7 @@ public class Settings {
         default_settings.put("xray", new XrayConfig());
         default_settings.put("fullbright", new FullbrightConfig());
         default_settings.put("fpsColors", new FpsColorConfig());
+        default_settings.put("waypoints", new WaypointConfig());
         load();
     }
 
@@ -290,14 +291,20 @@ public class Settings {
      * @return The list of waypoints.
      */
     public static ArrayList<Waypoint> getWaypoints() {
-
-        Gson gson = new Gson();
+        var gson = new GsonBuilder().setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+                .setExclusionStrategies(new AnnotationExclusionStrategy())
+                .create();
+        var cfg = settings.get("waypoint.locations").toString();
         Type waypointType = new TypeToken<ArrayList<Waypoint>>() {
         }.getType();
         ArrayList<Waypoint> waypoints = gson.fromJson(settings.get("waypoint.locations").toString(), waypointType);
-        if (waypoints == null) return new ArrayList<>();
-        return waypoints;
+        var waypointList = new ArrayList<Waypoint>();
+        for (var v : waypoints)
+            waypointList.add((Waypoint) v);
+
+        return waypointList;
     }
+
     /**
      * Sets the given key to the given value.
      *

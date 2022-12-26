@@ -26,7 +26,6 @@ import com.peasenet.gavui.color.Colors;
 import com.peasenet.gavui.math.BoxD;
 import com.peasenet.gavui.math.PointD;
 import com.peasenet.main.GavinsMod;
-import com.peasenet.main.Settings;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.mods.render.waypoints.Waypoint;
@@ -216,7 +215,7 @@ public class ModRadar extends Mod implements InGameHudRenderListener {
      */
     private void drawWaypointsOnRadar(MatrixStack stack) {
         var yaw = getPlayer().getYaw();
-        var waypoints = Settings.getWaypoints().stream().filter(Waypoint::isEnabled).toList();
+        var waypoints = GavinsMod.waypointConfig.getWaypoints().stream().filter(Waypoint::isEnabled).toList();
         for (Waypoint w : waypoints) {
             var color = w.getColor();
             if (!GavinsMod.radarConfig.getInstance().isUseWaypointColor())
