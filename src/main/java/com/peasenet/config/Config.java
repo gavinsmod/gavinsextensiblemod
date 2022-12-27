@@ -23,7 +23,7 @@ package com.peasenet.config;
 import com.peasenet.annotations.Exclude;
 import com.peasenet.main.Settings;
 
-public abstract class Config<E> {
+public abstract class Config<E extends Config<?>> {
 
     @Exclude
     private transient String key;
@@ -47,5 +47,9 @@ public abstract class Config<E> {
 
     protected void setKey(String key) {
         this.key = key;
+    }
+
+    public String getKey() {
+        return key;
     }
 }

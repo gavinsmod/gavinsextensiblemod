@@ -130,15 +130,6 @@ public class GavinsMod implements ModInitializer {
 
         eventManager = new EventManager();
 
-        espConfig = espConfig.readFromSettings();
-        tracerConfig = tracerConfig.readFromSettings();
-        xrayConfig = xrayConfig.readFromSettings();
-        fullbrightConfig = fullbrightConfig.readFromSettings();
-        fpsColorConfig = fpsColorConfig.readFromSettings();
-        radarConfig = radarConfig.readFromSettings();
-        waypointConfig = waypointConfig.readFromSettings();
-        miscConfig = miscConfig.readFromSettings();
-
         new Mods();
         LOGGER.info("GavinsMod initialized");
         ArrayList<com.peasenet.gavui.Gui> guiList = new ArrayList<>();
