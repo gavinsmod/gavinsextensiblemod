@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -76,7 +76,7 @@ public class GavinsModClient implements ClientModInitializer {
         if (!GavinsMod.fullbrightConfig.isAutoFullBright()) return;
         var skyBrightness = getMinecraftClient().getWorld().getLightLevel(LightType.SKY, getPlayer().getBlockPos().up());
         var blockBrightness = getMinecraftClient().getWorld().getLightLevel(LightType.BLOCK, getPlayer().getBlockPos().up());
-        var currTime = getMinecraftClient().getWorld().getTimeOfDay();
+        var currTime = getMinecraftClient().getWorld().getTimeOfDay() % 24000;
         var shouldBeFullBright = (currTime >= 13000 || currTime <= 100 || skyBrightness <= 2) && blockBrightness <= 2;
         if (shouldBeFullBright && !Mods.getMod("fullbright").isActive()) Mods.getMod("fullbright").activate();
         else if (Mods.getMod("fullbright").isActive() && !shouldBeFullBright) Mods.getMod("fullbright").deactivate();
