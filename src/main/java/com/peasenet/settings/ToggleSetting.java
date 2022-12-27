@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -23,7 +23,6 @@ package com.peasenet.settings;
 import com.peasenet.gavui.GuiToggle;
 import com.peasenet.gavui.math.PointD;
 import com.peasenet.gavui.util.GavUISettings;
-import com.peasenet.main.Settings;
 import net.minecraft.text.Text;
 
 /**
@@ -59,9 +58,7 @@ public class ToggleSetting extends Setting {
         if (name.contains("gavui")) {
             name = name.replace("gavui.", "");
             isGavUi = true;
-        } else if (!name.equals("none"))
-            value = Settings.getBool(name);
-        else
+        } else
             value = false;
         gui = new GuiToggle(new PointD(0, 0), 90, 10, Text.translatable(key));
         gui.setState(value);
@@ -73,16 +70,21 @@ public class ToggleSetting extends Setting {
             if (isGavUi) {
                 GavUISettings.add(finalName, value);
                 GavUISettings.save();
-                return;
             }
-            Settings.add(finalName, value);
-            Settings.save();
         });
         gui.hide();
     }
 
     public ToggleSetting(String translationKey) {
         this("none", translationKey);
+    }
+
+    public ToggleSetting(Text literal) {
+        super("none", "none");
+        gui = new GuiToggle(new PointD(0, 0), 90, 10, literal);
+        gui.setState(value);
+        gui.setCallback(this::onClick);
+        gui.hide();
     }
 
     /**
@@ -96,19 +98,10 @@ public class ToggleSetting extends Setting {
     public ToggleSetting(String name, Text literal, boolean noToggle) {
         super(name, "");
         this.noToggle = noToggle;
-        if (!name.equals("none"))
-            value = Settings.getBool(name);
-        else
-            value = false;
+        value = false;
         gui = new GuiToggle(new PointD(0, 0), 90, 10, literal);
         gui.setState(value);
-        gui.setCallback(() -> {
-            onClick();
-            if (name.equals("none"))
-                return;
-            Settings.add(name, value);
-            Settings.save();
-        });
+        gui.setCallback(this::onClick);
         gui.hide();
     }
 
@@ -130,9 +123,6 @@ public class ToggleSetting extends Setting {
         this.value = value;
         gui.setBackground(value ? GavUISettings.getColor("gui.color.enabled") : GavUISettings.getColor("gui.color.background"));
         gui.setState(value);
-        if (getName().equals("none"))
-            return;
-        Settings.setBool(getName(), value);
     }
 
     @Override
