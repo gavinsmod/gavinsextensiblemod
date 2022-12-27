@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -27,6 +27,7 @@ import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.RenderUtils;
 import com.peasenet.util.event.data.EntityRender;
 import com.peasenet.util.listeners.EntityRenderListener;
+import net.minecraft.entity.mob.MobEntity;
 
 /**
  * @author gt3ch1
@@ -73,6 +74,8 @@ public class ModMobEsp extends Mod implements EntityRenderListener {
     @Override
     public void onEntityRender(EntityRender er) {
         var box = RenderUtils.getEntityBox(er.delta, er.entity);
+        if (!(er.entity instanceof MobEntity))
+            return;
         if (espConfig.isShowPeacefulMobs() && er.getEntityType().getSpawnGroup().isPeaceful()) {
             RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getPeacefulMobColor());
         } else if (espConfig.isShowHostileMobs() && !er.getEntityType().getSpawnGroup().isPeaceful()) {
