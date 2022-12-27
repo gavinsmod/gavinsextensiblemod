@@ -32,7 +32,6 @@ public class EspConfig extends Config<EspConfig> {
     public Color itemColor = Colors.CYAN;
     public boolean showHostileMobs = true;
     public boolean showPeacefulMobs = true;
-    public boolean showPlayers = true;
 
     public boolean isShowHostileMobs() {
         return getInstance().showHostileMobs;
@@ -49,15 +48,6 @@ public class EspConfig extends Config<EspConfig> {
 
     public void setShowPeacefulMobs(boolean showPeacefulMobs) {
         getInstance().showPeacefulMobs = showPeacefulMobs;
-        saveConfig();
-    }
-
-    public boolean isShowPlayers() {
-        return getInstance().showPlayers;
-    }
-
-    public void setShowPlayers(boolean showPlayers) {
-        getInstance().showPlayers = showPlayers;
         saveConfig();
     }
 
