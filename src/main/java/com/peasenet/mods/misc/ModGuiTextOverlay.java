@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -25,7 +25,6 @@ import com.peasenet.gavui.math.PointD;
 import com.peasenet.gavui.util.GavUISettings;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
-import com.peasenet.main.Settings;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ToggleSetting;
@@ -47,8 +46,8 @@ public class ModGuiTextOverlay extends Mod implements InGameHudRenderListener {
         super(Type.MOD_GUI_TEXT_OVERLAY);
 
         //NOTE: This isn't really the best place for this, but it works for now. this is for chat message toggles.
-        ToggleSetting chatMessage = new ToggleSetting("misc.messages", "gavinsmod.settings.misc.messages");
-        chatMessage.setValue(Settings.getBool("misc.messages"));
+        ToggleSetting chatMessage = new ToggleSetting("gavinsmod.settings.misc.messages");
+        chatMessage.setValue(miscConfig.isMessages());
         addSetting(chatMessage);
     }
 

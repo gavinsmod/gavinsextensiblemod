@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -24,7 +24,6 @@ import com.peasenet.config.*;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Mods;
-import com.peasenet.main.Settings;
 import com.peasenet.mixinterface.IMinecraftClient;
 import com.peasenet.settings.Setting;
 import com.peasenet.util.KeyBindUtils;
@@ -59,6 +58,7 @@ public abstract class Mod implements IMod {
     protected static RadarConfig radarConfig = GavinsMod.radarConfig;
     protected static WaypointConfig waypointConfig = GavinsMod.waypointConfig;
     protected static XrayConfig xrayConfig = GavinsMod.xrayConfig;
+    protected static MiscConfig miscConfig = GavinsMod.miscConfig;
     /**
      * The keybind for this mod.
      */
@@ -148,7 +148,7 @@ public abstract class Mod implements IMod {
      * @param message The message to send.
      */
     public void sendMessage(String message) {
-        if (Settings.getBool("misc.messages") && !reloading)
+        if (miscConfig.isMessages() && !reloading)
             GavinsModClient.getPlayer().sendMessage(Text.literal(message), false);
     }
 

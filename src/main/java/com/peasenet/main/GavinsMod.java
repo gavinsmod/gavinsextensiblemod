@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -74,6 +74,7 @@ public class GavinsMod implements ModInitializer {
     public static FpsColorConfig fpsColorConfig = new FpsColorConfig();
     public static RadarConfig radarConfig = new RadarConfig();
     public static WaypointConfig waypointConfig = new WaypointConfig();
+    public static MiscConfig miscConfig = new MiscConfig();
     private static ModCommands modCommands;
 
     /**
@@ -136,6 +137,7 @@ public class GavinsMod implements ModInitializer {
         fpsColorConfig = fpsColorConfig.readFromSettings();
         radarConfig = radarConfig.readFromSettings();
         waypointConfig = waypointConfig.readFromSettings();
+        miscConfig = miscConfig.readFromSettings();
 
         new Mods();
         LOGGER.info("GavinsMod initialized");
