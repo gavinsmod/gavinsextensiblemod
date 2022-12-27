@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -90,7 +90,7 @@ public class ModWaypoint extends Mod implements EntityRenderListener, CameraBobL
      * @param waypoint - The waypoint to edit.
      */
     private void createWaypoint(Waypoint waypoint) {
-        ToggleSetting clickSetting = new ToggleSetting("none", Text.literal(waypoint.getName()), true);
+        ToggleSetting clickSetting = new ToggleSetting(Text.literal(waypoint.getName()));
         clickSetting.setCallback(() -> {
             getClient().setScreen(new GuiWaypoint(waypoint));
             clickSetting.setValue(waypoint.isEnabled());
