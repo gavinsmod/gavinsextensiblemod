@@ -50,9 +50,10 @@ public enum Type {
     XRAY("Xray", "gavinsmod.mod.render.xray", "gavinsmod.keybinds.render", RENDER, "xray"),
     FULL_BRIGHT("Full Bright", "gavinsmod.mod.render.fullbright", "gavinsmod.keybinds.render", RENDER, "fullbright"),
     ANTI_HURT("Anti Hurt", "gavinsmod.mod.render.antihurt", "gavinsmod.keybinds.render", RENDER, "antihurt"),
-    ANTI_FIRE("Anti Fire", "gavinsmod.mod.render.antifire", "gavinsmod.keybinds.render", RENDER, "antifire"),
+    NO_FIRE("No Fire", "gavinsmod.mod.render.nofire", "gavinsmod.keybinds.render", RENDER, "nofire"),
     NO_OVERLAY("No Overlay", "gavinsmod.mod.render.nooverlay", "gavinsmod.keybinds.render", RENDER, "nooverlay"),
     ANTI_PUMPKIN("Anti Pumpkin", "gavinsmod.mod.render.antipumpkin", "gavinsmod.keybinds.render", RENDER, "antipumpkin"),
+    NO_NAUSEA("No Nausea", "gavinsmod.mod.render.nonausea", "gavinsmod.keybinds.render", RENDER, "nonausea"),
     NO_RAIN("No Rain", "gavinsmod.mod.render.norain", "gavinsmod.keybinds.render", RENDER, "norain"),
     MOD_HPTAG("HP Tags", "gavinsmod.mod.render.hptags", "gavinsmod.keybinds.render", RENDER, "hptags"),
     WAYPOINT("Waypoint", "gavinsmod.mod.render.waypoints", "gavinsmod.keybinds.render", RENDER, "waypoints"),
@@ -63,12 +64,14 @@ public enum Type {
     ENTITY_ITEM_ESP("Item ESP", "gavinsmod.mod.esp.item", "gavinsmod.keybinds.esp", ESPS, "itemesp"),
     ENTITY_PLAYER_ESP("Player ESP", "gavinsmod.mod.esp.player", "gavinsmod.keybinds.esp", ESPS, "playeresp"),
     MOB_ESP("Mob ESP", "gavinsmod.mod.esp.mob", "gavinsmod.keybinds.esp", ESPS, "mobesp"),
+    BEEHIVE_ESP("Beehive ESP", "gavinsmod.mod.esp.beehive", "gavinsmod.keybinds.esp", ESPS, "beehiveesp"),
 
     // TRACER
     CHEST_TRACER("Chest Tracer", "gavinsmod.mod.tracer.chest", "gavinsmod.keybinds.tracers", TRACERS, "chesttracer"),
     ENTITY_ITEM_TRACER("Item Tracer", "gavinsmod.mod.tracer.item", "gavinsmod.keybinds.tracers", TRACERS, "itemtracer"),
     ENTITY_PLAYER_TRACER("Player Tracer", "gavinsmod.mod.tracer.player", "gavinsmod.keybinds.tracers", TRACERS, "playertracer"),
     MOB_TRACER("Mob Tracer", "gavinsmod.mod.tracer.mob", "gavinsmod.keybinds.tracers", TRACERS, "mobtracer"),
+    BEEHIVE_TRACER("Beehive Tracer", "gavinsmod.mod.tracer.beehive", "gavinsmod.keybinds.tracers", TRACERS, "beehivetracer"),
 
     // MISC
     MOD_FPS_COUNTER("FPS Counter", "gavinsmod.mod.misc.fpscounter", "gavinsmod.keybinds.misc", MISC, "fpscounter"),

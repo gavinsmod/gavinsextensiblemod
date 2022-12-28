@@ -25,17 +25,20 @@ import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
 import com.peasenet.util.RenderUtils;
+import com.peasenet.util.event.data.BlockEntityRender;
 import com.peasenet.util.event.data.CameraBob;
-import com.peasenet.util.event.data.ChestEntityRender;
+import com.peasenet.util.listeners.BlockEntityRenderListener;
 import com.peasenet.util.listeners.CameraBobListener;
-import com.peasenet.util.listeners.ChestEntityRenderListener;
+import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.block.entity.EnderChestBlockEntity;
+import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 
 /**
  * @author gt3ch1
  * @version 6/27/2022
  * A mod that allows the player to see tracers towards chests.
  */
-public class ModChestTracer extends Mod implements ChestEntityRenderListener,
+public class ModChestTracer extends Mod implements BlockEntityRenderListener,
         CameraBobListener {
     public ModChestTracer() {
         super(Type.CHEST_TRACER);
@@ -48,20 +51,22 @@ public class ModChestTracer extends Mod implements ChestEntityRenderListener,
     @Override
     public void onEnable() {
         super.onEnable();
-        em.subscribe(ChestEntityRenderListener.class, this);
-        em.subscribe(CameraBobListener.class,this);
+        em.subscribe(BlockEntityRenderListener.class, this);
+        em.subscribe(CameraBobListener.class, this);
     }
 
     @Override
     public void onDisable() {
         super.onDisable();
-        em.unsubscribe(ChestEntityRenderListener.class, this);
-        em.unsubscribe(CameraBobListener.class,this);
+        em.unsubscribe(BlockEntityRenderListener.class, this);
+        em.unsubscribe(CameraBobListener.class, this);
     }
 
     @Override
-    public void onEntityRender(ChestEntityRender er) {
-        RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, tracerConfig.getChestColor());
+    public void onEntityRender(BlockEntityRender er) {
+        if (er.entity instanceof ChestBlockEntity || er.entity instanceof ShulkerBoxBlockEntity
+                || er.entity instanceof EnderChestBlockEntity)
+            RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, tracerConfig.getChestColor());
     }
 
     @Override

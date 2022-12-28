@@ -37,7 +37,7 @@ public class MathUtils {
      */
     public static Rotation getRotationToEntity(Entity entity) {
         var player = GavinsModClient.getPlayer();
-        var playerPos = new Vec3d(player.getX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
+        var playerPos = new Vec3d(player.getPrevX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
         var diffX = entity.getX() - playerPos.x;
         var diffY = (entity.getBoundingBox().getCenter().y - playerPos.y);
         var diffZ = entity.getZ() - playerPos.z;

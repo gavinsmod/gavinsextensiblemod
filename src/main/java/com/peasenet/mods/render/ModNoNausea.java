@@ -17,23 +17,19 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.util.listeners;
 
-import com.peasenet.util.event.data.ChestEntityRender;
+package com.peasenet.mods.render;
+
+import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 
 /**
- * A listener for the world render event.
- *
- * @author GT3CH1
- * @version 12/23/2022
+ * @author gt3ch1
+ * @version 12/26/2022
+ * A mod that disables underwater/lava overlay.
  */
-public interface ChestEntityRenderListener extends Listener {
-
-    /**
-     * Called when the world is rendered.
-     */
-    void onEntityRender(ChestEntityRender er);
-
-
-
+public class ModNoNausea extends Mod {
+    public ModNoNausea() {
+        super(Type.NO_NAUSEA);
+    }
 }

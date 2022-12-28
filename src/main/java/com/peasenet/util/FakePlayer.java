@@ -24,7 +24,6 @@ import com.peasenet.main.GavinsModClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.player.PlayerEntity;
 
@@ -42,8 +41,8 @@ public class FakePlayer extends OtherClientPlayerEntity {
         DataTracker toTracker = this.getDataTracker();
         Byte playerModel = fromTracker.get(PlayerEntity.PLAYER_MODEL_PARTS);
         toTracker.set(PlayerEntity.PLAYER_MODEL_PARTS, playerModel);
-        headYaw = GavinsModClient.getPlayer().headYaw;
-        bodyYaw = GavinsModClient.getPlayer().bodyYaw;
+        headYaw = GavinsModClient.getPlayer().getHeadYaw();
+        bodyYaw = GavinsModClient.getPlayer().getBodyYaw();
         getInventory().clone(player.getInventory());
         world.addEntity(getId(), this);
     }

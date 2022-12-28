@@ -29,6 +29,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
+import net.minecraft.client.network.message.MessageHandler;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
@@ -80,6 +81,9 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Final
     @Shadow
     private Window window;
+
+    @Shadow
+    public abstract MessageHandler getMessageHandler();
 
     @Inject(at = @At(value = "HEAD"), method = "isAmbientOcclusionEnabled()Z", cancellable = true)
     private static void isXrayOrFullBright(CallbackInfoReturnable<Boolean> ci) {

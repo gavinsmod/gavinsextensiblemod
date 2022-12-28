@@ -21,13 +21,11 @@
 package com.peasenet.main;
 
 import com.peasenet.mods.Mod;
+import com.peasenet.mods.Type;
 import com.peasenet.mods.combat.ModAutoAttack;
 import com.peasenet.mods.combat.ModAutoCrit;
 import com.peasenet.mods.combat.ModKillAura;
-import com.peasenet.mods.esp.ModChestEsp;
-import com.peasenet.mods.esp.ModEntityItemEsp;
-import com.peasenet.mods.esp.ModEntityPlayerEsp;
-import com.peasenet.mods.esp.ModMobEsp;
+import com.peasenet.mods.esp.*;
 import com.peasenet.mods.gui.ModGui;
 import com.peasenet.mods.gui.ModGuiSettings;
 import com.peasenet.mods.misc.ModFpsCounter;
@@ -35,10 +33,7 @@ import com.peasenet.mods.misc.ModFreecam;
 import com.peasenet.mods.misc.ModGuiTextOverlay;
 import com.peasenet.mods.movement.*;
 import com.peasenet.mods.render.*;
-import com.peasenet.mods.tracer.ModChestTracer;
-import com.peasenet.mods.tracer.ModEntityItemTracer;
-import com.peasenet.mods.tracer.ModEntityPlayerTracer;
-import com.peasenet.mods.tracer.ModMobTracer;
+import com.peasenet.mods.tracer.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -76,10 +71,13 @@ public class Mods {
         new ModEntityItemTracer();
         new ModEntityItemEsp();
         new ModEntityPlayerTracer();
+        new ModBeehiveTracer();
+        new ModBeehiveEsp();
         new ModEntityPlayerEsp();
         new ModAntiPumpkin();
         new ModHealthTag();
         new ModNoRain();
+        new ModNoNausea();
         new ModAntiFire();
         new ModNoOverlay();
         // GUI
@@ -129,6 +127,10 @@ public class Mods {
      */
     public static Mod getMod(String name) {
         return modMap.get(name);
+    }
+
+    public static Mod getMod(Type type) {
+        return modMap.get(type.getChatCommand());
     }
 
     /**

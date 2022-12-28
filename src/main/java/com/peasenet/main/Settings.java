@@ -57,10 +57,14 @@ public class Settings {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        JsonObject jsonObject = json.toJsonTree(map).getAsJsonObject();
-        // convert the map to a config object
-
-        return json.fromJson(jsonObject, clazz);
+        try {
+            JsonObject jsonObject = json.toJsonTree(map).getAsJsonObject();
+            return json.fromJson(jsonObject, clazz);
+        } catch (IllegalStateException e) {
+            settings.put(key, defaultSettings.get(key));
+            save();
+            return defaultSettings.get(key);
+        }
     }
 
     /**

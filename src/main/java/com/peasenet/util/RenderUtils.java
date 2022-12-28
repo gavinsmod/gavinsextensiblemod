@@ -26,14 +26,10 @@ import com.peasenet.gavui.math.BoxD;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.mixinterface.ISimpleOption;
-import com.peasenet.mods.Type;
-import com.peasenet.util.event.ChestEntityRenderEvent;
+import com.peasenet.util.event.BlockEntityRenderEvent;
 import com.peasenet.util.event.EntityRenderEvent;
 import com.peasenet.util.event.WorldRenderEvent;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.block.entity.EnderChestBlockEntity;
-import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
@@ -156,20 +152,20 @@ public class RenderUtils {
      * @param chunk_z   The player's chunk z.
      */
     private static void drawChestMods(ClientWorld level, MatrixStack stack, BufferBuilder buffer, Vec3d playerPos, int chunk_x, int chunk_z, float delta) {
-        if (!GavinsMod.isEnabled(Type.CHEST_ESP) && !GavinsMod.isEnabled(Type.CHEST_TRACER)) return;
         for (int x = -CHUNK_RADIUS; x <= CHUNK_RADIUS; x++) {
             for (int z = -CHUNK_RADIUS; z <= CHUNK_RADIUS; z++) {
                 int chunk_x_ = chunk_x + x;
                 int chunk_z_ = chunk_z + z;
                 if (level.getChunk(chunk_x_, chunk_z_) != null) {
-                    level.getChunk(chunk_x_, chunk_z_).getBlockEntities().forEach((blockPos, blockEntity) -> {
-                        if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof EnderChestBlockEntity || blockEntity instanceof ShulkerBoxBlockEntity) {
-                            Box aabb = new Box(blockPos);
-                            Vec3d boxPos = aabb.getCenter();
-                            ChestEntityRenderEvent event = new ChestEntityRenderEvent(blockEntity, stack, buffer, boxPos, playerPos, delta);
-                            GavinsMod.eventManager.call(event);
-                        }
-                    });
+                    var blockEntities = level.getChunk(chunk_x_, chunk_z_).getBlockEntities();
+                    for (var entry : blockEntities.entrySet()) {
+                        var blockPos = entry.getKey();
+                        var blockEntity = entry.getValue();
+                        Box aabb = new Box(blockPos);
+                        Vec3d boxPos = aabb.getCenter();
+                        BlockEntityRenderEvent event = new BlockEntityRenderEvent(blockEntity, stack, buffer, boxPos, playerPos, delta);
+                        GavinsMod.eventManager.call(event);
+                    }
                 }
             }
         }

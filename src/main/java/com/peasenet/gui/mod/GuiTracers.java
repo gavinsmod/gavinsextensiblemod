@@ -37,7 +37,7 @@ public class GuiTracers extends GuiScroll {
      * Creates a new tracer dropdown.
      */
     public GuiTracers() {
-        this(new PointD(85, 120), 95, 10, Text.translatable("gavinsmod.gui.tracers"));
+        this(new PointD(95, 120), 105, 10, Text.translatable("gavinsmod.gui.tracers"));
     }
 
     /**

@@ -26,6 +26,7 @@ import com.peasenet.settings.ColorSetting;
 import com.peasenet.util.RenderUtils;
 import com.peasenet.util.event.data.BlockEntityRender;
 import com.peasenet.util.listeners.BlockEntityRenderListener;
+import net.minecraft.block.entity.BeehiveBlockEntity;
 import net.minecraft.util.math.Box;
 
 /**
@@ -33,13 +34,13 @@ import net.minecraft.util.math.Box;
  * @version 6/27/2022
  * A mod that allows the client to see an esp (a box) around chests.
  */
-public class ModChestEsp extends Mod implements BlockEntityRenderListener {
-    public ModChestEsp() {
-        super(Type.CHEST_ESP);
+public class ModBeehiveEsp extends Mod implements BlockEntityRenderListener {
+    public ModBeehiveEsp() {
+        super(Type.BEEHIVE_ESP);
         ColorSetting colorSetting = new ColorSetting("none",
-                "gavinsmod.settings.esp.chest.color");
-        colorSetting.setCallback(() -> espConfig.setChestColor(colorSetting.getColor()));
-        colorSetting.setColor(espConfig.getChestColor());
+                "gavinsmod.settings.esp.beehive.color");
+        colorSetting.setCallback(() -> espConfig.setBeehiveColor(colorSetting.getColor()));
+        colorSetting.setColor(espConfig.getBeehiveColor());
         addSetting(colorSetting);
     }
 
@@ -58,7 +59,8 @@ public class ModChestEsp extends Mod implements BlockEntityRenderListener {
 
     @Override
     public void onEntityRender(BlockEntityRender er) {
+        if (!(er.entity instanceof BeehiveBlockEntity)) return;
         var box = new Box(er.entity.getPos());
-        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getChestColor());
+        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getBeehiveColor());
     }
 }

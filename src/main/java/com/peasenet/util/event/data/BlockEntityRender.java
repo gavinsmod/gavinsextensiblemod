@@ -5,7 +5,7 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
 
-public class ChestEntityRender {
+public class BlockEntityRender {
 
     public BlockEntity entity;
     public MatrixStack stack;
@@ -14,7 +14,7 @@ public class ChestEntityRender {
     public Vec3d playerPos;
     public float delta;
 
-    public ChestEntityRender(BlockEntity entity, MatrixStack stack, BufferBuilder buffer, Vec3d center, Vec3d playerPos, float delta) {
+    public BlockEntityRender(BlockEntity entity, MatrixStack stack, BufferBuilder buffer, Vec3d center, Vec3d playerPos, float delta) {
         this.entity = entity;
         this.stack = stack;
         this.buffer = buffer;

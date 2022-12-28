@@ -18,28 +18,31 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods.esp;
+package com.peasenet.mods.tracer;
 
+import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
 import com.peasenet.util.RenderUtils;
 import com.peasenet.util.event.data.BlockEntityRender;
+import com.peasenet.util.event.data.CameraBob;
 import com.peasenet.util.listeners.BlockEntityRenderListener;
-import net.minecraft.util.math.Box;
+import com.peasenet.util.listeners.CameraBobListener;
+import net.minecraft.block.entity.BeehiveBlockEntity;
 
 /**
  * @author gt3ch1
  * @version 6/27/2022
- * A mod that allows the client to see an esp (a box) around chests.
+ * A mod that allows the player to see tracers towards chests.
  */
-public class ModChestEsp extends Mod implements BlockEntityRenderListener {
-    public ModChestEsp() {
-        super(Type.CHEST_ESP);
-        ColorSetting colorSetting = new ColorSetting("none",
-                "gavinsmod.settings.esp.chest.color");
-        colorSetting.setCallback(() -> espConfig.setChestColor(colorSetting.getColor()));
-        colorSetting.setColor(espConfig.getChestColor());
+public class ModBeehiveTracer extends Mod implements BlockEntityRenderListener,
+        CameraBobListener {
+    public ModBeehiveTracer() {
+        super(Type.BEEHIVE_TRACER);
+        ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.tracer.beehive.color");
+        colorSetting.setCallback(() -> tracerConfig.setBeehiveColor(colorSetting.getColor()));
+        colorSetting.setColor(GavinsMod.tracerConfig.getBeehiveColor());
         addSetting(colorSetting);
     }
 
@@ -47,18 +50,24 @@ public class ModChestEsp extends Mod implements BlockEntityRenderListener {
     public void onEnable() {
         super.onEnable();
         em.subscribe(BlockEntityRenderListener.class, this);
+        em.subscribe(CameraBobListener.class, this);
     }
 
     @Override
-
     public void onDisable() {
         super.onDisable();
         em.unsubscribe(BlockEntityRenderListener.class, this);
+        em.unsubscribe(CameraBobListener.class, this);
     }
 
     @Override
     public void onEntityRender(BlockEntityRender er) {
-        var box = new Box(er.entity.getPos());
-        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getChestColor());
+        if (er.entity instanceof BeehiveBlockEntity)
+            RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, tracerConfig.getBeehiveColor());
+    }
+
+    @Override
+    public void onCameraViewBob(CameraBob c) {
+        c.cancel();
     }
 }

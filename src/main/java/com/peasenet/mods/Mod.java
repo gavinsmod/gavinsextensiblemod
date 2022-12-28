@@ -52,6 +52,7 @@ public abstract class Mod implements IMod {
     public static final String GAVINS_MOD_STRING = "§b§l[ §4§lGavinsMod §b§l] §7";
     protected static EventManager em = GavinsMod.eventManager;
     protected static TracerConfig tracerConfig = GavinsMod.tracerConfig;
+
     protected static EspConfig espConfig = GavinsMod.espConfig;
     protected static FpsColorConfig fpsColorConfig = GavinsMod.fpsColorConfig;
     protected static FullbrightConfig fullbrightConfig = GavinsMod.fullbrightConfig;

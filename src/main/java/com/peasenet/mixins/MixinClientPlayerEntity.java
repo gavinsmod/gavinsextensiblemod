@@ -20,10 +20,23 @@
 
 package com.peasenet.mixins;
 
-import com.peasenet.util.ModCommands;
+import com.mojang.authlib.GameProfile;
+import com.peasenet.main.Mods;
+import com.peasenet.mixinterface.IClientPlayerEntity;
+import com.peasenet.mods.Type;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityPose;
+import net.minecraft.entity.player.PlayerAbilities;
 import net.minecraft.text.Text;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.Vec3d;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -33,15 +46,118 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * @version 5/24/2022
  */
 @Mixin(ClientPlayerEntity.class)
-public class MixinClientPlayerEntity {
-//    @Inject(method = "sendChatMessage(Ljava/lang/String;Lnet/minecraft/text/Text;)V", at = @At("HEAD"), cancellable = true)
-//    public void checkModCommands(String message, Text preview, CallbackInfo ci) {
-//        // Checks to see if the messages starts with a . followed immediately by the name of the mod
-//        if (message.startsWith(".")) {
-//            // If so, it will be sent to the mod's command handler
-//            var success = ModCommands.handleCommand(message);
-//            // If the command was handled, the message will not be sent to the server
-//            if (success) ci.cancel();
-//        }
-//    }
+public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implements IClientPlayerEntity {
+    @Shadow
+    public float nextNauseaStrength;
+    @Shadow
+    @Final
+    public
+    ClientPlayNetworkHandler networkHandler;
+    @Shadow
+    public float lastNauseaStrength;
+
+    public MixinClientPlayerEntity(ClientWorld world, GameProfile profile) {
+        super(world, profile);
+    }
+
+    @Shadow
+    public abstract void sendMessage(Text message, boolean overlay);
+
+    public float getNextNauseaStrength() {
+        return 0.0f;
+    }
+
+    public void setNextNauseaStrength(float nextNauseaStrength) {
+        this.nextNauseaStrength = nextNauseaStrength;
+    }
+
+    public boolean isOnGround() {
+        return super.isOnGround();
+    }
+
+    public void setPitch(float pitch) {
+        super.setPitch(pitch);
+    }
+
+    public void setYaw(float yaw) {
+        super.setYaw(yaw);
+    }
+
+    public Vec3d getPos() {
+        return super.getPos();
+    }
+
+    @Override
+    public double getPrevX() {
+        return super.prevX;
+    }
+
+    @Override
+    public double getPrevY() {
+        return super.prevY;
+    }
+
+    @Override
+    public double getPrevZ() {
+        return super.prevZ;
+    }
+
+    @Override
+    public double getEyeHeight() {
+        return super.getStandingEyeHeight();
+    }
+
+    @Override
+    public EntityPose getPose() {
+        return super.getPose();
+    }
+
+    @Override
+    public boolean isNoClip() {
+        return super.noClip;
+    }
+
+    @Override
+    public float getEyeHeight(EntityPose pose) {
+        return super.getEyeHeight(pose);
+    }
+
+    @Override
+    public float getAttackCooldownProgress(float f) {
+        return super.getAttackCooldownProgress(f);
+    }
+
+    @Override
+    public boolean tryAttack(Entity target) {
+        return super.tryAttack(target);
+    }
+
+    @Override
+    public void swingHand(Hand h) {
+        super.swingHand(h);
+    }
+
+    @Override
+    public PlayerAbilities getAbilities() {
+        return super.getAbilities();
+    }
+
+    @Override
+    public double getFallDistance() {
+        return super.fallDistance;
+    }
+
+    @Override
+    public ClientPlayNetworkHandler getNetworkHandler() {
+        return networkHandler;
+    }
+
+    @Inject(method = "updateNausea", at = @At("HEAD"), cancellable = true)
+    public void cancelNausea(CallbackInfo ci) {
+        if (Mods.getMod(Type.NO_NAUSEA).isActive()) {
+            this.lastNauseaStrength = 0.0f;
+            this.nextNauseaStrength = 0.0f;
+            ci.cancel();
+        }
+    }
 }

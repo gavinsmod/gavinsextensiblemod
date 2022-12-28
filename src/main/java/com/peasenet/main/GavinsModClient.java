@@ -20,6 +20,7 @@
 
 package com.peasenet.main;
 
+import com.peasenet.mixinterface.IClientPlayerEntity;
 import com.peasenet.mixinterface.IMinecraftClient;
 import com.peasenet.mods.Mod;
 import com.peasenet.util.RenderUtils;
@@ -27,7 +28,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.world.LightType;
 
 /**
@@ -51,8 +51,8 @@ public class GavinsModClient implements ClientModInitializer {
      *
      * @return The minecraft client player.
      */
-    public static ClientPlayerEntity getPlayer() {
-        return getMinecraftClient().getPlayer();
+    public static IClientPlayerEntity getPlayer() {
+        return (IClientPlayerEntity) MinecraftClient.getInstance().player;
     }
 
     @Override

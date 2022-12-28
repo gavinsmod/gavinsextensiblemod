@@ -30,6 +30,16 @@ public class EspConfig extends Config<EspConfig> {
     public Color peacefulMobColor = Colors.GREEN;
     public Color playerColor = Colors.YELLOW;
     public Color itemColor = Colors.CYAN;
+
+    public Color beehiveColor = Colors.GOLD;
+
+    public Color getBeehiveColor() {
+        return beehiveColor;
+    }
+
+    public void setBeehiveColor(Color beehiveColor) {
+        this.beehiveColor = beehiveColor;
+    }
     public boolean showHostileMobs = true;
     public boolean showPeacefulMobs = true;
 

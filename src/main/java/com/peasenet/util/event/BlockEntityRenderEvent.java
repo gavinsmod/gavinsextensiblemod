@@ -20,8 +20,8 @@
 
 package com.peasenet.util.event;
 
-import com.peasenet.util.event.data.ChestEntityRender;
-import com.peasenet.util.listeners.ChestEntityRenderListener;
+import com.peasenet.util.event.data.BlockEntityRender;
+import com.peasenet.util.listeners.BlockEntityRenderListener;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.util.math.MatrixStack;
@@ -36,8 +36,8 @@ import java.util.ArrayList;
  * @version 12/22/2022
  */
 
-public class ChestEntityRenderEvent extends Event<ChestEntityRenderListener> {
-    ChestEntityRender entityRender;
+public class BlockEntityRenderEvent extends Event<BlockEntityRenderListener> {
+    BlockEntityRender entityRender;
 
     /**
      * Creates a new world render event.
@@ -47,19 +47,19 @@ public class ChestEntityRenderEvent extends Event<ChestEntityRenderListener> {
      * @param center    - The box.
      * @param playerPos - The delta.
      */
-    public ChestEntityRenderEvent(BlockEntity entity, MatrixStack stack, BufferBuilder buffer, Vec3d center, Vec3d playerPos, float delta) {
-        this.entityRender = new ChestEntityRender(entity, stack, buffer, center, playerPos, delta);
+    public BlockEntityRenderEvent(BlockEntity entity, MatrixStack stack, BufferBuilder buffer, Vec3d center, Vec3d playerPos, float delta) {
+        this.entityRender = new BlockEntityRender(entity, stack, buffer, center, playerPos, delta);
     }
 
     @Override
-    public void fire(ArrayList<ChestEntityRenderListener> listeners) {
-        for (ChestEntityRenderListener listener : listeners) {
+    public void fire(ArrayList<BlockEntityRenderListener> listeners) {
+        for (BlockEntityRenderListener listener : listeners) {
             listener.onEntityRender(entityRender);
         }
     }
 
     @Override
-    public Class<ChestEntityRenderListener> getEvent() {
-        return ChestEntityRenderListener.class;
+    public Class<BlockEntityRenderListener> getEvent() {
+        return BlockEntityRenderListener.class;
     }
 }

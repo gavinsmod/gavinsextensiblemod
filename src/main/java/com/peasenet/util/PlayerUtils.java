@@ -28,6 +28,7 @@ import com.peasenet.util.event.PlayerAttackEvent;
 import com.peasenet.util.math.Rotation;
 import net.minecraft.client.render.Camera;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
@@ -72,10 +73,10 @@ public class PlayerUtils {
     public static Vec3d getNewPlayerPosition(float deltaTime, Camera camera) {
         var look = camera.getHorizontalPlane();
         var player = GavinsModClient.getPlayer();
-        var px = (player.prevX + (getPlayerPos().getX() - player.prevX) * deltaTime) + look.x();
-        var py = (player.prevY + (getPlayerPos().getY() - player.prevY) * deltaTime) + look.y()
-                + player.getStandingEyeHeight();
-        var pz = (player.prevZ + (getPlayerPos().getZ() - player.prevZ) * deltaTime) + look.z();
+        var px = (player.getPrevX() + (getPlayerPos().getX() - player.getPrevX()) * deltaTime) + look.x();
+        var py = (player.getPrevY() + (getPlayerPos().getY() - player.getPrevY()) * deltaTime) + look.y()
+                + player.getEyeHeight();
+        var pz = (player.getPrevZ() + (getPlayerPos().getZ() - player.getPrevZ()) * deltaTime) + look.z();
         return new Vec3d(px, py, pz);
     }
 
@@ -97,10 +98,10 @@ public class PlayerUtils {
     public static void attackEntity(Entity entity) {
         var player = GavinsModClient.getPlayer();
         assert GavinsModClient.getMinecraftClient().getPlayerInteractionManager() != null;
-        if (onGround() && !player.noClip && player.getAttackCooldownProgress(0.5f) > 0.90f) {
+        if (onGround() && !player.isNoClip() && player.getAttackCooldownProgress(0.5f) > 0.90f) {
             PlayerAttackEvent event = new PlayerAttackEvent();
             GavinsMod.eventManager.call(event);
-            GavinsModClient.getMinecraftClient().getPlayerInteractionManager().attackEntity(player, entity);
+            GavinsModClient.getMinecraftClient().getPlayerInteractionManager().attackEntity((PlayerEntity) player, entity);
             player.tryAttack(entity);
             player.swingHand(Hand.MAIN_HAND);
             lastAttackTime = 0;
@@ -162,12 +163,12 @@ public class PlayerUtils {
         //TODO: This is apparently a bit weird in preventing the player from crouching + moving while flying.
         var player = GavinsModClient.getPlayer();
         if (player != null) {
-            if (player.fallDistance <= (isFalling() ? 1 : 2))
+            if (player.getFallDistance() <= (isFalling() ? 1 : 2))
                 return;
             if (player.isSneaking() && !fallSpeedCanDamage() && player.isFallFlying())
                 return;
             if (GavinsMod.isEnabled(Type.NO_FALL)) {
-                player.networkHandler.sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
+                player.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
             }
         }
     }

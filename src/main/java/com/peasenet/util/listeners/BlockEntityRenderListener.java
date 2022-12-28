@@ -17,38 +17,22 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.listeners;
 
-package com.peasenet.mods.render;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.util.event.data.RenderSubmergedOverlay;
-import com.peasenet.util.listeners.RenderSubmergedOverlayListener;
+import com.peasenet.util.event.data.BlockEntityRender;
 
 /**
- * @author gt3ch1
- * @version 6/14/2022
- * A mod that disables the pumpkin overlay.
+ * A listener for the world render event.
+ *
+ * @author GT3CH1
+ * @version 12/23/2022
  */
-public class ModAntiFire extends Mod implements RenderSubmergedOverlayListener {
-    public ModAntiFire() {
-        super(Type.NO_FIRE);
-    }
+public interface BlockEntityRenderListener extends Listener {
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        em.subscribe(RenderSubmergedOverlayListener.class, this);
-    }
+    /**
+     * Called when the world is rendered.
+     */
+    void onEntityRender(BlockEntityRender er);
 
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        em.unsubscribe(RenderSubmergedOverlayListener.class, this);
-    }
 
-    @Override
-    public void onRenderOverlay(RenderSubmergedOverlay overlay) {
-        overlay.cancel();
-    }
 }

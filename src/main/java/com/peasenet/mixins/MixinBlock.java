@@ -49,4 +49,9 @@ public class MixinBlock {
         cir.setReturnValue(blockVisible);
         return blockVisible;
     }
+
+    @Inject(at = @At("HEAD"), method = "getSlipperiness", cancellable = true)
+    public void slippery(CallbackInfoReturnable<Float> cir) {
+        cir.setReturnValue(0.9f);
+    }
 }

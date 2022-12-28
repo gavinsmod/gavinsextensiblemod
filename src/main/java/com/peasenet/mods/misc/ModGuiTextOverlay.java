@@ -47,6 +47,7 @@ public class ModGuiTextOverlay extends Mod implements InGameHudRenderListener {
 
         //NOTE: This isn't really the best place for this, but it works for now. this is for chat message toggles.
         ToggleSetting chatMessage = new ToggleSetting("gavinsmod.settings.misc.messages");
+        chatMessage.setCallback(() -> miscConfig.setMessages(chatMessage.getValue()));
         chatMessage.setValue(miscConfig.isMessages());
         addSetting(chatMessage);
     }
