@@ -79,6 +79,7 @@ public class GavinsModClient implements ClientModInitializer {
         var blockBrightness = getMinecraftClient().getWorld().getLightLevel(LightType.BLOCK, getPlayer().getBlockPos().up());
         var currTime = getMinecraftClient().getWorld().getTimeOfDay() % 24000;
         var shouldBeFullBright = (currTime >= 13000 || currTime <= 100 || skyBrightness <= 2) && blockBrightness <= 2;
+        shouldBeFullBright = shouldBeFullBright || getPlayer().isSubmergedInWater();
         if (shouldBeFullBright && !Mods.getMod("fullbright").isActive()) Mods.getMod("fullbright").activate();
         else if (Mods.getMod("fullbright").isActive() && !shouldBeFullBright) Mods.getMod("fullbright").deactivate();
     }
