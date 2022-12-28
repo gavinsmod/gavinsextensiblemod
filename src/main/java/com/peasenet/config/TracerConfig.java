@@ -33,6 +33,16 @@ public class TracerConfig extends Config<TracerConfig> {
 
     public Color beehiveColor = Colors.GOLD;
 
+    public Color getFurnaceColor() {
+        return furnaceColor;
+    }
+
+    public void setFurnaceColor(Color furnaceColor) {
+        this.furnaceColor = furnaceColor;
+    }
+
+    public Color furnaceColor = Colors.RED_ORANGE;
+
     public Color getBeehiveColor() {
         return beehiveColor;
     }
@@ -40,6 +50,7 @@ public class TracerConfig extends Config<TracerConfig> {
     public void setBeehiveColor(Color beehiveColor) {
         this.beehiveColor = beehiveColor;
     }
+
     public boolean showHostileMobs = true;
     public boolean showPeacefulMobs = true;
 

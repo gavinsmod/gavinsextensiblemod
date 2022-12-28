@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -65,6 +65,7 @@ public enum Type {
     ENTITY_PLAYER_ESP("Player ESP", "gavinsmod.mod.esp.player", "gavinsmod.keybinds.esp", ESPS, "playeresp"),
     MOB_ESP("Mob ESP", "gavinsmod.mod.esp.mob", "gavinsmod.keybinds.esp", ESPS, "mobesp"),
     BEEHIVE_ESP("Beehive ESP", "gavinsmod.mod.esp.beehive", "gavinsmod.keybinds.esp", ESPS, "beehiveesp"),
+    FURNACE_ESP("Furnace ESP", "gavinsmod.mod.esp.furnace", "gavinsmod.keybinds.esp", ESPS, "furnaceesp"),
 
     // TRACER
     CHEST_TRACER("Chest Tracer", "gavinsmod.mod.tracer.chest", "gavinsmod.keybinds.tracers", TRACERS, "chesttracer"),
@@ -72,6 +73,7 @@ public enum Type {
     ENTITY_PLAYER_TRACER("Player Tracer", "gavinsmod.mod.tracer.player", "gavinsmod.keybinds.tracers", TRACERS, "playertracer"),
     MOB_TRACER("Mob Tracer", "gavinsmod.mod.tracer.mob", "gavinsmod.keybinds.tracers", TRACERS, "mobtracer"),
     BEEHIVE_TRACER("Beehive Tracer", "gavinsmod.mod.tracer.beehive", "gavinsmod.keybinds.tracers", TRACERS, "beehivetracer"),
+    FURNACE_TRACER("Furnace Tracer", "gavinsmod.mod.tracer.furnace", "gavinsmod.keybinds.tracers", TRACERS, "furnacetracer"),
 
     // MISC
     MOD_FPS_COUNTER("FPS Counter", "gavinsmod.mod.misc.fpscounter", "gavinsmod.keybinds.misc", MISC, "fpscounter"),
