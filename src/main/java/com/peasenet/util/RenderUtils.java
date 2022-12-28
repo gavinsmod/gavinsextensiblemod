@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -36,6 +36,7 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix3f;
@@ -113,13 +114,46 @@ public class RenderUtils {
         int chunk_x = player.getChunkPos().x;
         int chunk_z = player.getChunkPos().z;
 
-        drawChestMods(level, stack, buffer, playerPos, chunk_x, chunk_z, delta);
+//        drawChestMods(level, stack, buffer, playerPos, chunk_x, chunk_z, delta);
         drawEntityMods(level, player, stack, delta, buffer, playerPos);
         WorldRenderEvent event = new WorldRenderEvent(level, stack, buffer, delta);
         GavinsMod.eventManager.call(event);
         tessellator.draw();
         stack.pop();
         resetRenderSystem();
+    }
+
+    public static boolean beforeBlockOutline(WorldRenderContext context, HitResult h) {
+        CHUNK_RADIUS = GavinsModClient.getMinecraftClient().getOptions().getViewDistance().getValue();
+        MinecraftClient minecraft = MinecraftClient.getInstance();
+        ClientWorld level = minecraft.world;
+        ClientPlayerEntity player = minecraft.player;
+        MatrixStack stack = context.matrixStack();
+        float delta = context.tickDelta();
+        Camera mainCamera = minecraft.gameRenderer.getCamera();
+        Vec3d camera = mainCamera.getPos();
+
+        setupRenderSystem();
+
+        stack.push();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+
+        RenderSystem.applyModelViewMatrix();
+        stack.translate(-camera.x, -camera.y, -camera.z);
+        assert player != null;
+        Vec3d playerPos = PlayerUtils.getNewPlayerPosition(delta, mainCamera);
+        assert level != null;
+        int chunk_x = player.getChunkPos().x;
+        int chunk_z = player.getChunkPos().z;
+
+        drawBlockMods(level, stack, buffer, playerPos, chunk_x, chunk_z, delta);
+
+        tessellator.draw();
+        stack.pop();
+        resetRenderSystem();
+        return true;
     }
 
     /**
@@ -151,7 +185,7 @@ public class RenderUtils {
      * @param chunk_x   The player's chunk x.
      * @param chunk_z   The player's chunk z.
      */
-    private static void drawChestMods(ClientWorld level, MatrixStack stack, BufferBuilder buffer, Vec3d playerPos, int chunk_x, int chunk_z, float delta) {
+    private static void drawBlockMods(ClientWorld level, MatrixStack stack, BufferBuilder buffer, Vec3d playerPos, int chunk_x, int chunk_z, float delta) {
         for (int x = -CHUNK_RADIUS; x <= CHUNK_RADIUS; x++) {
             for (int z = -CHUNK_RADIUS; z <= CHUNK_RADIUS; z++) {
                 int chunk_x_ = chunk_x + x;
@@ -224,7 +258,7 @@ public class RenderUtils {
         if (GavinsMod.fullbrightConfig.isGammaFade()) {
             fadeGammaUp();
         } else {
-            setGamma(64.0);
+            setGamma(16.0);
         }
     }
 
@@ -255,7 +289,7 @@ public class RenderUtils {
      */
     public static void setGamma(double gamma) {
         if (gamma < 0.0) gamma = 0.0;
-        if (gamma > 64.0) return;
+        if (gamma > 16.0) return;
         var newGamma = GavinsModClient.getMinecraftClient().getOptions().getGamma();
         if (newGamma.getValue() != gamma) {
             @SuppressWarnings("unchecked") var newGamma2 = (ISimpleOption<Double>) (Object) newGamma;
@@ -270,7 +304,7 @@ public class RenderUtils {
      */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isHighGamma() {
-        return getGamma() == 64;
+        return getGamma() == 16;
     }
 
     /**
@@ -287,7 +321,7 @@ public class RenderUtils {
      * Sets the gamma to the last user configured value.
      */
     public static void setLastGamma() {
-        if (getGamma() > 100) return;
+        if (getGamma() > 1) return;
         LAST_GAMMA = getGamma();
     }
 

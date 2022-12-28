@@ -67,6 +67,7 @@ public class GavinsModClient implements ClientModInitializer {
             checkAutoFullBright();
         });
         WorldRenderEvents.AFTER_ENTITIES.register(RenderUtils::afterEntities);
+        WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(RenderUtils::beforeBlockOutline);
     }
 
     /**
