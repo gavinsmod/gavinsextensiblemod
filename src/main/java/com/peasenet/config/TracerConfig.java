@@ -30,8 +30,17 @@ public class TracerConfig extends Config<TracerConfig> {
     public Color peacefulMobColor = Colors.GREEN;
     public Color playerColor = Colors.YELLOW;
     public Color itemColor = Colors.CYAN;
-
     public Color beehiveColor = Colors.GOLD;
+    public float alpha = 0.5f;
+
+    public float getAlpha() {
+        return alpha;
+    }
+
+    public void setAlpha(float alpha) {
+        this.alpha = alpha;
+        saveConfig();
+    }
 
     public Color getFurnaceColor() {
         return furnaceColor;
@@ -39,6 +48,7 @@ public class TracerConfig extends Config<TracerConfig> {
 
     public void setFurnaceColor(Color furnaceColor) {
         this.furnaceColor = furnaceColor;
+        saveConfig();
     }
 
     public Color furnaceColor = Colors.RED_ORANGE;
@@ -49,6 +59,7 @@ public class TracerConfig extends Config<TracerConfig> {
 
     public void setBeehiveColor(Color beehiveColor) {
         this.beehiveColor = beehiveColor;
+        saveConfig();
     }
 
     public boolean showHostileMobs = true;

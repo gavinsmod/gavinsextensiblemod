@@ -64,6 +64,6 @@ public class ModChestEsp extends Mod implements BlockEntityRenderListener {
         var box = new Box(er.entity.getPos());
         if (er.entity instanceof ChestBlockEntity || er.entity instanceof ShulkerBoxBlockEntity
                 || er.entity instanceof EnderChestBlockEntity)
-            RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getChestColor());
+            RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getChestColor(), espConfig.getAlpha());
     }
 }

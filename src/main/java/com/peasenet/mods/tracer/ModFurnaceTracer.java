@@ -63,7 +63,7 @@ public class ModFurnaceTracer extends Mod implements BlockEntityRenderListener,
     @Override
     public void onEntityRender(BlockEntityRender er) {
         if (er.entity instanceof FurnaceBlockEntity)
-            RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, tracerConfig.getFurnaceColor());
+            RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, tracerConfig.getFurnaceColor(), tracerConfig.getAlpha());
     }
 
     @Override

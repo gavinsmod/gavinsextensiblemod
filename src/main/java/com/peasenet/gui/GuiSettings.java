@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -28,6 +28,7 @@ import com.peasenet.main.Mods;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.Setting;
+import com.peasenet.settings.SlideSetting;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -42,27 +43,27 @@ public class GuiSettings extends GuiElement {
     /**
      * The tracer dropdown
      */
-    GuiScroll tracerDropdown;
+    public static GuiScroll tracerDropdown;
 
     /**
      * The esp dropdown
      */
-    GuiScroll espDropdown;
+    public static GuiScroll espDropdown;
 
     /**
      * The render dropdown
      */
-    GuiScroll renderDropdown;
+    public static GuiScroll renderDropdown;
 
     /**
      * The miscellaneous dropdown
      */
-    GuiScroll miscDropdown;
+    public static GuiScroll miscDropdown;
 
     /**
      * The dropdown containing gui settings.
      */
-    GuiScroll guiDropdown;
+    public static GuiScroll guiDropdown;
 
     /**
      * Creates a new GUI settings screen.
@@ -91,7 +92,10 @@ public class GuiSettings extends GuiElement {
     public void reloadGui() {
         guis.forEach(Gui::clearChildren);
         guis.clear();
-        // Create a plain gui at the top right corner
+        // Create a plain gui in the top right corner
+
+        miscSettings();
+
         addSettings(tracerDropdown, Type.Category.TRACERS);
         addSettings(espDropdown, Type.Category.ESPS);
         addSettings(renderDropdown, Type.Category.RENDER);
@@ -103,6 +107,19 @@ public class GuiSettings extends GuiElement {
         guis.add(miscDropdown);
         guis.add(guiDropdown);
         guis.forEach(g -> g.setParent(true));
+    }
+
+    private static void miscSettings() {
+        var espAlpha = new SlideSetting("gavinsmod.settings.esp.alpha");
+        espAlpha.setCallback(() -> GavinsMod.espConfig.setAlpha(espAlpha.getValue()));
+        espAlpha.setValue(GavinsMod.espConfig.getAlpha());
+
+        var tracerAlpha = new SlideSetting("gavinsmod.settings.tracer.alpha");
+        tracerAlpha.setCallback(() -> GavinsMod.tracerConfig.setAlpha(tracerAlpha.getValue()));
+        tracerAlpha.setValue(GavinsMod.tracerConfig.getAlpha());
+
+        espDropdown.addElement(espAlpha.getGui());
+        tracerDropdown.addElement(tracerAlpha.getGui());
     }
 
     /**

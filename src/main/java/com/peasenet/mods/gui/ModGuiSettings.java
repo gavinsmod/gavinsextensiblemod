@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -20,11 +20,13 @@
 
 package com.peasenet.mods.gui;
 
+import com.peasenet.gavui.util.GavUISettings;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
+import com.peasenet.settings.SlideSetting;
 import com.peasenet.settings.ToggleSetting;
 
 /**
@@ -40,6 +42,12 @@ public class ModGuiSettings extends Mod {
         ColorSetting categoryColorSetting = new ColorSetting("gavui.gui.color.category", "gavinsmod.settings.gui.color.category");
         ColorSetting enabledColorSetting = new ColorSetting("gavui.gui.color.enabled", "gavinsmod.settings.gui.color.enabled");
         ToggleSetting guiSounds = new ToggleSetting("gavui.gui.sound", "gavinsmod.settings.gui.sound");
+        SlideSetting guiAlpha = new SlideSetting("gavui.gui.alpha", "gavinsmod.settings.gui.alpha");
+        guiAlpha.setCallback(() -> {
+            GavUISettings.add("gui.alpha", guiAlpha.getValue());
+        });
+        guiAlpha.setValue(GavUISettings.getFloat("gui.alpha"));
+        addSetting(guiAlpha);
 
         addSetting(backgroundColorSetting);
         addSetting(foregroundColorSetting);

@@ -74,12 +74,25 @@ public class RenderUtils {
      * @param color     The color to draw the line in.
      */
     public static void renderSingleLine(MatrixStack stack, VertexConsumer buffer, Vec3d playerPos, Vec3d boxPos, Color color) {
+        renderSingleLine(stack, buffer, playerPos, boxPos, color, 1);
+    }
+
+    /**
+     * Draws a single line in the given color.
+     *
+     * @param stack     The matrix stack to use.
+     * @param buffer    The buffer to write to.
+     * @param playerPos The position of the player.
+     * @param boxPos    The center of the location we want to draw a line to.
+     * @param color     The color to draw the line in.
+     */
+    public static void renderSingleLine(MatrixStack stack, VertexConsumer buffer, Vec3d playerPos, Vec3d boxPos, Color color, float alpha) {
         Vec3d normal = new Vec3d(boxPos.getX() - playerPos.getX(), boxPos.getY() - playerPos.getY(), boxPos.getZ() - playerPos.getZ());
         normal.normalize();
         Matrix4f matrix4f = stack.peek().getPositionMatrix();
         Matrix3f matrix3f = stack.peek().getNormalMatrix();
-        buffer.vertex(matrix4f, (float) playerPos.getX(), (float) playerPos.getY(), (float) playerPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), 0.5f).normal(matrix3f, (float) normal.getX(), (float) normal.getY(), (float) normal.getZ()).next();
-        buffer.vertex(matrix4f, (float) boxPos.getX(), (float) boxPos.getY(), (float) boxPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), 0.5f).normal(matrix3f, (float) normal.getX(), (float) normal.getY(), (float) normal.getZ()).next();
+        buffer.vertex(matrix4f, (float) playerPos.getX(), (float) playerPos.getY(), (float) playerPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), alpha).normal(matrix3f, (float) normal.getX(), (float) normal.getY(), (float) normal.getZ()).next();
+        buffer.vertex(matrix4f, (float) boxPos.getX(), (float) boxPos.getY(), (float) boxPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), alpha).normal(matrix3f, (float) normal.getX(), (float) normal.getY(), (float) normal.getZ()).next();
     }
 
     /**
@@ -162,6 +175,7 @@ public class RenderUtils {
     private static void resetRenderSystem() {
         RenderSystem.applyModelViewMatrix();
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.disableBlend();
         GL11.glDisable(GL11.GL_LINE_SMOOTH);
     }
 
@@ -170,9 +184,8 @@ public class RenderUtils {
      */
     private static void setupRenderSystem() {
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.enableBlend();
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.disableTexture();
     }
 
     /**
@@ -214,7 +227,20 @@ public class RenderUtils {
      * @param c      The color to draw the box in.
      */
     public static void drawBox(MatrixStack stack, BufferBuilder buffer, Box aabb, Color c) {
-        WorldRenderer.drawBox(stack, buffer, aabb, c.getRed(), c.getGreen(), c.getBlue(), 1f);
+        drawBox(stack, buffer, aabb, c, 1);
+    }
+
+    /**
+     * Draws a box on the world.
+     *
+     * @param stack  The matrix stack.
+     * @param buffer The buffer to write to.
+     * @param aabb   The box to draw.
+     * @param c      The color to draw the box in.
+     * @param alpha  The alpha of the box.
+     */
+    public static void drawBox(MatrixStack stack, BufferBuilder buffer, Box aabb, Color c, float alpha) {
+        WorldRenderer.drawBox(stack, buffer, aabb, c.getRed(), c.getGreen(), c.getBlue(), alpha);
     }
 
     /**

@@ -40,8 +40,8 @@ public class ModFurnaceEsp extends Mod implements BlockEntityRenderListener {
         super(Type.FURNACE_ESP);
         ColorSetting colorSetting = new ColorSetting("none",
                 "gavinsmod.settings.esp.furnace.color");
-        colorSetting.setCallback(() -> tracerConfig.setFurnaceColor(colorSetting.getColor()));
-        colorSetting.setColor(GavinsMod.tracerConfig.getFurnaceColor());
+        colorSetting.setCallback(() -> espConfig.setFurnaceColor(colorSetting.getColor()));
+        colorSetting.setColor(GavinsMod.espConfig.getFurnaceColor());
         addSetting(colorSetting);
     }
 
@@ -62,7 +62,7 @@ public class ModFurnaceEsp extends Mod implements BlockEntityRenderListener {
     public void onEntityRender(BlockEntityRender er) {
         if (er.entity instanceof FurnaceBlockEntity) {
             var box = new Box(er.entity.getPos());
-            RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getFurnaceColor());
+            RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getFurnaceColor(), espConfig.getAlpha());
         }
     }
 }

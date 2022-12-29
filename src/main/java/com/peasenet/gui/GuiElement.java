@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -24,6 +24,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.peasenet.gavui.Gui;
 import com.peasenet.gavui.math.PointD;
 import com.peasenet.gavui.util.GavUISettings;
+import com.peasenet.main.GavinsMod;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -42,6 +43,11 @@ public class GuiElement extends Screen {
      * The box that contains the menu title in the top left corner of the screen.
      */
     public Gui titleBox;
+
+    private Gui overlay;
+
+    private Gui selectedGui;
+
     /**
      * A list of gui children to render.
      */
@@ -64,6 +70,9 @@ public class GuiElement extends Screen {
     public void init() {
         super.init();
         titleBox = new Gui(new PointD(10, 1), textRenderer.getWidth(title) + 4, 10, title);
+        var clientWidth = client.getWindow().getScaledWidth();
+        var clientHeight = client.getWindow().getScaledHeight();
+        overlay = new Gui(new PointD(0, 0), clientWidth + 1, clientHeight, Text.of(""));
     }
 
     @Override
@@ -89,12 +98,13 @@ public class GuiElement extends Screen {
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         for (var gui : guis) {
-            if (gui.isDragging()) {
+            if (gui.isDragging() && selectedGui.equals(gui)) {
                 gui.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
                 return true;
             }
             if (!gui.isDragging() && gui.mouseWithinGui(mouseX, mouseY)) {
                 gui.setDragging(true);
+                selectedGui = gui;
             }
         }
         return false;
@@ -103,6 +113,8 @@ public class GuiElement extends Screen {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         guis.forEach(g -> g.setDragging(false));
+        selectedGui = null;
+        GavinsMod.LOGGER.info("Released");
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
@@ -112,6 +124,7 @@ public class GuiElement extends Screen {
         var tr = client.textRenderer;
         RenderSystem.setShader(GameRenderer::getPositionProgram);
         RenderSystem.enableBlend();
+//        overlay.render(matrixStack, tr, mouseX, mouseY, delta);
         guis.forEach(gui -> {
             if (gui.isParent())
                 gui.setBackground(GavUISettings.getColor("gui.color.category"));

@@ -33,12 +33,25 @@ public class EspConfig extends Config<EspConfig> {
 
     public Color beehiveColor = Colors.GOLD;
 
+    public float alpha = 0.5f;
+
+    public float getAlpha() {
+        return alpha;
+    }
+
+    public void setAlpha(float alpha) {
+        this.alpha = alpha;
+        saveConfig();
+    }
+
+
     public Color getFurnaceColor() {
         return furnaceColor;
     }
 
     public void setFurnaceColor(Color furnaceColor) {
         this.furnaceColor = furnaceColor;
+        saveConfig();
     }
 
     public Color furnaceColor = Colors.RED_ORANGE;
@@ -49,6 +62,7 @@ public class EspConfig extends Config<EspConfig> {
 
     public void setBeehiveColor(Color beehiveColor) {
         this.beehiveColor = beehiveColor;
+        saveConfig();
     }
 
     public boolean showHostileMobs = true;

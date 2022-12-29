@@ -77,9 +77,9 @@ public class ModMobEsp extends Mod implements EntityRenderListener {
         if (!(er.entity instanceof MobEntity))
             return;
         if (espConfig.isShowPeacefulMobs() && er.getEntityType().getSpawnGroup().isPeaceful()) {
-            RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getPeacefulMobColor());
+            RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getPeacefulMobColor(), espConfig.getAlpha());
         } else if (espConfig.isShowHostileMobs() && !er.getEntityType().getSpawnGroup().isPeaceful()) {
-            RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getHostileMobColor());
+            RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getHostileMobColor(), espConfig.getAlpha());
         }
     }
 }
