@@ -112,14 +112,15 @@ public class ModRadar extends Mod implements InGameHudRenderListener {
         useWaypointColorSetting.setCallback(() -> radarConfig.getInstance().setUseWaypointColor(useWaypointColorSetting.getValue()));
         useWaypointColorSetting.setValue(radarConfig.getInstance().isUseWaypointColor());
 
-        var color = new SubSetting(90, 10, "gavinsmod.settings.radar.color");
-        var drawSettings = new SubSetting(90, 10, "gavinsmod.settings.radar.drawn");
+        var color = new SubSetting(110, 10, "gavinsmod.settings.radar.color");
+        var drawSettings = new SubSetting(110, 10, "gavinsmod.settings.radar.drawn");
 
         color.add(playerEntityColor);
         color.add(hostileMobEntityColor);
         color.add(peacefulMobEntityColor);
         color.add(entityItemColor);
         color.add(waypointColor);
+
 
         scaleSetting.setCallback(this::increaseScale);
         pointSizeSetting.setCallback(this::togglePointSize);
@@ -132,11 +133,9 @@ public class ModRadar extends Mod implements InGameHudRenderListener {
         drawSettings.add(playerSetting);
         drawSettings.add(useWaypointColorSetting);
 
-        color.getGui().getChildren().forEach(c -> c.setWidth(color.getGui().getWidth() + 20));
-        drawSettings.getGui().getChildren().forEach(c -> c.setWidth(drawSettings.getGui().getWidth() + 20));
-
         addSetting(color);
         addSetting(drawSettings);
+
         updateScaleText(pointSizeSetting, radarConfig.getInstance().getPointSize());
         updateScaleText(scaleSetting, radarConfig.getInstance().getScale());
     }
