@@ -73,6 +73,7 @@
     "gavinsmod.settings.gui.color.category": "Category Color",
     "gavinsmod.settings.gui.color.enabled": "Enabled Color",
     "gavinsmod.settings.gui.color.foreground": "Foreground Color",
+    "gavinsmod.settings.gui.color.frozen": "Frozen Color",
     "gavinsmod.settings.gui.sound": "GUI Sounds",
     "gavinsmod.settings.misc": "Misc. Settings",
     "gavinsmod.settings.misc.fps.color.fast": "Fast FPS Color",

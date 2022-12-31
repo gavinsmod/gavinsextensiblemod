@@ -41,6 +41,7 @@ public class ModGuiSettings extends Mod {
         ColorSetting backgroundColorSetting = new ColorSetting("gavui.gui.color.background", "gavinsmod.settings.gui.color.background");
         ColorSetting categoryColorSetting = new ColorSetting("gavui.gui.color.category", "gavinsmod.settings.gui.color.category");
         ColorSetting enabledColorSetting = new ColorSetting("gavui.gui.color.enabled", "gavinsmod.settings.gui.color.enabled");
+        ColorSetting frozenColorSetting = new ColorSetting("gavui.gui.color.frozen", "gavinsmod.settings.gui.color.frozen");
         ToggleSetting guiSounds = new ToggleSetting("gavui.gui.sound", "gavinsmod.settings.gui.sound");
         SlideSetting guiAlpha = new SlideSetting("gavui.gui.alpha", "gavinsmod.settings.gui.alpha");
         guiAlpha.setCallback(() -> {
@@ -53,6 +54,7 @@ public class ModGuiSettings extends Mod {
         addSetting(foregroundColorSetting);
         addSetting(categoryColorSetting);
         addSetting(enabledColorSetting);
+        addSetting(frozenColorSetting);
         addSetting(guiSounds);
     }
 
