@@ -104,6 +104,7 @@
     "gavinsmod.settings.render.tracers.color": "Tracer Colors",
     "gavinsmod.settings.render.waypoints.add": "Add Waypoint",
     "gavinsmod.settings.render.waypoints.color": "Waypoint Color",
+    "gavinsmod.settings.reset": "Reset",
     "gavinsmod.settings.save": "Save",
     "gavinsmod.settings.tracer": "Tracer",
     "gavinsmod.settings.tracer.alpha": "Tracer Alpha",

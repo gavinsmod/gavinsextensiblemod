@@ -22,6 +22,7 @@ package com.peasenet.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.peasenet.gavui.Gui;
+import com.peasenet.gavui.color.Colors;
 import com.peasenet.gavui.math.PointF;
 import com.peasenet.gavui.util.GavUISettings;
 import com.peasenet.main.GavinsMod;
@@ -43,8 +44,6 @@ public class GuiElement extends Screen {
      * The box that contains the menu title in the top left corner of the screen.
      */
     public Gui titleBox;
-
-    private Gui overlay;
 
     private Gui selectedGui;
 
@@ -72,7 +71,9 @@ public class GuiElement extends Screen {
         titleBox = new Gui(new PointF(10, 1), textRenderer.getWidth(title) + 4, 10, title);
         var clientWidth = client.getWindow().getScaledWidth();
         var clientHeight = client.getWindow().getScaledHeight();
-        overlay = new Gui(new PointF(0, 0), clientWidth + 1, clientHeight, Text.of(""));
+        //TODO: Maybe make this a background?
+        Gui overlay = new Gui(new PointF(0, 0), clientWidth + 1, clientHeight, Text.of(""));
+        overlay.setBackground(Colors.BLACK);
     }
 
     @Override

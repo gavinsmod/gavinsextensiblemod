@@ -21,7 +21,9 @@
 package com.peasenet.gui;
 
 import com.peasenet.gavui.Gui;
+import com.peasenet.gavui.GuiClick;
 import com.peasenet.gavui.GuiScroll;
+import com.peasenet.gavui.color.Colors;
 import com.peasenet.gavui.math.PointF;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.Mods;
@@ -43,41 +45,73 @@ public class GuiSettings extends GuiElement {
     /**
      * The tracer dropdown
      */
-    public static GuiScroll tracerDropdown;
+    private static GuiScroll tracerDropdown;
 
     /**
      * The esp dropdown
      */
-    public static GuiScroll espDropdown;
+    private static GuiScroll espDropdown;
 
     /**
      * The render dropdown
      */
-    public static GuiScroll renderDropdown;
+    private static GuiScroll renderDropdown;
 
     /**
      * The miscellaneous dropdown
      */
-    public static GuiScroll miscDropdown;
+    private static GuiScroll miscDropdown;
 
     /**
      * The dropdown containing gui settings.
      */
-    public static GuiScroll guiDropdown;
+    private static GuiScroll guiDropdown;
+
+    private static GuiClick resetButton;
 
     /**
      * Creates a new GUI settings screen.
      */
     public GuiSettings() {
         super(Text.translatable("gavinsmod.gui.settings"));
+    }
+
+    /**
+     * Sets up miscellaneous settings that don't really have a proper
+     * home.
+     */
+    private static void miscSettings() {
+        var espAlpha = new SlideSetting("gavinsmod.settings.esp.alpha");
+        espAlpha.setCallback(() -> GavinsMod.espConfig.setAlpha(espAlpha.getValue()));
+        espAlpha.setValue(GavinsMod.espConfig.getAlpha());
+
+        var tracerAlpha = new SlideSetting("gavinsmod.settings.tracer.alpha");
+        tracerAlpha.setCallback(() -> GavinsMod.tracerConfig.setAlpha(tracerAlpha.getValue()));
+        tracerAlpha.setValue(GavinsMod.tracerConfig.getAlpha());
+
+        espDropdown.addElement(espAlpha.getGui());
+        tracerDropdown.addElement(tracerAlpha.getGui());
+    }
+
+    @Override
+    public void init() {
+        super.init();
         guis = new ArrayList<>();
         renderDropdown = new GuiScroll(new PointF(10, 20), 100, 10, Text.translatable("gavinsmod.settings.render"));
         miscDropdown = new GuiScroll(new PointF(115, 20), 100, 10, Text.translatable("gavinsmod.settings.misc"));
         guiDropdown = new GuiScroll(new PointF(220, 20), 100, 10, Text.translatable("gavinsmod.settings.gui"));
         espDropdown = new GuiScroll(new PointF(10, 130), 110, 10, Text.translatable("gavinsmod.settings.esp"));
         tracerDropdown = new GuiScroll(new PointF(125, 130), 115, 10, Text.translatable("gavinsmod.settings.tracer"));
+        var titleW = textRenderer.getWidth(Text.translatable("gavinsmod.gui.settings")) + 16;
+        var resetText = Text.translatable("gavinsmod.settings.reset");
+        var width = textRenderer.getWidth(resetText);
+        resetButton = new GuiClick(new PointF(titleW, 1), width + 4, 10, Text.translatable("gavinsmod.settings.reset"));
+        resetButton.setBackground(Colors.DARK_RED);
+        resetButton.setCallback(() -> {
+            GavinsMod.gui.reset();
+            GavinsMod.guiSettings.reset();
+        });
         reloadGui();
-
     }
 
     @Override
@@ -107,19 +141,8 @@ public class GuiSettings extends GuiElement {
         guis.add(miscDropdown);
         guis.add(guiDropdown);
         guis.forEach(g -> g.setParent(true));
-    }
 
-    private static void miscSettings() {
-        var espAlpha = new SlideSetting("gavinsmod.settings.esp.alpha");
-        espAlpha.setCallback(() -> GavinsMod.espConfig.setAlpha(espAlpha.getValue()));
-        espAlpha.setValue(GavinsMod.espConfig.getAlpha());
-
-        var tracerAlpha = new SlideSetting("gavinsmod.settings.tracer.alpha");
-        tracerAlpha.setCallback(() -> GavinsMod.tracerConfig.setAlpha(tracerAlpha.getValue()));
-        tracerAlpha.setValue(GavinsMod.tracerConfig.getAlpha());
-
-        espDropdown.addElement(espAlpha.getGui());
-        tracerDropdown.addElement(tracerAlpha.getGui());
+        guis.add(resetButton);
     }
 
     /**
