@@ -21,7 +21,7 @@
 package com.peasenet.settings;
 
 import com.peasenet.gavui.GuiToggle;
-import com.peasenet.gavui.math.PointD;
+import com.peasenet.gavui.math.PointF;
 import com.peasenet.gavui.util.GavUISettings;
 import net.minecraft.text.Text;
 
@@ -60,7 +60,7 @@ public class ToggleSetting extends Setting {
             isGavUi = true;
         } else
             value = false;
-        gui = new GuiToggle(new PointD(0, 0), 90, 10, Text.translatable(key));
+        gui = new GuiToggle(new PointF(0, 0), 90, 10, Text.translatable(key));
         gui.setState(value);
         String finalName = name;
         gui.setCallback(() -> {
@@ -81,7 +81,7 @@ public class ToggleSetting extends Setting {
 
     public ToggleSetting(Text literal) {
         super("none", "none");
-        gui = new GuiToggle(new PointD(0, 0), 90, 10, literal);
+        gui = new GuiToggle(new PointF(0, 0), 90, 10, literal);
         gui.setState(value);
         gui.setCallback(this::onClick);
         gui.hide();
@@ -99,7 +99,7 @@ public class ToggleSetting extends Setting {
         super(name, "");
         this.noToggle = noToggle;
         value = false;
-        gui = new GuiToggle(new PointD(0, 0), 90, 10, literal);
+        gui = new GuiToggle(new PointF(0, 0), 90, 10, literal);
         gui.setState(value);
         gui.setCallback(this::onClick);
         gui.hide();

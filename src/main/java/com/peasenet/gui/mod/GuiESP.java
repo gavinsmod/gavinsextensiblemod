@@ -21,8 +21,8 @@
 package com.peasenet.gui.mod;
 
 import com.peasenet.gavui.GuiScroll;
-import com.peasenet.gavui.math.BoxD;
-import com.peasenet.gavui.math.PointD;
+import com.peasenet.gavui.math.BoxF;
+import com.peasenet.gavui.math.PointF;
 import com.peasenet.mods.Type;
 import net.minecraft.text.Text;
 
@@ -37,7 +37,7 @@ public class GuiESP extends GuiScroll {
      * Creates a new ESP dropdown.
      */
     public GuiESP() {
-        this(new PointD(10, 120), 85, 10, Text.translatable("gavinsmod.gui.esps"));
+        this(new PointF(10, 120), 85, 10, Text.translatable("gavinsmod.gui.esps"));
     }
 
     /**
@@ -48,8 +48,8 @@ public class GuiESP extends GuiScroll {
      * @param height   - The height of the dropdown.
      * @param title    - The title of the dropdown.
      */
-    public GuiESP(PointD position, int width, int height, Text title) {
+    public GuiESP(PointF position, int width, int height, Text title) {
         super(position, width, height, title, 4, ModGuiUtil.getGuiToggleFromCategory(Type.Category.ESPS,
-                new BoxD(position, width, height)));
+                new BoxF(position, width, height)));
     }
 }

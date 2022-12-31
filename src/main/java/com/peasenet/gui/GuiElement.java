@@ -22,7 +22,7 @@ package com.peasenet.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.peasenet.gavui.Gui;
-import com.peasenet.gavui.math.PointD;
+import com.peasenet.gavui.math.PointF;
 import com.peasenet.gavui.util.GavUISettings;
 import com.peasenet.main.GavinsMod;
 import net.minecraft.client.gui.screen.Screen;
@@ -69,10 +69,10 @@ public class GuiElement extends Screen {
     @Override
     public void init() {
         super.init();
-        titleBox = new Gui(new PointD(10, 1), textRenderer.getWidth(title) + 4, 10, title);
+        titleBox = new Gui(new PointF(10, 1), textRenderer.getWidth(title) + 4, 10, title);
         var clientWidth = client.getWindow().getScaledWidth();
         var clientHeight = client.getWindow().getScaledHeight();
-        overlay = new Gui(new PointD(0, 0), clientWidth + 1, clientHeight, Text.of(""));
+        overlay = new Gui(new PointF(0, 0), clientWidth + 1, clientHeight, Text.of(""));
     }
 
     @Override

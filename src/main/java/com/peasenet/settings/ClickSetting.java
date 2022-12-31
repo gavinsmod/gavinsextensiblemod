@@ -22,7 +22,7 @@ package com.peasenet.settings;
 
 import com.peasenet.gavui.Gui;
 import com.peasenet.gavui.GuiClick;
-import com.peasenet.gavui.math.PointD;
+import com.peasenet.gavui.math.PointF;
 import net.minecraft.text.Text;
 
 /**
@@ -45,7 +45,7 @@ public class ClickSetting extends Setting {
      */
     public ClickSetting(String name, String translationKey) {
         super(name, translationKey);
-        gui = new GuiClick(new PointD(0, 0), 100, 10, Text.translatable(translationKey));
+        gui = new GuiClick(new PointF(0, 0), 100, 10, Text.translatable(translationKey));
         gui.setCallback(this::onClick);
     }
 
@@ -55,7 +55,7 @@ public class ClickSetting extends Setting {
 
     public ClickSetting(Text literal) {
         super("none", "none");
-        gui = new GuiClick(new PointD(0, 0), 100, 10, literal);
+        gui = new GuiClick(new PointF(0, 0), 100, 10, literal);
         gui.setCallback(this::onClick);
     }
 

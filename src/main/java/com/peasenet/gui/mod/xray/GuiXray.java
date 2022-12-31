@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -24,13 +24,12 @@ import com.peasenet.gavui.Gui;
 import com.peasenet.gavui.GuiClick;
 import com.peasenet.gavui.GuiToggle;
 import com.peasenet.gavui.color.Colors;
-import com.peasenet.gavui.math.PointD;
+import com.peasenet.gavui.math.PointF;
 import com.peasenet.gavui.util.GavUISettings;
 import com.peasenet.gui.GuiElement;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Mods;
-import com.peasenet.main.Settings;
 import com.peasenet.util.RenderUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -133,7 +132,7 @@ public class GuiXray extends GuiElement {
         height = (int) (screenHeight * 0.78f);
         x = screenWidth / 20;
         y = (screenHeight / 20) + 20;
-        box = new Gui(new PointD(x, y), width, height, Text.literal(""));
+        box = new Gui(new PointF(x, y), width, height, Text.literal(""));
         box.setBackground(Colors.INDIGO);
         int blocksPerColumn = (height / 18);
         blocksPerRow = width / 18;
@@ -157,11 +156,11 @@ public class GuiXray extends GuiElement {
                 return pressed;
             }
         };
-        prevButton = new GuiClick(new PointD(x + (width >> 1) - 89, y - 16), 13, 13, Text.empty());
+        prevButton = new GuiClick(new PointF(x + (width >> 1) - 89, y - 16), 13, 13, Text.empty());
         prevButton.setCallback(this::pageDown);
-        nextButton = new GuiClick(new PointD(x + width / 2 + 76, y - 16), 13, 13, Text.empty());
+        nextButton = new GuiClick(new PointF(x + width / 2 + 76, y - 16), 13, 13, Text.empty());
         nextButton.setCallback(this::pageUp);
-        enabledOnly = new GuiToggle(new PointD(x + width / 2 - 170, y - 15), 80, 10, Text.literal("Enabled Only"));
+        enabledOnly = new GuiToggle(new PointF(x + width / 2 - 170, y - 15), 80, 10, Text.literal("Enabled Only"));
         enabledOnly.setCallback(() -> {
             page = 0;
             updateBlockList();

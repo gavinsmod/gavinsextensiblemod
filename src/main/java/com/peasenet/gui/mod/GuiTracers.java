@@ -21,8 +21,8 @@
 package com.peasenet.gui.mod;
 
 import com.peasenet.gavui.GuiScroll;
-import com.peasenet.gavui.math.BoxD;
-import com.peasenet.gavui.math.PointD;
+import com.peasenet.gavui.math.BoxF;
+import com.peasenet.gavui.math.PointF;
 import com.peasenet.mods.Type;
 import net.minecraft.text.Text;
 
@@ -37,7 +37,7 @@ public class GuiTracers extends GuiScroll {
      * Creates a new tracer dropdown.
      */
     public GuiTracers() {
-        this(new PointD(100, 120), 110, 10, Text.translatable("gavinsmod.gui.tracers"));
+        this(new PointF(100, 120), 110, 10, Text.translatable("gavinsmod.gui.tracers"));
     }
 
     /**
@@ -48,8 +48,8 @@ public class GuiTracers extends GuiScroll {
      * @param height   - The height of the dropdown.
      * @param title    - The title of the dropdown.
      */
-    public GuiTracers(PointD position, int width, int height, Text title) {
+    public GuiTracers(PointF position, int width, int height, Text title) {
         super(position, width, height, title, 4, ModGuiUtil.getGuiToggleFromCategory(Type.Category.TRACERS,
-                new BoxD(position, width, height)));
+                new BoxF(position, width, height)));
     }
 }

@@ -22,7 +22,7 @@ package com.peasenet.settings;
 
 import com.peasenet.gavui.Gui;
 import com.peasenet.gavui.GuiSlider;
-import com.peasenet.gavui.math.PointD;
+import com.peasenet.gavui.math.PointF;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 
@@ -46,7 +46,7 @@ public class SlideSetting extends Setting {
      */
     public SlideSetting(String name, String translationKey) {
         super(name, translationKey);
-        gui = new GuiSlider(new PointD(0, 0), 100, 10, Text.translatable(translationKey));
+        gui = new GuiSlider(new PointF(0, 0), 100, 10, Text.translatable(translationKey));
         gui.setCallback(this::onClick);
     }
 

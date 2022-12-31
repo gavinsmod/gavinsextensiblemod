@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -21,8 +21,8 @@
 package com.peasenet.gui.mod;
 
 import com.peasenet.gavui.GuiScroll;
-import com.peasenet.gavui.math.BoxD;
-import com.peasenet.gavui.math.PointD;
+import com.peasenet.gavui.math.BoxF;
+import com.peasenet.gavui.math.PointF;
 import com.peasenet.mods.Type;
 import net.minecraft.text.Text;
 
@@ -37,7 +37,7 @@ public class GuiCombat extends GuiScroll {
      * Creates a new combat dropdown.
      */
     public GuiCombat() {
-        this(new PointD(100, 20), 75, 10, Text.translatable("gavinsmod.gui.combat"));
+        this(new PointF(100, 20), 75, 10, Text.translatable("gavinsmod.gui.combat"));
     }
 
     /**
@@ -48,8 +48,8 @@ public class GuiCombat extends GuiScroll {
      * @param height   - The height of the dropdown.
      * @param title    - The title of the dropdown.
      */
-    public GuiCombat(PointD position, int width, int height, Text title) {
+    public GuiCombat(PointF position, int width, int height, Text title) {
         super(position, width, height, title, 4, ModGuiUtil.getGuiToggleFromCategory(Type.Category.COMBAT,
-                new BoxD(position, width, height)));
+                new BoxF(position, width, height)));
     }
 }

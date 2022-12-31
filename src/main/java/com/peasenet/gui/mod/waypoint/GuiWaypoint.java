@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -22,7 +22,7 @@ package com.peasenet.gui.mod.waypoint;
 
 import com.peasenet.gavui.Gui;
 import com.peasenet.gavui.color.Colors;
-import com.peasenet.gavui.math.PointD;
+import com.peasenet.gavui.math.PointF;
 import com.peasenet.gavui.util.GavUISettings;
 import com.peasenet.gui.GuiElement;
 import com.peasenet.main.GavinsMod;
@@ -231,7 +231,7 @@ public class GuiWaypoint extends GuiElement {
         offsetY = (GavinsModClient.getMinecraftClient().getWindow().getScaledHeight() / 2) - height / 2;
         paddingX = offsetX + padding;
         paddingY = offsetY + padding;
-        box = new Gui(new PointD(offsetX, offsetY), width, height, Text.literal(""));
+        box = new Gui(new PointF(offsetX, offsetY), width, height, Text.literal(""));
         textField = new TextFieldWidget(GavinsModClient.getMinecraftClient().getTextRenderer(), offsetX + 40, offsetY + 10, 100, 10, Text.literal(""));
         xCoordinate = new TextFieldWidget(GavinsModClient.getMinecraftClient().getTextRenderer(), paddingX + 11, offsetY + 80 + padding, 30, 10, Text.literal(""));
         yCoordinate = new TextFieldWidget(GavinsModClient.getMinecraftClient().getTextRenderer(), paddingX + 56, offsetY + 80 + padding, 30, 10, Text.literal(""));
@@ -260,22 +260,22 @@ public class GuiWaypoint extends GuiElement {
         var wholeButtonWidth = (buttonWidth * 3) + (padding * 2);
         var threeButtonY = offsetY + 34 + padding;
         colorCycle.setWidth(wholeButtonWidth);
-        colorCycle.getGui().setPosition(new PointD(paddingX, offsetY + 20 + padding));
+        colorCycle.getGui().setPosition(new PointF(paddingX, offsetY + 20 + padding));
 
-        saveSettings.getGui().setPosition(new PointD(paddingX, threeButtonY));
+        saveSettings.getGui().setPosition(new PointF(paddingX, threeButtonY));
         saveSettings.getGui().setWidth(buttonWidth);
         saveSettings.getGui().setBackground(Colors.GREEN);
-        cancelSettings.getGui().setPosition(new PointD(paddingX + padding + buttonWidth, threeButtonY));
+        cancelSettings.getGui().setPosition(new PointF(paddingX + padding + buttonWidth, threeButtonY));
         cancelSettings.getGui().setWidth(buttonWidth);
         cancelSettings.getGui().setBackground(Colors.YELLOW);
-        deleteSettings.getGui().setPosition(new PointD(paddingX + padding * 2 + (buttonWidth * 2), threeButtonY));
+        deleteSettings.getGui().setPosition(new PointF(paddingX + padding * 2 + (buttonWidth * 2), threeButtonY));
         deleteSettings.getGui().setWidth(buttonWidth);
         deleteSettings.getGui().setBackground(Colors.RED);
-        waypointToggle.getGui().setPosition(new PointD(paddingX, offsetY + padding + 48));
+        waypointToggle.getGui().setPosition(new PointF(paddingX, offsetY + padding + 48));
         waypointToggle.getGui().setWidth(wholeButtonWidth);
-        espToggle.getGui().setPosition(new PointD(paddingX, offsetY + 62 + padding));
+        espToggle.getGui().setPosition(new PointF(paddingX, offsetY + 62 + padding));
         espToggle.getGui().setWidth(wholeButtonWidth / 2 - padding / 2);
-        tracerToggle.getGui().setPosition(new PointD(offsetX + padding + padding / 2 + wholeButtonWidth / 2, offsetY + 62 + padding));
+        tracerToggle.getGui().setPosition(new PointF(offsetX + padding + padding / 2 + wholeButtonWidth / 2, offsetY + 62 + padding));
         tracerToggle.getGui().setWidth(wholeButtonWidth / 2 - padding / 2);
         super.init();
     }
@@ -303,10 +303,10 @@ public class GuiWaypoint extends GuiElement {
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
         box.render(matrixStack, client.textRenderer, mouseX, mouseY, delta);
 
-        client.textRenderer.draw(matrixStack, Text.literal("Name: "), paddingX, offsetY + 11, GavUISettings.getColor("gui.color.foregorund").getAsInt());
-        client.textRenderer.draw(matrixStack, Text.literal("X:"), paddingX + 1, offsetY + 82 + padding, GavUISettings.getColor("gui.color.foregorund").getAsInt());
-        client.textRenderer.draw(matrixStack, Text.literal("Y:"), paddingX + 46, offsetY + 82 + padding, GavUISettings.getColor("gui.color.foregorund").getAsInt());
-        client.textRenderer.draw(matrixStack, Text.literal("Z:"), paddingX + 91, offsetY + 82 + padding, GavUISettings.getColor("gui.color.foregorund").getAsInt());
+        client.textRenderer.draw(matrixStack, Text.literal("Name: "), paddingX, offsetY + 11, GavUISettings.getColor("gui.color.foreground").getAsInt());
+        client.textRenderer.draw(matrixStack, Text.literal("X:"), paddingX + 1, offsetY + 82 + padding, GavUISettings.getColor("gui.color.foreground").getAsInt());
+        client.textRenderer.draw(matrixStack, Text.literal("Y:"), paddingX + 46, offsetY + 82 + padding, GavUISettings.getColor("gui.color.foreground").getAsInt());
+        client.textRenderer.draw(matrixStack, Text.literal("Z:"), paddingX + 91, offsetY + 82 + padding, GavUISettings.getColor("gui.color.foreground").getAsInt());
         textField.render(matrixStack, mouseX, mouseY, delta);
         xCoordinate.render(matrixStack, mouseX, mouseY, delta);
         yCoordinate.render(matrixStack, mouseX, mouseY, delta);
