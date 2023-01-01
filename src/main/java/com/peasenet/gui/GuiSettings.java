@@ -74,6 +74,13 @@ public class GuiSettings extends GuiElement {
      */
     public GuiSettings() {
         super(Text.translatable("gavinsmod.gui.settings"));
+        renderDropdown = new GuiScroll(new PointF(10, 20), 100, 10, Text.translatable("gavinsmod.settings.render"));
+        miscDropdown = new GuiScroll(new PointF(115, 20), 100, 10, Text.translatable("gavinsmod.settings.misc"));
+        guiDropdown = new GuiScroll(new PointF(220, 20), 100, 10, Text.translatable("gavinsmod.settings.gui"));
+        espDropdown = new GuiScroll(new PointF(10, 130), 110, 10, Text.translatable("gavinsmod.settings.esp"));
+        tracerDropdown = new GuiScroll(new PointF(125, 130), 115, 10, Text.translatable("gavinsmod.settings.tracer"));
+        resetButton = new GuiClick(new PointF(0, 1), 4, 10, Text.translatable("gavinsmod.settings.reset"));
+        reloadGui();
     }
 
     /**
@@ -81,11 +88,11 @@ public class GuiSettings extends GuiElement {
      * home.
      */
     private static void miscSettings() {
-        var espAlpha = new SlideSetting("gavinsmod.settings.esp.alpha");
+        var espAlpha = new SlideSetting("gavinsmod.settings.alpha");
         espAlpha.setCallback(() -> GavinsMod.espConfig.setAlpha(espAlpha.getValue()));
         espAlpha.setValue(GavinsMod.espConfig.getAlpha());
 
-        var tracerAlpha = new SlideSetting("gavinsmod.settings.tracer.alpha");
+        var tracerAlpha = new SlideSetting("gavinsmod.settings.alpha");
         tracerAlpha.setCallback(() -> GavinsMod.tracerConfig.setAlpha(tracerAlpha.getValue()));
         tracerAlpha.setValue(GavinsMod.tracerConfig.getAlpha());
 
@@ -96,22 +103,17 @@ public class GuiSettings extends GuiElement {
     @Override
     public void init() {
         super.init();
-        guis = new ArrayList<>();
-        renderDropdown = new GuiScroll(new PointF(10, 20), 100, 10, Text.translatable("gavinsmod.settings.render"));
-        miscDropdown = new GuiScroll(new PointF(115, 20), 100, 10, Text.translatable("gavinsmod.settings.misc"));
-        guiDropdown = new GuiScroll(new PointF(220, 20), 100, 10, Text.translatable("gavinsmod.settings.gui"));
-        espDropdown = new GuiScroll(new PointF(10, 130), 110, 10, Text.translatable("gavinsmod.settings.esp"));
-        tracerDropdown = new GuiScroll(new PointF(125, 130), 115, 10, Text.translatable("gavinsmod.settings.tracer"));
         var titleW = textRenderer.getWidth(Text.translatable("gavinsmod.gui.settings")) + 16;
         var resetText = Text.translatable("gavinsmod.settings.reset");
         var width = textRenderer.getWidth(resetText);
-        resetButton = new GuiClick(new PointF(titleW, 1), width + 4, 10, Text.translatable("gavinsmod.settings.reset"));
+        resetButton.setTitle(resetText);
+        resetButton.setWidth(width + 4);
+        resetButton.setPosition(new PointF(titleW, 1));
         resetButton.setBackground(Colors.DARK_RED);
         resetButton.setCallback(() -> {
             GavinsMod.gui.reset();
             GavinsMod.guiSettings.reset();
         });
-        reloadGui();
     }
 
     @Override

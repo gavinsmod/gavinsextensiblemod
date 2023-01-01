@@ -34,7 +34,7 @@ import net.minecraft.entity.mob.MobEntity;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 12/31/2022
  * A mod that allows the client to see lines, called tracers, towards mobs.
  */
 public class ModMobTracer extends Mod implements EntityRenderListener, CameraBobListener {

@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -33,7 +33,7 @@ import net.minecraft.block.BlockState;
 
 /**
  * @author gt3ch1
- * @version 7/5/2022
+ * @version 12/31/2022
  * A mod for xray like feature, allowing the player to see through certain blocks.
  */
 public class ModXray extends Mod {
@@ -47,7 +47,7 @@ public class ModXray extends Mod {
             xrayConfig.setBlockCulling(culling.getValue());
             if (isActive()) reload();
         });
-        culling.setValue(xrayConfig.isBlockCulling());
+        culling.setValue(xrayConfig.shouldCullBlocks());
         ClickSetting menu = new ClickSetting("gavinsmod.settings.xray.blocks");
         menu.setCallback(() -> getClient().setScreen(new GuiXray()));
         xraySubSetting.add(menu);
@@ -70,7 +70,7 @@ public class ModXray extends Mod {
     @Override
     public void activate() {
         if (!GavinsMod.isEnabled(Type.FULL_BRIGHT)) RenderUtils.setLastGamma();
-        getClient().setChunkCulling(xrayConfig.isBlockCulling());
+        getClient().setChunkCulling(xrayConfig.shouldCullBlocks());
         super.activate();
         reloadRenderer();
     }

@@ -24,8 +24,22 @@ import com.peasenet.mods.render.waypoints.Waypoint;
 
 import java.util.ArrayList;
 
+/**
+ * The configuration for waypoints.
+ *
+ * @author gt3ch1
+ * @version 12/31/2022
+ */
 public class WaypointConfig extends Config<WaypointConfig> {
+
+    /**
+     * The instance of the configuration.
+     */
     private static WaypointConfig instance;
+
+    /**
+     * The list of waypoints.
+     */
     private ArrayList<Waypoint> locations;
 
     public WaypointConfig() {
@@ -34,21 +48,37 @@ public class WaypointConfig extends Config<WaypointConfig> {
         setInstance(this);
     }
 
+    /**
+     * Adds a waypoint to the list.
+     * @param w - The waypoint to add.
+     */
     public void addWaypoint(Waypoint w) {
         this.getInstance().locations.add(w);
         saveConfig();
     }
 
+    /**
+     * Removes a waypoint from the list.
+     * @param w - The waypoint to remove.
+     */
     public void removeWaypoint(Waypoint w) {
         this.getInstance().locations.remove(w);
         saveConfig();
 
     }
 
+    /**
+     * Gets the list of waypoints.
+     * @return The list of waypoints.
+     */
     public ArrayList<Waypoint> getLocations() {
         return this.getInstance().locations;
     }
 
+    /**
+     * Sets the list of waypoints.
+     * @param locations - The list of waypoints.
+     */
     public void setLocations(ArrayList<Waypoint> locations) {
         this.getInstance().locations = locations;
         saveConfig();

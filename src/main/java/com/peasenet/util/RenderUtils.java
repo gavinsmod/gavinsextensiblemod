@@ -45,7 +45,7 @@ import org.lwjgl.opengl.GL11;
 
 /**
  * @author gt3ch1
- * @version 12/22/2022
+ * @version 13/31/2022
  * A utility class for rendering tracers and esp's.
  */
 public class RenderUtils {
@@ -53,8 +53,6 @@ public class RenderUtils {
      * How many chunks away to render things.
      */
     private static int CHUNK_RADIUS = GavinsModClient.getMinecraftClient().getOptions().getViewDistance().getValue();
-
-//    private static WorldRenderContext context;
 
     /**
      * The last player configured gamma.
@@ -284,7 +282,7 @@ public class RenderUtils {
         if (GavinsMod.fullbrightConfig.isGammaFade()) {
             fadeGammaUp();
         } else {
-            setGamma(16.0);
+            setGamma(GavinsMod.fullbrightConfig.getMaxGamma());
         }
     }
 
@@ -314,8 +312,9 @@ public class RenderUtils {
      * @param gamma The value to set the gamma to.
      */
     public static void setGamma(double gamma) {
+        var maxGamma = GavinsMod.fullbrightConfig.getMaxGamma();
         if (gamma < 0.0) gamma = 0.0;
-        if (gamma > 16.0) return;
+        if (gamma > maxGamma) gamma = maxGamma;
         var newGamma = GavinsModClient.getMinecraftClient().getOptions().getGamma();
         if (newGamma.getValue() != gamma) {
             @SuppressWarnings("unchecked") var newGamma2 = (ISimpleOption<Double>) (Object) newGamma;

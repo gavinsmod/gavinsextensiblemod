@@ -25,9 +25,27 @@ import net.minecraft.registry.Registries;
 
 import java.util.HashSet;
 
+/**
+ * The configuration for xray.
+ *
+ * @author gt3ch1
+ * @version 12/31/2022
+ */
 public class XrayConfig extends Config<XrayConfig> {
+
+    /**
+     * The instance of the configuration.
+     */
     private static XrayConfig instance;
+
+    /**
+     * The list of blocks to xray.
+     */
     private final HashSet<String> blocks;
+
+    /**
+     * Whether to cull blocks.
+     */
     private boolean blockCulling = false;
 
     public XrayConfig() {
@@ -39,28 +57,54 @@ public class XrayConfig extends Config<XrayConfig> {
         setInstance(this);
     }
 
-    public boolean isBlockCulling() {
+    /**
+     * Whether to cull blocks.
+     *
+     * @return Whether to cull blocks.
+     */
+    public boolean shouldCullBlocks() {
         return blockCulling;
     }
 
+    /**
+     * Sets whether to cull blocks.
+     *
+     * @param blockCulling - Whether to cull blocks.
+     */
     public void setBlockCulling(boolean blockCulling) {
         this.blockCulling = blockCulling;
         setInstance(this);
         saveConfig();
     }
 
+    /**
+     * Adds a block to the list.
+     *
+     * @param b - The block to add.
+     */
     public void addBlock(Block b) {
         blocks.add(b.getLootTableId().getPath().replace("blocks/", ""));
         setInstance(this);
         saveConfig();
     }
 
+    /**
+     * Removes a block from the list.
+     *
+     * @param b - The block to remove.
+     */
     public void removeBlock(Block b) {
         blocks.remove(b.getLootTableId().getPath().replace("blocks/", ""));
         setInstance(this);
         saveConfig();
     }
 
+    /**
+     * Whether the block is in the list.
+     *
+     * @param b - The block to check.
+     * @return Whether the block is in the list.
+     */
     public boolean isInList(Block b) {
         return blocks.contains(b.getLootTableId().getPath().replace("blocks/", ""));
     }

@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -27,14 +27,21 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.player.PlayerEntity;
 
+/**
+ * @author gt3ch1
+ * @version 12/31/2022
+ * <p>
+ * A fake player entity that can be used to render a player model in the world.
+ */
 public class FakePlayer extends OtherClientPlayerEntity {
     private final ClientWorld world = GavinsModClient.getMinecraftClient().getWorld();
     private final ClientPlayerEntity player = GavinsModClient.getMinecraftClient().getPlayer();
 
+    /**
+     * Creates a fake player entity in the world.
+     */
     public FakePlayer() {
         super(GavinsModClient.getMinecraftClient().getWorld(), GavinsModClient.getPlayer().getGameProfile());
-//        uuid = java.util.UUID.randomUUID();
-//        this.setUuid(uuid);
         copyPositionAndRotation(player);
         getInventory().clone(player.getInventory());
         DataTracker fromTracker = player.getDataTracker();
@@ -47,6 +54,9 @@ public class FakePlayer extends OtherClientPlayerEntity {
         world.addEntity(getId(), this);
     }
 
+    /**
+     * Removes the fake player from the world.
+     */
     public void remove() {
         // move player back to original position
         player.refreshPositionAndAngles(getX(), getY(), getZ(), getYaw(), getPitch());

@@ -28,7 +28,7 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 7/1/2022
+ * @version 12/31/2022
  * A setting that allows the user to change a color value.
  */
 public class ColorSetting extends Setting {
@@ -43,8 +43,6 @@ public class ColorSetting extends Setting {
      */
     private Color color;
 
-    private boolean isGavUi;
-
     /**
      * Creates a new color setting.
      *
@@ -52,22 +50,16 @@ public class ColorSetting extends Setting {
      * @param translationKey - The translation key of the setting.
      */
     public ColorSetting(String name, String translationKey) {
-        super(name, translationKey);
+        super(translationKey);
         if (name.contains("gavui")) {
             name = name.replace("gavui.", "");
-            isGavUi = true;
             color = GavUISettings.getColor(name);
         } else color = Colors.WHITE;
         guiCycle = new GuiCycle(90, 10, Text.translatable(translationKey), Colors.COLORS.length);
         guiCycle.setBackground(color);
-        String finalName = name;
         guiCycle.setCallback(() -> {
             color = Colors.COLORS[guiCycle.getCurrentIndex()];
             guiCycle.setBackground(color);
-            if (isGavUi) {
-                GavUISettings.add(finalName, color);
-                GavUISettings.save();
-            }
             onClick();
         });
         guiCycle.setCurrentIndex(Colors.getColorIndex(color));

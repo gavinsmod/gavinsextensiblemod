@@ -41,6 +41,9 @@ import java.util.HashMap;
 
 /**
  * A placeholder class that initializes all the mods, and contains a few methods for adding/getting to that list.
+ *
+ * @author gt3ch1
+ * @version 12/31/2022
  */
 public class Mods {
     private static final HashMap<String, Mod> modMap = new HashMap<>();
@@ -131,8 +134,24 @@ public class Mods {
         return modMap.get(name);
     }
 
+    /**
+     * Gets the mod from the given type.
+     *
+     * @param type - The type of the mod.
+     * @return The mod with the given type.
+     */
     public static Mod getMod(Type type) {
         return modMap.get(type.getChatCommand());
+    }
+
+    /**
+     * Whether the given mod is active.
+     *
+     * @param type - The type of the mod.
+     * @return Whether the mod is active.
+     */
+    public static boolean isActive(Type type) {
+        return getMod(type).isActive();
     }
 
     /**

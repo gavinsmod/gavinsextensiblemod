@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -29,10 +29,7 @@ import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.mods.render.waypoints.Waypoint;
-import com.peasenet.settings.ClickSetting;
-import com.peasenet.settings.ColorSetting;
-import com.peasenet.settings.SubSetting;
-import com.peasenet.settings.ToggleSetting;
+import com.peasenet.settings.*;
 import com.peasenet.util.RenderUtils;
 import com.peasenet.util.listeners.InGameHudRenderListener;
 import net.minecraft.client.util.math.MatrixStack;
@@ -47,7 +44,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A mod that allows for a radar-like view of the world.
  *
- * @version 11/30/2022
+ * @version 12/31/2022
  */
 public class ModRadar extends Mod implements InGameHudRenderListener {
 
@@ -112,6 +109,14 @@ public class ModRadar extends Mod implements InGameHudRenderListener {
         useWaypointColorSetting.setCallback(() -> radarConfig.getInstance().setUseWaypointColor(useWaypointColorSetting.getValue()));
         useWaypointColorSetting.setValue(radarConfig.getInstance().isUseWaypointColor());
 
+        var backgroundAlphaSetting = new SlideSetting("gavinsmod.settings.radar.background.alpha");
+        backgroundAlphaSetting.setCallback(() -> radarConfig.getInstance().setBackgroundAlpha(backgroundAlphaSetting.getValue()));
+        backgroundAlphaSetting.setValue(radarConfig.getInstance().getBackgroundAlpha());
+
+        var pointAlphaSetting = new SlideSetting("gavinsmod.settings.radar.point.alpha");
+        pointAlphaSetting.setCallback(() -> radarConfig.getInstance().setPointAlpha(pointAlphaSetting.getValue()));
+        pointAlphaSetting.setValue(radarConfig.getInstance().getPointAlpha());
+
         var color = new SubSetting(110, 10, "gavinsmod.settings.radar.color");
         var drawSettings = new SubSetting(110, 10, "gavinsmod.settings.radar.drawn");
 
@@ -132,8 +137,11 @@ public class ModRadar extends Mod implements InGameHudRenderListener {
         drawSettings.add(waypointsSetting);
         drawSettings.add(playerSetting);
         drawSettings.add(useWaypointColorSetting);
+        drawSettings.add(backgroundAlphaSetting);
+        drawSettings.add(pointAlphaSetting);
 
-        addSetting(color);
+        drawSettings.add(color);
+
         addSetting(drawSettings);
 
         updateScaleText(pointSizeSetting, radarConfig.getInstance().getPointSize());
@@ -202,9 +210,11 @@ public class ModRadar extends Mod implements InGameHudRenderListener {
     public void onRenderInGameHud(MatrixStack stack, float delta) {
         if (!isActive()) return;
         RadarConfig.setX(getClient().getWindow().getScaledWidth() - radarConfig.getInstance().getSize() - 10);
-        RenderUtils.drawBox(Colors.DARK_GRAY, new BoxD(new PointD(radarConfig.getInstance().getX(), radarConfig.getInstance().getY()), radarConfig.getInstance().getSize(), radarConfig.getInstance().getSize()), stack, 0.5f);
+        RenderUtils.drawBox(Colors.DARK_GRAY, new BoxD(new PointD(radarConfig.getInstance().getX(), radarConfig.getInstance().getY()),
+                radarConfig.getInstance().getSize(), radarConfig.getInstance().getSize()), stack, radarConfig.getInstance().getBackgroundAlpha());
         drawEntitiesOnRadar(stack);
-        if (radarConfig.getInstance().isShowWaypoint()) drawWaypointsOnRadar(stack);
+        if (radarConfig.getInstance().isShowWaypoint())
+            drawWaypointsOnRadar(stack);
     }
 
     /**
@@ -220,7 +230,8 @@ public class ModRadar extends Mod implements InGameHudRenderListener {
             if (!radarConfig.getInstance().isUseWaypointColor())
                 color = radarConfig.getInstance().getWaypointColor();
             var location = getScaledPos(w.getPos(), getPointRelativeToYaw(w.getPos(), yaw));
-            RenderUtils.drawBox(color, new BoxD(location, radarConfig.getInstance().getPointSize(), radarConfig.getInstance().getPointSize()), stack, 1f);
+            RenderUtils.drawBox(color, new BoxD(location, radarConfig.getInstance().getPointSize(), radarConfig.getInstance().getPointSize()), stack,
+                    radarConfig.getInstance().getPointAlpha());
         }
     }
 
@@ -237,7 +248,8 @@ public class ModRadar extends Mod implements InGameHudRenderListener {
             // get entity x and z relative to player
             var color = getColorFromEntity(entity);
             var point = getScaledPos(entity.getPos(), getPointRelativeToYaw(entity.getPos(), yaw));
-            RenderUtils.drawBox(color, new BoxD(point, radarConfig.getInstance().getPointSize(), radarConfig.getInstance().getPointSize()), stack, 1f);
+            RenderUtils.drawBox(color, new BoxD(point, radarConfig.getInstance().getPointSize(), radarConfig.getInstance().getPointSize()), stack,
+                    radarConfig.getInstance().getPointAlpha());
         }
     }
 

@@ -23,12 +23,14 @@ package com.peasenet.mods.render;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
+import com.peasenet.settings.SlideSetting;
+import com.peasenet.settings.SubSetting;
 import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.RenderUtils;
 
 /**
  * @author gt3ch1
- * @version 7/5/2022
+ * @version 12/31/2022
  * A mod that allows the client to see very clearly in the absence of a light source.
  */
 public class ModFullBright extends Mod {
@@ -40,13 +42,25 @@ public class ModFullBright extends Mod {
             fullbrightConfig.setGammaFade(gammaFade.getValue());
         });
         gammaFade.setValue(fullbrightConfig.isGammaFade());
+
         ToggleSetting autoFullBright = new ToggleSetting("gavinsmod.settings.render.autofullbright");
         autoFullBright.setCallback(() -> {
             fullbrightConfig.setAutoFullBright(autoFullBright.getValue());
         });
         autoFullBright.setValue(fullbrightConfig.isAutoFullBright());
-        addSetting(gammaFade);
-        addSetting(autoFullBright);
+
+        SlideSetting gamma = new SlideSetting("gavinsmod.settings.render.gamma");
+        gamma.setCallback(() -> {
+            fullbrightConfig.setGamma(gamma.getValue());
+        });
+        gamma.setValue(fullbrightConfig.getGamma());
+
+        var subSetting = new SubSetting(100, 10, getTranslationKey());
+        subSetting.add(gammaFade);
+        subSetting.add(autoFullBright);
+        subSetting.add(gamma);
+
+        addSetting(subSetting);
     }
 
     @Override

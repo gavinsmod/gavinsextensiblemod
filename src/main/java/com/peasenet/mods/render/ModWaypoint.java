@@ -41,7 +41,7 @@ import java.util.Comparator;
 
 /**
  * @author gt3ch1
- * @version 6/30/2022
+ * @version 12/31/2022
  * Creates a new mod to control waypoints.
  */
 public class ModWaypoint extends Mod implements EntityRenderListener, CameraBobListener {
@@ -52,7 +52,7 @@ public class ModWaypoint extends Mod implements EntityRenderListener, CameraBobL
     public ModWaypoint() {
         super(Type.WAYPOINT);
         setting = new SubSetting(100, 10, "gavinsmod.mod.render.waypoints");
-        openMenu = new ClickSetting("Open Menu", "gavinsmod.settings.render.waypoints.add");
+        openMenu = new ClickSetting("gavinsmod.settings.render.waypoints.add");
         reloadSettings();
     }
 

@@ -40,7 +40,7 @@ import java.util.stream.Stream;
 
 /**
  * @author gt3ch1
- * @version 12/22/2022
+ * @version 12/31/2022
  * The main initializer of the mod.
  */
 public class GavinsMod implements ModInitializer {
@@ -65,17 +65,56 @@ public class GavinsMod implements ModInitializer {
      */
     public static GuiSettings guiSettings;
 
+    /**
+     * The event manager of the mod.
+     */
     public static EventManager eventManager;
 
+    /**
+     * The ESP config.
+     */
     public static EspConfig espConfig = new EspConfig();
+
+    /**
+     * The tracer config.
+     */
     public static TracerConfig tracerConfig = new TracerConfig();
+
+    /**
+     * The xray config.
+     */
     public static XrayConfig xrayConfig = new XrayConfig();
+
+    /**
+     * The fullbright config.
+     */
     public static FullbrightConfig fullbrightConfig = new FullbrightConfig();
+
+    /**
+     * The FPS Color config.
+     */
     public static FpsColorConfig fpsColorConfig = new FpsColorConfig();
+
+    /**
+     * The radar config.
+     */
     public static RadarConfig radarConfig = new RadarConfig();
+
+    /**
+     * The waypoint config.
+     */
     public static WaypointConfig waypointConfig = new WaypointConfig();
+
+    /**
+     * The misc config.
+     */
     public static MiscConfig miscConfig = new MiscConfig();
+
+    /**
+     * Hook for chat commands.
+     */
     private static ModCommands modCommands;
+
 
     /**
      * Gets whether the given mod is enabled.

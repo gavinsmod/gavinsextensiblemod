@@ -33,8 +33,8 @@ import net.minecraft.block.entity.FurnaceBlockEntity;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
- * A mod that allows the player to see tracers towards chests.
+ * @version 12/31/2022
+ * A mod that allows the player to see tracers towards furnaces.
  */
 public class ModFurnaceTracer extends Mod implements BlockEntityRenderListener,
         CameraBobListener {

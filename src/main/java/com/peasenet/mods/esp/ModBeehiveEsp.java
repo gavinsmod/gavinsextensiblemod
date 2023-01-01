@@ -31,8 +31,8 @@ import net.minecraft.util.math.Box;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
- * A mod that allows the client to see an esp (a box) around chests.
+ * @version 12/31/2022
+ * A mod that allows the client to see an esp (a box) around beehives.
  */
 public class ModBeehiveEsp extends Mod implements BlockEntityRenderListener {
     public ModBeehiveEsp() {
@@ -51,7 +51,6 @@ public class ModBeehiveEsp extends Mod implements BlockEntityRenderListener {
     }
 
     @Override
-
     public void onDisable() {
         super.onDisable();
         em.unsubscribe(BlockEntityRenderListener.class, this);

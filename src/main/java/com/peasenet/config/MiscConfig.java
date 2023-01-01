@@ -20,22 +20,45 @@
 
 package com.peasenet.config;
 
+/**
+ * The miscellaneous configuration.
+ *
+ * @author gt3ch1
+ * @version 12/31/2022
+ */
 public class MiscConfig extends Config<MiscConfig> {
-    public boolean isMessages() {
-        return getInstance().messages;
-    }
 
-    public void setMessages(boolean messages) {
-        this.getInstance().messages = messages;
-    }
+    /**
+     * The instance of the configuration.
+     */
+    private static MiscConfig instance;
+    /**
+     * Whether to show messages about enabling or disabling mods.
+     */
+    private boolean messages = true;
 
     public MiscConfig() {
         setKey("misc");
         setInstance(this);
     }
 
-    private boolean messages = true;
-    private static MiscConfig instance;
+    /**
+     * Whether to show messages about enabling or disabling mods.
+     *
+     * @return True if messages should be shown.
+     */
+    public boolean isMessages() {
+        return getInstance().messages;
+    }
+
+    /**
+     * Sets whether to show messages about enabling or disabling mods.
+     *
+     * @param messages - True if messages should be shown.
+     */
+    public void setMessages(boolean messages) {
+        this.getInstance().messages = messages;
+    }
 
     @Override
     public MiscConfig getInstance() {

@@ -98,7 +98,7 @@ public class PlayerUtils {
     public static void attackEntity(Entity entity) {
         var player = GavinsModClient.getPlayer();
         assert GavinsModClient.getMinecraftClient().getPlayerInteractionManager() != null;
-        if (onGround() && !player.isNoClip() && player.getAttackCooldownProgress(0.5f) > 0.90f) {
+        if (onGround() && !player.isNoClip() && player.getAttackCoolDownProgress(0.5f) > 0.90f) {
             PlayerAttackEvent event = new PlayerAttackEvent();
             GavinsMod.eventManager.call(event);
             GavinsModClient.getMinecraftClient().getPlayerInteractionManager().attackEntity((PlayerEntity) player, entity);

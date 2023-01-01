@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author gt3ch1
- * @version 6/28/2022
+ * @version 12/31/2022
  * A mod that shows the currently active mods in the top left screen.
  */
 public class ModGuiTextOverlay extends Mod implements InGameHudRenderListener {

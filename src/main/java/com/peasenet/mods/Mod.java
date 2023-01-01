@@ -39,7 +39,7 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 7/5/2022
+ * @version 12/31/2022
  * The base class for mods. Inheriting this class will allow for creating different mods that have a keybinding,
  * and a gui button based off of the given category.
  */
@@ -48,42 +48,83 @@ public abstract class Mod implements IMod {
     /**
      * The string shown in the chat window when the player toggles the mod.
      */
-
     public static final String GAVINS_MOD_STRING = "§b§l[ §4§lGavinsMod §b§l] §7";
+
+    /**
+     * The event manager.
+     */
     protected static EventManager em = GavinsMod.eventManager;
+
+    /**
+     * Tracer configuration.
+     */
     protected static TracerConfig tracerConfig = GavinsMod.tracerConfig;
 
+    /**
+     * ESP configuration.
+     */
     protected static EspConfig espConfig = GavinsMod.espConfig;
+
+    /**
+     * Fps color configuration.
+     */
     protected static FpsColorConfig fpsColorConfig = GavinsMod.fpsColorConfig;
+
+    /**
+     * The fullbright configuration.
+     */
     protected static FullbrightConfig fullbrightConfig = GavinsMod.fullbrightConfig;
+
+    /**
+     * The radar configuration.
+     */
     protected static RadarConfig radarConfig = GavinsMod.radarConfig;
+
+    /**
+     * The waypoint configuration.
+     */
     protected static WaypointConfig waypointConfig = GavinsMod.waypointConfig;
+
+    /**
+     * The xray configuration.
+     */
     protected static XrayConfig xrayConfig = GavinsMod.xrayConfig;
+
+    /**
+     * The miscellaneous configuration.
+     */
     protected static MiscConfig miscConfig = GavinsMod.miscConfig;
+
     /**
      * The keybind for this mod.
      */
     protected final KeyBinding keyBinding;
+
     /**
      * The type of the mod.
      */
     private final Type type;
+
     /**
      * The category of this mod.
      */
     private final Type.Category category;
+
     /**
      * Whether this mod is currently deactivating.
      */
     protected boolean deactivating = true;
+
     /**
      * The settings of the mod.
      */
     protected ArrayList<Setting> modSettings = new ArrayList<>();
+
     /**
      * Whether the mod is currently reloading.
      */
     private boolean reloading = false;
+
     /**
      * Whether the mod is enabled.
      */
@@ -96,7 +137,6 @@ public abstract class Mod implements IMod {
      * @param category   The category of this mod.
      * @param keyBinding The keybind for this mod.
      */
-
     public Mod(Type type, Type.Category category, KeyBinding keyBinding) {
         this.type = type;
         this.category = category;

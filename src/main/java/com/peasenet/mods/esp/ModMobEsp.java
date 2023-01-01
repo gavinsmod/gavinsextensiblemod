@@ -31,7 +31,7 @@ import net.minecraft.entity.mob.MobEntity;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
+ * @version 12/31/2022
  * A mod that allows the client to see boxes around mobs.
  */
 public class ModMobEsp extends Mod implements EntityRenderListener {
@@ -46,12 +46,12 @@ public class ModMobEsp extends Mod implements EntityRenderListener {
         peacefulEspColor.setColor(espConfig.getPeacefulMobColor());
 
         ToggleSetting hostileEspToggle = new ToggleSetting("gavinsmod.settings.esp.mob.hostile");
-        hostileEspToggle.setCallback(() -> espConfig.setShowHostileMobs(hostileEspToggle.getValue()));
-        hostileEspToggle.setValue(espConfig.isShowHostileMobs());
+        hostileEspToggle.setCallback(() -> espConfig.setHostileMobs(hostileEspToggle.getValue()));
+        hostileEspToggle.setValue(espConfig.showHostileMobs());
 
         ToggleSetting peacefulEspToggle = new ToggleSetting("gavinsmod.settings.esp.mob.peaceful");
-        peacefulEspToggle.setCallback(() -> espConfig.setShowPeacefulMobs(peacefulEspToggle.getValue()));
-        peacefulEspToggle.setValue(espConfig.isShowPeacefulMobs());
+        peacefulEspToggle.setCallback(() -> espConfig.setPeacefulMobs(peacefulEspToggle.getValue()));
+        peacefulEspToggle.setValue(espConfig.showPeacefulMobs());
 
         addSetting(hostileEspColor);
         addSetting(peacefulEspColor);
@@ -76,9 +76,9 @@ public class ModMobEsp extends Mod implements EntityRenderListener {
         var box = RenderUtils.getEntityBox(er.delta, er.entity);
         if (!(er.entity instanceof MobEntity))
             return;
-        if (espConfig.isShowPeacefulMobs() && er.getEntityType().getSpawnGroup().isPeaceful()) {
+        if (espConfig.showPeacefulMobs() && er.getEntityType().getSpawnGroup().isPeaceful()) {
             RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getPeacefulMobColor(), espConfig.getAlpha());
-        } else if (espConfig.isShowHostileMobs() && !er.getEntityType().getSpawnGroup().isPeaceful()) {
+        } else if (espConfig.showHostileMobs() && !er.getEntityType().getSpawnGroup().isPeaceful()) {
             RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getHostileMobColor(), espConfig.getAlpha());
         }
     }

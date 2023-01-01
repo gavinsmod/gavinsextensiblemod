@@ -33,8 +33,8 @@ import net.minecraft.block.entity.BeehiveBlockEntity;
 
 /**
  * @author gt3ch1
- * @version 6/27/2022
- * A mod that allows the player to see tracers towards chests.
+ * @version 12/31/2022
+ * A mod that allows the player to see tracers towards beehives.
  */
 public class ModBeehiveTracer extends Mod implements BlockEntityRenderListener,
         CameraBobListener {

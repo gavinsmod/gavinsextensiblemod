@@ -27,7 +27,7 @@ import com.peasenet.gavui.color.Colors;
  * A class in which controls the configurations of the radar.
  *
  * @author gt3ch1
- * @version 12/16/2022
+ * @version 12/31/2022
  */
 public class RadarConfig extends Config<RadarConfig> {
 
@@ -35,70 +35,96 @@ public class RadarConfig extends Config<RadarConfig> {
      * The Y position of the radar.
      */
     private static int y = 12;
+
     /**
      * The X position of the radar.
      */
     private static int x = 0;
+
     /**
      * The size of the radar in pixels. scale*16+1.
      */
     private static int size = 129;
+
     /**
      * The current instance of the radar settings.
      */
     private static RadarConfig instance;
+
     /**
      * The current scale of the radar, used to determine the size of the radar.
      */
     private int scale = 4;
+
     /**
      * The point size of the radar. Used to draw the boxes on the radar.
      */
     private int pointSize = 3;
+
     /**
      * The default color used to draw players on the radar.
      */
     private Color playerColor = Colors.GOLD;
+
     /**
      * The default color used to draw hostile mobs on the radar.
      */
     private Color hostileMobColor = Colors.RED;
+
     /**
      * The default color used to draw peaceful mobs on the radar.
      */
     private Color peacefulMobColor = Colors.GREEN;
+
     /**
      * The default color used to draw items on the radar.
      */
     private Color itemColor = Colors.CYAN;
+
     /**
      * The default color used to draw waypoints on the radar.
      */
     private Color waypointColor = Colors.WHITE;
+
     /**
      * Whether to show players on the radar.
      */
     private boolean showPlayer = true;
+
     /**
      * Whether to show hostile mobs on the radar.
      */
     private boolean showHostileMob = true;
+
     /**
      * Whether to show peaceful mobs on the radar.
      */
     private boolean showPeacefulMob = true;
+
     /**
      * Whether to show items on the radar.
      */
     private boolean showItem = true;
+
     /**
      * Whether to show waypoints on the radar.
      */
     private boolean showWaypoint = true;
+
     /**
      * Whether to use the waypoint color to draw waypoints on the radar.
      */
     private boolean useWaypointColor = true;
+
+    /**
+     * The alpha value for points on the radar.
+     */
+    private float pointAlpha = 0.5f;
+
+    /**
+     * The alpha value for the radar background.
+     */
+    private float backgroundAlpha = 0.5f;
 
     /**
      * Create a new instance of the radar settings if one does not already exist.
@@ -106,6 +132,43 @@ public class RadarConfig extends Config<RadarConfig> {
     public RadarConfig() {
         setKey("radar");
         if (instance == null) instance = this;
+    }
+
+    /**
+     * Gets the current alpha value for the radar background.
+     *
+     * @return The current alpha value for the radar background.
+     */
+    public float getPointAlpha() {
+        return pointAlpha;
+    }
+
+    /**
+     * Sets the current alpha value for the radar background.
+     *
+     * @param pointAlpha The new alpha value for the radar background.
+     */
+    public void setPointAlpha(float pointAlpha) {
+        this.pointAlpha = pointAlpha;
+    }
+
+    /**
+     * Gets the current alpha value for the radar background.
+     *
+     * @return The current alpha value for the radar background.
+     */
+    public float getBackgroundAlpha() {
+        return backgroundAlpha;
+    }
+
+    /**
+     * Sets the current alpha value for the radar background.
+     *
+     * @param backgroundAlpha The new alpha value for the radar background.
+     */
+    public void setBackgroundAlpha(float backgroundAlpha) {
+        this.backgroundAlpha = backgroundAlpha;
+        saveConfig();
     }
 
     /**

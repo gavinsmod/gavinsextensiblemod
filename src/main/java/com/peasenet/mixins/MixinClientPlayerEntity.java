@@ -43,7 +43,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * @author gt3ch1
- * @version 5/24/2022
+ * @version 12/31/2022
  */
 @Mixin(ClientPlayerEntity.class)
 public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implements IClientPlayerEntity {
@@ -62,14 +62,6 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
 
     @Shadow
     public abstract void sendMessage(Text message, boolean overlay);
-
-    public float getNextNauseaStrength() {
-        return 0.0f;
-    }
-
-    public void setNextNauseaStrength(float nextNauseaStrength) {
-        this.nextNauseaStrength = nextNauseaStrength;
-    }
 
     public boolean isOnGround() {
         return super.isOnGround();
@@ -123,7 +115,7 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     }
 
     @Override
-    public float getAttackCooldownProgress(float f) {
+    public float getAttackCoolDownProgress(float f) {
         return super.getAttackCooldownProgress(f);
     }
 
@@ -132,10 +124,8 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
         return super.tryAttack(target);
     }
 
-    @Override
-    public void swingHand(Hand h) {
-        super.swingHand(h);
-    }
+    @Shadow
+    public abstract void swingHand(Hand hand);
 
     @Override
     public PlayerAbilities getAbilities() {
@@ -154,7 +144,7 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
 
     @Shadow
     public abstract boolean isSubmergedInWater();
-    
+
     @Inject(method = "updateNausea", at = @At("HEAD"), cancellable = true)
     public void cancelNausea(CallbackInfo ci) {
         if (Mods.getMod(Type.NO_NAUSEA).isActive()) {

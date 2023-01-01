@@ -27,7 +27,7 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 7/1/2022
+ * @version 12/31/2022
  * A setting that contains one of two finite states - on or off.
  */
 public class ToggleSetting extends Setting {
@@ -36,69 +36,28 @@ public class ToggleSetting extends Setting {
      * The gui element that is used to display this toggle setting.
      */
     GuiToggle gui;
-    /**
-     * Whether the value of this setting is determined by a click, or by callback.
-     * Setting this to true will cause the value to be determined by a callback.
-     */
-    private boolean noToggle = false;
+
     /**
      * The current value of this toggle setting.
      */
     private boolean value;
-    private boolean isGavUi;
 
     /**
      * Creates a new toggle setting.
      *
-     * @param name - the name of this setting. Setting this to none will not cause the setting to be fetched from the settings file.
-     * @param key  - The translation key of this toggle setting.
+     * @param key - The translation key of this toggle setting.
      */
-    public ToggleSetting(String name, String key) {
-        super(name, key);
-        if (name.contains("gavui")) {
-            name = name.replace("gavui.", "");
-            isGavUi = true;
-        } else
-            value = false;
+    public ToggleSetting(String key) {
+        super(key);
+        value = false;
         gui = new GuiToggle(new PointF(0, 0), 90, 10, Text.translatable(key));
-        gui.setState(value);
-        String finalName = name;
-        gui.setCallback(() -> {
-            onClick();
-            if (finalName.equals("none"))
-                return;
-            if (isGavUi) {
-                GavUISettings.add(finalName, value);
-                GavUISettings.save();
-            }
-        });
-        gui.hide();
-    }
-
-    public ToggleSetting(String translationKey) {
-        this("none", translationKey);
-    }
-
-    public ToggleSetting(Text literal) {
-        super("none", "none");
-        gui = new GuiToggle(new PointF(0, 0), 90, 10, literal);
         gui.setState(value);
         gui.setCallback(this::onClick);
         gui.hide();
     }
 
-    /**
-     * Creates a new toggleable setting.
-     *
-     * @param name     - the name of this setting. Setting this to none will not cause the setting to be fetched from the settings file.
-     * @param literal  - The text to display.
-     * @param noToggle - Whether the value of this setting is determined by a click, or by callback.
-     *                 Setting this to true will cause the value to be determined by a callback.
-     */
-    public ToggleSetting(String name, Text literal, boolean noToggle) {
-        super(name, "");
-        this.noToggle = noToggle;
-        value = false;
+    public ToggleSetting(Text literal) {
+        super("none");
         gui = new GuiToggle(new PointF(0, 0), 90, 10, literal);
         gui.setState(value);
         gui.setCallback(this::onClick);
@@ -123,13 +82,6 @@ public class ToggleSetting extends Setting {
         this.value = value;
         gui.setBackground(value ? GavUISettings.getColor("gui.color.enabled") : GavUISettings.getColor("gui.color.background"));
         gui.setState(value);
-    }
-
-    @Override
-    public void onClick() {
-        if (!noToggle)
-            setValue(!value);
-        super.onClick();
     }
 
     @Override

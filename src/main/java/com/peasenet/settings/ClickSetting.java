@@ -40,22 +40,11 @@ public class ClickSetting extends Setting {
     /**
      * Creates a new click setting with the given name (?) and translation key.
      *
-     * @param name           - The name of the setting.
      * @param translationKey - The translation key of the setting.
      */
-    public ClickSetting(String name, String translationKey) {
-        super(name, translationKey);
-        gui = new GuiClick(new PointF(0, 0), 100, 10, Text.translatable(translationKey));
-        gui.setCallback(this::onClick);
-    }
-
     public ClickSetting(String translationKey) {
-        this("none", translationKey);
-    }
-
-    public ClickSetting(Text literal) {
-        super("none", "none");
-        gui = new GuiClick(new PointF(0, 0), 100, 10, literal);
+        super(translationKey);
+        gui = new GuiClick(new PointF(0, 0), 100, 10, Text.translatable(translationKey));
         gui.setCallback(this::onClick);
     }
 

@@ -23,12 +23,11 @@ package com.peasenet.settings;
 import com.peasenet.gavui.Gui;
 import com.peasenet.gavui.GuiSlider;
 import com.peasenet.gavui.math.PointF;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 7/1/2022
+ * @version 12/31/2022
  * A setting that can be clicked. This is purely dependant on the given callback.
  */
 public class SlideSetting extends Setting {
@@ -41,29 +40,34 @@ public class SlideSetting extends Setting {
     /**
      * Creates a new click setting with the given name (?) and translation key.
      *
-     * @param name           - The name of the setting.
      * @param translationKey - The translation key of the setting.
      */
-    public SlideSetting(String name, String translationKey) {
-        super(name, translationKey);
+    public SlideSetting(String translationKey) {
+        super(translationKey);
         gui = new GuiSlider(new PointF(0, 0), 100, 10, Text.translatable(translationKey));
         gui.setCallback(this::onClick);
     }
 
-    public SlideSetting(String name) {
-        this(name, I18n.translate(name));
-    }
-
+    /**
+     * Gets the current float value of the setting.
+     *
+     * @return The current float value of the setting.
+     */
     public float getValue() {
         return gui.getValue();
+    }
+
+    /**
+     * Sets the current value of the setting.
+     *
+     * @param alpha The new value of the setting.
+     */
+    public void setValue(float alpha) {
+        gui.setValue(alpha);
     }
 
     @Override
     public Gui getGui() {
         return gui;
-    }
-
-    public void setValue(float alpha) {
-        gui.setValue(alpha);
     }
 }

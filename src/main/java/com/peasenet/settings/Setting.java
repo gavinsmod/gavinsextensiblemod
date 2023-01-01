@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
- *  of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
- *  following conditions:
+ * of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
@@ -27,15 +27,10 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 7/1/2022
+ * @version 12/31/2022
  * A class that represents a mod setting. This class should not be instantiated directly.
  */
 public abstract class Setting {
-
-    /**
-     * The name of the setting.
-     */
-    private final String name;
 
     /**
      * The callback of the setting.
@@ -45,26 +40,15 @@ public abstract class Setting {
     /**
      * The translation key for the name of this setting.
      */
-    private String translationKey;
+    private final String translationKey;
 
     /**
      * Creates a new setting.
      *
-     * @param name - The name of the setting (ie, "foregroundColor").
      * @param translationKey - The translation key of this setting (ie, "gavinsmod.settings.xray")
      */
-    public Setting(String name, String translationKey) {
-        this.name = name;
+    public Setting(String translationKey) {
         this.translationKey = translationKey;
-    }
-
-    /**
-     * Gets the name of the setting.
-     *
-     * @return The name of the setting.
-     */
-    public String getName() {
-        return name;
     }
 
     /**
@@ -110,6 +94,7 @@ public abstract class Setting {
 
     /**
      * Gets the translation key for this setting.
+     *
      * @return The translation key.
      */
     public String getTranslationKey() {

@@ -70,32 +70,32 @@ public class GuiWaypoint extends GuiElement {
     /**
      * The button used to save the waypoint.
      */
-    ClickSetting saveSettings = new ClickSetting("none", "gavinsmod.settings.save");
+    ClickSetting saveSettings = new ClickSetting("gavinsmod.settings.save");
 
     /**
      * The button used to cancel the waypoint.
      */
-    ClickSetting cancelSettings = new ClickSetting("none", "gavinsmod.settings.cancel");
+    ClickSetting cancelSettings = new ClickSetting("gavinsmod.settings.cancel");
 
     /**
      * The button used to delete the waypoint.
      */
-    ClickSetting deleteSettings = new ClickSetting("none", "gavinsmod.settings.delete");
+    ClickSetting deleteSettings = new ClickSetting("gavinsmod.settings.delete");
 
     /**
      * The button used to toggle the waypoint's visibility.
      */
-    ToggleSetting waypointToggle = new ToggleSetting("none", "gavinsmod.settings.enabled");
+    ToggleSetting waypointToggle = new ToggleSetting("gavinsmod.settings.enabled");
 
     /**
      * The button used to toggle the waypoint's esp.
      */
-    ToggleSetting espToggle = new ToggleSetting("none", "gavinsmod.settings.esp");
+    ToggleSetting espToggle = new ToggleSetting("gavinsmod.settings.esp");
 
     /**
      * The button used to toggle the waypoint's tracer.
      */
-    ToggleSetting tracerToggle = new ToggleSetting("none", "gavinsmod.settings.tracer");
+    ToggleSetting tracerToggle = new ToggleSetting("gavinsmod.settings.tracer");
 
     /**
      * The background box.

@@ -119,5 +119,8 @@
     "gavinsmod.settings.tracer.player.color": "Player Color",
     "gavinsmod.settings.xray.blocks": "X-Ray Blocks",
     "gavinsmod.settings.xray.chests": "X-Ray Chests",
+    "gavinsmod.settings.alpha": "Alpha",
+    "gavinsmod.settings.radar.background.alpha": "Background Alpha",
+    "gavinsmod.settings.radar.point.alpha": "Point Alpha",
     "gavinsmod.settings.xray.culling": "X-Ray Culling"
 }

@@ -26,7 +26,7 @@ import static com.peasenet.mods.Type.Category.*;
 
 /**
  * @author gt3ch1
- * @version 6/18/2022
+ * @version 12/31/2022
  * An enum containing all the mods.
  */
 public enum Type {

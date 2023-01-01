@@ -28,7 +28,7 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/28/2022
+ * @version 12/31/2022
  * Creates a new gui for combat mods as a dropdown.
  */
 public class GuiCombat extends GuiScroll {

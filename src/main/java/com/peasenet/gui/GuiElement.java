@@ -85,7 +85,9 @@ public class GuiElement extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         for (Gui g : guis)
-            if (g.mouseClicked(mouseX, mouseY, button)) return true;
+            if (g.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
@@ -99,11 +101,13 @@ public class GuiElement extends Screen {
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         for (var gui : guis) {
-            if (gui.isDragging() && selectedGui.equals(gui)) {
+            if (gui.isDragging() && gui.equals(selectedGui)) {
                 gui.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+                GavinsMod.LOGGER.info("Dragging " + gui.getUUID());
                 return true;
             }
             if (!gui.isDragging() && gui.mouseWithinGui(mouseX, mouseY)) {
+                GavinsMod.LOGGER.info("Dragging " + gui.getUUID());
                 gui.setDragging(true);
                 selectedGui = gui;
             }
@@ -115,7 +119,6 @@ public class GuiElement extends Screen {
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         guis.forEach(g -> g.setDragging(false));
         selectedGui = null;
-        GavinsMod.LOGGER.info("Released");
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
