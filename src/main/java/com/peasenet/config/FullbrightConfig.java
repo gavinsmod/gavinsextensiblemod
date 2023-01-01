@@ -79,7 +79,7 @@ public class FullbrightConfig extends Config<FullbrightConfig> {
      * @return max gamma value.
      */
     public float getMaxGamma() {
-        return Mods.isActive(Type.XRAY) ? 16 : 1 + 3 * getGamma();
+        return Mods.isActive(Type.XRAY) ? 16 : 1 + 15 * getGamma();
     }
 
     /**
