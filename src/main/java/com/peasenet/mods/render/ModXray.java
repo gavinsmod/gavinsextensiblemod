@@ -22,13 +22,14 @@ package com.peasenet.mods.render;
 
 import com.peasenet.gui.mod.xray.GuiXray;
 import com.peasenet.main.GavinsMod;
-import com.peasenet.main.Mods;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.settings.ClickSetting;
 import com.peasenet.settings.SubSetting;
 import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.RenderUtils;
+import com.peasenet.util.event.data.DrawSide;
+import com.peasenet.util.listeners.ShouldDrawSideListener;
 import net.minecraft.block.BlockState;
 
 /**
@@ -36,16 +37,16 @@ import net.minecraft.block.BlockState;
  * @version 12/31/2022
  * A mod for xray like feature, allowing the player to see through certain blocks.
  */
-public class ModXray extends Mod {
+public class ModXray extends Mod implements ShouldDrawSideListener {
 
     public ModXray() {
         super(Type.XRAY);
         SubSetting xraySubSetting = new SubSetting(100, 10, getTranslationKey());
         ToggleSetting culling = new ToggleSetting("gavinsmod.settings.xray.culling");
         culling.setCallback(() -> {
-//            culling.setValue(!culling.getValue());
             xrayConfig.setBlockCulling(culling.getValue());
             if (isActive()) reload();
+
         });
         culling.setValue(xrayConfig.shouldCullBlocks());
         ClickSetting menu = new ClickSetting("gavinsmod.settings.xray.blocks");
@@ -63,13 +64,23 @@ public class ModXray extends Mod {
      * @return True if visible, false if not
      */
     public static boolean shouldDrawFace(BlockState block) {
-        if (GavinsMod.isEnabled(Type.XRAY)) return xrayConfig.isInList(block.getBlock());
-        return true;
+        return xrayConfig.isInList(block.getBlock());
+    }
+
+    @Override
+    public void onEnable() {
+        em.subscribe(ShouldDrawSideListener.class, this);
+        super.onEnable();
+    }
+
+    @Override
+    public void onDisable() {
+        em.unsubscribe(ShouldDrawSideListener.class, this);
+        super.onDisable();
     }
 
     @Override
     public void activate() {
-        if (!GavinsMod.isEnabled(Type.FULL_BRIGHT)) RenderUtils.setLastGamma();
         getClient().setChunkCulling(xrayConfig.shouldCullBlocks());
         super.activate();
         reloadRenderer();
@@ -79,7 +90,7 @@ public class ModXray extends Mod {
      * Reloads the renderer if and only if the setting "xray.forcereload" is true.
      */
     private void reloadRenderer() {
-        if (Mods.getMod("xray").isActive()) getClient().getWorldRenderer().reload();
+        getClient().getWorldRenderer().reload();
     }
 
     @Override
@@ -105,5 +116,11 @@ public class ModXray extends Mod {
         deactivating = true;
         RenderUtils.setGamma(4);
         super.deactivate();
+    }
+
+    @Override
+    public void onDrawSide(DrawSide event) {
+        if (!isActive()) return;
+        event.setShouldDraw(shouldDrawFace(event.getState()));
     }
 }

@@ -20,7 +20,9 @@
 
 package com.peasenet.mixins;
 
-import com.peasenet.mods.render.ModXray;
+import com.peasenet.main.GavinsMod;
+import com.peasenet.util.event.ShouldDrawSideEvent;
+import com.peasenet.util.event.data.DrawSide;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -44,14 +46,18 @@ public class MixinBlock {
             "Lnet/minecraft/util/math/BlockPos;" + // blockPos
             ")Z", // ci
             cancellable = true)
-    private static boolean xray(BlockState state, BlockView world, BlockPos pos, Direction side, BlockPos otherPos, CallbackInfoReturnable<Boolean> cir) {
-        boolean blockVisible = ModXray.shouldDrawFace(state);
-        cir.setReturnValue(blockVisible);
-        return blockVisible;
+
+    private static void xray(BlockState state, BlockView world, BlockPos pos, Direction side, BlockPos otherPos, CallbackInfoReturnable<Boolean> cir) {
+        var drawSide = new DrawSide(pos, state);
+        var evt = new ShouldDrawSideEvent(drawSide);
+        GavinsMod.eventManager.call(evt);
+        if (drawSide.shouldDraw() != null) {
+            cir.setReturnValue(drawSide.shouldDraw());
+        }
     }
 
     @Inject(at = @At("HEAD"), method = "getSlipperiness", cancellable = true)
     public void slippery(CallbackInfoReturnable<Float> cir) {
-        cir.setReturnValue(0.9f);
+//        cir.setReturnValue(0.9f);
     }
 }
