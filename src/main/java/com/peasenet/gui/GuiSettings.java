@@ -149,12 +149,14 @@ public class GuiSettings extends GuiElement {
             var width = textRenderer.getWidth(resetText);
             resetButton.setTitle(resetText);
             resetButton.setWidth(width + 4);
+            var pos = new PointF(titleW, 1);
             resetButton.setPosition(new PointF(titleW, 1));
             resetButton.setBackground(Colors.DARK_RED);
             resetButton.setCallback(() -> {
                 GavinsMod.gui.reset();
                 GavinsMod.guiSettings.reset();
             });
+            resetButton.setDefaultPosition(pos);
         }
 
         guis.add(resetButton);
