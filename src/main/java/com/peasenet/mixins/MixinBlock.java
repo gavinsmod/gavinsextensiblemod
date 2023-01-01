@@ -35,18 +35,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * @author gt3ch1
- * @version 5/15/2022
+ * @version 01/01/2023
  */
 @Mixin(Block.class)
 public class MixinBlock {
-    @Inject(at = @At("HEAD"), method = "shouldDrawSide(" + "Lnet/minecraft/block/BlockState;" + // state
-            "Lnet/minecraft/world/BlockView;" + // reader
-            "Lnet/minecraft/util/math/BlockPos;" + // pos
-            "Lnet/minecraft/util/math/Direction;" + // face
-            "Lnet/minecraft/util/math/BlockPos;" + // blockPos
-            ")Z", // ci
-            cancellable = true)
-
+    @Inject(at = @At("HEAD"), method = "shouldDrawSide", cancellable = true)
     private static void xray(BlockState state, BlockView world, BlockPos pos, Direction side, BlockPos otherPos, CallbackInfoReturnable<Boolean> cir) {
         var drawSide = new DrawSide(pos, state);
         var evt = new ShouldDrawSideEvent(drawSide);
@@ -54,10 +47,5 @@ public class MixinBlock {
         if (drawSide.shouldDraw() != null) {
             cir.setReturnValue(drawSide.shouldDraw());
         }
-    }
-
-    @Inject(at = @At("HEAD"), method = "getSlipperiness", cancellable = true)
-    public void slippery(CallbackInfoReturnable<Float> cir) {
-//        cir.setReturnValue(0.9f);
     }
 }
