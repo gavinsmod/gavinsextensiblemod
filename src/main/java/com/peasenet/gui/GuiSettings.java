@@ -69,6 +69,9 @@ public class GuiSettings extends GuiElement {
 
     private static GuiClick resetButton;
 
+    private static float resetWidth = 0;
+    private static PointF resetPos;
+
     /**
      * Creates a new GUI settings screen.
      */
@@ -106,9 +109,14 @@ public class GuiSettings extends GuiElement {
         var titleW = textRenderer.getWidth(Text.translatable("gavinsmod.gui.settings")) + 16;
         var resetText = Text.translatable("gavinsmod.settings.reset");
         var width = textRenderer.getWidth(resetText);
+        if (resetPos == null)
+            resetPos = new PointF(titleW, 1);
         resetButton.setTitle(resetText);
-        resetButton.setWidth(width + 4);
-        resetButton.setPosition(new PointF(titleW, 1));
+        if (resetWidth == 0.0)
+            resetWidth = width + 4;
+        resetButton.setWidth(resetWidth);
+        resetButton.setPosition(resetPos);
+        resetButton.setDefaultPosition(resetButton.getBox());
         resetButton.setBackground(Colors.DARK_RED);
         resetButton.setCallback(() -> {
             GavinsMod.gui.reset();
@@ -143,22 +151,6 @@ public class GuiSettings extends GuiElement {
         guis.add(miscDropdown);
         guis.add(guiDropdown);
         guis.forEach(g -> g.setParent(true));
-        if (textRenderer != null) {
-            var titleW = textRenderer.getWidth(Text.translatable("gavinsmod.gui.settings")) + 16;
-            var resetText = Text.translatable("gavinsmod.settings.reset");
-            var width = textRenderer.getWidth(resetText);
-            resetButton.setTitle(resetText);
-            resetButton.setWidth(width + 4);
-            var pos = new PointF(titleW, 1);
-            resetButton.setPosition(new PointF(titleW, 1));
-            resetButton.setBackground(Colors.DARK_RED);
-            resetButton.setCallback(() -> {
-                GavinsMod.gui.reset();
-                GavinsMod.guiSettings.reset();
-            });
-            resetButton.setDefaultPosition(pos);
-        }
-
         guis.add(resetButton);
     }
 
