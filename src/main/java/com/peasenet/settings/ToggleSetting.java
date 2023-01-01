@@ -70,7 +70,7 @@ public class ToggleSetting extends Setting {
      * @return The current state of this setting.
      */
     public boolean getValue() {
-        return value;
+        return gui.isOn();
     }
 
     /**
