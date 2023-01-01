@@ -18,38 +18,23 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.gui.mod;
+package com.peasenet.mixins;
 
-import com.peasenet.gavui.GuiScroll;
-import com.peasenet.gavui.math.BoxF;
-import com.peasenet.gavui.math.PointF;
+import com.peasenet.main.Mods;
 import com.peasenet.mods.Type;
-import net.minecraft.text.Text;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.client.world.ClientWorld;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-/**
- * @author gt3ch1
- * @version 6/28/2022
- * Creates a new gui for render mods as a dropdown.
- */
-public class GuiRender extends GuiScroll {
-
-    /**
-     * Creates a new render dropdown.
-     */
-    public GuiRender() {
-        this(new PointF(280, 20), 105, 10, Text.translatable("gavinsmod.gui.render"));
-    }
-
-    /**
-     * Creates a new render dropdown.
-     *
-     * @param position - The position of the dropdown.
-     * @param width    - The width of the dropdown.
-     * @param height   - The height of the dropdown.
-     * @param title    - The title of the dropdown.
-     */
-    public GuiRender(PointF position, int width, int height, Text title) {
-        super(position, width, height, title, 4, ModGuiUtil.getGuiToggleFromCategory(Type.Category.RENDER,
-                new BoxF(position, width, height)));
+@Mixin(ClientWorld.class)
+public class MixinClientWorld {
+    @Inject(at = @At("HEAD"), method = "getBlockParticle", cancellable = true)
+    public void getBlockParticle(CallbackInfoReturnable<Block> cir) {
+        if (Mods.isActive(Type.BARRIER_DETECT))
+            cir.setReturnValue(Blocks.BARRIER);
     }
 }

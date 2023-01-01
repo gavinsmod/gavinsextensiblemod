@@ -143,6 +143,19 @@ public class GuiSettings extends GuiElement {
         guis.add(miscDropdown);
         guis.add(guiDropdown);
         guis.forEach(g -> g.setParent(true));
+        if (textRenderer != null) {
+            var titleW = textRenderer.getWidth(Text.translatable("gavinsmod.gui.settings")) + 16;
+            var resetText = Text.translatable("gavinsmod.settings.reset");
+            var width = textRenderer.getWidth(resetText);
+            resetButton.setTitle(resetText);
+            resetButton.setWidth(width + 4);
+            resetButton.setPosition(new PointF(titleW, 1));
+            resetButton.setBackground(Colors.DARK_RED);
+            resetButton.setCallback(() -> {
+                GavinsMod.gui.reset();
+                GavinsMod.guiSettings.reset();
+            });
+        }
 
         guis.add(resetButton);
     }

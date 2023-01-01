@@ -58,6 +58,7 @@ public enum Type {
     MOD_HPTAG("HP Tags", "gavinsmod.mod.render.hptags", "gavinsmod.keybinds.render", RENDER, "hptags"),
     WAYPOINT("Waypoint", "gavinsmod.mod.render.waypoints", "gavinsmod.keybinds.render", RENDER, "waypoints"),
     RADAR("Radar", "gavinsmod.mod.render.radar", "gavinsmod.keybinds.misc", RENDER, "radar"),
+    BARRIER_DETECT("Barrier Detect", "gavinsmod.mod.render.barrierdetect", "gavinsmod.keybinds.render", RENDER, "barrierdetect"),
 
     // ESP
     CHEST_ESP("Chest ESP", "gavinsmod.mod.esp.chest", "gavinsmod.keybinds.esp", ESPS, "chestesp"),

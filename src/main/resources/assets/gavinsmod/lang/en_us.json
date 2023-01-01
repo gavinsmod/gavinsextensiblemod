@@ -122,5 +122,6 @@
     "gavinsmod.settings.alpha": "Alpha",
     "gavinsmod.settings.radar.background.alpha": "Background Alpha",
     "gavinsmod.settings.radar.point.alpha": "Point Alpha",
+    "gavinsmod.mod.render.barrierdetect": "Barrier Detector",
     "gavinsmod.settings.xray.culling": "X-Ray Culling"
 }

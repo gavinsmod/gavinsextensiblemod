@@ -85,6 +85,7 @@ public class Mods {
         new ModNoNausea();
         new ModAntiFire();
         new ModNoOverlay();
+        new ModBarrierDetect();
         // GUI
         new ModGui();
         new ModGuiSettings();
