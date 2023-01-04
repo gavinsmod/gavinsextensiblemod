@@ -23,6 +23,7 @@ import com.peasenet.main.GavinsMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.ExperienceDroppingBlock;
 import net.minecraft.registry.Registries;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.List;
@@ -31,7 +32,7 @@ import java.util.List;
  * The configuration for xray.
  *
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 01/04/2022
  */
 public class XrayConfig extends Config<XrayConfig> {
 
@@ -53,18 +54,36 @@ public class XrayConfig extends Config<XrayConfig> {
     public XrayConfig() {
         setKey("xray");
         blocks = new HashSet<>();
-        Registries.BLOCK.stream().filter(b -> b instanceof ExperienceDroppingBlock).forEach(b -> blocks.add(
-                b.getLootTableId().getPath().replace("blocks/", "")
-        ));
+        loadDefaultBlocks();
         setInstance(this);
     }
 
     /**
-     * Loads the default block list.
+     * Loads the default block list into the configuration, and saves it.
      */
     public static void loadDefaultBlocks() {
-        var list = Registries.BLOCK.stream().filter(b -> b instanceof ExperienceDroppingBlock).toList();
-        GavinsMod.xrayConfig.setList(list);
+        GavinsMod.xrayConfig.setList(getDefaultBlockList());
+    }
+
+    /**
+     * Gets the default block list.
+     *
+     * @return The default block list.
+     */
+    private static List<Block> getDefaultBlockList() {
+        return Registries.BLOCK.stream().filter(b -> b instanceof ExperienceDroppingBlock).toList();
+    }
+
+    /**
+     * Gets the name of the block, used to identify blocks to xray.
+     *
+     * @param b - The block to get the name of.
+     * @return The name of the block.
+     */
+    @NotNull
+    private static String getId(Block b) {
+        var path = b.getLootTableId().getPath();
+        return path.equals("empty") ? b.getTranslationKey().replace("block.minecraft.", "") : path.replace("blocks/", "");
     }
 
     /**
@@ -82,8 +101,7 @@ public class XrayConfig extends Config<XrayConfig> {
      * @param blockCulling - Whether to cull blocks.
      */
     public void setBlockCulling(boolean blockCulling) {
-        this.blockCulling = blockCulling;
-        setInstance(this);
+        getInstance().blockCulling = blockCulling;
         saveConfig();
     }
 
@@ -93,15 +111,8 @@ public class XrayConfig extends Config<XrayConfig> {
      * @param b - The block to add.
      */
     public void addBlock(Block b) {
-        var path = b.getLootTableId().getPath();
-        var id = "";
-        if (path.equals("empty")) {
-            id = b.getTranslationKey().replace("block.minecraft.", "");
-        } else {
-            id = path.replace("blocks/", "");
-        }
-        blocks.add(id);
-        setInstance(this);
+        String id = getId(b);
+        getInstance().blocks.add(id);
         saveConfig();
     }
 
@@ -111,9 +122,8 @@ public class XrayConfig extends Config<XrayConfig> {
      * @param list - the list to set to.
      */
     public void setList(List<Block> list) {
-        blocks.clear();
+        getInstance().blocks.clear();
         list.forEach(this::addBlock);
-        setInstance(this);
         saveConfig();
     }
 
@@ -123,15 +133,8 @@ public class XrayConfig extends Config<XrayConfig> {
      * @param b - The block to remove.
      */
     public void removeBlock(Block b) {
-        var path = b.getLootTableId().getPath();
-        var id = "";
-        if (path.equals("empty")) {
-            id = b.getTranslationKey().replace("block.minecraft.", "");
-        } else {
-            id = path.replace("blocks/", "");
-        }
-        blocks.remove(id);
-        setInstance(this);
+        String id = getId(b);
+        getInstance().blocks.remove(id);
         saveConfig();
     }
 
@@ -142,19 +145,13 @@ public class XrayConfig extends Config<XrayConfig> {
      * @return Whether the block is in the list.
      */
     public boolean isInList(Block b) {
-        var path = b.getLootTableId().getPath();
-        var id = "";
-        if (path.equals("empty")) {
-            id = b.getTranslationKey().replace("block.minecraft.", "");
-        } else {
-            id = path.replace("blocks/", "");
-        }
-        return blocks.contains(id);
+        String id = getId(b);
+        return getInstance().blocks.contains(id);
     }
 
     @Override
     public XrayConfig getInstance() {
-        return this;
+        return instance;
     }
 
     @Override
