@@ -93,7 +93,14 @@ public class XrayConfig extends Config<XrayConfig> {
      * @param b - The block to add.
      */
     public void addBlock(Block b) {
-        blocks.add(b.getLootTableId().getPath().replace("blocks/", ""));
+        var path = b.getLootTableId().getPath();
+        var id = "";
+        if (path.equals("empty")) {
+            id = b.getTranslationKey().replace("block.minecraft.", "");
+        } else {
+            id = path.replace("blocks/", "");
+        }
+        blocks.add(id);
         setInstance(this);
         saveConfig();
     }
@@ -116,7 +123,14 @@ public class XrayConfig extends Config<XrayConfig> {
      * @param b - The block to remove.
      */
     public void removeBlock(Block b) {
-        blocks.remove(b.getLootTableId().getPath().replace("blocks/", ""));
+        var path = b.getLootTableId().getPath();
+        var id = "";
+        if (path.equals("empty")) {
+            id = b.getTranslationKey().replace("block.minecraft.", "");
+        } else {
+            id = path.replace("blocks/", "");
+        }
+        blocks.remove(id);
         setInstance(this);
         saveConfig();
     }
@@ -128,8 +142,14 @@ public class XrayConfig extends Config<XrayConfig> {
      * @return Whether the block is in the list.
      */
     public boolean isInList(Block b) {
-        var path = b.getLootTableId().getPath().replace("blocks/", "");
-        return blocks.contains(path);
+        var path = b.getLootTableId().getPath();
+        var id = "";
+        if (path.equals("empty")) {
+            id = b.getTranslationKey().replace("block.minecraft.", "");
+        } else {
+            id = path.replace("blocks/", "");
+        }
+        return blocks.contains(id);
     }
 
     @Override

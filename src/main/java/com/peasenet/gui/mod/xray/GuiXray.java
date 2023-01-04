@@ -234,7 +234,7 @@ public class GuiXray extends GuiElement {
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float delta) {
         for (int i = 0; i < blocksPerPage; i++) {
             if (i > visibleBlocks.size() - 1) break;
-            Block block = visibleBlocks.toArray(new Block[0])[i];
+            Block block = (Block) visibleBlocks.toArray()[i];
             if (block == null) return;
             var stack = block.asItem().getDefaultStack();
             var blockX = (i % (blocksPerRow)) * 18 + x + 2;
