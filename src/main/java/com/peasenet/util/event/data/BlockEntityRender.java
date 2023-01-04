@@ -25,15 +25,54 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
 
-public class BlockEntityRender {
+/**
+ * Data class for the block entity render event.
+ *
+ * @author gt3ch1
+ * @version 01/03/2022
+ */
+public class BlockEntityRender extends Cancellable {
 
+    /**
+     * The block entity.
+     */
     public BlockEntity entity;
+
+    /**
+     * The matrix stack.
+     */
     public MatrixStack stack;
+
+    /**
+     * The buffer builder.
+     */
     public BufferBuilder buffer;
+
+    /**
+     * The center of the block entity.
+     */
     public Vec3d center;
+
+    /**
+     * The current player's position.
+     */
     public Vec3d playerPos;
+
+    /**
+     * Change in ticks.
+     */
     public float delta;
 
+    /**
+     * Creates a new block entity render event.
+     *
+     * @param entity    - The block entity.
+     * @param stack     - The matrix stack.
+     * @param buffer    - The buffer builder.
+     * @param center    - The center of the block entity.
+     * @param playerPos - The current player's position.
+     * @param delta     - Change in ticks.
+     */
     public BlockEntityRender(BlockEntity entity, MatrixStack stack, BufferBuilder buffer, Vec3d center, Vec3d playerPos, float delta) {
         this.entity = entity;
         this.stack = stack;

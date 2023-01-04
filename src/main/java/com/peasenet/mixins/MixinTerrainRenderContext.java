@@ -21,31 +21,34 @@
 package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
-import com.peasenet.util.event.ShouldDrawSideEvent;
-import com.peasenet.util.event.data.DrawSide;
-import net.minecraft.block.Block;
+import com.peasenet.util.event.TessellateBlockEvent;
+import com.peasenet.util.event.data.TessellateBlock;
+import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderContext;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
+ * Mixin to rendering terrain, used to cancel rendering of some blocks for xray.
+ *
  * @author gt3ch1
- * @version 01/01/2023
+ * @version 01/03/2022
  */
-@Mixin(Block.class)
-public class MixinBlock {
-    @Inject(at = @At("RETURN"), method = "shouldDrawSide", cancellable = true)
-    private static void xray(BlockState state, BlockView world, BlockPos pos, Direction side, BlockPos otherPos, CallbackInfoReturnable<Boolean> cir) {
-        var drawSide = new DrawSide(pos, state);
-        var evt = new ShouldDrawSideEvent(drawSide);
+
+@Mixin(TerrainRenderContext.class)
+public class MixinTerrainRenderContext {
+    @Inject(at = @At("HEAD"), method = "tessellateBlock", cancellable = true)
+    private void tessellateBlock(BlockState blockState, BlockPos blockPos, BakedModel model, MatrixStack matrixStack, CallbackInfoReturnable<Boolean> cir) {
+        var tb = new TessellateBlock(blockState, blockPos, model, matrixStack);
+        var evt = new TessellateBlockEvent(tb);
         GavinsMod.eventManager.call(evt);
-        if (drawSide.shouldDraw() != null) {
-            cir.setReturnValue(drawSide.shouldDraw());
+        if (evt.isCancelled()) {
+            cir.cancel();
         }
     }
 }

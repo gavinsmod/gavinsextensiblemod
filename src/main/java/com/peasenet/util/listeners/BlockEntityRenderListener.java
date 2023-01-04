@@ -25,14 +25,14 @@ import com.peasenet.util.event.data.BlockEntityRender;
  * A listener for the world render event.
  *
  * @author GT3CH1
- * @version 12/23/2022
+ * @version 01/03/2022
  */
 public interface BlockEntityRenderListener extends Listener {
 
     /**
      * Called when the world is rendered.
      */
-    void onEntityRender(BlockEntityRender er);
+    void onRenderBlockEntity(BlockEntityRender er);
 
 
 }

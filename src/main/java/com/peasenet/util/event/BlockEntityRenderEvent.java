@@ -33,10 +33,10 @@ import java.util.ArrayList;
  * The event for the world render event.
  *
  * @author GT3CH1
- * @version 12/22/2022
+ * @version 01/03/2022
  */
 
-public class BlockEntityRenderEvent extends Event<BlockEntityRenderListener> {
+public class BlockEntityRenderEvent extends CancellableEvent<BlockEntityRenderListener> {
     BlockEntityRender entityRender;
 
     /**
@@ -51,10 +51,16 @@ public class BlockEntityRenderEvent extends Event<BlockEntityRenderListener> {
         this.entityRender = new BlockEntityRender(entity, stack, buffer, center, playerPos, delta);
     }
 
+    public BlockEntityRenderEvent(BlockEntityRender ber) {
+        this.entityRender = ber;
+    }
+
     @Override
     public void fire(ArrayList<BlockEntityRenderListener> listeners) {
         for (BlockEntityRenderListener listener : listeners) {
-            listener.onEntityRender(entityRender);
+            listener.onRenderBlockEntity(entityRender);
+            if (entityRender.isCancelled())
+                this.cancel();
         }
     }
 

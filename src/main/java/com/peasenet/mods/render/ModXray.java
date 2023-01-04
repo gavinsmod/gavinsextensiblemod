@@ -28,16 +28,20 @@ import com.peasenet.settings.ClickSetting;
 import com.peasenet.settings.SubSetting;
 import com.peasenet.settings.ToggleSetting;
 import com.peasenet.util.RenderUtils;
+import com.peasenet.util.event.data.BlockEntityRender;
 import com.peasenet.util.event.data.DrawSide;
+import com.peasenet.util.event.data.TessellateBlock;
+import com.peasenet.util.listeners.BlockEntityRenderListener;
 import com.peasenet.util.listeners.ShouldDrawSideListener;
+import com.peasenet.util.listeners.TessellateBlockListener;
 import net.minecraft.block.BlockState;
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 01/03/2022
  * A mod for xray like feature, allowing the player to see through certain blocks.
  */
-public class ModXray extends Mod implements ShouldDrawSideListener {
+public class ModXray extends Mod implements ShouldDrawSideListener, TessellateBlockListener, BlockEntityRenderListener {
 
     public ModXray() {
         super(Type.XRAY);
@@ -70,12 +74,16 @@ public class ModXray extends Mod implements ShouldDrawSideListener {
     @Override
     public void onEnable() {
         em.subscribe(ShouldDrawSideListener.class, this);
+        em.subscribe(TessellateBlockListener.class, this);
+        em.subscribe(BlockEntityRenderListener.class, this);
         super.onEnable();
     }
 
     @Override
     public void onDisable() {
         em.unsubscribe(ShouldDrawSideListener.class, this);
+        em.unsubscribe(TessellateBlockListener.class, this);
+        em.unsubscribe(BlockEntityRenderListener.class, this);
         super.onDisable();
     }
 
@@ -122,5 +130,17 @@ public class ModXray extends Mod implements ShouldDrawSideListener {
     public void onDrawSide(DrawSide event) {
         if (!isActive()) return;
         event.setShouldDraw(shouldDrawFace(event.getState()));
+    }
+
+    @Override
+    public void onTessellateBlock(TessellateBlock event) {
+        if (!shouldDrawFace(event.getBlockState()))
+            event.cancel();
+    }
+
+    @Override
+    public void onRenderBlockEntity(BlockEntityRender er) {
+        if (!shouldDrawFace(getClient().getWorld().getBlockState(er.entity.getPos())))
+            er.cancel();
     }
 }

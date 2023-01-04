@@ -33,7 +33,7 @@ import net.minecraft.entity.player.PlayerEntity;
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 01/03/2022
  * A mod that allows the player to see a tracer to other players.
  */
 public class ModEntityPlayerTracer extends Mod implements EntityRenderListener, CameraBobListener {
@@ -66,6 +66,8 @@ public class ModEntityPlayerTracer extends Mod implements EntityRenderListener, 
 
     @Override
     public void onEntityRender(EntityRender er) {
+        if (er.buffer == null)
+            return;
         if (!(er.entity instanceof PlayerEntity))
             return;
         RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, tracerConfig.getPlayerColor(), tracerConfig.getAlpha());

@@ -31,7 +31,7 @@ import net.minecraft.util.math.Box;
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 01/03/2022
  * A mod that allows the client to see an esp (a box) around beehives.
  */
 public class ModBeehiveEsp extends Mod implements BlockEntityRenderListener {
@@ -57,8 +57,8 @@ public class ModBeehiveEsp extends Mod implements BlockEntityRenderListener {
     }
 
     @Override
-    public void onEntityRender(BlockEntityRender er) {
-        if (!(er.entity instanceof BeehiveBlockEntity)) return;
+    public void onRenderBlockEntity(BlockEntityRender er) {
+        if (!(er.entity instanceof BeehiveBlockEntity) || er.buffer == null) return;
         var box = new Box(er.entity.getPos());
         RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getBeehiveColor(), espConfig.getAlpha());
     }

@@ -33,7 +33,7 @@ import net.minecraft.block.entity.BeehiveBlockEntity;
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 01/03/2022
  * A mod that allows the player to see tracers towards beehives.
  */
 public class ModBeehiveTracer extends Mod implements BlockEntityRenderListener,
@@ -61,7 +61,9 @@ public class ModBeehiveTracer extends Mod implements BlockEntityRenderListener,
     }
 
     @Override
-    public void onEntityRender(BlockEntityRender er) {
+    public void onRenderBlockEntity(BlockEntityRender er) {
+        if (er.buffer == null)
+            return;
         if (er.entity instanceof BeehiveBlockEntity)
             RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, tracerConfig.getBeehiveColor(),
                     tracerConfig.getAlpha());

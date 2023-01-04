@@ -30,6 +30,7 @@ import com.peasenet.gui.GuiElement;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Mods;
+import com.peasenet.mods.Type;
 import com.peasenet.util.RenderUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -44,7 +45,7 @@ import java.util.LinkedHashSet;
 
 /**
  * @author gt3ch1
- * @version 7/4/2022
+ * @version 01/03/2022
  * A gui that allows the player to search for blocks and add them to the xray list.
  */
 public class GuiXray extends GuiElement {
@@ -53,54 +54,67 @@ public class GuiXray extends GuiElement {
      * The list of currently visible blocks.
      */
     private final LinkedHashSet<Block> visibleBlocks = blockList();
+
     /**
      * The background gui element.
      */
     private Gui box;
+
     /**
      * The button that moves to a page behind the current one.
      */
     private GuiClick prevButton;
+
     /**
      * The button that moves to a page ahead of the current one.
      */
     private GuiClick nextButton;
+
     /**
      * The width of the main gui.
      */
     private int width;
+
     /**
      * The height of the main gui.
      */
     private int height;
+
     /**
      * The x coordinate of the main gui.
      */
     private int x;
+
     /**
      * The y coordinate of the main gui.
      */
     private int y;
+
     /**
      * The current page of the gui.
      */
     private int page = 0;
+
     /**
      * The number of pages in the gui.
      */
     private int pageCount = 0;
+
     /**
      * The number of blocks per page.
      */
     private int blocksPerPage = 0;
+
     /**
      * The number of blocks per row.
      */
     private int blocksPerRow = 0;
+
     /**
      * The search field.
      */
     private TextFieldWidget search;
+
     /**
      * The toggle element to show all blocks or just enabled blocks.
      */
@@ -264,8 +278,7 @@ public class GuiXray extends GuiElement {
         if (block == null || button != 0) return false;
         if (GavinsMod.xrayConfig.isInList(block)) GavinsMod.xrayConfig.removeBlock(block);
         else GavinsMod.xrayConfig.addBlock(block);
-        Mods.getMod("xray").reload();
-
+        Mods.getMod(Type.XRAY).reload();
         return super.mouseClicked(mouseX, mouseY, button);
     }
 

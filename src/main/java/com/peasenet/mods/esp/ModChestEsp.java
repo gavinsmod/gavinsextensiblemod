@@ -33,7 +33,7 @@ import net.minecraft.util.math.Box;
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 01/03/2022
  * A mod that allows the client to see an esp (a box) around chests.
  */
 public class ModChestEsp extends Mod implements BlockEntityRenderListener {
@@ -60,8 +60,10 @@ public class ModChestEsp extends Mod implements BlockEntityRenderListener {
     }
 
     @Override
-    public void onEntityRender(BlockEntityRender er) {
+    public void onRenderBlockEntity(BlockEntityRender er) {
         var box = new Box(er.entity.getPos());
+        if (er.buffer == null)
+            return;
         if (er.entity instanceof ChestBlockEntity || er.entity instanceof ShulkerBoxBlockEntity
                 || er.entity instanceof EnderChestBlockEntity)
             RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getChestColor(), espConfig.getAlpha());

@@ -30,7 +30,7 @@ import net.minecraft.entity.player.PlayerEntity;
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 01/03/2022
  * A mod that allows the player to see an ESP to other players.
  */
 public class ModEntityPlayerEsp extends Mod implements EntityRenderListener {
@@ -56,7 +56,7 @@ public class ModEntityPlayerEsp extends Mod implements EntityRenderListener {
 
     @Override
     public void onEntityRender(EntityRender er) {
-        if (!(er.entity instanceof PlayerEntity))
+        if (!(er.entity instanceof PlayerEntity) || er.buffer == null)
             return;
         var box = RenderUtils.getEntityBox(er.delta, er.entity);
         RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getPlayerColor(), espConfig.getAlpha());

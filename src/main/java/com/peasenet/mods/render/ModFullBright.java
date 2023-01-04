@@ -30,7 +30,7 @@ import com.peasenet.util.RenderUtils;
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 01/03/2022
  * A mod that allows the client to see very clearly in the absence of a light source.
  */
 public class ModFullBright extends Mod {
@@ -49,7 +49,7 @@ public class ModFullBright extends Mod {
         });
         autoFullBright.setValue(fullbrightConfig.isAutoFullBright());
 
-        SlideSetting gamma = new SlideSetting("gavinsmod.settings.render.gamma");
+        SlideSetting gamma = new SlideSetting("gavinsmod.settings.render.fullbright.gamma");
         gamma.setCallback(() -> {
             fullbrightConfig.setGamma(gamma.getValue());
         });

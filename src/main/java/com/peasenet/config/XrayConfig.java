@@ -106,7 +106,8 @@ public class XrayConfig extends Config<XrayConfig> {
      * @return Whether the block is in the list.
      */
     public boolean isInList(Block b) {
-        return blocks.contains(b.getLootTableId().getPath().replace("blocks/", ""));
+        var path = b.getLootTableId().getPath().replace("blocks/", "");
+        return blocks.contains(path);
     }
 
     @Override

@@ -120,6 +120,7 @@
     "gavinsmod.settings.xray.blocks": "X-Ray Blocks",
     "gavinsmod.settings.xray.chests": "X-Ray Chests",
     "gavinsmod.settings.alpha": "Alpha",
+    "gavinsmod.settings.render.fullbright.gamma": "Intensity",
     "gavinsmod.settings.radar.background.alpha": "Background Alpha",
     "gavinsmod.settings.radar.point.alpha": "Point Alpha",
     "gavinsmod.mod.render.barrierdetect": "Barrier Detector",

@@ -21,31 +21,34 @@
 package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
-import com.peasenet.util.event.ShouldDrawSideEvent;
-import com.peasenet.util.event.data.DrawSide;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
+import com.peasenet.util.event.BlockEntityRenderEvent;
+import com.peasenet.util.event.data.BlockEntityRender;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
+ * Mixin to rendering block entities.
+ *
  * @author gt3ch1
- * @version 01/01/2023
+ * @version 01/03/2023
  */
-@Mixin(Block.class)
-public class MixinBlock {
-    @Inject(at = @At("RETURN"), method = "shouldDrawSide", cancellable = true)
-    private static void xray(BlockState state, BlockView world, BlockPos pos, Direction side, BlockPos otherPos, CallbackInfoReturnable<Boolean> cir) {
-        var drawSide = new DrawSide(pos, state);
-        var evt = new ShouldDrawSideEvent(drawSide);
+
+@Mixin(BlockEntityRenderDispatcher.class)
+public class MixinBlockEntityRenderDispatcher {
+
+    @Inject(at = {@At("HEAD")}, method = {"render(Lnet/minecraft/block/entity/BlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;)V"}, cancellable = true)
+    private <E extends BlockEntity> void onRender(E blockEntity, float delta, MatrixStack stack, VertexConsumerProvider consumerProvider, CallbackInfo ci) {
+        var ber = new BlockEntityRender(blockEntity, stack, null, null, null, delta);
+        var evt = new BlockEntityRenderEvent(ber);
         GavinsMod.eventManager.call(evt);
-        if (drawSide.shouldDraw() != null) {
-            cir.setReturnValue(drawSide.shouldDraw());
+        if (evt.isCancelled()) {
+            ci.cancel();
         }
     }
 }

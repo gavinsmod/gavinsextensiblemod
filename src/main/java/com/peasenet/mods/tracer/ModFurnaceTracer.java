@@ -33,7 +33,7 @@ import net.minecraft.block.entity.FurnaceBlockEntity;
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 01/03/2022
  * A mod that allows the player to see tracers towards furnaces.
  */
 public class ModFurnaceTracer extends Mod implements BlockEntityRenderListener,
@@ -61,7 +61,9 @@ public class ModFurnaceTracer extends Mod implements BlockEntityRenderListener,
     }
 
     @Override
-    public void onEntityRender(BlockEntityRender er) {
+    public void onRenderBlockEntity(BlockEntityRender er) {
+        if (er.buffer == null)
+            return;
         if (er.entity instanceof FurnaceBlockEntity)
             RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, tracerConfig.getFurnaceColor(), tracerConfig.getAlpha());
     }

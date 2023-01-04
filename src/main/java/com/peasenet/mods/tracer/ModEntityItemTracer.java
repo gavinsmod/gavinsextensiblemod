@@ -33,7 +33,7 @@ import net.minecraft.entity.EntityType;
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 01/03/2022
  * A mod that allows the player to see tracers towards items.
  */
 public class ModEntityItemTracer extends Mod implements EntityRenderListener, CameraBobListener {
@@ -61,6 +61,8 @@ public class ModEntityItemTracer extends Mod implements EntityRenderListener, Ca
 
     @Override
     public void onEntityRender(EntityRender er) {
+        if (er.buffer == null)
+            return;
         if (er.getEntityType() != EntityType.ITEM) return;
         RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, tracerConfig.getItemColor(), tracerConfig.getAlpha());
     }

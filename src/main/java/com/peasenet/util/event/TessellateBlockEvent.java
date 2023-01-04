@@ -18,34 +18,41 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mixins;
+package com.peasenet.util.event;
 
-import com.peasenet.main.GavinsMod;
-import com.peasenet.util.event.ShouldDrawSideEvent;
-import com.peasenet.util.event.data.DrawSide;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import com.peasenet.util.event.data.TessellateBlock;
+import com.peasenet.util.listeners.TessellateBlockListener;
+
+import java.util.ArrayList;
 
 /**
+ * Event called when block tessellation occurs.
+ *
  * @author gt3ch1
- * @version 01/01/2023
+ * @version 01/03/2023
  */
-@Mixin(Block.class)
-public class MixinBlock {
-    @Inject(at = @At("RETURN"), method = "shouldDrawSide", cancellable = true)
-    private static void xray(BlockState state, BlockView world, BlockPos pos, Direction side, BlockPos otherPos, CallbackInfoReturnable<Boolean> cir) {
-        var drawSide = new DrawSide(pos, state);
-        var evt = new ShouldDrawSideEvent(drawSide);
-        GavinsMod.eventManager.call(evt);
-        if (drawSide.shouldDraw() != null) {
-            cir.setReturnValue(drawSide.shouldDraw());
+public class TessellateBlockEvent extends CancellableEvent<TessellateBlockListener> {
+
+    /**
+     * The data for the event.
+     */
+    private final TessellateBlock tessellateBlock;
+
+    public TessellateBlockEvent(TessellateBlock event) {
+        this.tessellateBlock = event;
+    }
+
+    @Override
+    public void fire(ArrayList<TessellateBlockListener> listeners) {
+        for (TessellateBlockListener listener : listeners) {
+            listener.onTessellateBlock(tessellateBlock);
+            if (tessellateBlock.isCancelled())
+                this.cancel();
         }
+    }
+
+    @Override
+    public Class<TessellateBlockListener> getEvent() {
+        return TessellateBlockListener.class;
     }
 }

@@ -30,7 +30,7 @@ import net.minecraft.entity.EntityType;
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 01/03/2022
  * A mod that allows the player to see an esp (a box) around items.
  */
 public class ModEntityItemEsp extends Mod implements EntityRenderListener {
@@ -57,6 +57,8 @@ public class ModEntityItemEsp extends Mod implements EntityRenderListener {
     @Override
     public void onEntityRender(EntityRender er) {
         if (er.getEntityType() != EntityType.ITEM)
+            return;
+        if (er.buffer == null)
             return;
         var box = RenderUtils.getEntityBox(er.delta, er.entity);
         RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getItemColor(), espConfig.getAlpha());
