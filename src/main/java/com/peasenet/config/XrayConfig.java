@@ -19,7 +19,6 @@
  */
 package com.peasenet.config;
 
-import com.peasenet.main.GavinsMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.ExperienceDroppingBlock;
 import net.minecraft.registry.Registries;
@@ -61,8 +60,8 @@ public class XrayConfig extends Config<XrayConfig> {
     /**
      * Loads the default block list into the configuration, and saves it.
      */
-    public static void loadDefaultBlocks() {
-        GavinsMod.xrayConfig.setList(getDefaultBlockList());
+    public void loadDefaultBlocks() {
+        setList(getDefaultBlockList());
     }
 
     /**

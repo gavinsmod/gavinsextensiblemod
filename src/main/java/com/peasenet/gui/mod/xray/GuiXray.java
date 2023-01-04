@@ -20,7 +20,6 @@
 
 package com.peasenet.gui.mod.xray;
 
-import com.peasenet.config.XrayConfig;
 import com.peasenet.gavui.Gui;
 import com.peasenet.gavui.GuiClick;
 import com.peasenet.gavui.GuiToggle;
@@ -189,9 +188,10 @@ public class GuiXray extends GuiElement {
         resetButton.setBackground(Colors.DARK_RED);
         resetButton.setCallback(() -> {
             // get all experience dropping blocks, create a list of strings of block loot tables, and set the list to that.
-            XrayConfig.loadDefaultBlocks();
+            GavinsMod.xrayConfig.loadDefaultBlocks();
             updateBlockList();
             page = 0;
+            GavinsModClient.getMinecraftClient().getWorldRenderer().reload();
         });
         addSelectableChild(search);
         updateBlockList();
