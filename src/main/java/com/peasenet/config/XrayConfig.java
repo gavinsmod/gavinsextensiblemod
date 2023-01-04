@@ -19,11 +19,13 @@
  */
 package com.peasenet.config;
 
+import com.peasenet.main.GavinsMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.ExperienceDroppingBlock;
 import net.minecraft.registry.Registries;
 
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * The configuration for xray.
@@ -58,6 +60,14 @@ public class XrayConfig extends Config<XrayConfig> {
     }
 
     /**
+     * Loads the default block list.
+     */
+    public static void loadDefaultBlocks() {
+        var list = Registries.BLOCK.stream().filter(b -> b instanceof ExperienceDroppingBlock).toList();
+        GavinsMod.xrayConfig.setList(list);
+    }
+
+    /**
      * Whether to cull blocks.
      *
      * @return Whether to cull blocks.
@@ -84,6 +94,18 @@ public class XrayConfig extends Config<XrayConfig> {
      */
     public void addBlock(Block b) {
         blocks.add(b.getLootTableId().getPath().replace("blocks/", ""));
+        setInstance(this);
+        saveConfig();
+    }
+
+    /**
+     * Sets the xray block list.
+     *
+     * @param list - the list to set to.
+     */
+    public void setList(List<Block> list) {
+        blocks.clear();
+        list.forEach(this::addBlock);
         setInstance(this);
         saveConfig();
     }

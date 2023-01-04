@@ -20,6 +20,7 @@
 
 package com.peasenet.gui.mod.xray;
 
+import com.peasenet.config.XrayConfig;
 import com.peasenet.gavui.Gui;
 import com.peasenet.gavui.GuiClick;
 import com.peasenet.gavui.GuiToggle;
@@ -50,75 +51,68 @@ import java.util.LinkedHashSet;
  */
 public class GuiXray extends GuiElement {
 
+    private static float resetWidth = 0;
+    private static PointF resetPos;
     /**
      * The list of currently visible blocks.
      */
     private final LinkedHashSet<Block> visibleBlocks = blockList();
-
     /**
      * The background gui element.
      */
     private Gui box;
-
     /**
      * The button that moves to a page behind the current one.
      */
     private GuiClick prevButton;
-
     /**
      * The button that moves to a page ahead of the current one.
      */
     private GuiClick nextButton;
-
     /**
      * The width of the main gui.
      */
     private int width;
-
     /**
      * The height of the main gui.
      */
     private int height;
-
     /**
      * The x coordinate of the main gui.
      */
     private int x;
-
     /**
      * The y coordinate of the main gui.
      */
     private int y;
-
     /**
      * The current page of the gui.
      */
     private int page = 0;
-
     /**
      * The number of pages in the gui.
      */
     private int pageCount = 0;
-
     /**
      * The number of blocks per page.
      */
     private int blocksPerPage = 0;
-
     /**
      * The number of blocks per row.
      */
     private int blocksPerRow = 0;
-
     /**
      * The search field.
      */
     private TextFieldWidget search;
-
     /**
      * The toggle element to show all blocks or just enabled blocks.
      */
     private GuiToggle enabledOnly;
+    /**
+     * The reset button to load the default blocks.
+     */
+    private GuiClick resetButton;
 
     /**
      * Creates a new GUI menu with the given title.
@@ -178,6 +172,26 @@ public class GuiXray extends GuiElement {
         enabledOnly.setCallback(() -> {
             page = 0;
             updateBlockList();
+        });
+        var titleW = textRenderer.getWidth(Text.translatable("gavinsmod.mod.render.xray")) + 16;
+        var resetText = Text.translatable("gavinsmod.settings.reset");
+        var width = textRenderer.getWidth(resetText);
+        if (resetPos == null)
+            resetPos = new PointF(titleW, 1);
+        resetButton = new GuiClick(resetPos, width + 8, 10, resetText);
+
+        resetButton.setTitle(resetText);
+        if (resetWidth == 0.0)
+            resetWidth = width + 4;
+        resetButton.setWidth(resetWidth);
+        resetButton.setPosition(resetPos);
+        resetButton.setDefaultPosition(resetButton.getBox());
+        resetButton.setBackground(Colors.DARK_RED);
+        resetButton.setCallback(() -> {
+            // get all experience dropping blocks, create a list of strings of block loot tables, and set the list to that.
+            XrayConfig.loadDefaultBlocks();
+            updateBlockList();
+            page = 0;
         });
         addSelectableChild(search);
         updateBlockList();
@@ -243,6 +257,7 @@ public class GuiXray extends GuiElement {
         prevButton.render(matrixStack, textRenderer, mouseX, mouseY, delta);
         nextButton.render(matrixStack, textRenderer, mouseX, mouseY, delta);
         enabledOnly.render(matrixStack, textRenderer, mouseX, mouseY, delta);
+        resetButton.render(matrixStack, textRenderer, mouseX, mouseY, delta);
         textRenderer.draw(matrixStack, Text.literal(String.valueOf('\u25c0')), x + width / 2 - 86, y - 13, Colors.WHITE.getAsInt());
         textRenderer.draw(matrixStack, Text.literal(String.valueOf('\u25b6')), x + width / 2 + 80, y - 13, Colors.WHITE.getAsInt());
         super.render(matrixStack, mouseX, mouseY, delta);
@@ -268,6 +283,11 @@ public class GuiXray extends GuiElement {
             enabledOnly.mouseClicked(mouseX, mouseY, button);
             return true;
         }
+        if (resetButton.mouseWithinGui(mouseX, mouseY)) {
+            resetButton.mouseClicked(mouseX, mouseY, button);
+            return true;
+        }
+
         if (!(mouseX > x && mouseX < x + width && mouseY > y && mouseY < y + height)) return false;
         search.setTextFieldFocused(false);
 
