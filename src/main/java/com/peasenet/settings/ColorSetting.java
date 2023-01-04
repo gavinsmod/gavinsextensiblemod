@@ -23,12 +23,11 @@ package com.peasenet.settings;
 import com.peasenet.gavui.GuiCycle;
 import com.peasenet.gavui.color.Color;
 import com.peasenet.gavui.color.Colors;
-import com.peasenet.gavui.util.GavUISettings;
 import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 01/03/2023
  * A setting that allows the user to change a color value.
  */
 public class ColorSetting extends Setting {
@@ -41,20 +40,16 @@ public class ColorSetting extends Setting {
     /**
      * The color value of the setting.
      */
-    private Color color;
+    private Color color = Colors.WHITE;
+
 
     /**
-     * Creates a new color setting.
+     * Creates a new cycle setting used for selecting a color.
      *
-     * @param name           - The name of the setting (ie, "foregroundColor").
      * @param translationKey - The translation key of the setting.
      */
-    public ColorSetting(String name, String translationKey) {
+    public ColorSetting(String translationKey) {
         super(translationKey);
-        if (name.contains("gavui")) {
-            name = name.replace("gavui.", "");
-            color = GavUISettings.getColor(name);
-        } else color = Colors.WHITE;
         guiCycle = new GuiCycle(90, 10, Text.translatable(translationKey), Colors.COLORS.length);
         guiCycle.setBackground(color);
         guiCycle.setCallback(() -> {
@@ -63,10 +58,6 @@ public class ColorSetting extends Setting {
             onClick();
         });
         guiCycle.setCurrentIndex(Colors.getColorIndex(color));
-    }
-
-    public ColorSetting(String translationKey) {
-        this("none", translationKey);
     }
 
     /**

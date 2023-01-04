@@ -38,7 +38,7 @@ import net.minecraft.util.math.Box;
 public class ModFurnaceEsp extends Mod implements BlockEntityRenderListener {
     public ModFurnaceEsp() {
         super(Type.FURNACE_ESP);
-        ColorSetting colorSetting = new ColorSetting("none",
+        ColorSetting colorSetting = new ColorSetting(
                 "gavinsmod.settings.esp.furnace.color");
         colorSetting.setCallback(() -> espConfig.setFurnaceColor(colorSetting.getColor()));
         colorSetting.setColor(GavinsMod.espConfig.getFurnaceColor());

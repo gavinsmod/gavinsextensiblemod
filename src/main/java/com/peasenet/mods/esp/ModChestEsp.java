@@ -39,7 +39,7 @@ import net.minecraft.util.math.Box;
 public class ModChestEsp extends Mod implements BlockEntityRenderListener {
     public ModChestEsp() {
         super(Type.CHEST_ESP);
-        ColorSetting colorSetting = new ColorSetting("none",
+        ColorSetting colorSetting = new ColorSetting(
                 "gavinsmod.settings.esp.chest.color");
         colorSetting.setCallback(() -> espConfig.setChestColor(colorSetting.getColor()));
         colorSetting.setColor(espConfig.getChestColor());

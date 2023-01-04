@@ -105,7 +105,7 @@ public class GuiWaypoint extends GuiElement {
     /**
      * The button that is used to change the waypoints color.
      */
-    ColorSetting colorCycle = new ColorSetting("none", "gavinsmod.settings.render.waypoints.color");
+    ColorSetting colorCycle = new ColorSetting("gavinsmod.settings.render.waypoints.color");
 
     /**
      * The width of the gui.

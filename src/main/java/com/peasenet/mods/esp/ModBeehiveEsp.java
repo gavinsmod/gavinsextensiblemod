@@ -37,8 +37,7 @@ import net.minecraft.util.math.Box;
 public class ModBeehiveEsp extends Mod implements BlockEntityRenderListener {
     public ModBeehiveEsp() {
         super(Type.BEEHIVE_ESP);
-        ColorSetting colorSetting = new ColorSetting("none",
-                "gavinsmod.settings.esp.beehive.color");
+        ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.esp.beehive.color");
         colorSetting.setCallback(() -> espConfig.setBeehiveColor(colorSetting.getColor()));
         colorSetting.setColor(espConfig.getBeehiveColor());
         addSetting(colorSetting);
