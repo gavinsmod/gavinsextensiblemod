@@ -54,8 +54,8 @@ public class XrayConfig extends Config<XrayConfig> {
     public XrayConfig() {
         setKey("xray");
         blocks = new HashSet<>();
-        loadDefaultBlocks();
         setInstance(this);
+        loadDefaultBlocks();
     }
 
     /**
