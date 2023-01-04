@@ -89,8 +89,7 @@ public class TracerEspConfig<E> extends Config<TracerEspConfig<E>> {
      * @param alpha - The alpha value.
      */
     public void setAlpha(float alpha) {
-        this.alpha = alpha;
-        setInstance(this);
+        getInstance().alpha = alpha;
         saveConfig();
     }
 
@@ -109,7 +108,7 @@ public class TracerEspConfig<E> extends Config<TracerEspConfig<E>> {
      * @param furnaceColor - The color for furnaces.
      */
     public void setFurnaceColor(Color furnaceColor) {
-        this.furnaceColor = furnaceColor;
+        getInstance().furnaceColor = furnaceColor;
         saveConfig();
     }
 
@@ -128,7 +127,7 @@ public class TracerEspConfig<E> extends Config<TracerEspConfig<E>> {
      * @param beehiveColor - The color for beehives.
      */
     public void setBeehiveColor(Color beehiveColor) {
-        this.beehiveColor = beehiveColor;
+        getInstance().beehiveColor = beehiveColor;
         saveConfig();
     }
 

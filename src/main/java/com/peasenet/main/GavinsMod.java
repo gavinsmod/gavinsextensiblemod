@@ -73,42 +73,42 @@ public class GavinsMod implements ModInitializer {
     /**
      * The ESP config.
      */
-    public static EspConfig espConfig = new EspConfig();
+    public static EspConfig espConfig;
 
     /**
      * The tracer config.
      */
-    public static TracerConfig tracerConfig = new TracerConfig();
+    public static TracerConfig tracerConfig;
 
     /**
      * The xray config.
      */
-    public static XrayConfig xrayConfig = new XrayConfig();
+    public static XrayConfig xrayConfig;
 
     /**
      * The fullbright config.
      */
-    public static FullbrightConfig fullbrightConfig = new FullbrightConfig();
+    public static FullbrightConfig fullbrightConfig;
 
     /**
      * The FPS Color config.
      */
-    public static FpsColorConfig fpsColorConfig = new FpsColorConfig();
+    public static FpsColorConfig fpsColorConfig;
 
     /**
      * The radar config.
      */
-    public static RadarConfig radarConfig = new RadarConfig();
+    public static RadarConfig radarConfig;
 
     /**
      * The waypoint config.
      */
-    public static WaypointConfig waypointConfig = new WaypointConfig();
+    public static WaypointConfig waypointConfig;
 
     /**
      * The misc config.
      */
-    public static MiscConfig miscConfig = new MiscConfig();
+    public static MiscConfig miscConfig;
 
     /**
      * Hook for chat commands.
@@ -165,6 +165,16 @@ public class GavinsMod implements ModInitializer {
         GavUI.initialize();
         LOGGER.info("Loading settings");
         Settings.initialize();
+
+        espConfig = (EspConfig) Settings.settings.get("esp");
+        tracerConfig = (TracerConfig) Settings.settings.get("tracer");
+        xrayConfig = (XrayConfig) Settings.settings.get("xray");
+        fullbrightConfig = (FullbrightConfig) Settings.settings.get("fullbright");
+        fpsColorConfig = (FpsColorConfig) Settings.settings.get("fpsColors");
+        radarConfig = (RadarConfig) Settings.settings.get("radar");
+        waypointConfig = (WaypointConfig) Settings.settings.get("waypoints");
+        miscConfig = (MiscConfig) Settings.settings.get("misc");
+
         LOGGER.info("Settings loaded");
 
         eventManager = new EventManager();

@@ -161,6 +161,8 @@ public class Settings {
      * Loads the default configuration.
      */
     public static void loadDefault() {
+
+        GavinsMod.LOGGER.warn("Loading default settings.");
         var cfgFile = getFilePath();
         // rename settings file to settings.bak
         var bakFile = cfgFile + ".bak";
