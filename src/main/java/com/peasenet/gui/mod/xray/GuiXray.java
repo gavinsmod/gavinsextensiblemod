@@ -24,14 +24,15 @@ import com.peasenet.gavui.Gui;
 import com.peasenet.gavui.GuiClick;
 import com.peasenet.gavui.GuiToggle;
 import com.peasenet.gavui.color.Colors;
+import com.peasenet.gavui.math.BoxF;
 import com.peasenet.gavui.math.PointF;
 import com.peasenet.gavui.util.GavUISettings;
+import com.peasenet.gavui.util.GuiUtil;
 import com.peasenet.gui.GuiElement;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.main.Mods;
 import com.peasenet.mods.Type;
-import com.peasenet.util.RenderUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
@@ -195,6 +196,7 @@ public class GuiXray extends GuiElement {
         });
         addSelectableChild(search);
         updateBlockList();
+        box.setHoverable(false);
         super.init();
     }
 
@@ -240,13 +242,14 @@ public class GuiXray extends GuiElement {
             var blockX = (i % (blocksPerRow)) * 18 + x + 2;
             var blockY = (i / blocksPerRow) * 18 + y + 5;
 
+            var boxF = new BoxF(blockX, blockY, 16, 16);
             if (GavinsMod.xrayConfig.isInList(block)) {
                 fill(matrixStack, blockX, blockY, blockX + 16, blockY + 16, GavUISettings.getColor("gui.color.enabled").getAsInt(0.5f));
-                RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), blockX, blockY, blockX + 16, blockY + 16, matrixStack);
+                GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack);
             }
             if (mouseX > blockX && mouseX < blockX + 16 && mouseY > blockY && mouseY < blockY + 16) {
-                fill(matrixStack, blockX, blockY, blockX + 16, blockY + 16, GavUISettings.getColor("gui.color.foreground").getAsInt(0.5f));
-                RenderUtils.drawOutline(Colors.WHITE.getAsFloatArray(), blockX, blockY, blockX + 16, blockY + 16, matrixStack);
+                fill(matrixStack, blockX, blockY, (int) boxF.getX2(), (int) boxF.getY1(), GavUISettings.getColor("gui.color.foreground").getAsInt(0.5f));
+                GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack);
                 renderTooltip(matrixStack, Text.translatable(stack.getTranslationKey()), mouseX, mouseY);
             }
             client.getItemRenderer().renderGuiItemIcon(stack, blockX, blockY);

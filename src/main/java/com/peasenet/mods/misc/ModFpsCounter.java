@@ -20,9 +20,10 @@
 
 package com.peasenet.mods.misc;
 
-import com.peasenet.gavui.math.BoxD;
-import com.peasenet.gavui.math.PointD;
+import com.peasenet.gavui.math.BoxF;
+import com.peasenet.gavui.math.PointF;
 import com.peasenet.gavui.util.GavUISettings;
+import com.peasenet.gavui.util.GuiUtil;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.mods.Mod;
@@ -30,14 +31,13 @@ import com.peasenet.mods.Type;
 import com.peasenet.settings.ColorSetting;
 import com.peasenet.settings.SubSetting;
 import com.peasenet.settings.ToggleSetting;
-import com.peasenet.util.RenderUtils;
 import com.peasenet.util.listeners.InGameHudRenderListener;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 01/07/2023
  * A mod that renders the current frames per second in the top right corner of the screen.
  */
 public class ModFpsCounter extends Mod implements InGameHudRenderListener {
@@ -105,7 +105,7 @@ public class ModFpsCounter extends Mod implements InGameHudRenderListener {
         var fps = GavinsModClient.getMinecraftClient().getFps();
         var fpsString = "FPS: " + fps;
         var xCoordinate = GavinsModClient.getMinecraftClient().getWindow().getScaledWidth() - (fpsString.length() * 5 + 2);
-        var box = new BoxD(new PointD(xCoordinate - 2, 0), fpsString.length() * 5 + 4, 12);
+        var box = new BoxF(new PointF(xCoordinate - 2, 0), fpsString.length() * 5 + 4, 12);
         var maximumFps = GavinsModClient.getMinecraftClient().getOptions().getMaxFps().getValue();
         var color = GavUISettings.getColor("gui.color.foreground");
         var colorEnabled = fpsColorConfig.isColorsEnabled();
@@ -117,7 +117,7 @@ public class ModFpsCounter extends Mod implements InGameHudRenderListener {
             else if (fps > maximumFps * 0.45 && fps < maximumFps * 0.85) color = okColor;
             else color = slowFps;
         }
-        RenderUtils.drawBox((GavUISettings.getColor("gui.color.background")).getAsFloatArray(), box, matrixStack, 0.5f);
+        GuiUtil.drawBox((GavUISettings.getColor("gui.color.background")), box, matrixStack, 0.5f);
         textRenderer.draw(matrixStack, Text.literal(fpsString), xCoordinate, 2, color.getAsInt());
     }
 }

@@ -23,14 +23,14 @@ package com.peasenet.mods.render;
 import com.peasenet.config.RadarConfig;
 import com.peasenet.gavui.color.Color;
 import com.peasenet.gavui.color.Colors;
-import com.peasenet.gavui.math.BoxD;
-import com.peasenet.gavui.math.PointD;
+import com.peasenet.gavui.math.BoxF;
+import com.peasenet.gavui.math.PointF;
+import com.peasenet.gavui.util.GuiUtil;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.mods.render.waypoints.Waypoint;
 import com.peasenet.settings.*;
-import com.peasenet.util.RenderUtils;
 import com.peasenet.util.listeners.InGameHudRenderListener;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
@@ -44,7 +44,8 @@ import org.jetbrains.annotations.NotNull;
 /**
  * A mod that allows for a radar-like view of the world.
  *
- * @version 12/31/2022
+ * @author gt3ch1
+ * @version 01/07/2023
  */
 public class ModRadar extends Mod implements InGameHudRenderListener {
 
@@ -163,7 +164,7 @@ public class ModRadar extends Mod implements InGameHudRenderListener {
      *
      * @return The offset to draw the points on the radar.
      */
-    public static int getPointOffset() {
+    public static float getPointOffset() {
         if (radarConfig.getInstance().getPointSize() == 1) return 0;
         return (radarConfig.getInstance().getPointSize() - 1) / 2;
     }
@@ -177,13 +178,13 @@ public class ModRadar extends Mod implements InGameHudRenderListener {
      * @return The position and distance of the given coordinates from the player.
      */
     @NotNull
-    private static PointD calculateDistance(float yaw, double x, double z) {
+    private static PointF calculateDistance(float yaw, double x, double z) {
         var arctan = Math.atan2(z, x);
         var angle = Math.toDegrees(arctan) - yaw;
         var distance = Math.sqrt(x * x + z * z);
         x = Math.cos(Math.toRadians(angle)) * distance * -1;
         z = Math.sin(Math.toRadians(angle)) * distance * -1;
-        return new PointD(x, z);
+        return new PointF(x, z);
     }
 
     @Override
@@ -210,7 +211,7 @@ public class ModRadar extends Mod implements InGameHudRenderListener {
     public void onRenderInGameHud(MatrixStack stack, float delta) {
         if (!isActive()) return;
         RadarConfig.setX(getClient().getWindow().getScaledWidth() - radarConfig.getInstance().getSize() - 10);
-        RenderUtils.drawBox(Colors.DARK_GRAY, new BoxD(new PointD(radarConfig.getInstance().getX(), radarConfig.getInstance().getY()),
+        GuiUtil.drawBox(Colors.DARK_GRAY, new BoxF(new PointF(radarConfig.getInstance().getX(), radarConfig.getInstance().getY()),
                 radarConfig.getInstance().getSize(), radarConfig.getInstance().getSize()), stack, radarConfig.getInstance().getBackgroundAlpha());
         drawEntitiesOnRadar(stack);
         if (radarConfig.getInstance().isShowWaypoint())
@@ -230,7 +231,7 @@ public class ModRadar extends Mod implements InGameHudRenderListener {
             if (!radarConfig.getInstance().isUseWaypointColor())
                 color = radarConfig.getInstance().getWaypointColor();
             var location = getScaledPos(w.getPos(), getPointRelativeToYaw(w.getPos(), yaw));
-            RenderUtils.drawBox(color, new BoxD(location, radarConfig.getInstance().getPointSize(), radarConfig.getInstance().getPointSize()), stack,
+            GuiUtil.drawBox(color, new BoxF(location, radarConfig.getInstance().getPointSize(), radarConfig.getInstance().getPointSize()), stack,
                     radarConfig.getInstance().getPointAlpha());
         }
     }
@@ -248,7 +249,7 @@ public class ModRadar extends Mod implements InGameHudRenderListener {
             // get entity x and z relative to player
             var color = getColorFromEntity(entity);
             var point = getScaledPos(entity.getPos(), getPointRelativeToYaw(entity.getPos(), yaw));
-            RenderUtils.drawBox(color, new BoxD(point, radarConfig.getInstance().getPointSize(), radarConfig.getInstance().getPointSize()), stack,
+            GuiUtil.drawBox(color, new BoxF(point, radarConfig.getInstance().getPointSize(), radarConfig.getInstance().getPointSize()), stack,
                     radarConfig.getInstance().getPointAlpha());
         }
     }
@@ -271,12 +272,12 @@ public class ModRadar extends Mod implements InGameHudRenderListener {
      * @return A scaled position relative to the radar, clamped to the radar.
      */
     @NotNull
-    private PointD getScaledPos(Vec3d w, PointD location) {
-        if (w.distanceTo(getPlayer().getPos()) >= (radarConfig.getInstance().getSize() >> 1) - radarConfig.getInstance().getPointSize())
+    private PointF getScaledPos(Vec3d w, PointF location) {
+        if (w.distanceTo(getPlayer().getPos()) >= (radarConfig.getInstance().getSize() / 2f) - radarConfig.getInstance().getPointSize())
             location = clampPoint(location);
-        location = location.add(new PointD(radarConfig.getInstance().getX() + radarConfig.getInstance().getSize() / 2.0, radarConfig.getInstance().getSize() / 2.0 + radarConfig.getInstance().getY()));
+        location = location.add(new PointF(radarConfig.getInstance().getX() + radarConfig.getInstance().getSize() / 2f, radarConfig.getInstance().getSize() / 2f + radarConfig.getInstance().getY()));
         if (radarConfig.getInstance().getPointSize() != 1)
-            location = location.subtract(new PointD(getPointOffset(), getPointOffset()));
+            location = location.subtract(new PointF(getPointOffset(), getPointOffset()));
         return location;
     }
 
@@ -286,17 +287,16 @@ public class ModRadar extends Mod implements InGameHudRenderListener {
      * @param point - The point to clamp.
      * @return The clamped point.
      */
-    private PointD clampPoint(PointD point) {
-        var offset = radarConfig.getInstance().getSize() / 2;
-
-        if (point.x() >= (offset) - getPointOffset())
-            point = new PointD(offset - getPointOffset(), point.y());
+    private PointF clampPoint(PointF point) {
+        float offset = radarConfig.getInstance().getSize() / 2f;
+        if (point.x() >= offset - getPointOffset())
+            point = new PointF(offset - getPointOffset() - 1f, point.y());
         else if (point.x() <= -(offset) + getPointOffset())
-            point = new PointD(-offset + getPointOffset(), point.y());
+            point = new PointF(-offset + getPointOffset(), point.y());
         if (point.y() >= (offset) - getPointOffset())
-            point = new PointD(point.x(), offset - getPointOffset());
+            point = new PointF(point.x(), offset - getPointOffset() - 1f);
         else if (point.y() <= -(offset) + getPointOffset())
-            point = new PointD(point.x(), -offset + getPointOffset());
+            point = new PointF(point.x(), -offset + getPointOffset());
         return point;
     }
 
@@ -330,9 +330,9 @@ public class ModRadar extends Mod implements InGameHudRenderListener {
      *
      * @param loc - The waypoint to get the position of.
      * @param yaw - The yaw of the player.
-     * @return A new PointD with the x and z values.
+     * @return A new PointF with the x and z values.
      */
-    private PointD getPointRelativeToYaw(Vec3d loc, float yaw) {
+    private PointF getPointRelativeToYaw(Vec3d loc, float yaw) {
         double x = loc.getX() - getPlayer().getX();
         double z = loc.getZ() - getPlayer().getZ();
         return calculateDistance(yaw, x, z);
