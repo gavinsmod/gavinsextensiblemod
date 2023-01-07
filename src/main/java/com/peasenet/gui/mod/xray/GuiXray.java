@@ -245,11 +245,11 @@ public class GuiXray extends GuiElement {
             var boxF = new BoxF(blockX, blockY, 16, 16);
             if (GavinsMod.xrayConfig.isInList(block)) {
                 fill(matrixStack, blockX, blockY, blockX + 16, blockY + 16, GavUISettings.getColor("gui.color.enabled").getAsInt(0.5f));
-                GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack);
+                GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack, 1f);
             }
             if (mouseX > blockX && mouseX < blockX + 16 && mouseY > blockY && mouseY < blockY + 16) {
-                fill(matrixStack, blockX, blockY, (int) boxF.getX2(), (int) boxF.getY1(), GavUISettings.getColor("gui.color.foreground").getAsInt(0.5f));
-                GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack);
+                fill(matrixStack, blockX, blockY, (int) boxF.getX2(), (int) boxF.getY1(), GavUISettings.getColor("gui.color.foreground").brighten(0.5f).getAsInt(0.5f));
+                GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack, 1f);
                 renderTooltip(matrixStack, Text.translatable(stack.getTranslationKey()), mouseX, mouseY);
             }
             client.getItemRenderer().renderGuiItemIcon(stack, blockX, blockY);

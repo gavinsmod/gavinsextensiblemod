@@ -147,6 +147,9 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     @Shadow
     public abstract boolean isSubmergedInWater();
 
+    @Shadow
+    public abstract boolean isSneaking();
+
     @Override
     public BlockPos getBlockPos() {
         return super.getBlockPos();
@@ -156,6 +159,27 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     public ItemStack getMainHandStack() {
         return super.getMainHandStack();
     }
+
+    @Override
+    public boolean isFallFlying() {
+        return super.isFallFlying();
+    }
+
+    @Override
+    public GameProfile getGameProfile() {
+        return super.getGameProfile();
+    }
+
+    @Override
+    public float getBodyYaw() {
+        return super.bodyYaw;
+    }
+
+    @Override
+    public float getHeadYaw() {
+        return super.headYaw;
+    }
+
 
     @Inject(method = "updateNausea", at = @At("HEAD"), cancellable = true)
     public void cancelNausea(CallbackInfo ci) {
