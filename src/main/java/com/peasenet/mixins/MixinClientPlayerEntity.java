@@ -31,6 +31,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.player.PlayerAbilities;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -149,6 +150,11 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     @Override
     public BlockPos getBlockPos() {
         return super.getBlockPos();
+    }
+
+    @Override
+    public ItemStack getMainHandStack() {
+        return super.getMainHandStack();
     }
 
     @Inject(method = "updateNausea", at = @At("HEAD"), cancellable = true)
