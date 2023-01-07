@@ -122,6 +122,7 @@ public class GuiSettings extends GuiElement {
             GavinsMod.gui.reset();
             GavinsMod.guiSettings.reset();
         });
+        resetButton.setHoverable(true);
     }
 
     @Override
