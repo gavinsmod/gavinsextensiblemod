@@ -68,6 +68,12 @@ public class ModGuiSettings extends Mod {
         });
         enabledColorSetting.setColor(GavUISettings.getColor("gui.color.enabled"));
 
+        var borderColorSetting = new ColorSetting("gavinsmod.settings.gui.color.border");
+        borderColorSetting.setCallback(() -> {
+            GavUISettings.add("gui.color.border", borderColorSetting.getColor());
+        });
+        borderColorSetting.setColor(GavUISettings.getColor("gui.color.border"));
+
         var frozenColorSetting = new ColorSetting("gavinsmod.settings.gui.color.frozen");
         frozenColorSetting.setCallback(() -> {
             GavUISettings.add("gui.color.frozen", frozenColorSetting.getColor());
@@ -84,6 +90,7 @@ public class ModGuiSettings extends Mod {
         addSetting(categoryColorSetting);
         addSetting(enabledColorSetting);
         addSetting(frozenColorSetting);
+        addSetting(borderColorSetting);
         addSetting(guiSounds);
     }
 
