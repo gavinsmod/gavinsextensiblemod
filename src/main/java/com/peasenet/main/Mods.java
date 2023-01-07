@@ -59,6 +59,7 @@ public class Mods {
         new ModFastPlace();
         new ModDolphin();
         new ModAntiTrample();
+        new ModSpeed();
         // COMBAT
         new ModKillAura();
         new ModAutoCrit();
@@ -86,6 +87,7 @@ public class Mods {
         new ModAntiFire();
         new ModNoOverlay();
         new ModBarrierDetect();
+        new ModNoVignette();
         // GUI
         new ModGui();
         new ModGuiSettings();

@@ -41,6 +41,7 @@ public enum Type {
     NO_CLIP("No Clip", "gavinsmod.mod.movement.noclip", "gavinsmod.keybinds.movement", MOVEMENT, "noclip"),
     NO_FALL("No Fall", "gavinsmod.mod.movement.nofall", "gavinsmod.keybinds.movement", MOVEMENT, "nofall"),
     DOLPHIN("Dolphin", "gavinsmod.mod.movement.dolphin", "gavinsmod.keybinds.movement", MOVEMENT, "dolphin"),
+    SPEED("Speed", "gavinsmod.mod.movement.speed", "gavinsmod.keybinds.movement", MOVEMENT, "speed"),
 
     //COMBAT
     KILL_AURA("Kill Aura", "gavinsmod.mod.combat.killaura", "gavinsmod.keybinds.combat", COMBAT, "killaura"),
