@@ -22,7 +22,6 @@ package com.peasenet.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.peasenet.gavui.color.Color;
-import com.peasenet.gavui.math.BoxD;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.main.GavinsModClient;
 import com.peasenet.mixinterface.ISimpleOption;
@@ -375,21 +374,6 @@ public class RenderUtils {
     }
 
     /**
-     * Draws a box within the area of the given BoxD.
-     *
-     * @param acColor     The color of the box.
-     * @param box         The box to draw.
-     * @param matrixStack The matrix stack.
-     */
-    public static void drawBox(float[] acColor, BoxD box, MatrixStack matrixStack, float alpha) {
-        drawBox(acColor, (int) box.getTopLeft().x(), (int) box.getTopLeft().y(), (int) box.getBottomRight().x(), (int) box.getBottomRight().y(), matrixStack, alpha);
-    }
-
-    public static void drawBox(Color c, BoxD box, MatrixStack matrixStack, float alpha) {
-        drawBox(c.getAsFloatArray(), box, matrixStack, alpha);
-    }
-
-    /**
      * Draws a box on screen.
      *
      * @param acColor     The color of the box as a 4 point float array.
@@ -428,50 +412,6 @@ public class RenderUtils {
         bufferBuilder.vertex(matrix, xt1, yt2, 0).next();
         bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
         bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
-    }
-
-    /**
-     * Draws a line on screen.
-     *
-     * @param accColor    - The color of the line as a 4 point float array.
-     * @param xt1         - The x coordinate of the first point of the line.
-     * @param yt1         - The y coordinate of the first point of the line.
-     * @param xt2         - The x coordinate of the second point of the line.
-     * @param yt2         - The y coordinate of the second point of the line.
-     * @param matrixStack - The matrix stack used to draw lines on screen.
-     */
-    public static void drawSingleLine(float[] accColor, int xt1, int yt1, int xt2, int yt2, MatrixStack matrixStack) {
-        RenderSystem.setShader(GameRenderer::getPositionProgram);
-        RenderSystem.enableBlend();
-        var matrix = matrixStack.peek().getPositionMatrix();
-        var bufferBuilder = Tessellator.getInstance().getBuffer();
-        RenderSystem.setShaderColor(accColor[0], accColor[1], accColor[2], 1f);
-        bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
-        bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
-        bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
-        Tessellator.getInstance().draw();
-    }
-
-    /**
-     * Draws a box outline on screen.
-     *
-     * @param acColor     The color of the box as a 4 point float array.
-     * @param xt1         The x coordinate of the top left corner of the box.
-     * @param yt1         The y coordinate of the top left corner of the box.
-     * @param xt2         The x coordinate of the bottom right corner of the box.
-     * @param yt2         The y coordinate of the bottom right corner of the box.
-     * @param matrixStack The matrix stack used to draw boxes on screen.
-     */
-    public static void drawOutline(float[] acColor, int xt1, int yt1, int xt2, int yt2, MatrixStack matrixStack) {
-        RenderSystem.setShader(GameRenderer::getPositionProgram);
-        RenderSystem.enableBlend();
-        var matrix = matrixStack.peek().getPositionMatrix();
-        var bufferBuilder = Tessellator.getInstance().getBuffer();
-        RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], 1.0F);
-        bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
-        drawBox(xt1, yt1, xt2, yt2, matrix, bufferBuilder);
-        bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
-        Tessellator.getInstance().draw();
     }
 
 }
