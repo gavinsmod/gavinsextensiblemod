@@ -25,7 +25,6 @@ import com.peasenet.gavui.Gui;
 import com.peasenet.gavui.color.Colors;
 import com.peasenet.gavui.math.PointF;
 import com.peasenet.gavui.util.GavUISettings;
-import com.peasenet.main.GavinsMod;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -44,9 +43,6 @@ public class GuiElement extends Screen {
      * The box that contains the menu title in the top left corner of the screen.
      */
     public Gui titleBox;
-
-    private Gui selectedGui;
-
     /**
      * A list of gui children to render.
      */
@@ -55,6 +51,11 @@ public class GuiElement extends Screen {
      * The screen to go back to when this screen is closed.
      */
     protected Screen parent;
+
+    /**
+     * The previously selected/clicked gui
+     */
+    private Gui selectedGui;
 
     /**
      * Creates a new GUI menu with the given title.
@@ -74,6 +75,7 @@ public class GuiElement extends Screen {
         //TODO: Maybe make this a background?
         Gui overlay = new Gui(new PointF(0, 0), clientWidth + 1, clientHeight, Text.of(""));
         overlay.setBackground(Colors.BLACK);
+        titleBox.setHoverable(false);
     }
 
     @Override
@@ -101,15 +103,14 @@ public class GuiElement extends Screen {
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         for (var gui : guis) {
-            if (gui.isDragging() && gui.equals(selectedGui)) {
+            if (gui.equals(selectedGui)) {
                 gui.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
-                GavinsMod.LOGGER.info("Dragging " + gui.getUUID());
                 return true;
             }
-            if (!gui.isDragging() && gui.mouseWithinGui(mouseX, mouseY)) {
-                GavinsMod.LOGGER.info("Dragging " + gui.getUUID());
+            if (!gui.isDragging() && gui.mouseWithinGui(mouseX, mouseY) && selectedGui == null) {
                 gui.setDragging(true);
                 selectedGui = gui;
+                return true;
             }
         }
         return false;
@@ -130,8 +131,6 @@ public class GuiElement extends Screen {
         RenderSystem.enableBlend();
 //        overlay.render(matrixStack, tr, mouseX, mouseY, delta);
         guis.forEach(gui -> {
-            if (gui.isParent())
-                gui.setBackground(GavUISettings.getColor("gui.color.category"));
             gui.render(matrixStack, tr, mouseX, mouseY, delta);
         });
         if (titleBox != null) {
@@ -146,6 +145,12 @@ public class GuiElement extends Screen {
      */
     public void reset() {
         guis.forEach(Gui::resetPosition);
+    }
+
+    @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        guis.forEach(gui -> gui.mouseWithinGui(mouseX, mouseY));
+        return true;
     }
 
     @Override
