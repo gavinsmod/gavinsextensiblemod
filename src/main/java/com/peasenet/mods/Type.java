@@ -59,6 +59,7 @@ public enum Type {
     WAYPOINT("Waypoint", "gavinsmod.mod.render.waypoints", "gavinsmod.keybinds.render", RENDER, "waypoints"),
     RADAR("Radar", "gavinsmod.mod.render.radar", "gavinsmod.keybinds.misc", RENDER, "radar"),
     BARRIER_DETECT("Barrier Detect", "gavinsmod.mod.render.barrierdetect", "gavinsmod.keybinds.render", RENDER, "barrierdetect"),
+    NO_VIGNETTE("No Vignette", "gavinsmod.mod.render.novignette", "gavinsmod.keybinds.render", RENDER, "novignette"),
 
     // ESP
     CHEST_ESP("Chest ESP", "gavinsmod.mod.esp.chest", "gavinsmod.keybinds.esp", ESPS, "chestesp"),

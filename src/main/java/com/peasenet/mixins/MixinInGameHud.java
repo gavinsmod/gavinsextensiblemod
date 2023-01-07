@@ -55,5 +55,14 @@ public class MixinInGameHud {
             ci.cancel();
     }
 
+    @Inject(at = @At("HEAD"), method = "renderVignetteOverlay", cancellable = true)
+    private void antiVignette(CallbackInfo ci) {
+        var overlay = new RenderOverlay(new Identifier("textures/misc/vignette.png"));
+        RenderOverlayEvent event = new RenderOverlayEvent(overlay);
+        GavinsMod.eventManager.call(event);
+        if (event.isCancelled())
+            ci.cancel();
+    }
+
 
 }
