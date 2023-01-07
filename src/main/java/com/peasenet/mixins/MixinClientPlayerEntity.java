@@ -33,6 +33,7 @@ import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.player.PlayerAbilities;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -144,6 +145,11 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
 
     @Shadow
     public abstract boolean isSubmergedInWater();
+
+    @Override
+    public BlockPos getBlockPos() {
+        return super.getBlockPos();
+    }
 
     @Inject(method = "updateNausea", at = @At("HEAD"), cancellable = true)
     public void cancelNausea(CallbackInfo ci) {
