@@ -28,8 +28,8 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/28/2022
- * Creates a new gui for ESP mods as a drop down.
+ * @version 01/07/2023
+ * Creates a new gui for ESP mods as a drop-down.
  */
 public class GuiESP extends GuiScroll {
 
@@ -49,7 +49,7 @@ public class GuiESP extends GuiScroll {
      * @param title    - The title of the dropdown.
      */
     public GuiESP(PointF position, int width, int height, Text title) {
-        super(position, width, height, title, 4, ModGuiUtil.getGuiToggleFromCategory(Type.Category.ESPS,
+        super(position, width, height, title, 6, ModGuiUtil.getGuiToggleFromCategory(Type.Category.ESPS,
                 new BoxF(position, width, height)));
     }
 }

@@ -28,7 +28,7 @@ import net.minecraft.text.Text;
 
 /**
  * @author gt3ch1
- * @version 6/28/2022
+ * @version 01/07/2023
  * Creates a new gui for movement mods as a dropdown.
  */
 public class GuiMovement extends GuiScroll {
@@ -49,7 +49,7 @@ public class GuiMovement extends GuiScroll {
      * @param title    - The title of the dropdown.
      */
     public GuiMovement(PointF position, int width, int height, Text title) {
-        super(position, width, height, title, 4, ModGuiUtil.getGuiToggleFromCategory(Type.Category.MOVEMENT,
+        super(position, width, height, title, 6, ModGuiUtil.getGuiToggleFromCategory(Type.Category.MOVEMENT,
                 new BoxF(position, width, height)));
     }
 }
