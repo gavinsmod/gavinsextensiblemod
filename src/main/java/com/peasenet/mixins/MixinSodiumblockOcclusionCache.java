@@ -20,7 +20,10 @@
 
 package com.peasenet.mixins;
 
+import com.peasenet.main.GavinsMod;
 import com.peasenet.mods.render.ModXray;
+import com.peasenet.util.event.ShouldDrawSideEvent;
+import com.peasenet.util.event.data.DrawSide;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
