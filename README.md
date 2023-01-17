@@ -24,9 +24,10 @@ config, it may not be.
   ![](src/main/resources/assets/gavinsmod/screenshots/mobs.png)
 - Item ESP & Tracers
   ![](src/main/resources/assets/gavinsmod/screenshots/items.png)
+- Other ESP & Tracers includes beehive and furnaces.
 - Radar
-    - ![](src/main/resources/assets/gavinsmod/screenshots/radar.png)
-    - Configurable point size, radar size, entities drawn, and colors.
+  - ![](src/main/resources/assets/gavinsmod/screenshots/radar.png)
+  - Configurable point size, radar size, entities drawn, and colors.
 - Fly
 - Fast Mine
 - Fast Place
@@ -37,15 +38,20 @@ config, it may not be.
 - Auto Crit
 - No Fall
 - No Clip
+- Speed Hack
+- Anti Trample
+- No Nausea
+- Barrier Detect
+- No Vignette
+- Free Cam
 - In Game GUI, featuring draggable, dropdown, and scrollable elements with clickable elements.
   ![](src/main/resources/assets/gavinsmod/screenshots/gui.png)
-    - There is also a text-based overlay that will show you what mods are currently active
+  - There is also a text-based overlay that will show you what mods are currently active
 - Settings UI, allowing YOU to change certain elements of the mod.
   ![](src/main/resources/assets/gavinsmod/screenshots/settings.png)
-    - You can configure what colors are for what part of the mod. Almost every color is configurable.
-- Anti Camera Bob
+  - You can configure what colors are for what part of the mod. Almost every color is configurable.
 - FPS counter
-    - Colors based off of what percentage of your frames you are getting
+  - Colors based off of what percentage of your frames you are getting
 - HP tags
 - NoRain
 - Waypoints
