@@ -115,14 +115,12 @@ public class GavinsMod implements ModInitializer {
      */
     private static ModCommands modCommands;
 
-
     /**
      * Gets whether the given mod is enabled.
      *
      * @param mod - The mod type to check.
      * @return Whether the mod is enabled.
      */
-    //TODO: Make this into a String based check and not Mod.
     public static boolean isEnabled(Type mod) {
         return Mods.getMod(mod.getChatCommand()).isActive();
     }

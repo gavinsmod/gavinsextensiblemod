@@ -43,7 +43,7 @@ import java.util.HashMap;
  * A placeholder class that initializes all the mods, and contains a few methods for adding/getting to that list.
  *
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 01/07/2023
  */
 public class Mods {
     private static final HashMap<String, Mod> modMap = new HashMap<>();
@@ -68,6 +68,22 @@ public class Mods {
         new ModXray();
         new ModAntiHurt();
         new ModFullBright();
+        new ModAntiPumpkin();
+        new ModHealthTag();
+        new ModNoRain();
+        new ModNoNausea();
+        new ModAntiFire();
+        new ModNoOverlay();
+        new ModBarrierDetect();
+        new ModNoVignette();
+        new ModRadar();
+        new ModWaypoint();
+
+        // GUI
+        new ModGui();
+        new ModGuiSettings();
+
+        // ESP + TRACER
         new ModChestEsp();
         new ModChestTracer();
         new ModMobEsp();
@@ -80,37 +96,10 @@ public class Mods {
         new ModFurnaceTracer();
         new ModFurnaceEsp();
         new ModEntityPlayerEsp();
-        new ModAntiPumpkin();
-        new ModHealthTag();
-        new ModNoRain();
-        new ModNoNausea();
-        new ModAntiFire();
-        new ModNoOverlay();
-        new ModBarrierDetect();
-        new ModNoVignette();
-        // GUI
-        new ModGui();
-        new ModGuiSettings();
-
         // MISC
         new ModGuiTextOverlay();
         new ModFpsCounter();
-        new ModWaypoint();
-        new ModRadar();
         new ModFreecam();
-    }
-
-    public static void reload() {
-        // get the mods that are enabled
-        ArrayList<String> enabledMods = new ArrayList<>(modMap.values().stream().filter(Mod::isActive).map(Mod::getChatCommand).toList());
-        modMap.clear();
-        new Mods();
-        for (String modName : enabledMods) {
-            Mod mod = getMod(modName);
-            if (mod != null) {
-                mod.activate();
-            }
-        }
     }
 
     /**

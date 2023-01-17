@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 /**
  * @author gt3ch1
- * @version 7/5/2022
+ * @version 01/07/2022
  * A parent class that holds all that is needed to render an in game gui.
  */
 public class GuiElement extends Screen {
@@ -43,10 +43,12 @@ public class GuiElement extends Screen {
      * The box that contains the menu title in the top left corner of the screen.
      */
     public Gui titleBox;
+
     /**
      * A list of gui children to render.
      */
     public ArrayList<Gui> guis = new ArrayList<>();
+
     /**
      * The screen to go back to when this screen is closed.
      */
@@ -130,9 +132,7 @@ public class GuiElement extends Screen {
         RenderSystem.setShader(GameRenderer::getPositionProgram);
         RenderSystem.enableBlend();
 //        overlay.render(matrixStack, tr, mouseX, mouseY, delta);
-        guis.forEach(gui -> {
-            gui.render(matrixStack, tr, mouseX, mouseY, delta);
-        });
+        guis.forEach(gui -> gui.render(matrixStack, tr, mouseX, mouseY, delta));
         if (titleBox != null) {
             titleBox.setBackground(GavUISettings.getColor("gui.color.background"));
             titleBox.render(matrixStack, tr, mouseX, mouseY, delta);
