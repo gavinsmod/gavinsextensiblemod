@@ -86,19 +86,6 @@ public class ModCommands implements OnChatSendListener {
             }
             return true;
         }
-        if (message.startsWith("up")) {
-            // split the message from "up" and a number.
-            String[] split = message.split(" ");
-            if (split.length == 2) {
-                try {
-                    int amount = Integer.parseInt(split[1]);
-                    PlayerUtils.moveUp(amount);
-                } catch (NumberFormatException e) {
-                    GavinsMod.LOGGER.error("Invalid number: " + split[1]);
-                }
-            }
-            return true;
-        }
         if (message.equals("resetgui")) {
             GavinsMod.gui.reset();
             GavinsMod.guiSettings.reset();

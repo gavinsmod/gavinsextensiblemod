@@ -226,15 +226,6 @@ public interface IClientPlayerEntity {
     ClientPlayNetworkHandler getNetworkHandler();
 
     /**
-     * Sets the player's position.
-     *
-     * @param x - The x coordinate.
-     * @param y - The y coordinate.
-     * @param z - The z coordinate.
-     */
-    void setPos(double x, double y, double z);
-
-    /**
      * Sends a chat message.
      *
      * @param message   - The message to send.

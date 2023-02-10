@@ -144,6 +144,10 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
         return networkHandler;
     }
 
+    public BlockPos getBlockPos() {
+        return super.getBlockPos();
+    }
+
     @Shadow
     public abstract boolean isSubmergedInWater();
 
@@ -179,7 +183,6 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     public float getHeadYaw() {
         return super.headYaw;
     }
-
 
     @Inject(method = "updateNausea", at = @At("HEAD"), cancellable = true)
     public void cancelNausea(CallbackInfo ci) {

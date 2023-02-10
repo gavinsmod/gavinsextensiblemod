@@ -173,26 +173,6 @@ public class PlayerUtils {
         }
     }
 
-    /**
-     * Sets the position of the player to the given position.
-     *
-     * @param pos The position to set the player to.
-     */
-    public static void setPosition(Vec3d pos) {
-        var player = GavinsModClient.getPlayer();
-        player.setPos(pos.getX(), pos.getY(), pos.getZ());
-    }
-
-    /**
-     * Moves the player up by the given amount.
-     *
-     * @param amount The amount to move the player up.
-     */
-    public static void moveUp(int amount) {
-        var player = GavinsModClient.getPlayer();
-        setPosition(new Vec3d(player.getPos().getX(), player.getPos().getY() + amount, player.getPos().getZ()));
-    }
-
     public static void sendMessage(String message, boolean withPrefix) {
         if (withPrefix)
             message = Mod.GAVINS_MOD_STRING + message;
