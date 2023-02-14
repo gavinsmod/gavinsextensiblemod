@@ -319,7 +319,7 @@ public class GuiWaypoint extends GuiElement {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         for (var child : guis) {
             if (child.mouseClicked(mouseX, mouseY, button)) {
-                textField.setTextFieldFocused(false);
+                textField.setFocused(false);
                 return true;
             }
         }

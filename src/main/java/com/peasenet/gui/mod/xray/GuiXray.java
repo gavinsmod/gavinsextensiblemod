@@ -271,7 +271,7 @@ public class GuiXray extends GuiElement {
         // check if the mouse is over the search box
         if (search.isMouseOver(mouseX, mouseY)) {
             search.mouseClicked(mouseX, mouseY, button);
-            search.setTextFieldFocused(true);
+            search.setFocused(true);
             return true;
         }
         if (prevButton.mouseWithinGui(mouseX, mouseY)) {
@@ -292,7 +292,7 @@ public class GuiXray extends GuiElement {
         }
 
         if (!(mouseX > x && mouseX < x + width && mouseY > y && mouseY < y + height)) return false;
-        search.setTextFieldFocused(false);
+        search.setFocused(false);
 
         int blockIndex = (int) ((mouseY - y) / 19) * blocksPerRow + (int) ((mouseX - x) / 18);
         if (blockIndex > visibleBlocks.size() - 1) return false;

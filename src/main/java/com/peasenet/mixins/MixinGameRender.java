@@ -31,14 +31,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
 public class MixinGameRender {
-    @Inject(method = "bobViewWhenHurt(Lnet/minecraft/client/util/math/MatrixStack;F)V", at = @At("HEAD"), cancellable = true)
-    public void checkAntiHurt(MatrixStack stack, float f, CallbackInfo ci) {
-        CameraBobEvent event = new CameraBobEvent();
-        GavinsMod.eventManager.call(event);
-        if (event.isCancelled())
-            ci.cancel();
-
-    }
+    // TODO: 1.20
+//    @Inject(method = "bobViewWhenHurt(Lnet/minecraft/client/util/math/MatrixStack;F)V", at = @At("HEAD"), cancellable = true)
+//    public void checkAntiHurt(MatrixStack stack, float f, CallbackInfo ci) {
+//        CameraBobEvent event = new CameraBobEvent();
+//        GavinsMod.eventManager.call(event);
+//        if (event.isCancelled())
+//            ci.cancel();
+//
+//    }
 
     @Inject(method = "bobView", at = @At("HEAD"), cancellable = true)
     public void checkTracersAndEsps(MatrixStack stack, float f, CallbackInfo ci) {

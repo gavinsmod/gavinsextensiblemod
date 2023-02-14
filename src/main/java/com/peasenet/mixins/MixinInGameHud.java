@@ -46,8 +46,8 @@ public class MixinInGameHud {
     }
 
 
-    @Inject(at = @At("HEAD"), method = "renderOverlay(Lnet/minecraft/util/Identifier;F)V", cancellable = true)
-    private void antiPumpkin(Identifier texture, float opacity, CallbackInfo ci) {
+    @Inject(at = @At("HEAD"), method = "renderOverlay(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/Identifier;F)V", cancellable = true)
+    private void antiPumpkin(MatrixStack stack, Identifier texture, float opacity, CallbackInfo ci) {
         var overlay = new RenderOverlay(texture);
         RenderOverlayEvent event = new RenderOverlayEvent(overlay);
         GavinsMod.eventManager.call(event);

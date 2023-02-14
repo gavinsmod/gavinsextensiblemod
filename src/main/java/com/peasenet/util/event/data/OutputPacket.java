@@ -20,7 +20,7 @@
 
 package com.peasenet.util.event.data;
 
-import net.minecraft.network.Packet;
+import net.minecraft.network.packet.Packet;
 
 public class OutputPacket extends Cancellable {
     private Packet<?> packet;

@@ -22,7 +22,7 @@ package com.peasenet.util.event;
 
 import com.peasenet.util.event.data.OutputPacket;
 import com.peasenet.util.listeners.PacketSendListener;
-import net.minecraft.network.Packet;
+import net.minecraft.network.packet.Packet;
 
 import java.util.ArrayList;
 

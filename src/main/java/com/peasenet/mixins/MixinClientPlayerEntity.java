@@ -155,11 +155,6 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     public abstract boolean isSneaking();
 
     @Override
-    public BlockPos getBlockPos() {
-        return super.getBlockPos();
-    }
-
-    @Override
     public ItemStack getMainHandStack() {
         return super.getMainHandStack();
     }
