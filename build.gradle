@@ -26,15 +26,6 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
-repositories {
-    maven {
-        url = uri("https://maven.pkg.github.com/gt3ch1/gavui")
-        credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
-        }
-    }
-}
 
 dependencies {
     // To change the versions see the gradle.properties file
