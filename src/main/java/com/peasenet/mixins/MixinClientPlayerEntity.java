@@ -21,9 +21,11 @@
 package com.peasenet.mixins;
 
 import com.mojang.authlib.GameProfile;
+import com.peasenet.main.GavinsMod;
 import com.peasenet.main.Mods;
 import com.peasenet.mixinterface.IClientPlayerEntity;
 import com.peasenet.mods.Type;
+import com.peasenet.util.event.AirStrafeEvent;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -45,7 +47,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 02/27/2023
  */
 @Mixin(ClientPlayerEntity.class)
 public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implements IClientPlayerEntity {
@@ -186,5 +188,13 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
             this.nextNauseaStrength = 0.0f;
             ci.cancel();
         }
+    }
+
+    @Override
+    protected float method_49484() {
+        var speed = super.method_49484();
+        var event = new AirStrafeEvent(speed);
+        GavinsMod.eventManager.call(event);
+        return event.getSpeed();
     }
 }

@@ -26,7 +26,9 @@ import com.peasenet.mods.Type;
 import com.peasenet.util.FakePlayer;
 import com.peasenet.util.PlayerUtils;
 import com.peasenet.util.RenderUtils;
+import com.peasenet.util.event.AirStrafeEvent;
 import com.peasenet.util.event.data.OutputPacket;
+import com.peasenet.util.listeners.AirStrafeListener;
 import com.peasenet.util.listeners.PacketSendListener;
 import com.peasenet.util.listeners.WorldRenderListener;
 import net.minecraft.client.MinecraftClient;
@@ -42,7 +44,7 @@ import net.minecraft.util.math.Vec3d;
  * @author GT3CH1
  * @version 12/22/2022
  */
-public class ModFreecam extends Mod implements PacketSendListener, WorldRenderListener {
+public class ModFreecam extends Mod implements PacketSendListener, WorldRenderListener, AirStrafeListener {
     FakePlayer fake;
 
     public ModFreecam() {
@@ -55,6 +57,7 @@ public class ModFreecam extends Mod implements PacketSendListener, WorldRenderLi
         fake = new FakePlayer();
         em.subscribe(PacketSendListener.class, this);
         em.subscribe(WorldRenderListener.class, this);
+        em.subscribe(AirStrafeListener.class, this);
     }
 
     @Override
@@ -63,7 +66,6 @@ public class ModFreecam extends Mod implements PacketSendListener, WorldRenderLi
         if (!isActive())
             return;
         getPlayer().setVelocity(Vec3d.ZERO);
-        getPlayer().airStrafingSpeed = 1;
         getPlayer().setOnGround(false);
         getPlayer().getAbilities().flying = false;
 
@@ -80,6 +82,7 @@ public class ModFreecam extends Mod implements PacketSendListener, WorldRenderLi
         fake.remove();
         em.unsubscribe(PacketSendListener.class, this);
         em.unsubscribe(WorldRenderListener.class, this);
+        em.unsubscribe(AirStrafeListener.class, this);
     }
 
     @Override
@@ -95,5 +98,10 @@ public class ModFreecam extends Mod implements PacketSendListener, WorldRenderLi
     public void onPacketSend(OutputPacket packet) {
         if (packet.getPacket() instanceof PlayerMoveC2SPacket)
             packet.cancel();
+    }
+
+    @Override
+    public void onAirStrafe(AirStrafeEvent event) {
+        event.setSpeed(1f);
     }
 }

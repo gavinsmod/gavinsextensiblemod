@@ -18,46 +18,50 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet.mods.movement;
+package com.peasenet.util.event;
 
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.util.event.AirStrafeEvent;
 import com.peasenet.util.listeners.AirStrafeListener;
+import com.peasenet.util.listeners.InGameHudRenderListener;
+import net.minecraft.client.util.math.MatrixStack;
+
+import java.util.ArrayList;
 
 /**
- * @author gt3ch1
- * @version 7/6/2022
- * A mod for allowing the printer to noclip (move through blocks)
+ * The event for the world render event.
+ *
+ * @author GT3CH1
+ * @version 12/22/2022
  */
-public class ModNoClip extends Mod implements AirStrafeListener {
+public class AirStrafeEvent extends Event<AirStrafeListener> {
+    float speed;
 
-    public ModNoClip() {
-        super(Type.NO_CLIP);
+    /**
+     * Creates a new world render event.
+     *
+     * @param speed - The speed.
+     */
+    public AirStrafeEvent(float speed) {
+        this.speed = speed;
     }
 
-    @Override
-    public void onEnable() {
-        em.subscribe(AirStrafeListener.class, this);
+    public float getSpeed() {
+        return speed;
     }
 
-    @Override
-    public void onDisable() {
-        em.unsubscribe(AirStrafeListener.class, this);
-    }
 
     @Override
-    public void onTick() {
-        getPlayer().getAbilities().flying = true;
-    }
-
-    @Override
-    public void onAirStrafe(AirStrafeEvent event) {
-        var speed = 0.2f;
-        if(getPlayer().isSprinting()) {
-            speed = 1f;
+    public void fire(ArrayList<AirStrafeListener> listeners) {
+        for (AirStrafeListener listener : listeners) {
+            listener.onAirStrafe(this);
         }
-        event.setSpeed(speed);
+    }
 
+    @Override
+    public Class<AirStrafeListener> getEvent() {
+        return AirStrafeListener.class;
+    }
+
+    public void setSpeed(float v) {
+        speed = v;
     }
 }

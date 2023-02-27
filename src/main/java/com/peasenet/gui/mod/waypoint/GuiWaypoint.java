@@ -221,7 +221,7 @@ public class GuiWaypoint extends GuiElement {
     @NotNull
     private Vec3i getFlooredPlayerPos() {
         var playerPos = GavinsModClient.getPlayer().getPos();
-        return new Vec3i(Math.floor(playerPos.x), Math.floor(playerPos.y) + 1, Math.floor(playerPos.z));
+        return new Vec3i((int)Math.floor(playerPos.x), (int)Math.floor(playerPos.y) + 1, (int)Math.floor(playerPos.z));
     }
 
     @Override

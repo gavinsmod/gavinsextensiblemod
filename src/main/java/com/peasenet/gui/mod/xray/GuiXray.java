@@ -252,7 +252,7 @@ public class GuiXray extends GuiElement {
                 GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack, 1f);
                 renderTooltip(matrixStack, Text.translatable(stack.getTranslationKey()), mouseX, mouseY);
             }
-            client.getItemRenderer().renderGuiItemIcon(stack, blockX, blockY);
+            client.getItemRenderer().renderGuiItemIcon(matrixStack, stack, blockX, blockY);
         }
 
         box.render(matrixStack, textRenderer, mouseX, mouseY, delta);

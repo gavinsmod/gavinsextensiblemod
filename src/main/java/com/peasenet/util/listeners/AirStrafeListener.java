@@ -17,47 +17,22 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.listeners;
 
-package com.peasenet.mods.movement;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
 import com.peasenet.util.event.AirStrafeEvent;
-import com.peasenet.util.listeners.AirStrafeListener;
+import net.minecraft.client.util.math.MatrixStack;
 
 /**
- * @author gt3ch1
- * @version 7/6/2022
- * A mod for allowing the printer to noclip (move through blocks)
+ * A listener for the world render event.
+ *
+ * @author GT3CH1
+ * @version 12/22/2022
  */
-public class ModNoClip extends Mod implements AirStrafeListener {
+public interface AirStrafeListener extends Listener {
+    /*
+     * @param delta - The delta.
+     */
+    void onAirStrafe(AirStrafeEvent event);
 
-    public ModNoClip() {
-        super(Type.NO_CLIP);
-    }
 
-    @Override
-    public void onEnable() {
-        em.subscribe(AirStrafeListener.class, this);
-    }
-
-    @Override
-    public void onDisable() {
-        em.unsubscribe(AirStrafeListener.class, this);
-    }
-
-    @Override
-    public void onTick() {
-        getPlayer().getAbilities().flying = true;
-    }
-
-    @Override
-    public void onAirStrafe(AirStrafeEvent event) {
-        var speed = 0.2f;
-        if(getPlayer().isSprinting()) {
-            speed = 1f;
-        }
-        event.setSpeed(speed);
-
-    }
 }

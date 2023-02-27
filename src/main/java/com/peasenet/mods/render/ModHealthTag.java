@@ -24,6 +24,8 @@ import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.util.event.data.EntityRender;
 import com.peasenet.util.listeners.EntityRenderNameListener;
+
+import net.minecraft.client.font.TextRenderer.TextLayerType;
 import net.minecraft.entity.LivingEntity;
 
 /**
@@ -79,9 +81,9 @@ public class ModHealthTag extends Mod implements EntityRenderNameListener {
             color = 0xffa500;
         if (percentHealth < 0.25)
             color = 0xff0000;
-        textRenderer.draw(text, h, (float) 0, color, false, matrix4f, er.vertexConsumers, bl, j, er.light);
+        textRenderer.draw(text, h, (float) 0, color, false, matrix4f, er.vertexConsumers, TextLayerType.NORMAL, j, er.light);
         if (bl) {
-            textRenderer.draw(text, h, (float) 0, color, false, matrix4f, er.vertexConsumers, false, 0, er.light);
+            textRenderer.draw(text, h, (float) 0, color, false, matrix4f, er.vertexConsumers, TextLayerType.NORMAL, 0, er.light);
         }
 
         matrices.pop();
