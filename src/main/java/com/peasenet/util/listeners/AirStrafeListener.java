@@ -20,13 +20,12 @@
 package com.peasenet.util.listeners;
 
 import com.peasenet.util.event.AirStrafeEvent;
-import net.minecraft.client.util.math.MatrixStack;
 
 /**
  * A listener for the world render event.
  *
  * @author GT3CH1
- * @version 12/22/2022
+ * @version 02/27/2023
  */
 public interface AirStrafeListener extends Listener {
     /*

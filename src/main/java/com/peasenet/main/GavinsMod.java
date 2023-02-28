@@ -53,7 +53,7 @@ public class GavinsMod implements ModInitializer {
     /**
      * The current version of the mod.
      */
-    public static final String VERSION = "v1.4.0";
+    public static final String VERSION = "v1.4.1";
 
     /**
      * The gui used to display the main mod menu.
@@ -124,7 +124,7 @@ public class GavinsMod implements ModInitializer {
     public static boolean isEnabled(Type mod) {
         return Mods.getMod(mod.getChatCommand()).isActive();
     }
-
+    
     /**
      * Sets whether the given mod is enabled.
      *

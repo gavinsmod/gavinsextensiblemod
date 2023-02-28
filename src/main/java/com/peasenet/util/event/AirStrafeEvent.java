@@ -21,8 +21,6 @@
 package com.peasenet.util.event;
 
 import com.peasenet.util.listeners.AirStrafeListener;
-import com.peasenet.util.listeners.InGameHudRenderListener;
-import net.minecraft.client.util.math.MatrixStack;
 
 import java.util.ArrayList;
 
@@ -34,7 +32,7 @@ import java.util.ArrayList;
  */
 public class AirStrafeEvent extends Event<AirStrafeListener> {
     float speed;
-
+    boolean modified = false;
     /**
      * Creates a new world render event.
      *
@@ -61,7 +59,12 @@ public class AirStrafeEvent extends Event<AirStrafeListener> {
         return AirStrafeListener.class;
     }
 
+    public boolean isModified() {
+        return modified;
+    }
+
     public void setSpeed(float v) {
+        modified = true;
         speed = v;
     }
 }

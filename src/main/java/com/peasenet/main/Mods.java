@@ -99,6 +99,7 @@ public class Mods {
         // MISC
         new ModGuiTextOverlay();
         new ModFpsCounter();
+        //TODO: 1.19.4
         new ModFreecam();
     }
 

@@ -67,7 +67,7 @@ public class ModFreecam extends Mod implements PacketSendListener, WorldRenderLi
             return;
         getPlayer().setVelocity(Vec3d.ZERO);
         getPlayer().setOnGround(false);
-        getPlayer().getAbilities().flying = false;
+        getPlayer().getAbilities().flying = true;
 
         if (getPlayer().input.sneaking)
             getPlayer().setVelocity(getPlayer().getVelocity().add(0, -1, 0));
@@ -102,6 +102,8 @@ public class ModFreecam extends Mod implements PacketSendListener, WorldRenderLi
 
     @Override
     public void onAirStrafe(AirStrafeEvent event) {
-        event.setSpeed(1f);
+        var speed = 1.0f;
+        event.setSpeed(speed);
     }
 }
+

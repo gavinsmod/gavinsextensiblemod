@@ -30,6 +30,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import org.spongepowered.asm.mixin.Shadow;
 
 /**
  * The interface for the player entity.
@@ -253,4 +254,7 @@ public interface IClientPlayerEntity {
      * @return Whether the player is currently submerged in water.
      */
     boolean isSubmergedInWater();
+    
+
+    float getOffGroundSpeed();
 }
