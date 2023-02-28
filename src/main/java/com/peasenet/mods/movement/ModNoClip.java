@@ -39,11 +39,13 @@ public class ModNoClip extends Mod implements AirStrafeListener {
     @Override
     public void onEnable() {
         em.subscribe(AirStrafeListener.class, this);
+        super.onEnable();
     }
 
     @Override
     public void onDisable() {
         em.unsubscribe(AirStrafeListener.class, this);
+        super.onDisable();
     }
 
     @Override
@@ -54,7 +56,7 @@ public class ModNoClip extends Mod implements AirStrafeListener {
     @Override
     public void onAirStrafe(AirStrafeEvent event) {
         var speed = 0.2f;
-        if(getPlayer().isSprinting()) {
+        if (getPlayer().isSprinting()) {
             speed = 1f;
         }
         event.setSpeed(speed);
