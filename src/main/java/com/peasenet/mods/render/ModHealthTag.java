@@ -24,7 +24,6 @@ import com.peasenet.mods.Mod;
 import com.peasenet.mods.Type;
 import com.peasenet.util.event.data.EntityRender;
 import com.peasenet.util.listeners.EntityRenderNameListener;
-
 import net.minecraft.client.font.TextRenderer.TextLayerType;
 import net.minecraft.entity.LivingEntity;
 
