@@ -122,7 +122,8 @@ public class GavinsMod implements ModInitializer {
      * @return Whether the mod is enabled.
      */
     public static boolean isEnabled(Type mod) {
-        return Mods.getMod(mod.getChatCommand()).isActive();
+
+        return Mods.getMod(mod.chatCommand).isActive();
     }
     
     /**

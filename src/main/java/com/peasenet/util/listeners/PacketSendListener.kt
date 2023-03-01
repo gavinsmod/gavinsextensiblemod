@@ -17,22 +17,22 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.util.listeners;
+package com.peasenet.util.listeners
 
-import com.peasenet.util.event.data.OutputPacket;
+import com.peasenet.util.event.data.OutputPacket
 
 /**
  * A listener for packets being sent.
  *
  * @author GT3CH1
- * @version 12/22/2022
+ * @version 03-01-2023
  */
-public interface PacketSendListener extends Listener {
+interface PacketSendListener : Listener {
     /**
      * Called when a packet is sent.
      *
      * @param packet - The OutputPacket being sent.
      * @see OutputPacket
      */
-    void onPacketSend(OutputPacket packet);
+    fun onPacketSend(packet: OutputPacket)
 }

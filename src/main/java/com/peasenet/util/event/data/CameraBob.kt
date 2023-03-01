@@ -17,8 +17,6 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event.data
 
-package com.peasenet.util.event.data;
-
-public class CameraBob extends Cancellable {
-}
+class CameraBob : Cancellable()

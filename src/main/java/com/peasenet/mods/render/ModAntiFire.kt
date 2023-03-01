@@ -17,38 +17,30 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.render
 
-package com.peasenet.mods.render;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.util.event.data.RenderSubmergedOverlay;
-import com.peasenet.util.listeners.RenderSubmergedOverlayListener;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.util.event.data.RenderSubmergedOverlay
+import com.peasenet.util.listeners.RenderSubmergedOverlayListener
 
 /**
  * @author gt3ch1
  * @version 12/31/2022
  * A mod that disables the pumpkin overlay.
  */
-public class ModAntiFire extends Mod implements RenderSubmergedOverlayListener {
-    public ModAntiFire() {
-        super(Type.NO_FIRE);
+class ModAntiFire : Mod(Type.NO_FIRE), RenderSubmergedOverlayListener {
+    override fun onEnable() {
+        super.onEnable()
+        em.subscribe(RenderSubmergedOverlayListener::class.java, this)
     }
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        em.subscribe(RenderSubmergedOverlayListener.class, this);
+    override fun onDisable() {
+        super.onDisable()
+        em.unsubscribe(RenderSubmergedOverlayListener::class.java, this)
     }
 
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        em.unsubscribe(RenderSubmergedOverlayListener.class, this);
-    }
-
-    @Override
-    public void onRenderOverlay(RenderSubmergedOverlay overlay) {
-        overlay.cancel();
+    override fun onRenderOverlay(overlay: RenderSubmergedOverlay) {
+        overlay.cancel()
     }
 }

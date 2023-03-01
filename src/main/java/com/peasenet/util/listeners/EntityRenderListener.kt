@@ -17,9 +17,9 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.util.listeners;
+package com.peasenet.util.listeners
 
-import com.peasenet.util.event.data.EntityRender;
+import com.peasenet.util.event.data.EntityRender
 
 /**
  * A listener for the world render event.
@@ -27,12 +27,9 @@ import com.peasenet.util.event.data.EntityRender;
  * @author GT3CH1
  * @version 12/23/2022
  */
-public interface EntityRenderListener extends Listener {
-
+interface EntityRenderListener : Listener {
     /**
      * Called when the world is rendered.
      */
-    void onEntityRender(EntityRender er);
-
-
+    fun onEntityRender(er: EntityRender)
 }

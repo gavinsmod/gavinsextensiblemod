@@ -17,7 +17,6 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.util.listeners;
+package com.peasenet.util.listeners
 
-public interface Listener {
-}
+interface Listener 

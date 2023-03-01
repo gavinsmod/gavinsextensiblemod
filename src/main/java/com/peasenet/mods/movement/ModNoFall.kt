@@ -17,26 +17,19 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.movement
 
-package com.peasenet.mods.movement;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.util.PlayerUtils;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.util.PlayerUtils
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
  * A mod that prevents the player from taking fall damage.
  */
-public class ModNoFall extends Mod {
-    public ModNoFall() {
-        super(Type.NO_FALL);
-    }
-
-    @Override
-    public void onTick() {
-
-        PlayerUtils.handleNoFall();
+class ModNoFall : Mod(Type.NO_FALL) {
+    override fun onTick() {
+        PlayerUtils.handleNoFall()
     }
 }

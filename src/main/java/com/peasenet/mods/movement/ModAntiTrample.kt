@@ -17,45 +17,41 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.movement
 
-package com.peasenet.mods.movement;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import net.minecraft.block.Blocks
 
 /**
  * @author gt3ch1
  * @version 8/6/2022
  * AntiTrample prevents the player from trampling over farm blocks.
  */
-public class ModAntiTrample extends Mod {
-
-    private static final Block FARMLAND = Blocks.FARMLAND;
-    private static boolean wasOnFarmland = false;
-
-    public ModAntiTrample() {
-        super(Type.ANTI_TRAMPLE);
-    }
-
-    @Override
-    public void onTick() {
+class ModAntiTrample : Mod(Type.ANTI_TRAMPLE) {
+    override fun onTick() {
         // check if the player is on farmland by looking at the block below the player.
-        var playerLoc = getPlayer().getBlockPos();
-        var playerLocDown = getPlayer().getBlockPos().down();
-        var playerBlock = getWorld().getBlockState(playerLoc).getBlock();
-        var playerBlockDown = getWorld().getBlockState(playerLocDown).getBlock();
-        var isOnFarmland = playerBlock == FARMLAND || playerBlockDown == FARMLAND;
+        if (client.player == null)
+            return
+        val player = client.player
+        val playerLoc = player.blockPos
+        val playerLocDown = player.blockPos.down()
+        val playerBlock = world.getBlockState(playerLoc).block
+        val playerBlockDown = world.getBlockState(playerLocDown).block
+        val isOnFarmland = playerBlock === FARMLAND || playerBlockDown === FARMLAND
         if (isOnFarmland) {
-            getClient().getOptions().sneakKey.setPressed(true);
-            wasOnFarmland = true;
-            return;
+            client.options.sneakKey.isPressed = true
+            wasOnFarmland = true
+            return
         }
         if (wasOnFarmland) {
-            getClient().getOptions().sneakKey.setPressed(false);
-            wasOnFarmland = false;
+            client.options.sneakKey.isPressed = false
+            wasOnFarmland = false
         }
     }
 
+    companion object {
+        private val FARMLAND = Blocks.FARMLAND
+        private var wasOnFarmland = false
+    }
 }

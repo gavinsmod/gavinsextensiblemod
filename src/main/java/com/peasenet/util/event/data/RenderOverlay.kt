@@ -17,19 +17,8 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event.data
 
-package com.peasenet.util.event.data;
+import net.minecraft.util.Identifier
 
-import net.minecraft.util.Identifier;
-
-public class RenderOverlay extends Cancellable {
-    private Identifier texture;
-
-    public RenderOverlay(Identifier texture) {
-        this.texture = texture;
-    }
-
-    public Identifier getTexture() {
-        return texture;
-    }
-}
+class RenderOverlay(val texture: Identifier) : Cancellable()

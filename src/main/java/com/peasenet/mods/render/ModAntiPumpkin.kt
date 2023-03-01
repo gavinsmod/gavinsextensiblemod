@@ -17,40 +17,31 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.render
 
-package com.peasenet.mods.render;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.util.event.data.RenderOverlay;
-import com.peasenet.util.listeners.RenderOverlayListener;
-import net.minecraft.util.Identifier;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.util.event.data.RenderOverlay
+import com.peasenet.util.listeners.RenderOverlayListener
+import net.minecraft.util.Identifier
 
 /**
  * @author gt3ch1
  * @version 12/31/2022
  * A mod that disables the pumpkin overlay.
  */
-public class ModAntiPumpkin extends Mod implements RenderOverlayListener {
-    public ModAntiPumpkin() {
-        super(Type.ANTI_PUMPKIN);
+class ModAntiPumpkin : Mod(Type.ANTI_PUMPKIN), RenderOverlayListener {
+    override fun onEnable() {
+        super.onEnable()
+        em.subscribe(RenderOverlayListener::class.java, this)
     }
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        em.subscribe(RenderOverlayListener.class, this);
+    override fun onDisable() {
+        super.onDisable()
+        em.unsubscribe(RenderOverlayListener::class.java, this)
     }
 
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        em.unsubscribe(RenderOverlayListener.class, this);
-    }
-
-    @Override
-    public void onRenderOverlay(RenderOverlay overlay) {
-        if (overlay.getTexture().equals(new Identifier("textures/misc/pumpkinblur.png")))
-            overlay.cancel();
+    override fun onRenderOverlay(overlay: RenderOverlay) {
+        if (overlay.texture == Identifier("textures/misc/pumpkinblur.png")) overlay.cancel()
     }
 }

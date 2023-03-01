@@ -17,71 +17,61 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.render
 
-package com.peasenet.mods.render;
-
-import com.peasenet.gui.mod.waypoint.GuiWaypoint;
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.mods.render.waypoints.Waypoint;
-import com.peasenet.settings.ClickSetting;
-import com.peasenet.settings.SubSetting;
-import com.peasenet.settings.ToggleSetting;
-import com.peasenet.util.RenderUtils;
-import com.peasenet.util.event.data.CameraBob;
-import com.peasenet.util.event.data.EntityRender;
-import com.peasenet.util.listeners.CameraBobListener;
-import com.peasenet.util.listeners.EntityRenderListener;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-
-import java.util.Comparator;
+import com.peasenet.gui.mod.waypoint.GuiWaypoint
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.mods.render.waypoints.Waypoint
+import com.peasenet.settings.ClickSetting
+import com.peasenet.settings.SubSetting
+import com.peasenet.settings.ToggleSetting
+import com.peasenet.util.RenderUtils
+import com.peasenet.util.event.data.CameraBob
+import com.peasenet.util.event.data.EntityRender
+import com.peasenet.util.listeners.CameraBobListener
+import com.peasenet.util.listeners.EntityRenderListener
+import net.minecraft.text.Text
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Box
+import java.util.function.Function
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 03-01-2023
  * Creates a new mod to control waypoints.
  */
-public class ModWaypoint extends Mod implements EntityRenderListener, CameraBobListener {
-
-    private static SubSetting setting;
-    private static ClickSetting openMenu;
-
-    public ModWaypoint() {
-        super(Type.WAYPOINT);
-        setting = new SubSetting(100, 10, "gavinsmod.mod.render.waypoints");
-        openMenu = new ClickSetting("gavinsmod.settings.render.waypoints.add");
-        reloadSettings();
+class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener {
+    init {
+        setting = SubSetting(100, 10, "gavinsmod.mod.render.waypoints")
+        openMenu = ClickSetting("gavinsmod.settings.render.waypoints.add")
+        reloadSettings()
     }
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        em.subscribe(EntityRenderListener.class, this);
-        em.subscribe(CameraBobListener.class, this);
+    override fun onEnable() {
+        super.onEnable()
+        em.subscribe(EntityRenderListener::class.java, this)
+        em.subscribe(CameraBobListener::class.java, this)
     }
 
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        em.unsubscribe(EntityRenderListener.class, this);
-        em.unsubscribe(CameraBobListener.class, this);
+    override fun onDisable() {
+        super.onDisable()
+        em.unsubscribe(EntityRenderListener::class.java, this)
+        em.unsubscribe(CameraBobListener::class.java, this)
     }
 
-    @Override
-    public void reloadSettings() {
-        modSettings.clear();
-        setting = new SubSetting((int) setting.getGui().getWidth(), 10, "gavinsmod.mod.render.waypoints");
-        openMenu.setCallback(() -> getClient().setScreen(new GuiWaypoint()));
-        openMenu.getGui().setSymbol('+');
-        setting.add(openMenu);
+    override fun reloadSettings() {
+        modSettings.clear()
+        setting = SubSetting(setting.gui.width.toInt(), 10, "gavinsmod.mod.render.waypoints")
+        openMenu.setCallback { client.setScreen(GuiWaypoint()) }
+        openMenu.gui.setSymbol('+')
+        setting.add(openMenu)
         // get all waypoints and add them to the menu
-        var waypoints = waypointConfig.getLocations().stream().sorted(Comparator.comparing(Waypoint::getName));
-        for (var w : waypoints.toArray())
-            createWaypoint((Waypoint) w);
-        addSetting(setting);
+        val waypoints = waypointConfig.getLocations().stream().sorted(
+            Comparator.comparing(Function<Waypoint, String> { obj: Waypoint -> obj.name })
+        )
+        for (w in waypoints.toArray()) createWaypoint(w as Waypoint)
+        addSetting(setting)
     }
 
     /**
@@ -89,30 +79,37 @@ public class ModWaypoint extends Mod implements EntityRenderListener, CameraBobL
      *
      * @param waypoint - The waypoint to edit.
      */
-    private void createWaypoint(Waypoint waypoint) {
-        ToggleSetting clickSetting = new ToggleSetting(Text.literal(waypoint.getName()));
-        clickSetting.setCallback(() -> {
-            getClient().setScreen(new GuiWaypoint(waypoint));
-            clickSetting.setValue(waypoint.isEnabled());
-        });
-        clickSetting.setValue(waypoint.isEnabled());
-        setting.add(clickSetting);
+    private fun createWaypoint(waypoint: Waypoint) {
+        val clickSetting = ToggleSetting(Text.literal(waypoint.name))
+        clickSetting.setCallback {
+            client.setScreen(GuiWaypoint(waypoint))
+            clickSetting.value = waypoint.isEnabled
+        }
+        clickSetting.value = waypoint.isEnabled
+        setting.add(clickSetting)
     }
 
-    @Override
-    public void onEntityRender(EntityRender er) {
-        waypointConfig.getLocations().stream().filter(Waypoint::isEnabled).forEach(w -> {
-            Box aabb = new Box(new BlockPos(w.getX(), w.getY(), w.getZ()));
-            Vec3d boxPos = aabb.getCenter();
-            if (w.isTracerEnabled())
-                RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, boxPos, w.getColor());
-            if (w.isEspEnabled())
-                RenderUtils.drawBox(er.stack, er.buffer, aabb, w.getColor());
-        });
+    override fun onEntityRender(er: EntityRender) {
+        waypointConfig.getLocations().stream().filter { obj: Waypoint -> obj.isEnabled }.forEach { w: Waypoint ->
+            val aabb = Box(BlockPos(w.x, w.y, w.z))
+            val boxPos = aabb.center
+            if (w.isTracerEnabled) RenderUtils.renderSingleLine(
+                er.stack,
+                er.buffer!!,
+                er.playerPos!!,
+                boxPos,
+                w.color!!
+            )
+            if (w.isEspEnabled) RenderUtils.drawBox(er.stack, er.buffer, aabb, w.color!!)
+        }
     }
 
-    @Override
-    public void onCameraViewBob(CameraBob c) {
-        c.cancel();
+    override fun onCameraViewBob(c: CameraBob) {
+        c.cancel()
+    }
+
+    companion object {
+        private lateinit var setting: SubSetting
+        private lateinit var openMenu: ClickSetting
     }
 }

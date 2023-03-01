@@ -17,43 +17,37 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.combat
 
-package com.peasenet.mods.combat;
-
-import com.peasenet.main.GavinsModClient;
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.util.PlayerUtils;
-import com.peasenet.util.math.MathUtils;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.mob.MobEntity;
-
-import java.util.stream.StreamSupport;
+import com.peasenet.main.GavinsModClient
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.util.PlayerUtils
+import com.peasenet.util.math.MathUtils
+import net.minecraft.entity.Entity
+import net.minecraft.entity.mob.MobEntity
+import java.util.stream.StreamSupport
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 03-01-2023
  * A mod that makes the player face and attack the nearest mob.
  */
-public class ModKillAura extends Mod {
-    public ModKillAura() {
-        super(Type.KILL_AURA);
-    }
-
-    @Override
-    public void onTick() {
-        if (GavinsModClient.getMinecraftClient().getWorld() != null && isActive()) {
-            var stream = StreamSupport.stream(GavinsModClient.getMinecraftClient().getWorld().getEntities().spliterator(), false)
-                    .filter(e -> e instanceof MobEntity)
-                    .filter(Entity::isAlive)
-                    .filter(e -> PlayerUtils.distanceToEntity(e) <= 16)
-                    .sorted((e1, e2) -> (int) ((int) PlayerUtils.distanceToEntity(e1) - PlayerUtils.distanceToEntity(e2)))
-                    .map(e -> (MobEntity) e);
-
-            stream.forEach(entity -> {
-                PlayerUtils.setRotation(MathUtils.getRotationToEntity(entity));
-                PlayerUtils.attackEntity(entity);
-            });
+class ModKillAura : Mod(Type.KILL_AURA) {
+    override fun onTick() {
+        if (GavinsModClient.getMinecraftClient().world != null && isActive) {
+            val stream = StreamSupport.stream(GavinsModClient.getMinecraftClient().world.entities.spliterator(), false)
+                .filter { e: Entity? -> e is MobEntity }
+                .filter { obj: Entity -> obj.isAlive }
+                .filter { e: Entity? -> PlayerUtils.distanceToEntity(e) <= 16 }
+                .sorted { e1: Entity?, e2: Entity? ->
+                    (PlayerUtils.distanceToEntity(e1).toInt() - PlayerUtils.distanceToEntity(e2)).toInt()
+                }
+                .map { e: Entity? -> e as MobEntity? }
+            stream.forEach { entity: MobEntity? ->
+                entity?.let { MathUtils.getRotationToEntity(it) }?.let { PlayerUtils.setRotation(it) }
+                PlayerUtils.attackEntity(entity)
+            }
         }
     }
 }

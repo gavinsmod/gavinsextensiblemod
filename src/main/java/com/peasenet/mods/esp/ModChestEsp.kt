@@ -17,55 +17,49 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.esp
 
-package com.peasenet.mods.esp;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.settings.ColorSetting;
-import com.peasenet.util.RenderUtils;
-import com.peasenet.util.event.data.BlockEntityRender;
-import com.peasenet.util.listeners.BlockEntityRenderListener;
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.block.entity.EnderChestBlockEntity;
-import net.minecraft.block.entity.ShulkerBoxBlockEntity;
-import net.minecraft.util.math.Box;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.settings.ColorSetting
+import com.peasenet.util.RenderUtils
+import com.peasenet.util.event.data.BlockEntityRender
+import com.peasenet.util.listeners.BlockEntityRenderListener
+import net.minecraft.block.entity.ChestBlockEntity
+import net.minecraft.block.entity.EnderChestBlockEntity
+import net.minecraft.block.entity.ShulkerBoxBlockEntity
+import net.minecraft.util.math.Box
 
 /**
  * @author gt3ch1
  * @version 01/03/2022
  * A mod that allows the client to see an esp (a box) around chests.
  */
-public class ModChestEsp extends Mod implements BlockEntityRenderListener {
-    public ModChestEsp() {
-        super(Type.CHEST_ESP);
-        ColorSetting colorSetting = new ColorSetting(
-                "gavinsmod.settings.esp.chest.color");
-        colorSetting.setCallback(() -> espConfig.setChestColor(colorSetting.getColor()));
-        colorSetting.setColor(espConfig.getChestColor());
-        addSetting(colorSetting);
+class ModChestEsp : Mod(Type.CHEST_ESP), BlockEntityRenderListener {
+    init {
+        val colorSetting = ColorSetting(
+            "gavinsmod.settings.esp.chest.color"
+        )
+        colorSetting.setCallback { espConfig.chestColor = colorSetting.color }
+        colorSetting.color = espConfig.chestColor
+        addSetting(colorSetting)
     }
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        em.subscribe(BlockEntityRenderListener.class, this);
+    override fun onEnable() {
+        super.onEnable()
+        em.subscribe(BlockEntityRenderListener::class.java, this)
     }
 
-    @Override
-
-    public void onDisable() {
-        super.onDisable();
-        em.unsubscribe(BlockEntityRenderListener.class, this);
+    override fun onDisable() {
+        super.onDisable()
+        em.unsubscribe(BlockEntityRenderListener::class.java, this)
     }
 
-    @Override
-    public void onRenderBlockEntity(BlockEntityRender er) {
-        var box = new Box(er.entity.getPos());
-        if (er.buffer == null)
-            return;
-        if (er.entity instanceof ChestBlockEntity || er.entity instanceof ShulkerBoxBlockEntity
-                || er.entity instanceof EnderChestBlockEntity)
-            RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getChestColor(), espConfig.getAlpha());
+    override fun onRenderBlockEntity(er: BlockEntityRender) {
+        val box = Box(er.entity.pos)
+        if (er.buffer == null) return
+        if (er.entity is ChestBlockEntity || er.entity is ShulkerBoxBlockEntity
+            || er.entity is EnderChestBlockEntity
+        ) RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.chestColor, espConfig.alpha)
     }
 }

@@ -17,53 +17,35 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event
 
-package com.peasenet.util.event;
-
-
-import com.peasenet.util.listeners.WorldRenderListener;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.world.ClientWorld;
-
-import java.util.ArrayList;
+import com.peasenet.util.listeners.WorldRenderListener
+import net.minecraft.client.render.BufferBuilder
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.client.world.ClientWorld
 
 /**
  * The event for the world render event.
  *
  * @author GT3CH1
- * @version 12/22/2022
+ * @version 03-01-2023
  */
-public class WorldRenderEvent extends Event<WorldRenderListener> {
-    ClientWorld level;
-    MatrixStack stack;
-    BufferBuilder buffer;
-    float delta;
-
-    /**
-     * Creates a new world render event.
-     *
-     * @param level  - The world being rendered.
-     * @param stack  - The matrix stack.
-     * @param buffer - The buffer builder.
-     * @param delta  - The delta.
-     */
-    public WorldRenderEvent(ClientWorld level, MatrixStack stack, BufferBuilder buffer, float delta) {
-        this.level = level;
-        this.stack = stack;
-        this.buffer = buffer;
-        this.delta = delta;
-    }
-
-    @Override
-    public void fire(ArrayList<WorldRenderListener> listeners) {
-        for (WorldRenderListener listener : listeners) {
-            listener.onWorldRender(level, stack, buffer, delta);
+class WorldRenderEvent
+/**
+ * Creates a new world render event.
+ *
+ * @param level  - The world being rendered.
+ * @param stack  - The matrix stack.
+ * @param buffer - The buffer builder.
+ * @param delta  - The delta.
+ */(var level: ClientWorld, var stack: MatrixStack, var buffer: BufferBuilder, var delta: Float) :
+    Event<WorldRenderListener>() {
+    override fun fire(listeners: ArrayList<WorldRenderListener>) {
+        for (listener in listeners) {
+            listener.onWorldRender(level, stack, buffer, delta)
         }
     }
 
-    @Override
-    public Class<WorldRenderListener> getEvent() {
-        return WorldRenderListener.class;
-    }
+    override val event: Class<WorldRenderListener>
+        get() = WorldRenderListener::class.java
 }

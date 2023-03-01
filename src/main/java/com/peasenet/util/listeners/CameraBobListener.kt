@@ -17,9 +17,9 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.util.listeners;
+package com.peasenet.util.listeners
 
-import com.peasenet.util.event.data.CameraBob;
+import com.peasenet.util.event.data.CameraBob
 
 /**
  * A listener for the Camera bobbing.
@@ -27,9 +27,9 @@ import com.peasenet.util.event.data.CameraBob;
  * @author GT3CH1
  * @version 12/25/2022
  */
-public interface CameraBobListener extends Listener {
+interface CameraBobListener : Listener {
     /**
      * Called when the camera is moved slightly.
      */
-    void onCameraViewBob(CameraBob c);
+    fun onCameraViewBob(c: CameraBob)
 }

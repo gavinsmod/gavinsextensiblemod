@@ -17,31 +17,23 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.movement
 
-package com.peasenet.mods.movement;
-
-import com.peasenet.main.GavinsModClient;
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import net.minecraft.item.BlockItem;
+import com.peasenet.main.GavinsModClient
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import net.minecraft.item.BlockItem
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
  * A mod that allows the player to place blocks really fast.
  */
-public class ModFastPlace extends Mod {
-    public ModFastPlace() {
-        super(Type.FAST_PLACE);
-    }
-
-    @Override
-    public void onTick() {
-
+class ModFastPlace : Mod(Type.FAST_PLACE) {
+    override fun onTick() {
         if (GavinsModClient.getPlayer() != null) {
-            var item = GavinsModClient.getPlayer().getMainHandStack().getItem() instanceof BlockItem;
-            if (isActive() && item)
-                getClient().setItemUseCooldown(0);
+            val item = GavinsModClient.getPlayer().mainHandStack.item is BlockItem
+            if (isActive && item) client.setItemUseCooldown(0)
         }
     }
 }

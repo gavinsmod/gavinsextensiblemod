@@ -17,69 +17,52 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event.data
 
-package com.peasenet.util.event.data;
-
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.block.entity.BlockEntity
+import net.minecraft.client.render.BufferBuilder
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.util.math.Vec3d
 
 /**
  * Data class for the block entity render event.
  *
  * @author gt3ch1
- * @version 01/03/2022
+ * @version 03-01-2023
  */
-public class BlockEntityRender extends Cancellable {
-
+class BlockEntityRender
+/**
+ * Creates a new block entity render event.
+ *
+ * @param entity    - The block entity.
+ * @param stack     - The matrix stack.
+ * @param buffer    - The buffer builder.
+ * @param center    - The center of the block entity.
+ * @param playerPos - The current player's position.
+ * @param delta     - Change in ticks.
+ */(
     /**
      * The block entity.
      */
-    public BlockEntity entity;
-
+    var entity: BlockEntity,
     /**
      * The matrix stack.
      */
-    public MatrixStack stack;
-
+    var stack: MatrixStack?,
     /**
      * The buffer builder.
      */
-    public BufferBuilder buffer;
-
+    var buffer: BufferBuilder?,
     /**
      * The center of the block entity.
      */
-    public Vec3d center;
-
+    var center: Vec3d?,
     /**
      * The current player's position.
      */
-    public Vec3d playerPos;
-
+    var playerPos: Vec3d?,
     /**
      * Change in ticks.
      */
-    public float delta;
-
-    /**
-     * Creates a new block entity render event.
-     *
-     * @param entity    - The block entity.
-     * @param stack     - The matrix stack.
-     * @param buffer    - The buffer builder.
-     * @param center    - The center of the block entity.
-     * @param playerPos - The current player's position.
-     * @param delta     - Change in ticks.
-     */
-    public BlockEntityRender(BlockEntity entity, MatrixStack stack, BufferBuilder buffer, Vec3d center, Vec3d playerPos, float delta) {
-        this.entity = entity;
-        this.stack = stack;
-        this.buffer = buffer;
-        this.center = center;
-        this.playerPos = playerPos;
-        this.delta = delta;
-    }
-
-}
+    var delta: Float
+) : Cancellable()

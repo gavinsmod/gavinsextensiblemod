@@ -17,23 +17,8 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event.data
 
-package com.peasenet.util.event.data;
+import net.minecraft.network.packet.Packet
 
-import net.minecraft.network.packet.Packet;
-
-public class OutputPacket extends Cancellable {
-    private Packet<?> packet;
-
-    public OutputPacket(Packet<?> packet) {
-        this.packet = packet;
-    }
-
-    public Packet<?> getPacket() {
-        return packet;
-    }
-
-    public void setPacket(Packet<?> packet) {
-        this.packet = packet;
-    }
-}
+class OutputPacket(var packet: Packet<*>) : Cancellable()

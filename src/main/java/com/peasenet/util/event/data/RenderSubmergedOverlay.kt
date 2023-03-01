@@ -17,19 +17,10 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event.data
 
-package com.peasenet.util.event.data;
-
-public class RenderSubmergedOverlay extends Cancellable {
-    public SubmergedOverlayType type;
-
-    public RenderSubmergedOverlay(SubmergedOverlayType type) {
-        this.type = type;
-    }
-
-    public enum SubmergedOverlayType {
-        WATER,
-        FIRE
-
+class RenderSubmergedOverlay(var type: SubmergedOverlayType) : Cancellable() {
+    enum class SubmergedOverlayType {
+        WATER, FIRE
     }
 }

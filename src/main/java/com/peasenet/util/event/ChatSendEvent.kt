@@ -17,41 +17,34 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event
 
-package com.peasenet.util.event;
-
-import com.peasenet.util.event.data.ChatMessage;
-import com.peasenet.util.listeners.OnChatSendListener;
-
-import java.util.ArrayList;
+import com.peasenet.util.event.data.ChatMessage
+import com.peasenet.util.listeners.OnChatSendListener
 
 /**
  * An event for when a packet is sent.
  *
  * @author GT3CH1
- * @version 12/22/2022
+ * @version 03-01-2023
  */
-public class ChatSendEvent extends CancellableEvent<OnChatSendListener> {
-    ChatMessage message;
+class ChatSendEvent(msg: String) : CancellableEvent<OnChatSendListener>() {
+    var message: ChatMessage
 
     /**
      * Creates a new PacketSendEvent.
      */
-    public ChatSendEvent(String msg) {
-        this.message = new ChatMessage(msg);
+    init {
+        message = ChatMessage(msg)
     }
 
-    @Override
-    public void fire(ArrayList<OnChatSendListener> listeners) {
-        for (OnChatSendListener listener : listeners) {
-            listener.onChatSend(message);
-            if (message.isCancelled())
-                this.cancel();
+    override fun fire(listeners: ArrayList<OnChatSendListener>) {
+        for (listener in listeners) {
+            listener.onChatSend(message)
+            if (message.isCancelled) cancel()
         }
     }
 
-    @Override
-    public Class<OnChatSendListener> getEvent() {
-        return OnChatSendListener.class;
-    }
+    override val event: Class<OnChatSendListener>
+        get() = OnChatSendListener::class.java
 }

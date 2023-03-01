@@ -17,16 +17,14 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.listeners
 
-
-package com.peasenet.util.listeners;
-
-import com.peasenet.util.event.data.DrawSide;
+import com.peasenet.util.event.data.DrawSide
 
 /**
  * @author gt3ch1
- * @version 01/01/2023
+ * @version 03-01-2023
  */
-public interface ShouldDrawSideListener extends Listener {
-    void onDrawSide(DrawSide event);
+interface ShouldDrawSideListener : Listener {
+    fun onDrawSide(event: DrawSide)
 }

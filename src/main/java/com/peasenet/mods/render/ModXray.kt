@@ -17,130 +17,111 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.render
 
-package com.peasenet.mods.render;
-
-import com.peasenet.gui.mod.xray.GuiXray;
-import com.peasenet.main.GavinsMod;
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.settings.ClickSetting;
-import com.peasenet.settings.SubSetting;
-import com.peasenet.settings.ToggleSetting;
-import com.peasenet.util.RenderUtils;
-import com.peasenet.util.event.data.BlockEntityRender;
-import com.peasenet.util.event.data.DrawSide;
-import com.peasenet.util.event.data.TessellateBlock;
-import com.peasenet.util.listeners.BlockEntityRenderListener;
-import com.peasenet.util.listeners.ShouldDrawSideListener;
-import com.peasenet.util.listeners.TessellateBlockListener;
-import net.minecraft.block.BlockState;
+import com.peasenet.gui.mod.xray.GuiXray
+import com.peasenet.main.GavinsMod
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.settings.ClickSetting
+import com.peasenet.settings.SubSetting
+import com.peasenet.settings.ToggleSetting
+import com.peasenet.util.RenderUtils
+import com.peasenet.util.event.data.BlockEntityRender
+import com.peasenet.util.event.data.DrawSide
+import com.peasenet.util.event.data.TessellateBlock
+import com.peasenet.util.listeners.BlockEntityRenderListener
+import com.peasenet.util.listeners.ShouldDrawSideListener
+import com.peasenet.util.listeners.TessellateBlockListener
+import net.minecraft.block.BlockState
 
 /**
  * @author gt3ch1
- * @version 01/03/2022
+ * @version 03-01-2023
  * A mod for xray like feature, allowing the player to see through certain blocks.
  */
-public class ModXray extends Mod implements ShouldDrawSideListener, TessellateBlockListener, BlockEntityRenderListener {
-
-    public ModXray() {
-        super(Type.XRAY);
-        SubSetting xraySubSetting = new SubSetting(100, 10, getTranslationKey());
-        ToggleSetting culling = new ToggleSetting("gavinsmod.settings.xray.culling");
-        culling.setCallback(() -> {
-            xrayConfig.setBlockCulling(culling.getValue());
-            if (isActive()) reload();
-
-        });
-        culling.setValue(xrayConfig.shouldCullBlocks());
-        ClickSetting menu = new ClickSetting("gavinsmod.settings.xray.blocks");
-        menu.setCallback(() -> getClient().setScreen(new GuiXray()));
-        xraySubSetting.add(menu);
-        xraySubSetting.add(culling);
-        addSetting(xraySubSetting);
+class ModXray : Mod(Type.XRAY), ShouldDrawSideListener, TessellateBlockListener, BlockEntityRenderListener {
+    init {
+        val xraySubSetting = SubSetting(100, 10, translationKey)
+        val culling = ToggleSetting("gavinsmod.settings.xray.culling")
+        culling.setCallback {
+            xrayConfig.blockCulling = culling.value
+            if (isActive) reload()
+        }
+        culling.value = xrayConfig.blockCulling
+        val menu = ClickSetting("gavinsmod.settings.xray.blocks")
+        menu.setCallback { client.setScreen(GuiXray()) }
+        xraySubSetting.add(menu)
+        xraySubSetting.add(culling)
+        addSetting(xraySubSetting)
     }
 
-
-    /**
-     * Checks if a block is visible
-     *
-     * @param block Block to check
-     * @return True if visible, false if not
-     */
-    public static boolean shouldDrawFace(BlockState block) {
-        return xrayConfig.isInList(block.getBlock());
+    override fun onEnable() {
+        em.subscribe(ShouldDrawSideListener::class.java, this)
+        em.subscribe(TessellateBlockListener::class.java, this)
+        em.subscribe(BlockEntityRenderListener::class.java, this)
+        super.onEnable()
     }
 
-    @Override
-    public void onEnable() {
-        em.subscribe(ShouldDrawSideListener.class, this);
-        em.subscribe(TessellateBlockListener.class, this);
-        em.subscribe(BlockEntityRenderListener.class, this);
-        super.onEnable();
+    override fun onDisable() {
+        em.unsubscribe(ShouldDrawSideListener::class.java, this)
+        em.unsubscribe(TessellateBlockListener::class.java, this)
+        em.unsubscribe(BlockEntityRenderListener::class.java, this)
+        super.onDisable()
     }
 
-    @Override
-    public void onDisable() {
-        em.unsubscribe(ShouldDrawSideListener.class, this);
-        em.unsubscribe(TessellateBlockListener.class, this);
-        em.unsubscribe(BlockEntityRenderListener.class, this);
-        super.onDisable();
-    }
-
-    @Override
-    public void activate() {
-        getClient().setChunkCulling(xrayConfig.shouldCullBlocks());
-        super.activate();
-        reloadRenderer();
+    override fun activate() {
+        client.setChunkCulling(xrayConfig.blockCulling)
+        super.activate()
+        reloadRenderer()
     }
 
     /**
      * Reloads the renderer if and only if the setting "xray.forcereload" is true.
      */
-    private void reloadRenderer() {
-        getClient().getWorldRenderer().reload();
+    private fun reloadRenderer() {
+        client.worldRenderer.reload()
     }
 
-    @Override
-    public void onTick() {
-        if (isActive() && !RenderUtils.isHighGamma()) RenderUtils.setHighGamma();
-        else if (!GavinsMod.isEnabled(Type.FULL_BRIGHT) && !RenderUtils.isLastGamma() && deactivating) {
-            RenderUtils.setLowGamma();
-            deactivating = !RenderUtils.isLastGamma();
+    override fun onTick() {
+        if (isActive && !RenderUtils.isHighGamma) RenderUtils.setHighGamma() else if (!GavinsMod.isEnabled(Type.FULL_BRIGHT) && !RenderUtils.isLastGamma && deactivating) {
+            RenderUtils.setLowGamma()
+            deactivating = !RenderUtils.isLastGamma
         }
     }
 
-    @Override
-    public boolean isDeactivating() {
-        return deactivating;
-    }
-
-    @Override
-    public void deactivate() {
+    override fun deactivate() {
         // check if full bright is disabled, if it is, reset gamma back to LAST_GAMMA
-        if (!GavinsMod.isEnabled(Type.FULL_BRIGHT)) RenderUtils.setLowGamma();
-        getClient().setChunkCulling(true);
-        reloadRenderer();
-        deactivating = true;
-        RenderUtils.setGamma(4);
-        super.deactivate();
+        if (!GavinsMod.isEnabled(Type.FULL_BRIGHT)) RenderUtils.setLowGamma()
+        client.setChunkCulling(true)
+        reloadRenderer()
+        deactivating = true
+        RenderUtils.gamma = 4.0
+        super.deactivate()
     }
 
-    @Override
-    public void onDrawSide(DrawSide event) {
-        if (!isActive()) return;
-        event.setShouldDraw(shouldDrawFace(event.getState()));
+    override fun onDrawSide(event: DrawSide) {
+        if (!isActive) return
+        event.setShouldDraw(shouldDrawFace(event.state))
     }
 
-    @Override
-    public void onTessellateBlock(TessellateBlock event) {
-        if (!shouldDrawFace(event.getBlockState()))
-            event.cancel();
+    override fun onTessellateBlock(event: TessellateBlock) {
+        if (!shouldDrawFace(event.blockState)) event.cancel()
     }
 
-    @Override
-    public void onRenderBlockEntity(BlockEntityRender er) {
-        if (!shouldDrawFace(getClient().getWorld().getBlockState(er.entity.getPos())))
-            er.cancel();
+    override fun onRenderBlockEntity(er: BlockEntityRender) {
+        if (!shouldDrawFace(client.world.getBlockState(er.entity.pos))) er.cancel()
+    }
+
+    companion object {
+        /**
+         * Checks if a block is visible
+         *
+         * @param block Block to check
+         * @return True if visible, false if not
+         */
+        fun shouldDrawFace(block: BlockState): Boolean {
+            return xrayConfig.isInList(block.block)
+        }
     }
 }

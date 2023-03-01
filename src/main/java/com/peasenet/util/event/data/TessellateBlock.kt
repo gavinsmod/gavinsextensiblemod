@@ -17,13 +17,12 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event.data
 
-package com.peasenet.util.event.data;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.block.BlockState
+import net.minecraft.client.render.model.BakedModel
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.util.math.BlockPos
 
 /**
  * Data class for the tessellate block event.
@@ -31,76 +30,51 @@ import net.minecraft.util.math.BlockPos;
  * @author gt3ch1
  * @version 01/03/2023
  */
-public class TessellateBlock extends Cancellable {
-
+class TessellateBlock
+/**
+ * Creates a new TessellateBlock data class.
+ *
+ * @param blockState  - The block state.
+ * @param blockPos    - The block position.
+ * @param model       - The baked model.
+ * @param matrixStack - The matrix stack.
+ */(
     /**
      * The block state.
      */
-    BlockState blockState;
-
+    var blockState: BlockState,
     /**
      * The block position.
      */
-    BlockPos blockPos;
-
+    var blockPos: BlockPos,
     /**
      * The baked model.
      */
-    BakedModel model;
-
+    var model: BakedModel,
     /**
      * The matrix stack.
      */
-    MatrixStack matrixStack;
-
-    /**
-     * Creates a new TessellateBlock data class.
-     *
-     * @param blockState  - The block state.
-     * @param blockPos    - The block position.
-     * @param model       - The baked model.
-     * @param matrixStack - The matrix stack.
-     */
-    public TessellateBlock(BlockState blockState, BlockPos blockPos, BakedModel model, MatrixStack matrixStack) {
-        this.blockState = blockState;
-        this.blockPos = blockPos;
-        this.model = model;
-        this.matrixStack = matrixStack;
-    }
-
+    var matrixStack: MatrixStack
+) : Cancellable() {
     /**
      * Gets the block state.
      *
      * @return The block state.
      */
-    public BlockState getBlockState() {
-        return blockState;
-    }
-
     /**
      * Gets the block position.
      *
      * @return The block position.
      */
-    public BlockPos getBlockPos() {
-        return blockPos;
-    }
-
     /**
      * Gets the baked model.
      *
      * @return The baked model.
      */
-    public BakedModel getModel() {
-        return model;
-    }
-
     /**
      * Gets the matrix stack.
      *
      * @return The matrix stack.
      */
-    public MatrixStack getMatrixStack() {
-        return matrixStack;
-    }
+
 }

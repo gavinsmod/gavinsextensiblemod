@@ -17,58 +17,57 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.tracer
 
-package com.peasenet.mods.tracer;
-
-import com.peasenet.main.GavinsMod;
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.settings.ColorSetting;
-import com.peasenet.util.RenderUtils;
-import com.peasenet.util.event.data.CameraBob;
-import com.peasenet.util.event.data.EntityRender;
-import com.peasenet.util.listeners.CameraBobListener;
-import com.peasenet.util.listeners.EntityRenderListener;
-import net.minecraft.entity.EntityType;
+import com.peasenet.main.GavinsMod
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.settings.ColorSetting
+import com.peasenet.util.RenderUtils
+import com.peasenet.util.event.data.CameraBob
+import com.peasenet.util.event.data.EntityRender
+import com.peasenet.util.listeners.CameraBobListener
+import com.peasenet.util.listeners.EntityRenderListener
+import net.minecraft.entity.EntityType
 
 /**
  * @author gt3ch1
- * @version 01/03/2022
+ * @version 03-01-2023
  * A mod that allows the player to see tracers towards items.
  */
-public class ModEntityItemTracer extends Mod implements EntityRenderListener, CameraBobListener {
-    public ModEntityItemTracer() {
-        super(Type.ENTITY_ITEM_TRACER);
-        ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.tracer.item.color");
-        colorSetting.setCallback(() -> tracerConfig.setItemColor(colorSetting.getColor()));
-        colorSetting.setColor(GavinsMod.tracerConfig.getItemColor());
-        addSetting(colorSetting);
+class ModEntityItemTracer : Mod(Type.ENTITY_ITEM_TRACER), EntityRenderListener, CameraBobListener {
+    init {
+        val colorSetting = ColorSetting("gavinsmod.settings.tracer.item.color")
+        colorSetting.setCallback { tracerConfig.itemColor = colorSetting.color }
+        colorSetting.color = GavinsMod.tracerConfig.itemColor
+        addSetting(colorSetting)
     }
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        em.subscribe(EntityRenderListener.class, this);
-        em.subscribe(CameraBobListener.class, this);
-
+    override fun onEnable() {
+        super.onEnable()
+        em.subscribe(EntityRenderListener::class.java, this)
+        em.subscribe(CameraBobListener::class.java, this)
     }
 
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        em.unsubscribe(EntityRenderListener.class, this);
+    override fun onDisable() {
+        super.onDisable()
+        em.unsubscribe(EntityRenderListener::class.java, this)
     }
 
-    @Override
-    public void onEntityRender(EntityRender er) {
-        if (er.buffer == null)
-            return;
-        if (er.getEntityType() != EntityType.ITEM) return;
-        RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, tracerConfig.getItemColor(), tracerConfig.getAlpha());
+    override fun onEntityRender(er: EntityRender) {
+        if (er.buffer == null) return
+        if (er.entityType !== EntityType.ITEM) return
+        RenderUtils.renderSingleLine(
+            er.stack,
+            er.buffer!!,
+            er.playerPos!!,
+            er.center!!,
+            tracerConfig.itemColor,
+            tracerConfig.alpha
+        )
     }
 
-    @Override
-    public void onCameraViewBob(CameraBob c) {
-        c.cancel();
+    override fun onCameraViewBob(c: CameraBob) {
+        c.cancel()
     }
 }

@@ -17,87 +17,88 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.tracer
 
-package com.peasenet.mods.tracer;
-
-import com.peasenet.main.GavinsMod;
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.settings.ColorSetting;
-import com.peasenet.settings.ToggleSetting;
-import com.peasenet.util.RenderUtils;
-import com.peasenet.util.event.data.CameraBob;
-import com.peasenet.util.event.data.EntityRender;
-import com.peasenet.util.listeners.CameraBobListener;
-import com.peasenet.util.listeners.EntityRenderListener;
-import net.minecraft.entity.mob.MobEntity;
+import com.peasenet.main.GavinsMod
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.settings.ColorSetting
+import com.peasenet.settings.ToggleSetting
+import com.peasenet.util.RenderUtils
+import com.peasenet.util.event.data.CameraBob
+import com.peasenet.util.event.data.EntityRender
+import com.peasenet.util.listeners.CameraBobListener
+import com.peasenet.util.listeners.EntityRenderListener
+import net.minecraft.entity.mob.MobEntity
 
 /**
  * @author gt3ch1
- * @version 01/03/2022
+ * @version 03-01-2023
  * A mod that allows the client to see lines, called tracers, towards mobs.
  */
-public class ModMobTracer extends Mod implements EntityRenderListener, CameraBobListener {
-    public ModMobTracer() {
-        super(Type.MOB_TRACER);
-        ColorSetting peacefulColor = new ColorSetting("gavinsmod.settings.tracer.mob.peaceful.color");
-        peacefulColor.setCallback(() -> tracerConfig.setPeacefulMobColor(peacefulColor.getColor()));
-        peacefulColor.setColor(GavinsMod.tracerConfig.getPeacefulMobColor());
-
-
-        ColorSetting hostileColor = new ColorSetting("gavinsmod.settings.tracer.mob.hostile.color");
-        hostileColor.setCallback(() -> tracerConfig.setHostileMobColor(hostileColor.getColor()));
-        hostileColor.setColor(GavinsMod.tracerConfig.getHostileMobColor());
-
-        ToggleSetting hostile = new ToggleSetting("gavinsmod.settings.tracer.mob.hostile");
-        hostile.setCallback(() -> tracerConfig.setShowHostileMobs(hostile.getValue()));
-        hostile.setValue(GavinsMod.tracerConfig.getShowHostileMobs());
-
-        ToggleSetting peaceful = new ToggleSetting("gavinsmod.settings.tracer.mob.peaceful");
-        peaceful.setCallback(() -> tracerConfig.setShowPeacefulMobs(peaceful.getValue()));
-        peaceful.setValue(GavinsMod.tracerConfig.getShowPeacefulMobs());
-
-        addSetting(hostileColor);
-        addSetting(peacefulColor);
-        addSetting(hostile);
-        addSetting(peaceful);
+class ModMobTracer : Mod(Type.MOB_TRACER), EntityRenderListener, CameraBobListener {
+    init {
+        val peacefulColor = ColorSetting("gavinsmod.settings.tracer.mob.peaceful.color")
+        peacefulColor.setCallback { tracerConfig.peacefulMobColor = peacefulColor.color }
+        peacefulColor.color = GavinsMod.tracerConfig.peacefulMobColor
+        val hostileColor = ColorSetting("gavinsmod.settings.tracer.mob.hostile.color")
+        hostileColor.setCallback { tracerConfig.hostileMobColor = hostileColor.color }
+        hostileColor.color = GavinsMod.tracerConfig.hostileMobColor
+        val hostile = ToggleSetting("gavinsmod.settings.tracer.mob.hostile")
+        hostile.setCallback { tracerConfig.showHostileMobs = hostile.value }
+        hostile.value = GavinsMod.tracerConfig.showHostileMobs
+        val peaceful = ToggleSetting("gavinsmod.settings.tracer.mob.peaceful")
+        peaceful.setCallback { tracerConfig.showPeacefulMobs = peaceful.value }
+        peaceful.value = GavinsMod.tracerConfig.showPeacefulMobs
+        addSetting(hostileColor)
+        addSetting(peacefulColor)
+        addSetting(hostile)
+        addSetting(peaceful)
     }
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        em.subscribe(EntityRenderListener.class, this);
-        em.subscribe(CameraBobListener.class, this);
+    override fun onEnable() {
+        super.onEnable()
+        em.subscribe(EntityRenderListener::class.java, this)
+        em.subscribe(CameraBobListener::class.java, this)
     }
 
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        em.unsubscribe(EntityRenderListener.class, this);
-        em.unsubscribe(CameraBobListener.class, this);
+    override fun onDisable() {
+        super.onDisable()
+        em.unsubscribe(EntityRenderListener::class.java, this)
+        em.unsubscribe(CameraBobListener::class.java, this)
     }
 
-    @Override
-    public void onEntityRender(EntityRender er) {
-        if (er.buffer == null)
-            return;
+    override fun onEntityRender(er: EntityRender) {
+        if (er.buffer == null) return
         // check if entity is a mob
-        var entity = er.entity;
-        var stack = er.stack;
-        var buffer = er.buffer;
-        var center = er.center;
-        var playerPos = er.playerPos;
-        if (!(entity instanceof MobEntity))
-            return;
-        if (er.getEntityType().getSpawnGroup().isPeaceful() && tracerConfig.getShowPeacefulMobs()) {
-            RenderUtils.renderSingleLine(stack, buffer, playerPos, center, tracerConfig.getPeacefulMobColor(), tracerConfig.getAlpha());
-        } else if (!er.getEntityType().getSpawnGroup().isPeaceful() && tracerConfig.getShowHostileMobs()) {
-            RenderUtils.renderSingleLine(stack, buffer, playerPos, center, tracerConfig.getHostileMobColor(), tracerConfig.getAlpha());
+        val entity = er.entity
+        val stack = er.stack
+        val buffer = er.buffer
+        val center = er.center
+        val playerPos = er.playerPos
+        if (entity !is MobEntity) return
+        if (er.entityType.spawnGroup.isPeaceful && tracerConfig.showPeacefulMobs) {
+            RenderUtils.renderSingleLine(
+                stack,
+                buffer!!,
+                playerPos!!,
+                center!!,
+                tracerConfig.peacefulMobColor,
+                tracerConfig.alpha
+            )
+        } else if (!er.entityType.spawnGroup.isPeaceful && tracerConfig.showHostileMobs) {
+            RenderUtils.renderSingleLine(
+                stack,
+                buffer!!,
+                playerPos!!,
+                center!!,
+                tracerConfig.hostileMobColor,
+                tracerConfig.alpha
+            )
         }
     }
 
-    @Override
-    public void onCameraViewBob(CameraBob c) {
-        c.cancel();
+    override fun onCameraViewBob(c: CameraBob) {
+        c.cancel()
     }
 }

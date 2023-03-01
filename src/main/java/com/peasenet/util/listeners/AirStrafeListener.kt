@@ -17,9 +17,9 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.util.listeners;
+package com.peasenet.util.listeners
 
-import com.peasenet.util.event.AirStrafeEvent;
+import com.peasenet.util.event.AirStrafeEvent
 
 /**
  * A listener for the world render event.
@@ -27,11 +27,9 @@ import com.peasenet.util.event.AirStrafeEvent;
  * @author GT3CH1
  * @version 02/27/2023
  */
-public interface AirStrafeListener extends Listener {
+interface AirStrafeListener : Listener {
     /*
      * @param delta - The delta.
      */
-    void onAirStrafe(AirStrafeEvent event);
-
-
+    fun onAirStrafe(event: AirStrafeEvent)
 }

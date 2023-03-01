@@ -17,54 +17,47 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.esp
 
-package com.peasenet.mods.esp;
-
-import com.peasenet.main.GavinsMod;
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.settings.ColorSetting;
-import com.peasenet.util.RenderUtils;
-import com.peasenet.util.event.data.BlockEntityRender;
-import com.peasenet.util.listeners.BlockEntityRenderListener;
-import net.minecraft.block.entity.FurnaceBlockEntity;
-import net.minecraft.util.math.Box;
+import com.peasenet.main.GavinsMod
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.settings.ColorSetting
+import com.peasenet.util.RenderUtils
+import com.peasenet.util.event.data.BlockEntityRender
+import com.peasenet.util.listeners.BlockEntityRenderListener
+import net.minecraft.block.entity.FurnaceBlockEntity
+import net.minecraft.util.math.Box
 
 /**
  * @author gt3ch1
  * @version 01/03/2022
  * A mod that allows the client to see an esp (a box) around furnaces.
  */
-public class ModFurnaceEsp extends Mod implements BlockEntityRenderListener {
-    public ModFurnaceEsp() {
-        super(Type.FURNACE_ESP);
-        ColorSetting colorSetting = new ColorSetting(
-                "gavinsmod.settings.esp.furnace.color");
-        colorSetting.setCallback(() -> espConfig.setFurnaceColor(colorSetting.getColor()));
-        colorSetting.setColor(GavinsMod.espConfig.getFurnaceColor());
-        addSetting(colorSetting);
+class ModFurnaceEsp : Mod(Type.FURNACE_ESP), BlockEntityRenderListener {
+    init {
+        val colorSetting = ColorSetting(
+            "gavinsmod.settings.esp.furnace.color"
+        )
+        colorSetting.setCallback { espConfig.furnaceColor = colorSetting.color }
+        colorSetting.color = GavinsMod.espConfig.furnaceColor
+        addSetting(colorSetting)
     }
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        em.subscribe(BlockEntityRenderListener.class, this);
+    override fun onEnable() {
+        super.onEnable()
+        em.subscribe(BlockEntityRenderListener::class.java, this)
     }
 
-    @Override
-
-    public void onDisable() {
-        super.onDisable();
-        em.unsubscribe(BlockEntityRenderListener.class, this);
+    override fun onDisable() {
+        super.onDisable()
+        em.unsubscribe(BlockEntityRenderListener::class.java, this)
     }
 
-    @Override
-    public void onRenderBlockEntity(BlockEntityRender er) {
-        if (er.buffer == null)
-            return;
-        if (!(er.entity instanceof FurnaceBlockEntity))
-            return;
-        var box = new Box(er.entity.getPos());
-        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getFurnaceColor(), espConfig.getAlpha());
+    override fun onRenderBlockEntity(er: BlockEntityRender) {
+        if (er.buffer == null) return
+        if (er.entity !is FurnaceBlockEntity) return
+        val box = Box(er.entity.pos)
+        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.furnaceColor, espConfig.alpha)
     }
 }

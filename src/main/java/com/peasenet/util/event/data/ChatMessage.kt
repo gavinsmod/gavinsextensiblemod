@@ -17,18 +17,6 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event.data
 
-package com.peasenet.util.event.data;
-
-
-public class ChatMessage extends Cancellable {
-    private final String msg;
-
-    public ChatMessage(String msg) {
-        this.msg = msg;
-    }
-
-    public String getMessage() {
-        return msg;
-    }
-}
+class ChatMessage(val message: String) : Cancellable()

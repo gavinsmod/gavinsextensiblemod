@@ -17,22 +17,21 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mixins
 
-package com.peasenet.mixins;
+import com.peasenet.main.GavinsMod
+import com.peasenet.mods.Type
+import net.minecraft.client.render.Camera
+import net.minecraft.client.render.CameraSubmersionType
+import org.spongepowered.asm.mixin.Mixin
+import org.spongepowered.asm.mixin.injection.At
+import org.spongepowered.asm.mixin.injection.Inject
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
-import com.peasenet.main.GavinsMod;
-import com.peasenet.mods.Type;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.CameraSubmersionType;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-@Mixin(Camera.class)
-public class CameraMixin {
-    @Inject(at = @At("HEAD"), method = "getSubmersionType", cancellable = true)
-    public void getSubmersionType(CallbackInfoReturnable<CameraSubmersionType> cir) {
-        if (GavinsMod.isEnabled(Type.NO_OVERLAY)) cir.setReturnValue(CameraSubmersionType.NONE);
+@Mixin(Camera::class)
+class CameraMixin {
+    @Inject(at = [At("HEAD")], method = ["getSubmersionType"], cancellable = true)
+    fun getSubmersionType(cir: CallbackInfoReturnable<CameraSubmersionType?>) {
+        if (GavinsMod.isEnabled(Type.NO_OVERLAY)) cir.returnValue = CameraSubmersionType.NONE
     }
 }

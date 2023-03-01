@@ -17,11 +17,10 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.listeners
 
-package com.peasenet.util.listeners;
+import com.peasenet.util.event.data.RenderSubmergedOverlay
 
-import com.peasenet.util.event.data.RenderSubmergedOverlay;
-
-public interface RenderSubmergedOverlayListener extends Listener {
-    void onRenderOverlay(RenderSubmergedOverlay overlay);
+interface RenderSubmergedOverlayListener : Listener {
+    fun onRenderOverlay(overlay: RenderSubmergedOverlay)
 }

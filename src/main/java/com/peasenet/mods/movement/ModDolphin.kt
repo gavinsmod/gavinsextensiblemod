@@ -17,28 +17,21 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.movement
 
-package com.peasenet.mods.movement;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket.PositionAndOnGround
 
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
-
-public class ModDolphin extends Mod {
-    public ModDolphin() {
-        super(Type.DOLPHIN);
-    }
-
-    @Override
-    public void onTick() {
-
-        if (getPlayer() == null)
-            return;
+class ModDolphin : Mod(Type.DOLPHIN) {
+    override fun onTick() {
         // check if the player is swimming
-        if (getPlayer().isTouchingWater()) {
+        if (client.player!!.isTouchingWater) {
+            val player = client.player
+
             // if they are, move them up
-            getPlayer().addVelocity(0, 0.1, 0);
-            getPlayer().networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(getPlayer().getX(), getPlayer().getY() + 0.1, getPlayer().getZ(), false));
+            player.addVelocity(0.0, 0.1, 0.0)
+            player.networkHandler.sendPacket(PositionAndOnGround(player.x, player.y + 0.1, player.z, false))
         }
     }
 }

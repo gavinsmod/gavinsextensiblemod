@@ -17,42 +17,43 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event
 
-package com.peasenet.util.event;
-
-import com.peasenet.util.event.data.EntityRender;
-import com.peasenet.util.listeners.EntityRenderNameListener;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
-
-import java.util.ArrayList;
+import com.peasenet.util.event.data.EntityRender
+import com.peasenet.util.listeners.EntityRenderNameListener
+import net.minecraft.client.render.VertexConsumerProvider
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.entity.Entity
 
 /**
  * The event for the world render event.
  *
  * @author GT3CH1
- * @version 12/22/2022
+ * @version 03-01-2023
  */
-public class EntityRenderNameEvent extends Event<EntityRenderNameListener> {
-    EntityRender entityRender;
+class EntityRenderNameEvent(
+    entity: Entity,
+    yaw: Float,
+    tickDelta: Float,
+    matrices: MatrixStack,
+    vertexConsumers: VertexConsumerProvider?,
+    light: Int
+) : Event<EntityRenderNameListener>() {
+    private var entityRender: EntityRender
 
     /**
      * Creates a new world render event.
      */
-    public EntityRenderNameEvent(Entity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
-        this.entityRender = new EntityRender(entity, yaw, tickDelta, matrices, vertexConsumers, light);
+    init {
+        entityRender = EntityRender(entity, yaw, tickDelta, matrices, vertexConsumers, light)
     }
 
-    @Override
-    public void fire(ArrayList<EntityRenderNameListener> listeners) {
-        for (EntityRenderNameListener listener : listeners) {
-            listener.onEntityRender(entityRender);
+    override fun fire(listeners: ArrayList<EntityRenderNameListener>) {
+        for (listener in listeners) {
+            listener.onEntityRender(entityRender)
         }
     }
 
-    @Override
-    public Class<EntityRenderNameListener> getEvent() {
-        return EntityRenderNameListener.class;
-    }
+    override val event: Class<EntityRenderNameListener>
+        get() = EntityRenderNameListener::class.java
 }

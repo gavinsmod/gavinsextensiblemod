@@ -17,54 +17,29 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event
 
-package com.peasenet.util.event;
-
-import com.peasenet.util.listeners.AirStrafeListener;
-
-import java.util.ArrayList;
+import com.peasenet.util.listeners.AirStrafeListener
 
 /**
  * The event for the world render event.
  *
  * @author GT3CH1
- * @version 12/22/2022
+ * @version 03-01-2023
  */
-public class AirStrafeEvent extends Event<AirStrafeListener> {
-    float speed;
-    boolean modified = false;
-    /**
-     * Creates a new world render event.
-     *
-     * @param speed - The speed.
-     */
-    public AirStrafeEvent(float speed) {
-        this.speed = speed;
-    }
-
-    public float getSpeed() {
-        return speed;
-    }
-
-
-    @Override
-    public void fire(ArrayList<AirStrafeListener> listeners) {
-        for (AirStrafeListener listener : listeners) {
-            listener.onAirStrafe(this);
+class AirStrafeEvent
+/**
+ * Creates a new world render event.
+ *
+ * @param speed - The speed.
+ */(var speed: Float) : Event<AirStrafeListener>() {
+    override fun fire(listeners: ArrayList<AirStrafeListener>) {
+        for (listener in listeners) {
+            listener.onAirStrafe(this)
         }
     }
 
-    @Override
-    public Class<AirStrafeListener> getEvent() {
-        return AirStrafeListener.class;
-    }
+    override val event: Class<AirStrafeListener>
+        get() = AirStrafeListener::class.java
 
-    public boolean isModified() {
-        return modified;
-    }
-
-    public void setSpeed(float v) {
-        modified = true;
-        speed = v;
-    }
 }

@@ -17,52 +17,48 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.render
 
-package com.peasenet.mods.render;
-
-import com.peasenet.mixinterface.ISimpleOption;
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import net.minecraft.client.option.ParticlesMode;
+import com.peasenet.mixinterface.ISimpleOption
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import net.minecraft.client.option.ParticlesMode
 
 /**
  * @author gt3ch1
  * @version 01/01/2023
  */
-public class ModBarrierDetect extends Mod {
-
-    private static ParticlesMode particlesMode;
-
-    public ModBarrierDetect() {
-        super(Type.BARRIER_DETECT);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void onEnable() {
-        super.onEnable();
-        particlesMode = getClient().getOptions().getParticles().getValue();
-        switch (particlesMode) {
-            case ALL, DECREASED -> {
+@Suppress("UNCHECKED_CAST")
+class ModBarrierDetect : Mod(Type.BARRIER_DETECT) {
+    override fun onEnable() {
+        super.onEnable()
+        particlesMode = client.options.particles.value
+        when (particlesMode) {
+            ParticlesMode.ALL, ParticlesMode.DECREASED -> {}
+            ParticlesMode.MINIMAL -> {
+                val newMode = client.options.particles
+                (newMode as Any as ISimpleOption<ParticlesMode>).forceSetValue(ParticlesMode.ALL)
             }
-            case MINIMAL -> {
-                var newMode = getClient().getOptions().getParticles();
-                ((ISimpleOption<ParticlesMode>) (Object) newMode).forceSetValue(ParticlesMode.ALL);
-            }
+
+            null -> TODO()
         }
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public void onDisable() {
-        super.onDisable();
-        switch (particlesMode) {
-            case ALL, DECREASED -> {
+    @Suppress("UNCHECKED_CAST")
+    override fun onDisable() {
+        super.onDisable()
+        when (particlesMode) {
+            ParticlesMode.ALL, ParticlesMode.DECREASED -> {}
+            ParticlesMode.MINIMAL -> {
+                val newMode = client.options.particles!!
+                (newMode as ISimpleOption<ParticlesMode>).forceSetValue(ParticlesMode.MINIMAL)
             }
-            case MINIMAL -> {
-                var newMode = getClient().getOptions().getParticles();
-                ((ISimpleOption<ParticlesMode>) (Object) newMode).forceSetValue(ParticlesMode.MINIMAL);
-            }
+
+            null -> TODO()
         }
+    }
+
+    companion object {
+        private var particlesMode: ParticlesMode? = null
     }
 }

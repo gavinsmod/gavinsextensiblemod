@@ -17,44 +17,37 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event
 
-package com.peasenet.util.event;
-
-import com.peasenet.util.event.data.OutputPacket;
-import com.peasenet.util.listeners.PacketSendListener;
-import net.minecraft.network.packet.Packet;
-
-import java.util.ArrayList;
+import com.peasenet.util.event.data.OutputPacket
+import com.peasenet.util.listeners.PacketSendListener
+import net.minecraft.network.packet.Packet
 
 /**
  * An event for when a packet is sent.
  *
  * @author GT3CH1
- * @version 12/22/2022
+ * @version 03-01-2023
  */
-public class PacketSendEvent extends CancellableEvent<PacketSendListener> {
-    OutputPacket packet;
+class PacketSendEvent(packet: Packet<*>) : CancellableEvent<PacketSendListener>() {
+    var packet: OutputPacket
 
     /**
      * Creates a new PacketSendEvent.
      *
      * @param packet - The packet being sent.
      */
-    public PacketSendEvent(Packet<?> packet) {
-        this.packet = new OutputPacket(packet);
+    init {
+        this.packet = OutputPacket(packet)
     }
 
-    @Override
-    public void fire(ArrayList<PacketSendListener> listeners) {
-        for (PacketSendListener listener : listeners) {
-            listener.onPacketSend(packet);
-            if (packet.isCancelled())
-                this.cancel();
+    override fun fire(listeners: ArrayList<PacketSendListener>) {
+        for (listener in listeners) {
+            listener.onPacketSend(packet)
+            if (packet.isCancelled) cancel()
         }
     }
 
-    @Override
-    public Class<PacketSendListener> getEvent() {
-        return PacketSendListener.class;
-    }
+    override val event: Class<PacketSendListener>
+        get() = PacketSendListener::class.java
 }

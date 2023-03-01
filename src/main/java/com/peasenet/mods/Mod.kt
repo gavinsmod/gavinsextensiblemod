@@ -17,142 +17,74 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods
 
-package com.peasenet.mods;
-
-import com.peasenet.config.*;
-import com.peasenet.main.GavinsMod;
-import com.peasenet.main.GavinsModClient;
-import com.peasenet.main.Mods;
-import com.peasenet.mixinterface.IMinecraftClient;
-import com.peasenet.settings.Setting;
-import com.peasenet.util.KeyBindUtils;
-import com.peasenet.util.event.EventManager;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.text.Text;
-import org.lwjgl.glfw.GLFW;
-
-import java.util.ArrayList;
+import com.peasenet.config.*
+import com.peasenet.main.GavinsMod
+import com.peasenet.main.GavinsModClient
+import com.peasenet.main.Mods
+import com.peasenet.mixinterface.IMinecraftClient
+import com.peasenet.settings.Setting
+import com.peasenet.util.KeyBindUtils
+import com.peasenet.util.event.EventManager
+import net.minecraft.client.option.KeyBinding
+import net.minecraft.client.resource.language.I18n
+import net.minecraft.client.world.ClientWorld
+import net.minecraft.text.Text
+import org.lwjgl.glfw.GLFW
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 03-01-2023
  * The base class for mods. Inheriting this class will allow for creating different mods that have a keybinding,
  * and a gui button based off of the given category.
  */
-public abstract class Mod implements IMod {
-
-    /**
-     * The string shown in the chat window when the player toggles the mod.
-     */
-    public static final String GAVINS_MOD_STRING = "§b§l[ §4§lGavinsMod §b§l] §7";
-
-    /**
-     * The event manager.
-     */
-    protected static EventManager em = GavinsMod.eventManager;
-
-    /**
-     * Tracer configuration.
-     */
-    protected static TracerConfig tracerConfig = GavinsMod.tracerConfig;
-
-    /**
-     * ESP configuration.
-     */
-    protected static EspConfig espConfig = GavinsMod.espConfig;
-
-    /**
-     * Fps color configuration.
-     */
-    protected static FpsColorConfig fpsColorConfig = GavinsMod.fpsColorConfig;
-
-    /**
-     * The fullbright configuration.
-     */
-    protected static FullbrightConfig fullbrightConfig = GavinsMod.fullbrightConfig;
-
-    /**
-     * The radar configuration.
-     */
-    protected static RadarConfig radarConfig = GavinsMod.radarConfig;
-
-    /**
-     * The waypoint configuration.
-     */
-    protected static WaypointConfig waypointConfig = GavinsMod.waypointConfig;
-
-    /**
-     * The xray configuration.
-     */
-    protected static XrayConfig xrayConfig = GavinsMod.xrayConfig;
-
-    /**
-     * The miscellaneous configuration.
-     */
-    protected static MiscConfig miscConfig = GavinsMod.miscConfig;
-
-    /**
-     * The keybind for this mod.
-     */
-    protected final KeyBinding keyBinding;
-
+abstract class Mod constructor(
     /**
      * The type of the mod.
      */
-    private final Type type;
-
+    override val type: Type,
     /**
      * The category of this mod.
      */
-    private final Type.Category category;
-
+    override val category: Type.Category = type.modCategory,
+    /**
+     * The keybind for this mod.
+     */
+    private val keyBinding: KeyBinding = if (type.keyBinding != GLFW.GLFW_KEY_UNKNOWN) KeyBindUtils.registerKeyBindForType(
+        type
+    ) else KeyBindUtils.registerEmptyKeyBind(type)
+) : IMod {
     /**
      * Whether this mod is currently deactivating.
      */
-    protected boolean deactivating = true;
+    protected var deactivating = true
+    override var isActive: Boolean = false
+
+
+    override val isDeactivating: Boolean = false
 
     /**
      * The settings of the mod.
      */
-    protected ArrayList<Setting> modSettings = new ArrayList<>();
+    protected var modSettings = ArrayList<Setting>()
 
     /**
      * Whether the mod is currently reloading.
      */
-    private boolean reloading = false;
+    private var reloading = false
 
     /**
      * Whether the mod is enabled.
      */
-    private boolean isEnabled = false;
+    private var isEnabled = false
 
-    /**
-     * Creates a new mod.
-     *
-     * @param type       The type of the mod.
-     * @param category   The category of this mod.
-     * @param keyBinding The keybind for this mod.
-     */
-    public Mod(Type type, Type.Category category, KeyBinding keyBinding) {
-        this.type = type;
-        this.category = category;
-        this.keyBinding = keyBinding;
-        Mods.addMod(this);
+    fun setEnabled(value: Boolean) {
+        isEnabled = value
     }
 
-    /**
-     * Creates a new mod with an empty keybinding.
-     *
-     * @param type     The type of the mod.
-     * @param category The category of this mod.
-     */
-    public Mod(Type type, Type.Category category) {
-        this(type, category, (type.getKeyBinding() != GLFW.GLFW_KEY_UNKNOWN) ?
-                KeyBindUtils.registerKeyBindForType(type) : KeyBindUtils.registerEmptyKeyBind(type));
+    init {
+        Mods.addMod(this)
     }
 
     /**
@@ -161,140 +93,174 @@ public abstract class Mod implements IMod {
      * @param type       - The type of the mod.
      * @param keyBinding - The keybinding for this mod.
      */
-    public Mod(Type type, KeyBinding keyBinding) {
-        this(type, type.getModCategory(), keyBinding);
-    }
-
-    /**
-     * Creates a new mod with an empty keybinding.
-     *
-     * @param type - The type of the mod.
-     */
-    public Mod(Type type) {
-        this(type, type.getModCategory());
-    }
-
-    /**
-     * Gets the minecraft client.
-     *
-     * @return The minecraft client.
-     */
-    protected static IMinecraftClient getClient() {
-        return GavinsModClient.getMinecraftClient();
-    }
+    constructor(type: Type, keyBinding: KeyBinding) : this(type, type.modCategory, keyBinding)
+    constructor(type: Type) : this(type, type.modCategory, KeyBindUtils.registerKeyBindForType(type))
 
     /**
      * Sends a message to the player.
      *
      * @param message The message to send.
      */
-    public void sendMessage(String message) {
-        if (miscConfig.isMessages() && !reloading)
-            GavinsModClient.getPlayer().sendMessage(Text.literal(message), false);
+    private fun sendMessage(message: String?) {
+        if (miscConfig.isMessages && !reloading) GavinsModClient.getPlayer().sendMessage(Text.literal(message), false)
     }
 
-    public void onEnable() {
-        sendMessage(GAVINS_MOD_STRING + I18n.translate(type.getTranslationKey()) + " §a§lenabled§r!");
+    override fun onEnable() {
+        sendMessage(
+            GAVINS_MOD_STRING + I18n.translate(
+                type.translationKey
+            ) + " §a§lenabled§r!"
+        )
+        isActive = true
+        isEnabled = true
     }
 
-    public void onDisable() {
-        sendMessage(GAVINS_MOD_STRING + I18n.translate(type.getTranslationKey()) + " §c§ldisabled§r!");
+    override fun onDisable() {
+        sendMessage(
+            GAVINS_MOD_STRING + I18n.translate(
+                type.translationKey
+            ) + " §c§ldisabled§r!"
+        )
+        isEnabled = false
+        isActive = false
     }
 
-    public void onTick() {
-    }
-
-    public void checkKeybinding() {
+    override fun onTick() {}
+    override fun checkKeybinding() {
         if (keyBinding.wasPressed()) {
             if (isEnabled) {
-                deactivate();
+                deactivate()
             } else {
-                activate();
+                activate()
             }
         }
     }
 
-    public boolean isActive() {
-        return isEnabled;
+    override fun activate() {
+        isEnabled = true
+        onEnable()
     }
 
-    public void activate() {
-        isEnabled = true;
-        onEnable();
+    override fun deactivate() {
+        isEnabled = false
+        onDisable()
     }
 
-    public void deactivate() {
-        isEnabled = false;
-        onDisable();
-    }
-
-    public void toggle() {
-        if (isActive()) {
-            deactivate();
+    override fun toggle() {
+        if (isActive) {
+            deactivate()
         } else {
-            activate();
+            activate()
         }
     }
 
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
+    fun addSetting(setting: Setting) {
+        modSettings.add(setting)
     }
 
-    public Type.Category getCategory() {
-        return category;
+
+    override fun hasSettings(): Boolean {
+        return modSettings.isNotEmpty()
     }
 
-    public String getTranslationKey() {
-        return type.getTranslationKey();
+    override val settings
+        get() = modSettings
+
+    override fun reload() {
+        val prevState = isActive
+        if (!prevState) return
+        reloading = true
+        deactivate()
+        activate()
+        reloading = false
     }
 
-    public String getName() {
-        return type.getName();
+    override val translationKey
+        get() = type.translationKey
+    override val name
+        get() = type.modName
+    override val chatCommand
+        get() = type.chatCommand
+
+    override fun reloadSettings() {
+        modSettings = ArrayList(settings)
     }
 
-    public String getChatCommand() {
-        return type.getChatCommand();
-    }
+    override val world: ClientWorld
+        get() = client.world
 
-    public Type getType() {
-        return type;
-    }
+    public val client: IMinecraftClient
+        /**
+         * Gets the minecraft client.
+         *
+         * @return The minecraft client.
+         */
+        get() = GavinsModClient.getMinecraftClient()
 
-    public ClientPlayerEntity getPlayer() {
-        return getClient().getPlayer();
-    }
 
-    public boolean isDeactivating() {
-        return false;
-    }
+    companion object {
+        /**
+         * The string shown in the chat window when the player toggles the mod.
+         */
+        const val GAVINS_MOD_STRING = "§b§l[ §4§lGavinsMod §b§l] §7"
 
-    public void addSetting(Setting setting) {
-        modSettings.add(setting);
-    }
+        /**
+         * The event manager.
+         */
+        @JvmStatic
+        protected var em: EventManager = GavinsMod.eventManager
 
-    public ArrayList<Setting> getSettings() {
-        return modSettings;
-    }
+        /**
+         * Tracer configuration.
+         */
+        @JvmStatic
+        protected var tracerConfig: TracerConfig = GavinsMod.tracerConfig
 
-    public boolean hasSettings() {
-        return !modSettings.isEmpty();
-    }
+        /**
+         * ESP configuration.
+         */
+        @JvmStatic
+        var espConfig: EspConfig = GavinsMod.espConfig
 
-    public void reload() {
-        var prevState = isActive();
-        if (!prevState)
-            return;
-        reloading = true;
-        deactivate();
-        activate();
-        reloading = false;
-    }
+        /**
+         * Fps color configuration.
+         */
+        @JvmStatic
+        protected var fpsColorConfig: FpsColorConfig = GavinsMod.fpsColorConfig
 
-    public void reloadSettings() {
-        modSettings = new ArrayList<>(getSettings());
-    }
+        /**
+         * The fullbright configuration.
+         */
+        @JvmStatic
 
-    public ClientWorld getWorld() {
-        return getClient().getWorld();
+        protected var fullbrightConfig: FullbrightConfig = GavinsMod.fullbrightConfig
+
+        /**
+         * The radar configuration.
+         */
+        @JvmStatic
+
+        protected var radarConfig: RadarConfig = GavinsMod.radarConfig
+
+        /**
+         * The waypoint configuration.
+         */
+        @JvmStatic
+
+        protected var waypointConfig: WaypointConfig = GavinsMod.waypointConfig
+
+        /**
+         * The xray configuration.
+         */
+        @JvmStatic
+
+        protected var xrayConfig: XrayConfig = GavinsMod.xrayConfig
+
+        /**
+         * The miscellaneous configuration.
+         */
+        @JvmStatic
+        protected var miscConfig: MiscConfig = GavinsMod.miscConfig
+
     }
 }

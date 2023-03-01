@@ -17,19 +17,14 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.render
 
-package com.peasenet.mods.render;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
 
 /**
  * @author gt3ch1
  * @version 12/31/2022
  * A mod that disables underwater/lava overlay.
  */
-public class ModNoNausea extends Mod {
-    public ModNoNausea() {
-        super(Type.NO_NAUSEA);
-    }
-}
+class ModNoNausea : Mod(Type.NO_NAUSEA)

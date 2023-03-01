@@ -17,25 +17,21 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.movement
 
-package com.peasenet.mods.movement;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
 
 /**
  * @author gt3ch1
  * @version 6/24/2022
  * A mod that allows the player to jump as if they were pressing the jump key.
  */
-public class ModAutoJump extends Mod {
-    public ModAutoJump() {
-        super(Type.AUTO_JUMP);
-    }
-
-    @Override
-    public void onTick() {
-        if (getPlayer().isOnGround())
-            getPlayer().jump();
+class ModAutoJump : Mod(Type.AUTO_JUMP) {
+    override fun onTick() {
+        if (client.player == null)
+            return
+        val player = client.player
+        if (player.isOnGround) player.jump()
     }
 }

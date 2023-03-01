@@ -17,74 +17,70 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.render
 
-package com.peasenet.mods.render;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.util.event.data.EntityRender;
-import com.peasenet.util.listeners.EntityRenderNameListener;
-import net.minecraft.client.font.TextRenderer.TextLayerType;
-import net.minecraft.entity.LivingEntity;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.util.event.data.EntityRender
+import com.peasenet.util.listeners.EntityRenderNameListener
+import net.minecraft.client.font.TextRenderer.TextLayerType
+import net.minecraft.entity.LivingEntity
 
 /**
  * @author gt3ch1
  * @version 12/31/2022
  * A mod that shows entity's health as a tag above their head.
  */
-public class ModHealthTag extends Mod implements EntityRenderNameListener {
-    public ModHealthTag() {
-        super(Type.MOD_HPTAG);
+class ModHealthTag : Mod(Type.MOD_HPTAG), EntityRenderNameListener {
+    override fun onEnable() {
+        super.onEnable()
+        em.subscribe(EntityRenderNameListener::class.java, this)
     }
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        em.subscribe(EntityRenderNameListener.class, this);
+    override fun onDisable() {
+        super.onDisable()
+        em.unsubscribe(EntityRenderNameListener::class.java, this)
     }
 
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        em.unsubscribe(EntityRenderNameListener.class, this);
-    }
-
-    @Override
-    public void onEntityRender(EntityRender er) {
-        var entity = er.entity;
-        var matrices = er.stack;
-        var textRenderer = getClient().getTextRenderer();
-        var d = getClient().getEntityRenderDispatcher().getSquaredDistanceToCamera(entity);
-        if (!(entity instanceof LivingEntity livingEntity))
-            return;
-        if (d > 1024)
-            return;
-        var currentHealth = livingEntity.getHealth();
-        var text = currentHealth + " HP";
-        boolean bl = !entity.isSneaky();
-        float f = entity.getHeight() + 0.5F;
-
-        matrices.push();
-        matrices.translate(0.0D, f, 0.0D);
-        matrices.multiply(getClient().getEntityRenderDispatcher().getRotation());
-        matrices.scale(-0.025F, -0.025F, 0.025F);
-        var matrix4f = matrices.peek().getPositionMatrix();
-        float g = getClient().getOptions().getTextBackgroundOpacity(0.5f);
-        int j = (int) (g * 255.0F) << 24;
-        float h = (float) (-textRenderer.getWidth(text) / 2);
-        int color = 0x00ff00;
-        var percentHealth = (double) (livingEntity.getHealth() / livingEntity.getMaxHealth());
-        if (percentHealth < 0.75)
-            color = 0xffff00;
-        if (percentHealth < 0.5)
-            color = 0xffa500;
-        if (percentHealth < 0.25)
-            color = 0xff0000;
-        textRenderer.draw(text, h, (float) 0, color, false, matrix4f, er.vertexConsumers, TextLayerType.NORMAL, j, er.light);
+    override fun onEntityRender(er: EntityRender) {
+        val entity = er.entity
+        val matrices = er.stack
+        val textRenderer = client.textRenderer
+        val d = client.entityRenderDispatcher.getSquaredDistanceToCamera(entity)
+        if (entity !is LivingEntity) return
+        if (d > 1024) return
+        val currentHealth: Float = entity.health
+        val text = "$currentHealth HP"
+        val bl = !entity.isSneaky()
+        val f = entity.getHeight() + 0.5f
+        matrices.push()
+        matrices.translate(0.0, f.toDouble(), 0.0)
+        matrices.multiply(client.entityRenderDispatcher.rotation)
+        matrices.scale(-0.025f, -0.025f, 0.025f)
+        val matrix4f = matrices.peek().positionMatrix
+        val g = client.options.getTextBackgroundOpacity(0.5f)
+        val j = (g * 255.0f).toInt() shl 24
+        val h = (-textRenderer.getWidth(text) / 2).toFloat()
+        var color = 0x00ff00
+        val percentHealth: Double = (entity.health / entity.maxHealth).toDouble()
+        if (percentHealth < 0.75) color = 0xffff00
+        if (percentHealth < 0.5) color = 0xffa500
+        if (percentHealth < 0.25) color = 0xff0000
+        textRenderer.draw(text, h, 0f, color, false, matrix4f, er.vertexConsumers, TextLayerType.NORMAL, j, er.light)
         if (bl) {
-            textRenderer.draw(text, h, (float) 0, color, false, matrix4f, er.vertexConsumers, TextLayerType.NORMAL, 0, er.light);
+            textRenderer.draw(
+                text,
+                h,
+                0f,
+                color,
+                false,
+                matrix4f,
+                er.vertexConsumers,
+                TextLayerType.NORMAL,
+                0,
+                er.light
+            )
         }
-
-        matrices.pop();
+        matrices.pop()
     }
 }

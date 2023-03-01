@@ -17,59 +17,51 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.tracer
 
-package com.peasenet.mods.tracer;
-
-import com.peasenet.main.GavinsMod;
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.settings.ColorSetting;
-import com.peasenet.util.RenderUtils;
-import com.peasenet.util.event.data.BlockEntityRender;
-import com.peasenet.util.event.data.CameraBob;
-import com.peasenet.util.listeners.BlockEntityRenderListener;
-import com.peasenet.util.listeners.CameraBobListener;
-import net.minecraft.block.entity.FurnaceBlockEntity;
+import com.peasenet.main.GavinsMod
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.settings.ColorSetting
+import com.peasenet.util.RenderUtils
+import com.peasenet.util.event.data.BlockEntityRender
+import com.peasenet.util.event.data.CameraBob
+import com.peasenet.util.listeners.BlockEntityRenderListener
+import com.peasenet.util.listeners.CameraBobListener
+import net.minecraft.block.entity.FurnaceBlockEntity
 
 /**
  * @author gt3ch1
- * @version 01/03/2022
+ * @version 03-01-2023
  * A mod that allows the player to see tracers towards furnaces.
  */
-public class ModFurnaceTracer extends Mod implements BlockEntityRenderListener,
-        CameraBobListener {
-    public ModFurnaceTracer() {
-        super(Type.FURNACE_TRACER);
-        ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.tracer.furnace.color");
-        colorSetting.setCallback(() -> tracerConfig.setFurnaceColor(colorSetting.getColor()));
-        colorSetting.setColor(GavinsMod.tracerConfig.getFurnaceColor());
-        addSetting(colorSetting);
+class ModFurnaceTracer : Mod(Type.FURNACE_TRACER), BlockEntityRenderListener, CameraBobListener {
+    init {
+        val colorSetting = ColorSetting("gavinsmod.settings.tracer.furnace.color")
+        colorSetting.setCallback { tracerConfig.furnaceColor = colorSetting.color }
+        colorSetting.color = GavinsMod.tracerConfig.furnaceColor
+        addSetting(colorSetting)
     }
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        em.subscribe(BlockEntityRenderListener.class, this);
-        em.subscribe(CameraBobListener.class, this);
+    override fun onEnable() {
+        super.onEnable()
+        em.subscribe(BlockEntityRenderListener::class.java, this)
+        em.subscribe(CameraBobListener::class.java, this)
     }
 
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        em.unsubscribe(BlockEntityRenderListener.class, this);
-        em.unsubscribe(CameraBobListener.class, this);
+    override fun onDisable() {
+        super.onDisable()
+        em.unsubscribe(BlockEntityRenderListener::class.java, this)
+        em.unsubscribe(CameraBobListener::class.java, this)
     }
 
-    @Override
-    public void onRenderBlockEntity(BlockEntityRender er) {
-        if (er.buffer == null)
-            return;
-        if (er.entity instanceof FurnaceBlockEntity)
-            RenderUtils.renderSingleLine(er.stack, er.buffer, er.playerPos, er.center, tracerConfig.getFurnaceColor(), tracerConfig.getAlpha());
+    override fun onRenderBlockEntity(er: BlockEntityRender) {
+        if (er.entity is FurnaceBlockEntity) RenderUtils.renderSingleLine(
+            er.stack!!, er.buffer!!, er.playerPos!!, er.center!!, tracerConfig.furnaceColor, tracerConfig.alpha
+        )
     }
 
-    @Override
-    public void onCameraViewBob(CameraBob c) {
-        c.cancel();
+    override fun onCameraViewBob(c: CameraBob) {
+        c.cancel()
     }
 }

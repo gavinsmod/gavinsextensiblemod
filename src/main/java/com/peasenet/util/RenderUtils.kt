@@ -17,49 +17,46 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util
 
-package com.peasenet.util;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.peasenet.gavui.color.Color;
-import com.peasenet.main.GavinsMod;
-import com.peasenet.main.GavinsModClient;
-import com.peasenet.mixinterface.ISimpleOption;
-import com.peasenet.util.event.BlockEntityRenderEvent;
-import com.peasenet.util.event.EntityRenderEvent;
-import com.peasenet.util.event.WorldRenderEvent;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.systems.RenderSystem
+import com.peasenet.gavui.color.Color
+import com.peasenet.main.GavinsMod
+import com.peasenet.main.GavinsModClient
+import com.peasenet.mixinterface.ISimpleOption
+import com.peasenet.util.PlayerUtils.getNewPlayerPosition
+import com.peasenet.util.event.BlockEntityRenderEvent
+import com.peasenet.util.event.EntityRenderEvent
+import com.peasenet.util.event.WorldRenderEvent
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
+import net.minecraft.client.MinecraftClient
+import net.minecraft.client.network.ClientPlayerEntity
+import net.minecraft.client.render.*
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.client.world.ClientWorld
+import net.minecraft.entity.Entity
+import net.minecraft.util.hit.HitResult
+import net.minecraft.util.math.Box
+import net.minecraft.util.math.Vec3d
+import org.joml.Matrix4f
+import org.lwjgl.opengl.GL11
+import java.util.function.Consumer
 
 /**
  * @author gt3ch1
- * @version 13/31/2022
+ * @version 03-01-2023
  * A utility class for rendering tracers and esp's.
  */
-public class RenderUtils {
+object RenderUtils {
     /**
      * How many chunks away to render things.
      */
-    private static int CHUNK_RADIUS = GavinsModClient.getMinecraftClient().getOptions().getViewDistance().getValue();
+    private var CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.viewDistance.value
 
     /**
      * The last player configured gamma.
      */
-    private static double LAST_GAMMA;
-
-    private RenderUtils() {
-    }
+    private var LAST_GAMMA = 0.0
 
     /**
      * Draws a single line in the given color.
@@ -70,26 +67,26 @@ public class RenderUtils {
      * @param boxPos    The center of the location we want to draw a line to.
      * @param color     The color to draw the line in.
      */
-    public static void renderSingleLine(MatrixStack stack, VertexConsumer buffer, Vec3d playerPos, Vec3d boxPos, Color color) {
-        renderSingleLine(stack, buffer, playerPos, boxPos, color, 1);
-    }
-
-    /**
-     * Draws a single line in the given color.
-     *
-     * @param stack     The matrix stack to use.
-     * @param buffer    The buffer to write to.
-     * @param playerPos The position of the player.
-     * @param boxPos    The center of the location we want to draw a line to.
-     * @param color     The color to draw the line in.
-     */
-    public static void renderSingleLine(MatrixStack stack, VertexConsumer buffer, Vec3d playerPos, Vec3d boxPos, Color color, float alpha) {
-        Vec3d normal = new Vec3d(boxPos.getX() - playerPos.getX(), boxPos.getY() - playerPos.getY(), boxPos.getZ() - playerPos.getZ());
-        normal.normalize();
-        Matrix4f matrix4f = stack.peek().getPositionMatrix();
-        Matrix3f matrix3f = stack.peek().getNormalMatrix();
-        buffer.vertex(matrix4f, (float) playerPos.getX(), (float) playerPos.getY(), (float) playerPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), alpha).normal(matrix3f, (float) normal.getX(), (float) normal.getY(), (float) normal.getZ()).next();
-        buffer.vertex(matrix4f, (float) boxPos.getX(), (float) boxPos.getY(), (float) boxPos.getZ()).color(color.getRed(), color.getGreen(), color.getBlue(), alpha).normal(matrix3f, (float) normal.getX(), (float) normal.getY(), (float) normal.getZ()).next();
+    @JvmOverloads
+    fun renderSingleLine(
+        stack: MatrixStack,
+        buffer: VertexConsumer,
+        playerPos: Vec3d,
+        boxPos: Vec3d,
+        color: Color,
+        alpha: Float = 1f
+    ) {
+        val normal =
+            Vec3d(boxPos.getX() - playerPos.getX(), boxPos.getY() - playerPos.getY(), boxPos.getZ() - playerPos.getZ())
+        normal.normalize()
+        val matrix4f = stack.peek().positionMatrix
+        val matrix3f = stack.peek().normalMatrix
+        buffer.vertex(matrix4f, playerPos.getX().toFloat(), playerPos.getY().toFloat(), playerPos.getZ().toFloat())
+            .color(color.red, color.green, color.blue, alpha)
+            .normal(matrix3f, normal.getX().toFloat(), normal.getY().toFloat(), normal.getZ().toFloat()).next()
+        buffer.vertex(matrix4f, boxPos.getX().toFloat(), boxPos.getY().toFloat(), boxPos.getZ().toFloat())
+            .color(color.red, color.green, color.blue, alpha)
+            .normal(matrix3f, normal.getX().toFloat(), normal.getY().toFloat(), normal.getZ().toFloat()).next()
     }
 
     /**
@@ -97,92 +94,86 @@ public class RenderUtils {
      *
      * @param context The render context.
      */
-    public static void afterEntities(WorldRenderContext context) {
+    @JvmStatic
+    fun afterEntities(context: WorldRenderContext) {
 //        RenderUtils.context = context;
-        CHUNK_RADIUS = GavinsModClient.getMinecraftClient().getOptions().getViewDistance().getValue() / 2;
+        CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.viewDistance.value / 2
         // this helps with lag
-        MinecraftClient minecraft = MinecraftClient.getInstance();
-        ClientWorld level = minecraft.world;
-        ClientPlayerEntity player = minecraft.player;
-        MatrixStack stack = context.matrixStack();
-        float delta = context.tickDelta();
-        Camera mainCamera = minecraft.gameRenderer.getCamera();
-        Vec3d camera = mainCamera.getPos();
-
-        setupRenderSystem();
-
-        stack.push();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
-
-        RenderSystem.applyModelViewMatrix();
-        stack.translate(-camera.x, -camera.y, -camera.z);
-        assert player != null;
-        Vec3d playerPos = PlayerUtils.getNewPlayerPosition(delta, mainCamera);
-        assert level != null;
-        int chunk_x = player.getChunkPos().x;
-        int chunk_z = player.getChunkPos().z;
+        val minecraft = MinecraftClient.getInstance()
+        val level = minecraft.world
+        val player = minecraft.player
+        val stack = context.matrixStack()
+        val delta = context.tickDelta()
+        val mainCamera = minecraft.gameRenderer.camera
+        val camera = mainCamera.pos
+        setupRenderSystem()
+        stack.push()
+        val tessellator = Tessellator.getInstance()
+        val buffer = tessellator.buffer
+        buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR)
+        RenderSystem.applyModelViewMatrix()
+        stack.translate(-camera.x, -camera.y, -camera.z)
+        assert(player != null)
+        val playerPos = getNewPlayerPosition(delta, mainCamera)
+        assert(level != null)
+        val chunk_x = player!!.chunkPos.x
+        val chunk_z = player.chunkPos.z
 
 //        drawChestMods(level, stack, buffer, playerPos, chunk_x, chunk_z, delta);
-        drawEntityMods(level, player, stack, delta, buffer, playerPos);
-        WorldRenderEvent event = new WorldRenderEvent(level, stack, buffer, delta);
-        GavinsMod.eventManager.call(event);
-        tessellator.draw();
-        stack.pop();
-        resetRenderSystem();
+        drawEntityMods(level, player, stack, delta, buffer, playerPos)
+        val event = WorldRenderEvent(level!!, stack, buffer, delta)
+        GavinsMod.eventManager.call(event)
+        tessellator.draw()
+        stack.pop()
+        resetRenderSystem()
     }
 
-    public static boolean beforeBlockOutline(WorldRenderContext context, HitResult h) {
-        CHUNK_RADIUS = GavinsModClient.getMinecraftClient().getOptions().getViewDistance().getValue();
-        MinecraftClient minecraft = MinecraftClient.getInstance();
-        ClientWorld level = minecraft.world;
-        ClientPlayerEntity player = minecraft.player;
-        MatrixStack stack = context.matrixStack();
-        float delta = context.tickDelta();
-        Camera mainCamera = minecraft.gameRenderer.getCamera();
-        Vec3d camera = mainCamera.getPos();
-
-        setupRenderSystem();
-
-        stack.push();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
-
-        RenderSystem.applyModelViewMatrix();
-        stack.translate(-camera.x, -camera.y, -camera.z);
-        assert player != null;
-        Vec3d playerPos = PlayerUtils.getNewPlayerPosition(delta, mainCamera);
-        assert level != null;
-        int chunk_x = player.getChunkPos().x;
-        int chunk_z = player.getChunkPos().z;
-
-        drawBlockMods(level, stack, buffer, playerPos, chunk_x, chunk_z, delta);
-
-        tessellator.draw();
-        stack.pop();
-        resetRenderSystem();
-        return true;
+    @JvmStatic
+    fun beforeBlockOutline(context: WorldRenderContext, h: HitResult?): Boolean {
+        CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.viewDistance.value
+        val minecraft = MinecraftClient.getInstance()
+        val level = minecraft.world
+        val player = minecraft.player
+        val stack = context.matrixStack()
+        val delta = context.tickDelta()
+        val mainCamera = minecraft.gameRenderer.camera
+        val camera = mainCamera.pos
+        setupRenderSystem()
+        stack.push()
+        val tessellator = Tessellator.getInstance()
+        val buffer = tessellator.buffer
+        buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR)
+        RenderSystem.applyModelViewMatrix()
+        stack.translate(-camera.x, -camera.y, -camera.z)
+        assert(player != null)
+        val playerPos = getNewPlayerPosition(delta, mainCamera)
+        assert(level != null)
+        val chunkX = player!!.chunkPos.x
+        val chunkZ = player.chunkPos.z
+        drawBlockMods(level, stack, buffer, playerPos, chunkX, chunkZ, delta)
+        tessellator.draw()
+        stack.pop()
+        resetRenderSystem()
+        return true
     }
 
     /**
      * Resets the render system to the default state.
      */
-    private static void resetRenderSystem() {
-        RenderSystem.applyModelViewMatrix();
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.disableBlend();
-        GL11.glDisable(GL11.GL_LINE_SMOOTH);
+    private fun resetRenderSystem() {
+        RenderSystem.applyModelViewMatrix()
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
+        RenderSystem.disableBlend()
+        GL11.glDisable(GL11.GL_LINE_SMOOTH)
     }
 
     /**
      * Sets up the render system for the tracers and esps to work.
      */
-    private static void setupRenderSystem() {
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        RenderSystem.enableBlend();
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+    private fun setupRenderSystem() {
+        RenderSystem.setShader { GameRenderer.getPositionColorProgram() }
+        RenderSystem.enableBlend()
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
     }
 
     /**
@@ -192,23 +183,29 @@ public class RenderUtils {
      * @param stack     The matrix stack.
      * @param buffer    The buffer to write to.
      * @param playerPos The player's position.
-     * @param chunk_x   The player's chunk x.
-     * @param chunk_z   The player's chunk z.
+     * @param chunkX   The player's chunk x.
+     * @param chunkZ   The player's chunk z.
      */
-    private static void drawBlockMods(ClientWorld level, MatrixStack stack, BufferBuilder buffer, Vec3d playerPos, int chunk_x, int chunk_z, float delta) {
-        for (int x = -CHUNK_RADIUS; x <= CHUNK_RADIUS; x++) {
-            for (int z = -CHUNK_RADIUS; z <= CHUNK_RADIUS; z++) {
-                int chunk_x_ = chunk_x + x;
-                int chunk_z_ = chunk_z + z;
-                if (level.getChunk(chunk_x_, chunk_z_) != null) {
-                    var blockEntities = level.getChunk(chunk_x_, chunk_z_).getBlockEntities();
-                    for (var entry : blockEntities.entrySet()) {
-                        var blockPos = entry.getKey();
-                        var blockEntity = entry.getValue();
-                        Box aabb = new Box(blockPos);
-                        Vec3d boxPos = aabb.getCenter();
-                        BlockEntityRenderEvent event = new BlockEntityRenderEvent(blockEntity, stack, buffer, boxPos, playerPos, delta);
-                        GavinsMod.eventManager.call(event);
+    private fun drawBlockMods(
+        level: ClientWorld?,
+        stack: MatrixStack,
+        buffer: BufferBuilder,
+        playerPos: Vec3d,
+        chunkX: Int,
+        chunkZ: Int,
+        delta: Float
+    ) {
+        for (x in -CHUNK_RADIUS..CHUNK_RADIUS) {
+            for (z in -CHUNK_RADIUS..CHUNK_RADIUS) {
+                val chunkX1 = chunkX + x
+                val chunkZ1 = chunkZ + z
+                if (level!!.getChunk(chunkX1, chunkZ1) != null) {
+                    val blockEntities = level.getChunk(chunkX1, chunkZ1).blockEntities
+                    for ((blockPos, blockEntity) in blockEntities) {
+                        val aabb = Box(blockPos)
+                        val boxPos = aabb.center
+                        val event = BlockEntityRenderEvent(blockEntity, stack, buffer, boxPos, playerPos, delta)
+                        GavinsMod.eventManager.call(event)
                     }
                 }
             }
@@ -223,21 +220,9 @@ public class RenderUtils {
      * @param aabb   The box to draw.
      * @param c      The color to draw the box in.
      */
-    public static void drawBox(MatrixStack stack, BufferBuilder buffer, Box aabb, Color c) {
-        drawBox(stack, buffer, aabb, c, 1);
-    }
-
-    /**
-     * Draws a box on the world.
-     *
-     * @param stack  The matrix stack.
-     * @param buffer The buffer to write to.
-     * @param aabb   The box to draw.
-     * @param c      The color to draw the box in.
-     * @param alpha  The alpha of the box.
-     */
-    public static void drawBox(MatrixStack stack, BufferBuilder buffer, Box aabb, Color c, float alpha) {
-        WorldRenderer.drawBox(stack, buffer, aabb, c.getRed(), c.getGreen(), c.getBlue(), alpha);
+    @JvmOverloads
+    fun drawBox(stack: MatrixStack?, buffer: BufferBuilder?, aabb: Box?, c: Color, alpha: Float = 1f) {
+        WorldRenderer.drawBox(stack, buffer, aabb, c.red, c.green, c.blue, alpha)
     }
 
     /**
@@ -250,14 +235,21 @@ public class RenderUtils {
      * @param buffer    The buffer to write to.
      * @param playerPos The player's position.
      */
-    private static void drawEntityMods(ClientWorld level, ClientPlayerEntity player, MatrixStack stack, float delta, BufferBuilder buffer, Vec3d playerPos) {
-        level.getEntities().forEach(e -> {
-            if ((e.squaredDistanceTo(player) > 64 * CHUNK_RADIUS * 16) || player == e) return;
-            Box aabb = getEntityBox(delta, e);
-            Vec3d boxPos = aabb.getCenter();
-            EntityRenderEvent event = new EntityRenderEvent(e, stack, buffer, boxPos, playerPos, delta);
-            GavinsMod.eventManager.call(event);
-        });
+    private fun drawEntityMods(
+        level: ClientWorld?,
+        player: ClientPlayerEntity?,
+        stack: MatrixStack,
+        delta: Float,
+        buffer: BufferBuilder,
+        playerPos: Vec3d
+    ) {
+        level!!.entities.forEach(Consumer { e: Entity ->
+            if (e.squaredDistanceTo(player) > 64 * CHUNK_RADIUS * 16 || player === e) return@Consumer
+            val aabb = getEntityBox(delta, e)
+            val boxPos = aabb.center
+            val event = EntityRenderEvent(e, stack, buffer, boxPos, playerPos, delta)
+            GavinsMod.eventManager.call(event)
+        })
     }
 
     /**
@@ -267,86 +259,79 @@ public class RenderUtils {
      * @param e     The entity.
      * @return The bounding box of the entity.
      */
-    public static Box getEntityBox(float delta, Entity e) {
-        double x = e.prevX + (e.getX() - e.prevX) * delta;
-        double y = e.prevY + (e.getY() - e.prevY) * delta;
-        double z = e.prevZ + (e.getZ() - e.prevZ) * delta;
-        return e.getType().createSimpleBoundingBox(x, y, z);
+    fun getEntityBox(delta: Float, e: Entity): Box {
+        val x = e.prevX + (e.x - e.prevX) * delta
+        val y = e.prevY + (e.y - e.prevY) * delta
+        val z = e.prevZ + (e.z - e.prevZ) * delta
+        return e.type.createSimpleBoundingBox(x, y, z)
     }
 
     /**
      * Sets the gamma of the game to the full bright value of 10000.0 while storing the last gamma value.
      */
-    public static void setHighGamma() {
-        if (GavinsMod.fullbrightConfig.getGammaFade()) {
-            fadeGammaUp();
+    fun setHighGamma() {
+        if (GavinsMod.fullbrightConfig.gammaFade) {
+            fadeGammaUp()
         } else {
-            setGamma(GavinsMod.fullbrightConfig.getMaxGamma());
+            gamma = GavinsMod.fullbrightConfig.maxGamma.toDouble()
         }
     }
 
     /**
      * Resets the gamma to the players last configured value.
      */
-    public static void setLowGamma() {
-        if (GavinsMod.fullbrightConfig.getGammaFade()) {
-            fadeGammaDown();
+    fun setLowGamma() {
+        if (GavinsMod.fullbrightConfig.gammaFade) {
+            fadeGammaDown()
         } else {
-            setGamma(LAST_GAMMA);
+            gamma = LAST_GAMMA
         }
     }
 
-    /**
-     * Gets the current game gamma.
-     *
-     * @return The current game gamma.
-     */
-    public static double getGamma() {
-        return GavinsModClient.getMinecraftClient().getOptions().getGamma().getValue();
-    }
-
-    /**
-     * Sets the gamma to the given value.
-     *
-     * @param gamma The value to set the gamma to.
-     */
-    public static void setGamma(double gamma) {
-        var maxGamma = GavinsMod.fullbrightConfig.getMaxGamma();
-        if (gamma < 0.0) gamma = 0.0;
-        if (gamma > maxGamma) gamma = maxGamma;
-        var newGamma = GavinsModClient.getMinecraftClient().getOptions().getGamma();
-        if (newGamma.getValue() != gamma) {
-            @SuppressWarnings("unchecked") var newGamma2 = (ISimpleOption<Double>) (Object) newGamma;
-            newGamma2.forceSetValue(gamma);
+    var gamma: Double
+        /**
+         * Gets the current game gamma.
+         *
+         * @return The current game gamma.
+         */
+        get() = GavinsModClient.getMinecraftClient().options.gamma.value
+        /**
+         * Sets the gamma to the given value.
+         *
+         * @param gamma The value to set the gamma to.
+         */
+        set(gamma) {
+            var newValue = gamma
+            val maxGamma = GavinsMod.fullbrightConfig.maxGamma
+            if (newValue < 0.0) newValue = 0.0
+            if (newValue > maxGamma) newValue = maxGamma.toDouble()
+            val newGamma = GavinsModClient.getMinecraftClient().options.gamma
+            if (newGamma.value != newValue) {
+                val newGamma2 = newGamma as Any as ISimpleOption<Double>
+                newGamma2.forceSetValue(newValue)
+            }
         }
-    }
-
-    /**
-     * Whether the gamma is set to its full bright value.
-     *
-     * @return Whether the gamma is set to its full bright value.
-     */
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public static boolean isHighGamma() {
-        return getGamma() == 16;
-    }
-
-    /**
-     * Whether the gamma is currently at its last user configured value.
-     *
-     * @return Whether the gamma is currently at its last user configured value.
-     */
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public static boolean isLastGamma() {
-        return getGamma() <= LAST_GAMMA;
-    }
+    val isHighGamma: Boolean
+        /**
+         * Whether the gamma is set to its full bright value.
+         *
+         * @return Whether the gamma is set to its full bright value.
+         */
+        get() = gamma == 16.0
+    val isLastGamma: Boolean
+        /**
+         * Whether the gamma is currently at its last user configured value.
+         *
+         * @return Whether the gamma is currently at its last user configured value.
+         */
+        get() = gamma <= LAST_GAMMA
 
     /**
      * Sets the gamma to the last user configured value.
      */
-    public static void setLastGamma() {
-        if (getGamma() > 1) return;
-        LAST_GAMMA = getGamma();
+    fun setLastGamma() {
+        if (gamma > 1) return
+        LAST_GAMMA = gamma
     }
 
     /**
@@ -354,23 +339,23 @@ public class RenderUtils {
      *
      * @return The last user configured value of the gamma.
      */
-    public static double getLastGamma() {
-        return LAST_GAMMA;
+    private fun getLastGamma(): Double {
+        return LAST_GAMMA
     }
 
     /**
      * Fades the gamma up to the full bright value.
      */
-    public static void fadeGammaUp() {
-        setGamma(getGamma() + 0.2f);
+    private fun fadeGammaUp() {
+        gamma += 0.2f
     }
 
     /**
      * Fades the gamma down to the last user configured value.
      */
-    public static void fadeGammaDown() {
-        setGamma(getGamma() - 0.2f);
-        if (getGamma() < getLastGamma()) setGamma(getLastGamma());
+    private fun fadeGammaDown() {
+        gamma -= 0.2f
+        if (gamma < getLastGamma()) gamma = getLastGamma()
     }
 
     /**
@@ -384,17 +369,18 @@ public class RenderUtils {
      * @param matrixStack The matrix stack used to draw boxes on screen.
      * @param alpha       The alpha value of the box.
      */
-    public static void drawBox(float[] acColor, int xt1, int yt1, int xt2, int yt2, MatrixStack matrixStack, float alpha) {
+    fun drawBox(acColor: FloatArray, xt1: Int, yt1: Int, xt2: Int, yt2: Int, matrixStack: MatrixStack, alpha: Float) {
         // set alpha to be between 0 and 1
-        alpha = Math.max(0, Math.min(1, alpha));
-        RenderSystem.setShader(GameRenderer::getPositionProgram);
-        RenderSystem.enableBlend();
-        var matrix = matrixStack.peek().getPositionMatrix();
-        var bufferBuilder = Tessellator.getInstance().getBuffer();
-        RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], alpha);
-        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-        drawBox(xt1, yt1, xt2, yt2, matrix, bufferBuilder);
-        Tessellator.getInstance().draw();
+        var newAlpha = alpha
+        newAlpha = 0f.coerceAtLeast(1f.coerceAtMost(newAlpha))
+        RenderSystem.setShader { GameRenderer.getPositionProgram() }
+        RenderSystem.enableBlend()
+        val matrix = matrixStack.peek().positionMatrix
+        val bufferBuilder = Tessellator.getInstance().buffer
+        RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], newAlpha)
+        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION)
+        drawBox(xt1, yt1, xt2, yt2, matrix, bufferBuilder)
+        Tessellator.getInstance().draw()
     }
 
     /**
@@ -407,11 +393,10 @@ public class RenderUtils {
      * @param matrix        - The matrix stack used to draw boxes on screen.
      * @param bufferBuilder - The buffer builder used to draw boxes on screen.
      */
-    private static void drawBox(int xt1, int yt1, int xt2, int yt2, Matrix4f matrix, BufferBuilder bufferBuilder) {
-        bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
-        bufferBuilder.vertex(matrix, xt1, yt2, 0).next();
-        bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
-        bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
+    private fun drawBox(xt1: Int, yt1: Int, xt2: Int, yt2: Int, matrix: Matrix4f, bufferBuilder: BufferBuilder) {
+        bufferBuilder.vertex(matrix, xt1.toFloat(), yt1.toFloat(), 0f).next()
+        bufferBuilder.vertex(matrix, xt1.toFloat(), yt2.toFloat(), 0f).next()
+        bufferBuilder.vertex(matrix, xt2.toFloat(), yt2.toFloat(), 0f).next()
+        bufferBuilder.vertex(matrix, xt2.toFloat(), yt1.toFloat(), 0f).next()
     }
-
 }

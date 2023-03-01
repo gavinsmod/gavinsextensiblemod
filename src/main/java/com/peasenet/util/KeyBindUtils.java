@@ -40,9 +40,9 @@ public class KeyBindUtils {
      */
     public static KeyBinding getKeyBinding(Type type) {
         return new KeyBinding(
-                type.getTranslationKey(),
+                type.translationKey,
                 InputUtil.Type.KEYSYM,
-                type.getKeyBinding(),
+                type.keyBinding,
                 type.getCategory()
         );
     }
@@ -57,7 +57,7 @@ public class KeyBindUtils {
         try {
             return KeyBindingHelper.registerKeyBinding(getKeyBinding(type));
         } catch (Exception e) {
-            if(type.getKeyBinding() == GLFW.GLFW_KEY_UNKNOWN) {
+            if (type.keyBinding == GLFW.GLFW_KEY_UNKNOWN) {
                 return registerEmptyKeyBind(type);
             }
             return getKeyBinding(type);
@@ -72,7 +72,7 @@ public class KeyBindUtils {
      */
     public static KeyBinding registerEmptyKeyBind(Type type) {
         return KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                type.getTranslationKey(),
+                type.translationKey,
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_UNKNOWN,
                 type.getCategory()

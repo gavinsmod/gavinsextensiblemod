@@ -17,32 +17,26 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.movement
 
-package com.peasenet.mods.movement;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
 
 /**
  * @author gt3ch1
  * @version 01/07/2023
  */
-public class ModSpeed extends Mod {
-    public ModSpeed() {
-        super(Type.SPEED);
-    }
+class ModSpeed : Mod(Type.SPEED) {
+    override fun onTick() {
+        if (client.player == null) return
+        val player = client.player
 
-    @Override
-    public void onTick() {
-        if (getPlayer().isSneaking())
-            return;
-        if (!getPlayer().isOnGround())
-            return;
-        var velocity = getPlayer().getVelocity();
-        velocity = velocity.multiply(1.5);
-        var currentSpeed = Math.sqrt(Math.pow(velocity.x, 2) + Math.pow(velocity.z, 2));
-        getPlayer().setVelocity(velocity);
-        if (currentSpeed > 0.5)
-            getPlayer().setVelocity(velocity.multiply(0.5 / currentSpeed));
+        if (player!!.isSneaking) return
+        if (!player.isOnGround) return
+        var velocity = player.velocity
+        velocity = velocity.multiply(1.5)
+        val currentSpeed = Math.sqrt(Math.pow(velocity.x, 2.0) + Math.pow(velocity.z, 2.0))
+        player.velocity = velocity
+        if (currentSpeed > 0.5) player.velocity = velocity.multiply(0.5 / currentSpeed)
     }
 }

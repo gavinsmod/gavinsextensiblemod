@@ -17,48 +17,43 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.esp
 
-package com.peasenet.mods.esp;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.settings.ColorSetting;
-import com.peasenet.util.RenderUtils;
-import com.peasenet.util.event.data.BlockEntityRender;
-import com.peasenet.util.listeners.BlockEntityRenderListener;
-import net.minecraft.block.entity.BeehiveBlockEntity;
-import net.minecraft.util.math.Box;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.settings.ColorSetting
+import com.peasenet.util.RenderUtils
+import com.peasenet.util.event.data.BlockEntityRender
+import com.peasenet.util.listeners.BlockEntityRenderListener
+import net.minecraft.block.entity.BeehiveBlockEntity
+import net.minecraft.util.math.Box
 
 /**
  * @author gt3ch1
- * @version 01/03/2022
+ * @version 03-01-2023
  * A mod that allows the client to see an esp (a box) around beehives.
  */
-public class ModBeehiveEsp extends Mod implements BlockEntityRenderListener {
-    public ModBeehiveEsp() {
-        super(Type.BEEHIVE_ESP);
-        ColorSetting colorSetting = new ColorSetting("gavinsmod.settings.esp.beehive.color");
-        colorSetting.setCallback(() -> espConfig.setBeehiveColor(colorSetting.getColor()));
-        colorSetting.setColor(espConfig.getBeehiveColor());
-        addSetting(colorSetting);
+class ModBeehiveEsp : Mod(Type.BEEHIVE_ESP), BlockEntityRenderListener {
+    init {
+        val colorSetting = ColorSetting("gavinsmod.settings.esp.beehive.color")
+        colorSetting.setCallback { espConfig.beehiveColor = colorSetting.color }
+        colorSetting.color = espConfig.beehiveColor
+        addSetting(colorSetting)
     }
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        em.subscribe(BlockEntityRenderListener.class, this);
+    override fun onEnable() {
+        super.onEnable()
+        em.subscribe(BlockEntityRenderListener::class.java, this)
     }
 
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        em.unsubscribe(BlockEntityRenderListener.class, this);
+    override fun onDisable() {
+        super.onDisable()
+        em.unsubscribe(BlockEntityRenderListener::class.java, this)
     }
 
-    @Override
-    public void onRenderBlockEntity(BlockEntityRender er) {
-        if (!(er.entity instanceof BeehiveBlockEntity) || er.buffer == null) return;
-        var box = new Box(er.entity.getPos());
-        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.getBeehiveColor(), espConfig.getAlpha());
+    override fun onRenderBlockEntity(er: BlockEntityRender) {
+        if (er.entity !is BeehiveBlockEntity) return
+        val box = Box(er.entity.pos)
+        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.beehiveColor, espConfig.alpha)
     }
 }

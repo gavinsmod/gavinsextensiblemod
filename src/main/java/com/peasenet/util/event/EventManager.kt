@@ -17,33 +17,26 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.util.event;
+package com.peasenet.util.event
 
-import com.peasenet.util.listeners.Listener;
-
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.peasenet.util.listeners.Listener
 
 /**
  * The event manager. Allows adding/removing listeners and firing events.
  *
  * @author GT3CH1
- * @version 12/22/2022
+ * @version 03-01-2023
  */
-public class EventManager {
-
-    // a list of event classes with the mod that created them
-    protected static final HashMap<Class<? extends Listener>, ArrayList<? extends Listener>> eventMap = new HashMap<>();
-
+open class EventManager {
     /**
      * Adds a listener to the event manager.
      *
      * @param event    - The event class.
      * @param listener - The listener to add.
      */
-    public <L extends Listener> void subscribe(Class<L> event, L listener) {
-        eventMap.computeIfAbsent(event, k -> new ArrayList<>());
-        ((ArrayList<L>) (eventMap.get(event))).add(listener);
+    fun <L : Listener> subscribe(event: Class<L>, listener: L) {
+        eventMap.computeIfAbsent(event) { k: Class<out Listener?>? -> ArrayList() }
+        (eventMap[event] as ArrayList<L>).add(listener)
     }
 
     /**
@@ -52,8 +45,8 @@ public class EventManager {
      * @param event    - The event class.
      * @param listener - The listener to remove.
      */
-    public <L extends Listener> void unsubscribe(Class<L> event, L listener) {
-        eventMap.get(event).remove(listener);
+    fun <L : Listener> unsubscribe(event: Class<L>, listener: L) {
+        eventMap[event]!!.remove(listener)
     }
 
     /**
@@ -61,11 +54,15 @@ public class EventManager {
      *
      * @param event - The event to fire.
      */
-    @SuppressWarnings({"unchecked"})
-    public <L extends Listener, E extends Event<L>> void call(E event) {
-        var listeners = (ArrayList<L>) eventMap.get(event.getEvent());
-        if (listeners != null) {
-            event.fire(listeners);
-        }
+    fun <L : Listener, E : Event<L>> call(event: E) {
+        // get all listeners for the event
+        val listeners = eventMap[event.event] ?: return
+
+        event.fire(listeners as ArrayList<L>)
+    }
+
+    companion object {
+        // a list of event classes with the mod that created them
+        protected val eventMap = HashMap<Class<out Listener>, ArrayList<Listener>>()
     }
 }

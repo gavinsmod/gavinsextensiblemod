@@ -17,33 +17,28 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event
 
-
-package com.peasenet.util.event;
-
-import com.peasenet.util.listeners.Listener;
+import com.peasenet.util.listeners.Listener
 
 /**
  * An event that can be cancelled.
  *
  * @param <T> The type of listener to manage.
  * @author GT3CH1
- * @version 12/22/2022
- */
-public abstract class CancellableEvent<T extends Listener> extends Event<T> {
-    private boolean cancelled = false;
-
+ * @version 03-01-2023
+</T> */
+abstract class CancellableEvent<T : Listener> : Event<T>() {
     /**
      * Whether this even is cancelled.
      */
-    public boolean isCancelled() {
-        return cancelled;
-    }
+    var isCancelled = false
+        private set
 
     /**
      * Cancels this event.
      */
-    public void cancel() {
-        this.cancelled = true;
+    fun cancel() {
+        isCancelled = true
     }
 }

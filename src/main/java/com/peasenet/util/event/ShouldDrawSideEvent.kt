@@ -17,38 +17,25 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event
 
-package com.peasenet.util.event;
-
-import com.peasenet.util.event.data.DrawSide;
-import com.peasenet.util.listeners.ShouldDrawSideListener;
-
-import java.util.ArrayList;
+import com.peasenet.util.event.data.DrawSide
+import com.peasenet.util.listeners.ShouldDrawSideListener
 
 /**
  * @author gt3ch1
- * @version 01/01/2023
+ * @version 03-01-2023
  */
-public class ShouldDrawSideEvent extends CancellableEvent<ShouldDrawSideListener> {
-
-    DrawSide evt;
-
-    public ShouldDrawSideEvent(DrawSide evt) {
-        this.evt = evt;
-    }
-
-    @Override
-    public void fire(ArrayList<ShouldDrawSideListener> listeners) {
-        for (ShouldDrawSideListener listener : listeners) {
-            listener.onDrawSide(evt);
-            if (evt.isCancelled()) {
-                this.cancel();
+class ShouldDrawSideEvent(var evt: DrawSide) : CancellableEvent<ShouldDrawSideListener>() {
+    override fun fire(listeners: ArrayList<ShouldDrawSideListener>) {
+        for (listener in listeners) {
+            listener.onDrawSide(evt)
+            if (evt.isCancelled) {
+                cancel()
             }
         }
     }
 
-    @Override
-    public Class<ShouldDrawSideListener> getEvent() {
-        return ShouldDrawSideListener.class;
-    }
+    override val event: Class<ShouldDrawSideListener>
+        get() = ShouldDrawSideListener::class.java
 }

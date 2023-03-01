@@ -17,38 +17,30 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.render
 
-package com.peasenet.mods.render;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.util.event.data.CameraBob;
-import com.peasenet.util.listeners.CameraBobListener;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.util.event.data.CameraBob
+import com.peasenet.util.listeners.CameraBobListener
 
 /**
  * @author gt3ch1
  * @version 12/31/2022
  * A mod that disables the view bob when the player is damaged.
  */
-public class ModAntiHurt extends Mod implements CameraBobListener {
-    public ModAntiHurt() {
-        super(Type.ANTI_HURT);
+class ModAntiHurt : Mod(Type.ANTI_HURT), CameraBobListener {
+    override fun onEnable() {
+        super.onEnable()
+        em.subscribe(CameraBobListener::class.java, this)
     }
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        em.subscribe(CameraBobListener.class, this);
+    override fun onDisable() {
+        super.onDisable()
+        em.unsubscribe(CameraBobListener::class.java, this)
     }
 
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        em.unsubscribe(CameraBobListener.class, this);
-    }
-
-    @Override
-    public void onCameraViewBob(CameraBob c) {
-        c.cancel();
+    override fun onCameraViewBob(c: CameraBob) {
+        c.cancel()
     }
 }

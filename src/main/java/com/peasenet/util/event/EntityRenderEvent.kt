@@ -17,48 +17,41 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event
 
-package com.peasenet.util.event;
-
-import com.peasenet.util.event.data.EntityRender;
-import com.peasenet.util.listeners.EntityRenderListener;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3d;
-
-import java.util.ArrayList;
+import com.peasenet.util.event.data.EntityRender
+import com.peasenet.util.listeners.EntityRenderListener
+import net.minecraft.client.render.BufferBuilder
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.entity.Entity
+import net.minecraft.util.math.Vec3d
 
 /**
  * The event for the world render event.
  *
  * @author GT3CH1
- * @version 12/22/2022
+ * @version 03-01-2023
  */
-public class EntityRenderEvent extends Event<EntityRenderListener> {
-    EntityRender entityRender;
+class EntityRenderEvent(
+    entity: Entity,
+    stack: MatrixStack,
+    buffer: BufferBuilder?,
+    center: Vec3d?,
+    playerPos: Vec3d?,
+    delta: Float
+) : Event<EntityRenderListener>() {
+    private var entityRender: EntityRender
 
-    /**
-     * Creates a new world render event.
-     *
-     * @param stack     - The matrix stack.
-     * @param buffer    - The buffer builder.
-     * @param center    - The box.
-     * @param playerPos - The delta.
-     */
-    public EntityRenderEvent(Entity entity, MatrixStack stack, BufferBuilder buffer, Vec3d center, Vec3d playerPos, float delta) {
-        this.entityRender = new EntityRender(entity, stack, buffer, center, playerPos, delta);
+    init {
+        entityRender = EntityRender(entity, stack, buffer, center, playerPos, delta)
     }
 
-    @Override
-    public void fire(ArrayList<EntityRenderListener> listeners) {
-        for (EntityRenderListener listener : listeners) {
-            listener.onEntityRender(entityRender);
+    override fun fire(listeners: ArrayList<EntityRenderListener>) {
+        for (listener in listeners) {
+            listener.onEntityRender(entityRender)
         }
     }
 
-    @Override
-    public Class<EntityRenderListener> getEvent() {
-        return EntityRenderListener.class;
-    }
+    override val event: Class<EntityRenderListener>
+        get() = EntityRenderListener::class.java
 }

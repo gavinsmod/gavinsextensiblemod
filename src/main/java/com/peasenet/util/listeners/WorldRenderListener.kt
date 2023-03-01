@@ -17,19 +17,19 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.util.listeners;
+package com.peasenet.util.listeners
 
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.render.BufferBuilder
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.client.world.ClientWorld
 
 /**
  * A listener for the world render event.
  *
  * @author GT3CH1
- * @version 12/22/2022
+ * @version 03-01-2023
  */
-public interface WorldRenderListener extends Listener {
+interface WorldRenderListener : Listener {
     /**
      * Called when the world is rendered.
      *
@@ -38,5 +38,5 @@ public interface WorldRenderListener extends Listener {
      * @param bufferBuilder - The buffer builder.
      * @param delta         - The delta.
      */
-    void onWorldRender(ClientWorld level, MatrixStack stack, BufferBuilder bufferBuilder, float delta);
+    fun onWorldRender(level: ClientWorld, stack: MatrixStack, bufferBuilder: BufferBuilder, delta: Float)
 }

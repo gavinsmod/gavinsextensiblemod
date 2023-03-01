@@ -159,13 +159,13 @@ public class GuiWaypoint extends GuiElement {
             Vec3i flooredPos = getFlooredPlayerPos();
             w = new Waypoint(flooredPos);
             w.setName(textField.getText());
-            w.setColor(colorCycle.getColor());
+            w.color = colorCycle.getColor();
             w.setEnabled(waypointToggle.getValue());
             w.setEspEnabled(espToggle.getValue());
             w.setTracerEnabled(tracerToggle.getValue());
-            w.setX(Integer.parseInt(xCoordinate.getText()));
-            w.setY(Integer.parseInt(yCoordinate.getText()));
-            w.setZ(Integer.parseInt(zCoordinate.getText()));
+            w.x = Integer.parseInt(xCoordinate.getText());
+            w.y = Integer.parseInt(yCoordinate.getText());
+            w.z = Integer.parseInt(zCoordinate.getText());
             GavinsMod.waypointConfig.addWaypoint(w);
             Mods.getMod("waypoints").reloadSettings();
             GavinsMod.guiSettings.reloadGui();
@@ -183,17 +183,17 @@ public class GuiWaypoint extends GuiElement {
         super(Text.translatable("gavinsmod.mod.render.waypoints"));
         this.w = w;
         waypointToggle.setValue(w.isEnabled());
-        colorCycle.setColor(w.getColor());
+        colorCycle.setColor(w.color);
         saveSettings.setCallback(() -> {
             GavinsMod.waypointConfig.removeWaypoint(w);
             w.setName(textField.getText());
-            w.setColor(colorCycle.getColor());
+            w.color = colorCycle.getColor();
             w.setEnabled(waypointToggle.getValue());
             w.setEspEnabled(espToggle.getValue());
             w.setTracerEnabled(tracerToggle.getValue());
-            w.setX(Integer.parseInt(xCoordinate.getText()));
-            w.setY(Integer.parseInt(yCoordinate.getText()));
-            w.setZ(Integer.parseInt(zCoordinate.getText()));
+            w.x = Integer.parseInt(xCoordinate.getText());
+            w.y = Integer.parseInt(yCoordinate.getText());
+            w.z = Integer.parseInt(zCoordinate.getText());
             GavinsMod.waypointConfig.addWaypoint(w);
             Mods.getMod("waypoints").reloadSettings();
             GavinsMod.guiSettings.reloadGui();
@@ -239,9 +239,9 @@ public class GuiWaypoint extends GuiElement {
         // make sure xCoordinate only contains numbers
         if (w != null) {
             textField.setText(w.getName());
-            xCoordinate.setText(String.valueOf(w.getX()));
-            yCoordinate.setText(String.valueOf(w.getY()));
-            zCoordinate.setText(String.valueOf(w.getZ()));
+            xCoordinate.setText(String.valueOf(w.x));
+            yCoordinate.setText(String.valueOf(w.y));
+            zCoordinate.setText(String.valueOf(w.z));
         } else {
             var playerPos = getFlooredPlayerPos();
             xCoordinate.setText(String.valueOf(playerPos.getX()));

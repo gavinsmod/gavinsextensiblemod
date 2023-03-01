@@ -17,14 +17,12 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.combat
 
-
-package com.peasenet.mods.combat;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.util.PlayerUtils;
-import net.minecraft.util.hit.EntityHitResult;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.util.PlayerUtils
+import net.minecraft.util.hit.EntityHitResult
 
 /**
  * A mod that makes the player attack the entity that it is currently looking at.
@@ -32,19 +30,10 @@ import net.minecraft.util.hit.EntityHitResult;
  * @author gt3ch1
  * @version 12/31/2022
  */
-public class ModAutoAttack extends Mod {
-
-    public ModAutoAttack() {
-        super(Type.AUTO_ATTACK);
+class ModAutoAttack : Mod(Type.AUTO_ATTACK) {
+    override fun onTick() {
+        val target = client.crosshairTarget() as? EntityHitResult ?: return
+        val entity = target.entity
+        PlayerUtils.attackEntity(entity)
     }
-
-    @Override
-    public void onTick() {
-        var target = getClient().crosshairTarget();
-        if (!(target instanceof EntityHitResult))
-            return;
-        var entity = ((EntityHitResult) target).getEntity();
-        PlayerUtils.attackEntity(entity);
-    }
-
 }

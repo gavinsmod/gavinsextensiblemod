@@ -17,17 +17,16 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.listeners
 
-package com.peasenet.util.listeners;
-
-import com.peasenet.util.event.data.TessellateBlock;
+import com.peasenet.util.event.data.TessellateBlock
 
 /**
  * Listener interface for classes that want to listen to the tessellate block event.
  *
  * @author gt3ch1
- * @version 01/03/2023
+ * @version 03-01-2023
  */
-public interface TessellateBlockListener extends Listener {
-    void onTessellateBlock(TessellateBlock event);
+interface TessellateBlockListener : Listener {
+    fun onTessellateBlock(event: TessellateBlock)
 }

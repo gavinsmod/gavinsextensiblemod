@@ -17,42 +17,30 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event
 
-package com.peasenet.util.event;
-
-import com.peasenet.util.event.data.TessellateBlock;
-import com.peasenet.util.listeners.TessellateBlockListener;
-
-import java.util.ArrayList;
+import com.peasenet.util.event.data.TessellateBlock
+import com.peasenet.util.listeners.TessellateBlockListener
 
 /**
  * Event called when block tessellation occurs.
  *
  * @author gt3ch1
- * @version 01/03/2023
+ * @version 03-01-2023
  */
-public class TessellateBlockEvent extends CancellableEvent<TessellateBlockListener> {
-
+class TessellateBlockEvent(
     /**
      * The data for the event.
      */
-    private final TessellateBlock tessellateBlock;
-
-    public TessellateBlockEvent(TessellateBlock event) {
-        this.tessellateBlock = event;
-    }
-
-    @Override
-    public void fire(ArrayList<TessellateBlockListener> listeners) {
-        for (TessellateBlockListener listener : listeners) {
-            listener.onTessellateBlock(tessellateBlock);
-            if (tessellateBlock.isCancelled())
-                this.cancel();
+    private val tessellateBlock: TessellateBlock
+) : CancellableEvent<TessellateBlockListener>() {
+    override fun fire(listeners: ArrayList<TessellateBlockListener>) {
+        for (listener in listeners) {
+            listener.onTessellateBlock(tessellateBlock)
+            if (tessellateBlock.isCancelled) cancel()
         }
     }
 
-    @Override
-    public Class<TessellateBlockListener> getEvent() {
-        return TessellateBlockListener.class;
-    }
+    override val event: Class<TessellateBlockListener>
+        get() = TessellateBlockListener::class.java
 }

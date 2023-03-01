@@ -19,6 +19,7 @@
  */
 package com.peasenet.config
 
+import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 
 /**
@@ -28,7 +29,7 @@ import com.peasenet.gavui.color.Colors
  * @version 03-01-2023
  */
 class FpsColorConfig : Config<FpsColorConfig>() {
-    var slowFps = Colors.RED
+    var slowFps: Color = Colors.RED
         /**
          * Sets the color for slow FPS.
          * @param slowFps - The color for slow FPS.
@@ -44,7 +45,7 @@ class FpsColorConfig : Config<FpsColorConfig>() {
      *
      * @return The color for ok FPS.
      */
-    var okFps = Colors.YELLOW!!
+    var okFps: Color = Colors.YELLOW
         /**
          * Sets the color for ok FPS.
          * @param okFps - The color for ok FPS.
@@ -58,7 +59,7 @@ class FpsColorConfig : Config<FpsColorConfig>() {
      * Gets the color for fast FPS.
      * @return The color for fast FPS.
      */
-    var fastFps = Colors.GREEN!!
+    var fastFps: Color = Colors.GREEN
         /**
          * Sets the color for fast FPS.
          * @param fastFps - The color for fast FPS.

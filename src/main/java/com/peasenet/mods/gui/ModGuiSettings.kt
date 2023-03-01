@@ -17,91 +17,64 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.gui
 
-package com.peasenet.mods.gui;
-
-import com.peasenet.gavui.util.GavUISettings;
-import com.peasenet.main.GavinsMod;
-import com.peasenet.main.GavinsModClient;
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.settings.ColorSetting;
-import com.peasenet.settings.SlideSetting;
-import com.peasenet.settings.ToggleSetting;
+import com.peasenet.gavui.util.GavUISettings
+import com.peasenet.main.GavinsMod
+import com.peasenet.main.GavinsModClient
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.settings.ColorSetting
+import com.peasenet.settings.SlideSetting
+import com.peasenet.settings.ToggleSetting
 
 /**
  * @author gt3ch1
  * @version 12/31/2022
  * A mod that allows the player to configure certain settings of gavinsmod.
  */
-public class ModGuiSettings extends Mod {
-    public ModGuiSettings() {
-        super(Type.SETTINGS);
-
-        var guiSounds = new ToggleSetting("gavinsmod.settings.gui.sound");
-        guiSounds.setCallback(() -> {
-            GavUISettings.add("gui.sound", guiSounds.getValue());
-        });
-        guiSounds.setValue(GavUISettings.getBool("gui.sound"));
-
-        var foregroundColorSetting = new ColorSetting("gavinsmod.settings.gui.color.foreground");
-        foregroundColorSetting.setCallback(() -> {
-            GavUISettings.add("gui.color.foreground", foregroundColorSetting.getColor());
-        });
-        foregroundColorSetting.setColor(GavUISettings.getColor("gui.color.foreground"));
-
-        var backgroundColorSetting = new ColorSetting("gavinsmod.settings.gui.color.background");
-        backgroundColorSetting.setCallback(() -> {
-            GavUISettings.add("gui.color.background", backgroundColorSetting.getColor());
-        });
-        backgroundColorSetting.setColor(GavUISettings.getColor("gui.color.background"));
-
-        var categoryColorSetting = new ColorSetting("gavinsmod.settings.gui.color.category");
-        categoryColorSetting.setCallback(() -> {
-            GavUISettings.add("gui.color.category", categoryColorSetting.getColor());
-        });
-        categoryColorSetting.setColor(GavUISettings.getColor("gui.color.category"));
-
-        var enabledColorSetting = new ColorSetting("gavinsmod.settings.gui.color.enabled");
-        enabledColorSetting.setCallback(() -> {
-            GavUISettings.add("gui.color.enabled", enabledColorSetting.getColor());
-        });
-        enabledColorSetting.setColor(GavUISettings.getColor("gui.color.enabled"));
-
-        var borderColorSetting = new ColorSetting("gavinsmod.settings.gui.color.border");
-        borderColorSetting.setCallback(() -> {
-            GavUISettings.add("gui.color.border", borderColorSetting.getColor());
-        });
-        borderColorSetting.setColor(GavUISettings.getColor("gui.color.border"));
-
-        var frozenColorSetting = new ColorSetting("gavinsmod.settings.gui.color.frozen");
-        frozenColorSetting.setCallback(() -> {
-            GavUISettings.add("gui.color.frozen", frozenColorSetting.getColor());
-        });
-        frozenColorSetting.setColor(GavUISettings.getColor("gui.color.frozen"));
-
-        SlideSetting guiAlpha = new SlideSetting("gavinsmod.settings.alpha");
-        guiAlpha.setCallback(() -> GavUISettings.add("gui.alpha", guiAlpha.getValue()));
-        guiAlpha.setValue(GavUISettings.getFloat("gui.alpha"));
-        addSetting(guiAlpha);
-
-        addSetting(backgroundColorSetting);
-        addSetting(foregroundColorSetting);
-        addSetting(categoryColorSetting);
-        addSetting(enabledColorSetting);
-        addSetting(frozenColorSetting);
-        addSetting(borderColorSetting);
-        addSetting(guiSounds);
+class ModGuiSettings : Mod(Type.SETTINGS) {
+    init {
+        val guiSounds = ToggleSetting("gavinsmod.settings.gui.sound")
+        guiSounds.setCallback { GavUISettings.add("gui.sound", guiSounds.value) }
+        guiSounds.value = GavUISettings.getBool("gui.sound")
+        val foregroundColorSetting = ColorSetting("gavinsmod.settings.gui.color.foreground")
+        foregroundColorSetting.setCallback { GavUISettings.add("gui.color.foreground", foregroundColorSetting.color) }
+        foregroundColorSetting.color = GavUISettings.getColor("gui.color.foreground")
+        val backgroundColorSetting = ColorSetting("gavinsmod.settings.gui.color.background")
+        backgroundColorSetting.setCallback { GavUISettings.add("gui.color.background", backgroundColorSetting.color) }
+        backgroundColorSetting.color = GavUISettings.getColor("gui.color.background")
+        val categoryColorSetting = ColorSetting("gavinsmod.settings.gui.color.category")
+        categoryColorSetting.setCallback { GavUISettings.add("gui.color.category", categoryColorSetting.color) }
+        categoryColorSetting.color = GavUISettings.getColor("gui.color.category")
+        val enabledColorSetting = ColorSetting("gavinsmod.settings.gui.color.enabled")
+        enabledColorSetting.setCallback { GavUISettings.add("gui.color.enabled", enabledColorSetting.color) }
+        enabledColorSetting.color = GavUISettings.getColor("gui.color.enabled")
+        val borderColorSetting = ColorSetting("gavinsmod.settings.gui.color.border")
+        borderColorSetting.setCallback { GavUISettings.add("gui.color.border", borderColorSetting.color) }
+        borderColorSetting.color = GavUISettings.getColor("gui.color.border")
+        val frozenColorSetting = ColorSetting("gavinsmod.settings.gui.color.frozen")
+        frozenColorSetting.setCallback { GavUISettings.add("gui.color.frozen", frozenColorSetting.color) }
+        frozenColorSetting.color = GavUISettings.getColor("gui.color.frozen")
+        val guiAlpha = SlideSetting("gavinsmod.settings.alpha")
+        guiAlpha.setCallback { GavUISettings.add("gui.alpha", guiAlpha.value) }
+        guiAlpha.value = GavUISettings.getFloat("gui.alpha")
+        addSetting(guiAlpha)
+        addSetting(backgroundColorSetting)
+        addSetting(foregroundColorSetting)
+        addSetting(categoryColorSetting)
+        addSetting(enabledColorSetting)
+        addSetting(frozenColorSetting)
+        addSetting(borderColorSetting)
+        addSetting(guiSounds)
     }
 
-    @Override
-    public void activate() {
-        GavinsModClient.getMinecraftClient().setScreen(GavinsMod.guiSettings);
-        setEnabled(true);
+    override fun activate() {
+        GavinsModClient.getMinecraftClient().setScreen(GavinsMod.guiSettings)
+        setEnabled(true)
     }
 
-    @Override
-    public void deactivate() {
-        setEnabled(false);
+    override fun deactivate() {
+        setEnabled(false)
     }
 }

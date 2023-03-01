@@ -17,34 +17,21 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event
 
-package com.peasenet.util.event;
+import com.peasenet.util.event.data.CameraBob
+import com.peasenet.util.listeners.CameraBobListener
 
-import com.peasenet.util.event.data.CameraBob;
-import com.peasenet.util.listeners.CameraBobListener;
+class CameraBobEvent : CancellableEvent<CameraBobListener>() {
+    private var cameraBob: CameraBob = CameraBob()
 
-import java.util.ArrayList;
-
-public class CameraBobEvent extends CancellableEvent<CameraBobListener> {
-    CameraBob cameraBob;
-
-    /**
-     * Creates a new PacketSendEvent.
-     */
-    public CameraBobEvent() {
-        this.cameraBob = new CameraBob();
-    }
-
-    @Override
-    public void fire(ArrayList<CameraBobListener> listeners) {
-        for (CameraBobListener listener : listeners) {
-            listener.onCameraViewBob(cameraBob);
-            if (cameraBob.isCancelled()) this.cancel();
+    override fun fire(listeners: ArrayList<CameraBobListener>) {
+        for (listener in listeners) {
+            listener.onCameraViewBob(cameraBob)
+            if (cameraBob.isCancelled) cancel()
         }
     }
 
-    @Override
-    public Class<CameraBobListener> getEvent() {
-        return CameraBobListener.class;
-    }
+    override val event: Class<CameraBobListener>
+        get() = CameraBobListener::class.java
 }

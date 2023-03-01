@@ -17,40 +17,31 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.render
 
-package com.peasenet.mods.render;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.util.event.data.RenderOverlay;
-import com.peasenet.util.listeners.RenderOverlayListener;
-import net.minecraft.util.Identifier;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.util.event.data.RenderOverlay
+import com.peasenet.util.listeners.RenderOverlayListener
+import net.minecraft.util.Identifier
 
 /**
  * @author gt3ch1
  * @version 01/07/2022
  * A mod that disables some overlays that are drawn on screen.
  */
-public class ModNoOverlay extends Mod implements RenderOverlayListener {
-    public ModNoOverlay() {
-        super(Type.NO_OVERLAY);
+class ModNoOverlay : Mod(Type.NO_OVERLAY), RenderOverlayListener {
+    override fun onEnable() {
+        super.onEnable()
+        em.subscribe(RenderOverlayListener::class.java, this)
     }
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        em.subscribe(RenderOverlayListener.class, this);
+    override fun onDisable() {
+        super.onDisable()
+        em.unsubscribe(RenderOverlayListener::class.java, this)
     }
 
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        em.unsubscribe(RenderOverlayListener.class, this);
-    }
-
-    @Override
-    public void onRenderOverlay(RenderOverlay overlay) {
-        if (overlay.getTexture().equals(new Identifier("textures/misc/powder_snow_outline.png")))
-            overlay.cancel();
+    override fun onRenderOverlay(overlay: RenderOverlay) {
+        if (overlay.texture == Identifier("textures/misc/powder_snow_outline.png")) overlay.cancel()
     }
 }

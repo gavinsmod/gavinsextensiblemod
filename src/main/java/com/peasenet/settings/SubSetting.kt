@@ -17,24 +17,22 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.settings
 
-package com.peasenet.settings;
-
-import com.peasenet.gavui.GuiDropdown;
-import com.peasenet.gavui.GuiScroll;
-import net.minecraft.text.Text;
+import com.peasenet.gavui.GuiDropdown
+import com.peasenet.gavui.GuiScroll
+import net.minecraft.text.Text
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 03-01-2023
  * A setting that contains multiple sub settings within a dropdown element.
  */
-public class SubSetting extends Setting {
-
+class SubSetting(width: Int, height: Int, translationKey: String?) : Setting(translationKey) {
     /**
      * The dropdown menu that contains the sub settings.
      */
-    private final GuiScroll dropdown;
+    private val dropdown: GuiScroll
 
     /**
      * Creates a new subsetting element. You can call #add(Setting) to add subsettings to this element.
@@ -43,11 +41,10 @@ public class SubSetting extends Setting {
      * @param height         - The height of the dropdown element.
      * @param translationKey - The translation key.
      */
-    public SubSetting(int width, int height, String translationKey) {
-        super(translationKey);
-        dropdown = new GuiScroll(width, height, Text.translatable(translationKey));
-        dropdown.setDirection(GuiDropdown.Direction.RIGHT);
-        dropdown.hide();
+    init {
+        dropdown = GuiScroll(width, height, Text.translatable(translationKey))
+        dropdown.direction = GuiDropdown.Direction.RIGHT
+        dropdown.hide()
     }
 
     /**
@@ -55,13 +52,12 @@ public class SubSetting extends Setting {
      *
      * @param setting - The setting to add.
      */
-    public void add(Setting setting) {
-        dropdown.addElement(setting.getGui());
-        setting.getGui().hide();
+    fun add(setting: Setting) {
+        dropdown.addElement(setting.gui)
+        setting.gui.hide()
     }
 
-    @Override
-    public GuiScroll getGui() {
-        return dropdown;
+    override fun getGui(): GuiScroll {
+        return dropdown
     }
 }

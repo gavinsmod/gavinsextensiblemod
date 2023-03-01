@@ -17,33 +17,29 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event
 
-package com.peasenet.util.event;
-
-import com.peasenet.util.listeners.Listener;
-
-import java.util.ArrayList;
+import com.peasenet.util.listeners.Listener
 
 /**
  * A class that manages events.
  *
  * @param <T> The type of event to manage.
  * @author GT3CH1
- * @version 12/22/2022
- */
-public abstract class Event<T extends Listener> {
-
+ * @version 03-01-2023
+</T> */
+abstract class Event<T : Listener> {
     /**
      * Fires the event.
      *
      * @param listeners - The listeners to fire the event to.
      */
-    public abstract void fire(ArrayList<T> listeners);
+    abstract fun fire(listeners: ArrayList<T>)
 
     /**
      * Gets the event class.
      *
      * @return The event class.
      */
-    public abstract Class<T> getEvent();
+    abstract val event: Class<T>
 }

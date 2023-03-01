@@ -134,7 +134,7 @@ public class Mods {
      * @return The mod with the given type.
      */
     public static Mod getMod(Type type) {
-        return modMap.get(type.getChatCommand());
+        return modMap.get(type.chatCommand);
     }
 
     /**

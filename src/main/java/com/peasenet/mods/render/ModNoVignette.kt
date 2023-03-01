@@ -17,16 +17,13 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.render
 
-package com.peasenet.mods.render;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.util.event.data.RenderOverlay;
-import com.peasenet.util.listeners.RenderOverlayListener;
-import net.minecraft.util.Identifier;
-
-import java.util.Objects;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.util.event.data.RenderOverlay
+import com.peasenet.util.listeners.RenderOverlayListener
+import net.minecraft.util.Identifier
 
 /**
  * A mod that removes the vignette overlay.
@@ -34,27 +31,19 @@ import java.util.Objects;
  * @author gt3ch1
  * @version 01/04/2023
  */
-public class ModNoVignette extends Mod implements RenderOverlayListener {
-    public ModNoVignette() {
-        super(Type.NO_VIGNETTE);
+class ModNoVignette : Mod(Type.NO_VIGNETTE), RenderOverlayListener {
+    override fun onEnable() {
+        super.onEnable()
+        em.subscribe(RenderOverlayListener::class.java, this)
     }
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        em.subscribe(RenderOverlayListener.class, this);
+    override fun onDisable() {
+        super.onDisable()
+        em.unsubscribe(RenderOverlayListener::class.java, this)
     }
 
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        em.unsubscribe(RenderOverlayListener.class, this);
-    }
-
-    @Override
-    public void onRenderOverlay(RenderOverlay overlay) {
-        var texture = overlay.getTexture();
-        if (Objects.equals(texture, new Identifier("textures/misc/vignette.png")))
-            overlay.cancel();
+    override fun onRenderOverlay(overlay: RenderOverlay) {
+        val texture = overlay.texture
+        if (texture == Identifier("textures/misc/vignette.png")) overlay.cancel()
     }
 }

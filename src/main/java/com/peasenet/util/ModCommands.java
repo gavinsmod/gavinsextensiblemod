@@ -72,17 +72,17 @@ public class ModCommands implements OnChatSendListener {
             // sort by category then name
             Arrays.sort(mods, (o1, o2) -> {
                 if (o1.getCategory().equals(o2.getCategory())) {
-                    return o1.getName().compareTo(o2.getName());
+                    return o1.modName.compareTo(o2.modName);
                 }
                 return o1.getCategory().compareTo(o2.getCategory());
             });
             var previousCategory = "";
             for (var t : mods) {
                 if (!previousCategory.equals(t.getCategory())) {
-                    PlayerUtils.sendMessage("§l" + I18n.translate(t.getModCategory().translationKey), false);
+                    PlayerUtils.sendMessage("§l" + I18n.translate(t.modCategory.translationKey), false);
                     previousCategory = t.getCategory();
                 }
-                PlayerUtils.sendMessage("§a" + I18n.translate(t.getTranslationKey()) + " §9-§c " + t.getChatCommand(), false);
+                PlayerUtils.sendMessage("§a" + I18n.translate(t.translationKey) + " §9-§c " + t.chatCommand, false);
             }
             return true;
         }

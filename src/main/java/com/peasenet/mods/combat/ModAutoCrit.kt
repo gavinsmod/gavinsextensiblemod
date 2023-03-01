@@ -17,51 +17,46 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.combat
 
-package com.peasenet.mods.combat;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.util.listeners.PlayerAttackListener;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.util.listeners.PlayerAttackListener
+import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket.PositionAndOnGround
 
 /**
  * @author gt3ch1
  * @version 6/24/2022
  * A combat mod to make the player jump automatically when attacking an entity.
  */
-public class ModAutoCrit extends Mod implements PlayerAttackListener {
-
-    public ModAutoCrit() {
-        super(Type.AUTO_CRIT);
+class ModAutoCrit : Mod(Type.AUTO_CRIT), PlayerAttackListener {
+    override fun onEnable() {
+        super.onEnable()
+        em.subscribe(PlayerAttackListener::class.java, this)
     }
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        em.subscribe(PlayerAttackListener.class, this);
+    override fun onDisable() {
+        super.onDisable()
+        em.unsubscribe(PlayerAttackListener::class.java, this)
     }
 
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        em.unsubscribe(PlayerAttackListener.class, this);
+    override fun onAttackEntity() {
+        if (client.player == null)
+            return
+        val player = client.player
+        val x = player.x
+        val y = player.y
+        val z = player.z
+        sendPos(x, y + 0.0625, z, true)
+        sendPos(x, y, z, false)
+        sendPos(x, y + 1.1E-5, z, false)
+        sendPos(x, y, z, false)
     }
 
-    @Override
-    public void onAttackEntity() {
-        var x = getPlayer().getX();
-        var y = getPlayer().getY();
-        var z = getPlayer().getZ();
+    private fun sendPos(x: Double, y: Double, z: Double, onGround: Boolean) {
+        if (client.player == null) return
+        val player = client.player
 
-        sendPos(x, y + 0.0625D, z, true);
-        sendPos(x, y, z, false);
-        sendPos(x, y + 1.1E-5D, z, false);
-        sendPos(x, y, z, false);
-//        getPlayer().jump();
-    }
-
-    private void sendPos(double x, double y, double z, boolean onGround) {
-        getPlayer().networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, onGround));
+        player!!.networkHandler.sendPacket(PositionAndOnGround(x, y, z, onGround))
     }
 }

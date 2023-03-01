@@ -17,25 +17,22 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.util.listeners;
+package com.peasenet.util.listeners
 
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.MatrixStack
 
 /**
  * A listener for the world render event.
  *
  * @author GT3CH1
- * @version 12/22/2022
+ * @version 03-01-2023
  */
-public interface InGameHudRenderListener extends Listener {
-
+interface InGameHudRenderListener : Listener {
     /**
      * Called when the world is rendered.
      *
      * @param stack - The matrix stack.
      * @param delta - The delta.
      */
-    void onRenderInGameHud(MatrixStack stack, float delta);
-
-
+    fun onRenderInGameHud(stack: MatrixStack, delta: Float)
 }

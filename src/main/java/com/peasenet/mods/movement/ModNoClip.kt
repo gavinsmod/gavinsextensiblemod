@@ -17,49 +17,42 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.movement
 
-package com.peasenet.mods.movement;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.util.event.AirStrafeEvent;
-import com.peasenet.util.listeners.AirStrafeListener;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.util.event.AirStrafeEvent
+import com.peasenet.util.listeners.AirStrafeListener
 
 /**
  * @author gt3ch1
  * @version 7/6/2022
  * A mod for allowing the printer to noclip (move through blocks)
  */
-public class ModNoClip extends Mod implements AirStrafeListener {
-
-    public ModNoClip() {
-        super(Type.NO_CLIP);
+class ModNoClip : Mod(Type.NO_CLIP), AirStrafeListener {
+    override fun onEnable() {
+        em.subscribe(AirStrafeListener::class.java, this)
+        super.onEnable()
     }
 
-    @Override
-    public void onEnable() {
-        em.subscribe(AirStrafeListener.class, this);
-        super.onEnable();
+    override fun onDisable() {
+        em.unsubscribe(AirStrafeListener::class.java, this)
+        super.onDisable()
     }
 
-    @Override
-    public void onDisable() {
-        em.unsubscribe(AirStrafeListener.class, this);
-        super.onDisable();
+    override fun onTick() {
+        if (client.player == null) return
+        val player = client.player
+        player!!.abilities.flying = true
     }
 
-    @Override
-    public void onTick() {
-        getPlayer().getAbilities().flying = true;
-    }
-
-    @Override
-    public void onAirStrafe(AirStrafeEvent event) {
-        var speed = 0.2f;
-        if (getPlayer().isSprinting()) {
-            speed = 1f;
+    override fun onAirStrafe(event: AirStrafeEvent) {
+        var speed = 0.2f
+        if (client.player == null) return
+        val player = client.player
+        if (player!!.isSprinting) {
+            speed = 1f
         }
-        event.setSpeed(speed);
-
+        event.speed = speed
     }
 }

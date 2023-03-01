@@ -17,85 +17,61 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.render
 
-package com.peasenet.mods.render;
-
-import com.peasenet.main.GavinsMod;
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.settings.SlideSetting;
-import com.peasenet.settings.SubSetting;
-import com.peasenet.settings.ToggleSetting;
-import com.peasenet.util.RenderUtils;
+import com.peasenet.main.GavinsMod
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.settings.SlideSetting
+import com.peasenet.settings.SubSetting
+import com.peasenet.settings.ToggleSetting
+import com.peasenet.util.RenderUtils
 
 /**
  * @author gt3ch1
- * @version 01/03/2022
+ * @version 03-01-2023
  * A mod that allows the client to see very clearly in the absence of a light source.
  */
-public class ModFullBright extends Mod {
-
-    public ModFullBright() {
-        super(Type.FULL_BRIGHT);
-        ToggleSetting gammaFade = new ToggleSetting("gavinsmod.settings.render.gammafade");
-        gammaFade.setCallback(() -> {
-            fullbrightConfig.setGammaFade(gammaFade.getValue());
-        });
-        gammaFade.setValue(fullbrightConfig.getGammaFade());
-
-        ToggleSetting autoFullBright = new ToggleSetting("gavinsmod.settings.render.autofullbright");
-        autoFullBright.setCallback(() -> {
-            fullbrightConfig.setAutoFullBright(autoFullBright.getValue());
-        });
-        autoFullBright.setValue(fullbrightConfig.getAutoFullBright());
-
-        SlideSetting gamma = new SlideSetting("gavinsmod.settings.render.fullbright.gamma");
-        gamma.setCallback(() -> {
-            fullbrightConfig.setGamma(gamma.getValue());
-        });
-        gamma.setValue(fullbrightConfig.getGamma());
-
-        var subSetting = new SubSetting(100, 10, getTranslationKey());
-        subSetting.add(gammaFade);
-        subSetting.add(autoFullBright);
-        subSetting.add(gamma);
-
-        addSetting(subSetting);
+class ModFullBright : Mod(Type.FULL_BRIGHT) {
+    init {
+        val gammaFade = ToggleSetting("gavinsmod.settings.render.gammafade")
+        gammaFade.setCallback { fullbrightConfig.gammaFade = gammaFade.value }
+        gammaFade.value = fullbrightConfig.gammaFade
+        val autoFullBright = ToggleSetting("gavinsmod.settings.render.autofullbright")
+        autoFullBright.setCallback { fullbrightConfig.autoFullBright = autoFullBright.value }
+        autoFullBright.value = fullbrightConfig.autoFullBright
+        val gamma = SlideSetting("gavinsmod.settings.render.fullbright.gamma")
+        gamma.setCallback { fullbrightConfig.gamma = gamma.value }
+        gamma.value = fullbrightConfig.gamma
+        val subSetting = SubSetting(100, 10, translationKey)
+        subSetting.add(gammaFade)
+        subSetting.add(autoFullBright)
+        subSetting.add(gamma)
+        addSetting(subSetting)
     }
 
-    @Override
-    public void activate() {
-        if (!GavinsMod.isEnabled(Type.XRAY))
-            RenderUtils.setLastGamma();
-        super.activate();
+    override fun activate() {
+        if (!GavinsMod.isEnabled(Type.XRAY)) RenderUtils.setLastGamma()
+        super.activate()
     }
 
-    @Override
-    public void onTick() {
-        if (isActive() && !RenderUtils.isHighGamma()) {
-            RenderUtils.setHighGamma();
-        } else if (!GavinsMod.isEnabled(Type.XRAY) && !RenderUtils.isLastGamma() && deactivating) {
-            RenderUtils.setLowGamma();
-            deactivating = !RenderUtils.isLastGamma();
+    override fun onTick() {
+        if (isActive && !RenderUtils.isHighGamma) {
+            RenderUtils.setHighGamma()
+        } else if (!GavinsMod.isEnabled(Type.XRAY) && !RenderUtils.isLastGamma && deactivating) {
+            RenderUtils.setLowGamma()
+            deactivating = !RenderUtils.isLastGamma
         }
     }
 
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        if (RenderUtils.getGamma() > 16.0F && !deactivating)
-            RenderUtils.setGamma(16.0F);
+    override fun onDisable() {
+        super.onDisable()
+        if (RenderUtils.gamma > 16.0f && !deactivating) RenderUtils.gamma = 16.0
     }
 
-    @Override
-    public boolean isDeactivating() {
-        return deactivating;
-    }
-
-    @Override
-    public void deactivate() {
-        deactivating = true;
-        RenderUtils.setGamma(4);
-        super.deactivate();
+    override fun deactivate() {
+        deactivating = true
+        RenderUtils.gamma = 4.0
+        super.deactivate()
     }
 }

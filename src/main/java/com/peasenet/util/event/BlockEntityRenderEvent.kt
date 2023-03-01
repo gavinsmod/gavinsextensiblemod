@@ -17,27 +17,23 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event
 
-package com.peasenet.util.event;
-
-import com.peasenet.util.event.data.BlockEntityRender;
-import com.peasenet.util.listeners.BlockEntityRenderListener;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Vec3d;
-
-import java.util.ArrayList;
+import com.peasenet.util.event.data.BlockEntityRender
+import com.peasenet.util.listeners.BlockEntityRenderListener
+import net.minecraft.block.entity.BlockEntity
+import net.minecraft.client.render.BufferBuilder
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.util.math.Vec3d
 
 /**
  * The event for the world render event.
  *
  * @author GT3CH1
- * @version 01/03/2022
+ * @version 03-01-2023
  */
-
-public class BlockEntityRenderEvent extends CancellableEvent<BlockEntityRenderListener> {
-    BlockEntityRender entityRender;
+class BlockEntityRenderEvent : CancellableEvent<BlockEntityRenderListener> {
+    private var entityRender: BlockEntityRender
 
     /**
      * Creates a new world render event.
@@ -47,25 +43,28 @@ public class BlockEntityRenderEvent extends CancellableEvent<BlockEntityRenderLi
      * @param center    - The box.
      * @param playerPos - The delta.
      */
-    public BlockEntityRenderEvent(BlockEntity entity, MatrixStack stack, BufferBuilder buffer, Vec3d center, Vec3d playerPos, float delta) {
-        this.entityRender = new BlockEntityRender(entity, stack, buffer, center, playerPos, delta);
+    constructor(
+        entity: BlockEntity,
+        stack: MatrixStack,
+        buffer: BufferBuilder,
+        center: Vec3d,
+        playerPos: Vec3d,
+        delta: Float
+    ) {
+        entityRender = BlockEntityRender(entity, stack, buffer, center, playerPos, delta)
     }
 
-    public BlockEntityRenderEvent(BlockEntityRender ber) {
-        this.entityRender = ber;
+    constructor(ber: BlockEntityRender) {
+        entityRender = ber
     }
 
-    @Override
-    public void fire(ArrayList<BlockEntityRenderListener> listeners) {
-        for (BlockEntityRenderListener listener : listeners) {
-            listener.onRenderBlockEntity(entityRender);
-            if (entityRender.isCancelled())
-                this.cancel();
+    override fun fire(listeners: ArrayList<BlockEntityRenderListener>) {
+        for (listener in listeners) {
+            listener.onRenderBlockEntity(entityRender)
+            if (entityRender.isCancelled) cancel()
         }
     }
 
-    @Override
-    public Class<BlockEntityRenderListener> getEvent() {
-        return BlockEntityRenderListener.class;
-    }
+    override val event: Class<BlockEntityRenderListener>
+        get() = BlockEntityRenderListener::class.java
 }

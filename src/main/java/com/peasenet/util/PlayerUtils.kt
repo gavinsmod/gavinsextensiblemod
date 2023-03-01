@@ -17,51 +17,51 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util
 
-package com.peasenet.util;
-
-import com.peasenet.main.GavinsMod;
-import com.peasenet.main.GavinsModClient;
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.util.event.PlayerAttackEvent;
-import com.peasenet.util.math.Rotation;
-import net.minecraft.client.render.Camera;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.Vec3d;
+import com.peasenet.main.GavinsMod
+import com.peasenet.main.GavinsModClient
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.util.event.PlayerAttackEvent
+import com.peasenet.util.math.Rotation
+import net.minecraft.client.render.Camera
+import net.minecraft.entity.Entity
+import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket.OnGroundOnly
+import net.minecraft.text.Text
+import net.minecraft.util.Hand
+import net.minecraft.util.math.Vec3d
 
 /**
  * @author gt3ch1
- * @version 5/23/2022
+ * @version 03-01-2023
  * A helper class with utilities relating to the player.
  */
-public class PlayerUtils {
-    static int lastAttackTime = 0;
+object PlayerUtils {
+    private var lastAttackTime = 0
 
     /**
      * Sets the rotation of the player.
      *
      * @param rotation The rotation to set the view to.
      */
-    public static void setRotation(Rotation rotation) {
-        var player = GavinsModClient.getPlayer();
-        player.setPitch(rotation.getPitch());
-        player.setYaw(rotation.getYaw());
+    fun setRotation(rotation: Rotation) {
+        val player = GavinsModClient.getPlayer()
+        player.setPitch(rotation.pitch)
+        player.setYaw(rotation.yaw)
     }
 
-    /**
-     * Gets the current position of the player.
-     *
-     * @return The current position of the player.
-     */
-    public static Vec3d getPlayerPos() {
-        var player = GavinsModClient.getPlayer();
-        return player.getPos();
-    }
+    val playerPos: Vec3d
+        /**
+         * Gets the current position of the player.
+         *
+         * @return The current position of the player.
+         */
+        get() {
+            val player = GavinsModClient.getPlayer()
+            return player.pos
+        }
 
     /**
      * Gets the new player position after the change in time.
@@ -70,14 +70,15 @@ public class PlayerUtils {
      * @param camera    The camera to use.
      * @return The new player position.
      */
-    public static Vec3d getNewPlayerPosition(float deltaTime, Camera camera) {
-        var look = camera.getHorizontalPlane();
-        var player = GavinsModClient.getPlayer();
-        var px = (player.getPrevX() + (getPlayerPos().getX() - player.getPrevX()) * deltaTime) + look.x();
-        var py = (player.getPrevY() + (getPlayerPos().getY() - player.getPrevY()) * deltaTime) + look.y()
-                + player.getEyeHeight();
-        var pz = (player.getPrevZ() + (getPlayerPos().getZ() - player.getPrevZ()) * deltaTime) + look.z();
-        return new Vec3d(px, py, pz);
+    @JvmStatic
+    fun getNewPlayerPosition(deltaTime: Float, camera: Camera): Vec3d {
+        val look = camera.horizontalPlane
+        val player = GavinsModClient.getPlayer()
+        val px = player.prevX + (playerPos.getX() - player.prevX) * deltaTime + look.x()
+        val py = (player.prevY + (playerPos.getY() - player.prevY) * deltaTime + look.y()
+                + player.eyeHeight)
+        val pz = player.prevZ + (playerPos.getZ() - player.prevZ) * deltaTime + look.z()
+        return Vec3d(px, py, pz)
     }
 
     /**
@@ -85,9 +86,9 @@ public class PlayerUtils {
      *
      * @return True if the player is on the ground, false otherwise.
      */
-    public static boolean onGround() {
-        var player = GavinsModClient.getPlayer();
-        return player.isOnGround();
+    private fun onGround(): Boolean {
+        val player = GavinsModClient.getPlayer()
+        return player.isOnGround
     }
 
     /**
@@ -95,33 +96,32 @@ public class PlayerUtils {
      *
      * @param entity The entity to attack.
      */
-    public static void attackEntity(Entity entity) {
-        var player = GavinsModClient.getPlayer();
-        assert GavinsModClient.getMinecraftClient().getPlayerInteractionManager() != null;
-        if (onGround() && !player.isNoClip() && player.getAttackCoolDownProgress(0.5f) > 0.90f) {
-            PlayerAttackEvent event = new PlayerAttackEvent();
-            GavinsMod.eventManager.call(event);
-            GavinsModClient.getMinecraftClient().getPlayerInteractionManager().attackEntity((PlayerEntity) player, entity);
-            player.tryAttack(entity);
-            player.swingHand(Hand.MAIN_HAND);
-            lastAttackTime = 0;
+    fun attackEntity(entity: Entity?) {
+        val player = GavinsModClient.getPlayer()
+        assert(GavinsModClient.getMinecraftClient().playerInteractionManager != null)
+        if (onGround() && !player.isNoClip && player.getAttackCoolDownProgress(0.5f) > 0.90f) {
+            val event = PlayerAttackEvent()
+            GavinsMod.eventManager.call(event)
+            GavinsModClient.getMinecraftClient().playerInteractionManager.attackEntity(player as PlayerEntity, entity)
+            player.tryAttack(entity)
+            player.swingHand(Hand.MAIN_HAND)
+            lastAttackTime = 0
         }
-        lastAttackTime++;
+        lastAttackTime++
     }
 
     /**
      * Checks whether flight is enabled.
      */
-    public static void updateFlight() {
-        var player = GavinsModClient.getPlayer();
-        if (player == null || player.getAbilities() == null)
-            return;
-        var abilities = player.getAbilities();
-        abilities.allowFlying = GavinsMod.isEnabled(Type.FLY) || abilities.creativeMode || GavinsMod.isEnabled(Type.NO_CLIP);
-        if (GavinsMod.isEnabled(Type.FLY) && GavinsMod.isEnabled(Type.NO_CLIP))
-            abilities.flying = true;
-        if (!abilities.creativeMode && !GavinsMod.isEnabled(Type.FLY) && !GavinsMod.isEnabled(Type.NO_CLIP))
-            abilities.flying = false;
+    fun updateFlight() {
+        val player = GavinsModClient.getPlayer()
+        if (player == null || player.abilities == null) return
+        val abilities = player.abilities
+        abilities.allowFlying =
+            GavinsMod.isEnabled(Type.FLY) || abilities.creativeMode || GavinsMod.isEnabled(Type.NO_CLIP)
+        if (GavinsMod.isEnabled(Type.FLY) && GavinsMod.isEnabled(Type.NO_CLIP)) abilities.flying = true
+        if (!abilities.creativeMode && !GavinsMod.isEnabled(Type.FLY) && !GavinsMod.isEnabled(Type.NO_CLIP)) abilities.flying =
+            false
     }
 
     /**
@@ -130,53 +130,51 @@ public class PlayerUtils {
      * @param entity The entity to get the distance to.
      * @return The distance between the player and the given entity.
      */
-    public static double distanceToEntity(Entity entity) {
-        var player = GavinsModClient.getPlayer();
-        return player.squaredDistanceTo(entity);
+    fun distanceToEntity(entity: Entity?): Double {
+        val player = GavinsModClient.getPlayer()
+        return player.squaredDistanceTo(entity)
     }
 
-
-    /**
-     * Gets whether the player is falling.
-     *
-     * @return True if the player is falling, false otherwise.
-     */
-    public static boolean isFalling() {
-        var player = GavinsModClient.getPlayer();
-        return player.isFallFlying();
-    }
+    private val isFalling: Boolean
+        /**
+         * Gets whether the player is falling.
+         *
+         * @return True if the player is falling, false otherwise.
+         */
+        get() {
+            val player = GavinsModClient.getPlayer()
+            return player.isFallFlying
+        }
 
     /**
      * Gets whether the player can be damaged by the current fall speed.
      *
      * @return True if the player can be damaged, false otherwise.
      */
-    public static boolean fallSpeedCanDamage() {
-        var player = GavinsModClient.getPlayer();
-        return player.getVelocity().y < -0.5;
+    private fun fallSpeedCanDamage(): Boolean {
+        val player = GavinsModClient.getPlayer()
+        return player.velocity.y < -0.5
     }
 
     /**
      * Handles No Fall. This will prevent the player from falling when enabled.
      */
-    public static void handleNoFall() {
+    fun handleNoFall() {
         //TODO: This is apparently a bit weird in preventing the player from crouching + moving while flying.
-        var player = GavinsModClient.getPlayer();
+        val player = GavinsModClient.getPlayer()
         if (player != null) {
-            if (player.getFallDistance() <= (isFalling() ? 1 : 2))
-                return;
-            if (player.isSneaking() && !fallSpeedCanDamage() && player.isFallFlying())
-                return;
+            if (player.fallDistance <= (if (isFalling) 1 else 2)) return
+            if (player.isSneaking && !fallSpeedCanDamage() && player.isFallFlying) return
             if (GavinsMod.isEnabled(Type.NO_FALL)) {
-                player.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(true));
+                player.networkHandler.sendPacket(OnGroundOnly(true))
             }
         }
     }
 
-    public static void sendMessage(String message, boolean withPrefix) {
-        if (withPrefix)
-            message = Mod.GAVINS_MOD_STRING + message;
-        if (GavinsMod.miscConfig.isMessages())
-            GavinsModClient.getPlayer().sendMessage(Text.literal(message), false);
+    @JvmStatic
+    fun sendMessage(message: String, withPrefix: Boolean) {
+        var newMessage = message
+        if (withPrefix) newMessage = Mod.GAVINS_MOD_STRING + newMessage
+        if (GavinsMod.miscConfig.isMessages) GavinsModClient.getPlayer().sendMessage(Text.literal(newMessage), false)
     }
 }

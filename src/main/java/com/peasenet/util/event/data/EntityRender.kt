@@ -17,49 +17,60 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event.data
 
-package com.peasenet.util.event.data;
+import net.minecraft.client.render.BufferBuilder
+import net.minecraft.client.render.VertexConsumerProvider
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.entity.Entity
+import net.minecraft.entity.EntityType
+import net.minecraft.util.math.Vec3d
 
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.math.Vec3d;
+class EntityRender {
+    var entity: Entity
+    var stack: MatrixStack
+    var buffer: BufferBuilder?
+    var center: Vec3d?
+    var playerPos: Vec3d?
+    var delta: Float
+    var vertexConsumers: VertexConsumerProvider?
+    var light = 0
 
-public class EntityRender {
-
-    public Entity entity;
-    public MatrixStack stack;
-    public BufferBuilder buffer;
-    public Vec3d center;
-    public Vec3d playerPos;
-    public float delta;
-    public VertexConsumerProvider vertexConsumers;
-    public int light = 0;
-
-    public EntityRender(Entity entity, MatrixStack stack, BufferBuilder buffer, Vec3d center, Vec3d playerPos, float delta) {
-        this.entity = entity;
-        this.stack = stack;
-        this.buffer = buffer;
-        this.center = center;
-        this.playerPos = playerPos;
-        this.delta = delta;
-        this.vertexConsumers = null;
+    constructor(
+        entity: Entity,
+        stack: MatrixStack,
+        buffer: BufferBuilder?,
+        center: Vec3d?,
+        playerPos: Vec3d?,
+        delta: Float
+    ) {
+        this.entity = entity
+        this.stack = stack
+        this.buffer = buffer
+        this.center = center
+        this.playerPos = playerPos
+        this.delta = delta
+        vertexConsumers = null
     }
 
-    public EntityRender(Entity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
-        this.entity = entity;
-        this.stack = matrices;
-        this.buffer = null;
-        this.center = null;
-        this.playerPos = null;
-        this.delta = tickDelta;
-        this.vertexConsumers = vertexConsumers;
-        this.light = light;
+    constructor(
+        entity: Entity,
+        yaw: Float,
+        tickDelta: Float,
+        matrices: MatrixStack,
+        vertexConsumers: VertexConsumerProvider?,
+        light: Int
+    ) {
+        this.entity = entity
+        stack = matrices
+        buffer = null
+        center = null
+        playerPos = null
+        delta = tickDelta
+        this.vertexConsumers = vertexConsumers
+        this.light = light
     }
 
-    public EntityType<?> getEntityType() {
-        return entity.getType();
-    }
+    val entityType: EntityType<*>
+        get() = entity.type
 }

@@ -17,44 +17,30 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event
 
-package com.peasenet.util.event;
-
-import com.peasenet.util.listeners.InGameHudRenderListener;
-import net.minecraft.client.util.math.MatrixStack;
-
-import java.util.ArrayList;
+import com.peasenet.util.listeners.InGameHudRenderListener
+import net.minecraft.client.util.math.MatrixStack
 
 /**
  * The event for the world render event.
  *
  * @author GT3CH1
- * @version 12/22/2022
+ * @version 03-01-2023
  */
-public class InGameHudRenderEvent extends Event<InGameHudRenderListener> {
-    MatrixStack stack;
-    float delta;
-
-    /**
-     * Creates a new world render event.
-     *
-     * @param stack - The matrix stack.
-     * @param delta - The delta.
-     */
-    public InGameHudRenderEvent(MatrixStack stack, float delta) {
-        this.stack = stack;
-        this.delta = delta;
-    }
-
-    @Override
-    public void fire(ArrayList<InGameHudRenderListener> listeners) {
-        for (InGameHudRenderListener listener : listeners) {
-            listener.onRenderInGameHud(stack, delta);
+class InGameHudRenderEvent
+/**
+ * Creates a new world render event.
+ *
+ * @param stack - The matrix stack.
+ * @param delta - The delta.
+ */(var stack: MatrixStack, var delta: Float) : Event<InGameHudRenderListener>() {
+    override fun fire(listeners: ArrayList<InGameHudRenderListener>) {
+        for (listener in listeners) {
+            listener.onRenderInGameHud(stack, delta)
         }
     }
 
-    @Override
-    public Class<InGameHudRenderListener> getEvent() {
-        return InGameHudRenderListener.class;
-    }
+    override val event: Class<InGameHudRenderListener>
+        get() = InGameHudRenderListener::class.java
 }

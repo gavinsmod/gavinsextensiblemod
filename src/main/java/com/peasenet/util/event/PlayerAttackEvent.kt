@@ -17,36 +17,27 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event
 
-package com.peasenet.util.event;
-
-import com.peasenet.util.listeners.PlayerAttackListener;
-
-import java.util.ArrayList;
+import com.peasenet.util.listeners.PlayerAttackListener
 
 /**
  * An event for when a packet is sent.
  *
  * @author GT3CH1
- * @version 12/22/2022
+ * @version 03-01-2023
  */
-public class PlayerAttackEvent extends Event<PlayerAttackListener> {
-
-    /**
-     * Creates a new PacketSendEvent.
-     */
-    public PlayerAttackEvent() {
-    }
-
-    @Override
-    public void fire(ArrayList<PlayerAttackListener> listeners) {
-        for (PlayerAttackListener listener : listeners) {
-            listener.onAttackEntity();
+class PlayerAttackEvent
+/**
+ * Creates a new PacketSendEvent.
+ */
+    : Event<PlayerAttackListener>() {
+    override fun fire(listeners: ArrayList<PlayerAttackListener>) {
+        for (listener in listeners) {
+            listener.onAttackEntity()
         }
     }
 
-    @Override
-    public Class<PlayerAttackListener> getEvent() {
-        return PlayerAttackListener.class;
-    }
+    override val event: Class<PlayerAttackListener>
+        get() = PlayerAttackListener::class.java
 }

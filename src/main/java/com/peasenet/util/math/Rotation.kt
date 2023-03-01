@@ -17,31 +17,24 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package com.peasenet.util.math;
+package com.peasenet.util.math
 
 /**
  * @author gt3ch1
  * @version 5/23/2022
  * A class that represents a rotation (pitch and yaw).
  */
-public record Rotation(float pitch, float yaw) {
-
+data class Rotation(
     /**
      * Gets the pitch of this rotation.
      *
      * @return The pitch of this rotation.
      */
-    public float getPitch() {
-        return this.pitch;
-    }
-
+    val pitch: Float,
     /**
      * Gets the yaw of this rotation.
      *
      * @return The yaw of this rotation.
      */
-    public float getYaw() {
-        return this.yaw;
-    }
-}
+    val yaw: Float
+)

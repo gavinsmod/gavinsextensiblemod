@@ -17,17 +17,13 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event.data
 
-package com.peasenet.util.event.data;
+open class Cancellable {
+    var isCancelled = false
+        private set
 
-public class Cancellable {
-    private boolean cancelled;
-
-    public void cancel() {
-        this.cancelled = true;
-    }
-
-    public boolean isCancelled() {
-        return this.cancelled;
+    fun cancel() {
+        isCancelled = true
     }
 }

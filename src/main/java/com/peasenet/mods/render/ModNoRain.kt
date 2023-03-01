@@ -17,19 +17,14 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.render
 
-package com.peasenet.mods.render;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
 
 /**
  * @author gt3ch1
  * @version 6/14/2022
  * A mod that disables rain.
  */
-public class ModNoRain extends Mod {
-    public ModNoRain() {
-        super(Type.NO_RAIN);
-    }
-}
+class ModNoRain : Mod(Type.NO_RAIN)

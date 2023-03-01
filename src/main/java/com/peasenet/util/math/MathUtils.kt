@@ -17,33 +17,34 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.math
 
-package com.peasenet.util.math;
-
-import com.peasenet.main.GavinsModClient;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3d;
+import com.peasenet.main.GavinsModClient
+import net.minecraft.entity.Entity
+import net.minecraft.util.math.Vec3d
+import kotlin.math.atan2
+import kotlin.math.sqrt
 
 /**
  * @author gt3ch1
  * @version 5/23/2022
  */
-public class MathUtils {
+object MathUtils {
     /**
      * Gets the rotation to set to see the given entity at its midpoint.
      *
      * @param entity The entity to look at.
      * @return The rotation to set to.
      */
-    public static Rotation getRotationToEntity(Entity entity) {
-        var player = GavinsModClient.getPlayer();
-        var playerPos = new Vec3d(player.getPrevX(), player.getY() + player.getEyeHeight(player.getPose()), player.getZ());
-        var diffX = entity.getX() - playerPos.x;
-        var diffY = (entity.getBoundingBox().getCenter().y - playerPos.y);
-        var diffZ = entity.getZ() - playerPos.z;
-        var diffXZ = Math.sqrt(diffX * diffX + diffZ * diffZ);
-        var yaw = (float) Math.toDegrees(Math.atan2(diffZ, diffX)) - 90F;
-        var pitch = (float) -Math.toDegrees(Math.atan2(diffY, diffXZ));
-        return new Rotation(pitch, yaw);
+    fun getRotationToEntity(entity: Entity): Rotation {
+        val player = GavinsModClient.getPlayer()
+        val playerPos = Vec3d(player.prevX, player.y + player.getEyeHeight(player.pose), player.z)
+        val diffX = entity.x - playerPos.x
+        val diffY = entity.boundingBox.center.y - playerPos.y
+        val diffZ = entity.z - playerPos.z
+        val diffXZ = sqrt(diffX * diffX + diffZ * diffZ)
+        val yaw = Math.toDegrees(atan2(diffZ, diffX)).toFloat() - 90f
+        val pitch = -Math.toDegrees(atan2(diffY, diffXZ)).toFloat()
+        return Rotation(pitch, yaw)
     }
 }

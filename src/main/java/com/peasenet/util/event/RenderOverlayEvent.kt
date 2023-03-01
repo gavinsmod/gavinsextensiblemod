@@ -17,41 +17,28 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event
 
-package com.peasenet.util.event;
-
-import com.peasenet.util.event.data.RenderOverlay;
-import com.peasenet.util.listeners.RenderOverlayListener;
-
-import java.util.ArrayList;
+import com.peasenet.util.event.data.RenderOverlay
+import com.peasenet.util.listeners.RenderOverlayListener
 
 /**
  * An event for when a packet is sent.
  *
  * @author GT3CH1
- * @version 12/26/2022
+ * @version 03-01-2023
  */
-public class RenderOverlayEvent extends CancellableEvent<RenderOverlayListener> {
-    RenderOverlay renderOverlay;
-
-    /**
-     * Creates a new PacketSendEvent.
-     */
-    public RenderOverlayEvent(RenderOverlay r) {
-        this.renderOverlay = r;
-    }
-
-    @Override
-    public void fire(ArrayList<RenderOverlayListener> listeners) {
-        for (RenderOverlayListener listener : listeners) {
-            listener.onRenderOverlay(renderOverlay);
-            if (renderOverlay.isCancelled())
-                this.cancel();
+class RenderOverlayEvent
+/**
+ * Creates a new PacketSendEvent.
+ */(private var renderOverlay: RenderOverlay) : CancellableEvent<RenderOverlayListener>() {
+    override fun fire(listeners: ArrayList<RenderOverlayListener>) {
+        for (listener in listeners) {
+            listener.onRenderOverlay(renderOverlay)
+            if (renderOverlay.isCancelled) cancel()
         }
     }
 
-    @Override
-    public Class<RenderOverlayListener> getEvent() {
-        return RenderOverlayListener.class;
-    }
+    override val event: Class<RenderOverlayListener>
+        get() = RenderOverlayListener::class.java
 }

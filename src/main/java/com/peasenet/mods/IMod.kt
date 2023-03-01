@@ -17,148 +17,129 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods
 
-package com.peasenet.mods;
-
-import com.peasenet.settings.Setting;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
-
-import java.util.ArrayList;
+import com.peasenet.settings.Setting
+import net.minecraft.client.world.ClientWorld
 
 /**
  * @author gt3ch1
  * @version 12/31/2022
  * The interface of the base mod class.
  */
-public interface IMod {
-
+interface IMod {
     /**
      * Runs on enabling of mod.
      */
-    void onEnable();
+    fun onEnable()
 
     /**
      * Runs on disabling of mod.
      */
-    void onDisable();
+    fun onDisable()
 
     /**
      * Runs on every tick.
      */
-    void onTick();
+    fun onTick()
 
     /**
      * Checks the keybinding of the mod.
      */
-    void checkKeybinding();
+    fun checkKeybinding()
 
     /**
      * Whether the mod is enabled.
      *
      * @return True if the mod is enabled.
      */
-    boolean isActive();
+    val isActive: Boolean
 
     /**
      * Enables the mod.
      */
-    void activate();
+    fun activate()
 
     /**
      * Disables the mod.
      */
-    void deactivate();
+    fun deactivate()
 
     /**
      * Toggles the mod.
      */
-    void toggle();
+    fun toggle()
 
     /**
      * Get the mod category
      *
      * @return The mod category
      */
-    Type.Category getCategory();
+    val category: Type.Category?
 
     /**
      * Reloads this mod by calling #deactivate and #activate.
      */
-    void reload();
+    fun reload()
 
     /**
      * Gets the translation key for the mod.
      *
      * @return The translation key for the mod.
      */
-    String getTranslationKey();
+    val translationKey: String?
 
     /**
      * Gets the name of the mod.
      *
      * @return The name of the mod.
      */
-    String getName();
+    val name: String?
 
     /**
      * Gets the chat command of the mod.
      *
      * @return The chat command of the mod.
      */
-    String getChatCommand();
+    val chatCommand: String?
 
     /**
      * Gets the type of the mod.
      *
      * @return The type of the mod.
      */
-    Type getType();
-
-    /**
-     * Gets the player.
-     *
-     * @return The client player.
-     */
-    ClientPlayerEntity getPlayer();
+    val type: Type?
 
     /**
      * Whether the mod is in a deactivation state (where the mod is disabled, but there still needs work to be done).
      *
      * @return True if the mod is in a deactivation state.
      */
-    boolean isDeactivating();
+    val isDeactivating: Boolean
 
     /**
      * Whether the mod has settings.
      *
      * @return True if the mod has settings.
      */
-    boolean hasSettings();
+    fun hasSettings(): Boolean
 
     /**
      * Gets the settings of the mod.
      *
      * @return The settings of the mod.
      */
-    ArrayList<Setting> getSettings();
-
-    /**
-     * Adds a setting to the mod.
-     *
-     * @param setting - The setting to add.
-     */
-    void addSetting(Setting setting);
+    val settings: ArrayList<Setting>?
 
     /**
      * Reloads the settings of the mod.
      */
-    void reloadSettings();
+    fun reloadSettings()
 
     /**
      * The world that the player is in.
      *
      * @return The world that the player is in.
      */
-    ClientWorld getWorld();
+    val world: ClientWorld?
 }

@@ -17,42 +17,26 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event.data
 
-package com.peasenet.util.event.data;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.block.BlockState
+import net.minecraft.util.math.BlockPos
 
 /**
  * @author gt3ch1
  * @version 01/01/2023
- * <p>
+ *
+ *
  * Draw side data class for the draw side event.
  * @see com.peasenet.util.event.ShouldDrawSideEvent
  */
-public class DrawSide extends Cancellable {
-    private BlockPos pos;
-    private BlockState state;
-    private Boolean shouldDraw;
-
-    public DrawSide(BlockPos pos, BlockState state) {
-        this.pos = pos;
-        this.state = state;
+class DrawSide(val pos: BlockPos, val state: BlockState) : Cancellable() {
+    private var shouldDraw: Boolean? = null
+    fun setShouldDraw(shouldDraw: Boolean) {
+        this.shouldDraw = shouldDraw
     }
 
-    public BlockPos getPos() {
-        return pos;
-    }
-
-    public BlockState getState() {
-        return state;
-    }
-
-    public void setShouldDraw(boolean shouldDraw) {
-        this.shouldDraw = shouldDraw;
-    }
-
-    public Boolean shouldDraw() {
-        return shouldDraw;
+    fun shouldDraw(): Boolean? {
+        return shouldDraw
     }
 }

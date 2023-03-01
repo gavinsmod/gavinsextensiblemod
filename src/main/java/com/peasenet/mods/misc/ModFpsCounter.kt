@@ -17,82 +17,63 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.misc
 
-package com.peasenet.mods.misc;
-
-import com.peasenet.gavui.math.BoxF;
-import com.peasenet.gavui.math.PointF;
-import com.peasenet.gavui.util.GavUISettings;
-import com.peasenet.gavui.util.GuiUtil;
-import com.peasenet.main.GavinsMod;
-import com.peasenet.main.GavinsModClient;
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.settings.ColorSetting;
-import com.peasenet.settings.SubSetting;
-import com.peasenet.settings.ToggleSetting;
-import com.peasenet.util.listeners.InGameHudRenderListener;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
+import com.peasenet.gavui.math.BoxF
+import com.peasenet.gavui.math.PointF
+import com.peasenet.gavui.util.GavUISettings
+import com.peasenet.gavui.util.GuiUtil
+import com.peasenet.main.GavinsMod
+import com.peasenet.main.GavinsModClient
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.settings.ColorSetting
+import com.peasenet.settings.SubSetting
+import com.peasenet.settings.ToggleSetting
+import com.peasenet.util.listeners.InGameHudRenderListener
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.text.Text
 
 /**
  * @author gt3ch1
- * @version 01/07/2023
+ * @version 03-01-2023
  * A mod that renders the current frames per second in the top right corner of the screen.
  */
-public class ModFpsCounter extends Mod implements InGameHudRenderListener {
-    public ModFpsCounter() {
-        super(Type.MOD_FPS_COUNTER);
-        SubSetting fpsSetting = new SubSetting(100, 10, "gavinsmod.settings.misc.fpscolors");
-
-        ToggleSetting fpsColors = new ToggleSetting("gavinsmod.settings.misc.fpscolors.enabled");
-        fpsColors.setCallback(() -> {
-            fpsColorConfig.setColorsEnabled(fpsColors.getValue());
-        });
-        fpsColors.setValue(fpsColorConfig.isColorsEnabled());
-
-        ColorSetting fpsSlowColor = new ColorSetting("gavinsmod.settings.misc.fps.color.slow");
-        fpsSlowColor.setCallback(() -> {
-            fpsColorConfig.setSlowFps(fpsSlowColor.getColor());
-        });
-        fpsSlowColor.setColor(fpsColorConfig.getSlowFps());
-
-        ColorSetting fpsOkColor = new ColorSetting("gavinsmod.settings.misc.fps.color.ok");
-        fpsOkColor.setCallback(() -> {
-            fpsColorConfig.setOkFps(fpsOkColor.getColor());
-        });
-        fpsOkColor.setColor(fpsColorConfig.getOkFps());
-
-        ColorSetting fpsFastColor = new ColorSetting("gavinsmod.settings.misc.fps.color.fast");
-        fpsFastColor.setCallback(() -> {
-            fpsColorConfig.setFastFps(fpsFastColor.getColor());
-        });
-        fpsFastColor.setColor(fpsColorConfig.getFastFps());
-
-        fpsSetting.add(fpsColors);
-        fpsSetting.add(fpsSlowColor);
-        fpsSetting.add(fpsOkColor);
-        fpsSetting.add(fpsFastColor);
-        addSetting(fpsSetting);
-
+class ModFpsCounter : Mod(Type.MOD_FPS_COUNTER), InGameHudRenderListener {
+    init {
+        val fpsSetting = SubSetting(100, 10, "gavinsmod.settings.misc.fpscolors")
+        val fpsColors = ToggleSetting("gavinsmod.settings.misc.fpscolors.enabled")
+        fpsColors.setCallback { fpsColorConfig.isColorsEnabled = fpsColors.value }
+        fpsColors.value = fpsColorConfig.isColorsEnabled
+        val fpsSlowColor = ColorSetting("gavinsmod.settings.misc.fps.color.slow")
+        fpsSlowColor.setCallback { fpsColorConfig.slowFps = fpsSlowColor.color }
+        fpsSlowColor.color = fpsColorConfig.slowFps
+        val fpsOkColor = ColorSetting("gavinsmod.settings.misc.fps.color.ok")
+        fpsOkColor.setCallback { fpsColorConfig.okFps = fpsOkColor.color }
+        fpsOkColor.color = fpsColorConfig.okFps
+        val fpsFastColor = ColorSetting("gavinsmod.settings.misc.fps.color.fast")
+        fpsFastColor.setCallback { fpsColorConfig.fastFps = fpsFastColor.color }
+        fpsFastColor.color = fpsColorConfig.fastFps
+        fpsSetting.add(fpsColors)
+        fpsSetting.add(fpsSlowColor)
+        fpsSetting.add(fpsOkColor)
+        fpsSetting.add(fpsFastColor)
+        addSetting(fpsSetting)
     }
 
-    @Override
-    public void onEnable() {
-        super.onEnable();
-        em.subscribe(InGameHudRenderListener.class, this);
+    override fun onEnable() {
+        super.onEnable()
+        em.subscribe(InGameHudRenderListener::class.java, this)
     }
 
-    @Override
-    public void onDisable() {
-        super.onDisable();
-        em.unsubscribe(InGameHudRenderListener.class, this);
+    override fun onDisable() {
+        super.onDisable()
+        em.unsubscribe(InGameHudRenderListener::class.java, this)
     }
 
-    @Override
-    public void onRenderInGameHud(MatrixStack matrixStack, float delta) {
-        if (GavinsMod.isEnabled(Type.MOD_GUI) || GavinsMod.isEnabled(Type.SETTINGS) || !isActive()) return;
-        drawFpsOverlay(matrixStack);
+    override fun onRenderInGameHud(stack: MatrixStack, delta: Float) {
+        if (GavinsMod.isEnabled(Type.MOD_GUI) || GavinsMod.isEnabled(Type.SETTINGS) || !isActive) return
+        drawFpsOverlay(stack)
     }
 
     /**
@@ -100,24 +81,23 @@ public class ModFpsCounter extends Mod implements InGameHudRenderListener {
      *
      * @param matrixStack - The matrix stack to use.
      */
-    private void drawFpsOverlay(MatrixStack matrixStack) {
-        var textRenderer = getClient().getTextRenderer();
-        var fps = GavinsModClient.getMinecraftClient().getFps();
-        var fpsString = "FPS: " + fps;
-        var xCoordinate = GavinsModClient.getMinecraftClient().getWindow().getScaledWidth() - (fpsString.length() * 5 + 2);
-        var box = new BoxF(new PointF(xCoordinate - 2, 0), fpsString.length() * 5 + 4, 12);
-        var maximumFps = GavinsModClient.getMinecraftClient().getOptions().getMaxFps().getValue();
-        var color = GavUISettings.getColor("gui.color.foreground");
-        var colorEnabled = fpsColorConfig.isColorsEnabled();
-        var fastColor = fpsColorConfig.getFastFps();
-        var okColor = fpsColorConfig.getOkFps();
-        var slowFps = fpsColorConfig.getSlowFps();
+    private fun drawFpsOverlay(matrixStack: MatrixStack) {
+        val textRenderer = client.textRenderer
+        val fps = GavinsModClient.getMinecraftClient().fps
+        val fpsString = "FPS: $fps"
+        val xCoordinate = GavinsModClient.getMinecraftClient().window.scaledWidth - (fpsString.length * 5 + 2)
+        val box = BoxF(PointF((xCoordinate - 2).toFloat(), 0f), (fpsString.length * 5 + 4).toFloat(), 12f)
+        val maximumFps = GavinsModClient.getMinecraftClient().options.maxFps.value
+        var color = GavUISettings.getColor("gui.color.foreground")
+        val colorEnabled = fpsColorConfig.isColorsEnabled
+        val fastColor = fpsColorConfig.fastFps
+        val okColor = fpsColorConfig.okFps
+        val slowFps = fpsColorConfig.slowFps
         if (colorEnabled) {
-            if (fps >= maximumFps * 0.85) color = fastColor;
-            else if (fps > maximumFps * 0.45 && fps < maximumFps * 0.85) color = okColor;
-            else color = slowFps;
+            color =
+                if (fps >= maximumFps * 0.85) fastColor else if (fps > maximumFps * 0.45 && fps < maximumFps * 0.85) okColor else slowFps
         }
-        GuiUtil.drawBox((GavUISettings.getColor("gui.color.background")), box, matrixStack, 0.5f);
-        textRenderer.draw(matrixStack, Text.literal(fpsString), xCoordinate, 2, color.getAsInt());
+        GuiUtil.drawBox(GavUISettings.getColor("gui.color.background"), box, matrixStack, 0.5f)
+        textRenderer.draw(matrixStack, Text.literal(fpsString), xCoordinate.toFloat(), 2f, color.asInt)
     }
 }

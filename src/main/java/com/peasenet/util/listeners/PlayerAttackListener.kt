@@ -17,9 +17,9 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.util.listeners;
+package com.peasenet.util.listeners
 
-import com.peasenet.util.event.data.OutputPacket;
+import com.peasenet.util.event.data.OutputPacket
 
 /**
  * A listener for packets being sent.
@@ -27,13 +27,11 @@ import com.peasenet.util.event.data.OutputPacket;
  * @author GT3CH1
  * @version 12/22/2022
  */
-public interface PlayerAttackListener extends Listener {
+interface PlayerAttackListener : Listener {
     /**
      * Called when a packet is sent.
      *
      * @see OutputPacket
      */
-    void onAttackEntity();
-
-
+    fun onAttackEntity()
 }

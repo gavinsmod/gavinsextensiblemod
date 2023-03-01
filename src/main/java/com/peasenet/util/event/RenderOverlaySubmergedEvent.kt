@@ -17,42 +17,28 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.util.event
 
-package com.peasenet.util.event;
-
-import com.peasenet.util.event.data.RenderSubmergedOverlay;
-import com.peasenet.util.listeners.RenderSubmergedOverlayListener;
-
-import java.util.ArrayList;
+import com.peasenet.util.event.data.RenderSubmergedOverlay
+import com.peasenet.util.listeners.RenderSubmergedOverlayListener
 
 /**
  * An event for when a packet is sent.
  *
  * @author GT3CH1
- * @version 12/22/2022
+ * @version 03-01-2023
  */
-public class RenderOverlaySubmergedEvent extends CancellableEvent<RenderSubmergedOverlayListener> {
-
-    private RenderSubmergedOverlay overlay;
-
-    /**
-     * Creates a new PacketSendEvent.
-     */
-    public RenderOverlaySubmergedEvent(RenderSubmergedOverlay overlay) {
-        this.overlay = overlay;
-    }
-
-    @Override
-    public void fire(ArrayList<RenderSubmergedOverlayListener> listeners) {
-        for (RenderSubmergedOverlayListener listener : listeners) {
-            listener.onRenderOverlay(overlay);
-            if (overlay.isCancelled())
-                this.cancel();
+class RenderOverlaySubmergedEvent
+/**
+ * Creates a new PacketSendEvent.
+ */(private val overlay: RenderSubmergedOverlay) : CancellableEvent<RenderSubmergedOverlayListener>() {
+    override fun fire(listeners: ArrayList<RenderSubmergedOverlayListener>) {
+        for (listener in listeners) {
+            listener.onRenderOverlay(overlay)
+            if (overlay.isCancelled) cancel()
         }
     }
 
-    @Override
-    public Class<RenderSubmergedOverlayListener> getEvent() {
-        return RenderSubmergedOverlayListener.class;
-    }
+    override val event: Class<RenderSubmergedOverlayListener>
+        get() = RenderSubmergedOverlayListener::class.java
 }

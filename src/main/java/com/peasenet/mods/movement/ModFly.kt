@@ -17,26 +17,19 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.mods.movement
 
-package com.peasenet.mods.movement;
-
-import com.peasenet.mods.Mod;
-import com.peasenet.mods.Type;
-import com.peasenet.util.PlayerUtils;
+import com.peasenet.mods.Mod
+import com.peasenet.mods.Type
+import com.peasenet.util.PlayerUtils
 
 /**
  * @author gt3ch1
  * @version 6/24/2022
  * A mod that allows the player to fly.
  */
-public class ModFly extends Mod {
-    public ModFly() {
-        super(Type.FLY);
-    }
-
-    @Override
-    public void onTick() {
-
-        PlayerUtils.updateFlight();
+class ModFly : Mod(Type.FLY) {
+    override fun onTick() {
+        PlayerUtils.updateFlight()
     }
 }
