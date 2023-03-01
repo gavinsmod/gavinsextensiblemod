@@ -17,93 +17,47 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.config;
+package com.peasenet.config
 
-import net.minecraft.block.Block;
-import net.minecraft.block.ExperienceDroppingBlock;
-import net.minecraft.registry.Registries;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.HashSet;
-import java.util.List;
+import net.minecraft.block.Block
+import net.minecraft.block.ExperienceDroppingBlock
+import net.minecraft.registry.Registries
+import java.util.function.Consumer
 
 /**
  * The configuration for xray.
  *
  * @author gt3ch1
- * @version 01/04/2022
+ * @version 03-01-2023
  */
-public class XrayConfig extends Config<XrayConfig> {
-
-    /**
-     * The instance of the configuration.
-     */
-    private static XrayConfig instance;
-
+class XrayConfig : Config<XrayConfig>() {
     /**
      * The list of blocks to xray.
      */
-    private final HashSet<String> blocks;
+    private val blocks: HashSet<String>
 
     /**
      * Whether to cull blocks.
      */
-    private boolean blockCulling = false;
-
-    public XrayConfig() {
-        setKey("xray");
-        blocks = new HashSet<>();
-        for (var b : getDefaultBlockList()) {
-            blocks.add(getId(b));
+    var blockCulling = false
+        set(value) {
+            field = value
+            saveConfig()
         }
-        setInstance(this);
+
+    init {
+        key = "xray"
+        blocks = HashSet()
+        for (b in defaultBlockList) {
+            blocks.add(getId(b))
+        }
     }
 
     /**
      * Loads the default block list into the configuration, and saves it.
      */
-    public void loadDefaultBlocks() {
-        setList(getDefaultBlockList());
-    }
-
-    /**
-     * Gets the default block list.
-     *
-     * @return The default block list.
-     */
-    private static List<Block> getDefaultBlockList() {
-        return Registries.BLOCK.stream().filter(b -> b instanceof ExperienceDroppingBlock).toList();
-    }
-
-    /**
-     * Gets the name of the block, used to identify blocks to xray.
-     *
-     * @param b - The block to get the name of.
-     * @return The name of the block.
-     */
-    @NotNull
-    private static String getId(Block b) {
-        var path = b.getLootTableId().getPath();
-        return path.equals("empty") ? b.getTranslationKey().replace("block.minecraft.", "") : path.replace("blocks/", "");
-    }
-
-    /**
-     * Whether to cull blocks.
-     *
-     * @return Whether to cull blocks.
-     */
-    public boolean shouldCullBlocks() {
-        return blockCulling;
-    }
-
-    /**
-     * Sets whether to cull blocks.
-     *
-     * @param blockCulling - Whether to cull blocks.
-     */
-    public void setBlockCulling(boolean blockCulling) {
-        getInstance().blockCulling = blockCulling;
-        saveConfig();
+    fun loadDefaultBlocks() {
+        setList(defaultBlockList)
     }
 
     /**
@@ -111,10 +65,10 @@ public class XrayConfig extends Config<XrayConfig> {
      *
      * @param b - The block to add.
      */
-    public void addBlock(Block b) {
-        String id = getId(b);
-        getInstance().blocks.add(id);
-        saveConfig();
+    fun addBlock(b: Block) {
+        val id = getId(b)
+        blocks.add(id)
+        saveConfig()
     }
 
     /**
@@ -122,10 +76,10 @@ public class XrayConfig extends Config<XrayConfig> {
      *
      * @param list - the list to set to.
      */
-    public void setList(List<Block> list) {
-        getInstance().blocks.clear();
-        list.forEach(this::addBlock);
-        saveConfig();
+    private fun setList(list: List<Block>) {
+        blocks.clear()
+        list.forEach(Consumer { b: Block -> addBlock(b) })
+        saveConfig()
     }
 
     /**
@@ -133,10 +87,10 @@ public class XrayConfig extends Config<XrayConfig> {
      *
      * @param b - The block to remove.
      */
-    public void removeBlock(Block b) {
-        String id = getId(b);
-        getInstance().blocks.remove(id);
-        saveConfig();
+    fun removeBlock(b: Block) {
+        val id = getId(b)
+        blocks.remove(id)
+        saveConfig()
     }
 
     /**
@@ -145,19 +99,33 @@ public class XrayConfig extends Config<XrayConfig> {
      * @param b - The block to check.
      * @return Whether the block is in the list.
      */
-    public boolean isInList(Block b) {
-        String id = getId(b);
-        return getInstance().blocks.contains(id);
+    fun isInList(b: Block): Boolean {
+        val id = getId(b)
+        return blocks.contains(id)
     }
 
-    @Override
-    public XrayConfig getInstance() {
-        return instance;
-    }
+    companion object {
+        private val defaultBlockList: List<Block>
+            /**
+             * Gets the default block list.
+             *
+             * @return The default block list.
+             */
+            get() = Registries.BLOCK.stream().filter { b: Block? -> b is ExperienceDroppingBlock }
+                .toList()
 
-    @Override
-    public void setInstance(XrayConfig data) {
-        instance = data;
+        /**
+         * Gets the name of the block, used to identify blocks to xray.
+         *
+         * @param b - The block to get the name of.
+         * @return The name of the block.
+         */
+        private fun getId(b: Block): String {
+            val path = b.lootTableId.path
+            return if (path == "empty") b.translationKey.replace("block.minecraft.", "") else path.replace(
+                "blocks/",
+                ""
+            )
+        }
     }
-
 }

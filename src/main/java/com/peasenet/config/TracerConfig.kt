@@ -17,21 +17,16 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package com.peasenet.config;
+package com.peasenet.config
 
 /**
  * The configuration for tracers.
  *
  * @author gt3ch1
- * @version 01/03/2022
+ * @version 03-01-2023
  */
-public class TracerConfig extends TracerEspConfig<EspConfig> {
-
-    public TracerConfig() {
-        setKey("tracer");
-        setInstance(this);
+class TracerConfig : TracerEspConfig<EspConfig?>() {
+    init {
+        key = "tracer"
     }
-
-
 }

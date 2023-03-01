@@ -17,80 +17,63 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.config
 
-package com.peasenet.config;
-
-import com.peasenet.mods.render.waypoints.Waypoint;
-
-import java.util.ArrayList;
+import com.peasenet.mods.render.waypoints.Waypoint
 
 /**
  * The configuration for waypoints.
  *
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 03-01-2023
  */
-public class WaypointConfig extends Config<WaypointConfig> {
-
-    /**
-     * The instance of the configuration.
-     */
-    private static WaypointConfig instance;
-
+class WaypointConfig : Config<WaypointConfig>() {
     /**
      * The list of waypoints.
      */
-    private ArrayList<Waypoint> locations;
+    private var locations: ArrayList<Waypoint>
 
-    public WaypointConfig() {
-        setKey("waypoints");
-        locations = new ArrayList<>();
-        setInstance(this);
+    init {
+        key = "waypoints"
+        locations = ArrayList()
     }
 
     /**
      * Adds a waypoint to the list.
+     *
      * @param w - The waypoint to add.
      */
-    public void addWaypoint(Waypoint w) {
-        this.getInstance().locations.add(w);
-        saveConfig();
+    fun addWaypoint(w: Waypoint) {
+        locations.add(w)
+        saveConfig()
     }
 
     /**
      * Removes a waypoint from the list.
+     *
      * @param w - The waypoint to remove.
      */
-    public void removeWaypoint(Waypoint w) {
-        this.getInstance().locations.remove(w);
-        saveConfig();
-
+    fun removeWaypoint(w: Waypoint) {
+        locations.remove(w)
+        saveConfig()
     }
 
     /**
      * Gets the list of waypoints.
+     *
      * @return The list of waypoints.
      */
-    public ArrayList<Waypoint> getLocations() {
-        return this.getInstance().locations;
+    fun getLocations(): ArrayList<Waypoint> {
+        return locations
     }
 
     /**
      * Sets the list of waypoints.
+     *
      * @param locations - The list of waypoints.
      */
-    public void setLocations(ArrayList<Waypoint> locations) {
-        this.getInstance().locations = locations;
-        saveConfig();
-    }
-
-    @Override
-    public WaypointConfig getInstance() {
-        return instance;
-    }
-
-    @Override
-    public void setInstance(WaypointConfig data) {
-        instance = data;
+    fun setLocations(locations: ArrayList<Waypoint>) {
+        this.locations = locations
+        saveConfig()
     }
 }

@@ -41,13 +41,13 @@ public class ModFullBright extends Mod {
         gammaFade.setCallback(() -> {
             fullbrightConfig.setGammaFade(gammaFade.getValue());
         });
-        gammaFade.setValue(fullbrightConfig.isGammaFade());
+        gammaFade.setValue(fullbrightConfig.getGammaFade());
 
         ToggleSetting autoFullBright = new ToggleSetting("gavinsmod.settings.render.autofullbright");
         autoFullBright.setCallback(() -> {
             fullbrightConfig.setAutoFullBright(autoFullBright.getValue());
         });
-        autoFullBright.setValue(fullbrightConfig.isAutoFullBright());
+        autoFullBright.setValue(fullbrightConfig.getAutoFullBright());
 
         SlideSetting gamma = new SlideSetting("gavinsmod.settings.render.fullbright.gamma");
         gamma.setCallback(() -> {

@@ -17,48 +17,34 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.config
 
-package com.peasenet.config;
-
-import com.peasenet.annotations.Exclude;
-import com.peasenet.main.Settings;
+import com.peasenet.annotations.Exclude
+import com.peasenet.main.Settings
 
 /**
  * The base class for all configuration files.
  *
  * @param <E> The type of the config.
  * @author gt3ch1
- * @version 12/31/2022
- */
-public abstract class Config<E extends Config<?>> {
-
+ * @version 03-01-2023
+</E> */
+abstract class Config<E : Config<E>> {
     /**
      * The key for the config.
      */
     @Exclude
-    private transient String key;
-
-    /**
-     * Gets the instance of the configuration.
-     *
-     * @return The instance of the configuration.
-     */
-    public abstract E getInstance();
-
-    /**
-     * Sets the instance of the configuration.
-     *
-     * @param data - The instance of the configuration.
-     */
-    public abstract void setInstance(E data);
+    @Transient
+    var key: String? = null
+        protected set
 
     /**
      * Saves the configuration to file.
      */
-    public void saveConfig() {
-        var cfg = getInstance();
-        Settings.settings.put(key, cfg);
-        Settings.save();
+    fun saveConfig() {
+        val cfg = this
+        Settings.settings[key] = cfg
+        Settings.save()
     }
 
     /**
@@ -66,27 +52,7 @@ public abstract class Config<E extends Config<?>> {
      *
      * @return The instance of the configuration.
      */
-    public E readFromSettings() {
-        var _e = Settings.getConfig(this.getClass(), key);
-        setInstance((E) _e);
-        return (E) _e;
-    }
-
-    /**
-     * Gets the key of the configuration.
-     *
-     * @return
-     */
-    public String getKey() {
-        return key;
-    }
-
-    /**
-     * Sets the key of the configuration.
-     *
-     * @param key - The key of the configuration.
-     */
-    protected void setKey(String key) {
-        this.key = key;
+    fun readFromSettings(): Config<*> {
+        return Settings.getConfig(javaClass, key)!!
     }
 }

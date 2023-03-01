@@ -51,11 +51,11 @@ public class ModMobTracer extends Mod implements EntityRenderListener, CameraBob
 
         ToggleSetting hostile = new ToggleSetting("gavinsmod.settings.tracer.mob.hostile");
         hostile.setCallback(() -> tracerConfig.setShowHostileMobs(hostile.getValue()));
-        hostile.setValue(GavinsMod.tracerConfig.isShowHostileMobs());
+        hostile.setValue(GavinsMod.tracerConfig.getShowHostileMobs());
 
         ToggleSetting peaceful = new ToggleSetting("gavinsmod.settings.tracer.mob.peaceful");
         peaceful.setCallback(() -> tracerConfig.setShowPeacefulMobs(peaceful.getValue()));
-        peaceful.setValue(GavinsMod.tracerConfig.isShowPeacefulMobs());
+        peaceful.setValue(GavinsMod.tracerConfig.getShowPeacefulMobs());
 
         addSetting(hostileColor);
         addSetting(peacefulColor);
@@ -89,9 +89,9 @@ public class ModMobTracer extends Mod implements EntityRenderListener, CameraBob
         var playerPos = er.playerPos;
         if (!(entity instanceof MobEntity))
             return;
-        if (er.getEntityType().getSpawnGroup().isPeaceful() && tracerConfig.isShowPeacefulMobs()) {
+        if (er.getEntityType().getSpawnGroup().isPeaceful() && tracerConfig.getShowPeacefulMobs()) {
             RenderUtils.renderSingleLine(stack, buffer, playerPos, center, tracerConfig.getPeacefulMobColor(), tracerConfig.getAlpha());
-        } else if (!er.getEntityType().getSpawnGroup().isPeaceful() && tracerConfig.isShowHostileMobs()) {
+        } else if (!er.getEntityType().getSpawnGroup().isPeaceful() && tracerConfig.getShowHostileMobs()) {
             RenderUtils.renderSingleLine(stack, buffer, playerPos, center, tracerConfig.getHostileMobColor(), tracerConfig.getAlpha());
         }
     }

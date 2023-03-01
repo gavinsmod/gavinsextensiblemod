@@ -17,56 +17,22 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-
-package com.peasenet.config;
+package com.peasenet.config
 
 /**
  * The miscellaneous configuration.
  *
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 03-01-2023
  */
-public class MiscConfig extends Config<MiscConfig> {
+class MiscConfig : Config<MiscConfig>() {
+    var isMessages = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
 
-    /**
-     * The instance of the configuration.
-     */
-    private static MiscConfig instance;
-    /**
-     * Whether to show messages about enabling or disabling mods.
-     */
-    private boolean messages = true;
-
-    public MiscConfig() {
-        setKey("misc");
-        setInstance(this);
-    }
-
-    /**
-     * Whether to show messages about enabling or disabling mods.
-     *
-     * @return True if messages should be shown.
-     */
-    public boolean isMessages() {
-        return getInstance().messages;
-    }
-
-    /**
-     * Sets whether to show messages about enabling or disabling mods.
-     *
-     * @param messages - True if messages should be shown.
-     */
-    public void setMessages(boolean messages) {
-        this.getInstance().messages = messages;
-    }
-
-    @Override
-    public MiscConfig getInstance() {
-        return instance;
-    }
-
-    @Override
-    public void setInstance(MiscConfig data) {
-        instance = data;
+    init {
+        key = "misc"
     }
 }

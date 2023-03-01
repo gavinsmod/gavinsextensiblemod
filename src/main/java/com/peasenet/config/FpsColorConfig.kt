@@ -17,130 +17,73 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+package com.peasenet.config
 
-package com.peasenet.config;
-
-import com.peasenet.gavui.color.Color;
-import com.peasenet.gavui.color.Colors;
+import com.peasenet.gavui.color.Colors
 
 /**
  * The configuration for the FPS colors.
  *
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 03-01-2023
  */
-public class FpsColorConfig extends Config<FpsColorConfig> {
-
-    /**
-     * The instance of the configuration.
-     */
-    private static FpsColorConfig instance;
-
-    /**
-     * The color for less than 50% of the FPS - default is red.
-     */
-    private Color slowFps = Colors.RED;
-
-    /**
-     * The color for 50% to 85% of the FPS - default is yellow.
-     */
-    private Color okFps = Colors.YELLOW;
-
-    /**
-     * The color for 85% to 100% of the FPS - default is green.
-     */
-    private Color fastFps = Colors.GREEN;
-
-    /**
-     * Whether the FPS colors should be enabled - default is true.
-     */
-    private boolean colorsEnabled = true;
-
-    public FpsColorConfig() {
-        setKey("fpsColors");
-        instance = this;
-    }
-
-    /**
-     * Gets the color for slow FPS.
-     * @return The color for slow FPS.
-     */
-    public Color getSlowFps() {
-        return slowFps;
-    }
-
-    /**
-     * Sets the color for slow FPS.
-     * @param slowFps - The color for slow FPS.
-     */
-    public void setSlowFps(Color slowFps) {
-        this.slowFps = slowFps;
-        setInstance(this);
-        saveConfig();
-    }
+class FpsColorConfig : Config<FpsColorConfig>() {
+    var slowFps = Colors.RED
+        /**
+         * Sets the color for slow FPS.
+         * @param slowFps - The color for slow FPS.
+         */
+        set(slowFps) {
+            field = slowFps
+            saveConfig()
+        }
 
     /**
      * Gets the color for ok FPS.
+     * The color for 50% to 85% of the FPS - default is yellow.
+     *
      * @return The color for ok FPS.
      */
-    public Color getOkFps() {
-        return okFps;
-    }
-
-    /**
-     * Sets the color for ok FPS.
-     * @param okFps - The color for ok FPS.
-     */
-    public void setOkFps(Color okFps) {
-        this.okFps = okFps;
-        setInstance(this);
-        saveConfig();
-    }
+    var okFps = Colors.YELLOW!!
+        /**
+         * Sets the color for ok FPS.
+         * @param okFps - The color for ok FPS.
+         */
+        set(okFps) {
+            field = okFps
+            saveConfig()
+        }
 
     /**
      * Gets the color for fast FPS.
      * @return The color for fast FPS.
      */
-    public Color getFastFps() {
-        return fastFps;
-    }
-
-    /**
-     * Sets the color for fast FPS.
-     * @param fastFps - The color for fast FPS.
-     */
-    public void setFastFps(Color fastFps) {
-        this.fastFps = fastFps;
-        setInstance(this);
-        saveConfig();
-    }
+    var fastFps = Colors.GREEN!!
+        /**
+         * Sets the color for fast FPS.
+         * @param fastFps - The color for fast FPS.
+         */
+        set(fastFps) {
+            field = fastFps
+            saveConfig()
+        }
 
     /**
      * Gets whether the FPS colors are enabled.
      * @return Whether the FPS colors are enabled.
      */
-    public boolean isColorsEnabled() {
-        return colorsEnabled;
-    }
+    var isColorsEnabled = true
+        /**
+         * Sets whether the FPS colors are enabled.
+         * @param colorsEnabled - Whether the FPS colors are enabled.
+         */
+        set(colorsEnabled) {
+            field = colorsEnabled
+            saveConfig()
+        }
 
-    /**
-     * Sets whether the FPS colors are enabled.
-     * @param colorsEnabled - Whether the FPS colors are enabled.
-     */
-    public void setColorsEnabled(boolean colorsEnabled) {
-        this.colorsEnabled = colorsEnabled;
-        setInstance(this);
-        saveConfig();
-    }
-
-
-    public FpsColorConfig getInstance() {
-        return FpsColorConfig.instance;
-    }
-
-    @Override
-    public void setInstance(FpsColorConfig data) {
-        FpsColorConfig.instance = data;
+    init {
+        key = "fpsColors"
     }
 
 }

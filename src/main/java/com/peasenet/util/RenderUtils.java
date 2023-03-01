@@ -278,7 +278,7 @@ public class RenderUtils {
      * Sets the gamma of the game to the full bright value of 10000.0 while storing the last gamma value.
      */
     public static void setHighGamma() {
-        if (GavinsMod.fullbrightConfig.isGammaFade()) {
+        if (GavinsMod.fullbrightConfig.getGammaFade()) {
             fadeGammaUp();
         } else {
             setGamma(GavinsMod.fullbrightConfig.getMaxGamma());
@@ -289,7 +289,7 @@ public class RenderUtils {
      * Resets the gamma to the players last configured value.
      */
     public static void setLowGamma() {
-        if (GavinsMod.fullbrightConfig.isGammaFade()) {
+        if (GavinsMod.fullbrightConfig.getGammaFade()) {
             fadeGammaDown();
         } else {
             setGamma(LAST_GAMMA);
