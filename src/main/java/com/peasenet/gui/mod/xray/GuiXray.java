@@ -254,6 +254,7 @@ public class GuiXray extends GuiElement {
             }
             client.getItemRenderer().renderGuiItemIcon(matrixStack, stack, blockX, blockY);
         }
+        box.setHoverable(false);
 
         box.render(matrixStack, textRenderer, mouseX, mouseY, delta);
         search.render(matrixStack, mouseX, mouseY, delta);

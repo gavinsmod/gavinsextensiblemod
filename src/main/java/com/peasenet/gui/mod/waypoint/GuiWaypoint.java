@@ -277,6 +277,7 @@ public class GuiWaypoint extends GuiElement {
         espToggle.getGui().setWidth(wholeButtonWidth / 2 - padding / 2);
         tracerToggle.getGui().setPosition(new PointF(offsetX + padding + padding / 2 + wholeButtonWidth / 2, offsetY + 62 + padding));
         tracerToggle.getGui().setWidth(wholeButtonWidth / 2 - padding / 2);
+        box.setHoverable(false);
         super.init();
     }
 
