@@ -68,7 +68,7 @@ abstract class Setting
      *
      * @param callback - The callback method to run.
      */
-    fun setCallback(callback: SettingsCallback?) {
+    fun setCallback(callback: SettingsCallback) {
         this.callback = callback
     }
 
