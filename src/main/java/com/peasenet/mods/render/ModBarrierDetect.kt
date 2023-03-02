@@ -26,7 +26,7 @@ import net.minecraft.client.option.ParticlesMode
 
 /**
  * @author gt3ch1
- * @version 01/01/2023
+ * @version 03-02-2023
  */
 @Suppress("UNCHECKED_CAST")
 class ModBarrierDetect : Mod(Type.BARRIER_DETECT) {

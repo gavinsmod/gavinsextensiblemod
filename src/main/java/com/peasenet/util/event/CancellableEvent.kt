@@ -26,7 +26,7 @@ import com.peasenet.util.listeners.Listener
  *
  * @param <T> The type of listener to manage.
  * @author GT3CH1
- * @version 03-01-2023
+ * @version 03-02-2023
 </T> */
 abstract class CancellableEvent<T : Listener> : Event<T>() {
     /**

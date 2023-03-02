@@ -26,7 +26,7 @@ import com.peasenet.util.listeners.OnChatSendListener
  * An event for when a packet is sent.
  *
  * @author GT3CH1
- * @version 03-01-2023
+ * @version 03-02-2023
  */
 class ChatSendEvent(msg: String) : CancellableEvent<OnChatSendListener>() {
     var message: ChatMessage

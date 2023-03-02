@@ -26,7 +26,7 @@ import com.peasenet.util.listeners.RenderSubmergedOverlayListener
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 03-02-2023
  * A mod that disables the pumpkin overlay.
  */
 class ModAntiFire : Mod(Type.NO_FIRE), RenderSubmergedOverlayListener {

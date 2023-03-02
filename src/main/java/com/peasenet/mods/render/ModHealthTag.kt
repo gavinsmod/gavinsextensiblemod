@@ -28,7 +28,7 @@ import net.minecraft.entity.LivingEntity
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 03-02-2023
  * A mod that shows entity's health as a tag above their head.
  */
 class ModHealthTag : Mod(Type.MOD_HPTAG), EntityRenderNameListener {

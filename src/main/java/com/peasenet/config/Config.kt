@@ -27,7 +27,7 @@ import com.peasenet.main.Settings
  *
  * @param <E> The type of the config.
  * @author gt3ch1
- * @version 03-01-2023
+ * @version 03-02-2023
 </E> */
 abstract class Config<E : Config<E>> {
     /**
@@ -43,7 +43,7 @@ abstract class Config<E : Config<E>> {
      */
     fun saveConfig() {
         val cfg = this
-        Settings.settings[key] = cfg
+        Settings.settings[key!!] = cfg
         Settings.save()
     }
 
@@ -53,6 +53,6 @@ abstract class Config<E : Config<E>> {
      * @return The instance of the configuration.
      */
     fun readFromSettings(): Config<*> {
-        return Settings.getConfig(javaClass, key)!!
+        return Settings.getConfig(javaClass, key!!)!!
     }
 }

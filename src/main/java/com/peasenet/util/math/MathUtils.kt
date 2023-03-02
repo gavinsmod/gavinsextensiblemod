@@ -27,7 +27,7 @@ import kotlin.math.sqrt
 
 /**
  * @author gt3ch1
- * @version 5/23/2022
+ * @version 03-02-2023
  */
 object MathUtils {
     /**
@@ -37,8 +37,10 @@ object MathUtils {
      * @return The rotation to set to.
      */
     fun getRotationToEntity(entity: Entity): Rotation {
-        val player = GavinsModClient.getPlayer()
-        val playerPos = Vec3d(player.prevX, player.y + player.getEyeHeight(player.pose), player.z)
+        val player = GavinsModClient.player!!
+        val playerPos =
+            Vec3d(player.getPrevX(), player.getPos().y + player.getEyeHeight(player.getPose()), player.getPos().z)
+
         val diffX = entity.x - playerPos.x
         val diffY = entity.boundingBox.center.y - playerPos.y
         val diffZ = entity.z - playerPos.z

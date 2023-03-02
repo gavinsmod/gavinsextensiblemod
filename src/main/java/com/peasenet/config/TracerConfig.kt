@@ -23,7 +23,7 @@ package com.peasenet.config
  * The configuration for tracers.
  *
  * @author gt3ch1
- * @version 03-01-2023
+ * @version 03-02-2023
  */
 class TracerConfig : TracerEspConfig<EspConfig?>() {
     init {

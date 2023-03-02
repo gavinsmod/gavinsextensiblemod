@@ -29,14 +29,16 @@ import net.minecraft.entity.EntityType
 
 /**
  * @author gt3ch1
- * @version 01/03/2022
+ * @version 03-02-2023
  * A mod that allows the player to see an esp (a box) around items.
  */
 class ModEntityItemEsp : Mod(Type.ENTITY_ITEM_ESP), EntityRenderListener {
     init {
-        val colorSetting = ColorSetting("gavinsmod.settings.esp.item.color")
+        val colorSetting = ColorSetting(
+            "gavinsmod.settings.esp.item.color",
+            espConfig!!.itemColor
+        )
         colorSetting.setCallback { espConfig.itemColor = colorSetting.color }
-        colorSetting.color = espConfig.itemColor
         addSetting(colorSetting)
     }
 
@@ -54,6 +56,6 @@ class ModEntityItemEsp : Mod(Type.ENTITY_ITEM_ESP), EntityRenderListener {
         if (er.entityType !== EntityType.ITEM) return
         if (er.buffer == null) return
         val box = RenderUtils.getEntityBox(er.delta, er.entity)
-        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.itemColor, espConfig.alpha)
+        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig!!.itemColor, espConfig!!.alpha)
     }
 }

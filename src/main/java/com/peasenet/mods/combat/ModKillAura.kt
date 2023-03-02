@@ -30,13 +30,13 @@ import java.util.stream.StreamSupport
 
 /**
  * @author gt3ch1
- * @version 03-01-2023
+ * @version 03-02-2023
  * A mod that makes the player face and attack the nearest mob.
  */
 class ModKillAura : Mod(Type.KILL_AURA) {
     override fun onTick() {
-        if (GavinsModClient.getMinecraftClient().world != null && isActive) {
-            val stream = StreamSupport.stream(GavinsModClient.getMinecraftClient().world.entities.spliterator(), false)
+        if (isActive) {
+            val stream = StreamSupport.stream(GavinsModClient.minecraftClient.getWorld().entities.spliterator(), false)
                 .filter { e: Entity? -> e is MobEntity }
                 .filter { obj: Entity -> obj.isAlive }
                 .filter { e: Entity? -> PlayerUtils.distanceToEntity(e) <= 16 }

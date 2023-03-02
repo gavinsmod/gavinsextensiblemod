@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * @author gt3ch1
- * @version 03-01-2023
+ * @version 03-02-2023
  * A mod that shows the currently active mods in the top left screen.
  */
 class ModGuiTextOverlay : Mod(Type.MOD_GUI_TEXT_OVERLAY), InGameHudRenderListener {
@@ -44,8 +44,8 @@ class ModGuiTextOverlay : Mod(Type.MOD_GUI_TEXT_OVERLAY), InGameHudRenderListene
 
         //NOTE: This isn't really the best place for this, but it works for now. this is for chat message toggles.
         val chatMessage = ToggleSetting("gavinsmod.settings.misc.messages")
-        chatMessage.setCallback { miscConfig.isMessages = chatMessage.value }
-        chatMessage.value = miscConfig.isMessages
+        chatMessage.setCallback { miscConfig!!.isMessages = chatMessage.value }
+        chatMessage.value = miscConfig!!.isMessages
         addSetting(chatMessage)
     }
 
@@ -55,6 +55,7 @@ class ModGuiTextOverlay : Mod(Type.MOD_GUI_TEXT_OVERLAY), InGameHudRenderListene
     }
 
     override fun onDisable() {
+        super.onDisable()
         em.unsubscribe(InGameHudRenderListener::class.java, this)
     }
 
@@ -69,7 +70,7 @@ class ModGuiTextOverlay : Mod(Type.MOD_GUI_TEXT_OVERLAY), InGameHudRenderListene
      * @param matrixStack - The matrix stack to use.
      */
     private fun drawTextOverlay(matrixStack: MatrixStack) {
-        val textRenderer = GavinsModClient.getMinecraftClient().textRenderer
+        val textRenderer = GavinsModClient.minecraftClient.textRenderer
         val startingPoint = PointF(0.5f, 0.5f)
         val currX = (startingPoint.x + 2).toInt()
         val currY = AtomicInteger((startingPoint.y + 2).toInt())
@@ -78,8 +79,8 @@ class ModGuiTextOverlay : Mod(Type.MOD_GUI_TEXT_OVERLAY), InGameHudRenderListene
             )
         ) return
         // only get active mods, and mods that are not gui type.
-        val mods = GavinsMod.getModsForTextOverlay().toList()
-        val modsCount = GavinsMod.getModsForTextOverlay().count().toInt()
+        val mods = GavinsMod.modsForTextOverlay.toList()
+        val modsCount = GavinsMod.modsForTextOverlay.count().toInt()
         if (modsCount == 0) return
         // get the mod with the longest name.
         var longestModName = 0

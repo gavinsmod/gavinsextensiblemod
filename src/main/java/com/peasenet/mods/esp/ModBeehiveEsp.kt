@@ -30,14 +30,16 @@ import net.minecraft.util.math.Box
 
 /**
  * @author gt3ch1
- * @version 03-01-2023
+ * @version 03-02-2023
  * A mod that allows the client to see an esp (a box) around beehives.
  */
 class ModBeehiveEsp : Mod(Type.BEEHIVE_ESP), BlockEntityRenderListener {
     init {
-        val colorSetting = ColorSetting("gavinsmod.settings.esp.beehive.color")
+        val colorSetting = ColorSetting(
+            "gavinsmod.settings.esp.beehive.color",
+            espConfig.beehiveColor
+        )
         colorSetting.setCallback { espConfig.beehiveColor = colorSetting.color }
-        colorSetting.color = espConfig.beehiveColor
         addSetting(colorSetting)
     }
 
@@ -54,6 +56,6 @@ class ModBeehiveEsp : Mod(Type.BEEHIVE_ESP), BlockEntityRenderListener {
     override fun onRenderBlockEntity(er: BlockEntityRender) {
         if (er.entity !is BeehiveBlockEntity) return
         val box = Box(er.entity.pos)
-        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.beehiveColor, espConfig.alpha)
+        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig!!.beehiveColor, espConfig!!.alpha)
     }
 }

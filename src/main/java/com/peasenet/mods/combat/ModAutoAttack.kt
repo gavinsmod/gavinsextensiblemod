@@ -28,7 +28,7 @@ import net.minecraft.util.hit.EntityHitResult
  * A mod that makes the player attack the entity that it is currently looking at.
  *
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 03-02-2023
  */
 class ModAutoAttack : Mod(Type.AUTO_ATTACK) {
     override fun onTick() {

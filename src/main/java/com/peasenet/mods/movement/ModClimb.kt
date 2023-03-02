@@ -24,7 +24,7 @@ import com.peasenet.mods.Type
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 03-02-2023
  * A mod that allows the player to climb up walls despite a lack of ladders.
  */
 class ModClimb : Mod(Type.CLIMB)

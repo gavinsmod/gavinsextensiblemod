@@ -27,7 +27,7 @@ import net.minecraft.util.Identifier
 
 /**
  * @author gt3ch1
- * @version 01/07/2022
+ * @version 03-02-2023
  * A mod that disables some overlays that are drawn on screen.
  */
 class ModNoOverlay : Mod(Type.NO_OVERLAY), RenderOverlayListener {

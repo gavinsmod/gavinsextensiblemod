@@ -35,7 +35,7 @@ import org.lwjgl.glfw.GLFW
 
 /**
  * @author gt3ch1
- * @version 03-01-2023
+ * @version 03-02-2023
  * The base class for mods. Inheriting this class will allow for creating different mods that have a keybinding,
  * and a gui button based off of the given category.
  */
@@ -81,6 +81,7 @@ abstract class Mod constructor(
 
     fun setEnabled(value: Boolean) {
         isEnabled = value
+        isActive = value
     }
 
     init {
@@ -102,7 +103,7 @@ abstract class Mod constructor(
      * @param message The message to send.
      */
     private fun sendMessage(message: String?) {
-        if (miscConfig.isMessages && !reloading) GavinsModClient.getPlayer().sendMessage(Text.literal(message), false)
+        if (miscConfig!!.isMessages && !reloading) GavinsModClient.player!!.sendMessage(Text.literal(message), false)
     }
 
     override fun onEnable() {
@@ -187,7 +188,7 @@ abstract class Mod constructor(
     }
 
     override val world: ClientWorld
-        get() = client.world
+        get() = client.getWorld()
 
     public val client: IMinecraftClient
         /**
@@ -195,7 +196,7 @@ abstract class Mod constructor(
          *
          * @return The minecraft client.
          */
-        get() = GavinsModClient.getMinecraftClient()
+        get() = GavinsModClient.minecraftClient
 
 
     companion object {
@@ -208,59 +209,59 @@ abstract class Mod constructor(
          * The event manager.
          */
         @JvmStatic
-        protected var em: EventManager = GavinsMod.eventManager
+        protected var em: EventManager = GavinsMod.eventManager!!
 
         /**
          * Tracer configuration.
          */
         @JvmStatic
-        protected var tracerConfig: TracerConfig = GavinsMod.tracerConfig
+        protected var tracerConfig: TracerConfig = GavinsMod.tracerConfig!!
 
         /**
          * ESP configuration.
          */
         @JvmStatic
-        var espConfig: EspConfig = GavinsMod.espConfig
+        var espConfig: EspConfig = GavinsMod.espConfig!!
 
         /**
          * Fps color configuration.
          */
         @JvmStatic
-        protected var fpsColorConfig: FpsColorConfig = GavinsMod.fpsColorConfig
+        protected var fpsColorConfig: FpsColorConfig = GavinsMod.fpsColorConfig!!
 
         /**
          * The fullbright configuration.
          */
         @JvmStatic
 
-        protected var fullbrightConfig: FullbrightConfig = GavinsMod.fullbrightConfig
+        protected var fullbrightConfig: FullbrightConfig = GavinsMod.fullbrightConfig!!
 
         /**
          * The radar configuration.
          */
         @JvmStatic
 
-        protected var radarConfig: RadarConfig = GavinsMod.radarConfig
+        protected var radarConfig: RadarConfig = GavinsMod.radarConfig!!
 
         /**
          * The waypoint configuration.
          */
         @JvmStatic
 
-        protected var waypointConfig: WaypointConfig = GavinsMod.waypointConfig
+        protected var waypointConfig: WaypointConfig = GavinsMod.waypointConfig!!
 
         /**
          * The xray configuration.
          */
         @JvmStatic
 
-        protected var xrayConfig: XrayConfig = GavinsMod.xrayConfig
+        protected var xrayConfig: XrayConfig = GavinsMod.xrayConfig!!
 
         /**
          * The miscellaneous configuration.
          */
         @JvmStatic
-        protected var miscConfig: MiscConfig = GavinsMod.miscConfig
+        protected var miscConfig: MiscConfig = GavinsMod.miscConfig!!
 
     }
 }

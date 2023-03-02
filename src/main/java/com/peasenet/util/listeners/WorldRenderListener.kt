@@ -27,7 +27,7 @@ import net.minecraft.client.world.ClientWorld
  * A listener for the world render event.
  *
  * @author GT3CH1
- * @version 03-01-2023
+ * @version 03-02-2023
  */
 interface WorldRenderListener : Listener {
     /**

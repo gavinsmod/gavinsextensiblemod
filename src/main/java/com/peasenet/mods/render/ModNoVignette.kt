@@ -29,7 +29,7 @@ import net.minecraft.util.Identifier
  * A mod that removes the vignette overlay.
  *
  * @author gt3ch1
- * @version 01/04/2023
+ * @version 03-02-2023
  */
 class ModNoVignette : Mod(Type.NO_VIGNETTE), RenderOverlayListener {
     override fun onEnable() {

@@ -25,7 +25,7 @@ import com.peasenet.util.PlayerUtils
 
 /**
  * @author gt3ch1
- * @version 6/24/2022
+ * @version 03-02-2023
  * A mod that allows the player to fly.
  */
 class ModFly : Mod(Type.FLY) {

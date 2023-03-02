@@ -25,7 +25,7 @@ import com.peasenet.mods.render.waypoints.Waypoint
  * The configuration for waypoints.
  *
  * @author gt3ch1
- * @version 03-01-2023
+ * @version 03-02-2023
  */
 class WaypointConfig : Config<WaypointConfig>() {
     /**

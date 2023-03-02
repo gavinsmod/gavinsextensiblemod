@@ -24,7 +24,7 @@ import com.peasenet.util.listeners.ShouldDrawSideListener
 
 /**
  * @author gt3ch1
- * @version 03-01-2023
+ * @version 03-02-2023
  */
 class ShouldDrawSideEvent(var evt: DrawSide) : CancellableEvent<ShouldDrawSideListener>() {
     override fun fire(listeners: ArrayList<ShouldDrawSideListener>) {

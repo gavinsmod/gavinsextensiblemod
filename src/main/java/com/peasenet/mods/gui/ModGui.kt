@@ -26,12 +26,12 @@ import com.peasenet.mods.Type
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 03-02-2023
  * A mod that allows the player to see a menu of all the mods by pressing the keybind.
  */
 class ModGui : Mod(Type.MOD_GUI) {
     override fun activate() {
-        GavinsModClient.getMinecraftClient().setScreen(GavinsMod.gui)
+        GavinsModClient.minecraftClient.setScreen(GavinsMod.gui)
         setEnabled(true)
     }
 

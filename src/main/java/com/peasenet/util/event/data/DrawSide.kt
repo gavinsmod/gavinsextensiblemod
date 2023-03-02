@@ -24,7 +24,7 @@ import net.minecraft.util.math.BlockPos
 
 /**
  * @author gt3ch1
- * @version 01/01/2023
+ * @version 03-02-2023
  *
  *
  * Draw side data class for the draw side event.

@@ -25,7 +25,7 @@ import com.peasenet.util.event.data.CameraBob
  * A listener for the Camera bobbing.
  *
  * @author GT3CH1
- * @version 12/25/2022
+ * @version 03-02-2023
  */
 interface CameraBobListener : Listener {
     /**

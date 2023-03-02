@@ -25,7 +25,7 @@ import com.peasenet.util.event.data.OutputPacket
  * A listener for packets being sent.
  *
  * @author GT3CH1
- * @version 03-01-2023
+ * @version 03-02-2023
  */
 interface PacketSendListener : Listener {
     /**

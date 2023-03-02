@@ -28,7 +28,7 @@ import net.minecraft.util.math.Vec3d
  * Data class for the block entity render event.
  *
  * @author gt3ch1
- * @version 03-01-2023
+ * @version 03-02-2023
  */
 class BlockEntityRender
 /**

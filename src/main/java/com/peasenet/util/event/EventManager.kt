@@ -25,7 +25,7 @@ import com.peasenet.util.listeners.Listener
  * The event manager. Allows adding/removing listeners and firing events.
  *
  * @author GT3CH1
- * @version 03-01-2023
+ * @version 03-02-2023
  */
 open class EventManager {
     /**

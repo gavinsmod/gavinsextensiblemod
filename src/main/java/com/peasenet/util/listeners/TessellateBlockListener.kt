@@ -25,7 +25,7 @@ import com.peasenet.util.event.data.TessellateBlock
  * Listener interface for classes that want to listen to the tessellate block event.
  *
  * @author gt3ch1
- * @version 03-01-2023
+ * @version 03-02-2023
  */
 interface TessellateBlockListener : Listener {
     fun onTessellateBlock(event: TessellateBlock)

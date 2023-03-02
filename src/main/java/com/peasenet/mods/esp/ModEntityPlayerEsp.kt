@@ -29,14 +29,13 @@ import net.minecraft.entity.player.PlayerEntity
 
 /**
  * @author gt3ch1
- * @version 01/03/2022
+ * @version 03-02-2023
  * A mod that allows the player to see an ESP to other players.
  */
 class ModEntityPlayerEsp : Mod(Type.ENTITY_PLAYER_ESP), EntityRenderListener {
     init {
-        val colorSetting = ColorSetting("gavinsmod.settings.esp.player.color")
+        val colorSetting = ColorSetting("gavinsmod.settings.esp.player.color", espConfig.playerColor)
         colorSetting.setCallback { espConfig.playerColor = colorSetting.color }
-        colorSetting.color = espConfig.playerColor
         addSetting(colorSetting)
     }
 
@@ -53,6 +52,6 @@ class ModEntityPlayerEsp : Mod(Type.ENTITY_PLAYER_ESP), EntityRenderListener {
     override fun onEntityRender(er: EntityRender) {
         if (er.entity !is PlayerEntity || er.buffer == null) return
         val box = RenderUtils.getEntityBox(er.delta, er.entity)
-        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.playerColor, espConfig.alpha)
+        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig!!.playerColor, espConfig!!.alpha)
     }
 }

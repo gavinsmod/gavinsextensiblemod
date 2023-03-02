@@ -32,16 +32,16 @@ import net.minecraft.util.math.Box
 
 /**
  * @author gt3ch1
- * @version 01/03/2022
+ * @version 03-02-2023
  * A mod that allows the client to see an esp (a box) around chests.
  */
 class ModChestEsp : Mod(Type.CHEST_ESP), BlockEntityRenderListener {
     init {
         val colorSetting = ColorSetting(
-            "gavinsmod.settings.esp.chest.color"
+            "gavinsmod.settings.esp.chest.color",
+            espConfig.chestColor
         )
         colorSetting.setCallback { espConfig.chestColor = colorSetting.color }
-        colorSetting.color = espConfig.chestColor
         addSetting(colorSetting)
     }
 
@@ -60,6 +60,6 @@ class ModChestEsp : Mod(Type.CHEST_ESP), BlockEntityRenderListener {
         if (er.buffer == null) return
         if (er.entity is ChestBlockEntity || er.entity is ShulkerBoxBlockEntity
             || er.entity is EnderChestBlockEntity
-        ) RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.chestColor, espConfig.alpha)
+        ) RenderUtils.drawBox(er.stack, er.buffer, box, espConfig!!.chestColor, espConfig!!.alpha)
     }
 }

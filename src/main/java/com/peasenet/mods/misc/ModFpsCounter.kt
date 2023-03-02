@@ -36,7 +36,7 @@ import net.minecraft.text.Text
 
 /**
  * @author gt3ch1
- * @version 03-01-2023
+ * @version 03-02-2023
  * A mod that renders the current frames per second in the top right corner of the screen.
  */
 class ModFpsCounter : Mod(Type.MOD_FPS_COUNTER), InGameHudRenderListener {
@@ -45,13 +45,13 @@ class ModFpsCounter : Mod(Type.MOD_FPS_COUNTER), InGameHudRenderListener {
         val fpsColors = ToggleSetting("gavinsmod.settings.misc.fpscolors.enabled")
         fpsColors.setCallback { fpsColorConfig.isColorsEnabled = fpsColors.value }
         fpsColors.value = fpsColorConfig.isColorsEnabled
-        val fpsSlowColor = ColorSetting("gavinsmod.settings.misc.fps.color.slow")
+        val fpsSlowColor = ColorSetting("gavinsmod.settings.misc.fps.color.slow", fpsColorConfig.slowFps)
         fpsSlowColor.setCallback { fpsColorConfig.slowFps = fpsSlowColor.color }
         fpsSlowColor.color = fpsColorConfig.slowFps
-        val fpsOkColor = ColorSetting("gavinsmod.settings.misc.fps.color.ok")
+        val fpsOkColor = ColorSetting("gavinsmod.settings.misc.fps.color.ok", fpsColorConfig.okFps)
         fpsOkColor.setCallback { fpsColorConfig.okFps = fpsOkColor.color }
         fpsOkColor.color = fpsColorConfig.okFps
-        val fpsFastColor = ColorSetting("gavinsmod.settings.misc.fps.color.fast")
+        val fpsFastColor = ColorSetting("gavinsmod.settings.misc.fps.color.fast", fpsColorConfig.fastFps)
         fpsFastColor.setCallback { fpsColorConfig.fastFps = fpsFastColor.color }
         fpsFastColor.color = fpsColorConfig.fastFps
         fpsSetting.add(fpsColors)
@@ -83,11 +83,11 @@ class ModFpsCounter : Mod(Type.MOD_FPS_COUNTER), InGameHudRenderListener {
      */
     private fun drawFpsOverlay(matrixStack: MatrixStack) {
         val textRenderer = client.textRenderer
-        val fps = GavinsModClient.getMinecraftClient().fps
+        val fps = GavinsModClient.minecraftClient.getFps()
         val fpsString = "FPS: $fps"
-        val xCoordinate = GavinsModClient.getMinecraftClient().window.scaledWidth - (fpsString.length * 5 + 2)
+        val xCoordinate = GavinsModClient.minecraftClient.window.scaledWidth - (fpsString.length * 5 + 2)
         val box = BoxF(PointF((xCoordinate - 2).toFloat(), 0f), (fpsString.length * 5 + 4).toFloat(), 12f)
-        val maximumFps = GavinsModClient.getMinecraftClient().options.maxFps.value
+        val maximumFps = GavinsModClient.minecraftClient.options.maxFps.value
         var color = GavUISettings.getColor("gui.color.foreground")
         val colorEnabled = fpsColorConfig.isColorsEnabled
         val fastColor = fpsColorConfig.fastFps

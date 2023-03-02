@@ -25,14 +25,15 @@ import net.minecraft.text.Text
 
 /**
  * @author gt3ch1
- * @version 03-01-2023
+ * @version 03-02-2023
  * A setting that contains multiple sub settings within a dropdown element.
  */
-class SubSetting(width: Int, height: Int, translationKey: String?) : Setting(translationKey) {
+class SubSetting(width: Int, height: Int, translationKey: String) : Setting(translationKey) {
     /**
      * The dropdown menu that contains the sub settings.
      */
-    private val dropdown: GuiScroll
+    override val gui: GuiScroll
+
 
     /**
      * Creates a new subsetting element. You can call #add(Setting) to add subsettings to this element.
@@ -42,9 +43,9 @@ class SubSetting(width: Int, height: Int, translationKey: String?) : Setting(tra
      * @param translationKey - The translation key.
      */
     init {
-        dropdown = GuiScroll(width, height, Text.translatable(translationKey))
-        dropdown.direction = GuiDropdown.Direction.RIGHT
-        dropdown.hide()
+        gui = GuiScroll(width, height, Text.translatable(translationKey))
+        gui.direction = GuiDropdown.Direction.RIGHT
+        gui.hide()
     }
 
     /**
@@ -53,11 +54,7 @@ class SubSetting(width: Int, height: Int, translationKey: String?) : Setting(tra
      * @param setting - The setting to add.
      */
     fun add(setting: Setting) {
-        dropdown.addElement(setting.gui)
-        setting.gui.hide()
-    }
-
-    override fun getGui(): GuiScroll {
-        return dropdown
+        gui.addElement(setting.gui)
+        setting.gui?.hide()
     }
 }

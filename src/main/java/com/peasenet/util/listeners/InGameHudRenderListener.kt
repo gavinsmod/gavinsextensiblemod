@@ -25,7 +25,7 @@ import net.minecraft.client.util.math.MatrixStack
  * A listener for the world render event.
  *
  * @author GT3CH1
- * @version 03-01-2023
+ * @version 03-02-2023
  */
 interface InGameHudRenderListener : Listener {
     /**

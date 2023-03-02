@@ -21,7 +21,7 @@ package com.peasenet.util.math
 
 /**
  * @author gt3ch1
- * @version 5/23/2022
+ * @version 03-02-2023
  * A class that represents a rotation (pitch and yaw).
  */
 data class Rotation(

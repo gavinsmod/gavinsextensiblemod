@@ -41,7 +41,7 @@ import net.minecraft.util.math.Vec3d
  * A mod that allows the camera to be moved freely.
  *
  * @author GT3CH1
- * @version 03-01-2023
+ * @version 03-02-2023
  */
 class ModFreecam : Mod(Type.FREECAM), PacketSendListener, WorldRenderListener, AirStrafeListener {
     var fake: FakePlayer? = null
@@ -55,8 +55,8 @@ class ModFreecam : Mod(Type.FREECAM), PacketSendListener, WorldRenderListener, A
 
     override fun onTick() {
         super.onTick()
-        if (!isActive || client.player == null) return
-        val player = client.player
+        if (!isActive || client.player() == null) return
+        val player = client.player()
 
         player.velocity = Vec3d.ZERO
         player.isOnGround = false
@@ -77,8 +77,8 @@ class ModFreecam : Mod(Type.FREECAM), PacketSendListener, WorldRenderListener, A
         val camera = MinecraftClient.getInstance().gameRenderer.camera
         val playerPos = PlayerUtils.getNewPlayerPosition(delta, camera)
         val aabb = RenderUtils.getEntityBox(delta, fake!!)
-        RenderUtils.renderSingleLine(stack, bufferBuilder, playerPos, aabb.center, GavinsMod.tracerConfig.playerColor)
-        RenderUtils.drawBox(stack, bufferBuilder, aabb, GavinsMod.espConfig.playerColor)
+        RenderUtils.renderSingleLine(stack, bufferBuilder, playerPos, aabb.center, GavinsMod.tracerConfig!!.playerColor)
+        RenderUtils.drawBox(stack, bufferBuilder, aabb, GavinsMod.espConfig!!.playerColor)
     }
 
     override fun onPacketSend(packet: OutputPacket) {

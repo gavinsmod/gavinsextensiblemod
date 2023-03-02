@@ -24,7 +24,7 @@ import net.minecraft.client.world.ClientWorld
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 03-02-2023
  * The interface of the base mod class.
  */
 interface IMod {

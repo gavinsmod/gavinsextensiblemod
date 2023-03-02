@@ -24,12 +24,12 @@ import com.peasenet.mods.Type
 
 /**
  * @author gt3ch1
- * @version 01/07/2023
+ * @version 03-02-2023
  */
 class ModSpeed : Mod(Type.SPEED) {
     override fun onTick() {
-        if (client.player == null) return
-        val player = client.player
+        if (client.player() == null) return
+        val player = client.player()
 
         if (player!!.isSneaking) return
         if (!player.isOnGround) return

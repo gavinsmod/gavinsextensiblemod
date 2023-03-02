@@ -47,26 +47,40 @@ import kotlin.math.sqrt
  * A mod that allows for a radar-like view of the world.
  *
  * @author gt3ch1
- * @version 03-01-2023
+ * @version 03-02-2023
  */
 class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
     /**
      * Creates a radar overlay in the top-right corner of the screen.
      */
     init {
-        val playerEntityColor = ColorSetting("gavinsmod.settings.radar.player.color")
+        val playerEntityColor = ColorSetting(
+            "gavinsmod.settings.radar.player().color",
+            radarConfig.playerColor
+        )
         playerEntityColor.setCallback { radarConfig.playerColor = playerEntityColor.color }
-        playerEntityColor.color = radarConfig.playerColor
-        val hostileMobEntityColor = ColorSetting("gavinsmod.settings.radar.mob.hostile.color")
+        val hostileMobEntityColor = ColorSetting(
+            "gavinsmod.settings.radar.mob.hostile.color",
+            radarConfig.hostileMobColor
+        )
         hostileMobEntityColor.setCallback { radarConfig.hostileMobColor = hostileMobEntityColor.color }
         hostileMobEntityColor.color = radarConfig.hostileMobColor
-        val peacefulMobEntityColor = ColorSetting("gavinsmod.settings.radar.mob.peaceful.color")
+        val peacefulMobEntityColor = ColorSetting(
+            "gavinsmod.settings.radar.mob.peaceful.color",
+            radarConfig.peacefulMobColor
+        )
         peacefulMobEntityColor.setCallback { radarConfig.peacefulMobColor = peacefulMobEntityColor.color }
         peacefulMobEntityColor.color = radarConfig.peacefulMobColor
-        val entityItemColor = ColorSetting("gavinsmod.settings.radar.item.color")
+        val entityItemColor = ColorSetting(
+            "gavinsmod.settings.radar.item.color",
+            radarConfig.itemColor
+        )
         entityItemColor.setCallback { radarConfig.itemColor = entityItemColor.color }
         entityItemColor.color = radarConfig.itemColor
-        val waypointColor = ColorSetting("gavinsmod.settings.radar.waypoint.color")
+        val waypointColor = ColorSetting(
+            "gavinsmod.settings.radar.waypoint.color",
+            radarConfig.waypointColor
+        )
         waypointColor.setCallback { radarConfig.waypointColor = waypointColor.color }
         waypointColor.color = radarConfig.waypointColor
         scaleSetting = ClickSetting("gavinsmod.settings.radar.scale")
@@ -83,7 +97,7 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
         val waypointsSetting = ToggleSetting("gavinsmod.settings.radar.waypoints")
         waypointsSetting.setCallback { radarConfig.isShowWaypoint = waypointsSetting.value }
         waypointsSetting.value = radarConfig.isShowWaypoint
-        val playerSetting = ToggleSetting("gavinsmod.settings.radar.player")
+        val playerSetting = ToggleSetting("gavinsmod.settings.radar.player()")
         playerSetting.setCallback { radarConfig.isShowPlayer = playerSetting.value }
         playerSetting.value = radarConfig.isShowPlayer
         val useWaypointColorSetting = ToggleSetting("gavinsmod.settings.radar.waypoint.usecolor")
@@ -158,12 +172,12 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
      * @param stack - The matrix stack.
      */
     private fun drawWaypointsOnRadar(stack: MatrixStack) {
-        if (client.player == null) return
-        val player = client.player
+        if (client.player() == null) return
+        val player = client.player()
 
         val yaw = player!!.yaw
         val waypoints =
-            GavinsMod.waypointConfig.getLocations().stream().filter { obj: Waypoint -> obj.isEnabled }.toList()
+            GavinsMod.waypointConfig!!.getLocations().stream().filter { obj: Waypoint -> obj.isEnabled }.toList()
         for (w in waypoints) {
             var color = w.color
             if (!radarConfig.isUseWaypointColor) color = radarConfig.waypointColor
@@ -183,8 +197,8 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
      * @param stack - The matrix stack.
      */
     private fun drawEntitiesOnRadar(stack: MatrixStack) {
-        if (client.player == null) return
-        val player = client.player
+        if (client.player() == null) return
+        val player = client.player()
 
         val yaw = player!!.yaw
         val entities = world.entities
@@ -217,10 +231,11 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
      * @return A scaled position relative to the radar, clamped to the radar.
      */
     private fun getScaledPos(w: Vec3d?, location: PointF): PointF {
-        var newLoc = location;
-        if (w!!.distanceTo(client.player.pos) >= radarConfig.size / 2f - radarConfig.pointSize) newLoc =
+        var newLoc = location
+        if (w!!.distanceTo(client.player().pos) >= radarConfig.size / 2f - radarConfig.pointSize) newLoc =
             clampPoint(newLoc)
-        newLoc = newLoc.add(PointF(RadarConfig.x + radarConfig.size / 2f, radarConfig.size / 2f + RadarConfig.y))
+        newLoc =
+            newLoc.add(PointF(RadarConfig.x + radarConfig.size / 2f, radarConfig.size / 2f + RadarConfig.y))
         if (radarConfig.pointSize != 1) newLoc = location.subtract(PointF(pointOffset, pointOffset))
         return newLoc
     }
@@ -273,8 +288,8 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
      * @return A new PointF with the x and z values.
      */
     private fun getPointRelativeToYaw(loc: Vec3d?, yaw: Float): PointF {
-        if (client.player == null) return PointF(0F, 0F)
-        val player = client.player
+        if (client.player() == null) return PointF(0F, 0F)
+        val player = client.player()
 
         val x = loc!!.getX() - player!!.x
         val z = loc.getZ() - player.z

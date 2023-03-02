@@ -25,7 +25,7 @@ import com.peasenet.util.PlayerUtils
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 03-02-2023
  * A mod that prevents the player from taking fall damage.
  */
 class ModNoFall : Mod(Type.NO_FALL) {

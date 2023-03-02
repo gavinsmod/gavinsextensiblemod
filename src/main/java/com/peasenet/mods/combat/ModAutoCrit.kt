@@ -19,6 +19,7 @@
  */
 package com.peasenet.mods.combat
 
+import com.peasenet.main.GavinsModClient
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
 import com.peasenet.util.listeners.PlayerAttackListener
@@ -26,7 +27,7 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket.PositionAndOnGr
 
 /**
  * @author gt3ch1
- * @version 6/24/2022
+ * @version 03-02-2023
  * A combat mod to make the player jump automatically when attacking an entity.
  */
 class ModAutoCrit : Mod(Type.AUTO_CRIT), PlayerAttackListener {
@@ -41,9 +42,9 @@ class ModAutoCrit : Mod(Type.AUTO_CRIT), PlayerAttackListener {
     }
 
     override fun onAttackEntity() {
-        if (client.player == null)
+        if (GavinsModClient.player == null)
             return
-        val player = client.player
+        val player = GavinsModClient.player!!.getPos()
         val x = player.x
         val y = player.y
         val z = player.z
@@ -54,9 +55,8 @@ class ModAutoCrit : Mod(Type.AUTO_CRIT), PlayerAttackListener {
     }
 
     private fun sendPos(x: Double, y: Double, z: Double, onGround: Boolean) {
-        if (client.player == null) return
-        val player = client.player
+        val player = GavinsModClient.player
 
-        player!!.networkHandler.sendPacket(PositionAndOnGround(x, y, z, onGround))
+        player!!.getNetworkHandler().sendPacket(PositionAndOnGround(x, y, z, onGround))
     }
 }

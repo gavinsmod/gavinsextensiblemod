@@ -29,20 +29,20 @@ import com.peasenet.util.RenderUtils
 
 /**
  * @author gt3ch1
- * @version 03-01-2023
+ * @version 03-02-2023
  * A mod that allows the client to see very clearly in the absence of a light source.
  */
 class ModFullBright : Mod(Type.FULL_BRIGHT) {
     init {
         val gammaFade = ToggleSetting("gavinsmod.settings.render.gammafade")
-        gammaFade.setCallback { fullbrightConfig.gammaFade = gammaFade.value }
-        gammaFade.value = fullbrightConfig.gammaFade
+        gammaFade.setCallback { fullbrightConfig!!.gammaFade = gammaFade.value }
+        gammaFade.value = fullbrightConfig!!.gammaFade
         val autoFullBright = ToggleSetting("gavinsmod.settings.render.autofullbright")
-        autoFullBright.setCallback { fullbrightConfig.autoFullBright = autoFullBright.value }
-        autoFullBright.value = fullbrightConfig.autoFullBright
+        autoFullBright.setCallback { fullbrightConfig!!.autoFullBright = autoFullBright.value }
+        autoFullBright.value = fullbrightConfig!!.autoFullBright
         val gamma = SlideSetting("gavinsmod.settings.render.fullbright.gamma")
-        gamma.setCallback { fullbrightConfig.gamma = gamma.value }
-        gamma.value = fullbrightConfig.gamma
+        gamma.setCallback { fullbrightConfig!!.gamma = gamma.value }
+        gamma.value = fullbrightConfig!!.gamma
         val subSetting = SubSetting(100, 10, translationKey)
         subSetting.add(gammaFade)
         subSetting.add(autoFullBright)

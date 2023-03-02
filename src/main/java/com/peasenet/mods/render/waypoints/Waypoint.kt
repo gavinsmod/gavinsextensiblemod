@@ -25,7 +25,7 @@ import net.minecraft.util.math.Vec3i
 
 /**
  * @author gt3ch1
- * @version 03-01-2023
+ * @version 03-02-2023
  * A waypoint is a three-dimensional integer coordinate with a name, color, and can either have
  * an ESP, a tracer, or both.
  */

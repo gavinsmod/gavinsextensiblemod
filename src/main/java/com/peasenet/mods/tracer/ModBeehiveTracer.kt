@@ -32,14 +32,17 @@ import net.minecraft.block.entity.BeehiveBlockEntity
 
 /**
  * @author gt3ch1
- * @version 03-01-2023
+ * @version 03-02-2023
  * A mod that allows the player to see tracers towards beehives.
  */
 class ModBeehiveTracer : Mod(Type.BEEHIVE_TRACER), BlockEntityRenderListener, CameraBobListener {
     init {
-        val colorSetting = ColorSetting("gavinsmod.settings.tracer.beehive.color")
-        colorSetting.setCallback { tracerConfig.beehiveColor = colorSetting.color }
-        colorSetting.color = GavinsMod.tracerConfig.beehiveColor
+        val colorSetting = ColorSetting(
+            "gavinsmod.settings.tracer.beehive.color",
+            GavinsMod.tracerConfig!!.beehiveColor
+        )
+        colorSetting.setCallback { tracerConfig!!.beehiveColor = colorSetting.color }
+        colorSetting.color = GavinsMod.tracerConfig!!.beehiveColor
         addSetting(colorSetting)
     }
 
@@ -58,8 +61,8 @@ class ModBeehiveTracer : Mod(Type.BEEHIVE_TRACER), BlockEntityRenderListener, Ca
     override fun onRenderBlockEntity(er: BlockEntityRender) {
         if (er.buffer == null) return
         if (er.entity is BeehiveBlockEntity) RenderUtils.renderSingleLine(
-            er.stack!!, er.buffer!!, er.playerPos!!, er.center!!, tracerConfig.beehiveColor,
-            tracerConfig.alpha
+            er.stack!!, er.buffer!!, er.playerPos!!, er.center!!, tracerConfig!!.beehiveColor,
+            tracerConfig!!.alpha
         )
     }
 

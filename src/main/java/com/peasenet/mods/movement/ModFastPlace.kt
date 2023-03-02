@@ -26,13 +26,13 @@ import net.minecraft.item.BlockItem
 
 /**
  * @author gt3ch1
- * @version 6/14/2022
+ * @version 03-02-2023
  * A mod that allows the player to place blocks really fast.
  */
 class ModFastPlace : Mod(Type.FAST_PLACE) {
     override fun onTick() {
-        if (GavinsModClient.getPlayer() != null) {
-            val item = GavinsModClient.getPlayer().mainHandStack.item is BlockItem
+        if (GavinsModClient.player != null) {
+            val item = GavinsModClient.player!!.getMainHandStack().item is BlockItem
             if (isActive && item) client.setItemUseCooldown(0)
         }
     }

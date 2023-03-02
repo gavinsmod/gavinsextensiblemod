@@ -25,7 +25,7 @@ import com.peasenet.util.event.AirStrafeEvent
  * A listener for the world render event.
  *
  * @author GT3CH1
- * @version 02/27/2023
+ * @version 03-02-2023
  */
 interface AirStrafeListener : Listener {
     /*

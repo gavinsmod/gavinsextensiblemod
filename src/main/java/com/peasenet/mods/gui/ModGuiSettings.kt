@@ -30,7 +30,7 @@ import com.peasenet.settings.ToggleSetting
 
 /**
  * @author gt3ch1
- * @version 12/31/2022
+ * @version 03-02-2023
  * A mod that allows the player to configure certain settings of gavinsmod.
  */
 class ModGuiSettings : Mod(Type.SETTINGS) {
@@ -38,24 +38,34 @@ class ModGuiSettings : Mod(Type.SETTINGS) {
         val guiSounds = ToggleSetting("gavinsmod.settings.gui.sound")
         guiSounds.setCallback { GavUISettings.add("gui.sound", guiSounds.value) }
         guiSounds.value = GavUISettings.getBool("gui.sound")
-        val foregroundColorSetting = ColorSetting("gavinsmod.settings.gui.color.foreground")
+
+        val fgColor = GavUISettings.getColor("gui.color.foreground")
+        val bgColor = GavUISettings.getColor("gui.color.background")
+        val catColor = GavUISettings.getColor("gui.color.category")
+        val enColor = GavUISettings.getColor("gui.color.enabled")
+        val disColor = GavUISettings.getColor("gui.color.disabled")
+        val borderColor = GavUISettings.getColor("gui.color.border")
+        val frozenColor = GavUISettings.getColor("gui.color.frozen")
+
+
+        val foregroundColorSetting =
+            ColorSetting("gavinsmod.settings.gui.color.foreground", GavUISettings.getColor("gui.color.foreground"))
         foregroundColorSetting.setCallback { GavUISettings.add("gui.color.foreground", foregroundColorSetting.color) }
-        foregroundColorSetting.color = GavUISettings.getColor("gui.color.foreground")
-        val backgroundColorSetting = ColorSetting("gavinsmod.settings.gui.color.background")
+
+        val backgroundColorSetting = ColorSetting("gavinsmod.settings.gui.color.background", bgColor)
         backgroundColorSetting.setCallback { GavUISettings.add("gui.color.background", backgroundColorSetting.color) }
-        backgroundColorSetting.color = GavUISettings.getColor("gui.color.background")
-        val categoryColorSetting = ColorSetting("gavinsmod.settings.gui.color.category")
+
+        val categoryColorSetting = ColorSetting("gavinsmod.settings.gui.color.category", catColor)
         categoryColorSetting.setCallback { GavUISettings.add("gui.color.category", categoryColorSetting.color) }
-        categoryColorSetting.color = GavUISettings.getColor("gui.color.category")
-        val enabledColorSetting = ColorSetting("gavinsmod.settings.gui.color.enabled")
+
+        val enabledColorSetting = ColorSetting("gavinsmod.settings.gui.color.enabled", enColor)
         enabledColorSetting.setCallback { GavUISettings.add("gui.color.enabled", enabledColorSetting.color) }
-        enabledColorSetting.color = GavUISettings.getColor("gui.color.enabled")
-        val borderColorSetting = ColorSetting("gavinsmod.settings.gui.color.border")
+
+        val borderColorSetting = ColorSetting("gavinsmod.settings.gui.color.border", borderColor)
         borderColorSetting.setCallback { GavUISettings.add("gui.color.border", borderColorSetting.color) }
-        borderColorSetting.color = GavUISettings.getColor("gui.color.border")
-        val frozenColorSetting = ColorSetting("gavinsmod.settings.gui.color.frozen")
+
+        val frozenColorSetting = ColorSetting("gavinsmod.settings.gui.color.frozen", frozenColor)
         frozenColorSetting.setCallback { GavUISettings.add("gui.color.frozen", frozenColorSetting.color) }
-        frozenColorSetting.color = GavUISettings.getColor("gui.color.frozen")
         val guiAlpha = SlideSetting("gavinsmod.settings.alpha")
         guiAlpha.setCallback { GavUISettings.add("gui.alpha", guiAlpha.value) }
         guiAlpha.value = GavUISettings.getFloat("gui.alpha")
@@ -70,7 +80,7 @@ class ModGuiSettings : Mod(Type.SETTINGS) {
     }
 
     override fun activate() {
-        GavinsModClient.getMinecraftClient().setScreen(GavinsMod.guiSettings)
+        GavinsModClient.minecraftClient.setScreen(GavinsMod.guiSettings)
         setEnabled(true)
     }
 

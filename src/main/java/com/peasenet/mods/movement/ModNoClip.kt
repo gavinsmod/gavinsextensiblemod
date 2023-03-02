@@ -26,7 +26,7 @@ import com.peasenet.util.listeners.AirStrafeListener
 
 /**
  * @author gt3ch1
- * @version 7/6/2022
+ * @version 03-02-2023
  * A mod for allowing the printer to noclip (move through blocks)
  */
 class ModNoClip : Mod(Type.NO_CLIP), AirStrafeListener {
@@ -41,15 +41,15 @@ class ModNoClip : Mod(Type.NO_CLIP), AirStrafeListener {
     }
 
     override fun onTick() {
-        if (client.player == null) return
-        val player = client.player
+        if (client.player() == null) return
+        val player = client.player()
         player!!.abilities.flying = true
     }
 
     override fun onAirStrafe(event: AirStrafeEvent) {
         var speed = 0.2f
-        if (client.player == null) return
-        val player = client.player
+        if (client.player() == null) return
+        val player = client.player()
         if (player!!.isSprinting) {
             speed = 1f
         }

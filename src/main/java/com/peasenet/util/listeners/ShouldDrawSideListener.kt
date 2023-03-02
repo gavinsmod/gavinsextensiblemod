@@ -23,7 +23,7 @@ import com.peasenet.util.event.data.DrawSide
 
 /**
  * @author gt3ch1
- * @version 03-01-2023
+ * @version 03-02-2023
  */
 interface ShouldDrawSideListener : Listener {
     fun onDrawSide(event: DrawSide)

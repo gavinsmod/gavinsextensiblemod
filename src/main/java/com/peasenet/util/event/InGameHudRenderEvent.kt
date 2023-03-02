@@ -26,7 +26,7 @@ import net.minecraft.client.util.math.MatrixStack
  * The event for the world render event.
  *
  * @author GT3CH1
- * @version 03-01-2023
+ * @version 03-02-2023
  */
 class InGameHudRenderEvent
 /**

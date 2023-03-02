@@ -44,14 +44,14 @@ import java.util.function.Consumer
 
 /**
  * @author gt3ch1
- * @version 03-01-2023
+ * @version 03-02-2023
  * A utility class for rendering tracers and esp's.
  */
 object RenderUtils {
     /**
      * How many chunks away to render things.
      */
-    private var CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.viewDistance.value
+    private var CHUNK_RADIUS = GavinsModClient.minecraftClient.options.viewDistance.value
 
     /**
      * The last player configured gamma.
@@ -97,7 +97,7 @@ object RenderUtils {
     @JvmStatic
     fun afterEntities(context: WorldRenderContext) {
 //        RenderUtils.context = context;
-        CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.viewDistance.value / 2
+        CHUNK_RADIUS = GavinsModClient.minecraftClient.options.viewDistance.value / 2
         // this helps with lag
         val minecraft = MinecraftClient.getInstance()
         val level = minecraft.world
@@ -122,7 +122,7 @@ object RenderUtils {
 //        drawChestMods(level, stack, buffer, playerPos, chunk_x, chunk_z, delta);
         drawEntityMods(level, player, stack, delta, buffer, playerPos)
         val event = WorldRenderEvent(level!!, stack, buffer, delta)
-        GavinsMod.eventManager.call(event)
+        GavinsMod.eventManager!!.call(event)
         tessellator.draw()
         stack.pop()
         resetRenderSystem()
@@ -130,7 +130,7 @@ object RenderUtils {
 
     @JvmStatic
     fun beforeBlockOutline(context: WorldRenderContext, h: HitResult?): Boolean {
-        CHUNK_RADIUS = GavinsModClient.getMinecraftClient().options.viewDistance.value
+        CHUNK_RADIUS = GavinsModClient.minecraftClient.options.viewDistance.value
         val minecraft = MinecraftClient.getInstance()
         val level = minecraft.world
         val player = minecraft.player
@@ -205,7 +205,7 @@ object RenderUtils {
                         val aabb = Box(blockPos)
                         val boxPos = aabb.center
                         val event = BlockEntityRenderEvent(blockEntity, stack, buffer, boxPos, playerPos, delta)
-                        GavinsMod.eventManager.call(event)
+                        GavinsMod.eventManager!!.call(event)
                     }
                 }
             }
@@ -248,7 +248,7 @@ object RenderUtils {
             val aabb = getEntityBox(delta, e)
             val boxPos = aabb.center
             val event = EntityRenderEvent(e, stack, buffer, boxPos, playerPos, delta)
-            GavinsMod.eventManager.call(event)
+            GavinsMod.eventManager!!.call(event)
         })
     }
 
@@ -270,10 +270,10 @@ object RenderUtils {
      * Sets the gamma of the game to the full bright value of 10000.0 while storing the last gamma value.
      */
     fun setHighGamma() {
-        if (GavinsMod.fullbrightConfig.gammaFade) {
+        if (GavinsMod.fullbrightConfig!!.gammaFade) {
             fadeGammaUp()
         } else {
-            gamma = GavinsMod.fullbrightConfig.maxGamma.toDouble()
+            gamma = GavinsMod.fullbrightConfig!!.maxGamma.toDouble()
         }
     }
 
@@ -281,7 +281,7 @@ object RenderUtils {
      * Resets the gamma to the players last configured value.
      */
     fun setLowGamma() {
-        if (GavinsMod.fullbrightConfig.gammaFade) {
+        if (GavinsMod.fullbrightConfig!!.gammaFade) {
             fadeGammaDown()
         } else {
             gamma = LAST_GAMMA
@@ -294,7 +294,7 @@ object RenderUtils {
          *
          * @return The current game gamma.
          */
-        get() = GavinsModClient.getMinecraftClient().options.gamma.value
+        get() = GavinsModClient.minecraftClient.options.gamma.value
         /**
          * Sets the gamma to the given value.
          *
@@ -302,10 +302,10 @@ object RenderUtils {
          */
         set(gamma) {
             var newValue = gamma
-            val maxGamma = GavinsMod.fullbrightConfig.maxGamma
+            val maxGamma = GavinsMod.fullbrightConfig!!.maxGamma
             if (newValue < 0.0) newValue = 0.0
             if (newValue > maxGamma) newValue = maxGamma.toDouble()
-            val newGamma = GavinsModClient.getMinecraftClient().options.gamma
+            val newGamma = GavinsModClient.minecraftClient.options.gamma
             if (newGamma.value != newValue) {
                 val newGamma2 = newGamma as Any as ISimpleOption<Double>
                 newGamma2.forceSetValue(newValue)

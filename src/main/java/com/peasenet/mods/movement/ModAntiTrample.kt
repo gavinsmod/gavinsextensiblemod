@@ -25,15 +25,15 @@ import net.minecraft.block.Blocks
 
 /**
  * @author gt3ch1
- * @version 8/6/2022
+ * @version 03-02-2023
  * AntiTrample prevents the player from trampling over farm blocks.
  */
 class ModAntiTrample : Mod(Type.ANTI_TRAMPLE) {
     override fun onTick() {
         // check if the player is on farmland by looking at the block below the player.
-        if (client.player == null)
+        if (client.player() == null)
             return
-        val player = client.player
+        val player = client.player()
         val playerLoc = player.blockPos
         val playerLocDown = player.blockPos.down()
         val playerBlock = world.getBlockState(playerLoc).block
