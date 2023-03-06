@@ -41,7 +41,7 @@ class ModEntityPlayerTracer : Mod(Type.ENTITY_PLAYER_TRACER), EntityRenderListen
             "gavinsmod.settings.tracer.player.color",
             GavinsMod.tracerConfig!!.playerColor
         )
-        colorSetting.setCallback { tracerConfig!!.playerColor = colorSetting.color }
+        colorSetting.setCallback { tracerConfig.playerColor = colorSetting.color }
         colorSetting.color = GavinsMod.tracerConfig!!.playerColor
         addSetting(colorSetting)
     }
@@ -70,8 +70,8 @@ class ModEntityPlayerTracer : Mod(Type.ENTITY_PLAYER_TRACER), EntityRenderListen
             er.buffer!!,
             er.playerPos!!,
             er.center!!,
-            tracerConfig!!.playerColor,
-            tracerConfig!!.alpha
+            tracerConfig.playerColor,
+            tracerConfig.alpha
         )
     }
 }

@@ -32,7 +32,7 @@ open class FullbrightConfig : Config<FullbrightConfig>() {
     var gamma: Float = 1.0F
         set(value) {
             field = value
-            saveConfig();
+            saveConfig()
         }
 
     /**

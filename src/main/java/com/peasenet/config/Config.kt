@@ -53,6 +53,6 @@ abstract class Config<E : Config<E>> {
      * @return The instance of the configuration.
      */
     fun readFromSettings(): Config<*> {
-        return Settings.getConfig(javaClass, key!!)!!
+        return Settings.getConfig(javaClass, key!!)
     }
 }

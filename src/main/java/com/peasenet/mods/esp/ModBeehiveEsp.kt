@@ -56,6 +56,6 @@ class ModBeehiveEsp : Mod(Type.BEEHIVE_ESP), BlockEntityRenderListener {
     override fun onRenderBlockEntity(er: BlockEntityRender) {
         if (er.entity !is BeehiveBlockEntity) return
         val box = Box(er.entity.pos)
-        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig!!.beehiveColor, espConfig!!.alpha)
+        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.beehiveColor, espConfig.alpha)
     }
 }

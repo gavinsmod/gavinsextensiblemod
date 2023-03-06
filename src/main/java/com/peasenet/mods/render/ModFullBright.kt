@@ -35,14 +35,14 @@ import com.peasenet.util.RenderUtils
 class ModFullBright : Mod(Type.FULL_BRIGHT) {
     init {
         val gammaFade = ToggleSetting("gavinsmod.settings.render.gammafade")
-        gammaFade.setCallback { fullbrightConfig!!.gammaFade = gammaFade.value }
-        gammaFade.value = fullbrightConfig!!.gammaFade
+        gammaFade.setCallback { fullbrightConfig.gammaFade = gammaFade.value }
+        gammaFade.value = fullbrightConfig.gammaFade
         val autoFullBright = ToggleSetting("gavinsmod.settings.render.autofullbright")
-        autoFullBright.setCallback { fullbrightConfig!!.autoFullBright = autoFullBright.value }
-        autoFullBright.value = fullbrightConfig!!.autoFullBright
+        autoFullBright.setCallback { fullbrightConfig.autoFullBright = autoFullBright.value }
+        autoFullBright.value = fullbrightConfig.autoFullBright
         val gamma = SlideSetting("gavinsmod.settings.render.fullbright.gamma")
-        gamma.setCallback { fullbrightConfig!!.gamma = gamma.value }
-        gamma.value = fullbrightConfig!!.gamma
+        gamma.setCallback { fullbrightConfig.gamma = gamma.value }
+        gamma.value = fullbrightConfig.gamma
         val subSetting = SubSetting(100, 10, translationKey)
         subSetting.add(gammaFade)
         subSetting.add(autoFullBright)

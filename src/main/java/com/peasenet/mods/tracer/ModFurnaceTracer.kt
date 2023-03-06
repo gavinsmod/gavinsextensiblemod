@@ -41,7 +41,7 @@ class ModFurnaceTracer : Mod(Type.FURNACE_TRACER), BlockEntityRenderListener, Ca
             "gavinsmod.settings.tracer.furnace.color",
             GavinsMod.tracerConfig!!.furnaceColor
         )
-        colorSetting.setCallback { tracerConfig!!.furnaceColor = colorSetting.color }
+        colorSetting.setCallback { tracerConfig.furnaceColor = colorSetting.color }
         colorSetting.color = GavinsMod.tracerConfig!!.furnaceColor
         addSetting(colorSetting)
     }
@@ -60,7 +60,7 @@ class ModFurnaceTracer : Mod(Type.FURNACE_TRACER), BlockEntityRenderListener, Ca
 
     override fun onRenderBlockEntity(er: BlockEntityRender) {
         if (er.entity is FurnaceBlockEntity) RenderUtils.renderSingleLine(
-            er.stack!!, er.buffer!!, er.playerPos!!, er.center!!, tracerConfig!!.furnaceColor, tracerConfig!!.alpha
+            er.stack!!, er.buffer!!, er.playerPos!!, er.center!!, tracerConfig.furnaceColor, tracerConfig.alpha
         )
     }
 

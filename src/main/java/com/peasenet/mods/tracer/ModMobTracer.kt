@@ -41,18 +41,18 @@ class ModMobTracer : Mod(Type.MOB_TRACER), EntityRenderListener, CameraBobListen
         val peacefulColor = ColorSetting(
             "gavinsmod.settings.tracer.mob.peaceful.color", GavinsMod.tracerConfig!!.peacefulMobColor
         )
-        peacefulColor.setCallback { tracerConfig!!.peacefulMobColor = peacefulColor.color }
+        peacefulColor.setCallback { tracerConfig.peacefulMobColor = peacefulColor.color }
         peacefulColor.color = GavinsMod.tracerConfig!!.peacefulMobColor
         val hostileColor = ColorSetting(
             "gavinsmod.settings.tracer.mob.hostile.color", GavinsMod.tracerConfig!!.hostileMobColor
         )
-        hostileColor.setCallback { tracerConfig!!.hostileMobColor = hostileColor.color }
+        hostileColor.setCallback { tracerConfig.hostileMobColor = hostileColor.color }
         hostileColor.color = GavinsMod.tracerConfig!!.hostileMobColor
         val hostile = ToggleSetting("gavinsmod.settings.tracer.mob.hostile")
-        hostile.setCallback { tracerConfig!!.showHostileMobs = hostile.value }
+        hostile.setCallback { tracerConfig.showHostileMobs = hostile.value }
         hostile.value = GavinsMod.tracerConfig!!.showHostileMobs
         val peaceful = ToggleSetting("gavinsmod.settings.tracer.mob.peaceful")
-        peaceful.setCallback { tracerConfig!!.showPeacefulMobs = peaceful.value }
+        peaceful.setCallback { tracerConfig.showPeacefulMobs = peaceful.value }
         peaceful.value = GavinsMod.tracerConfig!!.showPeacefulMobs
         addSetting(hostileColor)
         addSetting(peacefulColor)
@@ -81,13 +81,13 @@ class ModMobTracer : Mod(Type.MOB_TRACER), EntityRenderListener, CameraBobListen
         val center = er.center
         val playerPos = er.playerPos
         if (entity !is MobEntity) return
-        if (er.entityType.spawnGroup.isPeaceful && tracerConfig!!.showPeacefulMobs) {
+        if (er.entityType.spawnGroup.isPeaceful && tracerConfig.showPeacefulMobs) {
             RenderUtils.renderSingleLine(
-                stack, buffer!!, playerPos!!, center!!, tracerConfig!!.peacefulMobColor, tracerConfig!!.alpha
+                stack, buffer!!, playerPos!!, center!!, tracerConfig.peacefulMobColor, tracerConfig.alpha
             )
-        } else if (!er.entityType.spawnGroup.isPeaceful && tracerConfig!!.showHostileMobs) {
+        } else if (!er.entityType.spawnGroup.isPeaceful && tracerConfig.showHostileMobs) {
             RenderUtils.renderSingleLine(
-                stack, buffer!!, playerPos!!, center!!, tracerConfig!!.hostileMobColor, tracerConfig!!.alpha
+                stack, buffer!!, playerPos!!, center!!, tracerConfig.hostileMobColor, tracerConfig.alpha
             )
         }
     }

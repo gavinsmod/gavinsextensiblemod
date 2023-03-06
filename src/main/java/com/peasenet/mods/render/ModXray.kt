@@ -45,10 +45,10 @@ class ModXray : Mod(Type.XRAY), ShouldDrawSideListener, TessellateBlockListener,
         val xraySubSetting = SubSetting(100, 10, translationKey)
         val culling = ToggleSetting("gavinsmod.settings.xray.culling")
         culling.setCallback {
-            xrayConfig!!.blockCulling = culling.value
+            xrayConfig.blockCulling = culling.value
             if (isActive) reload()
         }
-        culling.value = xrayConfig!!.blockCulling
+        culling.value = xrayConfig.blockCulling
         val menu = ClickSetting("gavinsmod.settings.xray.blocks")
         menu.setCallback { client.setScreen(GuiXray()) }
         xraySubSetting.add(menu)
@@ -71,7 +71,7 @@ class ModXray : Mod(Type.XRAY), ShouldDrawSideListener, TessellateBlockListener,
     }
 
     override fun activate() {
-        client.setChunkCulling(xrayConfig!!.blockCulling)
+        client.setChunkCulling(xrayConfig.blockCulling)
         super.activate()
         reloadRenderer()
     }
@@ -121,7 +121,7 @@ class ModXray : Mod(Type.XRAY), ShouldDrawSideListener, TessellateBlockListener,
          * @return True if visible, false if not
          */
         fun shouldDrawFace(block: BlockState): Boolean {
-            return xrayConfig!!.isInList(block.block)
+            return xrayConfig.isInList(block.block)
         }
     }
 }

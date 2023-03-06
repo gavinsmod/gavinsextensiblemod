@@ -39,7 +39,7 @@ class ModFurnaceEsp : Mod(Type.FURNACE_ESP), BlockEntityRenderListener {
         val colorSetting = ColorSetting(
             "gavinsmod.settings.esp.furnace.color", GavinsMod.espConfig!!.furnaceColor
         )
-        colorSetting.setCallback { espConfig!!.furnaceColor = colorSetting.color }
+        colorSetting.setCallback { espConfig.furnaceColor = colorSetting.color }
         colorSetting.color = GavinsMod.espConfig!!.furnaceColor
         addSetting(colorSetting)
     }
@@ -58,6 +58,6 @@ class ModFurnaceEsp : Mod(Type.FURNACE_ESP), BlockEntityRenderListener {
         if (er.buffer == null) return
         if (er.entity !is FurnaceBlockEntity) return
         val box = Box(er.entity.pos)
-        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig!!.furnaceColor, espConfig!!.alpha)
+        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.furnaceColor, espConfig.alpha)
     }
 }

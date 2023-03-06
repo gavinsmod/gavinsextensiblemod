@@ -36,7 +36,7 @@ class ModEntityItemEsp : Mod(Type.ENTITY_ITEM_ESP), EntityRenderListener {
     init {
         val colorSetting = ColorSetting(
             "gavinsmod.settings.esp.item.color",
-            espConfig!!.itemColor
+            espConfig.itemColor
         )
         colorSetting.setCallback { espConfig.itemColor = colorSetting.color }
         addSetting(colorSetting)
@@ -56,6 +56,6 @@ class ModEntityItemEsp : Mod(Type.ENTITY_ITEM_ESP), EntityRenderListener {
         if (er.entityType !== EntityType.ITEM) return
         if (er.buffer == null) return
         val box = RenderUtils.getEntityBox(er.delta, er.entity)
-        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig!!.itemColor, espConfig!!.alpha)
+        RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.itemColor, espConfig.alpha)
     }
 }

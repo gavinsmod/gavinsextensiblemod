@@ -103,7 +103,7 @@ abstract class Mod constructor(
      * @param message The message to send.
      */
     private fun sendMessage(message: String?) {
-        if (miscConfig!!.isMessages && !reloading) GavinsModClient.player!!.sendMessage(Text.literal(message), false)
+        if (miscConfig.isMessages && !reloading) GavinsModClient.player!!.sendMessage(Text.literal(message), false)
     }
 
     override fun onEnable() {
@@ -190,7 +190,7 @@ abstract class Mod constructor(
     override val world: ClientWorld
         get() = client.getWorld()
 
-    public val client: IMinecraftClient
+    val client: IMinecraftClient
         /**
          * Gets the minecraft client.
          *

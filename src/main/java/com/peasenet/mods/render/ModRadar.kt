@@ -175,7 +175,7 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
         if (client.player() == null) return
         val player = client.player()
 
-        val yaw = player!!.yaw
+        val yaw = player.yaw
         val waypoints =
             GavinsMod.waypointConfig!!.getLocations().stream().filter { obj: Waypoint -> obj.isEnabled }.toList()
         for (w in waypoints) {
@@ -200,7 +200,7 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
         if (client.player() == null) return
         val player = client.player()
 
-        val yaw = player!!.yaw
+        val yaw = player.yaw
         val entities = world.entities
         for (entity in entities) {
             if (!canRenderEntity(entity)) continue
@@ -291,7 +291,7 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
         if (client.player() == null) return PointF(0F, 0F)
         val player = client.player()
 
-        val x = loc!!.getX() - player!!.x
+        val x = loc!!.getX() - player.x
         val z = loc.getZ() - player.z
         return calculateDistance(yaw, x, z)
     }

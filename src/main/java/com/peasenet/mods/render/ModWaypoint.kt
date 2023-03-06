@@ -62,12 +62,12 @@ class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener 
 
     override fun reloadSettings() {
         modSettings.clear()
-        setting = SubSetting(setting.gui?.width!!.toInt(), 10, "gavinsmod.mod.render.waypoints")
+        setting = SubSetting(setting.gui.width.toInt(), 10, "gavinsmod.mod.render.waypoints")
         openMenu.setCallback { client.setScreen(GuiWaypoint()) }
         openMenu.gui.setSymbol('+')
         setting.add(openMenu)
         // get all waypoints and add them to the menu
-        val waypoints = waypointConfig!!.getLocations().stream().sorted(
+        val waypoints = waypointConfig.getLocations().stream().sorted(
             Comparator.comparing(Function<Waypoint, String> { obj: Waypoint -> obj.name })
         )
         for (w in waypoints.toArray()) createWaypoint(w as Waypoint)
@@ -90,7 +90,7 @@ class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener 
     }
 
     override fun onEntityRender(er: EntityRender) {
-        waypointConfig!!.getLocations().stream().filter { obj: Waypoint -> obj.isEnabled }.forEach { w: Waypoint ->
+        waypointConfig.getLocations().stream().filter { obj: Waypoint -> obj.isEnabled }.forEach { w: Waypoint ->
             val aabb = Box(BlockPos(w.x, w.y, w.z))
             val boxPos = aabb.center
             if (w.isTracerEnabled) RenderUtils.renderSingleLine(

@@ -89,4 +89,6 @@ abstract class Setting
     fun setTitle(text: Text?) {
         gui?.title = text
     }
+
+    abstract fun setCallback(callback: () -> Unit)
 }

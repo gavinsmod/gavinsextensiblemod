@@ -44,8 +44,8 @@ class ModGuiTextOverlay : Mod(Type.MOD_GUI_TEXT_OVERLAY), InGameHudRenderListene
 
         //NOTE: This isn't really the best place for this, but it works for now. this is for chat message toggles.
         val chatMessage = ToggleSetting("gavinsmod.settings.misc.messages")
-        chatMessage.setCallback { miscConfig!!.isMessages = chatMessage.value }
-        chatMessage.value = miscConfig!!.isMessages
+        chatMessage.setCallback { miscConfig.isMessages = chatMessage.value }
+        chatMessage.value = miscConfig.isMessages
         addSetting(chatMessage)
     }
 

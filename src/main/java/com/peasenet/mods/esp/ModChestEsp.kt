@@ -60,6 +60,6 @@ class ModChestEsp : Mod(Type.CHEST_ESP), BlockEntityRenderListener {
         if (er.buffer == null) return
         if (er.entity is ChestBlockEntity || er.entity is ShulkerBoxBlockEntity
             || er.entity is EnderChestBlockEntity
-        ) RenderUtils.drawBox(er.stack, er.buffer, box, espConfig!!.chestColor, espConfig!!.alpha)
+        ) RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.chestColor, espConfig.alpha)
     }
 }

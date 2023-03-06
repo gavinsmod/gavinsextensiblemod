@@ -31,7 +31,7 @@ class ModSpeed : Mod(Type.SPEED) {
         if (client.player() == null) return
         val player = client.player()
 
-        if (player!!.isSneaking) return
+        if (player.isSneaking) return
         if (!player.isOnGround) return
         var velocity = player.velocity
         velocity = velocity.multiply(1.5)

@@ -43,7 +43,7 @@ class ModChestTracer : Mod(Type.CHEST_TRACER), BlockEntityRenderListener, Camera
             "gavinsmod.settings.tracer.chest.color",
             GavinsMod.tracerConfig!!.chestColor
         )
-        colorSetting.setCallback { tracerConfig!!.chestColor = colorSetting.color }
+        colorSetting.setCallback { tracerConfig.chestColor = colorSetting.color }
         colorSetting.color = GavinsMod.tracerConfig!!.chestColor
         addSetting(colorSetting)
     }
@@ -69,8 +69,8 @@ class ModChestTracer : Mod(Type.CHEST_TRACER), BlockEntityRenderListener, Camera
             er.buffer!!,
             er.playerPos!!,
             er.center!!,
-            tracerConfig!!.chestColor,
-            tracerConfig!!.alpha
+            tracerConfig.chestColor,
+            tracerConfig.alpha
         )
     }
 

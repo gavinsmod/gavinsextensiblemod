@@ -41,7 +41,7 @@ class ModBeehiveTracer : Mod(Type.BEEHIVE_TRACER), BlockEntityRenderListener, Ca
             "gavinsmod.settings.tracer.beehive.color",
             GavinsMod.tracerConfig!!.beehiveColor
         )
-        colorSetting.setCallback { tracerConfig!!.beehiveColor = colorSetting.color }
+        colorSetting.setCallback { tracerConfig.beehiveColor = colorSetting.color }
         colorSetting.color = GavinsMod.tracerConfig!!.beehiveColor
         addSetting(colorSetting)
     }
@@ -61,8 +61,8 @@ class ModBeehiveTracer : Mod(Type.BEEHIVE_TRACER), BlockEntityRenderListener, Ca
     override fun onRenderBlockEntity(er: BlockEntityRender) {
         if (er.buffer == null) return
         if (er.entity is BeehiveBlockEntity) RenderUtils.renderSingleLine(
-            er.stack!!, er.buffer!!, er.playerPos!!, er.center!!, tracerConfig!!.beehiveColor,
-            tracerConfig!!.alpha
+            er.stack!!, er.buffer!!, er.playerPos!!, er.center!!, tracerConfig.beehiveColor,
+            tracerConfig.alpha
         )
     }
 
