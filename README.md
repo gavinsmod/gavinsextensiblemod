@@ -1,20 +1,22 @@
-# Gavin's Mod v1.3
+# Gavin's Mod v1.4
 
-## -- NOTE --
+## For Minecraft 1.19.4
 
-If you are upgrading from v1.2 or before, you may need to delete/rename your
-settings file located in `.minecraft/mods/gavinsmod/settings.json`. This *should* be done
-automatically, but since I cannot guarantee I have tested loading the update with your
-config, it may not be.
+- Note: I have recently rewritten (quite sloppily) the mod into Kotlin as a new challenge for myself.
+  If there is something wrong, please open an issue or pull request if you have a fix.
 
+### Versions of the mod for Minecraft versions 1.19.3 and below are no longer being actively developed.
+
+If you want a feature ported over to older versions, please open an issue with the detailing what you want
+and for what minecraft version you want it for.
+
+Features
 ---
-
-## Features
 
 - X-Ray
   ![](src/main/resources/assets/gavinsmod/screenshots/xray.png)
-    - With a fully configurable X-Ray filter (inspired by ate47's Xray)
-      ![](src/main/resources/assets/gavinsmod/screenshots/xray-menu.png)
+  - With a fully configurable X-Ray filter (inspired by ate47's Xray)
+    ![](src/main/resources/assets/gavinsmod/screenshots/xray-menu.png)
 - Full Bright
   ![](src/main/resources/assets/gavinsmod/screenshots/fullbright.png)
 - Chest ESP & Tracers (both configured individually)
@@ -83,3 +85,7 @@ Please use only the templates provided. Any other templates will be automaticall
 If you have a suggestion for a new template, please open an issue or pull request. This does not
 need to follow the templates.
 
+## Credits
+
+- GT3CH1
+- Starmism
