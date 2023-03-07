@@ -47,7 +47,7 @@ import kotlin.math.sqrt
  * A mod that allows for a radar-like view of the world.
  *
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 03-06-2023
  */
 class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
     /**
@@ -55,7 +55,7 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
      */
     init {
         val playerEntityColor = ColorSetting(
-            "gavinsmod.settings.radar.player().color",
+            "gavinsmod.settings.radar.player.color",
             radarConfig.playerColor
         )
         playerEntityColor.setCallback { radarConfig.playerColor = playerEntityColor.color }
@@ -81,7 +81,6 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
             "gavinsmod.settings.radar.waypoint.color",
             radarConfig.waypointColor
         )
-        waypointColor.setCallback { radarConfig.waypointColor = waypointColor.color }
         waypointColor.color = radarConfig.waypointColor
         scaleSetting = ClickSetting("gavinsmod.settings.radar.scale")
         pointSizeSetting = ClickSetting("gavinsmod.settings.radar.pointsize")
@@ -97,7 +96,7 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
         val waypointsSetting = ToggleSetting("gavinsmod.settings.radar.waypoints")
         waypointsSetting.setCallback { radarConfig.isShowWaypoint = waypointsSetting.value }
         waypointsSetting.value = radarConfig.isShowWaypoint
-        val playerSetting = ToggleSetting("gavinsmod.settings.radar.player()")
+        val playerSetting = ToggleSetting("gavinsmod.settings.radar.player")
         playerSetting.setCallback { radarConfig.isShowPlayer = playerSetting.value }
         playerSetting.value = radarConfig.isShowPlayer
         val useWaypointColorSetting = ToggleSetting("gavinsmod.settings.radar.waypoint.usecolor")
@@ -172,7 +171,6 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
      * @param stack - The matrix stack.
      */
     private fun drawWaypointsOnRadar(stack: MatrixStack) {
-        if (client.player() == null) return
         val player = client.player()
 
         val yaw = player.yaw
@@ -197,7 +195,6 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
      * @param stack - The matrix stack.
      */
     private fun drawEntitiesOnRadar(stack: MatrixStack) {
-        if (client.player() == null) return
         val player = client.player()
 
         val yaw = player.yaw
@@ -231,12 +228,16 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
      * @return A scaled position relative to the radar, clamped to the radar.
      */
     private fun getScaledPos(w: Vec3d?, location: PointF): PointF {
+        // check the distance of w to the player.
         var newLoc = location
-        if (w!!.distanceTo(client.player().pos) >= radarConfig.size / 2f - radarConfig.pointSize) newLoc =
-            clampPoint(newLoc)
-        newLoc =
-            newLoc.add(PointF(RadarConfig.x + radarConfig.size / 2f, radarConfig.size / 2f + RadarConfig.y))
-        if (radarConfig.pointSize != 1) newLoc = location.subtract(PointF(pointOffset, pointOffset))
+        if (w!!.distanceTo(client.player().pos) >= radarConfig.size / 2f - radarConfig.pointSize)
+            newLoc = clampPoint(location)
+
+        // offset the point to the center of the radar.
+        newLoc = PointF(
+            newLoc.x + RadarConfig.x + radarConfig.size / 2f,
+            newLoc.y + RadarConfig.y + radarConfig.size / 2f
+        )
         return newLoc
     }
 
@@ -249,11 +250,13 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
     private fun clampPoint(point: PointF): PointF {
         var newPoint = point
         val offset = radarConfig.size / 2f
-        if (newPoint.x >= offset - pointOffset) newPoint =
-            PointF(offset - pointOffset - 1f, newPoint.y) else if (newPoint.x <= -offset + pointOffset) newPoint =
+        if (newPoint.x >= offset - pointOffset - 1f)
+            newPoint = PointF(offset - pointOffset - 1f, newPoint.y)
+        else if (newPoint.x <= -offset + pointOffset) newPoint =
             PointF(-offset + pointOffset, newPoint.y)
-        if (newPoint.y >= offset - pointOffset) newPoint =
-            PointF(newPoint.x, offset - pointOffset - 1f) else if (newPoint.y <= -offset + pointOffset) newPoint =
+        if (newPoint.y >= offset - pointOffset - 1f)
+            newPoint = PointF(newPoint.x, offset - pointOffset - 1f)
+        else if (newPoint.y <= -offset + pointOffset) newPoint =
             PointF(newPoint.x, -offset + pointOffset)
         return newPoint
     }
@@ -288,7 +291,6 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
      * @return A new PointF with the x and z values.
      */
     private fun getPointRelativeToYaw(loc: Vec3d?, yaw: Float): PointF {
-        if (client.player() == null) return PointF(0F, 0F)
         val player = client.player()
 
         val x = loc!!.getX() - player.x

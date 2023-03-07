@@ -68,8 +68,12 @@ abstract class Setting
      *
      * @param callback - The callback method to run.
      */
-    fun setCallback(callback: SettingsCallback) {
-        this.callback = callback
+    fun setCallback(callback: () -> Unit) {
+        this.callback = object : SettingsCallback {
+            override fun callback() {
+                callback()
+            }
+        }
     }
 
     /**
@@ -90,5 +94,7 @@ abstract class Setting
         gui?.title = text
     }
 
-    abstract fun setCallback(callback: () -> Unit)
+    fun setCallback(callback: SettingsCallback?) {
+        this.callback = callback
+    }
 }
