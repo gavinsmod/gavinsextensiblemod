@@ -229,9 +229,7 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
      */
     private fun getScaledPos(w: Vec3d?, location: PointF): PointF {
         // check the distance of w to the player.
-        var newLoc = location
-        if (w!!.distanceTo(client.player().pos) >= radarConfig.size / 2f - radarConfig.pointSize)
-            newLoc = clampPoint(location)
+        var newLoc = clampPoint(location)
 
         // offset the point to the center of the radar.
         newLoc = PointF(
@@ -249,16 +247,19 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
      */
     private fun clampPoint(point: PointF): PointF {
         var newPoint = point
-        val offset = radarConfig.size / 2f
-        if (newPoint.x >= offset - pointOffset - 1f)
-            newPoint = PointF(offset - pointOffset - 1f, newPoint.y)
-        else if (newPoint.x <= -offset + pointOffset) newPoint =
-            PointF(-offset + pointOffset, newPoint.y)
-        if (newPoint.y >= offset - pointOffset - 1f)
-            newPoint = PointF(newPoint.x, offset - pointOffset - 1f)
-        else if (newPoint.y <= -offset + pointOffset) newPoint =
-            PointF(newPoint.x, -offset + pointOffset)
-        return newPoint
+        var offset = radarConfig.pointSize - pointOffset
+        // if the point is touching any edges of the radar, clamp it to the edge.
+        if (newPoint.x >= radarConfig.size / 2f - offset) newPoint =
+            PointF(radarConfig.size / 2f - offset, newPoint.y)
+        if (newPoint.x <= -radarConfig.size / 2f + offset) newPoint =
+            PointF(-radarConfig.size / 2f + offset, newPoint.y)
+        if (newPoint.y >= radarConfig.size / 2f - offset) newPoint =
+            PointF(newPoint.x, radarConfig.size / 2f - offset)
+        if (newPoint.y <= -radarConfig.size / 2f + offset) newPoint =
+            PointF(newPoint.x, -radarConfig.size / 2f + offset)
+        // offset the point to be centered
+
+        return newPoint.subtract(PointF(pointOffset, pointOffset))
     }
 
     /**
@@ -325,7 +326,7 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
              *
              * @return The offset to draw the points on the radar.
              */
-            get() = if (radarConfig.pointSize == 1) 0F else ((radarConfig.pointSize - 1) / 2).toFloat()
+            get() = if (radarConfig.pointSize == 1) 0F else radarConfig.pointSize / 2F
 
         /**
          * Calculates the position and distance of the given coordinates from the player.
