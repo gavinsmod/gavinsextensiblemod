@@ -58,7 +58,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
         val resetText = Text.translatable("gavinsmod.settings.reset")
         val width = textRenderer.getWidth(resetText)
         if (resetPos == null) resetPos = PointF(titleW.toFloat(), 1f)
-        resetButton.title = resetText
+        resetButton.setTitle(resetText);
         if (resetWidth.toDouble() == 0.0) resetWidth = (width + 4).toFloat()
         resetButton.width = resetWidth
         resetButton.position = resetPos

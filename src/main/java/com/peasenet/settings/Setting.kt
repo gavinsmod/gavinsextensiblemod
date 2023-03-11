@@ -91,7 +91,7 @@ abstract class Setting
      * @param text - The title of the gui.
      */
     fun setTitle(text: Text?) {
-        gui?.title = text
+        gui?.setTitle(text)
     }
 
     fun setCallback(callback: SettingsCallback?) {

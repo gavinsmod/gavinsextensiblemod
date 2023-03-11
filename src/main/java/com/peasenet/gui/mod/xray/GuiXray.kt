@@ -169,7 +169,7 @@ class GuiXray
         val width = textRenderer.getWidth(resetText)
         if (resetPos == null) resetPos = PointF(titleW.toFloat(), 1f)
         resetButton = GuiClick(resetPos, width + 8, 10, resetText)
-        resetButton!!.title = resetText
+        resetButton!!.setTitle(resetText)
         if (resetWidth.toDouble() == 0.0) resetWidth = (width + 4).toFloat()
         resetButton!!.width = resetWidth
         resetButton!!.position = resetPos
