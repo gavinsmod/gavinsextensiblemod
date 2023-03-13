@@ -41,7 +41,7 @@ import net.minecraft.util.math.Vec3d
  * A mod that allows the camera to be moved freely.
  *
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 03-13-2023
  */
 class ModFreecam : Mod(Type.FREECAM), PacketSendListener, WorldRenderListener, AirStrafeListener {
     var fake: FakePlayer? = null
@@ -55,7 +55,7 @@ class ModFreecam : Mod(Type.FREECAM), PacketSendListener, WorldRenderListener, A
 
     override fun onTick() {
         super.onTick()
-        if (!isActive || client.player() == null) return
+        if (!isActive) return
         val player = client.player()
 
         player.velocity = Vec3d.ZERO

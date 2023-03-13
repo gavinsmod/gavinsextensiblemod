@@ -30,7 +30,7 @@ import com.peasenet.settings.ToggleSetting
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 03-13-2023
  * A mod that allows the player to configure certain settings of gavinsmod.
  */
 class ModGuiSettings : Mod(Type.SETTINGS) {
@@ -43,13 +43,11 @@ class ModGuiSettings : Mod(Type.SETTINGS) {
         val bgColor = GavUISettings.getColor("gui.color.background")
         val catColor = GavUISettings.getColor("gui.color.category")
         val enColor = GavUISettings.getColor("gui.color.enabled")
-        val disColor = GavUISettings.getColor("gui.color.disabled")
         val borderColor = GavUISettings.getColor("gui.color.border")
         val frozenColor = GavUISettings.getColor("gui.color.frozen")
 
 
-        val foregroundColorSetting =
-            ColorSetting("gavinsmod.settings.gui.color.foreground", GavUISettings.getColor("gui.color.foreground"))
+        val foregroundColorSetting = ColorSetting("gavinsmod.settings.gui.color.foreground", fgColor)
         foregroundColorSetting.setCallback { GavUISettings.add("gui.color.foreground", foregroundColorSetting.color) }
 
         val backgroundColorSetting = ColorSetting("gavinsmod.settings.gui.color.background", bgColor)

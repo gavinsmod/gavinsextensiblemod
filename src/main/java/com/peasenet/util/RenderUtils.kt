@@ -44,7 +44,7 @@ import java.util.function.Consumer
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 03-13-2023
  * A utility class for rendering tracers and esp's.
  */
 object RenderUtils {
@@ -116,10 +116,6 @@ object RenderUtils {
         assert(player != null)
         val playerPos = getNewPlayerPosition(delta, mainCamera)
         assert(level != null)
-        val chunk_x = player!!.chunkPos.x
-        val chunk_z = player.chunkPos.z
-
-//        drawChestMods(level, stack, buffer, playerPos, chunk_x, chunk_z, delta);
         drawEntityMods(level, player, stack, delta, buffer, playerPos)
         val event = WorldRenderEvent(level!!, stack, buffer, delta)
         GavinsMod.eventManager!!.call(event)

@@ -43,7 +43,7 @@ import kotlin.math.ceil
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 03-13-2023
  * A gui that allows the player to search for blocks and add them to the xray list.
  */
 class GuiXray
@@ -304,7 +304,7 @@ class GuiXray
         val blockIndex = ((mouseY - y) / 19).toInt() * blocksPerRow + ((mouseX - x) / 18).toInt()
         if (blockIndex > visibleBlocks.size - 1) return false
         val block = visibleBlocks.toTypedArray()[blockIndex]
-        if (block == null || button != 0) return false
+        if (button != 0) return false
         if (GavinsMod.xrayConfig!!.isInList(block)) GavinsMod.xrayConfig!!.removeBlock(block) else GavinsMod.xrayConfig!!.addBlock(
             block
         )

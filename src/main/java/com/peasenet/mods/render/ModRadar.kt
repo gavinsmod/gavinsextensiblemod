@@ -47,7 +47,7 @@ import kotlin.math.sqrt
  * A mod that allows for a radar-like view of the world.
  *
  * @author gt3ch1
- * @version 03-06-2023
+ * @version 03-13-2023
  */
 class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
     /**
@@ -179,7 +179,7 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
         for (w in waypoints) {
             var color = w.color
             if (!radarConfig.isUseWaypointColor) color = radarConfig.waypointColor
-            val location = getScaledPos(w.pos, getPointRelativeToYaw(w.pos, yaw))
+            val location = getScaledPos(getPointRelativeToYaw(w.pos, yaw))
             GuiUtil.drawBox(
                 color,
                 BoxF(location, radarConfig.pointSize.toFloat(), radarConfig.pointSize.toFloat()),
@@ -203,7 +203,7 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
             if (!canRenderEntity(entity)) continue
             // get entity x and z relative to player
             val color = getColorFromEntity(entity)
-            val point = getScaledPos(entity.pos, getPointRelativeToYaw(entity.pos, yaw))
+            val point = getScaledPos(getPointRelativeToYaw(entity.pos, yaw))
             GuiUtil.drawBox(
                 color,
                 BoxF(point, radarConfig.pointSize.toFloat(), radarConfig.pointSize.toFloat()),
@@ -223,11 +223,10 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
     /**
      * Gets the scaled position relative to the radar.
      *
-     * @param w        - The vector to scale.
      * @param location - The location to scale.
      * @return A scaled position relative to the radar, clamped to the radar.
      */
-    private fun getScaledPos(w: Vec3d?, location: PointF): PointF {
+    private fun getScaledPos(location: PointF): PointF {
         // check the distance of w to the player.
         var newLoc = clampPoint(location)
 
@@ -247,7 +246,7 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
      */
     private fun clampPoint(point: PointF): PointF {
         var newPoint = point
-        var offset = radarConfig.pointSize - pointOffset
+        val offset = radarConfig.pointSize - pointOffset
         // if the point is touching any edges of the radar, clamp it to the edge.
         if (newPoint.x >= radarConfig.size / 2f - offset) newPoint =
             PointF(radarConfig.size / 2f - offset, newPoint.y)
