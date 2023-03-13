@@ -43,8 +43,8 @@ import net.minecraft.util.math.Vec3d
  * @author GT3CH1
  * @version 03-13-2023
  */
-class ModFreecam : Mod(Type.FREECAM), PacketSendListener, WorldRenderListener, AirStrafeListener {
-    var fake: FakePlayer? = null
+class ModFreeCam : Mod(Type.FREECAM), PacketSendListener, WorldRenderListener, AirStrafeListener {
+    private var fake: FakePlayer? = null
     override fun activate() {
         super.activate()
         fake = FakePlayer()

@@ -28,7 +28,7 @@ import com.peasenet.mods.esp.*
 import com.peasenet.mods.gui.ModGui
 import com.peasenet.mods.gui.ModGuiSettings
 import com.peasenet.mods.misc.ModFpsCounter
-import com.peasenet.mods.misc.ModFreecam
+import com.peasenet.mods.misc.ModFreeCam
 import com.peasenet.mods.misc.ModGuiTextOverlay
 import com.peasenet.mods.movement.*
 import com.peasenet.mods.render.*
@@ -93,7 +93,7 @@ class Mods {
         ModGuiTextOverlay()
         ModFpsCounter()
         //TODO: 1.19.4
-        ModFreecam()
+        ModFreeCam()
     }
 
     companion object {
