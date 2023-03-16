@@ -46,9 +46,6 @@ class MixinPlayerEntity {
         )
     )
     fun doNoClip(p: PlayerEntity, noClip: Boolean) {
-        var noClip = noClip
         p.noClip = isEnabled(Type.NO_CLIP)
-        //NOTE: This is fine. It is required for fabric to work.
-        noClip = p.noClip
     }
 }

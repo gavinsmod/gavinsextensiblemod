@@ -30,7 +30,7 @@ import java.nio.file.Paths
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 03-16-2023
  * A class that contains all the settings for the mod.
  */
 object Settings {
@@ -130,7 +130,7 @@ object Settings {
         /**
          * Gets the file path to the settings file.
          */
-        private get() {
+        get() {
             val runDir = GavinsModClient.minecraftClient.runDirectory.absolutePath
             val modsDir = "$runDir/mods"
             // ensure the gavinsmod folder exists

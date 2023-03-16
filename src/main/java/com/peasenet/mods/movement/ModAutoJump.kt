@@ -24,13 +24,11 @@ import com.peasenet.mods.Type
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 03-16-2023
  * A mod that allows the player to jump as if they were pressing the jump key.
  */
 class ModAutoJump : Mod(Type.AUTO_JUMP) {
     override fun onTick() {
-        if (client.player() == null)
-            return
         val player = client.player()
         if (player.isOnGround) player.jump()
     }

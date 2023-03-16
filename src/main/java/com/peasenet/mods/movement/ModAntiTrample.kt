@@ -31,8 +31,6 @@ import net.minecraft.block.Blocks
 class ModAntiTrample : Mod(Type.ANTI_TRAMPLE) {
     override fun onTick() {
         // check if the player is on farmland by looking at the block below the player.
-        if (client.player() == null)
-            return
         val player = client.player()
         val playerLoc = player.blockPos
         val playerLocDown = player.blockPos.down()

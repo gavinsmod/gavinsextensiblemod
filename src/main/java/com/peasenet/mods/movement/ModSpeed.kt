@@ -21,21 +21,22 @@ package com.peasenet.mods.movement
 
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 03-16-2023
  */
 class ModSpeed : Mod(Type.SPEED) {
     override fun onTick() {
-        if (client.player() == null) return
         val player = client.player()
 
         if (player.isSneaking) return
         if (!player.isOnGround) return
         var velocity = player.velocity
         velocity = velocity.multiply(1.5)
-        val currentSpeed = Math.sqrt(Math.pow(velocity.x, 2.0) + Math.pow(velocity.z, 2.0))
+        val currentSpeed = sqrt(velocity.x.pow(2.0) + velocity.z.pow(2.0))
         player.velocity = velocity
         if (currentSpeed > 0.5) player.velocity = velocity.multiply(0.5 / currentSpeed)
     }
