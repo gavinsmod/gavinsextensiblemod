@@ -21,38 +21,15 @@ package com.peasenet.mods.movement
 
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
-import com.peasenet.util.event.AirStrafeEvent
-import com.peasenet.util.listeners.AirStrafeListener
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 03-16-2023
  * A mod for allowing the printer to noclip (move through blocks)
  */
-class ModNoClip : Mod(Type.NO_CLIP), AirStrafeListener {
-    override fun onEnable() {
-        em.subscribe(AirStrafeListener::class.java, this)
-        super.onEnable()
-    }
-
-    override fun onDisable() {
-        em.unsubscribe(AirStrafeListener::class.java, this)
-        super.onDisable()
-    }
-
+class ModNoClip : Mod(Type.NO_CLIP) {
     override fun onTick() {
-        if (client.player() == null) return
         val player = client.player()
         player.abilities.flying = true
-    }
-
-    override fun onAirStrafe(event: AirStrafeEvent) {
-        var speed = 0.2f
-        if (client.player() == null) return
-        val player = client.player()
-        if (player.isSprinting) {
-            speed = 1f
-        }
-        event.speed = speed
     }
 }
