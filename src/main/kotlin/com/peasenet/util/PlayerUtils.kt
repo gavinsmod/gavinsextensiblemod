@@ -119,7 +119,9 @@ object PlayerUtils {
         val abilities = player.getAbilities()
         abilities.allowFlying =
             GavinsMod.isEnabled(Type.FLY) || abilities.creativeMode || GavinsMod.isEnabled(Type.NO_CLIP)
+
         if (GavinsMod.isEnabled(Type.FLY) && GavinsMod.isEnabled(Type.NO_CLIP)) abilities.flying = true
+
         if (!abilities.creativeMode && !GavinsMod.isEnabled(Type.FLY) && !GavinsMod.isEnabled(Type.NO_CLIP)) abilities.flying =
             false
     }

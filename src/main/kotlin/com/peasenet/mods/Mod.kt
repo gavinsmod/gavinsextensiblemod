@@ -58,7 +58,7 @@ abstract class Mod constructor(
     /**
      * Whether this mod is currently deactivating.
      */
-    protected var deactivating = true
+    protected var deactivating = false
     override var isActive: Boolean = false
 
 
