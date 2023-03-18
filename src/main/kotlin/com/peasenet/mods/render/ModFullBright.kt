@@ -72,8 +72,8 @@ class ModFullBright : Mod(Type.FULL_BRIGHT) {
             RenderUtils.gamma = RenderUtils.getLastGamma()
             return
         }
-//        if (RenderUtils.gamma > fullbrightConfig.gamma && !deactivating)
-//            RenderUtils.gamma = fullbrightConfig.gamma.toDouble()
+        if (RenderUtils.gamma > 16F && !deactivating)
+            RenderUtils.gamma = 16.0
 
     }
 
