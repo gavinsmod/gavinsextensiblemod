@@ -29,7 +29,7 @@ import com.peasenet.mods.Type
  */
 class ModNoClip : Mod(Type.NO_CLIP) {
     override fun onTick() {
-        val player = client.player()
+        val player = client.getPlayer()
         player.abilities.flying = true
     }
 }

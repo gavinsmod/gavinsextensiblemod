@@ -26,8 +26,8 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
 class ModDolphin : Mod(Type.DOLPHIN) {
     override fun onTick() {
         // check if the player is swimming
-        if (client.player().isTouchingWater) {
-            val player = client.player()
+        if (client.getPlayer().isTouchingWater) {
+            val player = client.getPlayer()
 
             // if they are, move them up
             player.addVelocity(0.0, 0.1, 0.0)

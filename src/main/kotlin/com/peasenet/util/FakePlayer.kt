@@ -32,7 +32,7 @@ import net.minecraft.client.network.OtherClientPlayerEntity
  */
 class FakePlayer : OtherClientPlayerEntity(minecraftClient.getWorld(), player!!.getGameProfile()) {
     private val world = minecraftClient.getWorld()
-    private val player = minecraftClient.player()
+    private val player = minecraftClient.getPlayer()
 
     /**
      * Creates a fake player entity in the getWorld().

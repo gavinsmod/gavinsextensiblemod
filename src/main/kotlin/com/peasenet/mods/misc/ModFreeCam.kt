@@ -22,6 +22,8 @@ package com.peasenet.mods.misc
 import com.peasenet.main.GavinsMod
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
+import com.peasenet.settings.SlideSetting
+import com.peasenet.settings.SubSetting
 import com.peasenet.util.FakePlayer
 import com.peasenet.util.PlayerUtils
 import com.peasenet.util.RenderUtils
@@ -45,6 +47,16 @@ import net.minecraft.util.math.Vec3d
  */
 class ModFreeCam : Mod(Type.FREECAM), PacketSendListener, WorldRenderListener, AirStrafeListener {
     private var fake: FakePlayer? = null
+
+    init {
+        val freeCamSpeed = SlideSetting("gavinsmod.settings.misc.freecam.speed")
+        freeCamSpeed.setCallback { miscConfig.freeCamSpeed = freeCamSpeed.value }
+        freeCamSpeed.value = miscConfig.freeCamSpeed
+        val subSetting = SubSetting(100, 10, translationKey)
+        subSetting.add(freeCamSpeed)
+        addSetting(subSetting)
+    }
+
     override fun activate() {
         super.activate()
         fake = FakePlayer()
@@ -56,13 +68,14 @@ class ModFreeCam : Mod(Type.FREECAM), PacketSendListener, WorldRenderListener, A
     override fun onTick() {
         super.onTick()
         if (!isActive) return
-        val player = client.player()
-
-        player.velocity = Vec3d.ZERO
+        val player = client.getPlayer()
         player.isOnGround = false
         player.abilities.flying = true
-        if (player.input.sneaking) player.velocity = player.velocity.add(0.0, -1.0, 0.0)
-        if (player.input.jumping) player.velocity = player.velocity.add(0.0, 1.0, 0.0)
+        player.setVelocity(Vec3d.ZERO)
+        if (player.input.sneaking)
+            player.setVelocity(0.0, -0.75 * miscConfig.freeCamSpeed, 0.0)
+        else if (player.input.jumping)
+            player.setVelocity(0.0, 0.75 * miscConfig.freeCamSpeed, 0.0)
     }
 
     override fun onDisable() {
@@ -86,7 +99,7 @@ class ModFreeCam : Mod(Type.FREECAM), PacketSendListener, WorldRenderListener, A
     }
 
     override fun onAirStrafe(event: AirStrafeEvent) {
-        val speed = 1.0f
+        val speed = 1f * (miscConfig.freeCamSpeed)
         event.speed = speed
     }
 }

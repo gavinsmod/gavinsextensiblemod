@@ -174,6 +174,7 @@ interface IClientPlayerEntity {
      */
     fun squaredDistanceTo(e: Entity?): Double
 
+
     /**
      * Whether the player is fall flying.
      *
