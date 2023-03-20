@@ -90,18 +90,16 @@ class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener 
     }
 
     override fun onEntityRender(er: EntityRender) {
-        waypointConfig.getLocations().stream().filter { obj: Waypoint -> obj.isEnabled }.forEach { w: Waypoint ->
-            val aabb = Box(BlockPos(w.x, w.y, w.z))
-            val boxPos = aabb.center
-            if (w.isTracerEnabled) RenderUtils.renderSingleLine(
-                er.stack,
-                er.buffer!!,
-                er.playerPos!!,
-                boxPos,
-                w.color!!
-            )
-            if (w.isEspEnabled) RenderUtils.drawBox(er.stack, er.buffer, aabb, w.color!!)
-        }
+        val playerDimension = client.getPlayer().world.dimension.effects.path!!
+        waypointConfig.getLocations().stream().filter { obj: Waypoint -> obj.isEnabled }
+            .filter { obj: Waypoint -> obj.dimension!! == playerDimension }.forEach { w: Waypoint ->
+                val aabb = Box(BlockPos(w.x, w.y, w.z))
+                val boxPos = aabb.center
+                if (w.isTracerEnabled) RenderUtils.renderSingleLine(
+                    er.stack, er.buffer!!, er.playerPos!!, boxPos, w.color!!
+                )
+                if (w.isEspEnabled) RenderUtils.drawBox(er.stack, er.buffer, aabb, w.color!!)
+            }
     }
 
     override fun onCameraViewBob(c: CameraBob) {

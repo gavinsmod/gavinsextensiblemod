@@ -114,7 +114,7 @@ class GuiWaypoint : GuiElement {
     /**
      * The height of the gui.
      */
-    var height = 100
+    var height = 110
 
     /**
      * The padding of each element.
@@ -154,6 +154,7 @@ class GuiWaypoint : GuiElement {
         guis.add(waypointToggle.gui)
         guis.add(espToggle.gui)
         guis.add(tracerToggle.gui)
+        var dimension = player!!.getWorld().dimension.effects.path
         saveSettings.setCallback {
             val flooredPos = flooredPlayerPos
             w = Waypoint(flooredPos)
@@ -165,6 +166,7 @@ class GuiWaypoint : GuiElement {
             w!!.x = xCoordinate!!.text.toInt()
             w!!.y = yCoordinate!!.text.toInt()
             w!!.z = zCoordinate!!.text.toInt()
+            w!!.dimension = dimension
             GavinsMod.waypointConfig!!.addWaypoint(w!!)
             getMod("waypoints").reloadSettings()
             GavinsMod.guiSettings!!.reloadGui()
@@ -237,7 +239,7 @@ class GuiWaypoint : GuiElement {
         xCoordinate = TextFieldWidget(
             minecraftClient.textRenderer,
             paddingX + 11,
-            offsetY + 80 + padding,
+            offsetY + 77 + padding,
             30,
             10,
             Text.literal("")
@@ -245,7 +247,7 @@ class GuiWaypoint : GuiElement {
         yCoordinate = TextFieldWidget(
             minecraftClient.textRenderer,
             paddingX + 56,
-            offsetY + 80 + padding,
+            offsetY + 77 + padding,
             30,
             10,
             Text.literal("")
@@ -253,7 +255,7 @@ class GuiWaypoint : GuiElement {
         zCoordinate = TextFieldWidget(
             minecraftClient.textRenderer,
             paddingX + 101,
-            offsetY + 80 + padding,
+            offsetY + 77 + padding,
             30,
             10,
             Text.literal("")
@@ -337,23 +339,34 @@ class GuiWaypoint : GuiElement {
             matrixStack,
             Text.literal("X:"),
             (paddingX + 1).toFloat(),
-            (offsetY + 82 + padding).toFloat(),
+            (offsetY + 78 + padding).toFloat(),
             GavUISettings.getColor("gui.color.foreground").asInt
         )
         client!!.textRenderer.draw(
             matrixStack,
             Text.literal("Y:"),
             (paddingX + 46).toFloat(),
-            (offsetY + 82 + padding).toFloat(),
+            (offsetY + 78 + padding).toFloat(),
             GavUISettings.getColor("gui.color.foreground").asInt
         )
         client!!.textRenderer.draw(
             matrixStack,
             Text.literal("Z:"),
             (paddingX + 91).toFloat(),
-            (offsetY + 82 + padding).toFloat(),
+            (offsetY + 78 + padding).toFloat(),
             GavUISettings.getColor("gui.color.foreground").asInt
         )
+        var dimension = player!!.getWorld().dimension.effects.path
+
+        client!!.textRenderer.draw(
+            matrixStack,
+            Text.literal("Dimension: ${w!!.dimension}"),
+            (paddingX + 1).toFloat(),
+            (offsetY + 92 + padding).toFloat(),
+            GavUISettings.getColor("gui.color.foreground").asInt
+        )
+
+
         textField!!.render(matrixStack, mouseX, mouseY, delta)
         xCoordinate!!.render(matrixStack, mouseX, mouseY, delta)
         yCoordinate!!.render(matrixStack, mouseX, mouseY, delta)

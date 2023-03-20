@@ -38,6 +38,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -207,5 +209,10 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
         var evt = new AirStrafeEvent(super.getOffGroundSpeed());
         GavinsMod.eventManager.call(evt);
         return evt.getSpeed();
+    }
+
+    @Override
+    public @NotNull World getWorld() {
+        return super.world;
     }
 }
