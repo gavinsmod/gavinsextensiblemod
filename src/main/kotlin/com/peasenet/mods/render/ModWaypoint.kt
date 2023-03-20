@@ -65,13 +65,12 @@ class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener 
         setting = SubSetting(setting.gui.width.toInt(), 10, "gavinsmod.mod.render.waypoints")
         openMenu.setCallback { client.setScreen(GuiWaypoint()) }
         openMenu.gui.setSymbol('+')
-        setting.add(openMenu)
+        addSetting(openMenu)
         // get all waypoints and add them to the menu
         val waypoints = waypointConfig.getLocations().stream().sorted(
             Comparator.comparing(Function<Waypoint, String> { obj: Waypoint -> obj.name })
         )
         for (w in waypoints.toArray()) createWaypoint(w as Waypoint)
-        addSetting(setting)
     }
 
     /**
@@ -86,7 +85,7 @@ class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener 
             clickSetting.value = waypoint.isEnabled
         }
         clickSetting.value = waypoint.isEnabled
-        setting.add(clickSetting)
+        addSetting(clickSetting)
     }
 
     override fun onEntityRender(er: EntityRender) {

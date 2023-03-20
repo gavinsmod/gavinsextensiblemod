@@ -357,10 +357,11 @@ class GuiWaypoint : GuiElement {
             GavUISettings.getColor("gui.color.foreground").asInt
         )
         var dimension = player!!.getWorld().dimension.effects.path
-
+        if (w?.dimension != null)
+            dimension = w!!.dimension
         client!!.textRenderer.draw(
             matrixStack,
-            Text.literal("Dimension: ${w!!.dimension}"),
+            Text.literal("Dimension: $dimension"),
             (paddingX + 1).toFloat(),
             (offsetY + 92 + padding).toFloat(),
             GavUISettings.getColor("gui.color.foreground").asInt
