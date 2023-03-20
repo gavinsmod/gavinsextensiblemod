@@ -22,6 +22,7 @@ package com.peasenet.main
 import com.peasenet.config.*
 import com.peasenet.gavui.GavUI
 import com.peasenet.gavui.Gui
+import com.peasenet.gavui.math.BoxF
 import com.peasenet.gui.GuiMainMenu
 import com.peasenet.gui.GuiSettings
 import com.peasenet.gui.mod.*
@@ -61,7 +62,17 @@ class GavinsMod : ModInitializer {
         guiList.add(GuiCombat())
         guiList.add(GuiESP())
         guiList.add(GuiMisc())
-        guiList.add(GuiRender())
+
+        val guiRender = GuiRender()
+        // fix for issue #55
+        val guis = ModGuiUtil.getGuiToggleFromCategory(
+            Type.Category.WAYPOINTS,
+            BoxF(guiRender.position, guiRender.width, guiRender.height)
+        )
+        guis.forEach { guiRender.addElement(it) }
+
+
+        guiList.add(guiRender)
         guiList.add(GuiTracers())
         guiList.forEach(Consumer { g: Gui -> g.isParent = true })
         gui = GuiMainMenu(guiList)
