@@ -217,8 +217,87 @@ object RenderUtils {
      * @param c      The color to draw the box in.
      */
     @JvmOverloads
-    fun drawBox(stack: MatrixStack?, buffer: BufferBuilder?, aabb: Box?, c: Color, alpha: Float = 1f) {
-        WorldRenderer.drawBox(stack, buffer, aabb, c.red, c.green, c.blue, alpha)
+    fun drawBox(stack: MatrixStack?, buffer: BufferBuilder?, aabb: Box, c: Color, alpha: Float = 1f) {
+        // draw vertices of the box
+        val x1 = aabb.minX.toFloat()
+        val y1 = aabb.minY.toFloat()
+        val z1 = aabb.minZ.toFloat()
+        val x2 = aabb.maxX.toFloat()
+        val y2 = aabb.maxY.toFloat()
+        val z2 = aabb.maxZ.toFloat()
+        val r = c.red
+        val g = c.green
+        val b = c.blue
+        val matrix4f = stack!!.peek().positionMatrix
+        val color = c.getAsInt(alpha)
+        stack.push()
+        renderCorner(buffer!!, matrix4f, x1, x2, y1, y2, z1, z2, color)
+        renderCorner(buffer, matrix4f, x2, x1, y2, y1, z1, z2, color)
+        renderCorner(buffer, matrix4f, x1, x2, y2, y1, z2, z1, color)
+        renderCorner(buffer, matrix4f, x2, x1, y1, y2, z2, z1, color)
+        stack.pop()
+    }
+
+    /**
+     * Renders a corner of a box with the given coordinates.
+     * @param buffer The buffer to write to.
+     * @param matrix4f The matrix to use.
+     * @param x1 The x coordinate of the first vertex.
+     * @param x2 The x coordinate of the second vertex.
+     * @param y1 The y coordinate of the first vertex.
+     * @param y2 The y coordinate of the second vertex.
+     * @param z1 The z coordinate of the first vertex.
+     * @param z2 The z coordinate of the second vertex.
+     * @param c The color to draw the box in.
+     */
+    private fun renderCorner(
+        buffer: BufferBuilder,
+        matrix4f: Matrix4f,
+        x1: Float,
+        x2: Float,
+        y1: Float,
+        y2: Float,
+        z1: Float,
+        z2: Float,
+        c: Int
+    ) {
+        buffer.vertex(matrix4f, x1, y1, z1).color(c).next()
+        buffer.vertex(matrix4f, x2, y1, z1).color(c).next()
+
+        buffer.vertex(matrix4f, x1, y1, z1).color(c).next()
+        buffer.vertex(matrix4f, x1, y1, z2).color(c).next()
+
+        buffer.vertex(matrix4f, x1, y1, z1).color(c).next()
+        buffer.vertex(matrix4f, x1, y2, z1).color(c).next()
+
+
+//        buffer.vertex(matrix4f, x1, y1, z1).color(r, g, b, alpha).next()
+//        buffer.vertex(matrix4f, x2, y1, z1).color(r, g, b, alpha).next()
+//
+//        buffer.vertex(matrix4f, x2, y1, z1).color(r, g, b, alpha).next()
+//        buffer.vertex(matrix4f, x2, y1, z2).color(r, g, b, alpha).next()
+//
+//        buffer.vertex(matrix4f, x2, y1, z2).color(r, g, b, alpha).next()
+//        buffer.vertex(matrix4f, x1, y1, z2).color(r, g, b, alpha).next()
+//
+//        buffer.vertex(matrix4f, x1, y1, z2).color(r, g, b, alpha).next()
+//        buffer.vertex(matrix4f, x1, y1, z1).color(r, g, b, alpha).next()
+//
+//        buffer.vertex(matrix4f, x1, y1, z1).color(r, g, b, alpha).next()
+//        buffer.vertex(matrix4f, x1, y2, z1).color(r, g, b, alpha).next()
+//
+//        buffer.vertex(matrix4f, x1, y2, z1).color(r, g, b, alpha).next()
+//        buffer.vertex(matrix4f, x2, y2, z1).color(r, g, b, alpha).next()
+//
+//
+//        buffer.vertex(matrix4f, x2, y2, z2).color(r, g, b, alpha).next()
+//        buffer.vertex(matrix4f, x2, y1, z2).color(r, g, b, alpha).next()
+//
+//        buffer.vertex(matrix4f, x2, y1, z2).color(r, g, b, alpha).next()
+//        buffer.vertex(matrix4f, x2, y1, z1).color(r, g, b, alpha).next()
+//
+//        buffer.vertex(matrix4f, x2, y1, z1).color(r, g, b, alpha).next()
+//        buffer.vertex(matrix4f, x1, y1, z1).color(r, g, b, alpha).next()
     }
 
     /**
