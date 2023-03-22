@@ -20,6 +20,7 @@
 package com.peasenet.mods.render.waypoints
 
 import com.peasenet.gavui.color.Color
+import com.peasenet.util.Dimension
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vec3i
 
@@ -41,7 +42,7 @@ class Waypoint {
     var name: String? = null
         private set
 
-    var dimension: String? = null
+    var dimension: ArrayList<String>? = null
 
     @JvmField
     var color: Color? = null
@@ -61,6 +62,16 @@ class Waypoint {
         z = vec.z
     }
 
+    fun addDimension(dim: Dimension) {
+        if (dimension == null)
+            dimension = ArrayList()
+        this.dimension!!.add(dim.dimension)
+    }
+
+    fun clearDimensions() {
+        dimension = ArrayList()
+    }
+
     fun setName(name: String) {
         var name1 = name
         if (name1.isEmpty()) name1 = "Waypoint"
@@ -73,6 +84,10 @@ class Waypoint {
 
     override fun hashCode(): Int {
         return name.hashCode()
+    }
+
+    fun canRender(dim: Dimension): Boolean {
+        return dimension != null && dimension!!.contains(dim.dimension) && isEnabled
     }
 
     val pos: Vec3d

@@ -111,7 +111,7 @@ object RenderUtils {
         assert(player != null)
         val playerPos = getNewPlayerPosition(delta, mainCamera)
         assert(level != null)
-        drawEntityMods(level, player, stack, delta, buffer, playerPos)
+//        drawEntityMods(level, player, stack, delta, buffer, playerPos)
         val event = WorldRenderEvent(level!!, stack, buffer, delta)
         GavinsMod.eventManager!!.call(event)
         tessellator.draw()
@@ -142,6 +142,9 @@ object RenderUtils {
         val chunkX = player!!.chunkPos.x
         val chunkZ = player.chunkPos.z
         drawBlockMods(level, stack, buffer, playerPos, chunkX, chunkZ, delta)
+        drawEntityMods(level, player, stack, delta, buffer, playerPos)
+        val event = WorldRenderEvent(level!!, stack, buffer, delta)
+        GavinsMod.eventManager!!.call(event)
         tessellator.draw()
         stack.pop()
         resetRenderSystem()
