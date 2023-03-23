@@ -71,11 +71,12 @@ class ModFreeCam : Mod(Type.FREECAM), PacketSendListener, WorldRenderListener, A
         val player = client.getPlayer()
         player.isOnGround = false
         player.abilities.flying = true
-        player.setVelocity(Vec3d.ZERO)
-        if (player.input.sneaking)
-            player.setVelocity(0.0, -0.75 * miscConfig.freeCamSpeed, 0.0)
-        else if (player.input.jumping)
-            player.setVelocity(0.0, 0.75 * miscConfig.freeCamSpeed, 0.0)
+        player.velocity = Vec3d.ZERO
+        var scalar = miscConfig.freeCamSpeed
+        if (player.input.sneaking && scalar != 0F)
+            player.addVelocity(0.0, -0.75 * miscConfig.freeCamSpeed, 0.0)
+        else if (player.input.jumping && scalar != 0F)
+            player.addVelocity(0.0, 0.75 * miscConfig.freeCamSpeed, 0.0)
     }
 
     override fun onDisable() {
@@ -84,6 +85,7 @@ class ModFreeCam : Mod(Type.FREECAM), PacketSendListener, WorldRenderListener, A
         em.unsubscribe(PacketSendListener::class.java, this)
         em.unsubscribe(WorldRenderListener::class.java, this)
         em.unsubscribe(AirStrafeListener::class.java, this)
+        client.getPlayer().abilities.flying = false
     }
 
     override fun onWorldRender(level: ClientWorld, stack: MatrixStack, bufferBuilder: BufferBuilder, delta: Float) {

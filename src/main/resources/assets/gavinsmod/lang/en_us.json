@@ -128,5 +128,8 @@
     "gavinsmod.settings.tracer.player.color": "Player Color",
     "gavinsmod.settings.xray.blocks": "X-Ray Blocks",
     "gavinsmod.settings.xray.chests": "X-Ray Chests",
+    "gavinsmod.settings.overworld": "Overworld",
+    "gavinsmod.settings.nether": "Nether",
+    "gavinsmod.settings.end": "End",
     "gavinsmod.settings.xray.culling": "X-Ray Culling"
 }

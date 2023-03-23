@@ -48,6 +48,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
         guiDropdown = GuiScroll(PointF(220f, 20f), 100, 10, Text.translatable("gavinsmod.settings.gui"))
         espDropdown = GuiScroll(PointF(10f, 130f), 110, 10, Text.translatable("gavinsmod.settings.esp"))
         tracerDropdown = GuiScroll(PointF(125f, 130f), 115, 10, Text.translatable("gavinsmod.settings.tracer"))
+        waypointDropdown = GuiScroll(PointF(245f, 130f), 100, 10, Text.translatable("gavinsmod.mod.render.waypoints"))
         resetButton = GuiClick(PointF(0f, 1f), 4, 10, Text.translatable("gavinsmod.settings.reset"))
         reloadGui()
     }
@@ -82,18 +83,19 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
     fun reloadGui() {
         guis.forEach(Consumer { obj: Gui -> obj.clearChildren() })
         guis.clear()
-        // Create a plain gui in the top right corner
         miscSettings()
         addSettings(tracerDropdown, Type.Category.TRACERS)
         addSettings(espDropdown, Type.Category.ESPS)
         addSettings(renderDropdown, Type.Category.RENDER)
         addSettings(miscDropdown, Type.Category.MISC)
         addSettings(guiDropdown, Type.Category.GUI)
+        addSettings(waypointDropdown, Type.Category.WAYPOINTS)
         guis.add(tracerDropdown)
         guis.add(espDropdown)
         guis.add(renderDropdown)
         guis.add(miscDropdown)
         guis.add(guiDropdown)
+        guis.add(waypointDropdown)
         guis.forEach(Consumer { g: Gui -> g.isParent = true })
         guis.add(resetButton)
     }
@@ -138,6 +140,8 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
          * The miscellaneous dropdown
          */
         private lateinit var miscDropdown: GuiScroll
+
+        private lateinit var waypointDropdown: GuiScroll
 
         /**
          * The dropdown containing gui settings.
