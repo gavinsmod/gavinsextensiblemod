@@ -55,7 +55,7 @@ class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener 
         em.subscribe(EntityRenderListener::class.java, this)
         em.subscribe(CameraBobListener::class.java, this)
         for (w in waypointConfig.getLocations()) {
-            if (w.hasDimensions()) {
+            if (!w.hasDimensions()) {
                 PlayerUtils.sendMessage(
                     "§6[WARNING]§7 Waypoint \"§b${w.name}§7\" has no dimensions set and will not be rendered.", true
                 )
