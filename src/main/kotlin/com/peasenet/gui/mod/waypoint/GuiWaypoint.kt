@@ -50,56 +50,56 @@ class GuiWaypoint : GuiElement {
     /**
      * The text field used to name the waypoint.
      */
-    var textField: TextFieldWidget? = null
+    private var textField: TextFieldWidget? = null
 
     /**
      * The x coordinate text field.
      */
-    var xCoordinate: TextFieldWidget? = null
+    private var xCoordinate: TextFieldWidget? = null
 
     /**
      * The y coordinate text field.
      */
-    var yCoordinate: TextFieldWidget? = null
+    private var yCoordinate: TextFieldWidget? = null
 
     /**
      * The z coordinate text field.
      */
-    var zCoordinate: TextFieldWidget? = null
+    private var zCoordinate: TextFieldWidget? = null
 
     /**
      * The button used to save the waypoint.
      */
-    var saveSettings = ClickSetting("gavinsmod.settings.save")
+    private var saveSettings = ClickSetting("gavinsmod.settings.save")
 
     /**
      * The button used to cancel the waypoint.
      */
-    var cancelSettings = ClickSetting("gavinsmod.settings.cancel")
+    private var cancelSettings = ClickSetting("gavinsmod.settings.cancel")
 
     /**
      * The button used to delete the waypoint.
      */
-    var deleteSettings = ClickSetting("gavinsmod.settings.delete")
+    private var deleteSettings = ClickSetting("gavinsmod.settings.delete")
 
     /**
      * The button used to toggle the waypoint's visibility.
      */
-    var waypointToggle = ToggleSetting("gavinsmod.settings.enabled")
+    private var waypointToggle = ToggleSetting("gavinsmod.settings.enabled")
 
     /**
      * The button used to toggle the waypoint's esp.
      */
-    var espToggle = ToggleSetting("gavinsmod.settings.esp")
+    private var espToggle = ToggleSetting("gavinsmod.settings.esp")
 
     /**
      * The button used to toggle the waypoint's tracer.
      */
-    var tracerToggle = ToggleSetting("gavinsmod.settings.tracer")
+    private var tracerToggle = ToggleSetting("gavinsmod.settings.tracer")
 
-    var overworldToggle = ToggleSetting("gavinsmod.settings.overworld")
-    var netherToggle = ToggleSetting("gavinsmod.settings.nether")
-    var endToggle = ToggleSetting("gavinsmod.settings.end")
+    private var overworldToggle = ToggleSetting("gavinsmod.settings.overworld")
+    private var netherToggle = ToggleSetting("gavinsmod.settings.nether")
+    private var endToggle = ToggleSetting("gavinsmod.settings.end")
 
     /**
      * The background box.
@@ -109,7 +109,7 @@ class GuiWaypoint : GuiElement {
     /**
      * The button that is used to change the waypoints color.
      */
-    var colorCycle = ColorSetting("gavinsmod.settings.render.waypoints.color", Colors.BLUE)
+    private var colorCycle = ColorSetting("gavinsmod.settings.render.waypoints.color", Colors.BLUE)
 
     /**
      * The width of the gui.
@@ -124,15 +124,15 @@ class GuiWaypoint : GuiElement {
     /**
      * The padding of each element.
      */
-    var padding = 5
+    private var padding = 5
 
     /**
      * The offset and padding in the x and y planes.
      */
-    var offsetX = 0
-    var paddingX = 0
-    var offsetY = 0
-    var paddingY = 0
+    private var offsetX = 0
+    private var paddingX = 0
+    private var offsetY = 0
+    private var paddingY = 0
 
     /**
      * The waypoint that is being edited.
@@ -193,11 +193,9 @@ class GuiWaypoint : GuiElement {
         this.w = w
         waypointToggle.value = w.isEnabled
         colorCycle.color = w.color!!
-        if (w.dimension != null) {
-            overworldToggle.value = w.dimension!!.contains("overworld")
-            netherToggle.value = w.dimension!!.contains("the_nether")
-            endToggle.value = w.dimension!!.contains("the_end")
-        }
+        overworldToggle.value = w.hasDimension(Dimension.OVERWORLD)
+        netherToggle.value = w.hasDimension(Dimension.NETHER)
+        endToggle.value = w.hasDimension(Dimension.END)
         saveSettings.setCallback {
             GavinsMod.waypointConfig!!.removeWaypoint(w)
             w.setName(textField!!.text)
@@ -209,8 +207,7 @@ class GuiWaypoint : GuiElement {
             w.y = yCoordinate!!.text.toInt()
             w.z = zCoordinate!!.text.toInt()
             w.clearDimensions()
-            if (overworldToggle.value)
-                w.addDimension(Dimension.OVERWORLD)
+            if (overworldToggle.value) w.addDimension(Dimension.OVERWORLD)
             if (netherToggle.value) w.addDimension(Dimension.NETHER)
             if (endToggle.value) w.addDimension(Dimension.END)
             GavinsMod.waypointConfig!!.addWaypoint(w)
@@ -263,11 +260,11 @@ class GuiWaypoint : GuiElement {
         focused = textField
         val buttonWidth = 42
         val wholeButtonWidth = buttonWidth * 3 + padding * 2
-        val threeButtonY = offsetY + 34 + padding
+        offsetY + 34 + padding
 
         colorCycle.setWidth(wholeButtonWidth)
         colorCycle.gui.position = PointF(paddingX.toFloat(), (offsetY + 20 + padding).toFloat())
-        offsetY = offsetY + 34 + padding
+        offsetY += 34 + padding
 
 
 //        offsetY = offsetY + padding + 48;
@@ -365,7 +362,7 @@ class GuiWaypoint : GuiElement {
             if (s.matches(regex.toRegex())) {
                 try {
                     val i = s.toInt()
-                    return@Predicate i >= Int.MIN_VALUE && i <= Int.MAX_VALUE
+                    return@Predicate true
                 } catch (e: Exception) {
                     return@Predicate false
                 }

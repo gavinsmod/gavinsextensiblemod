@@ -26,7 +26,7 @@ import net.minecraft.util.math.Vec3i
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 03-23-2023
  * A waypoint is a three-dimensional integer coordinate with a name, color, and can either have
  * an ESP, a tracer, or both.
  */
@@ -42,7 +42,7 @@ class Waypoint {
     var name: String? = null
         private set
 
-    var dimension: ArrayList<String>? = null
+    private var dimension: ArrayList<String>? = null
 
     @JvmField
     var color: Color? = null
@@ -68,8 +68,16 @@ class Waypoint {
         this.dimension!!.add(dim.dimension)
     }
 
+    fun hasDimension(dim: Dimension): Boolean {
+        return dimension != null && dimension!!.contains(dim.dimension)
+    }
+
     fun clearDimensions() {
         dimension = ArrayList()
+    }
+
+    fun hasDimensions(): Boolean {
+        return dimension != null && dimension!!.isNotEmpty()
     }
 
     fun setName(name: String) {
@@ -78,8 +86,10 @@ class Waypoint {
         this.name = name1
     }
 
-    fun equals(w: Waypoint): Boolean {
-        return hashCode() == w.hashCode()
+    override fun equals(other: Any?): Boolean {
+        if (other == null) return false
+        if (other !is Waypoint) return false
+        return other.hashCode() == hashCode()
     }
 
     override fun hashCode(): Int {

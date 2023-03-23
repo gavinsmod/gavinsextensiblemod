@@ -55,25 +55,12 @@ class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener 
         em.subscribe(EntityRenderListener::class.java, this)
         em.subscribe(CameraBobListener::class.java, this)
         for (w in waypointConfig.getLocations()) {
-            if (w.dimension == null || w.dimension!!.isEmpty()) {
+            if (w.hasDimensions()) {
                 PlayerUtils.sendMessage(
                     "§6[WARNING]§7 Waypoint \"§b${w.name}§7\" has no dimensions set and will not be rendered.", true
                 )
             }
         }
-//        var failed = false
-//        for (w in waypointConfig.getLocations()) {
-//            if (w.dimension == null)
-//                PlayerUtils.sendMessage(
-//                    "Waypoint \"§b${w.name}§7\" has no dimension set. Please go to the wanted dimension and save the waypoint again.",
-//                    true
-//                )
-//            failed = true
-//        }
-//        if (failed) {
-//            PlayerUtils.sendMessage("Waypoints failed to load. Disabling.", true)
-//            onDisable()
-//        }
     }
 
     override fun onDisable() {
