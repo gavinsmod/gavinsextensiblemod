@@ -116,6 +116,11 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     }
 
     @Override
+    public @NotNull Vec3d getVelocity() {
+        return super.getVelocity();
+    }
+
+    @Override
     public float getEyeHeight(EntityPose pose) {
         return super.getEyeHeight(pose);
     }
