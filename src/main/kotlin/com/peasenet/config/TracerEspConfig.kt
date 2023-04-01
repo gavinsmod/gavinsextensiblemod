@@ -113,7 +113,7 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
             return inList
         if (!mob.spawnGroup.isPeaceful && showHostileMobs)
             return inList
-        return inList
+        return false
     }
 }
 

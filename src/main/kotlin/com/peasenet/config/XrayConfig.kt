@@ -48,9 +48,7 @@ class XrayConfig : Config<XrayConfig>() {
     init {
         key = "xray"
         blocks = HashSet()
-        for (b in defaultBlockList) {
-            blocks.add(getId(b))
-        }
+        defaultBlockList.forEach { b: Block -> blocks.add(getId(b)) }
     }
 
     /**
