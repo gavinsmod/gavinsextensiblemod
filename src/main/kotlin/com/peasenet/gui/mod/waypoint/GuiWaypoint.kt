@@ -361,7 +361,7 @@ class GuiWaypoint : GuiElement {
             val regex = "^-?[0-9]+$"
             if (s.matches(regex.toRegex())) {
                 try {
-                    val i = s.toInt()
+                    s.toInt()
                     return@Predicate true
                 } catch (e: Exception) {
                     return@Predicate false

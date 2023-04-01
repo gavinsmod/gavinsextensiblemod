@@ -352,8 +352,7 @@ class GuiXray
         private fun blockList(): LinkedHashSet<Block> {
             val list = ArrayList<Block>()
             Registries.BLOCK.stream().sorted(Comparator.comparing { a: Block -> I18n.translate(a.translationKey) })
-                .filter { b: Block -> !b.asItem().translationKey.contains("air") }
-                .forEach { e: Block -> list.add(e) }
+                .filter { b: Block -> !b.asItem().translationKey.contains("air") }.forEach { e: Block -> list.add(e) }
             return LinkedHashSet(list)
         }
     }

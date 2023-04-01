@@ -109,9 +109,7 @@ object RenderUtils {
         RenderSystem.applyModelViewMatrix()
         stack.translate(-camera.x, -camera.y, -camera.z)
         assert(player != null)
-        val playerPos = getNewPlayerPosition(delta, mainCamera)
         assert(level != null)
-//        drawEntityMods(level, player, stack, delta, buffer, playerPos)
         val event = WorldRenderEvent(level!!, stack, buffer, delta)
         GavinsMod.eventManager!!.call(event)
         tessellator.draw()
@@ -154,7 +152,7 @@ object RenderUtils {
     /**
      * Resets the render system to the default state.
      */
-    private fun resetRenderSystem() {
+    fun resetRenderSystem() {
         RenderSystem.applyModelViewMatrix()
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
         RenderSystem.disableBlend()

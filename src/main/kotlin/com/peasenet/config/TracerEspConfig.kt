@@ -21,6 +21,8 @@ package com.peasenet.config
 
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
+import net.minecraft.entity.EntityType
+import net.minecraft.item.SpawnEggItem
 
 /**
  * @author gt3ch1
@@ -77,5 +79,41 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
             field = value
             saveConfig()
         }
+    var shownMobs: ArrayList<String> = ArrayList()
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    fun removeMob(mob: EntityType<*>) {
+        shownMobs.remove(mob.translationKey)
+        saveConfig()
+    }
+
+    fun removeMob(spawnEggItem: SpawnEggItem) {
+        removeMob(spawnEggItem.getEntityType(null))
+    }
+
+    fun addMob(spawnEggItem: SpawnEggItem) {
+        addMob(spawnEggItem.getEntityType(null))
+    }
+
+    fun addMob(mob: EntityType<*>) {
+        shownMobs.add(mob.translationKey)
+        saveConfig()
+    }
+
+    fun mobIsShown(egg: SpawnEggItem): Boolean {
+        return mobIsShown(egg.getEntityType(null))
+    }
+
+    fun mobIsShown(mob: EntityType<*>): Boolean {
+        val inList = shownMobs.contains(mob.translationKey);
+        if (mob.spawnGroup.isPeaceful && showPeacefulMobs)
+            return inList
+        if (!mob.spawnGroup.isPeaceful && showHostileMobs)
+            return inList
+        return false
+    }
 }
 

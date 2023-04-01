@@ -56,7 +56,6 @@ class ToggleSetting : Setting {
         gui = GuiToggle(PointF(0f, 0f), 90, 10, Text.translatable(key))
         gui.setState(value)
         gui.setCallback { onClick() }
-        gui.hide()
     }
 
     constructor(literal: Text?) : super("none") {
