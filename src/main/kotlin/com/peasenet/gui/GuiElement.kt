@@ -24,6 +24,7 @@ import com.peasenet.gavui.Gui
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GavUISettings
+import com.peasenet.util.RenderUtils
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.util.math.MatrixStack
@@ -120,6 +121,7 @@ open class GuiElement
             titleBox!!.setBackground(GavUISettings.getColor("gui.color.background"))
             titleBox!!.render(matrixStack, tr, mouseX, mouseY, delta)
         }
+        RenderUtils.resetRenderSystem()
         super.render(matrixStack, mouseX, mouseY, delta)
     }
 

@@ -61,6 +61,8 @@
     "gavinsmod.settings.delete": "Delete",
     "gavinsmod.settings.enabled": "Enabled",
     "gavinsmod.settings.esp": "ESP",
+    "gavinsmod.settings.mobesp": "Mob ESP Settings",
+    "gavinsmod.settings.mobtracer": "Mob Tracer Settings",
     "gavinsmod.settings.esp.alpha": "ESP Alpha",
     "gavinsmod.settings.esp.beehive.color": "Beehive Color",
     "gavinsmod.settings.esp.chest.color": "Chest Color",

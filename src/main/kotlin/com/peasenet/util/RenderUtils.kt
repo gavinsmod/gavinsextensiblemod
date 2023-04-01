@@ -156,7 +156,7 @@ object RenderUtils {
     /**
      * Resets the render system to the default state.
      */
-    private fun resetRenderSystem() {
+    fun resetRenderSystem() {
         RenderSystem.applyModelViewMatrix()
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
         RenderSystem.disableBlend()
