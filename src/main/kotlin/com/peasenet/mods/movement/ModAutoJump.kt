@@ -29,7 +29,7 @@ import com.peasenet.mods.Type
  */
 class ModAutoJump : Mod(Type.AUTO_JUMP) {
     override fun onTick() {
-        val player = client.player()
+        val player = client.getPlayer()
         if (player.isOnGround) player.jump()
     }
 }

@@ -32,6 +32,7 @@ import com.peasenet.mods.render.waypoints.Waypoint
 import com.peasenet.settings.ClickSetting
 import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.ToggleSetting
+import com.peasenet.util.Dimension
 import net.minecraft.client.gui.widget.TextFieldWidget
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.Text
@@ -49,52 +50,56 @@ class GuiWaypoint : GuiElement {
     /**
      * The text field used to name the waypoint.
      */
-    var textField: TextFieldWidget? = null
+    private var textField: TextFieldWidget? = null
 
     /**
      * The x coordinate text field.
      */
-    var xCoordinate: TextFieldWidget? = null
+    private var xCoordinate: TextFieldWidget? = null
 
     /**
      * The y coordinate text field.
      */
-    var yCoordinate: TextFieldWidget? = null
+    private var yCoordinate: TextFieldWidget? = null
 
     /**
      * The z coordinate text field.
      */
-    var zCoordinate: TextFieldWidget? = null
+    private var zCoordinate: TextFieldWidget? = null
 
     /**
      * The button used to save the waypoint.
      */
-    var saveSettings = ClickSetting("gavinsmod.settings.save")
+    private var saveSettings = ClickSetting("gavinsmod.settings.save")
 
     /**
      * The button used to cancel the waypoint.
      */
-    var cancelSettings = ClickSetting("gavinsmod.settings.cancel")
+    private var cancelSettings = ClickSetting("gavinsmod.settings.cancel")
 
     /**
      * The button used to delete the waypoint.
      */
-    var deleteSettings = ClickSetting("gavinsmod.settings.delete")
+    private var deleteSettings = ClickSetting("gavinsmod.settings.delete")
 
     /**
      * The button used to toggle the waypoint's visibility.
      */
-    var waypointToggle = ToggleSetting("gavinsmod.settings.enabled")
+    private var waypointToggle = ToggleSetting("gavinsmod.settings.enabled")
 
     /**
      * The button used to toggle the waypoint's esp.
      */
-    var espToggle = ToggleSetting("gavinsmod.settings.esp")
+    private var espToggle = ToggleSetting("gavinsmod.settings.esp")
 
     /**
      * The button used to toggle the waypoint's tracer.
      */
-    var tracerToggle = ToggleSetting("gavinsmod.settings.tracer")
+    private var tracerToggle = ToggleSetting("gavinsmod.settings.tracer")
+
+    private var overworldToggle = ToggleSetting("gavinsmod.settings.overworld")
+    private var netherToggle = ToggleSetting("gavinsmod.settings.nether")
+    private var endToggle = ToggleSetting("gavinsmod.settings.end")
 
     /**
      * The background box.
@@ -104,7 +109,7 @@ class GuiWaypoint : GuiElement {
     /**
      * The button that is used to change the waypoints color.
      */
-    var colorCycle = ColorSetting("gavinsmod.settings.render.waypoints.color", Colors.BLUE)
+    private var colorCycle = ColorSetting("gavinsmod.settings.render.waypoints.color", Colors.BLUE)
 
     /**
      * The width of the gui.
@@ -114,20 +119,20 @@ class GuiWaypoint : GuiElement {
     /**
      * The height of the gui.
      */
-    var height = 100
+    var height = 14 * 11
 
     /**
      * The padding of each element.
      */
-    var padding = 5
+    private var padding = 5
 
     /**
      * The offset and padding in the x and y planes.
      */
-    var offsetX = 0
-    var paddingX = 0
-    var offsetY = 0
-    var paddingY = 0
+    private var offsetX = 0
+    private var paddingX = 0
+    private var offsetY = 0
+    private var paddingY = 0
 
     /**
      * The waypoint that is being edited.
@@ -154,6 +159,9 @@ class GuiWaypoint : GuiElement {
         guis.add(waypointToggle.gui)
         guis.add(espToggle.gui)
         guis.add(tracerToggle.gui)
+        guis.add(overworldToggle.gui)
+        guis.add(netherToggle.gui)
+        guis.add(endToggle.gui)
         saveSettings.setCallback {
             val flooredPos = flooredPlayerPos
             w = Waypoint(flooredPos)
@@ -165,6 +173,9 @@ class GuiWaypoint : GuiElement {
             w!!.x = xCoordinate!!.text.toInt()
             w!!.y = yCoordinate!!.text.toInt()
             w!!.z = zCoordinate!!.text.toInt()
+            if (overworldToggle.value) w!!.addDimension(Dimension.OVERWORLD)
+            if (netherToggle.value) w!!.addDimension(Dimension.NETHER)
+            if (endToggle.value) w!!.addDimension(Dimension.END)
             GavinsMod.waypointConfig!!.addWaypoint(w!!)
             getMod("waypoints").reloadSettings()
             GavinsMod.guiSettings!!.reloadGui()
@@ -182,6 +193,9 @@ class GuiWaypoint : GuiElement {
         this.w = w
         waypointToggle.value = w.isEnabled
         colorCycle.color = w.color!!
+        overworldToggle.value = w.hasDimension(Dimension.OVERWORLD)
+        netherToggle.value = w.hasDimension(Dimension.NETHER)
+        endToggle.value = w.hasDimension(Dimension.END)
         saveSettings.setCallback {
             GavinsMod.waypointConfig!!.removeWaypoint(w)
             w.setName(textField!!.text)
@@ -192,6 +206,10 @@ class GuiWaypoint : GuiElement {
             w.x = xCoordinate!!.text.toInt()
             w.y = yCoordinate!!.text.toInt()
             w.z = zCoordinate!!.text.toInt()
+            w.clearDimensions()
+            if (overworldToggle.value) w.addDimension(Dimension.OVERWORLD)
+            if (netherToggle.value) w.addDimension(Dimension.NETHER)
+            if (endToggle.value) w.addDimension(Dimension.END)
             GavinsMod.waypointConfig!!.addWaypoint(w)
             getMod("waypoints").reloadSettings()
             GavinsMod.guiSettings!!.reloadGui()
@@ -214,6 +232,9 @@ class GuiWaypoint : GuiElement {
         guis.add(waypointToggle.gui)
         guis.add(espToggle.gui)
         guis.add(tracerToggle.gui)
+        guis.add(overworldToggle.gui)
+        guis.add(netherToggle.gui)
+        guis.add(endToggle.gui)
     }
 
     private val flooredPlayerPos: Vec3i
@@ -234,10 +255,47 @@ class GuiWaypoint : GuiElement {
         paddingY = offsetY + padding
         box = Gui(PointF(offsetX.toFloat(), offsetY.toFloat()), width, height, Text.literal(""))
         textField = TextFieldWidget(minecraftClient.textRenderer, offsetX + 40, offsetY + 10, 100, 10, Text.literal(""))
+
+
+        focused = textField
+        val buttonWidth = 42
+        val wholeButtonWidth = buttonWidth * 3 + padding * 2
+        offsetY + 34 + padding
+
+        colorCycle.setWidth(wholeButtonWidth)
+        colorCycle.gui.position = PointF(paddingX.toFloat(), (offsetY + 20 + padding).toFloat())
+        offsetY += 34 + padding
+
+
+//        offsetY = offsetY + padding + 48;
+        waypointToggle.gui.position = PointF(paddingX.toFloat(), (offsetY).toFloat())
+        waypointToggle.gui.width = wholeButtonWidth.toFloat()
+        offsetY += 14
+        espToggle.gui.position = PointF(paddingX.toFloat(), (offsetY).toFloat())
+        espToggle.gui.width = (wholeButtonWidth / 2 - padding / 2).toFloat()
+        tracerToggle.gui.position = PointF(
+            (offsetX + padding + padding / 2 + wholeButtonWidth / 2).toFloat(),
+            (offsetY).toFloat()
+        )
+        tracerToggle.gui.width = (wholeButtonWidth / 2 - padding / 2).toFloat()
+        offsetY += 28
+
+        // render overworld, nether, and end buttons underneath each other
+        overworldToggle.gui.position = PointF(paddingX.toFloat(), (offsetY).toFloat())
+        overworldToggle.gui.width = wholeButtonWidth.toFloat()
+        offsetY += 14
+
+        netherToggle.gui.position = PointF(paddingX.toFloat(), (offsetY).toFloat())
+        netherToggle.gui.width = wholeButtonWidth.toFloat()
+        offsetY += 14
+
+        endToggle.gui.position = PointF(paddingX.toFloat(), (offsetY).toFloat())
+        endToggle.gui.width = wholeButtonWidth.toFloat()
+        offsetY += 14
         xCoordinate = TextFieldWidget(
             minecraftClient.textRenderer,
             paddingX + 11,
-            offsetY + 80 + padding,
+            offsetY,
             30,
             10,
             Text.literal("")
@@ -245,7 +303,7 @@ class GuiWaypoint : GuiElement {
         yCoordinate = TextFieldWidget(
             minecraftClient.textRenderer,
             paddingX + 56,
-            offsetY + 80 + padding,
+            offsetY,
             30,
             10,
             Text.literal("")
@@ -253,7 +311,7 @@ class GuiWaypoint : GuiElement {
         zCoordinate = TextFieldWidget(
             minecraftClient.textRenderer,
             paddingX + 101,
-            offsetY + 80 + padding,
+            offsetY,
             30,
             10,
             Text.literal("")
@@ -277,31 +335,20 @@ class GuiWaypoint : GuiElement {
         addSelectableChild(xCoordinate)
         addSelectableChild(yCoordinate)
         addSelectableChild(zCoordinate)
-        focused = textField
-        val buttonWidth = 42
-        val wholeButtonWidth = buttonWidth * 3 + padding * 2
-        val threeButtonY = offsetY + 34 + padding
-        colorCycle.setWidth(wholeButtonWidth)
-        colorCycle.gui.position = PointF(paddingX.toFloat(), (offsetY + 20 + padding).toFloat())
-        saveSettings.gui.position = PointF(paddingX.toFloat(), threeButtonY.toFloat())
+        offsetY += 14
+        saveSettings.gui.position = PointF(paddingX.toFloat(), offsetY.toFloat())
         saveSettings.gui.width = buttonWidth.toFloat()
         saveSettings.gui.setBackground(Colors.GREEN)
-        cancelSettings.gui.position = PointF((paddingX + padding + buttonWidth).toFloat(), threeButtonY.toFloat())
+        saveSettings.gui.isHoverable = true
+        cancelSettings.gui.position = PointF((paddingX + padding + buttonWidth).toFloat(), offsetY.toFloat())
         cancelSettings.gui.width = buttonWidth.toFloat()
         cancelSettings.gui.setBackground(Colors.YELLOW)
+        cancelSettings.gui.isHoverable = true
         deleteSettings.gui.position =
-            PointF((paddingX + padding * 2 + buttonWidth * 2).toFloat(), threeButtonY.toFloat())
+            PointF((paddingX + padding * 2 + buttonWidth * 2).toFloat(), offsetY.toFloat())
         deleteSettings.gui.width = buttonWidth.toFloat()
         deleteSettings.gui.setBackground(Colors.RED)
-        waypointToggle.gui.position = PointF(paddingX.toFloat(), (offsetY + padding + 48).toFloat())
-        waypointToggle.gui.width = wholeButtonWidth.toFloat()
-        espToggle.gui.position = PointF(paddingX.toFloat(), (offsetY + 62 + padding).toFloat())
-        espToggle.gui.width = (wholeButtonWidth / 2 - padding / 2).toFloat()
-        tracerToggle.gui.position = PointF(
-            (offsetX + padding + padding / 2 + wholeButtonWidth / 2).toFloat(),
-            (offsetY + 62 + padding).toFloat()
-        )
-        tracerToggle.gui.width = (wholeButtonWidth / 2 - padding / 2).toFloat()
+        deleteSettings.gui.isHoverable = true
         box!!.isHoverable = false
         super.init()
     }
@@ -314,8 +361,8 @@ class GuiWaypoint : GuiElement {
             val regex = "^-?[0-9]+$"
             if (s.matches(regex.toRegex())) {
                 try {
-                    val i = s.toInt()
-                    return@Predicate i >= Int.MIN_VALUE && i <= Int.MAX_VALUE
+                    s.toInt()
+                    return@Predicate true
                 } catch (e: Exception) {
                     return@Predicate false
                 }
@@ -325,7 +372,11 @@ class GuiWaypoint : GuiElement {
     }
 
     override fun render(matrixStack: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
+        offsetY = minecraftClient.window.scaledHeight / 2 - height / 2
+
         box!!.render(matrixStack, client!!.textRenderer, mouseX, mouseY, delta)
+
+        guis.forEach(Consumer { obj: Gui -> obj.show() })
         client!!.textRenderer.draw(
             matrixStack,
             Text.literal("Name: "),
@@ -337,28 +388,36 @@ class GuiWaypoint : GuiElement {
             matrixStack,
             Text.literal("X:"),
             (paddingX + 1).toFloat(),
-            (offsetY + 82 + padding).toFloat(),
+            (offsetY + 14 * 9 - 2).toFloat(),
             GavUISettings.getColor("gui.color.foreground").asInt
         )
         client!!.textRenderer.draw(
             matrixStack,
             Text.literal("Y:"),
             (paddingX + 46).toFloat(),
-            (offsetY + 82 + padding).toFloat(),
+            (offsetY + 14 * 9 - 2).toFloat(),
             GavUISettings.getColor("gui.color.foreground").asInt
         )
         client!!.textRenderer.draw(
             matrixStack,
             Text.literal("Z:"),
             (paddingX + 91).toFloat(),
-            (offsetY + 82 + padding).toFloat(),
+            (offsetY + 14 * 9 - 2).toFloat(),
             GavUISettings.getColor("gui.color.foreground").asInt
         )
+        client!!.textRenderer.draw(
+            matrixStack,
+            Text.literal("Dimensions"),
+            (paddingX + 1).toFloat(),
+            (offsetY + 14 * 5 - 2).toFloat(),
+            GavUISettings.getColor("gui.color.foreground").asInt
+        )
+
+
         textField!!.render(matrixStack, mouseX, mouseY, delta)
         xCoordinate!!.render(matrixStack, mouseX, mouseY, delta)
         yCoordinate!!.render(matrixStack, mouseX, mouseY, delta)
         zCoordinate!!.render(matrixStack, mouseX, mouseY, delta)
-        guis.forEach(Consumer { obj: Gui -> obj.show() })
         super.render(matrixStack, mouseX, mouseY, delta)
     }
 

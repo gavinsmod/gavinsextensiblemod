@@ -21,9 +21,11 @@
 package com.peasenet.mixins;
 
 import com.mojang.authlib.GameProfile;
+import com.peasenet.main.GavinsMod;
 import com.peasenet.main.Mods;
 import com.peasenet.mixinterface.IClientPlayerEntity;
 import com.peasenet.mods.Type;
+import com.peasenet.util.event.AirStrafeEvent;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -36,6 +38,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -109,6 +113,11 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     @Override
     public boolean isNoClip() {
         return super.noClip;
+    }
+
+    @Override
+    public @NotNull Vec3d getVelocity() {
+        return super.getVelocity();
     }
 
     @Override
@@ -196,12 +205,19 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     }
 
     @Override
-    public float getOffGroundSpeed() {
-        return super.getOffGroundSpeed();
+    public double squaredDistanceTo(Entity e) {
+        return super.squaredDistanceTo(e);
     }
 
     @Override
-    public double squaredDistanceTo(Entity e) {
-        return super.squaredDistanceTo(e);
+    public float getOffGroundSpeed() {
+        var evt = new AirStrafeEvent(super.getOffGroundSpeed());
+        GavinsMod.eventManager.call(evt);
+        return evt.getSpeed();
+    }
+
+    @Override
+    public @NotNull World getWorld() {
+        return super.world;
     }
 }

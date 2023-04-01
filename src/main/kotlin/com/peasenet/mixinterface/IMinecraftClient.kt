@@ -51,7 +51,6 @@ interface IMinecraftClient {
      * @return The current frames per second.
      */
     fun getFps(): Int
-    fun player(): ClientPlayerEntity
 
     /**
      * Gets the current options for the game.
@@ -123,6 +122,7 @@ interface IMinecraftClient {
      */
     fun crosshairTarget(): HitResult
     fun getPlayer(): ClientPlayerEntity
+
 
     /**
      * Gets the entity render dispatcher.

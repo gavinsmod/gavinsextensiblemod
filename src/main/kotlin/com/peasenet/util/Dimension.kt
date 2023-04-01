@@ -17,19 +17,26 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.mods.movement
 
-import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
+package com.peasenet.util
 
 /**
+ *
  * @author gt3ch1
- * @version 03-16-2023
- * A mod for allowing the printer to noclip (move through blocks)
+ * @version 03/22/2023
  */
-class ModNoClip : Mod(Type.NO_CLIP) {
-    override fun onTick() {
-        val player = client.getPlayer()
-        player.abilities.flying = true
+enum class Dimension(val dimension: String) {
+    OVERWORLD("overworld"),
+    NETHER("the_nether"),
+    END("the_end");
+
+    companion object {
+        fun fromValue(dim: String): Dimension {
+            for (d in Dimension.values()) {
+                if (d.dimension == dim)
+                    return d
+            }
+            throw NotImplementedError("Dimension $dim is not implemented.")
+        }
     }
 }

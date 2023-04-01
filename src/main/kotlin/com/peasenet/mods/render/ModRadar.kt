@@ -171,7 +171,7 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
      * @param stack - The matrix stack.
      */
     private fun drawWaypointsOnRadar(stack: MatrixStack) {
-        val player = client.player()
+        val player = client.getPlayer()
 
         val yaw = player.yaw
         val waypoints =
@@ -195,7 +195,7 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
      * @param stack - The matrix stack.
      */
     private fun drawEntitiesOnRadar(stack: MatrixStack) {
-        val player = client.player()
+        val player = client.getPlayer()
 
         val yaw = player.yaw
         val entities = world.entities
@@ -291,7 +291,7 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
      * @return A new PointF with the x and z values.
      */
     private fun getPointRelativeToYaw(loc: Vec3d?, yaw: Float): PointF {
-        val player = client.player()
+        val player = client.getPlayer()
 
         val x = loc!!.getX() - player.x
         val z = loc.getZ() - player.z

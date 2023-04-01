@@ -19,11 +19,10 @@
  */
 package com.peasenet.mods.tracer
 
-import com.peasenet.main.GavinsMod
+import com.peasenet.gui.mod.tracer.GuiTracer
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
-import com.peasenet.settings.ColorSetting
-import com.peasenet.settings.ToggleSetting
+import com.peasenet.settings.ClickSetting
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.CameraBob
 import com.peasenet.util.event.data.EntityRender
@@ -33,31 +32,14 @@ import net.minecraft.entity.mob.MobEntity
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-01-2023
  * A mod that allows the client to see lines, called tracers, towards mobs.
  */
 class ModMobTracer : Mod(Type.MOB_TRACER), EntityRenderListener, CameraBobListener {
     init {
-        val peacefulColor = ColorSetting(
-            "gavinsmod.settings.tracer.mob.peaceful.color", GavinsMod.tracerConfig!!.peacefulMobColor
-        )
-        peacefulColor.setCallback { tracerConfig.peacefulMobColor = peacefulColor.color }
-        peacefulColor.color = GavinsMod.tracerConfig!!.peacefulMobColor
-        val hostileColor = ColorSetting(
-            "gavinsmod.settings.tracer.mob.hostile.color", GavinsMod.tracerConfig!!.hostileMobColor
-        )
-        hostileColor.setCallback { tracerConfig.hostileMobColor = hostileColor.color }
-        hostileColor.color = GavinsMod.tracerConfig!!.hostileMobColor
-        val hostile = ToggleSetting("gavinsmod.settings.tracer.mob.hostile")
-        hostile.setCallback { tracerConfig.showHostileMobs = hostile.value }
-        hostile.value = GavinsMod.tracerConfig!!.showHostileMobs
-        val peaceful = ToggleSetting("gavinsmod.settings.tracer.mob.peaceful")
-        peaceful.setCallback { tracerConfig.showPeacefulMobs = peaceful.value }
-        peaceful.value = GavinsMod.tracerConfig!!.showPeacefulMobs
-        addSetting(hostileColor)
-        addSetting(peacefulColor)
-        addSetting(hostile)
-        addSetting(peaceful)
+        val menu = ClickSetting("gavinsmod.settings.mobtracer")
+        menu.setCallback { client.setScreen(GuiTracer()) }
+        addSetting(menu)
     }
 
     override fun onEnable() {
@@ -81,15 +63,12 @@ class ModMobTracer : Mod(Type.MOB_TRACER), EntityRenderListener, CameraBobListen
         val center = er.center
         val playerPos = er.playerPos
         if (entity !is MobEntity) return
-        if (er.entityType.spawnGroup.isPeaceful && tracerConfig.showPeacefulMobs) {
+        val color =
+            if (er.entityType.spawnGroup.isPeaceful) tracerConfig.peacefulMobColor else tracerConfig.hostileMobColor
+        if (tracerConfig.mobIsShown(entity.type))
             RenderUtils.renderSingleLine(
-                stack, buffer!!, playerPos!!, center!!, tracerConfig.peacefulMobColor, tracerConfig.alpha
+                stack, buffer!!, playerPos!!, center!!, color, tracerConfig.alpha
             )
-        } else if (!er.entityType.spawnGroup.isPeaceful && tracerConfig.showHostileMobs) {
-            RenderUtils.renderSingleLine(
-                stack, buffer!!, playerPos!!, center!!, tracerConfig.hostileMobColor, tracerConfig.alpha
-            )
-        }
     }
 
     override fun onCameraViewBob(c: CameraBob) {
