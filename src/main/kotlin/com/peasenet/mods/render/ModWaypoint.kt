@@ -26,6 +26,8 @@ import com.peasenet.mods.render.waypoints.Waypoint
 import com.peasenet.settings.ClickSetting
 import com.peasenet.settings.SubSetting
 import com.peasenet.settings.ToggleSetting
+import com.peasenet.util.Dimension
+import com.peasenet.util.PlayerUtils
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.CameraBob
 import com.peasenet.util.event.data.EntityRender
@@ -52,6 +54,13 @@ class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener 
         super.onEnable()
         em.subscribe(EntityRenderListener::class.java, this)
         em.subscribe(CameraBobListener::class.java, this)
+        for (w in waypointConfig.getLocations()) {
+            if (!w.hasDimensions()) {
+                PlayerUtils.sendMessage(
+                    "§6[WARNING]§7 Waypoint \"§b${w.name}§7\" has no dimensions set and will not be rendered.", true
+                )
+            }
+        }
     }
 
     override fun onDisable() {
@@ -65,13 +74,12 @@ class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener 
         setting = SubSetting(setting.gui.width.toInt(), 10, "gavinsmod.mod.render.waypoints")
         openMenu.setCallback { client.setScreen(GuiWaypoint()) }
         openMenu.gui.setSymbol('+')
-        setting.add(openMenu)
+        addSetting(openMenu)
         // get all waypoints and add them to the menu
         val waypoints = waypointConfig.getLocations().stream().sorted(
             Comparator.comparing(Function<Waypoint, String> { obj: Waypoint -> obj.name })
         )
         for (w in waypoints.toArray()) createWaypoint(w as Waypoint)
-        addSetting(setting)
     }
 
     /**
@@ -86,19 +94,18 @@ class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener 
             clickSetting.value = waypoint.isEnabled
         }
         clickSetting.value = waypoint.isEnabled
-        setting.add(clickSetting)
+        addSetting(clickSetting)
     }
 
     override fun onEntityRender(er: EntityRender) {
-        waypointConfig.getLocations().stream().filter { obj: Waypoint -> obj.isEnabled }.forEach { w: Waypoint ->
+        val playerDimension = Dimension.fromValue(client.getPlayer().world.dimension.effects.path!!)
+        waypointConfig.getLocations().stream().filter { obj: Waypoint ->
+            obj.canRender(playerDimension)
+        }.forEach { w: Waypoint ->
             val aabb = Box(BlockPos(w.x, w.y, w.z))
             val boxPos = aabb.center
             if (w.isTracerEnabled) RenderUtils.renderSingleLine(
-                er.stack,
-                er.buffer!!,
-                er.playerPos!!,
-                boxPos,
-                w.color!!
+                er.stack, er.buffer!!, er.playerPos!!, boxPos, w.color!!
             )
             if (w.isEspEnabled) RenderUtils.drawBox(er.stack, er.buffer, aabb, w.color!!)
         }

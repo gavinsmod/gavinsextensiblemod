@@ -19,10 +19,10 @@
  */
 package com.peasenet.mods.esp
 
+import com.peasenet.gui.mod.esp.GuiEsp
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
-import com.peasenet.settings.ColorSetting
-import com.peasenet.settings.ToggleSetting
+import com.peasenet.settings.ClickSetting
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.EntityRender
 import com.peasenet.util.listeners.EntityRenderListener
@@ -30,35 +30,14 @@ import net.minecraft.entity.mob.MobEntity
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-01-2023
  * A mod that allows the client to see boxes around mobs.
  */
 class ModMobEsp : Mod(Type.MOB_ESP), EntityRenderListener {
     init {
-        val hostileEspColor = ColorSetting(
-            "gavinsmod.settings.esp.mob.hostile.color", espConfig.hostileMobColor
-        )
-        hostileEspColor.setCallback { espConfig.hostileMobColor = hostileEspColor.color }
-        hostileEspColor.color = espConfig.hostileMobColor
-
-        val peacefulEspColor = ColorSetting(
-            "gavinsmod.settings.esp.mob.peaceful.color", espConfig.peacefulMobColor
-        )
-        peacefulEspColor.setCallback { espConfig.peacefulMobColor = peacefulEspColor.color }
-        peacefulEspColor.color = espConfig.peacefulMobColor
-
-        val hostileEspToggle = ToggleSetting("gavinsmod.settings.esp.mob.hostile")
-        hostileEspToggle.setCallback { espConfig.showHostileMobs = hostileEspToggle.value }
-        hostileEspToggle.value = espConfig.showHostileMobs
-
-        val peacefulEspToggle = ToggleSetting("gavinsmod.settings.esp.mob.peaceful")
-        peacefulEspToggle.setCallback { espConfig.showPeacefulMobs = peacefulEspToggle.value }
-        peacefulEspToggle.value = espConfig.showPeacefulMobs
-
-        addSetting(hostileEspColor)
-        addSetting(peacefulEspColor)
-        addSetting(hostileEspToggle)
-        addSetting(peacefulEspToggle)
+        val menu = ClickSetting("gavinsmod.settings.mobesp")
+        menu.setCallback { client.setScreen(GuiEsp()) }
+        addSetting(menu)
     }
 
     override fun onEnable() {
@@ -75,10 +54,8 @@ class ModMobEsp : Mod(Type.MOB_ESP), EntityRenderListener {
         val box = RenderUtils.getEntityBox(er.delta, er.entity)
         if (er.entity !is MobEntity) return
         if (er.buffer == null) return
-        if (espConfig.showPeacefulMobs && er.entityType.spawnGroup.isPeaceful) {
-            RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.peacefulMobColor, espConfig.alpha)
-        } else if (espConfig.showHostileMobs && !er.entityType.spawnGroup.isPeaceful) {
-            RenderUtils.drawBox(er.stack, er.buffer, box, espConfig.hostileMobColor, espConfig.alpha)
-        }
+        val color = if (er.entityType.spawnGroup.isPeaceful) espConfig.peacefulMobColor else espConfig.hostileMobColor
+        if (espConfig.mobIsShown(er.entityType))
+            RenderUtils.drawBox(er.stack, er.buffer, box, color, espConfig.alpha)
     }
 }

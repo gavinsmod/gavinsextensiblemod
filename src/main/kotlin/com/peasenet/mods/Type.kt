@@ -211,7 +211,7 @@ enum class Type
         "Waypoint",
         "gavinsmod.mod.render.waypoints",
         "gavinsmod.keybinds.render",
-        Category.RENDER,
+        Category.WAYPOINTS,
         "waypoints"
     ),
     RADAR(
@@ -408,6 +408,7 @@ enum class Type
         MOVEMENT("gavinsmod.gui.movement"), RENDER("gavinsmod.gui.render"), COMBAT("gavinsmod.gui.combat"), MISC("gavinsmod.gui.misc"), ESPS(
             "gavinsmod.gui.esps"
         ),
+        WAYPOINTS("gavinsmod.mod.render.waypoints"),
         TRACERS("gavinsmod.gui.tracers"), GUI("gavinsmod.gui.gui"), NONE("none")
     }
 }

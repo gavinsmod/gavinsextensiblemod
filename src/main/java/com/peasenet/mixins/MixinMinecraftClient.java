@@ -73,6 +73,8 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     public File runDirectory;
     @Shadow
     public HitResult crosshairTarget;
+    @Shadow
+    public ClientPlayerEntity player;
     @Final
     @Shadow
     private EntityRenderDispatcher entityRenderDispatcher;
@@ -108,11 +110,6 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Override
     public int getFps() {
         return currentFps;
-    }
-
-    @Override
-    public ClientPlayerEntity player() {
-        return MinecraftClient.getInstance().player;
     }
 
     @Override
@@ -168,4 +165,8 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
         return entityRenderDispatcher;
     }
 
+    @Override
+    public ClientPlayerEntity getPlayer() {
+        return player;
+    }
 }
