@@ -31,6 +31,11 @@ class MiscConfig : Config<MiscConfig>() {
             field = value
             saveConfig()
         }
+    var freeCamSpeed = 0.1f
+        set(value) {
+            field = value
+            saveConfig()
+        }
 
     init {
         key = "misc"

@@ -69,12 +69,7 @@ object RenderUtils {
      */
     @JvmOverloads
     fun renderSingleLine(
-        stack: MatrixStack,
-        buffer: VertexConsumer,
-        playerPos: Vec3d,
-        boxPos: Vec3d,
-        color: Color,
-        alpha: Float = 1f
+        stack: MatrixStack, buffer: VertexConsumer, playerPos: Vec3d, boxPos: Vec3d, color: Color, alpha: Float = 1f
     ) {
         val normal =
             Vec3d(boxPos.getX() - playerPos.getX(), boxPos.getY() - playerPos.getY(), boxPos.getZ() - playerPos.getZ())
@@ -114,9 +109,7 @@ object RenderUtils {
         RenderSystem.applyModelViewMatrix()
         stack.translate(-camera.x, -camera.y, -camera.z)
         assert(player != null)
-        val playerPos = getNewPlayerPosition(delta, mainCamera)
         assert(level != null)
-        drawEntityMods(level, player, stack, delta, buffer, playerPos)
         val event = WorldRenderEvent(level!!, stack, buffer, delta)
         GavinsMod.eventManager!!.call(event)
         tessellator.draw()
@@ -147,6 +140,9 @@ object RenderUtils {
         val chunkX = player!!.chunkPos.x
         val chunkZ = player.chunkPos.z
         drawBlockMods(level, stack, buffer, playerPos, chunkX, chunkZ, delta)
+        drawEntityMods(level, player, stack, delta, buffer, playerPos)
+        val event = WorldRenderEvent(level!!, stack, buffer, delta)
+        GavinsMod.eventManager!!.call(event)
         tessellator.draw()
         stack.pop()
         resetRenderSystem()
@@ -217,8 +213,84 @@ object RenderUtils {
      * @param c      The color to draw the box in.
      */
     @JvmOverloads
-    fun drawBox(stack: MatrixStack?, buffer: BufferBuilder?, aabb: Box?, c: Color, alpha: Float = 1f) {
-        WorldRenderer.drawBox(stack, buffer, aabb, c.red, c.green, c.blue, alpha)
+    fun drawBox(stack: MatrixStack?, buffer: BufferBuilder?, aabb: Box, c: Color, alpha: Float = 1f) {
+        // draw vertices of the box
+        val x1 = aabb.minX.toFloat()
+        val y1 = aabb.minY.toFloat()
+        val z1 = aabb.minZ.toFloat()
+        val x2 = aabb.maxX.toFloat()
+        val y2 = aabb.maxY.toFloat()
+        val z2 = aabb.maxZ.toFloat()
+        val matrix4f = stack!!.peek().positionMatrix
+        val color = c.getAsInt(alpha)
+        stack.push()
+        renderPlane(buffer!!, matrix4f, x1, x2, y1, y1, z1, z2, color)
+        renderPlane(buffer, matrix4f, x2, x2, y1, y2, z1, z2, color)
+        renderPlane(buffer, matrix4f, x1, x2, y2, y2, z1, z2, color)
+        renderPlane(buffer, matrix4f, x1, x1, y1, y2, z1, z2, color)
+        stack.pop()
+    }
+
+    /**
+     * Renders a 2 dimensional plane.
+     * @param buffer The buffer to write to.
+     * @param matrix4f The matrix to use.
+     * @param x1 The first x coordinate.
+     * @param x2 The second x coordinate.
+     * @param y1 The first y coordinate.
+     * @param y2 The second y coordinate.
+     * @param z1 The first z coordinate.
+     * @param z2 The second z coordinate.
+     * @param c The color to draw the plane in.
+     */
+    private fun renderPlane(
+        buffer: BufferBuilder,
+        matrix4f: Matrix4f,
+        x1: Float,
+        x2: Float,
+        y1: Float,
+        y2: Float,
+        z1: Float,
+        z2: Float,
+        c: Int
+    ) {
+        if (x1 == x2) {
+            buffer.vertex(matrix4f, x1, y1, z1).color(c).next();
+            buffer.vertex(matrix4f, x1, y2, z1).color(c).next();
+
+            buffer.vertex(matrix4f, x1, y2, z1).color(c).next();
+            buffer.vertex(matrix4f, x1, y2, z2).color(c).next();
+
+            buffer.vertex(matrix4f, x1, y2, z2).color(c).next();
+            buffer.vertex(matrix4f, x1, y1, z2).color(c).next();
+
+            buffer.vertex(matrix4f, x1, y1, z2).color(c).next();
+            buffer.vertex(matrix4f, x1, y1, z1).color(c).next();
+        } else if (z1 == z2) {
+            buffer.vertex(matrix4f, x1, y1, z1).color(c).next();
+            buffer.vertex(matrix4f, x2, y1, z1).color(c).next();
+
+            buffer.vertex(matrix4f, x2, y1, z1).color(c).next();
+            buffer.vertex(matrix4f, x2, y2, z1).color(c).next();
+
+            buffer.vertex(matrix4f, x2, y2, z1).color(c).next();
+            buffer.vertex(matrix4f, x1, y2, z1).color(c).next();
+
+            buffer.vertex(matrix4f, x1, y2, z1).color(c).next();
+            buffer.vertex(matrix4f, x1, y1, z1).color(c).next();
+        } else if (y1 == y2) {
+            buffer.vertex(matrix4f, x1, y1, z1).color(c).next();
+            buffer.vertex(matrix4f, x2, y1, z1).color(c).next();
+
+            buffer.vertex(matrix4f, x2, y1, z1).color(c).next();
+            buffer.vertex(matrix4f, x2, y1, z2).color(c).next();
+
+            buffer.vertex(matrix4f, x2, y1, z2).color(c).next();
+            buffer.vertex(matrix4f, x1, y1, z2).color(c).next();
+
+            buffer.vertex(matrix4f, x1, y1, z2).color(c).next();
+            buffer.vertex(matrix4f, x1, y1, z1).color(c).next();
+        }
     }
 
     /**

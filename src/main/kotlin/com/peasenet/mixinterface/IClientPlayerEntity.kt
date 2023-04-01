@@ -29,6 +29,7 @@ import net.minecraft.text.Text
 import net.minecraft.util.Hand
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
+import net.minecraft.world.World
 
 /**
  * The interface for the player entity.
@@ -174,6 +175,7 @@ interface IClientPlayerEntity {
      */
     fun squaredDistanceTo(e: Entity?): Double
 
+
     /**
      * Whether the player is fall flying.
      *
@@ -241,4 +243,5 @@ interface IClientPlayerEntity {
     fun isSubmergedInWater(): Boolean
     fun getOffGroundSpeed(): Float
     fun getEyeHeight(): Double
+    fun getWorld(): World
 }

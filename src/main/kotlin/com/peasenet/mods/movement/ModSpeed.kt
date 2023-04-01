@@ -30,7 +30,7 @@ import kotlin.math.sqrt
  */
 class ModSpeed : Mod(Type.SPEED) {
     override fun onTick() {
-        val player = client.player()
+        val player = client.getPlayer()
 
         if (player.isSneaking) return
         if (!player.isOnGround) return
