@@ -30,7 +30,7 @@ import net.minecraft.entity.mob.MobEntity
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-01-2023
  * A mod that allows the client to see boxes around mobs.
  */
 class ModMobEsp : Mod(Type.MOB_ESP), EntityRenderListener {

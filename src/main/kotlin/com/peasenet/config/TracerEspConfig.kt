@@ -26,7 +26,7 @@ import net.minecraft.item.SpawnEggItem
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-01-2023
  */
 open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
     var chestColor: Color = Colors.PURPLE
@@ -79,34 +79,62 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
             field = value
             saveConfig()
         }
+
     var shownMobs: ArrayList<String> = ArrayList()
         set(value) {
             field = value
             saveConfig()
         }
 
+    /**
+     * Removes a mob from the shown mobs list.
+     * @param mob The mob to remove (EntityType)
+     */
     fun removeMob(mob: EntityType<*>) {
         shownMobs.remove(mob.translationKey)
         saveConfig()
     }
 
+    /**
+     * Removes a mob from the shown mobs list.
+     * @param spawnEggItem The mob to remove (SpawnEggItem)
+     */
     fun removeMob(spawnEggItem: SpawnEggItem) {
         removeMob(spawnEggItem.getEntityType(null))
     }
 
+    /**
+     * Adds a mob to the shown mobs list.
+     * @param spawnEggItem The mob to add (SpawnEggItem)
+     */
     fun addMob(spawnEggItem: SpawnEggItem) {
         addMob(spawnEggItem.getEntityType(null))
     }
 
+    /**
+     * Adds a mob to the shown mobs list.
+     * @param mob The mob to add (EntityType)
+     */
     fun addMob(mob: EntityType<*>) {
         shownMobs.add(mob.translationKey)
         saveConfig()
     }
 
+    /**
+     * Checks if a mob is shown.
+     * @param egg The mob to check (SpawnEggItem)
+     * @return Whether the mob is shown.
+     */
     fun mobIsShown(egg: SpawnEggItem): Boolean {
         return mobIsShown(egg.getEntityType(null))
     }
 
+
+    /**
+     * Checks if a mob is shown.
+     * @param mob The mob to check (EntityType)
+     * @return Whether the mob is shown.
+     */
     fun mobIsShown(mob: EntityType<*>): Boolean {
         val inList = shownMobs.contains(mob.translationKey);
         if (mob.spawnGroup.isPeaceful && showPeacefulMobs)

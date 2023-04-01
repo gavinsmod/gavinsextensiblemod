@@ -44,7 +44,7 @@ import net.minecraft.text.Text
 
 /**
  * @author gt3ch1
- * @version 03-28-2023
+ * @version 04-01-2023
  * A gui that allows the player to search for blocks and add them to the xray list.
  */
 class GuiEsp
