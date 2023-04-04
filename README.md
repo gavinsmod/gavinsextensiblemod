@@ -62,7 +62,7 @@ Features
 - Please install fabric from [here](https://fabricmc.net/use/installer/).
 - Navigate to your Minecraft installation directory (Windows is usually `%appdata%`), and drop in the jar downloaded
   from the [releases page](https://github.com/gt3ch1/minecraft-mod/releases) to the `mods` folder.
-- Install `Fabric Language Kotlin` from [here](fabric-language-kotlin-1.9.2+kotlin.1.8.10.jar)
+- Install `Fabric Language Kotlin` from [here](https://www.curseforge.com/minecraft/mc-mods/fabric-language-kotlin/files)
 - Start Minecraft! The default keybinding for the GUI is `I`. Each mod can have its own separate keybinding, or can be
   indivually toggled through the GUI.
 
