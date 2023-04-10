@@ -23,9 +23,9 @@ package com.peasenet.config
  * The configuration for tracers.
  *
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-10-2023
  */
-class TracerConfig : TracerEspConfig<EspConfig?>() {
+class TracerConfig : TracerEspConfig<EspConfig>() {
     init {
         key = "tracer"
     }
