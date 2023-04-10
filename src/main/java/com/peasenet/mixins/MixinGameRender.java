@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
@@ -22,6 +22,7 @@ package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
 import com.peasenet.util.event.CameraBobEvent;
+import com.peasenet.util.event.CameraHurtEvent;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,7 +34,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinGameRender {
     @Inject(method = "tiltViewWhenHurt", at = @At("HEAD"), cancellable = true)
     public void checkAntiHurt(MatrixStack stack, float f, CallbackInfo ci) {
-        CameraBobEvent event = new CameraBobEvent();
+        CameraHurtEvent event = new CameraHurtEvent();
         GavinsMod.eventManager.call(event);
         if (event.isCancelled())
             ci.cancel();

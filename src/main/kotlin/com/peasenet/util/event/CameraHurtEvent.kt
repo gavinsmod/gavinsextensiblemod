@@ -17,30 +17,21 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.mods.render
+package com.peasenet.util.event
 
-import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
 import com.peasenet.util.event.data.CameraBob
 import com.peasenet.util.listeners.CameraHurtListener
 
-/**
- * @author gt3ch1
- * @version 03-02-2023
- * A mod that disables the view bob when the player is damaged.
- */
-class ModAntiHurt : Mod(Type.ANTI_HURT), CameraHurtListener {
-    override fun onEnable() {
-        super.onEnable()
-        em.subscribe(CameraHurtListener::class.java, this)
+class CameraHurtEvent : CancellableEvent<CameraHurtListener>() {
+    private var cameraBob: CameraBob = CameraBob()
+
+    override fun fire(listeners: ArrayList<CameraHurtListener>) {
+        for (listener in listeners) {
+            listener.onCameraViewBob(cameraBob)
+            if (cameraBob.isCancelled) cancel()
+        }
     }
 
-    override fun onDisable() {
-        super.onDisable()
-        em.unsubscribe(CameraHurtListener::class.java, this)
-    }
-
-    override fun onCameraViewBob(c: CameraBob) {
-        c.cancel()
-    }
+    override val event: Class<CameraHurtListener>
+        get() = CameraHurtListener::class.java
 }
