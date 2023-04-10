@@ -19,6 +19,7 @@
  */
 package com.peasenet.mods.render
 
+import com.peasenet.gavui.color.Colors
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
 import com.peasenet.util.event.data.EntityRender
@@ -28,7 +29,7 @@ import net.minecraft.entity.LivingEntity
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-10-2023
  * A mod that shows entity's health as a tag above their head.
  */
 class ModHealthTag : Mod(Type.MOD_HPTAG), EntityRenderNameListener {
@@ -50,7 +51,9 @@ class ModHealthTag : Mod(Type.MOD_HPTAG), EntityRenderNameListener {
         if (entity !is LivingEntity) return
         if (d > 1024) return
         val currentHealth: Float = entity.health
-        val text = "$currentHealth HP"
+        // round to 1 decimal place
+        val roundedHealth = (currentHealth * 10).toInt() / 10.0
+        val text = "$roundedHealth HP"
         val bl = !entity.isSneaky()
         val f = entity.getHeight() + 0.5f
         matrices.push()
@@ -61,24 +64,24 @@ class ModHealthTag : Mod(Type.MOD_HPTAG), EntityRenderNameListener {
         val g = client.options.getTextBackgroundOpacity(0.5f)
         val j = (g * 255.0f).toInt() shl 24
         val h = (-textRenderer.getWidth(text) / 2).toFloat()
-        var color = 0x00ff00
+        var color = Colors.GREEN.asInt
         val percentHealth: Double = (entity.health / entity.maxHealth).toDouble()
-        if (percentHealth < 0.75) color = 0xffff00
-        if (percentHealth < 0.5) color = 0xffa500
-        if (percentHealth < 0.25) color = 0xff0000
+        if (percentHealth <= 0.75) color = Colors.YELLOW.asInt
+        if (percentHealth <= 0.5) color = Colors.GOLD.asInt
+        if (percentHealth <= 0.25) color = Colors.RED.asInt
         textRenderer.draw(text, h, 0f, color, false, matrix4f, er.vertexConsumers, TextLayerType.NORMAL, j, er.light)
         if (bl) {
             textRenderer.draw(
-                text,
-                h,
-                0f,
-                color,
-                false,
-                matrix4f,
-                er.vertexConsumers,
-                TextLayerType.NORMAL,
-                0,
-                er.light
+                    text,
+                    h,
+                    0f,
+                    color,
+                    false,
+                    matrix4f,
+                    er.vertexConsumers,
+                    TextLayerType.NORMAL,
+                    0,
+                    er.light
             )
         }
         matrices.pop()
