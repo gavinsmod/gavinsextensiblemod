@@ -32,17 +32,17 @@ import net.minecraft.block.entity.FurnaceBlockEntity
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-11-2023
  * A mod that allows the player to see tracers towards furnaces.
  */
 class ModFurnaceTracer : Mod(Type.FURNACE_TRACER), BlockEntityRenderListener, CameraBobListener {
     init {
         val colorSetting = ColorSetting(
             "gavinsmod.settings.tracer.furnace.color",
-            GavinsMod.tracerConfig!!.furnaceColor
+                GavinsMod.tracerConfig.furnaceColor
         )
         colorSetting.setCallback { tracerConfig.furnaceColor = colorSetting.color }
-        colorSetting.color = GavinsMod.tracerConfig!!.furnaceColor
+        colorSetting.color = GavinsMod.tracerConfig.furnaceColor
         addSetting(colorSetting)
     }
 

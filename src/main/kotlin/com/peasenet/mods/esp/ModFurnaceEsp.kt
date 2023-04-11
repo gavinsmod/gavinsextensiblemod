@@ -31,16 +31,16 @@ import net.minecraft.util.math.Box
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-11-2023
  * A mod that allows the client to see an esp (a box) around furnaces.
  */
 class ModFurnaceEsp : Mod(Type.FURNACE_ESP), BlockEntityRenderListener {
     init {
         val colorSetting = ColorSetting(
-            "gavinsmod.settings.esp.furnace.color", GavinsMod.espConfig!!.furnaceColor
+                "gavinsmod.settings.esp.furnace.color", GavinsMod.espConfig.furnaceColor
         )
         colorSetting.setCallback { espConfig.furnaceColor = colorSetting.color }
-        colorSetting.color = GavinsMod.espConfig!!.furnaceColor
+        colorSetting.color = GavinsMod.espConfig.furnaceColor
         addSetting(colorSetting)
     }
 

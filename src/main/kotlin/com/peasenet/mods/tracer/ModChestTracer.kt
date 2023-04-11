@@ -34,17 +34,17 @@ import net.minecraft.block.entity.ShulkerBoxBlockEntity
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-11-2023
  * A mod that allows the player to see tracers towards chests.
  */
 class ModChestTracer : Mod(Type.CHEST_TRACER), BlockEntityRenderListener, CameraBobListener {
     init {
         val colorSetting = ColorSetting(
             "gavinsmod.settings.tracer.chest.color",
-            GavinsMod.tracerConfig!!.chestColor
+                GavinsMod.tracerConfig.chestColor
         )
         colorSetting.setCallback { tracerConfig.chestColor = colorSetting.color }
-        colorSetting.color = GavinsMod.tracerConfig!!.chestColor
+        colorSetting.color = GavinsMod.tracerConfig.chestColor
         addSetting(colorSetting)
     }
 

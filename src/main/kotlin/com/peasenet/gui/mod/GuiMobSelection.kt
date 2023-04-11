@@ -47,7 +47,7 @@ import net.minecraft.text.Text
  * The base class for all gui mob selection elements, such as the tracer and esp gui.
  *
  * @author gt3ch1
- * @version 04/10/2023
+ * @version 04-11-2023
  */
 abstract class GuiMobSelection(label: Text) : GuiElement(label) {
 
@@ -149,7 +149,12 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
             return true
         }
         if (!(mouseX > x && mouseX < x + pageWidth && mouseY > y && mouseY < y + pageHeight)) return false
-        return super.mouseClicked(mouseX, mouseY, button)
+        val blockIndex = ((mouseY - y) / 19).toInt() * blocksPerRow + ((mouseX - x) / 18).toInt()
+        if (blockIndex > visibleItems.size - 1) return false
+        val block = visibleItems[blockIndex]
+        if (button != 0) return false
+        handleItemToggle(block)
+        return true
     }
 
 
@@ -233,6 +238,11 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
      */
     protected abstract fun isItemEnabled(item: ItemStack): Boolean
 
+    /**
+     * Handles the toggling of an item when it is clicked from the GUI.
+     */
+    abstract fun handleItemToggle(item: ItemStack)
+
     override fun render(matrixStack: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
         guis.forEach { it.render(matrixStack, textRenderer, mouseX, mouseY, delta) }
         search.render(matrixStack, mouseX, mouseY, delta)
@@ -296,4 +306,6 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
             nextButton.show()
         }
     }
+
+
 }

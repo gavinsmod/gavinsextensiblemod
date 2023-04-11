@@ -31,12 +31,12 @@ import java.util.*
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-11-2023
  * A class that handles chat commands for all mods.
  */
 class ModCommands : OnChatSendListener {
     init {
-        GavinsMod.eventManager!!.subscribe(OnChatSendListener::class.java, this)
+        GavinsMod.eventManager.subscribe(OnChatSendListener::class.java, this)
     }
 
     override fun onChatSend(s: ChatMessage) {
@@ -88,8 +88,8 @@ class ModCommands : OnChatSendListener {
                 return true
             }
             if (s == "resetgui") {
-                GavinsMod.gui!!.reset()
-                GavinsMod.guiSettings!!.reset()
+                GavinsMod.gui.reset()
+                GavinsMod.guiSettings.reset()
                 return true
             }
             if (s == "reloadgui") {

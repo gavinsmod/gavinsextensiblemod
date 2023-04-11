@@ -47,7 +47,7 @@ import kotlin.math.sqrt
  * A mod that allows for a radar-like view of the world.
  *
  * @author gt3ch1
- * @version 03-13-2023
+ * @version 04-11-2023
  */
 class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
     /**
@@ -175,7 +175,7 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
 
         val yaw = player.yaw
         val waypoints =
-            GavinsMod.waypointConfig!!.getLocations().stream().filter { obj: Waypoint -> obj.isEnabled }.toList()
+                GavinsMod.waypointConfig.getLocations().stream().filter { obj: Waypoint -> obj.isEnabled }.toList()
         for (w in waypoints) {
             var color = w.color
             if (!radarConfig.isUseWaypointColor) color = radarConfig.waypointColor

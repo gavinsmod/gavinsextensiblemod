@@ -43,7 +43,7 @@ import kotlin.math.floor
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-11-2023
  * A gui that allows the user to add, delete, or modify a waypoint.
  */
 class GuiWaypoint : GuiElement {
@@ -177,9 +177,9 @@ class GuiWaypoint : GuiElement {
             if (overworldToggle.value) w!!.addDimension(Dimension.OVERWORLD)
             if (netherToggle.value) w!!.addDimension(Dimension.NETHER)
             if (endToggle.value) w!!.addDimension(Dimension.END)
-            GavinsMod.waypointConfig!!.addWaypoint(w!!)
+            GavinsMod.waypointConfig.addWaypoint(w!!)
             getMod("waypoints").reloadSettings()
-            GavinsMod.guiSettings!!.reloadGui()
+            GavinsMod.guiSettings.reloadGui()
             parent = GavinsMod.guiSettings
             close()
         }
@@ -198,7 +198,7 @@ class GuiWaypoint : GuiElement {
         netherToggle.value = w.hasDimension(Dimension.NETHER)
         endToggle.value = w.hasDimension(Dimension.END)
         saveSettings.setCallback {
-            GavinsMod.waypointConfig!!.removeWaypoint(w)
+            GavinsMod.waypointConfig.removeWaypoint(w)
             w.setName(textField.text)
             w.color = colorCycle.color
             w.isEnabled = waypointToggle.value
@@ -211,17 +211,17 @@ class GuiWaypoint : GuiElement {
             if (overworldToggle.value) w.addDimension(Dimension.OVERWORLD)
             if (netherToggle.value) w.addDimension(Dimension.NETHER)
             if (endToggle.value) w.addDimension(Dimension.END)
-            GavinsMod.waypointConfig!!.addWaypoint(w)
+            GavinsMod.waypointConfig.addWaypoint(w)
             getMod("waypoints").reloadSettings()
-            GavinsMod.guiSettings!!.reloadGui()
+            GavinsMod.guiSettings.reloadGui()
             parent = GavinsMod.guiSettings
             close()
         }
         cancelSettings.setCallback { client!!.setScreen(parent) }
         deleteSettings.setCallback {
-            GavinsMod.waypointConfig!!.removeWaypoint(w)
+            GavinsMod.waypointConfig.removeWaypoint(w)
             getMod("waypoints").reloadSettings()
-            GavinsMod.guiSettings!!.reloadGui()
+            GavinsMod.guiSettings.reloadGui()
             close()
         }
         espToggle.value = w.isEspEnabled

@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-11-2023
  * A mod that shows the currently active mods in the top left screen.
  */
 class ModGuiTextOverlay : Mod(Type.MOD_GUI_TEXT_OVERLAY), InGameHudRenderListener {
@@ -85,7 +85,7 @@ class ModGuiTextOverlay : Mod(Type.MOD_GUI_TEXT_OVERLAY), InGameHudRenderListene
         // get the mod with the longest name.
         var longestModName = 0
         for (mod in mods) {
-            longestModName = Math.max(textRenderer.getWidth(I18n.translate(mod.translationKey)), longestModName)
+            longestModName = textRenderer.getWidth(I18n.translate(mod.translationKey)).coerceAtLeast(longestModName)
         }
         val box = BoxF(startingPoint, (longestModName + 4).toFloat(), modsCount * 10 + 0.5f)
         GuiUtil.drawBox(

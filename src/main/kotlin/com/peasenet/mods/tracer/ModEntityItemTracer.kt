@@ -32,17 +32,17 @@ import net.minecraft.entity.EntityType
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-11-2023
  * A mod that allows the player to see tracers towards items.
  */
 class ModEntityItemTracer : Mod(Type.ENTITY_ITEM_TRACER), EntityRenderListener, CameraBobListener {
     init {
         val colorSetting = ColorSetting(
             "gavinsmod.settings.tracer.item.color",
-            GavinsMod.tracerConfig!!.itemColor
+                GavinsMod.tracerConfig.itemColor
         )
         colorSetting.setCallback { tracerConfig.itemColor = colorSetting.color }
-        colorSetting.color = GavinsMod.tracerConfig!!.itemColor
+        colorSetting.color = GavinsMod.tracerConfig.itemColor
         addSetting(colorSetting)
     }
 

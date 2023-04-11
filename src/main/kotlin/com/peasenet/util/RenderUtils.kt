@@ -44,7 +44,7 @@ import java.util.function.Consumer
 
 /**
  * @author gt3ch1
- * @version 03-13-2023
+ * @version 04-11-2023
  * A utility class for rendering tracers and esp's.
  */
 object RenderUtils {
@@ -111,7 +111,7 @@ object RenderUtils {
         assert(player != null)
         assert(level != null)
         val event = WorldRenderEvent(level!!, stack, buffer, delta)
-        GavinsMod.eventManager!!.call(event)
+        GavinsMod.eventManager.call(event)
         tessellator.draw()
         stack.pop()
         resetRenderSystem()
@@ -142,7 +142,7 @@ object RenderUtils {
         drawBlockMods(level, stack, buffer, playerPos, chunkX, chunkZ, delta)
         drawEntityMods(level, player, stack, delta, buffer, playerPos)
         val event = WorldRenderEvent(level!!, stack, buffer, delta)
-        GavinsMod.eventManager!!.call(event)
+        GavinsMod.eventManager.call(event)
         tessellator.draw()
         stack.pop()
         resetRenderSystem()
@@ -197,7 +197,7 @@ object RenderUtils {
                         val aabb = Box(blockPos)
                         val boxPos = aabb.center
                         val event = BlockEntityRenderEvent(blockEntity, stack, buffer, boxPos, playerPos, delta)
-                        GavinsMod.eventManager!!.call(event)
+                        GavinsMod.eventManager.call(event)
                     }
                 }
             }
@@ -255,41 +255,41 @@ object RenderUtils {
         c: Int
     ) {
         if (x1 == x2) {
-            buffer.vertex(matrix4f, x1, y1, z1).color(c).next();
-            buffer.vertex(matrix4f, x1, y2, z1).color(c).next();
+            buffer.vertex(matrix4f, x1, y1, z1).color(c).next()
+            buffer.vertex(matrix4f, x1, y2, z1).color(c).next()
 
-            buffer.vertex(matrix4f, x1, y2, z1).color(c).next();
-            buffer.vertex(matrix4f, x1, y2, z2).color(c).next();
+            buffer.vertex(matrix4f, x1, y2, z1).color(c).next()
+            buffer.vertex(matrix4f, x1, y2, z2).color(c).next()
 
-            buffer.vertex(matrix4f, x1, y2, z2).color(c).next();
-            buffer.vertex(matrix4f, x1, y1, z2).color(c).next();
+            buffer.vertex(matrix4f, x1, y2, z2).color(c).next()
+            buffer.vertex(matrix4f, x1, y1, z2).color(c).next()
 
-            buffer.vertex(matrix4f, x1, y1, z2).color(c).next();
-            buffer.vertex(matrix4f, x1, y1, z1).color(c).next();
+            buffer.vertex(matrix4f, x1, y1, z2).color(c).next()
+            buffer.vertex(matrix4f, x1, y1, z1).color(c).next()
         } else if (z1 == z2) {
-            buffer.vertex(matrix4f, x1, y1, z1).color(c).next();
-            buffer.vertex(matrix4f, x2, y1, z1).color(c).next();
+            buffer.vertex(matrix4f, x1, y1, z1).color(c).next()
+            buffer.vertex(matrix4f, x2, y1, z1).color(c).next()
 
-            buffer.vertex(matrix4f, x2, y1, z1).color(c).next();
-            buffer.vertex(matrix4f, x2, y2, z1).color(c).next();
+            buffer.vertex(matrix4f, x2, y1, z1).color(c).next()
+            buffer.vertex(matrix4f, x2, y2, z1).color(c).next()
 
-            buffer.vertex(matrix4f, x2, y2, z1).color(c).next();
-            buffer.vertex(matrix4f, x1, y2, z1).color(c).next();
+            buffer.vertex(matrix4f, x2, y2, z1).color(c).next()
+            buffer.vertex(matrix4f, x1, y2, z1).color(c).next()
 
-            buffer.vertex(matrix4f, x1, y2, z1).color(c).next();
-            buffer.vertex(matrix4f, x1, y1, z1).color(c).next();
+            buffer.vertex(matrix4f, x1, y2, z1).color(c).next()
+            buffer.vertex(matrix4f, x1, y1, z1).color(c).next()
         } else if (y1 == y2) {
-            buffer.vertex(matrix4f, x1, y1, z1).color(c).next();
-            buffer.vertex(matrix4f, x2, y1, z1).color(c).next();
+            buffer.vertex(matrix4f, x1, y1, z1).color(c).next()
+            buffer.vertex(matrix4f, x2, y1, z1).color(c).next()
 
-            buffer.vertex(matrix4f, x2, y1, z1).color(c).next();
-            buffer.vertex(matrix4f, x2, y1, z2).color(c).next();
+            buffer.vertex(matrix4f, x2, y1, z1).color(c).next()
+            buffer.vertex(matrix4f, x2, y1, z2).color(c).next()
 
-            buffer.vertex(matrix4f, x2, y1, z2).color(c).next();
-            buffer.vertex(matrix4f, x1, y1, z2).color(c).next();
+            buffer.vertex(matrix4f, x2, y1, z2).color(c).next()
+            buffer.vertex(matrix4f, x1, y1, z2).color(c).next()
 
-            buffer.vertex(matrix4f, x1, y1, z2).color(c).next();
-            buffer.vertex(matrix4f, x1, y1, z1).color(c).next();
+            buffer.vertex(matrix4f, x1, y1, z2).color(c).next()
+            buffer.vertex(matrix4f, x1, y1, z1).color(c).next()
         }
     }
 
@@ -316,7 +316,7 @@ object RenderUtils {
             val aabb = getEntityBox(delta, e)
             val boxPos = aabb.center
             val event = EntityRenderEvent(e, stack, buffer, boxPos, playerPos, delta)
-            GavinsMod.eventManager!!.call(event)
+            GavinsMod.eventManager.call(event)
         })
     }
 
@@ -338,10 +338,10 @@ object RenderUtils {
      * Sets the gamma of the game to the full bright value of 10000.0 while storing the last gamma value.
      */
     fun setHighGamma() {
-        if (GavinsMod.fullbrightConfig!!.gammaFade) {
+        if (GavinsMod.fullbrightConfig.gammaFade) {
             fadeGammaUp()
         } else {
-            gamma = GavinsMod.fullbrightConfig!!.maxGamma.toDouble()
+            gamma = GavinsMod.fullbrightConfig.maxGamma.toDouble()
         }
     }
 
@@ -349,7 +349,7 @@ object RenderUtils {
      * Resets the gamma to the players last configured value.
      */
     fun setLowGamma() {
-        if (GavinsMod.fullbrightConfig!!.gammaFade) {
+        if (GavinsMod.fullbrightConfig.gammaFade) {
             fadeGammaDown()
         } else {
             gamma = LAST_GAMMA
@@ -370,12 +370,12 @@ object RenderUtils {
          */
         set(gamma) {
             var newValue = gamma
-            val maxGamma = GavinsMod.fullbrightConfig!!.maxGamma
+            val maxGamma = GavinsMod.fullbrightConfig.maxGamma
             if (newValue < 0.0) newValue = 0.0
             if (newValue > maxGamma) newValue = maxGamma.toDouble()
             val newGamma = GavinsModClient.minecraftClient.options.gamma
             if (newGamma.value != newValue) {
-                val newGamma2 = newGamma as Any as ISimpleOption<Double>
+                val newGamma2 = (newGamma as ISimpleOption<Double>)
                 newGamma2.forceSetValue(newValue)
             }
         }

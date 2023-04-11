@@ -32,7 +32,7 @@ import net.minecraft.text.Text
 
 /**
  * @author gt3ch1
- * @version 04-10-2023
+ * @version 04-11-2023
  * A gui that allows the player to search for blocks and add them to the xray list.
  */
 class GuiEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")) {
@@ -72,18 +72,12 @@ class GuiEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")) {
     }
 
     override fun isItemEnabled(item: ItemStack): Boolean {
-        return GavinsMod.espConfig!!.mobIsShown(item.item as SpawnEggItem)
+        return GavinsMod.espConfig.mobIsShown(item.item as SpawnEggItem)
     }
 
-    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        if (super.mouseClicked(mouseX, mouseY, button)) return true
-        val blockIndex = ((mouseY - y) / 19).toInt() * blocksPerRow + ((mouseX - x) / 18).toInt()
-        if (blockIndex > visibleItems.size - 1) return false
-        val block = visibleItems[blockIndex]
-        val spawnEgg = (block.item as SpawnEggItem)
-        if (button != 0) return false
-        if (GavinsMod.espConfig!!.mobIsShown(spawnEgg)) GavinsMod.tracerConfig!!.removeMob(spawnEgg)
-        else GavinsMod.espConfig!!.addMob(spawnEgg)
-        return true
+    override fun handleItemToggle(item: ItemStack) {
+        val spawnEgg = (item.item as SpawnEggItem)
+        if (isItemEnabled(item)) GavinsMod.espConfig.removeMob(spawnEgg)
+        else GavinsMod.espConfig.addMob(spawnEgg)
     }
 }

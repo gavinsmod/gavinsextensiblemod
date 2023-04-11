@@ -31,7 +31,7 @@ import net.minecraft.text.Text
 
 /**
  * @author gt3ch1
- * @version 04-10-2023
+ * @version 04-11-2023
  * A gui that allows the player to search for blocks and add them to the xray list.
  */
 class GuiTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtracer")) {
@@ -41,15 +41,15 @@ class GuiTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtrace
 
         val height = 24f
         var pos = PointF(10f, height)
-        hostileColor = ColorSetting("gavinsmod.settings.tracer.mob.hostile.color", GavinsMod.tracerConfig!!.hostileMobColor)
-        hostileColor.setCallback { GavinsMod.tracerConfig!!.hostileMobColor = hostileColor.color }
-        hostileColor.color = GavinsMod.tracerConfig!!.hostileMobColor
+        hostileColor = ColorSetting("gavinsmod.settings.tracer.mob.hostile.color", GavinsMod.tracerConfig.hostileMobColor)
+        hostileColor.setCallback { GavinsMod.tracerConfig.hostileMobColor = hostileColor.color }
+        hostileColor.color = GavinsMod.tracerConfig.hostileMobColor
         hostileColor.gui.position = pos
         pos = pos.add(0f, 12f)
 
-        peacefulColor = ColorSetting("gavinsmod.settings.tracer.mob.peaceful.color", GavinsMod.tracerConfig!!.peacefulMobColor)
-        peacefulColor.setCallback { GavinsMod.tracerConfig!!.peacefulMobColor = peacefulColor.color }
-        peacefulColor.color = GavinsMod.tracerConfig!!.peacefulMobColor
+        peacefulColor = ColorSetting("gavinsmod.settings.tracer.mob.peaceful.color", GavinsMod.tracerConfig.peacefulMobColor)
+        peacefulColor.setCallback { GavinsMod.tracerConfig.peacefulMobColor = peacefulColor.color }
+        peacefulColor.color = GavinsMod.tracerConfig.peacefulMobColor
         peacefulColor.gui.position = pos
         pos = pos.add(0f, 12f)
 
@@ -60,14 +60,14 @@ class GuiTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtrace
         pos = pos.add(0f, 12f)
 
         peacefulToggle = ToggleSetting("gavinsmod.settings.tracer.mob.hostile")
-        peacefulToggle.setCallback { GavinsMod.tracerConfig!!.showHostileMobs = peacefulToggle.value }
-        peacefulToggle.value = GavinsMod.tracerConfig!!.showHostileMobs
+        peacefulToggle.setCallback { GavinsMod.tracerConfig.showHostileMobs = peacefulToggle.value }
+        peacefulToggle.value = GavinsMod.tracerConfig.showHostileMobs
         peacefulToggle.gui.position = pos
         pos = pos.add(0f, 12f)
 
         hostileToggle = ToggleSetting("gavinsmod.settings.tracer.mob.peaceful")
-        hostileToggle.setCallback { GavinsMod.tracerConfig!!.showPeacefulMobs = hostileToggle.value }
-        hostileToggle.value = GavinsMod.tracerConfig!!.showPeacefulMobs
+        hostileToggle.setCallback { GavinsMod.tracerConfig.showPeacefulMobs = hostileToggle.value }
+        hostileToggle.value = GavinsMod.tracerConfig.showPeacefulMobs
         hostileToggle.gui.position = pos
         super.init()
 
@@ -75,18 +75,13 @@ class GuiTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtrace
     }
 
     override fun isItemEnabled(item: ItemStack): Boolean {
-        return GavinsMod.tracerConfig!!.mobIsShown(item.item as SpawnEggItem)
+        return GavinsMod.tracerConfig.mobIsShown(item.item as SpawnEggItem)
     }
 
-    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        if (super.mouseClicked(mouseX, mouseY, button)) return true
-        val blockIndex = ((mouseY - y) / 19).toInt() * blocksPerRow + ((mouseX - x) / 18).toInt()
-        if (blockIndex > visibleItems.size - 1) return false
-        val block = visibleItems[blockIndex]
-        val spawnEgg = (block.item as SpawnEggItem)
-        if (button != 0) return false
-        if (GavinsMod.tracerConfig!!.mobIsShown(spawnEgg)) GavinsMod.tracerConfig!!.removeMob(spawnEgg)
-        else GavinsMod.tracerConfig!!.addMob(spawnEgg)
-        return true
+    override fun handleItemToggle(item: ItemStack) {
+        val spawnEgg = (item.item as SpawnEggItem)
+        if (isItemEnabled(item)) GavinsMod.tracerConfig.removeMob(spawnEgg)
+        else GavinsMod.espConfig.addMob(spawnEgg)
+
     }
 }

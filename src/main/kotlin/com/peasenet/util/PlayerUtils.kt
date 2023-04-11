@@ -35,7 +35,7 @@ import net.minecraft.util.math.Vec3d
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-11-2023
  * A helper class with utilities relating to the player.
  */
 object PlayerUtils {
@@ -100,7 +100,7 @@ object PlayerUtils {
         val player = GavinsModClient.player
         if (onGround() && !player!!.isNoClip() && player.getAttackCoolDownProgress(0.5f) > 0.90f) {
             val event = PlayerAttackEvent()
-            GavinsMod.eventManager!!.call(event)
+            GavinsMod.eventManager.call(event)
             GavinsModClient.minecraftClient.getPlayerInteractionManager().attackEntity(player as PlayerEntity, entity)
 
             player.tryAttack(entity)
@@ -177,6 +177,6 @@ object PlayerUtils {
     fun sendMessage(message: String, withPrefix: Boolean) {
         var newMessage = message
         if (withPrefix) newMessage = Mod.GAVINS_MOD_STRING + newMessage
-        if (GavinsMod.miscConfig!!.isMessages) GavinsModClient.player!!.sendMessage(Text.literal(newMessage), false)
+        if (GavinsMod.miscConfig.isMessages) GavinsModClient.player!!.sendMessage(Text.literal(newMessage), false)
     }
 }

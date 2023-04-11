@@ -35,7 +35,7 @@ import java.util.function.Consumer
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-11-2023
  * A settings gui to control certain features of the mod.
  */
 class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
@@ -59,15 +59,15 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
         val resetText = Text.translatable("gavinsmod.settings.reset")
         val width = textRenderer.getWidth(resetText)
         if (resetPos == null) resetPos = PointF(titleW.toFloat(), 1f)
-        resetButton.setTitle(resetText);
+        resetButton.title = resetText
         if (resetWidth.toDouble() == 0.0) resetWidth = (width + 4).toFloat()
         resetButton.width = resetWidth
         resetButton.position = resetPos
         resetButton.setDefaultPosition(resetButton.box)
         resetButton.setBackground(Colors.DARK_RED)
         resetButton.setCallback {
-            GavinsMod.gui!!.reset()
-            GavinsMod.guiSettings!!.reset()
+            GavinsMod.gui.reset()
+            GavinsMod.guiSettings.reset()
         }
         resetButton.isHoverable = true
     }
@@ -157,11 +157,11 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
          */
         private fun miscSettings() {
             val espAlpha = SlideSetting("gavinsmod.settings.alpha")
-            espAlpha.setCallback { GavinsMod.espConfig!!.alpha = espAlpha.value }
-            espAlpha.value = GavinsMod.espConfig!!.alpha
+            espAlpha.setCallback { GavinsMod.espConfig.alpha = espAlpha.value }
+            espAlpha.value = GavinsMod.espConfig.alpha
             val tracerAlpha = SlideSetting("gavinsmod.settings.alpha")
-            tracerAlpha.setCallback { GavinsMod.tracerConfig!!.alpha = tracerAlpha.value }
-            tracerAlpha.value = GavinsMod.tracerConfig!!.alpha
+            tracerAlpha.setCallback { GavinsMod.tracerConfig.alpha = tracerAlpha.value }
+            tracerAlpha.value = GavinsMod.tracerConfig.alpha
             espDropdown.addElement(espAlpha.gui)
             tracerDropdown.addElement(tracerAlpha.gui)
         }

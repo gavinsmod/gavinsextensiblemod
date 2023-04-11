@@ -43,7 +43,7 @@ import kotlin.math.ceil
 
 /**
  * @author gt3ch1
- * @version 03-13-2023
+ * @version 04-11-2023
  * A gui that allows the player to search for blocks and add them to the xray list.
  */
 class GuiXray
@@ -169,7 +169,7 @@ class GuiXray
         resetButton.setCallback {
 
             // get all experience dropping blocks, create a list of strings of block loot tables, and set the list to that.
-            GavinsMod.xrayConfig!!.loadDefaultBlocks()
+            GavinsMod.xrayConfig.loadDefaultBlocks()
             updateBlockList()
             page = 0
             minecraftClient.worldRenderer.reload()
@@ -218,7 +218,7 @@ class GuiXray
             val blockX = i % blocksPerRow * 18 + x + 2
             val blockY = i / blocksPerRow * 18 + y + 5
             val boxF = BoxF(blockX.toFloat(), blockY.toFloat(), 16f, 16f)
-            if (GavinsMod.xrayConfig!!.isInList(block)) {
+            if (GavinsMod.xrayConfig.isInList(block)) {
                 fill(
                         matrixStack,
                         blockX,
@@ -296,7 +296,7 @@ class GuiXray
         if (blockIndex > visibleBlocks.size - 1) return false
         val block = visibleBlocks.toTypedArray()[blockIndex]
         if (button != 0) return false
-        if (GavinsMod.xrayConfig!!.isInList(block)) GavinsMod.xrayConfig!!.removeBlock(block) else GavinsMod.xrayConfig!!.addBlock(
+        if (GavinsMod.xrayConfig.isInList(block)) GavinsMod.xrayConfig.removeBlock(block) else GavinsMod.xrayConfig.addBlock(
                 block
         )
         getMod(Type.XRAY)!!.reload()
@@ -316,7 +316,7 @@ class GuiXray
         // get blocks in block list that are within the page.
         val enabled = enabledOnly.isOn
         if (enabled) tmpBlocks = ArrayList(tmpBlocks.stream().filter { b: Block? ->
-            GavinsMod.xrayConfig!!.isInList(
+            GavinsMod.xrayConfig.isInList(
                     b!!
             )
         }.toList())
@@ -325,7 +325,7 @@ class GuiXray
             if (tmpBlocks.isEmpty() || i > tmpBlocks.size - 1) break
             val block = tmpBlocks[i]
             if (block != null && block.translationKey.lowercase(Locale.getDefault()).contains(searchText)) {
-                if (enabled && !GavinsMod.xrayConfig!!.isInList(block)) continue
+                if (enabled && !GavinsMod.xrayConfig.isInList(block)) continue
                 visibleBlocks.add(block)
             }
         }

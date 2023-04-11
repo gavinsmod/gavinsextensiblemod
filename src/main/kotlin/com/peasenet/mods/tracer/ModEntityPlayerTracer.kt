@@ -32,17 +32,17 @@ import net.minecraft.entity.player.PlayerEntity
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-11-2023
  * A mod that allows the player to see a tracer to other players.
  */
 class ModEntityPlayerTracer : Mod(Type.ENTITY_PLAYER_TRACER), EntityRenderListener, CameraBobListener {
     init {
         val colorSetting = ColorSetting(
             "gavinsmod.settings.tracer.player.color",
-            GavinsMod.tracerConfig!!.playerColor
+                GavinsMod.tracerConfig.playerColor
         )
         colorSetting.setCallback { tracerConfig.playerColor = colorSetting.color }
-        colorSetting.color = GavinsMod.tracerConfig!!.playerColor
+        colorSetting.color = GavinsMod.tracerConfig.playerColor
         addSetting(colorSetting)
     }
 
