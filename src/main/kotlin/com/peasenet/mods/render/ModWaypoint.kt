@@ -56,9 +56,7 @@ class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener 
         em.subscribe(CameraBobListener::class.java, this)
         for (w in waypointConfig.getLocations()) {
             if (!w.hasDimensions()) {
-                PlayerUtils.sendMessage(
-                    "§6[WARNING]§7 Waypoint \"§b${w.name}§7\" has no dimensions set and will not be rendered.", true
-                )
+                PlayerUtils.sendMessage("§6[WARNING]§7 Waypoint \"§b${w.name}§7\" has no dimensions set and will not be rendered.", true)
             }
         }
     }
@@ -76,9 +74,7 @@ class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener 
         openMenu.gui.setSymbol('+')
         addSetting(openMenu)
         // get all waypoints and add them to the menu
-        val waypoints = waypointConfig.getLocations().stream().sorted(
-            Comparator.comparing(Function<Waypoint, String> { obj: Waypoint -> obj.name })
-        )
+        val waypoints = waypointConfig.getLocations().stream().sorted(Comparator.comparing(Function<Waypoint, String> { obj: Waypoint -> obj.name }))
         for (w in waypoints.toArray()) createWaypoint(w as Waypoint)
     }
 
@@ -104,15 +100,13 @@ class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener 
         }.forEach { w: Waypoint ->
             val aabb = Box(BlockPos(w.x, w.y, w.z))
             val boxPos = aabb.center
-            if (w.isTracerEnabled) RenderUtils.renderSingleLine(
-                er.stack, er.buffer!!, er.playerPos!!, boxPos, w.color!!
-            )
+            if (w.isTracerEnabled) RenderUtils.renderSingleLine(er.stack, er.buffer!!, er.playerPos!!, boxPos, w.color!!)
             if (w.isEspEnabled) RenderUtils.drawBox(er.stack, er.buffer, aabb, w.color!!)
         }
     }
 
     override fun onCameraViewBob(c: CameraBob) {
-        c.cancel()
+        if (tracerConfig.viewBobCancel) c.cancel()
     }
 
     companion object {

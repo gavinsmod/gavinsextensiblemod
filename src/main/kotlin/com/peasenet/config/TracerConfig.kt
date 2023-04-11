@@ -23,10 +23,16 @@ package com.peasenet.config
  * The configuration for tracers.
  *
  * @author gt3ch1
- * @version 04-10-2023
+ * @version 04-11-2023
  */
 class TracerConfig : TracerEspConfig<EspConfig>() {
     init {
         key = "tracer"
     }
+
+    var viewBobCancel: Boolean = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
 }

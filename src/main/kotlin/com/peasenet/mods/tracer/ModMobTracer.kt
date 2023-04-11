@@ -20,14 +20,11 @@
 package com.peasenet.mods.tracer
 
 import com.peasenet.gui.mod.tracer.GuiTracer
-import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
 import com.peasenet.settings.ClickSetting
 import com.peasenet.util.RenderUtils
-import com.peasenet.util.event.data.CameraBob
+import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.event.data.EntityRender
-import com.peasenet.util.listeners.CameraBobListener
-import com.peasenet.util.listeners.EntityRenderListener
 import net.minecraft.entity.mob.MobEntity
 
 /**
@@ -35,23 +32,11 @@ import net.minecraft.entity.mob.MobEntity
  * @version 04-01-2023
  * A mod that allows the client to see lines, called tracers, towards mobs.
  */
-class ModMobTracer : Mod(Type.MOB_TRACER), EntityRenderListener, CameraBobListener {
+class ModMobTracer : ModTracer(Type.MOB_TRACER) {
     init {
         val menu = ClickSetting("gavinsmod.settings.mobtracer")
         menu.setCallback { client.setScreen(GuiTracer()) }
         addSetting(menu)
-    }
-
-    override fun onEnable() {
-        super.onEnable()
-        em.subscribe(EntityRenderListener::class.java, this)
-        em.subscribe(CameraBobListener::class.java, this)
-    }
-
-    override fun onDisable() {
-        super.onDisable()
-        em.unsubscribe(EntityRenderListener::class.java, this)
-        em.unsubscribe(CameraBobListener::class.java, this)
     }
 
     override fun onEntityRender(er: EntityRender) {
@@ -64,14 +49,14 @@ class ModMobTracer : Mod(Type.MOB_TRACER), EntityRenderListener, CameraBobListen
         val playerPos = er.playerPos
         if (entity !is MobEntity) return
         val color =
-            if (er.entityType.spawnGroup.isPeaceful) tracerConfig.peacefulMobColor else tracerConfig.hostileMobColor
+                if (er.entityType.spawnGroup.isPeaceful) tracerConfig.peacefulMobColor else tracerConfig.hostileMobColor
         if (tracerConfig.mobIsShown(entity.type))
             RenderUtils.renderSingleLine(
-                stack, buffer!!, playerPos!!, center!!, color, tracerConfig.alpha
+                    stack, buffer!!, playerPos!!, center!!, color, tracerConfig.alpha
             )
     }
 
-    override fun onCameraViewBob(c: CameraBob) {
-        c.cancel()
+
+    override fun onRenderBlockEntity(er: BlockEntityRender) {
     }
 }

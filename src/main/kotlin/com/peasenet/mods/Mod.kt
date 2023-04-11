@@ -192,11 +192,6 @@ abstract class Mod(
         get() = client.getWorld()
 
     val client: IMinecraftClient
-        /**
-         * Gets the minecraft client.
-         *
-         * @return The minecraft client.
-         */
         get() = GavinsModClient.minecraftClient
 
 
@@ -234,28 +229,24 @@ abstract class Mod(
          * The fullbright configuration.
          */
         @JvmStatic
-
         protected var fullbrightConfig: FullbrightConfig = GavinsMod.fullbrightConfig
 
         /**
          * The radar configuration.
          */
         @JvmStatic
-
         protected var radarConfig: RadarConfig = GavinsMod.radarConfig
 
         /**
          * The waypoint configuration.
          */
         @JvmStatic
-
         protected var waypointConfig: WaypointConfig = GavinsMod.waypointConfig
 
         /**
          * The xray configuration.
          */
         @JvmStatic
-
         protected var xrayConfig: XrayConfig = GavinsMod.xrayConfig
 
         /**

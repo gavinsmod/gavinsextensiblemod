@@ -70,8 +70,6 @@ class GuiTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtrace
         hostileToggle.value = GavinsMod.tracerConfig.showPeacefulMobs
         hostileToggle.gui.position = pos
         super.init()
-
-
     }
 
     override fun isItemEnabled(item: ItemStack): Boolean {

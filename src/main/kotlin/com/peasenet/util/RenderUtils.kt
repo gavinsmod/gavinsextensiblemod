@@ -68,20 +68,13 @@ object RenderUtils {
      * @param color     The color to draw the line in.
      */
     @JvmOverloads
-    fun renderSingleLine(
-        stack: MatrixStack, buffer: VertexConsumer, playerPos: Vec3d, boxPos: Vec3d, color: Color, alpha: Float = 1f
-    ) {
-        val normal =
-            Vec3d(boxPos.getX() - playerPos.getX(), boxPos.getY() - playerPos.getY(), boxPos.getZ() - playerPos.getZ())
+    fun renderSingleLine(stack: MatrixStack, buffer: VertexConsumer, playerPos: Vec3d, boxPos: Vec3d, color: Color, alpha: Float = 1f) {
+        val normal = Vec3d(boxPos.getX() - playerPos.getX(), boxPos.getY() - playerPos.getY(), boxPos.getZ() - playerPos.getZ())
         normal.normalize()
         val matrix4f = stack.peek().positionMatrix
         val matrix3f = stack.peek().normalMatrix
-        buffer.vertex(matrix4f, playerPos.getX().toFloat(), playerPos.getY().toFloat(), playerPos.getZ().toFloat())
-            .color(color.red, color.green, color.blue, alpha)
-            .normal(matrix3f, normal.getX().toFloat(), normal.getY().toFloat(), normal.getZ().toFloat()).next()
-        buffer.vertex(matrix4f, boxPos.getX().toFloat(), boxPos.getY().toFloat(), boxPos.getZ().toFloat())
-            .color(color.red, color.green, color.blue, alpha)
-            .normal(matrix3f, normal.getX().toFloat(), normal.getY().toFloat(), normal.getZ().toFloat()).next()
+        buffer.vertex(matrix4f, playerPos.getX().toFloat(), playerPos.getY().toFloat(), playerPos.getZ().toFloat()).color(color.red, color.green, color.blue, alpha).normal(matrix3f, normal.getX().toFloat(), normal.getY().toFloat(), normal.getZ().toFloat()).next()
+        buffer.vertex(matrix4f, boxPos.getX().toFloat(), boxPos.getY().toFloat(), boxPos.getZ().toFloat()).color(color.red, color.green, color.blue, alpha).normal(matrix3f, normal.getX().toFloat(), normal.getY().toFloat(), normal.getZ().toFloat()).next()
     }
 
     /**
@@ -178,15 +171,7 @@ object RenderUtils {
      * @param chunkX   The player's chunk x.
      * @param chunkZ   The player's chunk z.
      */
-    private fun drawBlockMods(
-        level: ClientWorld?,
-        stack: MatrixStack,
-        buffer: BufferBuilder,
-        playerPos: Vec3d,
-        chunkX: Int,
-        chunkZ: Int,
-        delta: Float
-    ) {
+    private fun drawBlockMods(level: ClientWorld?, stack: MatrixStack, buffer: BufferBuilder, playerPos: Vec3d, chunkX: Int, chunkZ: Int, delta: Float) {
         for (x in -CHUNK_RADIUS..CHUNK_RADIUS) {
             for (z in -CHUNK_RADIUS..CHUNK_RADIUS) {
                 val chunkX1 = chunkX + x
@@ -243,17 +228,7 @@ object RenderUtils {
      * @param z2 The second z coordinate.
      * @param c The color to draw the plane in.
      */
-    private fun renderPlane(
-        buffer: BufferBuilder,
-        matrix4f: Matrix4f,
-        x1: Float,
-        x2: Float,
-        y1: Float,
-        y2: Float,
-        z1: Float,
-        z2: Float,
-        c: Int
-    ) {
+    private fun renderPlane(buffer: BufferBuilder, matrix4f: Matrix4f, x1: Float, x2: Float, y1: Float, y2: Float, z1: Float, z2: Float, c: Int) {
         if (x1 == x2) {
             buffer.vertex(matrix4f, x1, y1, z1).color(c).next()
             buffer.vertex(matrix4f, x1, y2, z1).color(c).next()
@@ -303,14 +278,7 @@ object RenderUtils {
      * @param buffer    The buffer to write to.
      * @param playerPos The player's position.
      */
-    private fun drawEntityMods(
-        level: ClientWorld?,
-        player: ClientPlayerEntity?,
-        stack: MatrixStack,
-        delta: Float,
-        buffer: BufferBuilder,
-        playerPos: Vec3d
-    ) {
+    private fun drawEntityMods(level: ClientWorld?, player: ClientPlayerEntity?, stack: MatrixStack, delta: Float, buffer: BufferBuilder, playerPos: Vec3d) {
         level!!.entities.forEach(Consumer { e: Entity ->
             if (e.squaredDistanceTo(player) > 64 * CHUNK_RADIUS * 16 || player === e) return@Consumer
             val aabb = getEntityBox(delta, e)
@@ -380,47 +348,23 @@ object RenderUtils {
             }
         }
     val isHighGamma: Boolean
-        /**
-         * Whether the gamma is set to its full bright value.
-         *
-         * @return Whether the gamma is set to its full bright value.
-         */
         get() = gamma == 16.0
     val isLastGamma: Boolean
-        /**
-         * Whether the gamma is currently at its last user configured value.
-         *
-         * @return Whether the gamma is currently at its last user configured value.
-         */
         get() = gamma <= LAST_GAMMA
 
-    /**
-     * Sets the gamma to the last user configured value.
-     */
     fun setLastGamma() {
         if (gamma > 1) return
         LAST_GAMMA = gamma
     }
 
-    /**
-     * Gets the last user configured value of the gamma.
-     *
-     * @return The last user configured value of the gamma.
-     */
     fun getLastGamma(): Double {
         return LAST_GAMMA
     }
 
-    /**
-     * Fades the gamma up to the full bright value.
-     */
     private fun fadeGammaUp() {
         gamma += 0.2f
     }
 
-    /**
-     * Fades the gamma down to the last user configured value.
-     */
     private fun fadeGammaDown() {
         gamma -= 0.2f
         if (gamma < getLastGamma()) gamma = getLastGamma()
