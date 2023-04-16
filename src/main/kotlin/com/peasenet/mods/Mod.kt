@@ -35,11 +35,11 @@ import org.lwjgl.glfw.GLFW
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-11-2023
  * The base class for mods. Inheriting this class will allow for creating different mods that have a keybinding,
  * and a gui button based off of the given category.
  */
-abstract class Mod constructor(
+abstract class Mod(
     /**
      * The type of the mod.
      */
@@ -192,11 +192,6 @@ abstract class Mod constructor(
         get() = client.getWorld()
 
     val client: IMinecraftClient
-        /**
-         * Gets the minecraft client.
-         *
-         * @return The minecraft client.
-         */
         get() = GavinsModClient.minecraftClient
 
 
@@ -210,59 +205,55 @@ abstract class Mod constructor(
          * The event manager.
          */
         @JvmStatic
-        protected var em: EventManager = GavinsMod.eventManager!!
+        protected var em: EventManager = GavinsMod.eventManager
 
         /**
          * Tracer configuration.
          */
         @JvmStatic
-        protected var tracerConfig: TracerConfig = GavinsMod.tracerConfig!!
+        protected var tracerConfig: TracerConfig = GavinsMod.tracerConfig
 
         /**
          * ESP configuration.
          */
         @JvmStatic
-        var espConfig: EspConfig = GavinsMod.espConfig!!
+        var espConfig: EspConfig = GavinsMod.espConfig
 
         /**
          * Fps color configuration.
          */
         @JvmStatic
-        protected var fpsColorConfig: FpsColorConfig = GavinsMod.fpsColorConfig!!
+        protected var fpsColorConfig: FpsColorConfig = GavinsMod.fpsColorConfig
 
         /**
          * The fullbright configuration.
          */
         @JvmStatic
-
-        protected var fullbrightConfig: FullbrightConfig = GavinsMod.fullbrightConfig!!
+        protected var fullbrightConfig: FullbrightConfig = GavinsMod.fullbrightConfig
 
         /**
          * The radar configuration.
          */
         @JvmStatic
-
-        protected var radarConfig: RadarConfig = GavinsMod.radarConfig!!
+        protected var radarConfig: RadarConfig = GavinsMod.radarConfig
 
         /**
          * The waypoint configuration.
          */
         @JvmStatic
-
-        protected var waypointConfig: WaypointConfig = GavinsMod.waypointConfig!!
+        protected var waypointConfig: WaypointConfig = GavinsMod.waypointConfig
 
         /**
          * The xray configuration.
          */
         @JvmStatic
-
-        protected var xrayConfig: XrayConfig = GavinsMod.xrayConfig!!
+        protected var xrayConfig: XrayConfig = GavinsMod.xrayConfig
 
         /**
          * The miscellaneous configuration.
          */
         @JvmStatic
-        protected var miscConfig: MiscConfig = GavinsMod.miscConfig!!
+        protected var miscConfig: MiscConfig = GavinsMod.miscConfig
 
     }
 }

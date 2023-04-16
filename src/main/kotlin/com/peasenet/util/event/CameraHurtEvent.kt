@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
@@ -17,22 +17,21 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.config
+package com.peasenet.util.event
 
-/**
- * The configuration for tracers.
- *
- * @author gt3ch1
- * @version 04-11-2023
- */
-class TracerConfig : TracerEspConfig<EspConfig>() {
-    init {
-        key = "tracer"
+import com.peasenet.util.event.data.CameraBob
+import com.peasenet.util.listeners.CameraHurtListener
+
+class CameraHurtEvent : CancellableEvent<CameraHurtListener>() {
+    private var cameraBob: CameraBob = CameraBob()
+
+    override fun fire(listeners: ArrayList<CameraHurtListener>) {
+        for (listener in listeners) {
+            listener.onCameraViewBob(cameraBob)
+            if (cameraBob.isCancelled) cancel()
+        }
     }
 
-    var viewBobCancel: Boolean = true
-        set(value) {
-            field = value
-            saveConfig()
-        }
+    override val event: Class<CameraHurtListener>
+        get() = CameraHurtListener::class.java
 }

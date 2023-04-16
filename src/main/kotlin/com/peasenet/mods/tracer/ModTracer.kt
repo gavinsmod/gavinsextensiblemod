@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023. Gavin Pease and contributors.
+ * Copyright (c) 2022-$YEAR. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
@@ -17,39 +17,39 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
+
 package com.peasenet.mods.tracer
 
-import com.peasenet.main.GavinsMod
+import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
-import com.peasenet.settings.ColorSetting
-import com.peasenet.util.RenderUtils
-import com.peasenet.util.event.data.BlockEntityRender
-import com.peasenet.util.event.data.EntityRender
-import net.minecraft.block.entity.FurnaceBlockEntity
+import com.peasenet.util.event.data.CameraBob
+import com.peasenet.util.listeners.BlockEntityRenderListener
+import com.peasenet.util.listeners.CameraBobListener
+import com.peasenet.util.listeners.EntityRenderListener
 
 /**
+ *
+ *
+ *
  * @author gt3ch1
- * @version 04-11-2023
- * A mod that allows the player to see tracers towards furnaces.
+ * @version 04/11/2023
  */
-class ModFurnaceTracer : ModTracer(Type.FURNACE_TRACER) {
-    init {
-        val colorSetting = ColorSetting(
-                "gavinsmod.settings.tracer.furnace.color",
-                GavinsMod.tracerConfig.furnaceColor
-        )
-        colorSetting.setCallback { tracerConfig.furnaceColor = colorSetting.color }
-        colorSetting.color = GavinsMod.tracerConfig.furnaceColor
-        addSetting(colorSetting)
+abstract class ModTracer(type: Type) : Mod(type), EntityRenderListener, CameraBobListener, BlockEntityRenderListener {
+    override fun onEnable() {
+        super.onEnable()
+        em.subscribe(BlockEntityRenderListener::class.java, this)
+        em.subscribe(EntityRenderListener::class.java, this)
+        em.subscribe(CameraBobListener::class.java, this)
     }
 
-    override fun onEntityRender(er: EntityRender) {
-       
+    override fun onDisable() {
+        super.onDisable()
+        em.unsubscribe(BlockEntityRenderListener::class.java, this)
+        em.unsubscribe(EntityRenderListener::class.java, this)
+        em.unsubscribe(CameraBobListener::class.java, this)
     }
 
-    override fun onRenderBlockEntity(er: BlockEntityRender) {
-        if (er.entity is FurnaceBlockEntity) RenderUtils.renderSingleLine(
-                er.stack!!, er.buffer!!, er.playerPos!!, er.center!!, tracerConfig.furnaceColor, tracerConfig.alpha
-        )
+    override fun onCameraViewBob(c: CameraBob) {
+        if (tracerConfig.viewBobCancel) c.cancel()
     }
 }

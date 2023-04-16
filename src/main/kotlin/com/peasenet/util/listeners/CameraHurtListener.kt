@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
@@ -17,22 +17,19 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.config
+package com.peasenet.util.listeners
+
+import com.peasenet.util.event.data.CameraBob
 
 /**
- * The configuration for tracers.
+ * A listener for the Camera bobbing.
  *
- * @author gt3ch1
- * @version 04-11-2023
+ * @author GT3CH1
+ * @version 04-10-2023
  */
-class TracerConfig : TracerEspConfig<EspConfig>() {
-    init {
-        key = "tracer"
-    }
-
-    var viewBobCancel: Boolean = true
-        set(value) {
-            field = value
-            saveConfig()
-        }
+interface CameraHurtListener : Listener {
+    /**
+     * Called when the camera is moved slightly.
+     */
+    fun onCameraViewBob(c: CameraBob)
 }

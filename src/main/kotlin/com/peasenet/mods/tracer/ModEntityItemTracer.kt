@@ -20,57 +20,43 @@
 package com.peasenet.mods.tracer
 
 import com.peasenet.main.GavinsMod
-import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
 import com.peasenet.settings.ColorSetting
 import com.peasenet.util.RenderUtils
-import com.peasenet.util.event.data.CameraBob
+import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.event.data.EntityRender
-import com.peasenet.util.listeners.CameraBobListener
-import com.peasenet.util.listeners.EntityRenderListener
 import net.minecraft.entity.EntityType
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-11-2023
  * A mod that allows the player to see tracers towards items.
  */
-class ModEntityItemTracer : Mod(Type.ENTITY_ITEM_TRACER), EntityRenderListener, CameraBobListener {
+class ModEntityItemTracer : ModTracer(Type.ENTITY_ITEM_TRACER) {
     init {
         val colorSetting = ColorSetting(
-            "gavinsmod.settings.tracer.item.color",
-            GavinsMod.tracerConfig!!.itemColor
+                "gavinsmod.settings.tracer.item.color",
+                GavinsMod.tracerConfig.itemColor
         )
         colorSetting.setCallback { tracerConfig.itemColor = colorSetting.color }
-        colorSetting.color = GavinsMod.tracerConfig!!.itemColor
+        colorSetting.color = GavinsMod.tracerConfig.itemColor
         addSetting(colorSetting)
-    }
-
-    override fun onEnable() {
-        super.onEnable()
-        em.subscribe(EntityRenderListener::class.java, this)
-        em.subscribe(CameraBobListener::class.java, this)
-    }
-
-    override fun onDisable() {
-        super.onDisable()
-        em.unsubscribe(EntityRenderListener::class.java, this)
     }
 
     override fun onEntityRender(er: EntityRender) {
         if (er.buffer == null) return
         if (er.entityType !== EntityType.ITEM) return
         RenderUtils.renderSingleLine(
-            er.stack,
-            er.buffer!!,
-            er.playerPos!!,
-            er.center!!,
-            tracerConfig.itemColor,
-            tracerConfig.alpha
+                er.stack,
+                er.buffer!!,
+                er.playerPos!!,
+                er.center!!,
+                tracerConfig.itemColor,
+                tracerConfig.alpha
         )
     }
 
-    override fun onCameraViewBob(c: CameraBob) {
-        c.cancel()
+    override fun onRenderBlockEntity(er: BlockEntityRender) {
+
     }
 }

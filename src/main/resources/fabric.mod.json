@@ -1,7 +1,7 @@
 {
     "schemaVersion": 1,
     "id": "gavinsmod",
-    "version": "1.4.0",
+    "version": "1.4.3",
     "name": "GavinsMod",
     "description": "A simple modded client containing some hacks!",
     "authors": [
@@ -31,9 +31,7 @@
         "fabric": "*",
         "minecraft": "~1.19",
         "java": ">=17",
-        "fabric-key-binding-api-v1": "*"
-    },
-    "suggests": {
-        "another-mod": "*"
+        "fabric-key-binding-api-v1": "*",
+        "fabric-language-kotlin": "*"
     }
 }

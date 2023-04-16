@@ -30,12 +30,13 @@ import com.peasenet.main.Mods.Companion.mods
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
 import com.peasenet.settings.SlideSetting
+import com.peasenet.settings.ToggleSetting
 import net.minecraft.text.Text
 import java.util.function.Consumer
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-11-2023
  * A settings gui to control certain features of the mod.
  */
 class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
@@ -59,15 +60,15 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
         val resetText = Text.translatable("gavinsmod.settings.reset")
         val width = textRenderer.getWidth(resetText)
         if (resetPos == null) resetPos = PointF(titleW.toFloat(), 1f)
-        resetButton.setTitle(resetText);
+        resetButton.title = resetText
         if (resetWidth.toDouble() == 0.0) resetWidth = (width + 4).toFloat()
         resetButton.width = resetWidth
         resetButton.position = resetPos
         resetButton.setDefaultPosition(resetButton.box)
         resetButton.setBackground(Colors.DARK_RED)
         resetButton.setCallback {
-            GavinsMod.gui!!.reset()
-            GavinsMod.guiSettings!!.reset()
+            GavinsMod.gui.reset()
+            GavinsMod.guiSettings.reset()
         }
         resetButton.isHoverable = true
     }
@@ -109,8 +110,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
     private fun addSettings(parent: Gui, category: Type.Category) {
         val modList = ArrayList<Mod>()
         // get all mods in esp category and have settings then add them to espDropdown
-        mods.stream().filter { m: Mod -> m.category === category && m.hasSettings() }
-            .forEach { e: Mod -> modList.add(e) }
+        mods.stream().filter { m: Mod -> m.category === category && m.hasSettings() }.forEach { e: Mod -> modList.add(e) }
         for (m in modList) {
             val modSettings = m.settings
             for (s in modSettings) {
@@ -157,12 +157,18 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
          */
         private fun miscSettings() {
             val espAlpha = SlideSetting("gavinsmod.settings.alpha")
-            espAlpha.setCallback { GavinsMod.espConfig!!.alpha = espAlpha.value }
-            espAlpha.value = GavinsMod.espConfig!!.alpha
+            espAlpha.setCallback { GavinsMod.espConfig.alpha = espAlpha.value }
+            espAlpha.value = GavinsMod.espConfig.alpha
             val tracerAlpha = SlideSetting("gavinsmod.settings.alpha")
-            tracerAlpha.setCallback { GavinsMod.tracerConfig!!.alpha = tracerAlpha.value }
-            tracerAlpha.value = GavinsMod.tracerConfig!!.alpha
+            tracerAlpha.setCallback { GavinsMod.tracerConfig.alpha = tracerAlpha.value }
+            tracerAlpha.value = GavinsMod.tracerConfig.alpha
+
+            val tracerViewBob = ToggleSetting("gavinsmod.settings.tracer.viewbobcancel")
+            tracerViewBob.setCallback { GavinsMod.tracerConfig.viewBobCancel = tracerViewBob.value }
+            tracerViewBob.value = GavinsMod.tracerConfig.viewBobCancel
+
             espDropdown.addElement(espAlpha.gui)
+            tracerDropdown.addElement(tracerViewBob.gui)
             tracerDropdown.addElement(tracerAlpha.gui)
         }
     }

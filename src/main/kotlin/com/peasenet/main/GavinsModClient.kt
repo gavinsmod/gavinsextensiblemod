@@ -34,7 +34,7 @@ import net.minecraft.world.LightType
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 04-11-2023
  * The main part of the mod that handles checking mods.
  */
 class GavinsModClient : ClientModInitializer {
@@ -65,7 +65,7 @@ class GavinsModClient : ClientModInitializer {
      * Checks if the auto full bright feature is enabled.
      */
     private fun checkAutoFullBright() {
-        if (!GavinsMod.fullbrightConfig!!.autoFullBright) return
+        if (!GavinsMod.fullbrightConfig.autoFullBright) return
         val skyBrightness = minecraftClient.getWorld().getLightLevel(LightType.SKY, player!!.getBlockPos().up())
         val blockBrightness = minecraftClient.getWorld().getLightLevel(LightType.BLOCK, player!!.getBlockPos().up())
         val currTime = minecraftClient.getWorld().timeOfDay % 24000
