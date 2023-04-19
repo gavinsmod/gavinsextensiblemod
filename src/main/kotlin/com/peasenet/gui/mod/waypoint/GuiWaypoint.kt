@@ -194,6 +194,7 @@ class GuiWaypoint : GuiElement {
         this.w = w
         waypointToggle.value = w.isEnabled
         colorCycle.color = w.color!!
+        colorCycle.setColorIndex(Colors.getColorIndex(w.color!!))
         overworldToggle.value = w.hasDimension(Dimension.OVERWORLD)
         netherToggle.value = w.hasDimension(Dimension.NETHER)
         endToggle.value = w.hasDimension(Dimension.END)
@@ -270,7 +271,8 @@ class GuiWaypoint : GuiElement {
         offsetY += 14
         espToggle.gui.position = PointF(paddingX.toFloat(), (offsetY).toFloat())
         espToggle.gui.width = (wholeButtonWidth / 2 - padding / 2).toFloat()
-        tracerToggle.gui.position = PointF((offsetX + padding + padding / 2 + wholeButtonWidth / 2).toFloat(), (offsetY).toFloat())
+        tracerToggle.gui.position =
+            PointF((offsetX + padding + padding / 2 + wholeButtonWidth / 2).toFloat(), (offsetY).toFloat())
         tracerToggle.gui.width = (wholeButtonWidth / 2 - padding / 2).toFloat()
         offsetY += 28
 
@@ -349,16 +351,40 @@ class GuiWaypoint : GuiElement {
         box!!.render(matrixStack, client!!.textRenderer, mouseX, mouseY, delta)
 
         guis.forEach(Consumer { obj: Gui -> obj.show() })
-        client!!.textRenderer.draw(matrixStack, Text.literal("Name: "), paddingX.toFloat(), (offsetY + 11).toFloat(), GavUISettings.getColor("gui.color.foreground").asInt)
-        client!!.textRenderer.draw(matrixStack, Text.literal("X:"), (paddingX + 1).toFloat(), (offsetY + 14 * 9 - 2).toFloat(), GavUISettings.getColor("gui.color.foreground").asInt)
-        client!!.textRenderer.draw(matrixStack, Text.literal("Y:"), (paddingX + 46).toFloat(), (offsetY + 14 * 9 - 2).toFloat(), GavUISettings.getColor("gui.color.foreground").asInt)
-        client!!.textRenderer.draw(matrixStack, Text.literal("Z:"), (paddingX + 91).toFloat(), (offsetY + 14 * 9 - 2).toFloat(), GavUISettings.getColor("gui.color.foreground").asInt)
         client!!.textRenderer.draw(
-                matrixStack,
-                Text.literal("Dimensions"),
-                (paddingX + 1).toFloat(),
-                (offsetY + 14 * 5 - 2).toFloat(),
-                GavUISettings.getColor("gui.color.foreground").asInt
+            matrixStack,
+            Text.literal("Name: "),
+            paddingX.toFloat(),
+            (offsetY + 11).toFloat(),
+            GavUISettings.getColor("gui.color.foreground").asInt
+        )
+        client!!.textRenderer.draw(
+            matrixStack,
+            Text.literal("X:"),
+            (paddingX + 1).toFloat(),
+            (offsetY + 14 * 9 - 2).toFloat(),
+            GavUISettings.getColor("gui.color.foreground").asInt
+        )
+        client!!.textRenderer.draw(
+            matrixStack,
+            Text.literal("Y:"),
+            (paddingX + 46).toFloat(),
+            (offsetY + 14 * 9 - 2).toFloat(),
+            GavUISettings.getColor("gui.color.foreground").asInt
+        )
+        client!!.textRenderer.draw(
+            matrixStack,
+            Text.literal("Z:"),
+            (paddingX + 91).toFloat(),
+            (offsetY + 14 * 9 - 2).toFloat(),
+            GavUISettings.getColor("gui.color.foreground").asInt
+        )
+        client!!.textRenderer.draw(
+            matrixStack,
+            Text.literal("Dimensions"),
+            (paddingX + 1).toFloat(),
+            (offsetY + 14 * 5 - 2).toFloat(),
+            GavUISettings.getColor("gui.color.foreground").asInt
         )
 
 
