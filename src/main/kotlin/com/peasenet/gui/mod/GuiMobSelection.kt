@@ -34,9 +34,9 @@ import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.ToggleSetting
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.widget.TextFieldWidget
 import net.minecraft.client.resource.language.I18n
-import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.ItemStack
 import net.minecraft.item.SpawnEggItem
 import net.minecraft.registry.Registries
@@ -179,7 +179,7 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
         prevButton.setCallback { pageDown() }
         val searchWidth = searchMaxWidth.coerceAtMost(pageWidth)
         search = object :
-                TextFieldWidget(textRenderer, (x + (pageWidth - searchWidth) / 2), y - 15, searchWidth, 12, Text.empty()) {
+            TextFieldWidget(textRenderer, (x + (pageWidth - searchWidth) / 2), y - 15, searchWidth, 12, Text.empty()) {
             override fun charTyped(chr: Char, keyCode: Int): Boolean {
                 val pressed = super.charTyped(chr, keyCode)
                 currentPage = 0
@@ -243,9 +243,10 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
      */
     abstract fun handleItemToggle(item: ItemStack)
 
-    override fun render(matrixStack: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
-        guis.forEach { it.render(matrixStack, textRenderer, mouseX, mouseY, delta) }
-        search.render(matrixStack, mouseX, mouseY, delta)
+    override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+        val matrixStack = drawContext.matrices
+        guis.forEach { it.render(drawContext, textRenderer, mouseX, mouseY, delta) }
+        search.render(drawContext, mouseX, mouseY, delta)
         RenderSystem.disableBlend()
         for (i in 0 until itemsPerPage) {
             if ((pageOffset + i) > visibleItems.size - 1) break
@@ -254,32 +255,31 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
             val blockY = i / blocksPerRow * blockOffset + y + 1
             val boxF = BoxF(blockX.toFloat(), blockY.toFloat(), 16f, 16f)
             if (isItemEnabled(block)) {
-                fill(
-                        matrixStack,
-                        blockX,
-                        blockY,
-                        blockX + 16,
-                        blockY + 16,
-                        GavUISettings.getColor("gui.color.enabled").getAsInt(0.5f)
+                drawContext.fill(
+                    blockX,
+                    blockY,
+                    blockX + 16,
+                    blockY + 16,
+                    GavUISettings.getColor("gui.color.enabled").getAsInt(0.5f)
                 )
                 GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack, 1f)
             }
             if (mouseX > blockX && mouseX < blockX + 16 && mouseY > blockY && mouseY < blockY + 16) {
-                fill(
-                        matrixStack,
-                        blockX,
-                        blockY,
-                        boxF.x2.toInt(),
-                        boxF.y1.toInt(),
-                        GavUISettings.getColor("gui.color.foreground").brighten(0.5f).getAsInt(0.5f)
+                drawContext.fill(
+                    blockX,
+                    blockY,
+                    boxF.x2.toInt(),
+                    boxF.y1.toInt(),
+                    GavUISettings.getColor("gui.color.foreground").brighten(0.5f).getAsInt(0.5f)
                 )
                 GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack, 1f)
-                renderTooltip(matrixStack, Text.translatable(block.translationKey), mouseX, mouseY)
+                this.setTooltip(Text.translatable(block.translationKey))
+                renderWithTooltip(drawContext, mouseX, mouseY, delta)
             }
-            client!!.itemRenderer.renderGuiItemIcon(matrixStack, block, blockX, blockY)
+//            client!!.(matrixStack, block, blockX, blockY)
         }
         RenderSystem.enableBlend()
-        super.render(matrixStack, mouseX, mouseY, delta)
+        super.render(drawContext, mouseX, mouseY, delta)
     }
 
     /**
@@ -288,7 +288,7 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
     fun updateItemList() {
         var itms = items.filter {
             I18n.translate(it.translationKey).lowercase().contains(
-                    search.text.lowercase()
+                search.text.lowercase()
             )
         }
         if (enabledOnly.isOn) {

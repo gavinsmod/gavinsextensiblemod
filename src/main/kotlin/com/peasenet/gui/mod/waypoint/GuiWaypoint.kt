@@ -33,8 +33,8 @@ import com.peasenet.settings.ClickSetting
 import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.ToggleSetting
 import com.peasenet.util.Dimension
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.widget.TextFieldWidget
-import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3i
 import java.util.function.Consumer
@@ -345,54 +345,58 @@ class GuiWaypoint : GuiElement {
         }
     }
 
-    override fun render(matrixStack: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+        val matrixStack = drawContext.matrices
         offsetY = minecraftClient.window.scaledHeight / 2 - height / 2
 
-        box!!.render(matrixStack, client!!.textRenderer, mouseX, mouseY, delta)
+        box!!.render(drawContext, client!!.textRenderer, mouseX, mouseY, delta)
 
         guis.forEach(Consumer { obj: Gui -> obj.show() })
-        client!!.textRenderer.draw(
-            matrixStack,
+        drawContext.drawText(
+            client!!.textRenderer,
             Text.literal("Name: "),
-            paddingX.toFloat(),
-            (offsetY + 11).toFloat(),
-            GavUISettings.getColor("gui.color.foreground").asInt
+            paddingX,
+            (offsetY + 11),
+            GavUISettings.getColor("gui.color.foreground").asInt,
+            false
         )
-        client!!.textRenderer.draw(
-            matrixStack,
+        drawContext.drawText(
+            client!!.textRenderer,
             Text.literal("X:"),
-            (paddingX + 1).toFloat(),
-            (offsetY + 14 * 9 - 2).toFloat(),
-            GavUISettings.getColor("gui.color.foreground").asInt
+            (paddingX + 1),
+            (offsetY + 14 * 9 - 2),
+            GavUISettings.getColor("gui.color.foreground").asInt,
+            false
         )
-        client!!.textRenderer.draw(
-            matrixStack,
+        drawContext.drawText(
+            client!!.textRenderer,
             Text.literal("Y:"),
-            (paddingX + 46).toFloat(),
-            (offsetY + 14 * 9 - 2).toFloat(),
-            GavUISettings.getColor("gui.color.foreground").asInt
+            (paddingX + 46),
+            (offsetY + 14 * 9 - 2),
+            GavUISettings.getColor("gui.color.foreground").asInt,
+            false
         )
-        client!!.textRenderer.draw(
-            matrixStack,
+        drawContext.drawText(
+            client!!.textRenderer,
             Text.literal("Z:"),
-            (paddingX + 91).toFloat(),
-            (offsetY + 14 * 9 - 2).toFloat(),
-            GavUISettings.getColor("gui.color.foreground").asInt
+            (paddingX + 91),
+            (offsetY + 14 * 9 - 2),
+            GavUISettings.getColor("gui.color.foreground").asInt,
+            false
         )
-        client!!.textRenderer.draw(
-            matrixStack,
+        drawContext.drawText(
+            client!!.textRenderer,
             Text.literal("Dimensions"),
-            (paddingX + 1).toFloat(),
-            (offsetY + 14 * 5 - 2).toFloat(),
-            GavUISettings.getColor("gui.color.foreground").asInt
+            (paddingX + 1),
+            (offsetY + 14 * 5 - 2),
+            GavUISettings.getColor("gui.color.foreground").asInt,
+            false
         )
-
-
-        textField.render(matrixStack, mouseX, mouseY, delta)
-        xCoordinate.render(matrixStack, mouseX, mouseY, delta)
-        yCoordinate.render(matrixStack, mouseX, mouseY, delta)
-        zCoordinate.render(matrixStack, mouseX, mouseY, delta)
-        super.render(matrixStack, mouseX, mouseY, delta)
+        textField.render(drawContext, mouseX, mouseY, delta)
+        xCoordinate.render(drawContext, mouseX, mouseY, delta)
+        yCoordinate.render(drawContext, mouseX, mouseY, delta)
+        zCoordinate.render(drawContext, mouseX, mouseY, delta)
+        super.render(drawContext, mouseX, mouseY, delta)
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {

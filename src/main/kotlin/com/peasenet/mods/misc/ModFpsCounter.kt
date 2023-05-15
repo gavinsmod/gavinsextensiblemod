@@ -31,7 +31,7 @@ import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.SubSetting
 import com.peasenet.settings.ToggleSetting
 import com.peasenet.util.listeners.InGameHudRenderListener
-import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Text
 
 /**
@@ -71,9 +71,9 @@ class ModFpsCounter : Mod(Type.MOD_FPS_COUNTER), InGameHudRenderListener {
         em.unsubscribe(InGameHudRenderListener::class.java, this)
     }
 
-    override fun onRenderInGameHud(stack: MatrixStack, delta: Float) {
+    override fun onRenderInGameHud(drawContext: DrawContext, delta: Float) {
         if (GavinsMod.isEnabled(Type.MOD_GUI) || GavinsMod.isEnabled(Type.SETTINGS) || !isActive) return
-        drawFpsOverlay(stack)
+        drawFpsOverlay(drawContext)
     }
 
     /**
@@ -81,7 +81,8 @@ class ModFpsCounter : Mod(Type.MOD_FPS_COUNTER), InGameHudRenderListener {
      *
      * @param matrixStack - The matrix stack to use.
      */
-    private fun drawFpsOverlay(matrixStack: MatrixStack) {
+    private fun drawFpsOverlay(drawContext: DrawContext) {
+        val matrixStack = drawContext.matrices
         val textRenderer = client.textRenderer
         val fps = GavinsModClient.minecraftClient.getFps()
         val fpsString = "FPS: $fps"
@@ -98,6 +99,6 @@ class ModFpsCounter : Mod(Type.MOD_FPS_COUNTER), InGameHudRenderListener {
                 if (fps >= maximumFps * 0.85) fastColor else if (fps > maximumFps * 0.45 && fps < maximumFps * 0.85) okColor else slowFps
         }
         GuiUtil.drawBox(GavUISettings.getColor("gui.color.background"), box, matrixStack, 0.5f)
-        textRenderer.draw(matrixStack, Text.literal(fpsString), xCoordinate.toFloat(), 2f, color.asInt)
+        drawContext.drawText(client.textRenderer, Text.literal(fpsString), xCoordinate, 2, color.asInt, false)
     }
 }

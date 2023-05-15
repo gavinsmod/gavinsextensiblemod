@@ -218,6 +218,6 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
 
     @Override
     public @NotNull World getWorld() {
-        return super.world;
+        return super.getWorld();
     }
 }

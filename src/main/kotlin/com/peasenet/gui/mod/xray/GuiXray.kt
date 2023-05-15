@@ -33,9 +33,9 @@ import com.peasenet.main.GavinsModClient.Companion.minecraftClient
 import com.peasenet.main.Mods.Companion.getMod
 import com.peasenet.mods.Type
 import net.minecraft.block.Block
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.widget.TextFieldWidget
 import net.minecraft.client.resource.language.I18n
-import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.registry.Registries
 import net.minecraft.text.Text
 import java.util.*
@@ -150,7 +150,7 @@ class GuiXray
         nextButton = GuiClick(PointF((x + width / 2 + 76).toFloat(), (y - 16).toFloat()), 13, 13, Text.empty())
         nextButton.setCallback { pageUp() }
         enabledOnly =
-                GuiToggle(PointF((x + width / 2 - 170).toFloat(), (y - 15).toFloat()), 80, 10, Text.literal("Enabled Only"))
+            GuiToggle(PointF((x + width / 2 - 170).toFloat(), (y - 15).toFloat()), 80, 10, Text.literal("Enabled Only"))
         enabledOnly.setCallback {
             page = 0
             updateBlockList()
@@ -210,7 +210,8 @@ class GuiXray
         return super.charTyped(chr, keyCode)
     }
 
-    override fun render(matrixStack: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+        val matrixStack = drawContext.matrices
         for (i in 0 until blocksPerPage) {
             if (i > visibleBlocks.size - 1) break
             val block = visibleBlocks.toTypedArray()[i]
@@ -219,52 +220,66 @@ class GuiXray
             val blockY = i / blocksPerRow * 18 + y + 5
             val boxF = BoxF(blockX.toFloat(), blockY.toFloat(), 16f, 16f)
             if (GavinsMod.xrayConfig.isInList(block)) {
-                fill(
-                        matrixStack,
-                        blockX,
-                        blockY,
-                        blockX + 16,
-                        blockY + 16,
-                        GavUISettings.getColor("gui.color.enabled").getAsInt(0.5f)
+                drawContext.fill(
+                    blockX,
+                    blockY,
+                    blockX + 16,
+                    blockY + 16,
+                    GavUISettings.getColor("gui.color.enabled").getAsInt(0.5f)
                 )
                 GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack, 1f)
             }
             if (mouseX > blockX && mouseX < blockX + 16 && mouseY > blockY && mouseY < blockY + 16) {
-                fill(
-                        matrixStack,
-                        blockX,
-                        blockY,
-                        boxF.x2.toInt(),
-                        boxF.y1.toInt(),
-                        GavUISettings.getColor("gui.color.foreground").brighten(0.5f).getAsInt(0.5f)
+                drawContext.fill(
+                    blockX,
+                    blockY,
+                    boxF.x2.toInt(),
+                    boxF.y1.toInt(),
+                    GavUISettings.getColor("gui.color.foreground").brighten(0.5f).getAsInt(0.5f)
                 )
                 GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack, 1f)
-                renderTooltip(matrixStack, Text.translatable(stack.translationKey), mouseX, mouseY)
+                drawContext.drawTooltip(client!!.textRenderer, Text.translatable(stack.translationKey), mouseX, mouseY)
             }
-            client!!.itemRenderer.renderGuiItemIcon(matrixStack, stack, blockX, blockY)
+            drawContext.drawItem(stack, blockX, blockY)
         }
         box.isHoverable = false
-        box.render(matrixStack, textRenderer, mouseX, mouseY, delta)
-        search.render(matrixStack, mouseX, mouseY, delta)
-        prevButton.render(matrixStack, textRenderer, mouseX, mouseY, delta)
-        nextButton.render(matrixStack, textRenderer, mouseX, mouseY, delta)
-        enabledOnly.render(matrixStack, textRenderer, mouseX, mouseY, delta)
-        resetButton.render(matrixStack, textRenderer, mouseX, mouseY, delta)
-        textRenderer.draw(
-                matrixStack,
-                Text.literal('\u25c0'.toString()),
-                (x + width / 2 - 86).toFloat(),
-                (y - 13).toFloat(),
-                Colors.WHITE.asInt
+        box.render(drawContext, textRenderer, mouseX, mouseY, delta)
+        search.render(drawContext, mouseX, mouseY, delta)
+        prevButton.render(drawContext, textRenderer, mouseX, mouseY, delta)
+        nextButton.render(drawContext, textRenderer, mouseX, mouseY, delta)
+        enabledOnly.render(drawContext, textRenderer, mouseX, mouseY, delta)
+        resetButton.render(drawContext, textRenderer, mouseX, mouseY, delta)
+//        textRenderer.draw(
+//            matrixStack,
+//            Text.literal('\u25c0'.toString()),
+//            (x + width / 2 - 86).toFloat(),
+//            (y - 13).toFloat(),
+//            Colors.WHITE.asInt
+//        )
+//        textRenderer.draw(
+//            matrixStack,
+//            Text.literal('\u25b6'.toString()),
+//            (x + width / 2 + 80).toFloat(),
+//            (y - 13).toFloat(),
+//            Colors.WHITE.asInt
+//        )
+        drawContext.drawText(
+            client!!.textRenderer,
+            Text.literal('\u25c0'.toString()),
+            x + width / 2 - 4,
+            y - 13,
+            Colors.WHITE.asInt,
+            false
         )
-        textRenderer.draw(
-                matrixStack,
-                Text.literal('\u25b6'.toString()),
-                (x + width / 2 + 80).toFloat(),
-                (y - 13).toFloat(),
-                Colors.WHITE.asInt
+        drawContext.drawText(
+            client!!.textRenderer,
+            Text.literal('\u25b6'.toString()),
+            x + width / 2 + 80,
+            y - 13,
+            Colors.WHITE.asInt,
+            false
         )
-        super.render(matrixStack, mouseX, mouseY, delta)
+        super.render(drawContext, mouseX, mouseY, delta)
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
@@ -297,7 +312,7 @@ class GuiXray
         val block = visibleBlocks.toTypedArray()[blockIndex]
         if (button != 0) return false
         if (GavinsMod.xrayConfig.isInList(block)) GavinsMod.xrayConfig.removeBlock(block) else GavinsMod.xrayConfig.addBlock(
-                block
+            block
         )
         getMod(Type.XRAY)!!.reload()
         return super.mouseClicked(mouseX, mouseY, button)
@@ -311,13 +326,13 @@ class GuiXray
         visibleBlocks.clear()
         var tmpBlocks = ArrayList<Block?>()
         blockList().stream()
-                .filter { block: Block -> block.translationKey.lowercase(Locale.getDefault()).contains(searchText) }
-                .forEach { e: Block? -> tmpBlocks.add(e) }
+            .filter { block: Block -> block.translationKey.lowercase(Locale.getDefault()).contains(searchText) }
+            .forEach { e: Block? -> tmpBlocks.add(e) }
         // get blocks in block list that are within the page.
         val enabled = enabledOnly.isOn
         if (enabled) tmpBlocks = ArrayList(tmpBlocks.stream().filter { b: Block? ->
             GavinsMod.xrayConfig.isInList(
-                    b!!
+                b!!
             )
         }.toList())
         pageCount = ceil(tmpBlocks.size.toDouble() / blocksPerPage).toInt()
@@ -343,7 +358,7 @@ class GuiXray
         private fun blockList(): LinkedHashSet<Block> {
             val list = ArrayList<Block>()
             Registries.BLOCK.stream().sorted(Comparator.comparing { a: Block -> I18n.translate(a.translationKey) })
-                    .filter { b: Block -> !b.asItem().translationKey.contains("air") }.forEach { e: Block -> list.add(e) }
+                .filter { b: Block -> !b.asItem().translationKey.contains("air") }.forEach { e: Block -> list.add(e) }
             return LinkedHashSet(list)
         }
     }

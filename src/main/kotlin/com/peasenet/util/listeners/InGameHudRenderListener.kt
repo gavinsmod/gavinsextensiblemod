@@ -19,7 +19,7 @@
  */
 package com.peasenet.util.listeners
 
-import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.client.gui.DrawContext
 
 /**
  * A listener for the world render event.
@@ -34,5 +34,5 @@ interface InGameHudRenderListener : Listener {
      * @param stack - The matrix stack.
      * @param delta - The delta.
      */
-    fun onRenderInGameHud(stack: MatrixStack, delta: Float)
+    fun onRenderInGameHud(drawContext: DrawContext, delta: Float)
 }

@@ -31,6 +31,7 @@ import com.peasenet.mods.Type
 import com.peasenet.mods.render.waypoints.Waypoint
 import com.peasenet.settings.*
 import com.peasenet.util.listeners.InGameHudRenderListener
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
 import net.minecraft.entity.ItemEntity
@@ -151,8 +152,9 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
         updateScaleText(scaleSetting, radarConfig.scale)
     }
 
-    override fun onRenderInGameHud(stack: MatrixStack, delta: Float) {
+    override fun onRenderInGameHud(drawContext: DrawContext, delta: Float) {
         if (!isActive) return
+        val stack = drawContext.matrices
         RadarConfig.x = client.window.scaledWidth - RadarConfig.size - 10
         GuiUtil.drawBox(
             Colors.DARK_GRAY, BoxF(
@@ -175,7 +177,7 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
 
         val yaw = player.yaw
         val waypoints =
-                GavinsMod.waypointConfig.getLocations().stream().filter { obj: Waypoint -> obj.isEnabled }.toList()
+            GavinsMod.waypointConfig.getLocations().stream().filter { obj: Waypoint -> obj.isEnabled }.toList()
         for (w in waypoints) {
             var color = w.color
             if (!radarConfig.isUseWaypointColor) color = radarConfig.waypointColor

@@ -29,8 +29,8 @@ import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
 import com.peasenet.settings.ToggleSetting
 import com.peasenet.util.listeners.InGameHudRenderListener
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.resource.language.I18n
-import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.Text
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -59,9 +59,9 @@ class ModGuiTextOverlay : Mod(Type.MOD_GUI_TEXT_OVERLAY), InGameHudRenderListene
         em.unsubscribe(InGameHudRenderListener::class.java, this)
     }
 
-    override fun onRenderInGameHud(stack: MatrixStack, delta: Float) {
+    override fun onRenderInGameHud(drawContext: DrawContext, delta: Float) {
         if (GavinsMod.isEnabled(Type.MOD_GUI) || GavinsMod.isEnabled(Type.SETTINGS)) return
-        drawTextOverlay(stack)
+        drawTextOverlay(drawContext)
     }
 
     /**
@@ -69,7 +69,8 @@ class ModGuiTextOverlay : Mod(Type.MOD_GUI_TEXT_OVERLAY), InGameHudRenderListene
      *
      * @param matrixStack - The matrix stack to use.
      */
-    private fun drawTextOverlay(matrixStack: MatrixStack) {
+    private fun drawTextOverlay(drawContext: DrawContext) {
+        val matrixStack = drawContext.matrices
         val textRenderer = GavinsModClient.minecraftClient.textRenderer
         val startingPoint = PointF(0.5f, 0.5f)
         val currX = (startingPoint.x + 2).toInt()
@@ -97,12 +98,13 @@ class ModGuiTextOverlay : Mod(Type.MOD_GUI_TEXT_OVERLAY), InGameHudRenderListene
         GuiUtil.drawOutline(GavUISettings.getColor("gui.color.border"), box, matrixStack)
         val modCounter = AtomicInteger()
         for (mod in mods) {
-            textRenderer.draw(
-                matrixStack,
+            drawContext.drawText(
+                textRenderer,
                 Text.translatable(mod.translationKey),
-                currX.toFloat(),
-                currY.get().toFloat(),
-                GavUISettings.getColor("gui.color.foreground").asInt
+                currX,
+                currY.get(),
+                GavUISettings.getColor("gui.color.foreground").asInt,
+                false
             )
             if (modsCount > 1 && modCounter.get() < modsCount - 1) {
                 val p1 = PointF(0.5f, currY.get().toFloat() + 8.5f)

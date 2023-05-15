@@ -20,7 +20,7 @@
 package com.peasenet.util.event
 
 import com.peasenet.util.listeners.InGameHudRenderListener
-import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.client.gui.DrawContext
 
 /**
  * The event for the world render event.
@@ -34,10 +34,10 @@ class InGameHudRenderEvent
  *
  * @param stack - The matrix stack.
  * @param delta - The delta.
- */(var stack: MatrixStack, var delta: Float) : Event<InGameHudRenderListener>() {
+ */(private var drawContext: DrawContext, var delta: Float) : Event<InGameHudRenderListener>() {
     override fun fire(listeners: ArrayList<InGameHudRenderListener>) {
         for (listener in listeners) {
-            listener.onRenderInGameHud(stack, delta)
+            listener.onRenderInGameHud(drawContext, delta)
         }
     }
 

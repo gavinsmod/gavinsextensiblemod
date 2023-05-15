@@ -24,8 +24,8 @@ import com.peasenet.main.GavinsMod;
 import com.peasenet.util.event.InGameHudRenderEvent;
 import com.peasenet.util.event.RenderOverlayEvent;
 import com.peasenet.util.event.data.RenderOverlay;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,15 +39,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
-    @Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/util/math/MatrixStack;F)V")
-    private void mixin(MatrixStack matrixStack, float delta, CallbackInfo ci) {
-        var event = new InGameHudRenderEvent(matrixStack, delta);
+    @Inject(at = @At("HEAD"), method = "render")
+    private void mixin(DrawContext context, float tickDelta, CallbackInfo ci) {
+        var event = new InGameHudRenderEvent(context, tickDelta);
         GavinsMod.eventManager.call(event);
     }
 
 
     @Inject(at = @At("HEAD"), method = "renderOverlay", cancellable = true)
-    private void antiPumpkin(MatrixStack matrices, Identifier texture, float opacity, CallbackInfo ci) {
+    private void antiPumpkin(DrawContext context, Identifier texture, float opacity, CallbackInfo ci) {
         var overlay = new RenderOverlay(texture);
         RenderOverlayEvent event = new RenderOverlayEvent(overlay);
         GavinsMod.eventManager.call(event);

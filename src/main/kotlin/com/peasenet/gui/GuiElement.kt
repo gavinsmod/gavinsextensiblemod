@@ -25,9 +25,9 @@ import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GavUISettings
 import com.peasenet.util.RenderUtils
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.render.GameRenderer
-import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.Text
 import java.util.function.Consumer
 
@@ -110,19 +110,20 @@ open class GuiElement
         return super.mouseReleased(mouseX, mouseY, button)
     }
 
-    override fun render(matrixStack: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+        val matrixStack = drawContext.matrices
         assert(client != null)
         val tr = client!!.textRenderer
         RenderSystem.setShader { GameRenderer.getPositionProgram() }
         RenderSystem.enableBlend()
         //        overlay.render(matrixStack, tr, mouseX, mouseY, delta);
-        guis.forEach(Consumer { gui: Gui -> gui.render(matrixStack, tr, mouseX, mouseY, delta) })
+        guis.forEach(Consumer { gui: Gui -> gui.render(drawContext, tr, mouseX, mouseY, delta) })
         if (titleBox != null) {
             titleBox!!.setBackground(GavUISettings.getColor("gui.color.background"))
-            titleBox!!.render(matrixStack, tr, mouseX, mouseY, delta)
+            titleBox!!.render(drawContext, tr, mouseX, mouseY, delta)
         }
         RenderUtils.resetRenderSystem()
-        super.render(matrixStack, mouseX, mouseY, delta)
+        super.render(drawContext, mouseX, mouseY, delta)
     }
 
     /**
