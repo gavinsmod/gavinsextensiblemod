@@ -54,13 +54,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPlayerEntity.class)
 public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implements IClientPlayerEntity {
     @Shadow
-    public float nextNauseaStrength;
+    public float nauseaIntensity;
     @Shadow
     @Final
     public
     ClientPlayNetworkHandler networkHandler;
     @Shadow
-    public float lastNauseaStrength;
+    public float prevNauseaIntensity;
 
     public MixinClientPlayerEntity(ClientWorld world, GameProfile profile) {
         super(world, profile);
@@ -193,8 +193,8 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     @Inject(method = "updateNausea", at = @At("HEAD"), cancellable = true)
     public void cancelNausea(CallbackInfo ci) {
         if (Mods.getMod(Type.NO_NAUSEA).isActive()) {
-            this.lastNauseaStrength = 0.0f;
-            this.nextNauseaStrength = 0.0f;
+            this.prevNauseaIntensity = 0.0f;
+            this.nauseaIntensity = 0.0f;
             ci.cancel();
         }
     }

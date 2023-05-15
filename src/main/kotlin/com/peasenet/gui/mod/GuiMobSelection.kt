@@ -273,10 +273,10 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
                     GavUISettings.getColor("gui.color.foreground").brighten(0.5f).getAsInt(0.5f)
                 )
                 GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack, 1f)
-                this.setTooltip(Text.translatable(block.translationKey))
-                renderWithTooltip(drawContext, mouseX, mouseY, delta)
+                drawContext.drawTooltip(textRenderer, Text.translatable(block.translationKey), mouseX, mouseY)
             }
 //            client!!.(matrixStack, block, blockX, blockY)
+            drawContext.drawItem(block, blockX, blockY)
         }
         RenderSystem.enableBlend()
         super.render(drawContext, mouseX, mouseY, delta)

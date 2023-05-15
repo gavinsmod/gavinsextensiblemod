@@ -266,7 +266,7 @@ class GuiXray
         drawContext.drawText(
             client!!.textRenderer,
             Text.literal('\u25c0'.toString()),
-            x + width / 2 - 4,
+            x + width / 2 - 86,
             y - 13,
             Colors.WHITE.asInt,
             false
