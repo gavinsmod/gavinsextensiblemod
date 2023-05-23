@@ -28,7 +28,7 @@ import com.peasenet.main.GavinsModClient
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
 import com.peasenet.settings.ColorSetting
-import com.peasenet.settings.SubSetting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.settings.ToggleSetting
 import com.peasenet.util.listeners.InGameHudRenderListener
 import net.minecraft.client.gui.DrawContext
@@ -41,7 +41,12 @@ import net.minecraft.text.Text
  */
 class ModFpsCounter : Mod(Type.MOD_FPS_COUNTER), InGameHudRenderListener {
     init {
-        val fpsSetting = SubSetting(100, 10, "gavinsmod.settings.misc.fpscolors")
+//        val fpsSetting = SubSetting(100, 10, "gavinsmod.settings.misc.fpscolors")
+        val fpsSetting = SettingBuilder()
+            .setWidth(100)
+            .setHeight(10)
+            .setTranslationKey("gavinsmod.settings.misc.fpscolors")
+            .buildSubSetting()
         val fpsColors = ToggleSetting("gavinsmod.settings.misc.fpscolors.enabled")
         fpsColors.setCallback { fpsColorConfig.isColorsEnabled = fpsColors.value }
         fpsColors.value = fpsColorConfig.isColorsEnabled

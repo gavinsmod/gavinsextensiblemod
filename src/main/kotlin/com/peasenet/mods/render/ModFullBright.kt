@@ -22,8 +22,7 @@ package com.peasenet.mods.render
 import com.peasenet.main.GavinsMod
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
-import com.peasenet.settings.SlideSetting
-import com.peasenet.settings.SubSetting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.settings.ToggleSetting
 import com.peasenet.util.RenderUtils
 
@@ -40,13 +39,33 @@ class ModFullBright : Mod(Type.FULL_BRIGHT) {
         val autoFullBright = ToggleSetting("gavinsmod.settings.render.autofullbright")
         autoFullBright.setCallback { fullbrightConfig.autoFullBright = autoFullBright.value }
         autoFullBright.value = fullbrightConfig.autoFullBright
-        val gamma = SlideSetting("gavinsmod.settings.render.fullbright.gamma")
+
+
+//        val gamma = SlideSetting("gavinsmod.settings.render.fullbright.gamma")
+//        gamma.setCallback { fullbrightConfig.gamma = gamma.value }
+//        gamma.value = fullbrightConfig.gamma
+        val gamma = SettingBuilder()
+            .setTitle("gavinsmod.settings.render.fullbright.gamma")
+            .setValue(fullbrightConfig.gamma)
+            .setWidth(100)
+            .setHeight(10)
+            .buildSlider()
         gamma.setCallback { fullbrightConfig.gamma = gamma.value }
-        gamma.value = fullbrightConfig.gamma
-        val subSetting = SubSetting(100, 10, translationKey)
+
+
+//        val subSetting = SubSetting(100, 10, translationKey)
+
+        val subSetting = SettingBuilder()
+            .setWidth(100)
+            .setHeight(10)
+            .setTitle(translationKey)
+            .setDefaultMaxChildren(4)
+            .buildSubSetting()
+
         subSetting.add(gammaFade)
         subSetting.add(autoFullBright)
         subSetting.add(gamma)
+
         addSetting(subSetting)
     }
 

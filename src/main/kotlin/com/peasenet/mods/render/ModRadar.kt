@@ -29,7 +29,10 @@ import com.peasenet.main.GavinsMod
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
 import com.peasenet.mods.render.waypoints.Waypoint
-import com.peasenet.settings.*
+import com.peasenet.settings.ClickSetting
+import com.peasenet.settings.ColorSetting
+import com.peasenet.settings.SettingBuilder
+import com.peasenet.settings.ToggleSetting
 import com.peasenet.util.listeners.InGameHudRenderListener
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.util.math.MatrixStack
@@ -37,7 +40,6 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.mob.MobEntity
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -103,14 +105,38 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
         val useWaypointColorSetting = ToggleSetting("gavinsmod.settings.radar.waypoint.usecolor")
         useWaypointColorSetting.setCallback { radarConfig.isUseWaypointColor = useWaypointColorSetting.value }
         useWaypointColorSetting.value = radarConfig.isUseWaypointColor
-        val backgroundAlphaSetting = SlideSetting("gavinsmod.settings.radar.background.alpha")
+
+//        val backgroundAlphaSetting = SlideSetting("gavinsmod.settings.radar.background.alpha")
+//        backgroundAlphaSetting.value = radarConfig.backgroundAlpha
+
+        val backgroundAlphaSetting = SettingBuilder()
+            .setTitle("gavinsmod.settings.radar.background.alpha")
+            .setValue(radarConfig.backgroundAlpha)
+            .buildSlider()
         backgroundAlphaSetting.setCallback { radarConfig.backgroundAlpha = backgroundAlphaSetting.value }
-        backgroundAlphaSetting.value = radarConfig.backgroundAlpha
-        val pointAlphaSetting = SlideSetting("gavinsmod.settings.radar.point.alpha")
+
+//        val pointAlphaSetting = SlideSetting("gavinsmod.settings.radar.point.alpha")
+//        pointAlphaSetting.setCallback { radarConfig.pointAlpha = pointAlphaSetting.value }
+//        pointAlphaSetting.value = radarConfig.pointAlpha
+
+        val pointAlphaSetting = SettingBuilder()
+            .setTitle("gavinsmod.settings.radar.point.alpha")
+            .setValue(radarConfig.pointAlpha)
+            .buildSlider()
         pointAlphaSetting.setCallback { radarConfig.pointAlpha = pointAlphaSetting.value }
-        pointAlphaSetting.value = radarConfig.pointAlpha
-        val color = SubSetting(110, 10, "gavinsmod.settings.radar.color")
-        val drawSettings = SubSetting(110, 10, "gavinsmod.settings.radar.drawn")
+
+
+        val color = SettingBuilder()
+            .setWidth(110)
+            .setHeight(10)
+            .setTitle("gavinsmod.settings.radar.color")
+            .buildSubSetting()
+
+        val drawSettings = SettingBuilder()
+            .setWidth(110)
+            .setHeight(10)
+            .setTitle("gavinsmod.settings.radar.drawn")
+            .buildSubSetting()
         color.add(playerEntityColor)
         color.add(hostileMobEntityColor)
         color.add(peacefulMobEntityColor)
@@ -318,7 +344,7 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
          * @param value   - The integer value to append to the title.
          */
         private fun updateScaleText(setting: ClickSetting, value: Int) {
-            setting.setTitle(Text.translatable(setting.translationKey).append(Text.literal(" (%s)".format(value))))
+//            setting.setTitle(setting.gui.title.str.append(Text.literal(" (%s)".format(value))))
         }
 
         val pointOffset: Float

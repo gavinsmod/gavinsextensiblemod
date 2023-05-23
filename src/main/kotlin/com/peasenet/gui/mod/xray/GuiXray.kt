@@ -150,7 +150,7 @@ class GuiXray
         nextButton = GuiClick(PointF((x + width / 2 + 76).toFloat(), (y - 16).toFloat()), 13, 13, Text.empty())
         nextButton.setCallback { pageUp() }
         enabledOnly =
-            GuiToggle(PointF((x + width / 2 - 170).toFloat(), (y - 15).toFloat()), 80, 10, Text.literal("Enabled Only"))
+            GuiToggle(PointF((x + width / 2f - 170f), (y - 15f)), 80, 10, Text.literal("Enabled Only"))
         enabledOnly.setCallback {
             page = 0
             updateBlockList()
@@ -159,9 +159,9 @@ class GuiXray
         val resetText = Text.translatable("gavinsmod.settings.reset")
         val width = textRenderer.getWidth(resetText)
         if (resetPos == null) resetPos = PointF(titleW.toFloat(), 1f)
+        if (resetWidth.toDouble() == 0.0) resetWidth = (width + 4).toFloat()
         resetButton = GuiClick(resetPos, width + 8, 10, resetText)
         resetButton.title = resetText
-        if (resetWidth.toDouble() == 0.0) resetWidth = (width + 4).toFloat()
         resetButton.width = resetWidth
         resetButton.position = resetPos
         resetButton.setDefaultPosition(resetButton.box)
@@ -249,20 +249,6 @@ class GuiXray
         nextButton.render(drawContext, textRenderer, mouseX, mouseY, delta)
         enabledOnly.render(drawContext, textRenderer, mouseX, mouseY, delta)
         resetButton.render(drawContext, textRenderer, mouseX, mouseY, delta)
-//        textRenderer.draw(
-//            matrixStack,
-//            Text.literal('\u25c0'.toString()),
-//            (x + width / 2 - 86).toFloat(),
-//            (y - 13).toFloat(),
-//            Colors.WHITE.asInt
-//        )
-//        textRenderer.draw(
-//            matrixStack,
-//            Text.literal('\u25b6'.toString()),
-//            (x + width / 2 + 80).toFloat(),
-//            (y - 13).toFloat(),
-//            Colors.WHITE.asInt
-//        )
         drawContext.drawText(
             client!!.textRenderer,
             Text.literal('\u25c0'.toString()),

@@ -28,7 +28,7 @@ import net.minecraft.text.Text
  * @version 03-02-2023
  * A setting that can be clicked. This is purely dependant on the given callback.
  */
-class ClickSetting(translationKey: String) : Setting(translationKey) {
+class ClickSetting(translationKey: String) : Setting() {
     /**
      * The gui used to display the setting.
      */

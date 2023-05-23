@@ -22,8 +22,7 @@ package com.peasenet.mods.misc
 import com.peasenet.main.GavinsMod
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
-import com.peasenet.settings.SlideSetting
-import com.peasenet.settings.SubSetting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.FakePlayer
 import com.peasenet.util.PlayerUtils
 import com.peasenet.util.RenderUtils
@@ -49,10 +48,19 @@ class ModFreeCam : Mod(Type.FREECAM), PacketSendListener, WorldRenderListener, A
     private var fake: FakePlayer? = null
 
     init {
-        val freeCamSpeed = SlideSetting("gavinsmod.settings.misc.freecam.speed")
+//        val freeCamSpeed = SlideSetting("gavinsmod.settings.misc.freecam.speed")
+//        freeCamSpeed.setCallback { miscConfig.freeCamSpeed = freeCamSpeed.value }
+//        freeCamSpeed.value = miscConfig.freeCamSpeed
+        val freeCamSpeed = SettingBuilder()
+            .setTitle("gavinsmod.settings.misc.freecam.speed")
+            .setValue(miscConfig.freeCamSpeed)
+            .buildSlider()
         freeCamSpeed.setCallback { miscConfig.freeCamSpeed = freeCamSpeed.value }
-        freeCamSpeed.value = miscConfig.freeCamSpeed
-        val subSetting = SubSetting(100, 10, translationKey)
+        val subSetting = SettingBuilder()
+            .setWidth(100)
+            .setHeight(10)
+            .setTitle(translationKey)
+            .buildSubSetting()
         subSetting.add(freeCamSpeed)
         addSetting(subSetting)
     }

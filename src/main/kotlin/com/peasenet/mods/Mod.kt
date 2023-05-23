@@ -20,6 +20,7 @@
 package com.peasenet.mods
 
 import com.peasenet.config.*
+import com.peasenet.gavui.Gui
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Mods
@@ -68,7 +69,7 @@ abstract class Mod(
     /**
      * The settings of the mod.
      */
-    protected var modSettings = ArrayList<Setting>()
+    protected var modSettings = ArrayList<Gui>()
 
     /**
      * Whether the mod is currently reloading.
@@ -157,6 +158,10 @@ abstract class Mod(
     }
 
     fun addSetting(setting: Setting) {
+        modSettings.add(setting.gui!!)
+    }
+
+    fun addSetting(setting: Gui) {
         modSettings.add(setting)
     }
 

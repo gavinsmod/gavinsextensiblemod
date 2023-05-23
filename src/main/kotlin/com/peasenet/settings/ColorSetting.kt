@@ -19,41 +19,70 @@
  */
 package com.peasenet.settings
 
+import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiCycle
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
-import net.minecraft.text.Text
 
 /**
  * @author gt3ch1
  * @version 03-02-2023
  * A setting that allows the user to change a color value.
  */
-class ColorSetting(translationKey: String, var color: Color) : Setting(translationKey) {
+class ColorSetting(builder: SettingBuilder) : Setting() {
     /**
      * The cycle element that allows the user to change the color value.
      */
     override val gui: GuiCycle
 
-    /**
-     * Creates a new cycle setting used for selecting a color.
-     *
-     * @param translationKey - The translation key of the setting.
-     */
+    var color: Color = builder.getColor()
+
     init {
-        gui = GuiCycle(90, 10, Text.translatable(translationKey), Colors.COLORS.size)
-        gui.setBackground(color)
+        gui = GuiBuilder()
+            .setWidth(90f)
+            .setHeight(10f)
+            .setTitle(builder.getTitle())
+            .setCycleSize(Colors.COLORS.size)
+            .setCurrentCycleIndex(Colors.getColorIndex(builder.getColor()))
+            .setBackgroundColor(builder.getColor())
+            .setTopLeft(builder.getTopLeft().x.toInt(), builder.getTopLeft().y.toInt())
+            .buildCycle()
         gui.setCallback {
             var index = gui.currentIndex
             if (index < 0)
                 index = Colors.COLORS.size - 1
             gui.currentIndex = index
-            color = Colors.COLORS[index]
-            gui.setBackground(color)
+            gui.setBackground(Colors.COLORS[index])
             onClick()
         }
-        gui.currentIndex = Colors.getColorIndex(color)
     }
+
+
+//    /**
+//     * Creates a new cycle setting used for selecting a color.
+//     *
+//     * @param translationKey - The translation key of the setting.
+//     */
+//    init {
+//        gui = GuiBuilder()
+//            .setWidth(90f)
+//            .setHeight(10f)
+//            .setTitle(translationKey)
+//            .setCycleSize(Colors.COLORS.size)
+//            .setCurrentCycleIndex(Colors.getColorIndex(color))
+//            .setBackgroundColor(color)
+//            .buildCycle();
+//        gui.setCallback {
+//            var index = gui.currentIndex
+//            if (index < 0)
+//                index = Colors.COLORS.size - 1
+//            gui.currentIndex = index
+//            color = Colors.COLORS[index]
+//            gui.setBackground(color)
+//            onClick()
+//        }
+//    }
+
 
     /**
      * Sets the color and color index to the given value.

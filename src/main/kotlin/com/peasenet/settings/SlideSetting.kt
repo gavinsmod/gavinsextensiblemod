@@ -20,28 +20,22 @@
 package com.peasenet.settings
 
 import com.peasenet.gavui.GuiSlider
-import com.peasenet.gavui.math.PointF
-import net.minecraft.text.Text
 
 /**
  * @author gt3ch1
  * @version 03-02-2023
  * A setting that can be clicked. This is purely dependant on the given callback.
  */
-class SlideSetting(translationKey: String) : Setting(translationKey) {
+class SlideSetting(slider: GuiSlider) : Setting() {
     /**
      * The gui used to display the setting.
      */
-    override val gui: GuiSlider
+    override var gui: GuiSlider = slider
 
-    /**
-     * Creates a new click setting with the given name (?) and translation key.
-     *
-     * @param translationKey - The translation key of the setting.
-     */
-    init {
-        gui = GuiSlider(PointF(0f, 0f), 100, 10, Text.translatable(translationKey))
-        gui.setCallback { onClick() }
+    companion object {
+        fun fromSlider(slider: GuiSlider): SlideSetting {
+            return SlideSetting(slider)
+        }
     }
 
     var value: Float
@@ -59,4 +53,8 @@ class SlideSetting(translationKey: String) : Setting(translationKey) {
         set(alpha) {
             gui.value = alpha
         }
+
+    init {
+        gui.setCallback { onClick() }
+    }
 }

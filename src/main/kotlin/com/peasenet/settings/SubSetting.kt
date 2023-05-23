@@ -19,16 +19,16 @@
  */
 package com.peasenet.settings
 
+import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiDropdown
 import com.peasenet.gavui.GuiScroll
-import net.minecraft.text.Text
 
 /**
  * @author gt3ch1
  * @version 03-02-2023
  * A setting that contains multiple sub settings within a dropdown element.
  */
-class SubSetting(width: Int, height: Int, translationKey: String) : Setting(translationKey) {
+class SubSetting(width: Int, height: Int, translationKey: String) : Setting() {
     /**
      * The dropdown menu that contains the sub settings.
      */
@@ -43,9 +43,14 @@ class SubSetting(width: Int, height: Int, translationKey: String) : Setting(tran
      * @param translationKey - The translation key.
      */
     init {
-        gui = GuiScroll(width, height, Text.translatable(translationKey))
+        gui = GuiBuilder()
+            .setWidth(width.toFloat())
+            .setHeight(height.toFloat())
+            .setTitle(translationKey)
+            .setMaxChildren(4)
+            .setDefaultMaxChildren(4)
+            .buildScroll()
         gui.direction = GuiDropdown.Direction.RIGHT
-        gui.hide()
     }
 
     /**

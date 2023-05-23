@@ -19,7 +19,7 @@
  */
 package com.peasenet.mods
 
-import com.peasenet.settings.Setting
+import com.peasenet.gavui.Gui
 import net.minecraft.client.world.ClientWorld
 
 /**
@@ -129,7 +129,7 @@ interface IMod {
      *
      * @return The settings of the mod.
      */
-    val settings: ArrayList<Setting>?
+    val settings: ArrayList<Gui>?
 
     /**
      * Reloads the settings of the mod.

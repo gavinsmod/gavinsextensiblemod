@@ -42,7 +42,14 @@ class ModBeehiveTracer : ModTracer(Type.BEEHIVE_TRACER) {
 
     override fun onRenderBlockEntity(er: BlockEntityRender) {
         if (er.buffer == null) return
-        if (er.entity is BeehiveBlockEntity) RenderUtils.renderSingleLine(er.stack!!, er.buffer!!, er.playerPos!!, er.center!!, tracerConfig.beehiveColor, tracerConfig.alpha)
+        if (er.entity is BeehiveBlockEntity) RenderUtils.renderSingleLine(
+            er.stack!!,
+            er.buffer!!,
+            er.playerPos!!,
+            er.center!!,
+            tracerConfig.beehiveColor,
+            tracerConfig.alpha
+        )
     }
 
     override fun onEntityRender(er: EntityRender) {

@@ -24,6 +24,7 @@ import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
 import com.peasenet.mods.render.waypoints.Waypoint
 import com.peasenet.settings.ClickSetting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.settings.SubSetting
 import com.peasenet.settings.ToggleSetting
 import com.peasenet.util.Dimension
@@ -45,7 +46,12 @@ import java.util.function.Function
  */
 class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener {
     init {
-        setting = SubSetting(100, 10, "gavinsmod.mod.render.waypoints")
+//        setting = SubSetting(100, 10, "gavinsmod.mod.render.waypoints")
+        setting = SettingBuilder()
+            .setWidth(100)
+            .setHeight(10)
+            .setTranslationKey("gavinsmod.mod.render.waypoints")
+            .buildSubSetting()
         openMenu = ClickSetting("gavinsmod.settings.render.waypoints.add")
         reloadSettings()
     }
@@ -56,7 +62,10 @@ class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener 
         em.subscribe(CameraBobListener::class.java, this)
         for (w in waypointConfig.getLocations()) {
             if (!w.hasDimensions()) {
-                PlayerUtils.sendMessage("§6[WARNING]§7 Waypoint \"§b${w.name}§7\" has no dimensions set and will not be rendered.", true)
+                PlayerUtils.sendMessage(
+                    "§6[WARNING]§7 Waypoint \"§b${w.name}§7\" has no dimensions set and will not be rendered.",
+                    true
+                )
             }
         }
     }
@@ -69,12 +78,18 @@ class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener 
 
     override fun reloadSettings() {
         modSettings.clear()
-        setting = SubSetting(setting.gui.width.toInt(), 10, "gavinsmod.mod.render.waypoints")
+//        setting = SubSetting(setting.gui.width.toInt(), 10, "gavinsmod.mod.render.waypoints")
+        setting = SettingBuilder()
+            .setWidth(setting.gui.width.toInt())
+            .setHeight(10)
+            .setTranslationKey("gavinsmod.mod.render.waypoints")
+            .buildSubSetting()
         openMenu.setCallback { client.setScreen(GuiWaypoint()) }
         openMenu.gui.setSymbol('+')
         addSetting(openMenu)
         // get all waypoints and add them to the menu
-        val waypoints = waypointConfig.getLocations().stream().sorted(Comparator.comparing(Function<Waypoint, String> { obj: Waypoint -> obj.name }))
+        val waypoints = waypointConfig.getLocations().stream()
+            .sorted(Comparator.comparing(Function<Waypoint, String> { obj: Waypoint -> obj.name }))
         for (w in waypoints.toArray()) createWaypoint(w as Waypoint)
     }
 
@@ -100,7 +115,13 @@ class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener 
         }.forEach { w: Waypoint ->
             val aabb = Box(BlockPos(w.x, w.y, w.z))
             val boxPos = aabb.center
-            if (w.isTracerEnabled) RenderUtils.renderSingleLine(er.stack, er.buffer!!, er.playerPos!!, boxPos, w.color!!)
+            if (w.isTracerEnabled) RenderUtils.renderSingleLine(
+                er.stack,
+                er.buffer!!,
+                er.playerPos!!,
+                boxPos,
+                w.color!!
+            )
             if (w.isEspEnabled) RenderUtils.drawBox(er.stack, er.buffer, aabb, w.color!!)
         }
     }

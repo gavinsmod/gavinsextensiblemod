@@ -21,6 +21,7 @@ package com.peasenet.gui
 
 import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.gavui.Gui
+import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GavUISettings
@@ -58,6 +59,8 @@ open class GuiElement
      */
     protected var parent: Screen? = null
 
+    private lateinit var overlay: Gui
+
     /**
      * The previously selected/clicked gui
      */
@@ -68,8 +71,14 @@ open class GuiElement
         val clientWidth = client!!.window.scaledWidth
         val clientHeight = client!!.window.scaledHeight
         //TODO: Maybe make this a background?
-        val overlay = Gui(PointF(0f, 0f), clientWidth + 1, clientHeight, Text.of(""))
-        overlay.setBackground(Colors.BLACK)
+//        overlay = Gui(PointF(0f, 0f), clientWidth + 1, clientHeight, Text.of(""))
+//        overlay.setBackground(Colors.BLACK)
+        overlay = GuiBuilder()
+            .setWidth((clientWidth + 1).toFloat())
+            .setHeight(clientHeight.toFloat())
+            .setBackgroundColor(Colors.BLACK)
+            .setTransparency(0.5f)
+            .build()
         titleBox!!.isHoverable = false
     }
 
@@ -116,7 +125,7 @@ open class GuiElement
         val tr = client!!.textRenderer
         RenderSystem.setShader { GameRenderer.getPositionProgram() }
         RenderSystem.enableBlend()
-        //        overlay.render(matrixStack, tr, mouseX, mouseY, delta);
+        overlay.render(drawContext, tr, mouseX, mouseY, delta)
         guis.forEach(Consumer { gui: Gui -> gui.render(drawContext, tr, mouseX, mouseY, delta) })
         if (titleBox != null) {
             titleBox!!.setBackground(GavUISettings.getColor("gui.color.background"))

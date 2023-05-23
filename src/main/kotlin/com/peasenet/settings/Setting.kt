@@ -21,7 +21,6 @@ package com.peasenet.settings
 
 import com.peasenet.gavui.Gui
 import com.peasenet.util.callbacks.SettingsCallback
-import net.minecraft.text.Text
 
 /**
  * @author gt3ch1
@@ -33,12 +32,8 @@ abstract class Setting
  * Creates a new setting.
  *
  * @param translationKey - The translation key of this setting (ie, "gavinsmod.settings.xray")
- */(
-    /**
-     * The translation key for the name of this setting.
-     */
-    val translationKey: String
-) {
+ */
+{
     /**
      * The callback of the setting.
      */
@@ -54,6 +49,11 @@ abstract class Setting
      */
     fun onClick() {
         if (callback != null) callback!!.callback()
+    }
+
+
+    fun getTranslationKey(): String {
+        return gui!!.title.string
     }
 
     /**
@@ -83,15 +83,6 @@ abstract class Setting
      */
     fun setWidth(width: Int) {
         gui?.width = width.toFloat()
-    }
-
-    /**
-     * Sets the title of the gui for this setting.
-     *
-     * @param text - The title of the gui.
-     */
-    fun setTitle(text: Text?) {
-        gui?.setTitle(text)
     }
 
     fun setCallback(callback: SettingsCallback?) {

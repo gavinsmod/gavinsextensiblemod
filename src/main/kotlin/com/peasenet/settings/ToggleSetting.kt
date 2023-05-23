@@ -19,8 +19,8 @@
  */
 package com.peasenet.settings
 
+import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiToggle
-import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GavUISettings
 import net.minecraft.text.Text
 
@@ -33,7 +33,14 @@ class ToggleSetting : Setting {
     /**
      * The gui element that is used to display this toggle setting.
      */
-    override var gui: GuiToggle = GuiToggle(PointF(0f, 0f), 90, 10, Text.translatable("none"))
+    override var gui: GuiToggle = GuiBuilder().setWidth(90F)
+        .setHeight(10F)
+        .buildToggle()
+
+    constructor(toggleSetting: GuiToggle) : super() {
+        gui = toggleSetting
+        gui.setCallback { onClick() }
+    }
 
     /**
      * The current value of this toggle setting.
@@ -51,17 +58,25 @@ class ToggleSetting : Setting {
      *
      * @param key - The translation key of this toggle setting.
      */
-    constructor(key: String) : super(key) {
+    constructor(key: String) : super() {
         value = false
-        gui = GuiToggle(PointF(0f, 0f), 90, 10, Text.translatable(key))
-        gui.setState(value)
-        gui.setCallback { onClick() }
+        gui = GuiBuilder()
+            .setWidth(90F)
+            .setHeight(10F)
+            .setTitle(key)
+            .setIsOn(value)
+            .setCallback(this::onClick)
+            .buildToggle()
     }
 
-    constructor(literal: Text?) : super("none") {
-        gui = GuiToggle(PointF(0f, 0f), 90, 10, literal)
-        gui.setState(value)
-        gui.setCallback { onClick() }
-        gui.hide()
+    constructor(literal: Text?) : super() {
+        gui = GuiBuilder()
+            .setWidth(90F)
+            .setHeight(10F)
+            .setTitle(literal)
+            .setIsOn(value)
+            .setCallback(this::onClick)
+            .setHidden(true)
+            .buildToggle()
     }
 }

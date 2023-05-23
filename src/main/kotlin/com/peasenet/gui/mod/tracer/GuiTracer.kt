@@ -24,6 +24,7 @@ import com.peasenet.gavui.math.PointF
 import com.peasenet.gui.mod.GuiMobSelection
 import com.peasenet.main.GavinsMod
 import com.peasenet.settings.ColorSetting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.settings.ToggleSetting
 import net.minecraft.item.ItemStack
 import net.minecraft.item.SpawnEggItem
@@ -41,13 +42,19 @@ class GuiTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtrace
 
         val height = 24f
         var pos = PointF(10f, height)
-        hostileColor = ColorSetting("gavinsmod.settings.tracer.mob.hostile.color", GavinsMod.tracerConfig.hostileMobColor)
-        hostileColor.setCallback { GavinsMod.tracerConfig.hostileMobColor = hostileColor.color }
-        hostileColor.color = GavinsMod.tracerConfig.hostileMobColor
-        hostileColor.gui.position = pos
+//        hostileColor = ColorSetting("gavinsmod.settings.tracer.mob.hostile.color", GavinsMod.tracerConfig.hostileMobColor)
+//        hostileColor.setCallback { GavinsMod.tracerConfig.hostileMobColor = hostileColor.color }
+//        hostileColor.color = GavinsMod.tracerConfig.hostileMobColor
+//        hostileColor.gui.position = pos
+        hostileColor = SettingBuilder()
+            .setTitle("gavinsmod.settings.tracer.mob.hostile.color")
+            .setColor(GavinsMod.tracerConfig.hostileMobColor)
+            .setTopLeft(pos)
+            .buildColorSetting()
         pos = pos.add(0f, 12f)
 
-        peacefulColor = ColorSetting("gavinsmod.settings.tracer.mob.peaceful.color", GavinsMod.tracerConfig.peacefulMobColor)
+        peacefulColor =
+            ColorSetting("gavinsmod.settings.tracer.mob.peaceful.color", GavinsMod.tracerConfig.peacefulMobColor)
         peacefulColor.setCallback { GavinsMod.tracerConfig.peacefulMobColor = peacefulColor.color }
         peacefulColor.color = GavinsMod.tracerConfig.peacefulMobColor
         peacefulColor.gui.position = pos
