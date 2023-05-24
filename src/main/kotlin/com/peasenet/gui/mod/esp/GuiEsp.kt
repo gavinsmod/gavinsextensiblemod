@@ -40,7 +40,7 @@ class GuiEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")) {
         val height = 24f
         var pos = PointF(10f, height)
 
-        val hostileColor = SettingBuilder()
+        hostileColor = SettingBuilder()
             .setTitle("gavinsmod.settings.esp.mob.hostile.color")
             .setColor(Mod.espConfig.hostileMobColor)
             .setTopLeft(pos)

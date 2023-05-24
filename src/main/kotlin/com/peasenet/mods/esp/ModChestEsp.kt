@@ -21,7 +21,7 @@ package com.peasenet.mods.esp
 
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
-import com.peasenet.settings.ColorSetting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.listeners.BlockEntityRenderListener
@@ -37,10 +37,15 @@ import net.minecraft.util.math.Box
  */
 class ModChestEsp : Mod(Type.CHEST_ESP), BlockEntityRenderListener {
     init {
-        val colorSetting = ColorSetting(
-            "gavinsmod.settings.esp.chest.color",
-            espConfig.chestColor
-        )
+//        val colorSetting = ColorSetting(
+//            "gavinsmod.settings.esp.chest.color",
+//            espConfig.chestColor
+//        )
+        val colorSetting = SettingBuilder()
+            .setTitle("gavinsmod.settings.esp.chest.color")
+            .setColor(espConfig.chestColor)
+            .buildColorSetting()
+
         colorSetting.setCallback { espConfig.chestColor = colorSetting.color }
         addSetting(colorSetting)
     }

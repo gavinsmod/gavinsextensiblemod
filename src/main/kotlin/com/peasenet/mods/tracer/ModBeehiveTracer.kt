@@ -19,9 +19,8 @@
  */
 package com.peasenet.mods.tracer
 
-import com.peasenet.main.GavinsMod
 import com.peasenet.mods.Type
-import com.peasenet.settings.ColorSetting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.event.data.EntityRender
@@ -34,9 +33,11 @@ import net.minecraft.block.entity.BeehiveBlockEntity
  */
 class ModBeehiveTracer : ModTracer(Type.BEEHIVE_TRACER) {
     init {
-        val colorSetting = ColorSetting("gavinsmod.settings.tracer.beehive.color", GavinsMod.tracerConfig.beehiveColor)
+        val colorSetting = SettingBuilder()
+            .setTitle("gavinsmod.settings.tracer.beehive.color")
+            .setColor(tracerConfig.beehiveColor)
+            .buildColorSetting()
         colorSetting.setCallback { tracerConfig.beehiveColor = colorSetting.color }
-        colorSetting.color = GavinsMod.tracerConfig.beehiveColor
         addSetting(colorSetting)
     }
 

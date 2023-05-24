@@ -22,7 +22,7 @@ package com.peasenet.mods.esp
 import com.peasenet.main.GavinsMod
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
-import com.peasenet.settings.ColorSetting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.listeners.BlockEntityRenderListener
@@ -36,11 +36,11 @@ import net.minecraft.util.math.Box
  */
 class ModFurnaceEsp : Mod(Type.FURNACE_ESP), BlockEntityRenderListener {
     init {
-        val colorSetting = ColorSetting(
-                "gavinsmod.settings.esp.furnace.color", GavinsMod.espConfig.furnaceColor
-        )
+        val colorSetting = SettingBuilder()
+            .setTitle("gavinsmod.settings.esp.furnace.color")
+            .setColor(GavinsMod.espConfig.furnaceColor)
+            .buildColorSetting()
         colorSetting.setCallback { espConfig.furnaceColor = colorSetting.color }
-        colorSetting.color = GavinsMod.espConfig.furnaceColor
         addSetting(colorSetting)
     }
 

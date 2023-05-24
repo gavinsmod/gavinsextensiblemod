@@ -19,9 +19,8 @@
  */
 package com.peasenet.mods.tracer
 
-import com.peasenet.main.GavinsMod
 import com.peasenet.mods.Type
-import com.peasenet.settings.ColorSetting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.event.data.EntityRender
@@ -36,12 +35,11 @@ import net.minecraft.block.entity.ShulkerBoxBlockEntity
  */
 class ModChestTracer : ModTracer(Type.CHEST_TRACER) {
     init {
-        val colorSetting = ColorSetting(
-                "gavinsmod.settings.tracer.chest.color",
-                GavinsMod.tracerConfig.chestColor
-        )
+        val colorSetting = SettingBuilder()
+            .setTitle("gavinsmod.settings.tracer.chest.color")
+            .setColor(tracerConfig.chestColor)
+            .buildColorSetting()
         colorSetting.setCallback { tracerConfig.chestColor = colorSetting.color }
-        colorSetting.color = GavinsMod.tracerConfig.chestColor
         addSetting(colorSetting)
     }
 
@@ -50,12 +48,12 @@ class ModChestTracer : ModTracer(Type.CHEST_TRACER) {
         if (er.entity is ChestBlockEntity || er.entity is ShulkerBoxBlockEntity
             || er.entity is EnderChestBlockEntity
         ) RenderUtils.renderSingleLine(
-                er.stack!!,
-                er.buffer!!,
-                er.playerPos!!,
-                er.center!!,
-                tracerConfig.chestColor,
-                tracerConfig.alpha
+            er.stack!!,
+            er.buffer!!,
+            er.playerPos!!,
+            er.center!!,
+            tracerConfig.chestColor,
+            tracerConfig.alpha
         )
     }
 

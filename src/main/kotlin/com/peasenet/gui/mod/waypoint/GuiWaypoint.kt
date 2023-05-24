@@ -31,6 +31,7 @@ import com.peasenet.main.Mods.Companion.getMod
 import com.peasenet.mods.render.waypoints.Waypoint
 import com.peasenet.settings.ClickSetting
 import com.peasenet.settings.ColorSetting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.settings.ToggleSetting
 import com.peasenet.util.Dimension
 import net.minecraft.client.gui.DrawContext
@@ -110,7 +111,8 @@ class GuiWaypoint : GuiElement {
     /**
      * The button that is used to change the waypoints color.
      */
-    private var colorCycle = ColorSetting("gavinsmod.settings.render.waypoints.color", Colors.BLUE)
+//    private var colorCycle = ColorSetting("gavinsmod.settings.render.waypoints.color", Colors.BLUE)
+    private lateinit var colorCycle: ColorSetting
 
     /**
      * The width of the gui.
@@ -144,6 +146,10 @@ class GuiWaypoint : GuiElement {
      * Creates a gui that allows the user to add a new waypoint.
      */
     constructor() : super(Text.translatable("gavinsmod.mod.render.waypoints")) {
+        this.colorCycle = SettingBuilder()
+            .setTitle("gavinsmod.settings.render.waypoints.color")
+            .setColor(Colors.BLUE)
+            .buildColorSetting()
         parent = GavinsMod.guiSettings
         w = null
         cancelSettings.setCallback { client!!.setScreen(parent) }

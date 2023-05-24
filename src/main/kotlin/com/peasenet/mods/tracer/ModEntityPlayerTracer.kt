@@ -19,9 +19,8 @@
  */
 package com.peasenet.mods.tracer
 
-import com.peasenet.main.GavinsMod
 import com.peasenet.mods.Type
-import com.peasenet.settings.ColorSetting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.event.data.EntityRender
@@ -34,12 +33,11 @@ import net.minecraft.entity.player.PlayerEntity
  */
 class ModEntityPlayerTracer : ModTracer(Type.ENTITY_PLAYER_TRACER) {
     init {
-        val colorSetting = ColorSetting(
-                "gavinsmod.settings.tracer.player.color",
-                GavinsMod.tracerConfig.playerColor
-        )
+        val colorSetting = SettingBuilder()
+            .setTitle("gavinsmod.settings.tracer.player.color")
+            .setColor(tracerConfig.playerColor)
+            .buildColorSetting()
         colorSetting.setCallback { tracerConfig.playerColor = colorSetting.color }
-        colorSetting.color = GavinsMod.tracerConfig.playerColor
         addSetting(colorSetting)
     }
 
@@ -47,16 +45,16 @@ class ModEntityPlayerTracer : ModTracer(Type.ENTITY_PLAYER_TRACER) {
         if (er.buffer == null) return
         if (er.entity !is PlayerEntity) return
         RenderUtils.renderSingleLine(
-                er.stack,
-                er.buffer!!,
-                er.playerPos!!,
-                er.center!!,
-                tracerConfig.playerColor,
-                tracerConfig.alpha
+            er.stack,
+            er.buffer!!,
+            er.playerPos!!,
+            er.center!!,
+            tracerConfig.playerColor,
+            tracerConfig.alpha
         )
     }
 
     override fun onRenderBlockEntity(er: BlockEntityRender) {
-       
+
     }
 }

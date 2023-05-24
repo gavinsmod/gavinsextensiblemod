@@ -21,7 +21,7 @@ package com.peasenet.mods.esp
 
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
-import com.peasenet.settings.ColorSetting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.EntityRender
 import com.peasenet.util.listeners.EntityRenderListener
@@ -34,10 +34,14 @@ import net.minecraft.entity.player.PlayerEntity
  */
 class ModEntityPlayerEsp : Mod(Type.ENTITY_PLAYER_ESP), EntityRenderListener {
     init {
-        val colorSetting = ColorSetting("gavinsmod.settings.esp.player.color", espConfig.playerColor)
-        colorSetting.setCallback {
-            espConfig.playerColor = colorSetting.color
-        }
+//        val colorSetting = ColorSetting("gavinsmod.settings.esp.player.color", espConfig.playerColor)
+//        colorSetting.setCallback {
+//            espConfig.playerColor = colorSetting.color
+//        }
+        val colorSetting = SettingBuilder()
+            .setTitle("gavinsmod.settings.esp.player.color")
+            .setColor(espConfig.playerColor)
+            .buildColorSetting()
         addSetting(colorSetting)
     }
 

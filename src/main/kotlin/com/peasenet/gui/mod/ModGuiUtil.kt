@@ -20,12 +20,11 @@
 package com.peasenet.gui.mod
 
 import com.peasenet.gavui.Gui
-import com.peasenet.gavui.GuiToggle
+import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
 import com.peasenet.main.GavinsMod.Companion.getModsInCategory
 import com.peasenet.mods.Type
-import net.minecraft.text.Text
 
 /**
  * @author gt3ch1
@@ -47,15 +46,16 @@ object ModGuiUtil {
             val mod = mods[i]
             val x = box.topLeft.x
             val y = box.bottomRight.y + i * 10
-            val gui = GuiToggle(
-                PointF(x, y + 2),
-                box.width.toInt(),
-                box.height.toInt(),
-                Text.translatable(mod.translationKey)
-            )
-            gui.setCallback { mod.toggle() }
+            val gui = GuiBuilder()
+                .setTopLeft(PointF(x, y + 2))
+                .setWidth(box.width)
+                .setHeight(box.height)
+                .setTitle(mod.translationKey)
+                .setCallback(mod::toggle)
+                .setHidden(true)
+                .buildToggle()
             gui.setRenderCallback { gui.setState(mod.isActive) }
-            gui.hide()
+
             guis.add(gui)
         }
         return guis

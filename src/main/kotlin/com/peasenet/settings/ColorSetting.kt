@@ -46,12 +46,14 @@ class ColorSetting(builder: SettingBuilder) : Setting() {
             .setCurrentCycleIndex(Colors.getColorIndex(builder.getColor()))
             .setBackgroundColor(builder.getColor())
             .setTopLeft(builder.getTopLeft().x.toInt(), builder.getTopLeft().y.toInt())
+            .setTransparency(builder.getTransparency())
             .buildCycle()
         gui.setCallback {
             var index = gui.currentIndex
             if (index < 0)
                 index = Colors.COLORS.size - 1
             gui.currentIndex = index
+            color = Colors.COLORS[index]
             gui.setBackground(Colors.COLORS[index])
             onClick()
         }

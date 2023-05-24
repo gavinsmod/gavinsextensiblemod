@@ -21,7 +21,7 @@ package com.peasenet.mods.tracer
 
 import com.peasenet.main.GavinsMod
 import com.peasenet.mods.Type
-import com.peasenet.settings.ColorSetting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.event.data.EntityRender
@@ -34,10 +34,10 @@ import net.minecraft.entity.EntityType
  */
 class ModEntityItemTracer : ModTracer(Type.ENTITY_ITEM_TRACER) {
     init {
-        val colorSetting = ColorSetting(
-                "gavinsmod.settings.tracer.item.color",
-                GavinsMod.tracerConfig.itemColor
-        )
+        val colorSetting = SettingBuilder()
+            .setTitle("gavinsmod.settings.tracer.item.color")
+            .setColor(tracerConfig.itemColor)
+            .buildColorSetting()
         colorSetting.setCallback { tracerConfig.itemColor = colorSetting.color }
         colorSetting.color = GavinsMod.tracerConfig.itemColor
         addSetting(colorSetting)
@@ -47,12 +47,12 @@ class ModEntityItemTracer : ModTracer(Type.ENTITY_ITEM_TRACER) {
         if (er.buffer == null) return
         if (er.entityType !== EntityType.ITEM) return
         RenderUtils.renderSingleLine(
-                er.stack,
-                er.buffer!!,
-                er.playerPos!!,
-                er.center!!,
-                tracerConfig.itemColor,
-                tracerConfig.alpha
+            er.stack,
+            er.buffer!!,
+            er.playerPos!!,
+            er.center!!,
+            tracerConfig.itemColor,
+            tracerConfig.alpha
         )
     }
 

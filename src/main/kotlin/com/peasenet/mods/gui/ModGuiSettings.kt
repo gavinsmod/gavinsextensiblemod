@@ -49,6 +49,7 @@ class ModGuiSettings : Mod(Type.SETTINGS) {
         val foregroundColorSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.gui.color.foreground")
             .setColor(fgColor)
+            .setTransparency(0.5f)
             .buildColorSetting()
         foregroundColorSetting.setCallback { GavUISettings.add("gui.color.foreground", foregroundColorSetting.color) }
 

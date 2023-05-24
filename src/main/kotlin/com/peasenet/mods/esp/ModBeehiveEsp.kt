@@ -21,7 +21,7 @@ package com.peasenet.mods.esp
 
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
-import com.peasenet.settings.ColorSetting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.listeners.BlockEntityRenderListener
@@ -35,10 +35,14 @@ import net.minecraft.util.math.Box
  */
 class ModBeehiveEsp : Mod(Type.BEEHIVE_ESP), BlockEntityRenderListener {
     init {
-        val colorSetting = ColorSetting(
-            "gavinsmod.settings.esp.beehive.color",
-            espConfig.beehiveColor
-        )
+//        val colorSetting = ColorSetting(
+//            "gavinsmod.settings.esp.beehive.color",
+//            espConfig.beehiveColor
+//        )
+        val colorSetting = SettingBuilder()
+            .setTitle("gavinsmod.settings.esp.beehive.color")
+            .setColor(espConfig.beehiveColor)
+            .buildColorSetting()
         colorSetting.setCallback { espConfig.beehiveColor = colorSetting.color }
         addSetting(colorSetting)
     }

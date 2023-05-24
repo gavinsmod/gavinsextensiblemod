@@ -43,10 +43,12 @@ class SettingBuilder {
     private var width: Int = 0
     private var height: Int = 0
     private var guiPosition: PointF = PointF(0f, 0f)
+    private var transparency: Float = -1f
     var maxChildren: Int = 4
 
     fun setTranslationKey(translationKey: String): SettingBuilder {
         this.translationKey = translationKey
+        setTitle(translationKey)
         return this
     }
 
@@ -129,6 +131,8 @@ class SettingBuilder {
             .setHeight(10f)
             .setIsOn(state)
             .setTitle(title)
+            .setTopLeft(guiPosition)
+            .setTransparency(transparency)
             .buildToggle()
         return ToggleSetting(toggle)
     }
@@ -140,6 +144,7 @@ class SettingBuilder {
             .setSlideValue(value)
             .setTitle(title)
             .setCallback(callback)
+            .setTransparency(transparency)
             .setDefaultMaxChildren(maxChildren)
             .setMaxChildren(maxChildren)
             .buildSlider()
@@ -162,6 +167,15 @@ class SettingBuilder {
     fun buildSubSetting(): SubSetting {
         val subSetting = SubSetting(width, height, translationKey)
         return subSetting
+    }
+
+    fun getTransparency(): Float {
+        return this.transparency
+    }
+
+    fun setTransparency(transparency: Float): SettingBuilder {
+        this.transparency = transparency
+        return this
     }
 
 

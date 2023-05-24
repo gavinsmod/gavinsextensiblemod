@@ -49,10 +49,10 @@ class ModMobTracer : ModTracer(Type.MOB_TRACER) {
         val playerPos = er.playerPos
         if (entity !is MobEntity) return
         val color =
-                if (er.entityType.spawnGroup.isPeaceful) tracerConfig.peacefulMobColor else tracerConfig.hostileMobColor
+            if (er.entityType.spawnGroup.isPeaceful) tracerConfig.peacefulMobColor else tracerConfig.hostileMobColor
         if (tracerConfig.mobIsShown(entity.type))
             RenderUtils.renderSingleLine(
-                    stack, buffer!!, playerPos!!, center!!, color, tracerConfig.alpha
+                stack, buffer!!, playerPos!!, center!!, color, tracerConfig.alpha
             )
     }
 

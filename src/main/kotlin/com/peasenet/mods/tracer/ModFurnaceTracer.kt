@@ -19,9 +19,8 @@
  */
 package com.peasenet.mods.tracer
 
-import com.peasenet.main.GavinsMod
 import com.peasenet.mods.Type
-import com.peasenet.settings.ColorSetting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.event.data.EntityRender
@@ -34,12 +33,11 @@ import net.minecraft.block.entity.FurnaceBlockEntity
  */
 class ModFurnaceTracer : ModTracer(Type.FURNACE_TRACER) {
     init {
-        val colorSetting = ColorSetting(
-                "gavinsmod.settings.tracer.furnace.color",
-                GavinsMod.tracerConfig.furnaceColor
-        )
+        val colorSetting = SettingBuilder()
+            .setTitle("gavinsmod.settings.tracer.furnace.color")
+            .setColor(tracerConfig.furnaceColor)
+            .buildColorSetting()
         colorSetting.setCallback { tracerConfig.furnaceColor = colorSetting.color }
-        colorSetting.color = GavinsMod.tracerConfig.furnaceColor
         addSetting(colorSetting)
     }
 

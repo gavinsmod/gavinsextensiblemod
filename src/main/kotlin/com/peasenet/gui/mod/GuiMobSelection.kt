@@ -20,8 +20,8 @@
 
 package com.peasenet.gui.mod
 
-import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.gavui.Gui
+import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiClick
 import com.peasenet.gavui.GuiToggle
 import com.peasenet.gavui.color.Colors
@@ -163,19 +163,39 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
         val screenHeight = GavinsModClient.minecraftClient.window.scaledHeight
         x = screenWidth - screenWidth / 2 - pageWidth / 2
         y = screenHeight - screenHeight / 2 - pageHeight / 2
-        box = Gui(PointF(x.toFloat(), y.toFloat()), pageWidth, pageHeight, Text.literal(""))
-        box.setBackground(Colors.INDIGO)
+//        box = Gui(PointF(x.toFloat(), y.toFloat()), pageWidth, pageHeight, Text.literal(""))
+//        box.setBackground(Colors.INDIGO)
+        box = GuiBuilder()
+            .setTopLeft(PointF(x.toFloat(), y.toFloat()))
+            .setWidth(pageWidth.toFloat())
+            .setHeight(pageHeight.toFloat())
+            .setBackgroundColor(Colors.INDIGO)
+            .setHoverable(false)
+            .build()
         parent = GavinsMod.guiSettings
-        box.isHoverable = false
         items = ArrayList()
         Registries.ENTITY_TYPE.forEach {
             val spawnEgg = SpawnEggItem.forEntity(it)
             if (spawnEgg != null) items.add(spawnEgg.defaultStack)
         }
         visibleItems = items
-        nextButton = GuiClick(PointF((x + pageWidth - 30f), (y + pageHeight).toFloat()), 30, 10, Text.literal("Next"))
+//        nextButton = GuiClick(PointF((x + pageWidth - 30f), (y + pageHeight).toFloat()), 30, 10, Text.literal("Next"))
+        nextButton = GuiBuilder()
+            .setTopLeft(PointF((x + pageWidth - 30f), (y + pageHeight).toFloat()))
+            .setWidth(30f)
+            .setHeight(10f)
+            .setTitle(Text.literal("Next"))
+            .setCallback { pageUp() }
+            .buildClick()
         nextButton.setCallback { pageUp() }
-        prevButton = GuiClick(PointF(x.toFloat(), (y + pageHeight).toFloat()), 30, 10, Text.literal("Prev"))
+//        prevButton = GuiClick(PointF(x.toFloat(), (y + pageHeight).toFloat()), 30, 10, Text.literal("Prev"))
+        prevButton = GuiBuilder()
+            .setTopLeft(PointF(x.toFloat(), (y + pageHeight).toFloat()))
+            .setWidth(30f)
+            .setHeight(10f)
+            .setTitle(Text.literal("Prev"))
+            .setCallback { pageDown() }
+            .buildClick()
         prevButton.setCallback { pageDown() }
         val searchWidth = searchMaxWidth.coerceAtMost(pageWidth)
         search = object :
@@ -245,9 +265,9 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
 
     override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
         val matrixStack = drawContext.matrices
-        guis.forEach { it.render(drawContext, textRenderer, mouseX, mouseY, delta) }
+//        guis.forEach { it.render(drawContext, textRenderer, mouseX, mouseY, delta) }
         search.render(drawContext, mouseX, mouseY, delta)
-        RenderSystem.disableBlend()
+//        RenderSystem.disableBlend()
         for (i in 0 until itemsPerPage) {
             if ((pageOffset + i) > visibleItems.size - 1) break
             val block = visibleItems[pageOffset + i]
@@ -275,10 +295,9 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
                 GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack, 1f)
                 drawContext.drawTooltip(textRenderer, Text.translatable(block.translationKey), mouseX, mouseY)
             }
-//            client!!.(matrixStack, block, blockX, blockY)
             drawContext.drawItem(block, blockX, blockY)
         }
-        RenderSystem.enableBlend()
+//        RenderSystem.enableBlend()
         super.render(drawContext, mouseX, mouseY, delta)
     }
 
