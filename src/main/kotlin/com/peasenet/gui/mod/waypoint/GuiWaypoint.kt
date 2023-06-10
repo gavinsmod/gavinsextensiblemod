@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023. Gavin Pease and contributors.
+ * Copyright (c) 2022-2022. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
@@ -199,6 +199,10 @@ class GuiWaypoint : GuiElement {
     constructor(w: Waypoint) : super(Text.translatable("gavinsmod.mod.render.waypoints")) {
         this.w = w
         waypointToggle.value = w.isEnabled
+        this.colorCycle = SettingBuilder()
+                .setTitle("gavinsmod.settings.render.waypoints.color")
+                .setColor(Colors.BLUE)
+                .buildColorSetting()
         colorCycle.color = w.color!!
         colorCycle.setColorIndex(Colors.getColorIndex(w.color!!))
         overworldToggle.value = w.hasDimension(Dimension.OVERWORLD)
