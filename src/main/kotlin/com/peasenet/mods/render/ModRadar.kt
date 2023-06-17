@@ -38,6 +38,7 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.mob.MobEntity
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -364,6 +365,8 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
          */
         private fun updateScaleText(setting: ClickSetting, value: Int) {
 //            setting.setTitle(setting.gui.title.str.append(Text.literal(" (%s)".format(value))))
+            setting.gui.title =
+                (Text.translatable(setting.gui.translationKey).append(Text.literal(" (%s)".format(value))))
         }
 
         val pointOffset: Float

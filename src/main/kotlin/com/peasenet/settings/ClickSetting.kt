@@ -47,6 +47,7 @@ class ClickSetting(builder: SettingBuilder) : Setting() {
             .setHoverable(builder.isHoverable())
             .setBackgroundColor(builder.getColor())
             .setTransparency(builder.getTransparency())
+            .setTranslationKey(builder.getTranslationKey())
             .setSymbol(builder.getSymbol())
             .buildClick()
     }

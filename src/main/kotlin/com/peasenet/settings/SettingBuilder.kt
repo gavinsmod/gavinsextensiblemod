@@ -37,7 +37,7 @@ import net.minecraft.text.Text
  */
 class SettingBuilder {
     private var symbol: Char = 0.toChar()
-    private lateinit var translationKey: String
+    private var translationKey: String = ""
     private var color: Color = Colors.INDIGO
     private var state: Boolean = false
     private var value: Float = 0f
