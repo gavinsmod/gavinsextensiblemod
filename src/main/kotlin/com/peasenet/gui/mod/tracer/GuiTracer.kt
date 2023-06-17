@@ -67,7 +67,7 @@ class GuiTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtrace
             .setTitle("gavinsmod.settings.tracer.mob.hostile")
             .setState(GavinsMod.tracerConfig.showHostileMobs)
             .setTopLeft(pos)
-            .buildToggle()
+            .buildToggleSetting()
         peacefulToggle.setCallback { GavinsMod.tracerConfig.showHostileMobs = peacefulToggle.value }
         pos = pos.add(0f, 12f)
 
@@ -75,7 +75,7 @@ class GuiTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtrace
             .setTitle("gavinsmod.settings.tracer.mob.peaceful")
             .setState(GavinsMod.tracerConfig.showPeacefulMobs)
             .setTopLeft(pos)
-            .buildToggle()
+            .buildToggleSetting()
         hostileToggle.setCallback { GavinsMod.tracerConfig.showPeacefulMobs = hostileToggle.value }
         super.init()
     }

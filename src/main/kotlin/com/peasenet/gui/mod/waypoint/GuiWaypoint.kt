@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022. Gavin Pease and contributors.
+ * Copyright (c) 2022-2023. Gavin Pease and contributors.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction, including
@@ -20,6 +20,9 @@
 package com.peasenet.gui.mod.waypoint
 
 import com.peasenet.gavui.Gui
+import com.peasenet.gavui.GuiBuilder
+import com.peasenet.gavui.GuiClick
+import com.peasenet.gavui.GuiToggle
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GavUISettings
@@ -29,10 +32,8 @@ import com.peasenet.main.GavinsModClient.Companion.minecraftClient
 import com.peasenet.main.GavinsModClient.Companion.player
 import com.peasenet.main.Mods.Companion.getMod
 import com.peasenet.mods.render.waypoints.Waypoint
-import com.peasenet.settings.ClickSetting
 import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.SettingBuilder
-import com.peasenet.settings.ToggleSetting
 import com.peasenet.util.Dimension
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.widget.TextFieldWidget
@@ -72,36 +73,46 @@ class GuiWaypoint : GuiElement {
     /**
      * The button used to save the waypoint.
      */
-    private var saveSettings = ClickSetting("gavinsmod.settings.save")
+    private lateinit var saveSettings: GuiClick
 
     /**
      * The button used to cancel the waypoint.
      */
-    private var cancelSettings = ClickSetting("gavinsmod.settings.cancel")
+    private lateinit var cancelSettings: GuiClick
 
     /**
      * The button used to delete the waypoint.
      */
-    private var deleteSettings = ClickSetting("gavinsmod.settings.delete")
+    private lateinit var deleteSettings: GuiClick
 
     /**
      * The button used to toggle the waypoint's visibility.
      */
-    private var waypointToggle = ToggleSetting("gavinsmod.settings.enabled")
+//    private var waypointToggle = ToggleSetting("gavinsmod.settings.enabled")
+    private lateinit var waypointToggle: GuiToggle
 
     /**
      * The button used to toggle the waypoint's esp.
      */
-    private var espToggle = ToggleSetting("gavinsmod.settings.esp")
+    private var espToggle: GuiToggle = GuiBuilder()
+        .setTitle("gavinsmod.settings.esp")
+        .buildToggle()
 
-    /**
-     * The button used to toggle the waypoint's tracer.
-     */
-    private var tracerToggle = ToggleSetting("gavinsmod.settings.tracer")
+    private var tracerToggle: GuiToggle = GuiBuilder()
+        .setTitle("gavinsmod.settings.tracer")
+        .buildToggle()
 
-    private var overworldToggle = ToggleSetting("gavinsmod.settings.overworld")
-    private var netherToggle = ToggleSetting("gavinsmod.settings.nether")
-    private var endToggle = ToggleSetting("gavinsmod.settings.end")
+    private var overworldToggle: GuiToggle = GuiBuilder()
+        .setTitle("gavinsmod.settings.overworld")
+        .buildToggle()
+
+    private var netherToggle: GuiToggle = GuiBuilder()
+        .setTitle("gavinsmod.settings.nether")
+        .buildToggle()
+
+    private var endToggle: GuiToggle = GuiBuilder()
+        .setTitle("gavinsmod.settings.end")
+        .buildToggle()
 
     /**
      * The background box.
@@ -142,53 +153,55 @@ class GuiWaypoint : GuiElement {
      */
     private var w: Waypoint?
 
+
     /**
      * Creates a gui that allows the user to add a new waypoint.
      */
     constructor() : super(Text.translatable("gavinsmod.mod.render.waypoints")) {
-        this.colorCycle = SettingBuilder()
-            .setTitle("gavinsmod.settings.render.waypoints.color")
-            .setColor(Colors.BLUE)
-            .buildColorSetting()
         parent = GavinsMod.guiSettings
         w = null
-        cancelSettings.setCallback { client!!.setScreen(parent) }
+        setup()
+//        cancelSettings.setCallback { client!!.setScreen(parent) }
         guis.add(colorCycle.gui)
         val rand = Colors.getRandomColor()
         colorCycle.setColorIndex(rand)
         colorCycle.color = Colors.COLORS[rand]
-        waypointToggle.value = true
-        espToggle.value = true
-        tracerToggle.value = true
-        guis.add(saveSettings.gui)
-        guis.add(cancelSettings.gui)
-        guis.add(deleteSettings.gui)
-        guis.add(waypointToggle.gui)
-        guis.add(espToggle.gui)
-        guis.add(tracerToggle.gui)
-        guis.add(overworldToggle.gui)
-        guis.add(netherToggle.gui)
-        guis.add(endToggle.gui)
+        waypointToggle.setState(true)
+        espToggle.setState(true)
+        tracerToggle.setState(true)
+        guis.add(saveSettings)
+        guis.add(cancelSettings)
+        guis.add(deleteSettings)
+        guis.add(waypointToggle)
+        guis.add(espToggle)
+        guis.add(tracerToggle)
+        guis.add(overworldToggle)
+        guis.add(netherToggle)
+        guis.add(endToggle)
         saveSettings.setCallback {
-            val flooredPos = flooredPlayerPos
-            w = Waypoint(flooredPos)
-            w!!.setName(textField.text)
-            w!!.color = colorCycle.color
-            w!!.isEnabled = waypointToggle.value
-            w!!.isEspEnabled = espToggle.value
-            w!!.isTracerEnabled = tracerToggle.value
-            w!!.x = xCoordinate.text.toInt()
-            w!!.y = yCoordinate.text.toInt()
-            w!!.z = zCoordinate.text.toInt()
-            if (overworldToggle.value) w!!.addDimension(Dimension.OVERWORLD)
-            if (netherToggle.value) w!!.addDimension(Dimension.NETHER)
-            if (endToggle.value) w!!.addDimension(Dimension.END)
-            GavinsMod.waypointConfig.addWaypoint(w!!)
-            getMod("waypoints").reloadSettings()
-            GavinsMod.guiSettings.reloadGui()
-            parent = GavinsMod.guiSettings
-            close()
+            saveCallback()
         }
+    }
+
+    private fun saveCallback() {
+        val flooredPos = flooredPlayerPos
+        w = Waypoint(flooredPos)
+        w!!.setName(textField.text)
+        w!!.color = colorCycle.color
+        w!!.isEnabled = waypointToggle.isOn
+        w!!.isEspEnabled = espToggle.isOn
+        w!!.isTracerEnabled = tracerToggle.isOn
+        w!!.x = xCoordinate.text.toInt()
+        w!!.y = yCoordinate.text.toInt()
+        w!!.z = zCoordinate.text.toInt()
+        if (overworldToggle.isOn) w!!.addDimension(Dimension.OVERWORLD)
+        if (netherToggle.isOn) w!!.addDimension(Dimension.NETHER)
+        if (endToggle.isOn) w!!.addDimension(Dimension.END)
+        GavinsMod.waypointConfig.addWaypoint(w!!)
+        getMod("waypoints").reloadSettings()
+        GavinsMod.guiSettings.reloadGui()
+        parent = GavinsMod.guiSettings
+        close()
     }
 
     /**
@@ -198,30 +211,27 @@ class GuiWaypoint : GuiElement {
      */
     constructor(w: Waypoint) : super(Text.translatable("gavinsmod.mod.render.waypoints")) {
         this.w = w
-        waypointToggle.value = w.isEnabled
-        this.colorCycle = SettingBuilder()
-                .setTitle("gavinsmod.settings.render.waypoints.color")
-                .setColor(Colors.BLUE)
-                .buildColorSetting()
+        setup()
+        waypointToggle.setState(w.isEnabled)
         colorCycle.color = w.color!!
         colorCycle.setColorIndex(Colors.getColorIndex(w.color!!))
-        overworldToggle.value = w.hasDimension(Dimension.OVERWORLD)
-        netherToggle.value = w.hasDimension(Dimension.NETHER)
-        endToggle.value = w.hasDimension(Dimension.END)
+        overworldToggle.setState(w.hasDimension(Dimension.OVERWORLD))
+        netherToggle.setState(w.hasDimension(Dimension.NETHER))
+        endToggle.setState(w.hasDimension(Dimension.END))
         saveSettings.setCallback {
             GavinsMod.waypointConfig.removeWaypoint(w)
             w.setName(textField.text)
             w.color = colorCycle.color
-            w.isEnabled = waypointToggle.value
-            w.isEspEnabled = espToggle.value
-            w.isTracerEnabled = tracerToggle.value
+            w.isEnabled = waypointToggle.isOn
+            w.isEspEnabled = espToggle.isOn
+            w.isTracerEnabled = tracerToggle.isOn
             w.x = xCoordinate.text.toInt()
             w.y = yCoordinate.text.toInt()
             w.z = zCoordinate.text.toInt()
             w.clearDimensions()
-            if (overworldToggle.value) w.addDimension(Dimension.OVERWORLD)
-            if (netherToggle.value) w.addDimension(Dimension.NETHER)
-            if (endToggle.value) w.addDimension(Dimension.END)
+            if (overworldToggle.isOn) w.addDimension(Dimension.OVERWORLD)
+            if (netherToggle.isOn) w.addDimension(Dimension.NETHER)
+            if (endToggle.isOn) w.addDimension(Dimension.END)
             GavinsMod.waypointConfig.addWaypoint(w)
             getMod("waypoints").reloadSettings()
             GavinsMod.guiSettings.reloadGui()
@@ -235,18 +245,18 @@ class GuiWaypoint : GuiElement {
             GavinsMod.guiSettings.reloadGui()
             close()
         }
-        espToggle.value = w.isEspEnabled
-        tracerToggle.value = w.isTracerEnabled
+        espToggle.setState(w.isEspEnabled)
+        tracerToggle.setState(w.isTracerEnabled)
         guis.add(colorCycle.gui)
-        guis.add(saveSettings.gui)
-        guis.add(cancelSettings.gui)
-        guis.add(deleteSettings.gui)
-        guis.add(waypointToggle.gui)
-        guis.add(espToggle.gui)
-        guis.add(tracerToggle.gui)
-        guis.add(overworldToggle.gui)
-        guis.add(netherToggle.gui)
-        guis.add(endToggle.gui)
+        guis.add(saveSettings)
+        guis.add(cancelSettings)
+        guis.add(deleteSettings)
+        guis.add(waypointToggle)
+        guis.add(espToggle)
+        guis.add(tracerToggle)
+        guis.add(overworldToggle)
+        guis.add(netherToggle)
+        guis.add(endToggle)
     }
 
     private val flooredPlayerPos: Vec3i
@@ -255,48 +265,83 @@ class GuiWaypoint : GuiElement {
             return Vec3i(floor(playerPos.x).toInt(), floor(playerPos.y).toInt() + 1, floor(playerPos.z).toInt())
         }
 
-    override fun init() {
+    private fun setup() {
         parent = GavinsMod.guiSettings
         offsetX = minecraftClient.window.scaledWidth / 2 - width / 2
         offsetY = minecraftClient.window.scaledHeight / 2 - height / 2
         paddingX = offsetX + padding
         paddingY = offsetY + padding
-        box = Gui(PointF(offsetX.toFloat(), offsetY.toFloat()), width, height, Text.literal(""))
+        box = GuiBuilder()
+            .setTopLeft(PointF(offsetX.toFloat(), offsetY.toFloat()))
+            .setWidth(width.toFloat())
+            .setHeight(height.toFloat())
+            .setTitle(Text.literal(""))
+            .build()
         textField = TextFieldWidget(minecraftClient.textRenderer, offsetX + 40, offsetY + 10, 100, 10, Text.literal(""))
-
 
         focused = textField
         val buttonWidth = 42
         val wholeButtonWidth = buttonWidth * 3 + padding * 2
-        offsetY + 34 + padding
+        offsetY += 20 + padding
 
-        colorCycle.setWidth(wholeButtonWidth)
-        colorCycle.gui.position = PointF(paddingX.toFloat(), (offsetY + 20 + padding).toFloat())
-        offsetY += 34 + padding
+        colorCycle = SettingBuilder()
+            .setTitle("gavinsmod.settings.render.waypoints.color")
+            .setColor(Colors.BLUE)
+            .setTopLeft(PointF(paddingX, offsetY))
+            .setWidth((wholeButtonWidth).toFloat())
+            .setHoverable(true)
+            .buildColorSetting()
 
+        offsetY += 14;
+        waypointToggle = GuiBuilder()
+            .setTitle("gavinsmod.settings.enabled")
+            .setTopLeft(PointF(paddingX.toFloat(), (offsetY).toFloat()))
+            .setWidth((wholeButtonWidth).toFloat())
+            .setHoverable(true)
+            .buildToggle()
 
-//        offsetY = offsetY + padding + 48;
-        waypointToggle.gui.position = PointF(paddingX.toFloat(), (offsetY).toFloat())
-        waypointToggle.gui.width = wholeButtonWidth.toFloat()
         offsetY += 14
-        espToggle.gui.position = PointF(paddingX.toFloat(), (offsetY).toFloat())
-        espToggle.gui.width = (wholeButtonWidth / 2 - padding / 2).toFloat()
-        tracerToggle.gui.position =
-            PointF((offsetX + padding + padding / 2 + wholeButtonWidth / 2).toFloat(), (offsetY).toFloat())
-        tracerToggle.gui.width = (wholeButtonWidth / 2 - padding / 2).toFloat()
+
+        espToggle = GuiBuilder()
+            .setTitle("gavinsmod.settings.esp")
+            .setTopLeft(PointF(paddingX.toFloat(), (offsetY).toFloat()))
+            .setWidth((wholeButtonWidth / 2 - padding / 2).toFloat())
+            .setHoverable(true)
+            .buildToggle()
+
+        tracerToggle = GuiBuilder()
+            .setTitle("gavinsmod.settings.tracer")
+            .setTopLeft(PointF((offsetX + padding + padding / 2 + wholeButtonWidth / 2).toFloat(), (offsetY).toFloat()))
+            .setWidth((wholeButtonWidth / 2 - padding / 2).toFloat())
+            .setHoverable(true)
+            .buildToggle()
+
         offsetY += 28
 
-        // render overworld, nether, and end buttons underneath each other
-        overworldToggle.gui.position = PointF(paddingX.toFloat(), (offsetY).toFloat())
-        overworldToggle.gui.width = wholeButtonWidth.toFloat()
+        overworldToggle = GuiBuilder()
+            .setTitle("gavinsmod.settings.overworld")
+            .setTopLeft(PointF(paddingX.toFloat(), (offsetY).toFloat()))
+            .setWidth(wholeButtonWidth.toFloat())
+            .setHoverable(true)
+            .buildToggle()
+
+
+        offsetY += 14
+        netherToggle = GuiBuilder()
+            .setTitle("gavinsmod.settings.nether")
+            .setTopLeft(PointF(paddingX.toFloat(), (offsetY).toFloat()))
+            .setWidth(wholeButtonWidth.toFloat())
+            .setHoverable(true)
+            .buildToggle()
+
         offsetY += 14
 
-        netherToggle.gui.position = PointF(paddingX.toFloat(), (offsetY).toFloat())
-        netherToggle.gui.width = wholeButtonWidth.toFloat()
-        offsetY += 14
-
-        endToggle.gui.position = PointF(paddingX.toFloat(), (offsetY).toFloat())
-        endToggle.gui.width = wholeButtonWidth.toFloat()
+        endToggle = GuiBuilder()
+            .setTitle("gavinsmod.settings.end")
+            .setTopLeft(PointF(paddingX.toFloat(), (offsetY).toFloat()))
+            .setWidth(wholeButtonWidth.toFloat())
+            .setHoverable(true)
+            .buildToggle()
         offsetY += 14
         xCoordinate = TextFieldWidget(minecraftClient.textRenderer, paddingX + 11, offsetY, 30, 10, Text.literal(""))
         yCoordinate = TextFieldWidget(minecraftClient.textRenderer, paddingX + 56, offsetY, 30, 10, Text.literal(""))
@@ -321,20 +366,29 @@ class GuiWaypoint : GuiElement {
         addSelectableChild(yCoordinate)
         addSelectableChild(zCoordinate)
         offsetY += 14
-        saveSettings.gui.position = PointF(paddingX.toFloat(), offsetY.toFloat())
-        saveSettings.gui.width = buttonWidth.toFloat()
-        saveSettings.gui.setBackground(Colors.GREEN)
-        saveSettings.gui.isHoverable = true
-        cancelSettings.gui.position = PointF((paddingX + padding + buttonWidth).toFloat(), offsetY.toFloat())
-        cancelSettings.gui.width = buttonWidth.toFloat()
-        cancelSettings.gui.setBackground(Colors.YELLOW)
-        cancelSettings.gui.isHoverable = true
-        deleteSettings.gui.position = PointF((paddingX + padding * 2 + buttonWidth * 2).toFloat(), offsetY.toFloat())
-        deleteSettings.gui.width = buttonWidth.toFloat()
-        deleteSettings.gui.setBackground(Colors.RED)
-        deleteSettings.gui.isHoverable = true
+        saveSettings = GuiBuilder()
+            .setTitle("gavinsmod.settings.save")
+            .setTopLeft(PointF(paddingX.toFloat(), offsetY.toFloat()))
+            .setWidth(buttonWidth.toFloat())
+            .setBackgroundColor(Colors.GREEN)
+            .setHoverable(true)
+            .buildClick()
+
+        cancelSettings = GuiBuilder()
+            .setTitle("gavinsmod.settings.cancel")
+            .setTopLeft(PointF((paddingX + padding + buttonWidth).toFloat(), offsetY.toFloat()))
+            .setWidth(buttonWidth.toFloat())
+            .setBackgroundColor(Colors.YELLOW)
+            .setHoverable(true)
+            .buildClick()
+        deleteSettings = GuiBuilder()
+            .setTitle("gavinsmod.settings.delete")
+            .setTopLeft(PointF((paddingX + padding * 2 + buttonWidth * 2).toFloat(), offsetY.toFloat()))
+            .setWidth(buttonWidth.toFloat())
+            .setBackgroundColor(Colors.RED)
+            .setHoverable(true)
+            .buildClick()
         box!!.isHoverable = false
-        super.init()
     }
 
     private fun checkIfSignedInt(): Predicate<String> {
@@ -356,17 +410,14 @@ class GuiWaypoint : GuiElement {
     }
 
     override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        val matrixStack = drawContext.matrices
         offsetY = minecraftClient.window.scaledHeight / 2 - height / 2
-
         box!!.render(drawContext, client!!.textRenderer, mouseX, mouseY, delta)
-
         guis.forEach(Consumer { obj: Gui -> obj.show() })
         drawContext.drawText(
             client!!.textRenderer,
             Text.literal("Name: "),
             paddingX,
-            (offsetY + 11),
+            (textField.y + 1),
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
         )
@@ -374,7 +425,7 @@ class GuiWaypoint : GuiElement {
             client!!.textRenderer,
             Text.literal("X:"),
             (paddingX + 1),
-            (offsetY + 14 * 9 - 2),
+            (xCoordinate.y + 1),
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
         )
@@ -382,7 +433,7 @@ class GuiWaypoint : GuiElement {
             client!!.textRenderer,
             Text.literal("Y:"),
             (paddingX + 46),
-            (offsetY + 14 * 9 - 2),
+            (yCoordinate.y + 1),
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
         )
@@ -390,7 +441,7 @@ class GuiWaypoint : GuiElement {
             client!!.textRenderer,
             Text.literal("Z:"),
             (paddingX + 91),
-            (offsetY + 14 * 9 - 2),
+            (zCoordinate.y + 1),
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
         )
@@ -398,7 +449,7 @@ class GuiWaypoint : GuiElement {
             client!!.textRenderer,
             Text.literal("Dimensions"),
             (paddingX + 1),
-            (offsetY + 14 * 5 - 2),
+            (espToggle.y + 15).toInt(),
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
         )

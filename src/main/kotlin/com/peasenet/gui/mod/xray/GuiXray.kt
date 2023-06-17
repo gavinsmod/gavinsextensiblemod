@@ -20,6 +20,7 @@
 package com.peasenet.gui.mod.xray
 
 import com.peasenet.gavui.Gui
+import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiClick
 import com.peasenet.gavui.GuiToggle
 import com.peasenet.gavui.color.Colors
@@ -123,8 +124,14 @@ class GuiXray
         height = (screenHeight * 0.78f).toInt()
         x = screenWidth / 20
         y = screenHeight / 20 + 20
-        box = Gui(PointF(x.toFloat(), y.toFloat()), width, height, Text.literal(""))
-        box.setBackground(Colors.INDIGO)
+        box = GuiBuilder()
+            .setTopLeft(x, y)
+            .setWidth(width.toFloat())
+            .setHeight(height.toFloat())
+            .setBackgroundColor(Colors.INDIGO)
+            .setTransparency(0.5f)
+            .setHoverable(false)
+            .build()
         val blocksPerColumn = height / 18
         blocksPerRow = width / 18
         blocksPerPage = blocksPerRow * blocksPerColumn
@@ -145,39 +152,54 @@ class GuiXray
                 return pressed
             }
         }
-        prevButton = GuiClick(PointF((x + (width shr 1) - 89).toFloat(), (y - 16).toFloat()), 13, 13, Text.empty())
-        prevButton.setCallback { pageDown() }
-        nextButton = GuiClick(PointF((x + width / 2 + 76).toFloat(), (y - 16).toFloat()), 13, 13, Text.empty())
-        nextButton.setCallback { pageUp() }
-        enabledOnly =
-            GuiToggle(PointF((x + width / 2f - 170f), (y - 15f)), 80, 10, Text.literal("Enabled Only"))
-        enabledOnly.setCallback {
-            page = 0
-            updateBlockList()
-        }
+        prevButton = GuiBuilder()
+            .setTopLeft(PointF(x + (width shr 1) - 89f, y - 16f))
+            .setWidth(13f)
+            .setHeight(13f)
+            .setCallback(this::pageDown)
+            .setHoverable(true)
+            .buildClick()
+        nextButton = GuiBuilder()
+            .setTopLeft(PointF(x + width / 2 + 76f, y - 16f))
+            .setWidth(13f)
+            .setHeight(13f)
+            .setCallback(this::pageUp)
+            .setHoverable(true)
+            .buildClick()
+        enabledOnly = GuiBuilder()
+            .setTopLeft(PointF(x + width / 2f - 170f, y - 15f))
+            .setWidth(80f)
+            .setHeight(10f)
+            .setTitle(Text.literal("Enabled Only"))
+            .setHoverable(true)
+            .setCallback { page = 0; updateBlockList() }
+            .buildToggle()
         val titleW = textRenderer.getWidth(Text.translatable("gavinsmod.mod.render.xray")) + 16
         val resetText = Text.translatable("gavinsmod.settings.reset")
         val width = textRenderer.getWidth(resetText)
         if (resetPos == null) resetPos = PointF(titleW.toFloat(), 1f)
         if (resetWidth.toDouble() == 0.0) resetWidth = (width + 4).toFloat()
-        resetButton = GuiClick(resetPos, width + 8, 10, resetText)
-        resetButton.title = resetText
-        resetButton.width = resetWidth
-        resetButton.position = resetPos
+//        resetButton = GuiClick(resetPos, width + 8, 10, resetText)
+        resetButton = GuiBuilder()
+            .setTopLeft(resetPos)
+            .setWidth(resetWidth)
+            .setHeight(10f)
+            .setTitle(resetText)
+            .setBackgroundColor(Colors.DARK_RED)
+            .setCallback(this::resetCallback)
+            .setHoverable(true)
+            .buildClick()
         resetButton.setDefaultPosition(resetButton.box)
-        resetButton.setBackground(Colors.DARK_RED)
-        resetButton.setCallback {
-
-            // get all experience dropping blocks, create a list of strings of block loot tables, and set the list to that.
-            GavinsMod.xrayConfig.loadDefaultBlocks()
-            updateBlockList()
-            page = 0
-            minecraftClient.worldRenderer.reload()
-        }
         addSelectableChild(search)
         updateBlockList()
-        box.isHoverable = false
         super.init()
+    }
+
+    private fun resetCallback() {
+        GavinsMod.xrayConfig.loadDefaultBlocks()
+        updateBlockList()
+        page = 0
+        minecraftClient.worldRenderer.reload()
     }
 
     /**
@@ -219,17 +241,20 @@ class GuiXray
             val blockX = i % blocksPerRow * 18 + x + 2
             val blockY = i / blocksPerRow * 18 + y + 5
             val boxF = BoxF(blockX.toFloat(), blockY.toFloat(), 16f, 16f)
+            var isHovering = isHovering(mouseX, blockX, mouseY, blockY)
             if (GavinsMod.xrayConfig.isInList(block)) {
+                var c = GavUISettings.getColor("gui.color.enabled")
+                if (isHovering)
+                    c = c.brighten(0.75f)
                 drawContext.fill(
                     blockX,
                     blockY,
                     blockX + 16,
                     blockY + 16,
-                    GavUISettings.getColor("gui.color.enabled").getAsInt(0.5f)
+                    c.getAsInt(0.5f)
                 )
                 GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack, 1f)
-            }
-            if (mouseX > blockX && mouseX < blockX + 16 && mouseY > blockY && mouseY < blockY + 16) {
+            } else if (isHovering && !GavinsMod.xrayConfig.isInList(block)) {
                 drawContext.fill(
                     blockX,
                     blockY,
@@ -238,8 +263,9 @@ class GuiXray
                     GavUISettings.getColor("gui.color.foreground").brighten(0.5f).getAsInt(0.5f)
                 )
                 GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack, 1f)
-                drawContext.drawTooltip(client!!.textRenderer, Text.translatable(stack.translationKey), mouseX, mouseY)
             }
+            if (isHovering)
+                drawContext.drawTooltip(client!!.textRenderer, Text.translatable(stack.translationKey), mouseX, mouseY)
             drawContext.drawItem(stack, blockX, blockY)
         }
         box.isHoverable = false
@@ -267,6 +293,9 @@ class GuiXray
         )
         super.render(drawContext, mouseX, mouseY, delta)
     }
+
+    private fun isHovering(mouseX: Int, blockX: Int, mouseY: Int, blockY: Int) =
+        mouseX > blockX && mouseX < blockX + 16 && mouseY > blockY && mouseY < blockY + 16
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         // check if the mouse is over the search box

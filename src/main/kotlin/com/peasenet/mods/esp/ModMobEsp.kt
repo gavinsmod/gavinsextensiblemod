@@ -22,7 +22,7 @@ package com.peasenet.mods.esp
 import com.peasenet.gui.mod.esp.GuiEsp
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
-import com.peasenet.settings.ClickSetting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.EntityRender
 import com.peasenet.util.listeners.EntityRenderListener
@@ -35,8 +35,12 @@ import net.minecraft.entity.mob.MobEntity
  */
 class ModMobEsp : Mod(Type.MOB_ESP), EntityRenderListener {
     init {
-        val menu = ClickSetting("gavinsmod.settings.mobesp")
-        menu.setCallback { client.setScreen(GuiEsp()) }
+//        val menu = ClickSetting("gavinsmod.settings.mobesp")
+//        menu.setCallback { client.setScreen(GuiEsp()) }
+        val menu = SettingBuilder()
+            .setTitle("gavinsmod.settings.mobesp")
+            .setCallback { client.setScreen(GuiEsp()) }
+            .buildClickSetting()
         addSetting(menu)
     }
 

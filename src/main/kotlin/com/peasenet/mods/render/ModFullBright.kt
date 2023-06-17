@@ -23,7 +23,6 @@ import com.peasenet.main.GavinsMod
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
-import com.peasenet.settings.ToggleSetting
 import com.peasenet.util.RenderUtils
 
 /**
@@ -33,13 +32,28 @@ import com.peasenet.util.RenderUtils
  */
 class ModFullBright : Mod(Type.FULL_BRIGHT) {
     init {
-        val gammaFade = ToggleSetting("gavinsmod.settings.render.gammafade")
-        gammaFade.setCallback { fullbrightConfig.gammaFade = gammaFade.value }
-        gammaFade.value = fullbrightConfig.gammaFade
-        val autoFullBright = ToggleSetting("gavinsmod.settings.render.autofullbright")
-        autoFullBright.setCallback { fullbrightConfig.autoFullBright = autoFullBright.value }
-        autoFullBright.value = fullbrightConfig.autoFullBright
+//        val gammaFade = ToggleSetting("gavinsmod.settings.render.gammafade")
+//        gammaFade.setCallback { fullbrightConfig.gammaFade = gammaFade.value }
+//        gammaFade.value = fullbrightConfig.gammaFade
+//        val autoFullBright = ToggleSetting("gavinsmod.settings.render.autofullbright")
+//        autoFullBright.setCallback { fullbrightConfig.autoFullBright = autoFullBright.value }
+//        autoFullBright.value = fullbrightConfig.autoFullBright
 
+        val gammaFade = SettingBuilder()
+            .setTitle("gavinsmod.settings.render.fullbright.gammafade")
+            .setState(fullbrightConfig.gammaFade)
+//            .setWidth(100)
+//            .setHeight(10)
+            .buildToggleSetting()
+        gammaFade.setCallback { fullbrightConfig.gammaFade = gammaFade.value }
+
+        val autoFullBright = SettingBuilder()
+            .setTitle("gavinsmod.settings.render.fullbright.autofullbright")
+            .setState(fullbrightConfig.autoFullBright)
+//            .setWidth(100)
+//            .setHeight(10)
+            .buildToggleSetting()
+        autoFullBright.setCallback { fullbrightConfig.autoFullBright = autoFullBright.value }
 
 //        val gamma = SlideSetting("gavinsmod.settings.render.fullbright.gamma")
 //        gamma.setCallback { fullbrightConfig.gamma = gamma.value }

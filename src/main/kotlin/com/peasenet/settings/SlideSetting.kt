@@ -53,8 +53,4 @@ class SlideSetting(slider: GuiSlider) : Setting() {
         set(alpha) {
             gui.value = alpha
         }
-
-    init {
-        gui.setCallback { onClick() }
-    }
 }

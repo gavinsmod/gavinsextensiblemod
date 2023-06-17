@@ -21,7 +21,9 @@
 package com.peasenet.settings
 
 import com.peasenet.gavui.GuiBuilder
+import com.peasenet.gavui.GuiDropdown.Direction
 import com.peasenet.gavui.color.Color
+import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.callbacks.GuiCallback
 import net.minecraft.text.Text
@@ -34,37 +36,121 @@ import net.minecraft.text.Text
  * @version 05/18/2023
  */
 class SettingBuilder {
+    private var symbol: Char = 0.toChar()
     private lateinit var translationKey: String
-    private lateinit var color: Color
+    private var color: Color = Colors.INDIGO
     private var state: Boolean = false
     private var value: Float = 0f
     private lateinit var title: Text
     private var callback: GuiCallback? = null
-    private var width: Int = 0
-    private var height: Int = 0
+    private var width: Float = 0f
+    private var height: Float = 0f
     private var guiPosition: PointF = PointF(0f, 0f)
     private var transparency: Float = -1f
-    var maxChildren: Int = 4
+    private var direction: Direction = Direction.RIGHT
+    private var hoverable: Boolean = true
+    private var maxChildren: Int = 4
+    private var defaultMaxChildren: Int = 4
 
-    fun setTranslationKey(translationKey: String): SettingBuilder {
-        this.translationKey = translationKey
-        setTitle(translationKey)
+    fun setHoverable(hoverable: Boolean): SettingBuilder {
+        this.hoverable = hoverable
         return this
+    }
+
+    fun isHoverable(): Boolean {
+        return this.hoverable
+    }
+
+    fun setDirection(direction: Direction): SettingBuilder {
+        this.direction = direction
+        return this
+    }
+
+    fun getDirection(): Direction {
+        return this.direction
+    }
+
+    fun setTopLeft(x: Float, y: Float): SettingBuilder {
+        this.guiPosition = PointF(x, y)
+        return this
+    }
+
+    fun setTopLeft(point: PointF): SettingBuilder {
+        this.guiPosition = point
+        return this
+    }
+
+    fun getTopLeft(): PointF {
+        return this.guiPosition
+    }
+
+    fun getMaxChildren(): Int {
+        return this.maxChildren
+    }
+
+    fun setMaxChildren(maxChildren: Int): SettingBuilder {
+        this.maxChildren = maxChildren
+        return this
+    }
+
+    fun getDefaultMaxChildren(): Int {
+        return this.defaultMaxChildren
+    }
+
+    fun setDefaultMaxChildren(defaultMaxChildren: Int): SettingBuilder {
+        this.defaultMaxChildren = defaultMaxChildren
+        return this
+    }
+
+    fun setWidth(width: Float): SettingBuilder {
+        this.width = width
+        return this
+    }
+
+    fun setWidth(width: Int): SettingBuilder {
+        this.width = width.toFloat()
+        return this
+    }
+
+    fun setHeight(height: Int): SettingBuilder {
+        this.height = height.toFloat()
+        return this
+    }
+
+    fun getTitle(): Text {
+        return this.title
+    }
+
+    fun setHeight(height: Float): SettingBuilder {
+        this.height = height
+        return this
+    }
+
+    fun getHeight(): Float {
+        return this.height
+    }
+
+    fun getWidth(): Float {
+        return this.width
+    }
+
+    fun setTitle(translationKey: String): SettingBuilder {
+        this.translationKey = translationKey
+        setTitle(Text.translatable(translationKey))
+        return this
+    }
+
+    fun setTitle(title: Text): SettingBuilder {
+        this.title = title
+        return this
+    }
+
+    fun getTranslationKey(): String {
+        return this.translationKey
     }
 
     fun setColor(color: Color): SettingBuilder {
         this.color = color
-        return this
-    }
-
-    fun setTitle(text: Text): SettingBuilder {
-        this.title = text
-        return this
-    }
-
-    fun setGuiSize(width: Int, height: Int): SettingBuilder {
-        this.width = width
-        this.height = height
         return this
     }
 
@@ -73,68 +159,38 @@ class SettingBuilder {
         return this
     }
 
-    fun setTitle(translationKey: String): SettingBuilder {
-        this.title = Text.translatable(translationKey)
-        this.translationKey = translationKey
-        return this
-    }
-
-    fun setCallback(callback: GuiCallback): SettingBuilder {
-        this.callback = callback
-        return this
-    }
-
     fun setValue(value: Float): SettingBuilder {
         this.value = value
         return this
     }
 
-    fun setWidth(width: Int): SettingBuilder {
-        this.width = width
-        return this
-    }
-
-    fun setHeight(height: Int): SettingBuilder {
-        this.height = height
-        return this
-    }
 
     fun getState(): Boolean {
         return this.state
     }
 
-    fun getTranslationKey(): String {
-        return this.translationKey
-    }
-
-    fun setDefaultMaxChildren(child: Int): SettingBuilder {
-        this.maxChildren = child
-        return this
-    }
-
-    fun getDefaultMaxChildren(): Int {
-        return this.maxChildren
-    }
-
-    fun getTitle(): Text {
-        return this.title
+    fun getSymbol(): Char {
+        return this.symbol
     }
 
     fun getColor(): Color {
         return this.color
     }
 
+    fun buildColorSetting(): ColorSetting {
+        return ColorSetting(this)
+    }
 
-    fun buildToggle(): ToggleSetting {
-        val toggle = GuiBuilder()
-            .setWidth(90f)
-            .setHeight(10f)
-            .setIsOn(state)
-            .setTitle(title)
-            .setTopLeft(guiPosition)
-            .setTransparency(transparency)
-            .buildToggle()
-        return ToggleSetting(toggle)
+    fun buildToggleSetting(): ToggleSetting {
+        return ToggleSetting(this)
+    }
+
+    fun buildSubSetting(): SubSetting {
+        return SubSetting(this)
+    }
+
+    fun buildClickSetting(): ClickSetting {
+        return ClickSetting(this)
     }
 
     fun buildSlider(): SlideSetting {
@@ -151,24 +207,6 @@ class SettingBuilder {
         return SlideSetting.fromSlider(slider)
     }
 
-    fun getTopLeft(): PointF {
-        return this.guiPosition
-    }
-
-    fun setTopLeft(pos: PointF): SettingBuilder {
-        this.guiPosition = pos
-        return this
-    }
-
-    fun buildColorSetting(): ColorSetting {
-        return ColorSetting(this)
-    }
-
-    fun buildSubSetting(): SubSetting {
-        val subSetting = SubSetting(width, height, translationKey)
-        return subSetting
-    }
-
     fun getTransparency(): Float {
         return this.transparency
     }
@@ -178,5 +216,23 @@ class SettingBuilder {
         return this
     }
 
+    fun setBackgroundColor(color: Color): SettingBuilder {
+        this.color = color
+        return this
+    }
+
+    fun setCallback(function: GuiCallback): SettingBuilder {
+        this.callback = function
+        return this
+    }
+
+    fun setSymbol(symbol: Char): SettingBuilder {
+        this.symbol = symbol
+        return this
+    }
+
+    fun getCallback(): GuiCallback? {
+        return callback;
+    }
 
 }

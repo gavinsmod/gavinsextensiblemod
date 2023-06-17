@@ -26,7 +26,6 @@ import com.peasenet.main.GavinsModClient
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
-import com.peasenet.settings.ToggleSetting
 
 /**
  * @author gt3ch1
@@ -35,9 +34,14 @@ import com.peasenet.settings.ToggleSetting
  */
 class ModGuiSettings : Mod(Type.SETTINGS) {
     init {
-        val guiSounds = ToggleSetting("gavinsmod.settings.gui.sound")
+//        val guiSounds = ToggleSetting("gavinsmod.settings.gui.sound")
+//        guiSounds.setCallback { GavUISettings.add("gui.sound", guiSounds.value) }
+//        guiSounds.value = GavUISettings.getBool("gui.sound")
+        val guiSounds = SettingBuilder()
+            .setTitle("gavinsmod.settings.gui.sound")
+            .setState(GavUISettings.getBool("gui.sound"))
+            .buildToggleSetting()
         guiSounds.setCallback { GavUISettings.add("gui.sound", guiSounds.value) }
-        guiSounds.value = GavUISettings.getBool("gui.sound")
 
         val fgColor = GavUISettings.getColor("gui.color.foreground")
         val bgColor = GavUISettings.getColor("gui.color.background")
@@ -49,7 +53,6 @@ class ModGuiSettings : Mod(Type.SETTINGS) {
         val foregroundColorSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.gui.color.foreground")
             .setColor(fgColor)
-            .setTransparency(0.5f)
             .buildColorSetting()
         foregroundColorSetting.setCallback { GavUISettings.add("gui.color.foreground", foregroundColorSetting.color) }
 

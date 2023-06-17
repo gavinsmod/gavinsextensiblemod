@@ -57,8 +57,8 @@ class ModFreeCam : Mod(Type.FREECAM), PacketSendListener, WorldRenderListener, A
             .buildSlider()
         freeCamSpeed.setCallback { miscConfig.freeCamSpeed = freeCamSpeed.value }
         val subSetting = SettingBuilder()
-            .setWidth(100)
-            .setHeight(10)
+            .setWidth(100f)
+            .setHeight(10f)
             .setTitle(translationKey)
             .buildSubSetting()
         subSetting.add(freeCamSpeed)

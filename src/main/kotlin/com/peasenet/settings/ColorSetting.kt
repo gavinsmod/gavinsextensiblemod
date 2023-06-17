@@ -39,51 +39,25 @@ class ColorSetting(builder: SettingBuilder) : Setting() {
 
     init {
         gui = GuiBuilder()
-            .setWidth(90f)
+            .setWidth(builder.getWidth())
             .setHeight(10f)
             .setTitle(builder.getTitle())
             .setCycleSize(Colors.COLORS.size)
             .setCurrentCycleIndex(Colors.getColorIndex(builder.getColor()))
             .setBackgroundColor(builder.getColor())
-            .setTopLeft(builder.getTopLeft().x.toInt(), builder.getTopLeft().y.toInt())
+            .setTopLeft(builder.getTopLeft())
             .setTransparency(builder.getTransparency())
+            .setHoverable(builder.isHoverable())
             .buildCycle()
-        gui.setCallback {
+        gui.setOnClick {
             var index = gui.currentIndex
             if (index < 0)
                 index = Colors.COLORS.size - 1
             gui.currentIndex = index
             color = Colors.COLORS[index]
             gui.setBackground(Colors.COLORS[index])
-            onClick()
         }
     }
-
-
-//    /**
-//     * Creates a new cycle setting used for selecting a color.
-//     *
-//     * @param translationKey - The translation key of the setting.
-//     */
-//    init {
-//        gui = GuiBuilder()
-//            .setWidth(90f)
-//            .setHeight(10f)
-//            .setTitle(translationKey)
-//            .setCycleSize(Colors.COLORS.size)
-//            .setCurrentCycleIndex(Colors.getColorIndex(color))
-//            .setBackgroundColor(color)
-//            .buildCycle();
-//        gui.setCallback {
-//            var index = gui.currentIndex
-//            if (index < 0)
-//                index = Colors.COLORS.size - 1
-//            gui.currentIndex = index
-//            color = Colors.COLORS[index]
-//            gui.setBackground(color)
-//            onClick()
-//        }
-//    }
 
 
     /**

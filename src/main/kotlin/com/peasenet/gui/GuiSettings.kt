@@ -175,7 +175,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
             val tracerViewBob = SettingBuilder()
                 .setTitle("gavinsmod.settings.tracer.viewbobcancel")
                 .setState(GavinsMod.tracerConfig.viewBobCancel)
-                .buildToggle()
+                .buildToggleSetting()
             tracerViewBob.setCallback { GavinsMod.tracerConfig.viewBobCancel = tracerViewBob.value }
 
             espDropdown.addElement(espAlpha.gui)

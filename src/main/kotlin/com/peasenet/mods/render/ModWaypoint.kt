@@ -20,13 +20,13 @@
 package com.peasenet.mods.render
 
 import com.peasenet.gui.mod.waypoint.GuiWaypoint
+import com.peasenet.main.GavinsModClient
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
 import com.peasenet.mods.render.waypoints.Waypoint
 import com.peasenet.settings.ClickSetting
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.settings.SubSetting
-import com.peasenet.settings.ToggleSetting
 import com.peasenet.util.Dimension
 import com.peasenet.util.PlayerUtils
 import com.peasenet.util.RenderUtils
@@ -46,13 +46,6 @@ import java.util.function.Function
  */
 class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener {
     init {
-//        setting = SubSetting(100, 10, "gavinsmod.mod.render.waypoints")
-        setting = SettingBuilder()
-            .setWidth(100)
-            .setHeight(10)
-            .setTranslationKey("gavinsmod.mod.render.waypoints")
-            .buildSubSetting()
-        openMenu = ClickSetting("gavinsmod.settings.render.waypoints.add")
         reloadSettings()
     }
 
@@ -80,12 +73,15 @@ class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener 
         modSettings.clear()
 //        setting = SubSetting(setting.gui.width.toInt(), 10, "gavinsmod.mod.render.waypoints")
         setting = SettingBuilder()
-            .setWidth(setting.gui.width.toInt())
-            .setHeight(10)
-            .setTranslationKey("gavinsmod.mod.render.waypoints")
+            .setWidth(100f)
+            .setHeight(10f)
+            .setTitle("gavinsmod.mod.render.waypoints")
             .buildSubSetting()
-        openMenu.setCallback { client.setScreen(GuiWaypoint()) }
-        openMenu.gui.setSymbol('+')
+        openMenu = SettingBuilder()
+            .setTitle("gavinsmod.settings.render.waypoints.add")
+            .setCallback { client.setScreen(GuiWaypoint()) }
+            .setSymbol('+')
+            .buildClickSetting()
         addSetting(openMenu)
         // get all waypoints and add them to the menu
         val waypoints = waypointConfig.getLocations().stream()
@@ -99,12 +95,15 @@ class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener 
      * @param waypoint - The waypoint to edit.
      */
     private fun createWaypoint(waypoint: Waypoint) {
-        val clickSetting = ToggleSetting(Text.literal(waypoint.name))
-        clickSetting.setCallback {
-            client.setScreen(GuiWaypoint(waypoint))
-            clickSetting.value = waypoint.isEnabled
-        }
-        clickSetting.value = waypoint.isEnabled
+        val clickSetting = SettingBuilder()
+            .setTitle(Text.literal(waypoint.name))
+            .setCallback {
+                GavinsModClient.minecraftClient.setScreen(GuiWaypoint(waypoint))
+            }
+            .setHoverable(true)
+            .setBackgroundColor(waypoint.color!!)
+            .setTransparency(0.5f)
+            .buildClickSetting()
         addSetting(clickSetting)
     }
 

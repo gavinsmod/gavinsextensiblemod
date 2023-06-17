@@ -27,7 +27,7 @@ import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
-import com.peasenet.settings.ToggleSetting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.listeners.InGameHudRenderListener
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.resource.language.I18n
@@ -43,9 +43,14 @@ class ModGuiTextOverlay : Mod(Type.MOD_GUI_TEXT_OVERLAY), InGameHudRenderListene
     init {
 
         //NOTE: This isn't really the best place for this, but it works for now. this is for chat message toggles.
-        val chatMessage = ToggleSetting("gavinsmod.settings.misc.messages")
+//        val chatMessage = ToggleSetting("gavinsmod.settings.misc.messages")
+//        chatMessage.setCallback { miscConfig.isMessages = chatMessage.value }
+//        chatMessage.value = miscConfig.isMessages
+        val chatMessage = SettingBuilder()
+            .setTitle("gavinsmod.settings.misc.messages")
+            .setState(miscConfig.isMessages)
+            .buildToggleSetting()
         chatMessage.setCallback { miscConfig.isMessages = chatMessage.value }
-        chatMessage.value = miscConfig.isMessages
         addSetting(chatMessage)
     }
 

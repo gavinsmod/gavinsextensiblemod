@@ -21,7 +21,7 @@ package com.peasenet.mods.tracer
 
 import com.peasenet.gui.mod.tracer.GuiTracer
 import com.peasenet.mods.Type
-import com.peasenet.settings.ClickSetting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.event.data.EntityRender
@@ -34,8 +34,12 @@ import net.minecraft.entity.mob.MobEntity
  */
 class ModMobTracer : ModTracer(Type.MOB_TRACER) {
     init {
-        val menu = ClickSetting("gavinsmod.settings.mobtracer")
-        menu.setCallback { client.setScreen(GuiTracer()) }
+//        val menu = ClickSetting("gavinsmod.settings.mobtracer")
+//        menu.setCallback { client.setScreen(GuiTracer()) }
+        val menu = SettingBuilder()
+            .setTitle("gavinsmod.settings.mobtracer")
+            .setCallback { client.setScreen(GuiTracer()) }
+            .buildClickSetting()
         addSetting(menu)
     }
 

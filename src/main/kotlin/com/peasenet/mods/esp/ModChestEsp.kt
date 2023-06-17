@@ -45,8 +45,9 @@ class ModChestEsp : Mod(Type.CHEST_ESP), BlockEntityRenderListener {
             .setTitle("gavinsmod.settings.esp.chest.color")
             .setColor(espConfig.chestColor)
             .buildColorSetting()
-
-        colorSetting.setCallback { espConfig.chestColor = colorSetting.color }
+        colorSetting.setCallback {
+            espConfig.chestColor = colorSetting.color
+        }
         addSetting(colorSetting)
     }
 

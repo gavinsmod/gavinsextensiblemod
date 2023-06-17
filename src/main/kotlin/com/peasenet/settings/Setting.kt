@@ -20,72 +20,26 @@
 package com.peasenet.settings
 
 import com.peasenet.gavui.Gui
-import com.peasenet.util.callbacks.SettingsCallback
+import com.peasenet.gavui.GuiClick
+import com.peasenet.gavui.util.callbacks.GuiCallback
+import net.minecraft.text.Text
 
 /**
  * @author gt3ch1
  * @version 03-02-2023
  * A class that represents a mod setting. This class should not be instantiated directly.
  */
-abstract class Setting
-/**
- * Creates a new setting.
- *
- * @param translationKey - The translation key of this setting (ie, "gavinsmod.settings.xray")
- */
-{
-    /**
-     * The callback of the setting.
-     */
-    private var callback: SettingsCallback? = null
-    /**
-     * Gets the translation key for this setting.
-     *
-     * @return The translation key.
-     */
-
-    /**
-     * What to run when the setting is clicked. By specifying a callback, you can run code when the setting is clicked.
-     */
-    fun onClick() {
-        if (callback != null) callback!!.callback()
-    }
-
-
-    fun getTranslationKey(): String {
-        return gui!!.title.string
-    }
-
-    /**
-     * Gets the gui element for this setting.
-     *
-     * @return The gui element for this setting.
-     */
+abstract class Setting() {
     open val gui: Gui? = null
 
-    /**
-     * Sets the callback of the setting. This will be run when #onClick is called.
-     *
-     * @param callback - The callback method to run.
-     */
-    fun setCallback(callback: () -> Unit) {
-        this.callback = object : SettingsCallback {
-            override fun callback() {
-                callback()
-            }
+
+    fun setCallback(callback: GuiCallback) {
+        if (gui != null) {
+            (gui as? GuiClick)?.setCallback(callback)
         }
     }
 
-    /**
-     * Sets the width of the GUI element.
-     *
-     * @param width - The wanted width.
-     */
-    fun setWidth(width: Int) {
-        gui?.width = width.toFloat()
-    }
-
-    fun setCallback(callback: SettingsCallback?) {
-        this.callback = callback
+    fun getTitle(): Text {
+        return gui!!.title
     }
 }

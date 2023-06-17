@@ -23,9 +23,10 @@ import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.color.Colors
-import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GavUISettings
+import com.peasenet.main.GavinsModClient
 import com.peasenet.util.RenderUtils
+import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.render.GameRenderer
@@ -67,7 +68,14 @@ open class GuiElement
     private var selectedGui: Gui? = null
     public override fun init() {
         super.init()
-        titleBox = Gui(PointF(10f, 1f), textRenderer.getWidth(title) + 4, 10, title)
+        this.client = MinecraftClient.getInstance()
+        this.textRenderer = GavinsModClient.minecraftClient.textRenderer
+        titleBox = GuiBuilder()
+            .setTopLeft(10, 1)
+            .setWidth(textRenderer.getWidth(title).toFloat() + 4f)
+            .setHeight(10f)
+            .setTitle(title)
+            .build()
         val clientWidth = client!!.window.scaledWidth
         val clientHeight = client!!.window.scaledHeight
         //TODO: Maybe make this a background?

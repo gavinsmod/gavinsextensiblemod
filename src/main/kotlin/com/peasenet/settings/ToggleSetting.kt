@@ -22,25 +22,17 @@ package com.peasenet.settings
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiToggle
 import com.peasenet.gavui.util.GavUISettings
-import net.minecraft.text.Text
 
 /**
  * @author gt3ch1
  * @version 03-02-2023
  * A setting that contains one of two finite states - on or off.
  */
-class ToggleSetting : Setting {
+class ToggleSetting(builder: SettingBuilder) : Setting() {
     /**
      * The gui element that is used to display this toggle setting.
      */
-    override var gui: GuiToggle = GuiBuilder().setWidth(90F)
-        .setHeight(10F)
-        .buildToggle()
-
-    constructor(toggleSetting: GuiToggle) : super() {
-        gui = toggleSetting
-        gui.setCallback { onClick() }
-    }
+    override lateinit var gui: GuiToggle
 
     /**
      * The current value of this toggle setting.
@@ -58,25 +50,16 @@ class ToggleSetting : Setting {
      *
      * @param key - The translation key of this toggle setting.
      */
-    constructor(key: String) : super() {
-        value = false
+    init {
         gui = GuiBuilder()
             .setWidth(90F)
             .setHeight(10F)
-            .setTitle(key)
-            .setIsOn(value)
-            .setCallback(this::onClick)
+            .setTitle(builder.getTitle())
+            .setIsOn(builder.getState())
+            .setCallback(builder.getCallback())
+            .setHoverable(builder.isHoverable())
+            .setTopLeft(builder.getTopLeft())
             .buildToggle()
-    }
 
-    constructor(literal: Text?) : super() {
-        gui = GuiBuilder()
-            .setWidth(90F)
-            .setHeight(10F)
-            .setTitle(literal)
-            .setIsOn(value)
-            .setCallback(this::onClick)
-            .setHidden(true)
-            .buildToggle()
     }
 }

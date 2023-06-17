@@ -19,16 +19,15 @@
  */
 package com.peasenet.settings
 
+import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiClick
-import com.peasenet.gavui.math.PointF
-import net.minecraft.text.Text
 
 /**
  * @author gt3ch1
  * @version 03-02-2023
  * A setting that can be clicked. This is purely dependant on the given callback.
  */
-class ClickSetting(translationKey: String) : Setting() {
+class ClickSetting(builder: SettingBuilder) : Setting() {
     /**
      * The gui used to display the setting.
      */
@@ -40,7 +39,15 @@ class ClickSetting(translationKey: String) : Setting() {
      * @param translationKey - The translation key of the setting.
      */
     init {
-        gui = GuiClick(PointF(0f, 0f), 100, 10, Text.translatable(translationKey))
-        gui.setCallback { onClick() }
+        gui = GuiBuilder()
+            .setWidth(builder.getWidth())
+            .setHeight(builder.getHeight())
+            .setTitle(builder.getTitle())
+            .setCallback(builder.getCallback())
+            .setHoverable(builder.isHoverable())
+            .setBackgroundColor(builder.getColor())
+            .setTransparency(builder.getTransparency())
+            .setSymbol(builder.getSymbol())
+            .buildClick()
     }
 }

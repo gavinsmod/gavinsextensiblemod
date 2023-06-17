@@ -20,7 +20,6 @@
 package com.peasenet.settings
 
 import com.peasenet.gavui.GuiBuilder
-import com.peasenet.gavui.GuiDropdown
 import com.peasenet.gavui.GuiScroll
 
 /**
@@ -28,12 +27,11 @@ import com.peasenet.gavui.GuiScroll
  * @version 03-02-2023
  * A setting that contains multiple sub settings within a dropdown element.
  */
-class SubSetting(width: Int, height: Int, translationKey: String) : Setting() {
+class SubSetting(builder: SettingBuilder) : Setting() {
     /**
      * The dropdown menu that contains the sub settings.
      */
     override val gui: GuiScroll
-
 
     /**
      * Creates a new subsetting element. You can call #add(Setting) to add subsettings to this element.
@@ -44,13 +42,13 @@ class SubSetting(width: Int, height: Int, translationKey: String) : Setting() {
      */
     init {
         gui = GuiBuilder()
-            .setWidth(width.toFloat())
-            .setHeight(height.toFloat())
-            .setTitle(translationKey)
-            .setMaxChildren(4)
-            .setDefaultMaxChildren(4)
+            .setWidth(builder.getWidth())
+            .setHeight(builder.getHeight())
+            .setTitle(builder.getTitle())
+            .setMaxChildren(builder.getMaxChildren())
+            .setDefaultMaxChildren(builder.getDefaultMaxChildren())
+            .setDirection(builder.getDirection())
             .buildScroll()
-        gui.direction = GuiDropdown.Direction.RIGHT
     }
 
     /**

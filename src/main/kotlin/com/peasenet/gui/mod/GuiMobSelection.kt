@@ -218,10 +218,10 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
         addSelectableChild(search)
 
         var tw = textRenderer.getWidth("Enabled Only")
-        tw = tw.coerceAtLeast(textRenderer.getWidth(I18n.translate(hostileColor.getTranslationKey())))
-        tw = tw.coerceAtLeast(textRenderer.getWidth(I18n.translate(peacefulColor.getTranslationKey())))
-        tw = tw.coerceAtLeast(textRenderer.getWidth(I18n.translate(hostileToggle.getTranslationKey())))
-        tw = tw.coerceAtLeast(textRenderer.getWidth(I18n.translate(peacefulToggle.getTranslationKey())))
+        tw = tw.coerceAtLeast(textRenderer.getWidth(hostileColor.getTitle()))
+        tw = tw.coerceAtLeast(textRenderer.getWidth(peacefulColor.getTitle()))
+        tw = tw.coerceAtLeast(textRenderer.getWidth(hostileToggle.getTitle()))
+        tw = tw.coerceAtLeast(textRenderer.getWidth(peacefulToggle.getTitle()))
         tw += 12
         hostileColor.gui.width = (tw).toFloat()
         peacefulColor.gui.width = (tw).toFloat()

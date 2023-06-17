@@ -86,43 +86,52 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
             .buildColorSetting()
         waypointColor.setCallback { radarConfig.waypointColor = waypointColor.color }
 
-        scaleSetting = ClickSetting("gavinsmod.settings.radar.scale")
-        pointSizeSetting = ClickSetting("gavinsmod.settings.radar.pointsize")
+//        scaleSetting = ClickSetting("gavinsmod.settings.radar.scale")
+//        pointSizeSetting = ClickSetting("gavinsmod.settings.radar.pointsize")
+        scaleSetting = SettingBuilder()
+            .setTitle("gavinsmod.settings.radar.scale")
+            .setCallback(this::increaseScale)
+            .buildClickSetting()
+
+        pointSizeSetting = SettingBuilder()
+            .setTitle("gavinsmod.settings.radar.pointsize")
+            .setCallback(this::togglePointSize)
+            .buildClickSetting()
 
         val peacefulMobsSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.mob.peaceful")
             .setState(radarConfig.isShowPeacefulMob)
-            .buildToggle()
+            .buildToggleSetting()
         peacefulMobsSetting.setCallback { radarConfig.isShowPeacefulMob = peacefulMobsSetting.value }
 
         val hostileMobsSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.mob.hostile")
             .setState(radarConfig.isShowHostileMob)
-            .buildToggle()
+            .buildToggleSetting()
         hostileMobsSetting.setCallback { radarConfig.isShowHostileMob = hostileMobsSetting.value }
 
         val itemsSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.item")
             .setState(radarConfig.isShowItem)
-            .buildToggle()
+            .buildToggleSetting()
         itemsSetting.setCallback { radarConfig.isShowItem = itemsSetting.value }
 
         val waypointsSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.waypoints")
             .setState(radarConfig.isShowWaypoint)
-            .buildToggle()
+            .buildToggleSetting()
         waypointsSetting.setCallback { radarConfig.isShowWaypoint = waypointsSetting.value }
 
         val playerSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.player")
             .setState(radarConfig.isShowPlayer)
-            .buildToggle()
+            .buildToggleSetting()
         playerSetting.setCallback { radarConfig.isShowPlayer = playerSetting.value }
 
         val useWaypointColorSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.waypoint.usecolor")
             .setState(radarConfig.isUseWaypointColor)
-            .buildToggle()
+            .buildToggleSetting()
 
         val backgroundAlphaSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.background.alpha")
@@ -137,14 +146,14 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
         pointAlphaSetting.setCallback { radarConfig.pointAlpha = pointAlphaSetting.value }
 
         val color = SettingBuilder()
-            .setWidth(110)
-            .setHeight(10)
+            .setWidth(110f)
+            .setHeight(10f)
             .setTitle("gavinsmod.settings.radar.color")
             .buildSubSetting()
 
         val drawSettings = SettingBuilder()
-            .setWidth(110)
-            .setHeight(10)
+            .setWidth(110f)
+            .setHeight(10f)
             .setTitle("gavinsmod.settings.radar.drawn")
             .buildSubSetting()
         color.add(playerEntityColor)
