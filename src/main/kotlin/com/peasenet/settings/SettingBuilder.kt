@@ -203,6 +203,7 @@ class SettingBuilder {
             .setTransparency(transparency)
             .setDefaultMaxChildren(maxChildren)
             .setMaxChildren(maxChildren)
+            .setTopLeft(guiPosition)
             .buildSlider()
         return SlideSetting.fromSlider(slider)
     }
