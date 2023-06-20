@@ -21,6 +21,8 @@ package com.peasenet.settings
 
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiClick
+import com.peasenet.gavui.GuiSlider
+import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.callbacks.GuiCallback
 import net.minecraft.text.Text
 
@@ -36,10 +38,19 @@ abstract class Setting() {
     fun setCallback(callback: GuiCallback) {
         if (gui != null) {
             (gui as? GuiClick)?.setCallback(callback)
+            (gui as? GuiSlider)?.setCallback(callback)
         }
     }
 
-    fun getTitle(): Text {
+    open fun getTitle(): Text {
         return gui!!.title
+    }
+
+    open fun getWidth(): Float {
+        return gui!!.width
+    }
+
+    open fun setPos(pos: PointF) {
+        gui!!.position = pos
     }
 }
