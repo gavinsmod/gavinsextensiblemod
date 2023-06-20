@@ -22,8 +22,10 @@ package com.peasenet.gui
 import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
+import com.peasenet.gavui.GuiScroll
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.util.GavUISettings
+import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.util.RenderUtils
 import net.minecraft.client.MinecraftClient
@@ -108,11 +110,13 @@ open class GuiElement
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
         for (gui in guis) {
-            if (gui == selectedGui) {
+            if (Gui.getClickedGui() != null && gui.uuid == Gui.getClickedGui().uuid) {
                 gui.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)
+                GavinsMod.LOGGER.info(gui.uuid.toString() + " " + Gui.getClickedGui().toString())
                 return true
-            }
-            if (!gui.isDragging && gui.mouseWithinGui(mouseX, mouseY) && selectedGui == null) {
+            } else if (gui is GuiScroll) {
+                if (gui.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) return true
+            } else if (!gui.isDragging && gui.mouseWithinGui(mouseX, mouseY) && Gui.getClickedGui() == null) {
                 gui.isDragging = true
                 selectedGui = gui
                 return true
