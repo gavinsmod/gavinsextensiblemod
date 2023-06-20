@@ -49,6 +49,7 @@ class ClickSetting(builder: SettingBuilder) : Setting() {
             .setTransparency(builder.getTransparency())
             .setTranslationKey(builder.getTranslationKey())
             .setSymbol(builder.getSymbol())
+            .setTopLeft(builder.getTopLeft())
             .buildClick()
     }
 }
