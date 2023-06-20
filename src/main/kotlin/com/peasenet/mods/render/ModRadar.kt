@@ -25,11 +25,13 @@ import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GuiUtil
+import com.peasenet.gui.mod.render.GuiRadar
 import com.peasenet.main.GavinsMod
+import com.peasenet.main.GavinsModClient
+import com.peasenet.main.Mods
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
 import com.peasenet.mods.render.waypoints.Waypoint
-import com.peasenet.settings.ClickSetting
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.listeners.InGameHudRenderListener
 import net.minecraft.client.gui.DrawContext
@@ -38,7 +40,6 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.mob.MobEntity
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -56,128 +57,11 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
      * Creates a radar overlay in the top-right corner of the screen.
      */
     init {
-
-        val playerEntityColor = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.player.color")
-            .setColor(radarConfig.playerColor)
-            .buildColorSetting()
-        playerEntityColor.setCallback { radarConfig.playerColor = playerEntityColor.color }
-
-        val hostileMobEntityColor = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.mob.hostile.color")
-            .setColor(radarConfig.hostileMobColor)
-            .buildColorSetting()
-        hostileMobEntityColor.setCallback { radarConfig.hostileMobColor = hostileMobEntityColor.color }
-
-        val peacefulMobEntityColor = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.mob.peaceful.color")
-            .setColor(radarConfig.peacefulMobColor)
-            .buildColorSetting()
-        peacefulMobEntityColor.setCallback { radarConfig.peacefulMobColor = peacefulMobEntityColor.color }
-
-        val entityItemColor = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.item.color")
-            .setColor(radarConfig.itemColor)
-            .buildColorSetting()
-        entityItemColor.setCallback { radarConfig.itemColor = entityItemColor.color }
-
-        val waypointColor = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.waypoint.color")
-            .setColor(radarConfig.waypointColor)
-            .buildColorSetting()
-        waypointColor.setCallback { radarConfig.waypointColor = waypointColor.color }
-
-//        scaleSetting = ClickSetting("gavinsmod.settings.radar.scale")
-//        pointSizeSetting = ClickSetting("gavinsmod.settings.radar.pointsize")
-        scaleSetting = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.scale")
-            .setCallback(this::increaseScale)
-            .buildClickSetting()
-
-        pointSizeSetting = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.pointsize")
-            .setCallback(this::togglePointSize)
-            .buildClickSetting()
-
-        val peacefulMobsSetting = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.mob.peaceful")
-            .setState(radarConfig.isShowPeacefulMob)
-            .buildToggleSetting()
-        peacefulMobsSetting.setCallback { radarConfig.isShowPeacefulMob = peacefulMobsSetting.value }
-
-        val hostileMobsSetting = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.mob.hostile")
-            .setState(radarConfig.isShowHostileMob)
-            .buildToggleSetting()
-        hostileMobsSetting.setCallback { radarConfig.isShowHostileMob = hostileMobsSetting.value }
-
-        val itemsSetting = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.item")
-            .setState(radarConfig.isShowItem)
-            .buildToggleSetting()
-        itemsSetting.setCallback { radarConfig.isShowItem = itemsSetting.value }
-
-        val waypointsSetting = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.waypoints")
-            .setState(radarConfig.isShowWaypoint)
-            .buildToggleSetting()
-        waypointsSetting.setCallback { radarConfig.isShowWaypoint = waypointsSetting.value }
-
-        val playerSetting = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.player")
-            .setState(radarConfig.isShowPlayer)
-            .buildToggleSetting()
-        playerSetting.setCallback { radarConfig.isShowPlayer = playerSetting.value }
-
-        val useWaypointColorSetting = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.waypoint.usecolor")
-            .setState(radarConfig.isUseWaypointColor)
-            .buildToggleSetting()
-
-        val backgroundAlphaSetting = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.background.alpha")
-            .setValue(radarConfig.backgroundAlpha)
-            .buildSlider()
-        backgroundAlphaSetting.setCallback { radarConfig.backgroundAlpha = backgroundAlphaSetting.value }
-
-        val pointAlphaSetting = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.point.alpha")
-            .setValue(radarConfig.pointAlpha)
-            .buildSlider()
-        pointAlphaSetting.setCallback { radarConfig.pointAlpha = pointAlphaSetting.value }
-
-        val color = SettingBuilder()
-            .setWidth(110f)
-            .setHeight(10f)
-            .setTitle("gavinsmod.settings.radar.color")
-            .buildSubSetting()
-
-        val drawSettings = SettingBuilder()
-            .setWidth(110f)
-            .setHeight(10f)
+        val clickSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.drawn")
-            .buildSubSetting()
-        color.add(playerEntityColor)
-        color.add(hostileMobEntityColor)
-        color.add(peacefulMobEntityColor)
-        color.add(entityItemColor)
-        color.add(waypointColor)
-        scaleSetting.setCallback { increaseScale() }
-        pointSizeSetting.setCallback { togglePointSize() }
-        drawSettings.add(pointSizeSetting)
-        drawSettings.add(scaleSetting)
-        drawSettings.add(peacefulMobsSetting)
-        drawSettings.add(hostileMobsSetting)
-        drawSettings.add(itemsSetting)
-        drawSettings.add(waypointsSetting)
-        drawSettings.add(playerSetting)
-        drawSettings.add(useWaypointColorSetting)
-        drawSettings.add(backgroundAlphaSetting)
-        drawSettings.add(pointAlphaSetting)
-        drawSettings.add(color)
-        addSetting(drawSettings)
-        updateScaleText(pointSizeSetting, radarConfig.pointSize)
-        updateScaleText(scaleSetting, radarConfig.scale)
+            .setCallback { GavinsModClient.minecraftClient.setScreen(GuiRadar()) }
+            .buildClickSetting()
+        addSetting(clickSetting)
     }
 
     override fun onEnable() {
@@ -190,26 +74,22 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
         em.unsubscribe(InGameHudRenderListener::class.java, this)
     }
 
-    /**
-     * Callback method for the scale setting.
-     */
-    private fun increaseScale() {
-        radarConfig.scale = radarConfig.scale + 1
-        updateScaleText(scaleSetting, radarConfig.scale)
-    }
-
     override fun onRenderInGameHud(drawContext: DrawContext, delta: Float) {
-        if (!isActive) return
+        var canRender = isActive && !Mods.isActive(Type.MOD_GUI) && !Mods.isActive(Type.SETTINGS)
+        canRender = canRender || GuiRadar.visible
+        if (!canRender) return
         val stack = drawContext.matrices
-        RadarConfig.x = client.window.scaledWidth - RadarConfig.size - 10
+        RadarConfig.x = client.window.scaledWidth - radarConfig.size - 10
+        val radarBox = BoxF(
+            PointF(RadarConfig.x.toFloat(), RadarConfig.y.toFloat()),
+            radarConfig.size.toFloat(),
+            radarConfig.size.toFloat()
+        )
         GuiUtil.drawBox(
-            Colors.DARK_GRAY, BoxF(
-                PointF(RadarConfig.x.toFloat(), RadarConfig.y.toFloat()),
-                radarConfig.size.toFloat(),
-                radarConfig.size.toFloat()
-            ), stack, radarConfig.backgroundAlpha
+            radarConfig.backgroundColor, radarBox, stack, radarConfig.backgroundAlpha
         )
         drawEntitiesOnRadar(stack)
+        GuiUtil.drawOutline(radarBox, stack)
         if (radarConfig.isShowWaypoint) drawWaypointsOnRadar(stack)
     }
 
@@ -296,25 +176,21 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
         var newPoint = point
         val offset = radarConfig.pointSize - pointOffset
         // if the point is touching any edges of the radar, clamp it to the edge.
+        // right side
         if (newPoint.x >= radarConfig.size / 2f - offset) newPoint =
             PointF(radarConfig.size / 2f - offset, newPoint.y)
-        if (newPoint.x <= -radarConfig.size / 2f + offset) newPoint =
-            PointF(-radarConfig.size / 2f + offset, newPoint.y)
+        // left side
+        if (newPoint.x <= -radarConfig.size / 2f + pointOffset) newPoint =
+            PointF(-radarConfig.size / 2f + pointOffset, newPoint.y)
+        // bottom side
         if (newPoint.y >= radarConfig.size / 2f - offset) newPoint =
             PointF(newPoint.x, radarConfig.size / 2f - offset)
-        if (newPoint.y <= -radarConfig.size / 2f + offset) newPoint =
-            PointF(newPoint.x, -radarConfig.size / 2f + offset)
+        // top side
+        if (newPoint.y <= -radarConfig.size / 2f + pointOffset) newPoint =
+            PointF(newPoint.x, -radarConfig.size / 2f + pointOffset)
         // offset the point to be centered
 
         return newPoint.subtract(PointF(pointOffset, pointOffset))
-    }
-
-    /**
-     * Callback for the point size setting.
-     */
-    private fun togglePointSize() {
-        radarConfig.updatePointSizeCallback()
-        updateScaleText(pointSizeSetting, radarConfig.pointSize)
     }
 
     /**
@@ -347,27 +223,6 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
     }
 
     companion object {
-        /**
-         * The setting relating to the radar scale.
-         */
-        private lateinit var scaleSetting: ClickSetting
-
-        /**
-         * The setting relating to the radar point size.
-         */
-        private lateinit var pointSizeSetting: ClickSetting
-
-        /**
-         * Updates the title for the given setting.
-         *
-         * @param setting - The setting to change the title for.
-         * @param value   - The integer value to append to the title.
-         */
-        private fun updateScaleText(setting: ClickSetting, value: Int) {
-//            setting.setTitle(setting.gui.title.str.append(Text.literal(" (%s)".format(value))))
-            setting.gui.title =
-                (Text.translatable(setting.gui.translationKey).append(Text.literal(" (%s)".format(value))))
-        }
 
         val pointOffset: Float
             /**
@@ -375,7 +230,7 @@ class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
              *
              * @return The offset to draw the points on the radar.
              */
-            get() = if (radarConfig.pointSize == 1) 0F else radarConfig.pointSize / 2F
+            get() = if (radarConfig.pointSize == 1) 0F else (radarConfig.pointSize - 1) / 2F
 
         /**
          * Calculates the position and distance of the given coordinates from the player.
