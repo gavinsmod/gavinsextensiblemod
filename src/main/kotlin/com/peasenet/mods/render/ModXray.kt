@@ -19,7 +19,7 @@
  */
 package com.peasenet.mods.render
 
-import com.peasenet.gui.mod.xray.GuiXray
+import com.peasenet.gui.mod.render.GuiXray
 import com.peasenet.main.GavinsMod
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type

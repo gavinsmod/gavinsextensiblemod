@@ -17,7 +17,7 @@
  * OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.peasenet.gui.mod.xray
+package com.peasenet.gui.mod.render
 
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
