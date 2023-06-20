@@ -28,6 +28,8 @@ import com.peasenet.gavui.color.Colors
  * @version 03-02-2023
  */
 class RadarConfig : Config<RadarConfig>() {
+
+
     /**
      * The current scale of the radar, used to determine the size of the radar.
      */
@@ -35,11 +37,10 @@ class RadarConfig : Config<RadarConfig>() {
         set(value) {
             field = value
             // cooerce field to be between 1 and 8 inclusive
-            if (field > 8)
+            if (field > MAX_SCALE)
                 field = 1
             if (field < 1)
-                field = 8
-            this.size = field * 16 + 1
+                field = MAX_SCALE
             saveConfig()
         }
 
@@ -72,6 +73,14 @@ class RadarConfig : Config<RadarConfig>() {
             field = playerColor
             saveConfig()
         }
+
+    var backgroundColor = Colors.DARK_GRAY!!
+        set(backgroundColor) {
+            field = backgroundColor
+            saveConfig()
+        }
+
+
     /**
      * Gets the color used to draw hostile mobs on the radar.
      *
@@ -282,35 +291,23 @@ class RadarConfig : Config<RadarConfig>() {
             saveConfig()
         }
 
-    /**
+    /*
      * Create a new instance of the radar settings if one does not already exist.
      */
     init {
         key = "radar"
     }
 
-    var size: Int
-        /**
-         * Gets the size of the radar in pixels.
-         *
-         * @return The size of the radar in pixels.
-         */
-        get() = Companion.size
-        /**
-         * Sets the size of the radar in pixels.
-         *
-         * @param size - The size of the radar in pixels.
-         */
-        set(size) {
-            Companion.size = size
-        }
+    val size: Int
+        get() = scale * 16 + 1
+
 
     /**
      * The call back used to increase the scale.
      */
     fun increaseScaleCallback() {
         scale = scale + 1
-        if (scale > 8) scale = 1
+        if (scale > MAX_SCALE) scale = 1
         saveConfig()
     }
 
@@ -329,16 +326,14 @@ class RadarConfig : Config<RadarConfig>() {
         @JvmField
         var y = 12
 
+        @JvmField
+        var MAX_SCALE = 10
+
         /**
          * The X position of the radar.
          */
         @JvmField
         var x = 0
 
-        /**
-         * The size of the radar in pixels. scale*16+1.
-         */
-        @JvmField
-        var size = 129
     }
 }
