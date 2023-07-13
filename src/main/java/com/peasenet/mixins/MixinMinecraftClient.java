@@ -23,6 +23,7 @@ package com.peasenet.mixins;
 import com.peasenet.main.GavinsMod;
 import com.peasenet.mixinterface.IMinecraftClient;
 import com.peasenet.mods.Type;
+import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.PlayerAttackEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
@@ -99,7 +100,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
             ordinal = 0), method = "doAttack()Z")
     private void doAttack(CallbackInfoReturnable<Boolean> cir) {
         PlayerAttackEvent event = new PlayerAttackEvent();
-        GavinsMod.eventManager.call(event);
+        EventManager.getEventManager().call(event);
     }
 
     @Override

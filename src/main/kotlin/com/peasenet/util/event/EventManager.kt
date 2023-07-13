@@ -61,8 +61,14 @@ open class EventManager {
         event.fire(listeners as ArrayList<L>)
     }
 
+
     companion object {
         // a list of event classes with the mod that created them
         protected val eventMap = HashMap<Class<out Listener>, ArrayList<Listener>>()
+
+        @JvmStatic
+        val eventManager = EventManager()
+
+
     }
 }

@@ -20,7 +20,7 @@
 
 package com.peasenet.mixins;
 
-import com.peasenet.main.GavinsMod;
+import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.RenderOverlaySubmergedEvent;
 import com.peasenet.util.event.data.RenderSubmergedOverlay;
 import net.minecraft.client.gui.hud.InGameOverlayRenderer;
@@ -35,7 +35,7 @@ public class MixinInGameOverlayRenderer {
     @Inject(at = @At("HEAD"), method = "renderFireOverlay", cancellable = true)
     private static void onRenderFireOverlay(CallbackInfo ci) {
         var evt = new RenderOverlaySubmergedEvent(new RenderSubmergedOverlay(RenderSubmergedOverlay.SubmergedOverlayType.FIRE));
-        GavinsMod.eventManager.call(evt);
+        EventManager.getEventManager().call(evt);
         if (evt.isCancelled())
             ci.cancel();
     }

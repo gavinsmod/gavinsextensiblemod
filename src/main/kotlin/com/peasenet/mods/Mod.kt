@@ -210,7 +210,7 @@ abstract class Mod(
          * The event manager.
          */
         @JvmStatic
-        protected var em: EventManager = GavinsMod.eventManager
+        protected var em: EventManager = EventManager.eventManager
 
         /**
          * Tracer configuration.

@@ -23,6 +23,7 @@ import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
+import com.peasenet.util.event.EventManager
 import com.peasenet.util.event.PlayerAttackEvent
 import com.peasenet.util.math.Rotation
 import net.minecraft.client.render.Camera
@@ -100,7 +101,7 @@ object PlayerUtils {
         val player = GavinsModClient.player
         if (onGround() && !player!!.isNoClip() && player.getAttackCoolDownProgress(0.5f) > 0.90f) {
             val event = PlayerAttackEvent()
-            GavinsMod.eventManager.call(event)
+            EventManager.eventManager.call(event)
             GavinsModClient.minecraftClient.getPlayerInteractionManager().attackEntity(player as PlayerEntity, entity)
 
             player.tryAttack(entity)

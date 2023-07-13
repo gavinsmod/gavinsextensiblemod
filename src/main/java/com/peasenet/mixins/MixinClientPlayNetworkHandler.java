@@ -21,7 +21,7 @@
 package com.peasenet.mixins;
 
 
-import com.peasenet.main.GavinsMod;
+import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.PacketSendEvent;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.Packet;
@@ -35,7 +35,7 @@ public class MixinClientPlayNetworkHandler {
     @Inject(at = @At("HEAD"), method = "sendPacket", cancellable = true)
     public void sendPacket(Packet<?> packet, CallbackInfo ci) {
         PacketSendEvent event = new PacketSendEvent(packet);
-        GavinsMod.eventManager.call(event);
+        EventManager.getEventManager().call(event);
         if (event.isCancelled())
             ci.cancel();
     }

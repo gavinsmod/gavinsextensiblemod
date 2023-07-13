@@ -24,6 +24,7 @@ import com.peasenet.main.GavinsMod
 import com.peasenet.main.Mods.Companion.mods
 import com.peasenet.mods.Type
 import com.peasenet.util.PlayerUtils.sendMessage
+import com.peasenet.util.event.EventManager
 import com.peasenet.util.event.data.ChatMessage
 import com.peasenet.util.listeners.OnChatSendListener
 import net.minecraft.client.resource.language.I18n
@@ -36,7 +37,7 @@ import java.util.*
  */
 class ModCommands : OnChatSendListener {
     init {
-        GavinsMod.eventManager.subscribe(OnChatSendListener::class.java, this)
+        EventManager.eventManager.subscribe(OnChatSendListener::class.java, this)
     }
 
     override fun onChatSend(s: ChatMessage) {

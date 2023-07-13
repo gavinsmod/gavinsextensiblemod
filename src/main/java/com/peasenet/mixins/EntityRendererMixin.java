@@ -20,8 +20,8 @@
 
 package com.peasenet.mixins;
 
-import com.peasenet.main.GavinsMod;
 import com.peasenet.util.event.EntityRenderNameEvent;
+import com.peasenet.util.event.EventManager;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
@@ -48,6 +48,6 @@ public abstract class EntityRendererMixin<T extends Entity> {
     @Inject(at = @At("HEAD"), method = "render")
     private void renderHealth(T entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
         var event = new EntityRenderNameEvent(entity, yaw, tickDelta, matrices, vertexConsumers, light);
-        GavinsMod.eventManager.call(event);
+        EventManager.getEventManager().call(event);
     }
 }

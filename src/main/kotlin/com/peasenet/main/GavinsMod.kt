@@ -29,7 +29,6 @@ import com.peasenet.gui.mod.*
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
 import com.peasenet.util.ModCommands
-import com.peasenet.util.event.EventManager
 import net.fabricmc.api.ModInitializer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -55,7 +54,6 @@ class GavinsMod : ModInitializer {
         waypointConfig = Settings.settings["waypoints"] as WaypointConfig
         miscConfig = Settings.settings["misc"] as MiscConfig
         LOGGER.info("Settings loaded")
-        eventManager = EventManager()
         Mods()
         LOGGER.info("GavinsMod initialized")
         val guiList = java.util.ArrayList<Gui>()
@@ -99,11 +97,6 @@ class GavinsMod : ModInitializer {
          * The gui used to display the settings menu.
          */
         lateinit var guiSettings: GuiSettings
-
-        /**
-         * The event manager of the mod.
-         */
-        lateinit var eventManager: EventManager
 
         /**
          * The ESP config.

@@ -21,11 +21,11 @@
 package com.peasenet.mixins;
 
 import com.mojang.authlib.GameProfile;
-import com.peasenet.main.GavinsMod;
 import com.peasenet.main.Mods;
 import com.peasenet.mixinterface.IClientPlayerEntity;
 import com.peasenet.mods.Type;
 import com.peasenet.util.event.AirStrafeEvent;
+import com.peasenet.util.event.EventManager;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -212,7 +212,7 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     @Override
     public float getOffGroundSpeed() {
         var evt = new AirStrafeEvent(super.getOffGroundSpeed());
-        GavinsMod.eventManager.call(evt);
+        EventManager.getEventManager().call(evt);
         return evt.getSpeed();
     }
 

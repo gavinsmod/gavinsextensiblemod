@@ -20,7 +20,7 @@
 
 package com.peasenet.mixins;
 
-import com.peasenet.main.GavinsMod;
+import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.ShouldDrawSideEvent;
 import com.peasenet.util.event.data.DrawSide;
 import net.minecraft.block.BlockState;
@@ -44,7 +44,7 @@ public class MixinSodiumblockOcclusionCache {
     private void xray(BlockState state, BlockView world, BlockPos pos, Direction side, CallbackInfoReturnable<Boolean> cir) {
         var drawSide = new DrawSide(pos, state);
         var evt = new ShouldDrawSideEvent(drawSide);
-        GavinsMod.eventManager.call(evt);
+        EventManager.getEventManager().call(evt);
         if (drawSide.shouldDraw() != null) {
             cir.setReturnValue(drawSide.shouldDraw());
         }

@@ -27,6 +27,7 @@ import com.peasenet.mixinterface.ISimpleOption
 import com.peasenet.util.PlayerUtils.getNewPlayerPosition
 import com.peasenet.util.event.BlockEntityRenderEvent
 import com.peasenet.util.event.EntityRenderEvent
+import com.peasenet.util.event.EventManager
 import com.peasenet.util.event.WorldRenderEvent
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.minecraft.client.MinecraftClient
@@ -104,7 +105,7 @@ object RenderUtils {
         assert(player != null)
         assert(level != null)
         val event = WorldRenderEvent(level!!, stack, buffer, delta)
-        GavinsMod.eventManager.call(event)
+        EventManager.eventManager.call(event)
         tessellator.draw()
         stack.pop()
         resetRenderSystem()
@@ -135,7 +136,7 @@ object RenderUtils {
         drawBlockMods(level, stack, buffer, playerPos, chunkX, chunkZ, delta)
         drawEntityMods(level, player, stack, delta, buffer, playerPos)
         val event = WorldRenderEvent(level!!, stack, buffer, delta)
-        GavinsMod.eventManager.call(event)
+        EventManager.eventManager.call(event)
         tessellator.draw()
         stack.pop()
         resetRenderSystem()
@@ -182,7 +183,7 @@ object RenderUtils {
                         val aabb = Box(blockPos)
                         val boxPos = aabb.center
                         val event = BlockEntityRenderEvent(blockEntity, stack, buffer, boxPos, playerPos, delta)
-                        GavinsMod.eventManager.call(event)
+                        EventManager.eventManager.call(event)
                     }
                 }
             }
@@ -284,7 +285,7 @@ object RenderUtils {
             val aabb = getEntityBox(delta, e)
             val boxPos = aabb.center
             val event = EntityRenderEvent(e, stack, buffer, boxPos, playerPos, delta)
-            GavinsMod.eventManager.call(event)
+            EventManager.eventManager.call(event)
         })
     }
 

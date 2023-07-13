@@ -20,8 +20,8 @@
 
 package com.peasenet.mixins;
 
-import com.peasenet.main.GavinsMod;
 import com.peasenet.util.event.ChatSendEvent;
+import com.peasenet.util.event.EventManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,7 +34,7 @@ public class MixinChatScreen {
     @Inject(at = @At("HEAD"), method = "sendMessage", cancellable = true)
     public void onChatMessage(String msg, boolean history, CallbackInfoReturnable<Boolean> cir) {
         var event = new ChatSendEvent(msg);
-        GavinsMod.eventManager.call(event);
+        EventManager.getEventManager().call(event);
         if (event.isCancelled()) {
             MinecraftClient.getInstance().inGameHud.getChatHud().addToMessageHistory(msg);
             cir.setReturnValue(true);

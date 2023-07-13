@@ -20,7 +20,7 @@
 
 package com.peasenet.mixins;
 
-import com.peasenet.main.GavinsMod;
+import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.TessellateBlockEvent;
 import com.peasenet.util.event.data.TessellateBlock;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderContext;
@@ -46,7 +46,7 @@ public class MixinTerrainRenderContext {
     private void tessellateBlock(BlockState blockState, BlockPos blockPos, BakedModel model, MatrixStack matrixStack, CallbackInfo ci) {
         var tb = new TessellateBlock(blockState, blockPos, model, matrixStack);
         var evt = new TessellateBlockEvent(tb);
-        GavinsMod.eventManager.call(evt);
+        EventManager.getEventManager().call(evt);
         if (evt.isCancelled()) {
             ci.cancel();
         }

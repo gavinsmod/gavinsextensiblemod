@@ -20,8 +20,8 @@
 
 package com.peasenet.mixins;
 
-import com.peasenet.main.GavinsMod;
 import com.peasenet.util.event.BlockEntityRenderEvent;
+import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.data.BlockEntityRender;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -46,7 +46,7 @@ public class MixinBlockEntityRenderDispatcher {
     private <E extends BlockEntity> void onRender(E blockEntity, float delta, MatrixStack stack, VertexConsumerProvider consumerProvider, CallbackInfo ci) {
         var ber = new BlockEntityRender(blockEntity, stack, null, null, null, delta);
         var evt = new BlockEntityRenderEvent(ber);
-        GavinsMod.eventManager.call(evt);
+        EventManager.getEventManager().call(evt);
         if (evt.isCancelled()) {
             ci.cancel();
         }

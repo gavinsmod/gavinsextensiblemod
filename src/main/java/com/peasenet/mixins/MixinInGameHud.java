@@ -20,7 +20,7 @@
 
 package com.peasenet.mixins;
 
-import com.peasenet.main.GavinsMod;
+import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.InGameHudRenderEvent;
 import com.peasenet.util.event.RenderOverlayEvent;
 import com.peasenet.util.event.data.RenderOverlay;
@@ -42,7 +42,7 @@ public class MixinInGameHud {
     @Inject(at = @At("HEAD"), method = "render")
     private void mixin(DrawContext context, float tickDelta, CallbackInfo ci) {
         var event = new InGameHudRenderEvent(context, tickDelta);
-        GavinsMod.eventManager.call(event);
+        EventManager.getEventManager().call(event);
     }
 
 
@@ -50,7 +50,7 @@ public class MixinInGameHud {
     private void antiPumpkin(DrawContext context, Identifier texture, float opacity, CallbackInfo ci) {
         var overlay = new RenderOverlay(texture);
         RenderOverlayEvent event = new RenderOverlayEvent(overlay);
-        GavinsMod.eventManager.call(event);
+        EventManager.getEventManager().call(event);
         if (event.isCancelled())
             ci.cancel();
     }
@@ -59,7 +59,7 @@ public class MixinInGameHud {
     private void antiVignette(CallbackInfo ci) {
         var overlay = new RenderOverlay(new Identifier("textures/misc/vignette.png"));
         RenderOverlayEvent event = new RenderOverlayEvent(overlay);
-        GavinsMod.eventManager.call(event);
+        EventManager.getEventManager().call(event);
         if (event.isCancelled())
             ci.cancel();
     }
