@@ -405,10 +405,13 @@ enum class Type
          */
         @JvmField val translationKey: String
     ) {
-        MOVEMENT("gavinsmod.gui.movement"), RENDER("gavinsmod.gui.render"), COMBAT("gavinsmod.gui.combat"), MISC("gavinsmod.gui.misc"), ESPS(
-            "gavinsmod.gui.esps"
-        ),
+        MOVEMENT("gavinsmod.gui.movement"), RENDER("gavinsmod.gui.render"),
+        COMBAT("gavinsmod.gui.combat"),
+        MISC("gavinsmod.gui.misc"),
+        ESPS("gavinsmod.gui.esps"),
         WAYPOINTS("gavinsmod.mod.render.waypoints"),
-        TRACERS("gavinsmod.gui.tracers"), GUI("gavinsmod.gui.gui"), NONE("none")
+        TRACERS("gavinsmod.gui.tracers"),
+        GUI("gavinsmod.gui.gui"),
+        NONE("none")
     }
 }

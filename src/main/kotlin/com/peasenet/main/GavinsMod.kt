@@ -176,7 +176,9 @@ class GavinsMod : ModInitializer {
         @JvmStatic
         fun getModsInCategory(category: Type.Category): java.util.ArrayList<Mod> {
             // use stream to filter by category and sort by mod name
-            return Mods.mods.stream().filter { mod: Mod -> mod.category === category }.sorted(Comparator.comparing(Mod::name)).collect({ ArrayList() }, { obj: java.util.ArrayList<Mod>, e: Mod -> obj.add(e) }) { obj: java.util.ArrayList<Mod>, c: java.util.ArrayList<Mod>? ->
+            return Mods.mods.stream().filter { mod: Mod -> mod.modCategory === category }
+                .sorted(Comparator.comparing(Mod::name)).collect({ ArrayList() },
+                { obj: java.util.ArrayList<Mod>, e: Mod -> obj.add(e) }) { obj: java.util.ArrayList<Mod>, c: java.util.ArrayList<Mod>? ->
                 obj.addAll(c!!)
             }
         }
@@ -187,6 +189,8 @@ class GavinsMod : ModInitializer {
              *
              * @return A list of mods used for the text overlay.
              */
-            get() = Mods.mods.stream().filter { mod: Mod -> mod.isActive && mod.category !== Type.Category.GUI && mod.type !== Type.MOD_GUI_TEXT_OVERLAY }.sorted(Comparator.comparing(Mod::name))
+            get() = Mods.mods.stream()
+                .filter { mod: Mod -> mod.isActive && mod.modCategory !== Type.Category.GUI && mod.type !== Type.MOD_GUI_TEXT_OVERLAY }
+                .sorted(Comparator.comparing(Mod::name))
     }
 }

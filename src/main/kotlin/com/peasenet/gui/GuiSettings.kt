@@ -109,7 +109,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
     private fun addSettings(parent: Gui, category: Type.Category) {
         val modList = ArrayList<Mod>()
         // get all mods in esp category and have settings then add them to espDropdown
-        mods.stream().filter { m: Mod -> m.category === category && m.hasSettings() }
+        mods.stream().filter { m: Mod -> m.modCategory === category && m.hasSettings() }
             .forEach { e: Mod -> modList.add(e) }
         for (m in modList) {
             val modSettings = m.settings

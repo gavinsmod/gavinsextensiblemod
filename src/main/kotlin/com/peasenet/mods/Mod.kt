@@ -19,6 +19,7 @@
  */
 package com.peasenet.mods
 
+import com.peasenet.ModCategory
 import com.peasenet.config.*
 import com.peasenet.gavui.Gui
 import com.peasenet.main.GavinsMod
@@ -32,7 +33,6 @@ import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.text.Text
-import org.lwjgl.glfw.GLFW
 
 /**
  * @author gt3ch1
@@ -41,20 +41,10 @@ import org.lwjgl.glfw.GLFW
  * and a gui button based off of the given category.
  */
 abstract class Mod(
-    /**
-     * The type of the mod.
-     */
-    override val type: Type,
-    /**
-     * The category of this mod.
-     */
-    override val category: Type.Category = type.modCategory,
-    /**
-     * The keybind for this mod.
-     */
-    private val keyBinding: KeyBinding = if (type.keyBinding != GLFW.GLFW_KEY_UNKNOWN) KeyBindUtils.registerKeyBindForType(
-        type
-    ) else KeyBindUtils.registerEmptyKeyBind(type)
+    override val translationKey: String,
+    final override var modCategory: ModCategory,
+    final override var keyBindCategory: KeyBindCategory,
+    private var keyBinding: KeyBinding
 ) : IMod {
     /**
      * Whether this mod is currently deactivating.
@@ -90,14 +80,23 @@ abstract class Mod(
         Mods.addMod(this)
     }
 
-    /**
-     * Creates a new mod with the given type and keybinding.
-     *
-     * @param type       - The type of the mod.
-     * @param keyBinding - The keybinding for this mod.
-     */
-    constructor(type: Type, keyBinding: KeyBinding) : this(type, type.modCategory, keyBinding)
-    constructor(type: Type) : this(type, type.modCategory, KeyBindUtils.registerKeyBindForType(type))
+
+    constructor(translationKey: String, modCategory: ModCategory, keyBindCategory: KeyBindCategory) : this(
+        translationKey,
+        modCategory,
+        keyBindCategory,
+        KeyBindUtils.registerKeyBindForType(translationKey, keyBindCategory)
+    )
+
+//
+//    /**
+//     * Creates a new mod with the given type and keybinding.
+//     *
+//     * @param type       - The type of the mod.
+//     * @param keyBinding - The keybinding for this mod.
+//     */
+//    constructor(type: Type, keyBinding: KeyBinding) : this(type, modCategory, keyBinding)
+//    constructor(type: Type) : this(type, modCategory, KeyBindUtils.registerKeyBindForType(type))
 
     /**
      * Sends a message to the player.
@@ -182,8 +181,6 @@ abstract class Mod(
         reloading = false
     }
 
-    override val translationKey
-        get() = type.translationKey
     override val name
         get() = type.modName
     override val chatCommand

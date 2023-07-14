@@ -19,6 +19,7 @@
  */
 package com.peasenet.util
 
+import com.peasenet.mods.KeyBindCategory
 import com.peasenet.mods.Type
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.minecraft.client.option.KeyBinding
@@ -46,6 +47,19 @@ object KeyBindUtils {
         )
     }
 
+    private fun getKeyBinding(
+        translationKey: String,
+        keyBindCategory: KeyBindCategory,
+        keyBind: Int = GLFW.GLFW_KEY_UNKNOWN
+    ): KeyBinding {
+        return KeyBinding(
+            translationKey,
+            InputUtil.Type.KEYSYM,
+            keyBind,
+            keyBindCategory.category
+        )
+    }
+
     /**
      * Registers the keybinding for the given mod type.
      *
@@ -60,6 +74,17 @@ object KeyBindUtils {
                 registerEmptyKeyBind(type)
             } else getKeyBinding(type)
         }
+    }
+
+
+    fun registerKeyBindForType(
+        translationKey: String,
+        keyBindCategory: KeyBindCategory,
+        keyBind: Int = GLFW.GLFW_KEY_UNKNOWN
+    ): KeyBinding {
+        if (keyBind == GLFW.GLFW_KEY_UNKNOWN)
+            return registerEmptyKeyBind(translationKey, keyBindCategory)
+        return KeyBindingHelper.registerKeyBinding(getKeyBinding(translationKey, keyBindCategory, keyBind))
     }
 
     /**
@@ -78,4 +103,16 @@ object KeyBindUtils {
             )
         )
     }
+
+    fun registerEmptyKeyBind(translationKey: String, keyBindCategory: KeyBindCategory): KeyBinding {
+        return KeyBindingHelper.registerKeyBinding(
+            KeyBinding(
+                translationKey,
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_UNKNOWN,
+                keyBindCategory.category
+            )
+        )
+    }
+
 }

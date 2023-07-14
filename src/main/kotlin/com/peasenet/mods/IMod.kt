@@ -19,6 +19,7 @@
  */
 package com.peasenet.mods
 
+import com.peasenet.ModCategory
 import com.peasenet.gavui.Gui
 import net.minecraft.client.world.ClientWorld
 
@@ -75,7 +76,7 @@ interface IMod {
      *
      * @return The mod category
      */
-    val category: Type.Category?
+    val modCategory: ModCategory?
 
     /**
      * Reloads this mod by calling #deactivate and #activate.
@@ -142,4 +143,6 @@ interface IMod {
      * @return The world that the player is in.
      */
     val world: ClientWorld?
+
+    val keyBindCategory: KeyBindCategory?
 }
