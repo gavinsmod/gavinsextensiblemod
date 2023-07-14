@@ -19,7 +19,6 @@
  */
 package com.peasenet.mods.tracer
 
-import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
@@ -31,7 +30,11 @@ import net.minecraft.block.entity.BeehiveBlockEntity
  * @version 04-11-2023
  * A mod that allows the player to see tracers towards beehives.
  */
-class ModBeehiveTracer : ModTracer(Type.BEEHIVE_TRACER) {
+class ModBeehiveTracer : TracerMod(
+    "Beehive Tracer",
+    "gavinsmod.mod.tracer.beehive",
+    "beehivetracer",
+) {
     init {
         val colorSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.tracer.beehive.color")

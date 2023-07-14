@@ -19,8 +19,6 @@
  */
 package com.peasenet.mods.movement
 
-import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
 import net.minecraft.block.Blocks
 
 /**
@@ -28,7 +26,11 @@ import net.minecraft.block.Blocks
  * @version 03-02-2023
  * AntiTrample prevents the player from trampling over farm blocks.
  */
-class ModAntiTrample : Mod(Type.ANTI_TRAMPLE) {
+class ModAntiTrample : MovementMod(
+    "Anti Trample",
+    "gavinsmod.mod.movement.antitrample",
+    "antitrample"
+) {
     override fun onTick() {
         // check if the player is on farmland by looking at the block below the player.
         val player = client.getPlayer()

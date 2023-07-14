@@ -28,7 +28,11 @@ import com.peasenet.util.PlayerUtils
  * @version 03-02-2023
  * A mod that prevents the player from taking fall damage.
  */
-class ModNoFall : Mod(Type.NO_FALL) {
+class ModNoFall : MovementMod(
+    "No Fall",
+    "gavinsmod.mod.movement.nofall",
+    "nofall"
+) {
     override fun onTick() {
         PlayerUtils.handleNoFall()
     }

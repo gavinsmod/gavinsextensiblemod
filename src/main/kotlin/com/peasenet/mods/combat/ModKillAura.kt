@@ -20,8 +20,6 @@
 package com.peasenet.mods.combat
 
 import com.peasenet.main.GavinsModClient
-import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
 import com.peasenet.util.PlayerUtils
 import com.peasenet.util.math.MathUtils
 import net.minecraft.entity.Entity
@@ -33,7 +31,11 @@ import java.util.stream.StreamSupport
  * @version 03-02-2023
  * A mod that makes the player face and attack the nearest mob.
  */
-class ModKillAura : Mod(Type.KILL_AURA) {
+class ModKillAura : CombatMod(
+    "Kill Aura",
+    "gavinsmod.mod.combat.killaura",
+    "killaura",
+) {
     override fun onTick() {
         if (isActive) {
             val stream = StreamSupport.stream(GavinsModClient.minecraftClient.getWorld().entities.spliterator(), false)

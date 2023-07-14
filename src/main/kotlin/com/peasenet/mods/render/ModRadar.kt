@@ -52,7 +52,11 @@ import kotlin.math.sqrt
  * @author gt3ch1
  * @version 04-11-2023
  */
-class ModRadar : Mod(Type.RADAR), InGameHudRenderListener {
+class ModRadar : RenderMod(
+    "Radar",
+    "gavinsmod.mod.render.radar",
+    "radar"
+), InGameHudRenderListener {
     /**
      * Creates a radar overlay in the top-right corner of the screen.
      */

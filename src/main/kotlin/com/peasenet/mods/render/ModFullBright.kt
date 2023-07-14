@@ -20,7 +20,6 @@
 package com.peasenet.mods.render
 
 import com.peasenet.main.GavinsMod
-import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
@@ -30,7 +29,11 @@ import com.peasenet.util.RenderUtils
  * @version 03-02-2023
  * A mod that allows the client to see very clearly in the absence of a light source.
  */
-class ModFullBright : Mod(Type.FULL_BRIGHT) {
+class ModFullBright : RenderMod(
+    "Full Bright",
+    "gavinsmod.mod.render.fullbright",
+    "fullbright"
+) {
     init {
 //        val gammaFade = ToggleSetting("gavinsmod.settings.render.gammafade")
 //        gammaFade.setCallback { fullbrightConfig.gammaFade = gammaFade.value }

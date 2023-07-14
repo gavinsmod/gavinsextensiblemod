@@ -32,7 +32,11 @@ import net.minecraft.entity.LivingEntity
  * @version 04-10-2023
  * A mod that shows entity's health as a tag above their head.
  */
-class ModHealthTag : Mod(Type.MOD_HPTAG), EntityRenderNameListener {
+class ModHealthTag : RenderMod(
+    "Health Tags",
+    "gavinsmod.mod.render.hptags",
+    "hptags"
+), EntityRenderNameListener {
     override fun onEnable() {
         super.onEnable()
         em.subscribe(EntityRenderNameListener::class.java, this)

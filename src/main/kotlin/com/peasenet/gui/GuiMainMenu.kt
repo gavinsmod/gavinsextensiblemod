@@ -22,7 +22,6 @@ package com.peasenet.gui
 import com.peasenet.gavui.Gui
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsMod.Companion.setEnabled
-import com.peasenet.mods.Type
 import net.minecraft.text.Text
 
 /**
@@ -41,7 +40,7 @@ class GuiMainMenu(guis: ArrayList<Gui>) : GuiElement(Text.literal("Gavin's Mod "
     }
 
     override fun close() {
-        setEnabled(Type.MOD_GUI, false)
+        setEnabled("gui", false)
         super.close()
     }
 }

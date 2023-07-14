@@ -21,14 +21,15 @@ package com.peasenet.util
 
 import com.peasenet.gui.GuiSettings
 import com.peasenet.main.GavinsMod
+import com.peasenet.main.Mods
 import com.peasenet.main.Mods.Companion.mods
-import com.peasenet.mods.Type
+import com.peasenet.mods.Mod
+import com.peasenet.mods.ModCategory
 import com.peasenet.util.PlayerUtils.sendMessage
 import com.peasenet.util.event.EventManager
 import com.peasenet.util.event.data.ChatMessage
 import com.peasenet.util.listeners.OnChatSendListener
 import net.minecraft.client.resource.language.I18n
-import java.util.*
 
 /**
  * @author gt3ch1
@@ -62,6 +63,7 @@ class ModCommands : OnChatSendListener {
             if (s.length == 1) return false
             s = s.substring(1)
             for (mod in mods) {
+                if (mod.modCategory == ModCategory.GUI) continue
                 if (s == mod.chatCommand) {
                     mod.toggle()
                     return true
@@ -70,19 +72,14 @@ class ModCommands : OnChatSendListener {
             if (s == "help") {
                 // get all mod types
                 sendMessage("§bEach command is preceded by a period (§l.§r§b)", true)
-                val mods = Type.values()
-                // sort by category then name
-                Arrays.sort(mods) { o1: Type, o2: Type ->
-                    if (o1.category == o2.category) {
-                        return@sort o1.modName.compareTo(o2.modName)
-                    }
-                    o1.category.compareTo(o2.category)
-                }
-                var previousCategory = ""
+                val mods = Mods.mods.toMutableList()
+                mods.sortWith(compareBy<Mod> { it.modCategory }.thenBy { it.name })
+                var previousCategory = ModCategory.NONE
                 for (t in mods) {
-                    if (previousCategory != t.category) {
+                    if (t.modCategory == ModCategory.GUI) continue
+                    if (previousCategory != t.modCategory) {
                         sendMessage("§l" + I18n.translate(t.modCategory.translationKey), false)
-                        previousCategory = t.category
+                        previousCategory = t.modCategory
                     }
                     sendMessage("§a" + I18n.translate(t.translationKey) + " §9-§c " + t.chatCommand, false)
                 }

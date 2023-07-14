@@ -20,7 +20,6 @@
 package com.peasenet.mods.tracer
 
 import com.peasenet.main.GavinsMod
-import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
@@ -32,7 +31,11 @@ import net.minecraft.entity.EntityType
  * @version 04-11-2023
  * A mod that allows the player to see tracers towards items.
  */
-class ModEntityItemTracer : ModTracer(Type.ENTITY_ITEM_TRACER) {
+class ModEntityItemTracer : TracerMod(
+    "Item Tracer",
+    "gavinsmod.mod.tracer.item",
+    "itemtracer"
+) {
     init {
         val colorSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.tracer.item.color")

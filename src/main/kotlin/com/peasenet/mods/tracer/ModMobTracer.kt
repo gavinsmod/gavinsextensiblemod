@@ -20,7 +20,6 @@
 package com.peasenet.mods.tracer
 
 import com.peasenet.gui.mod.tracer.GuiTracer
-import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
@@ -32,7 +31,11 @@ import net.minecraft.entity.mob.MobEntity
  * @version 04-01-2023
  * A mod that allows the client to see lines, called tracers, towards mobs.
  */
-class ModMobTracer : ModTracer(Type.MOB_TRACER) {
+class ModMobTracer : TracerMod(
+    "Mob Tracer",
+    "gavinsmod.mod.tracer.mob",
+    "mobtracer"
+) {
     init {
 //        val menu = ClickSetting("gavinsmod.settings.mobtracer")
 //        menu.setCallback { client.setScreen(GuiTracer()) }

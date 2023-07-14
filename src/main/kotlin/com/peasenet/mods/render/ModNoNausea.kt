@@ -27,4 +27,8 @@ import com.peasenet.mods.Type
  * @version 03-02-2023
  * A mod that disables underwater/lava overlay.
  */
-class ModNoNausea : Mod(Type.NO_NAUSEA)
+class ModNoNausea : RenderMod(
+    "No Nausea",
+    "gavinsmod.mod.render.nonausea",
+    "nonausea"
+)

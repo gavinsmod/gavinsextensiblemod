@@ -31,7 +31,11 @@ import net.minecraft.util.Identifier
  * @author gt3ch1
  * @version 03-02-2023
  */
-class ModNoVignette : Mod(Type.NO_VIGNETTE), RenderOverlayListener {
+class ModNoVignette : RenderMod(
+    "No Vignette",
+    "gavinsmod.mod.render.novignette",
+    "novignette",
+), RenderOverlayListener {
     override fun onEnable() {
         super.onEnable()
         em.subscribe(RenderOverlayListener::class.java, this)

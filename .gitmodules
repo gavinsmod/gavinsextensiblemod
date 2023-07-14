@@ -3,3 +3,6 @@
 	url = https://github.com/GT3CH1/gavui
 	ignore = all
 	branch = master
+[submodule "gavinsmod-events"]
+	path = gavinsmod-events
+	url = git@github.com:gavinsmod/gavinsmod-events

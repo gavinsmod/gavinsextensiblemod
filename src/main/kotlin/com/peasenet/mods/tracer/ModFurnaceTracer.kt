@@ -19,7 +19,6 @@
  */
 package com.peasenet.mods.tracer
 
-import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
@@ -31,7 +30,11 @@ import net.minecraft.block.entity.FurnaceBlockEntity
  * @version 04-11-2023
  * A mod that allows the player to see tracers towards furnaces.
  */
-class ModFurnaceTracer : ModTracer(Type.FURNACE_TRACER) {
+class ModFurnaceTracer : TracerMod(
+    "Furnace Tracer",
+    "gavinsmod.mod.tracer.furnace",
+    "furnacetracer"
+) {
     init {
         val colorSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.tracer.furnace.color")
@@ -42,12 +45,12 @@ class ModFurnaceTracer : ModTracer(Type.FURNACE_TRACER) {
     }
 
     override fun onEntityRender(er: EntityRender) {
-       
+
     }
 
     override fun onRenderBlockEntity(er: BlockEntityRender) {
         if (er.entity is FurnaceBlockEntity) RenderUtils.renderSingleLine(
-                er.stack!!, er.buffer!!, er.playerPos!!, er.center!!, tracerConfig.furnaceColor, tracerConfig.alpha
+            er.stack!!, er.buffer!!, er.playerPos!!, er.center!!, tracerConfig.furnaceColor, tracerConfig.alpha
         )
     }
 }

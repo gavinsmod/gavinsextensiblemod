@@ -19,8 +19,6 @@
  */
 package com.peasenet.mods.esp
 
-import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
@@ -35,7 +33,11 @@ import net.minecraft.util.math.Box
  * @version 03-02-2023
  * A mod that allows the client to see an esp (a box) around chests.
  */
-class ModChestEsp : Mod(Type.CHEST_ESP), BlockEntityRenderListener {
+class ModChestEsp : EspMod(
+    "Chest ESP",
+    "gavinsmod.mod.esp.chest",
+    "chestesp"
+), BlockEntityRenderListener {
     init {
 //        val colorSetting = ColorSetting(
 //            "gavinsmod.settings.esp.chest.color",

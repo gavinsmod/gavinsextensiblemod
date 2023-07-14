@@ -19,8 +19,6 @@
  */
 package com.peasenet.mods.esp
 
-import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
@@ -33,7 +31,11 @@ import net.minecraft.util.math.Box
  * @version 03-02-2023
  * A mod that allows the client to see an esp (a box) around beehives.
  */
-class ModBeehiveEsp : Mod(Type.BEEHIVE_ESP), BlockEntityRenderListener {
+class ModBeehiveEsp : EspMod(
+    "Beehive ESP",
+    "gavinsmod.mod.esp.beehive",
+    "beehiveesp"
+), BlockEntityRenderListener {
     init {
 //        val colorSetting = ColorSetting(
 //            "gavinsmod.settings.esp.beehive.color",

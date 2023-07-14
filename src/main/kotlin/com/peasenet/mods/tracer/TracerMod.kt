@@ -21,11 +21,12 @@
 package com.peasenet.mods.tracer
 
 import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
+import com.peasenet.mods.ModCategory
 import com.peasenet.util.event.data.CameraBob
 import com.peasenet.util.listeners.BlockEntityRenderListener
 import com.peasenet.util.listeners.CameraBobListener
 import com.peasenet.util.listeners.EntityRenderListener
+import org.lwjgl.glfw.GLFW
 
 /**
  *
@@ -34,7 +35,18 @@ import com.peasenet.util.listeners.EntityRenderListener
  * @author gt3ch1
  * @version 04/11/2023
  */
-abstract class ModTracer(type: Type) : Mod(type), EntityRenderListener, CameraBobListener, BlockEntityRenderListener {
+abstract class TracerMod(
+    name: String,
+    translationKey: String,
+    chatCommand: String,
+    keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN
+) : Mod(
+    name,
+    translationKey,
+    chatCommand,
+    ModCategory.TRACERS,
+    keyBinding
+), EntityRenderListener, CameraBobListener, BlockEntityRenderListener {
     override fun onEnable() {
         super.onEnable()
         em.subscribe(BlockEntityRenderListener::class.java, this)

@@ -38,7 +38,11 @@ import net.minecraft.block.BlockState
  * @version 03-02-2023
  * A mod for xray like feature, allowing the player to see through certain blocks.
  */
-class ModXray : Mod(Type.XRAY), ShouldDrawSideListener, TessellateBlockListener, BlockEntityRenderListener {
+class ModXray : RenderMod(
+    "Xray",
+    "gavinsmod.mod.render.xray",
+    "xray"
+), ShouldDrawSideListener, TessellateBlockListener, BlockEntityRenderListener {
     init {
         val xraySubSetting = SettingBuilder()
             .setWidth(100f)

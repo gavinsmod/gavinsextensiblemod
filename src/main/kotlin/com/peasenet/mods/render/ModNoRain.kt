@@ -27,4 +27,8 @@ import com.peasenet.mods.Type
  * @version 03-02-2023
  * A mod that disables rain.
  */
-class ModNoRain : Mod(Type.NO_RAIN)
+class ModNoRain : RenderMod(
+    "No Rain",
+    "gavinsmod.mod.render.norain",
+    "norain"
+)

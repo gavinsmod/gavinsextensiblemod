@@ -1,17 +1,17 @@
 {
-    "schemaVersion": 1,
-    "id": "gavinsmod",
-    "version": "1.4.3",
-    "name": "GavinsMod",
-    "description": "A simple modded client containing some hacks!",
-    "authors": [
-        "GT3CH1",
-        "Starmism"
-    ],
-    "contact": {
-        "homepage": "https://github.com/gt3ch1/minecraft-mod",
-        "sources": "https://github.com/gt3ch1/minecraft-mod"
-    },
+  "schemaVersion": 1,
+  "id": "gavinsmod",
+  "version": "1.4.5",
+  "name": "GavinsMod",
+  "description": "A simple modded client containing some hacks!",
+  "authors": [
+    "GT3CH1",
+    "Starmism"
+  ],
+  "contact": {
+    "homepage": "https://github.com/gt3ch1/minecraft-mod",
+    "sources": "https://github.com/gt3ch1/minecraft-mod"
+  },
     "license": "MIT",
     "icon": "assets/gavinsmod/icon.png",
     "environment": "*",

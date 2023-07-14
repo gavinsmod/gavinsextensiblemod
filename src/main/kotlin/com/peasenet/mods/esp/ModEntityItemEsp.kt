@@ -19,8 +19,6 @@
  */
 package com.peasenet.mods.esp
 
-import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.EntityRender
@@ -32,7 +30,11 @@ import net.minecraft.entity.EntityType
  * @version 03-02-2023
  * A mod that allows the player to see an esp (a box) around items.
  */
-class ModEntityItemEsp : Mod(Type.ENTITY_ITEM_ESP), EntityRenderListener {
+class ModEntityItemEsp : EspMod(
+    "Item ESP",
+    "gavinsmod.mod.esp.item",
+    "itemesp"
+), EntityRenderListener {
     init {
         val colorSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.esp.item.color")

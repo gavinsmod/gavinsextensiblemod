@@ -19,12 +19,13 @@
  */
 package com.peasenet.mods.movement
 
-import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
-
 /**
  * @author gt3ch1
  * @version 03-02-2023
  * A mod that allows the player to mine very quickly.
  */
-class ModFastMine : Mod(Type.FAST_MINE)
+class ModFastMine : MovementMod(
+    "Fast Mine",
+    "gavinsmod.mod.movement.fastmine",
+    "fastmine"
+)

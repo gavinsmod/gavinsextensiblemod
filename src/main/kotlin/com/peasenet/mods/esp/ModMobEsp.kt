@@ -20,8 +20,6 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.gui.mod.esp.GuiEsp
-import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.EntityRender
@@ -33,10 +31,12 @@ import net.minecraft.entity.mob.MobEntity
  * @version 04-01-2023
  * A mod that allows the client to see boxes around mobs.
  */
-class ModMobEsp : Mod(Type.MOB_ESP), EntityRenderListener {
+class ModMobEsp : EspMod(
+    "Mob ESP",
+    "gavinsmod.mod.esp.mob",
+    "mobesp"
+), EntityRenderListener {
     init {
-//        val menu = ClickSetting("gavinsmod.settings.mobesp")
-//        menu.setCallback { client.setScreen(GuiEsp()) }
         val menu = SettingBuilder()
             .setTitle("gavinsmod.settings.mobesp")
             .setCallback { client.setScreen(GuiEsp()) }

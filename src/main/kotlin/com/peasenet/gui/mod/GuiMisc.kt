@@ -19,10 +19,8 @@
  */
 package com.peasenet.gui.mod
 
-import com.peasenet.gavui.GuiScroll
-import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
-import com.peasenet.mods.Type
+import com.peasenet.mods.ModCategory
 import net.minecraft.text.Text
 
 /**
@@ -30,26 +28,4 @@ import net.minecraft.text.Text
  * @version 03-02-2023
  * Creates a new gui for miscellaneous mods as a dropdown.
  */
-class GuiMisc
-/**
- * Creates a new misc dropdown.
- *
- * @param position - The position of the dropdown.
- * @param width    - The width of the dropdown.
- * @param height   - The height of the dropdown.
- * @param title    - The title of the dropdown.
- */
-/**
- * Creates a new misc dropdown.
- */
-@JvmOverloads constructor(
-    position: PointF? = PointF(180f, 20f),
-    width: Int = 95,
-    height: Int = 10,
-    title: Text? = Text.translatable("gavinsmod.gui.misc")
-) : GuiScroll(
-    position, width, height, title, 4, ModGuiUtil.getGuiToggleFromCategory(
-        Type.Category.MISC,
-        BoxF(position, width.toFloat(), height.toFloat())
-    )
-)
+class GuiMisc : GuiMod(PointF(180f, 20f), 95, 10, Text.translatable("gavinsmod.gui.misc"), ModCategory.MISC, 4)

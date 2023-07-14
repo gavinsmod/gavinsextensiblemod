@@ -27,6 +27,7 @@ import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
+import com.peasenet.mods.gui.GuiMod
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.listeners.InGameHudRenderListener
 import net.minecraft.client.gui.DrawContext
@@ -39,7 +40,11 @@ import java.util.concurrent.atomic.AtomicInteger
  * @version 04-11-2023
  * A mod that shows the currently active mods in the top left screen.
  */
-class ModGuiTextOverlay : Mod(Type.MOD_GUI_TEXT_OVERLAY), InGameHudRenderListener {
+class ModGuiTextOverlay : GuiMod(
+    "Text Overlay",
+    "gavinsmod.mod.misc.textoverlay",
+    "textoverlay",
+), InGameHudRenderListener {
     init {
 
         //NOTE: This isn't really the best place for this, but it works for now. this is for chat message toggles.

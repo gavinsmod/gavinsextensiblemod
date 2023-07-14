@@ -1,31 +1,32 @@
 {
-    "client": [
-        "CameraMixin",
-        "EntityRendererMixin",
-        "MixinBiome",
-        "MixinBlock",
-        "MixinBlockEntityRenderDispatcher",
-        "MixinBlockModelRenderer",
-        "MixinChatScreen",
-        "MixinClientPlayerEntity",
-        "MixinClientPlayNetworkHandler",
-        "MixinClientWorld",
-        "MixinGameRender",
-        "MixinInGameHud",
-        "MixinInGameOverlayRenderer",
-        "MixinLivingEntity",
-        "MixinMinecraftClient",
-        "MixinPlayerEntity",
-        "MixinSimpleOption",
-        "MixinSodiumblockOcclusionCache",
-        "MixinTerrainRenderContext"
-    ],
-    "compatibilityLevel": "JAVA_17",
-    "injectors": {
-        "defaultRequire": 1
-    },
-    "minVersion": "0.8",
-    "mixins": [],
-    "package": "com.peasenet.mixins",
-    "required": true
+  "client": [
+    "CameraMixin",
+    "EntityRendererMixin",
+    "MixinBiome",
+    "MixinBlock",
+    "MixinBlockEntityRenderDispatcher",
+    "MixinBlockModelRenderer",
+    "MixinChatScreen",
+    "MixinClientPlayerEntity",
+    "MixinClientPlayNetworkHandler",
+    "MixinClientWorld",
+    "MixinGameRender",
+    "MixinInGameHud",
+    "MixinInGameOverlayRenderer",
+    "MixinKeyBinding",
+    "MixinLivingEntity",
+    "MixinMinecraftClient",
+    "MixinPlayerEntity",
+    "MixinSimpleOption",
+    "MixinSodiumblockOcclusionCache",
+    "MixinTerrainRenderContext"
+  ],
+  "compatibilityLevel": "JAVA_17",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "minVersion": "0.8",
+  "mixins": [],
+  "package": "com.peasenet.mixins",
+  "required": true
 }

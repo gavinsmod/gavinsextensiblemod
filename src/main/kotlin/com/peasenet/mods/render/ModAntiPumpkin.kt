@@ -19,8 +19,6 @@
  */
 package com.peasenet.mods.render
 
-import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
 import com.peasenet.util.event.data.RenderOverlay
 import com.peasenet.util.listeners.RenderOverlayListener
 import net.minecraft.util.Identifier
@@ -30,7 +28,11 @@ import net.minecraft.util.Identifier
  * @version 03-02-2023
  * A mod that disables the pumpkin overlay.
  */
-class ModAntiPumpkin : Mod(Type.ANTI_PUMPKIN), RenderOverlayListener {
+class ModAntiPumpkin : RenderMod(
+    "Anti Pumpkin",
+    "gavinsmod.mod.render.antipumpkin",
+    "antipumpkin"
+), RenderOverlayListener {
     override fun onEnable() {
         super.onEnable()
         em.subscribe(RenderOverlayListener::class.java, this)

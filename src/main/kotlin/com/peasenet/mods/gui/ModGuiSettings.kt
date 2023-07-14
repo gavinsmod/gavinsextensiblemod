@@ -26,13 +26,19 @@ import com.peasenet.main.GavinsModClient
 import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
+import org.lwjgl.glfw.GLFW
 
 /**
  * @author gt3ch1
  * @version 03-13-2023
  * A mod that allows the player to configure certain settings of gavinsmod.
  */
-class ModGuiSettings : Mod(Type.SETTINGS) {
+class ModGuiSettings : GuiMod(
+    "Settings",
+    "gavinsmod.settings.gui",
+    "settings",
+    GLFW.GLFW_KEY_O
+) {
     init {
 //        val guiSounds = ToggleSetting("gavinsmod.settings.gui.sound")
 //        guiSounds.setCallback { GavUISettings.add("gui.sound", guiSounds.value) }

@@ -32,6 +32,7 @@ import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.text.Text
+import org.lwjgl.glfw.GLFW
 
 /**
  * @author gt3ch1
@@ -81,23 +82,19 @@ abstract class Mod(
     }
 
 
-    constructor(name: String, translationKey: String, chatCommand: String, modCategory: ModCategory) : this(
+    constructor(
+        name: String,
+        translationKey: String,
+        chatCommand: String,
+        modCategory: ModCategory,
+        keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN
+    ) : this(
         name,
         translationKey,
         chatCommand,
         modCategory,
-        KeyBindUtils.registerKeyBindForType(translationKey, modCategory)
+        KeyBindUtils.registerKeyBindForType(translationKey, modCategory, keyBinding)
     )
-
-//
-//    /**
-//     * Creates a new mod with the given type and keybinding.
-//     *
-//     * @param type       - The type of the mod.
-//     * @param keyBinding - The keybinding for this mod.
-//     */
-//    constructor(type: Type, keyBinding: KeyBinding) : this(type, modCategory, keyBinding)
-//    constructor(type: Type) : this(type, modCategory, KeyBindUtils.registerKeyBindForType(type))
 
     /**
      * Sends a message to the player.

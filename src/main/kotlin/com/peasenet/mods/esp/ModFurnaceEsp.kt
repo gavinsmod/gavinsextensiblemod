@@ -20,8 +20,6 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.main.GavinsMod
-import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
@@ -34,7 +32,11 @@ import net.minecraft.util.math.Box
  * @version 04-11-2023
  * A mod that allows the client to see an esp (a box) around furnaces.
  */
-class ModFurnaceEsp : Mod(Type.FURNACE_ESP), BlockEntityRenderListener {
+class ModFurnaceEsp : EspMod(
+    "Furnace ESP",
+    "gavinsmod.mod.esp.furnace",
+    "furnaceesp"
+), BlockEntityRenderListener {
     init {
         val colorSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.esp.furnace.color")

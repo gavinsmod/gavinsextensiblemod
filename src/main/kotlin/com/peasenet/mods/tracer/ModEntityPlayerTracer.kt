@@ -19,7 +19,6 @@
  */
 package com.peasenet.mods.tracer
 
-import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
@@ -31,7 +30,11 @@ import net.minecraft.entity.player.PlayerEntity
  * @version 04-11-2023
  * A mod that allows the player to see a tracer to other players.
  */
-class ModEntityPlayerTracer : ModTracer(Type.ENTITY_PLAYER_TRACER) {
+class ModEntityPlayerTracer : TracerMod(
+    "Player Tracers",
+    "gavinsmod.mod.tracer.player",
+    "playertracer"
+) {
     init {
         val colorSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.tracer.player.color")

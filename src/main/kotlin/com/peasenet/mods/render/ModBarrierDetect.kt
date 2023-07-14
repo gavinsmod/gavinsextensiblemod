@@ -20,8 +20,6 @@
 package com.peasenet.mods.render
 
 import com.peasenet.mixinterface.ISimpleOption
-import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
 import net.minecraft.client.option.ParticlesMode
 
 /**
@@ -29,7 +27,11 @@ import net.minecraft.client.option.ParticlesMode
  * @version 03-02-2023
  */
 @Suppress("UNCHECKED_CAST")
-class ModBarrierDetect : Mod(Type.BARRIER_DETECT) {
+class ModBarrierDetect : RenderMod(
+    "Barrier Detect",
+    "gavinsmod.mod.render.barrierdetect",
+    "barrierdetect"
+) {
     override fun onEnable() {
         super.onEnable()
         particlesMode = client.options.particles.value

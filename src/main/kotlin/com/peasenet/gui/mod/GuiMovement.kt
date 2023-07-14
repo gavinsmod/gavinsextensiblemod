@@ -19,10 +19,8 @@
  */
 package com.peasenet.gui.mod
 
-import com.peasenet.gavui.GuiScroll
-import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
-import com.peasenet.mods.Type
+import com.peasenet.mods.ModCategory
 import net.minecraft.text.Text
 
 /**
@@ -30,26 +28,5 @@ import net.minecraft.text.Text
  * @version 03-02-2023
  * Creates a new gui for movement mods as a dropdown.
  */
-class GuiMovement
-/**
- * Creates a new movement dropdown.
- *
- * @param position - The position of the dropdown.
- * @param width    - The width of the dropdown.
- * @param height   - The height of the dropdown.
- * @param title    - The title of the dropdown.
- */
-/**
- * Creates a new movement dropdown.
- */
-@JvmOverloads constructor(
-    position: PointF? = PointF(10f, 20f),
-    width: Int = 85,
-    height: Int = 10,
-    title: Text? = Text.translatable("gavinsmod.gui.movement")
-) : GuiScroll(
-    position, width, height, title, 6, ModGuiUtil.getGuiToggleFromCategory(
-        Type.Category.MOVEMENT,
-        BoxF(position, width.toFloat(), height.toFloat())
-    )
-)
+class GuiMovement :
+    GuiMod(PointF(10f, 20f), 85, 10, Text.translatable("gavinsmod.gui.movement"), ModCategory.MOVEMENT, 6)

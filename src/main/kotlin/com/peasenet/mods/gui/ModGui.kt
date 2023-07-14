@@ -21,15 +21,19 @@ package com.peasenet.mods.gui
 
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
-import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
+import org.lwjgl.glfw.GLFW
 
 /**
  * @author gt3ch1
  * @version 03-02-2023
  * A mod that allows the player to see a menu of all the mods by pressing the keybind.
  */
-class ModGui : Mod(Type.MOD_GUI) {
+class ModGui : GuiMod(
+    "GUI",
+    "gavinsmod.mod.gui",
+    "gui",
+    GLFW.GLFW_KEY_I
+) {
     override fun activate() {
         GavinsModClient.minecraftClient.setScreen(GavinsMod.gui)
         setEnabled(true)

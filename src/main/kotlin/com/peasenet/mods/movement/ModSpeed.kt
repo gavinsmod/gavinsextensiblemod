@@ -28,7 +28,11 @@ import kotlin.math.sqrt
  * @author gt3ch1
  * @version 03-16-2023
  */
-class ModSpeed : Mod(Type.SPEED) {
+class ModSpeed : MovementMod(
+    "Speed",
+    "gavinsmod.mod.movement.speed",
+    "speed"
+) {
     override fun onTick() {
         val player = client.getPlayer()
 

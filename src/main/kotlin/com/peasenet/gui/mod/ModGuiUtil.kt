@@ -39,6 +39,7 @@ object ModGuiUtil {
      * @param box      - The box that contains the gui.
      * @return A list of toggleable gui elements.
      */
+    @JvmStatic
     fun getGuiToggleFromCategory(category: ModCategory?, box: BoxF): ArrayList<Gui> {
         val guis = ArrayList<Gui>()
         val mods = getModsInCategory(category!!)

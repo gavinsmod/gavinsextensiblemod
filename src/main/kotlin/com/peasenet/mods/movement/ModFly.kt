@@ -19,8 +19,6 @@
  */
 package com.peasenet.mods.movement
 
-import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
 import com.peasenet.util.PlayerUtils
 
 /**
@@ -28,7 +26,11 @@ import com.peasenet.util.PlayerUtils
  * @version 03-02-2023
  * A mod that allows the player to fly.
  */
-class ModFly : Mod(Type.FLY) {
+class ModFly : MovementMod(
+    "Fly",
+    "gavinsmod.mod.movement.fly",
+    "fly",
+) {
     override fun onTick() {
         PlayerUtils.updateFlight()
     }

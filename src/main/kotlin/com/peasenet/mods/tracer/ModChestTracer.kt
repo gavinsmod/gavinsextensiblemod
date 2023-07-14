@@ -19,7 +19,6 @@
  */
 package com.peasenet.mods.tracer
 
-import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
@@ -33,7 +32,11 @@ import net.minecraft.block.entity.ShulkerBoxBlockEntity
  * @version 04-11-2023
  * A mod that allows the player to see tracers towards chests.
  */
-class ModChestTracer : ModTracer(Type.CHEST_TRACER) {
+class ModChestTracer : TracerMod(
+    "Chest Tracer",
+    "gavinsmod.mod.tracer.chest",
+    "chesttracer",
+) {
     init {
         val colorSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.tracer.chest.color")

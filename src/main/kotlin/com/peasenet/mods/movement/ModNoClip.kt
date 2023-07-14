@@ -27,7 +27,11 @@ import com.peasenet.mods.Type
  * @version 03-16-2023
  * A mod for allowing the printer to noclip (move through blocks)
  */
-class ModNoClip : Mod(Type.NO_CLIP) {
+class ModNoClip : MovementMod(
+    "No Clip",
+    "gavinsmod.mod.movement.noclip",
+    "noclip"
+) {
     override fun onTick() {
         val player = client.getPlayer()
         player.abilities.flying = true

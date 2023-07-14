@@ -19,10 +19,8 @@
  */
 package com.peasenet.gui.mod
 
-import com.peasenet.gavui.GuiScroll
-import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
-import com.peasenet.mods.Type
+import com.peasenet.mods.ModCategory
 import net.minecraft.text.Text
 
 /**
@@ -30,26 +28,5 @@ import net.minecraft.text.Text
  * @version 03-02-2023
  * Creates a new gui for tracer mods as a dropdown.
  */
-class GuiTracers
-/**
- * Creates a new tracer dropdown.
- *
- * @param position - The position of the dropdown.
- * @param width    - The width of the dropdown.
- * @param height   - The height of the dropdown.
- * @param title    - The title of the dropdown.
- */
-/**
- * Creates a new tracer dropdown.
- */
-@JvmOverloads constructor(
-    position: PointF? = PointF(100f, 120f),
-    width: Int = 110,
-    height: Int = 10,
-    title: Text? = Text.translatable("gavinsmod.gui.tracers")
-) : GuiScroll(
-    position, width, height, title, 6, ModGuiUtil.getGuiToggleFromCategory(
-        Type.Category.TRACERS,
-        BoxF(position, width.toFloat(), height.toFloat())
-    )
-)
+class GuiTracers :
+    GuiMod(PointF(100f, 120f), 110, 10, Text.translatable("gavinsmod.gui.tracers"), ModCategory.TRACERS, 6)

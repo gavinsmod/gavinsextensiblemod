@@ -35,7 +35,7 @@ enum class ModCategory
     RENDER("gavinsmod.gui.render", "gavinsmod.keybinds.render"),
     COMBAT("gavinsmod.gui.combat", "gavinsmod.keybinds.combat"),
     MISC("gavinsmod.gui.misc", "gavinsmod.keybinds.misc"),
-    ESPS("gavinsmod.gui.esps", "gavinsmod.keybinds.esps"),
+    ESP("gavinsmod.gui.esps", "gavinsmod.keybinds.esps"),
     WAYPOINTS("gavinsmod.mod.render.waypoints", "gavinsmod.keybinds.waypoints"),
     TRACERS("gavinsmod.gui.tracers", "gavinsmod.keybinds.tracers"),
     GUI("gavinsmod.gui.gui", "gavinsmod.keybinds.gui"),

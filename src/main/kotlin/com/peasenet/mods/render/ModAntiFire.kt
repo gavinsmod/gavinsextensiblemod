@@ -19,8 +19,6 @@
  */
 package com.peasenet.mods.render
 
-import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
 import com.peasenet.util.event.data.RenderSubmergedOverlay
 import com.peasenet.util.listeners.RenderSubmergedOverlayListener
 
@@ -29,7 +27,11 @@ import com.peasenet.util.listeners.RenderSubmergedOverlayListener
  * @version 03-02-2023
  * A mod that disables the pumpkin overlay.
  */
-class ModAntiFire : Mod(Type.NO_FIRE), RenderSubmergedOverlayListener {
+class ModAntiFire : RenderMod(
+    "Anti Fire",
+    "gavinsmod.mod.render.antifire",
+    "antifire"
+), RenderSubmergedOverlayListener {
     override fun onEnable() {
         super.onEnable()
         em.subscribe(RenderSubmergedOverlayListener::class.java, this)

@@ -19,8 +19,6 @@
  */
 package com.peasenet.gui.mod
 
-import com.peasenet.gavui.GuiScroll
-import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
 import com.peasenet.mods.ModCategory
 import net.minecraft.text.Text
@@ -31,25 +29,13 @@ import net.minecraft.text.Text
  * Creates a new gui for combat mods as a dropdown.
  */
 class GuiCombat
-/**
- * Creates a new combat dropdown.
- *
- * @param position - The position of the dropdown.
- * @param width    - The width of the dropdown.
- * @param height   - The height of the dropdown.
- * @param title    - The title of the dropdown.
- */
-/**
- * Creates a new combat dropdown.
- */
-@JvmOverloads constructor(
-    position: PointF? = PointF(100f, 20f),
+    (
+    position: PointF = PointF(100f, 20f),
     width: Int = 75,
     height: Int = 10,
-    title: Text? = Text.translatable("gavinsmod.gui.combat")
-) : GuiScroll(
-    position, width, height, title, 4, ModGuiUtil.getGuiToggleFromCategory(
-        ModCategory.COMBAT,
-        BoxF(position, width.toFloat(), height.toFloat())
-    )
+    text: Text = Text.translatable("gavinsmod.gui.combat"),
+    category: ModCategory = ModCategory.COMBAT,
+    maxChildren: Int = 4
+) : GuiMod(
+    position, width, height, text, category, maxChildren
 )

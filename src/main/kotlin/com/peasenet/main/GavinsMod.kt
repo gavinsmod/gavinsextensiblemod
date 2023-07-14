@@ -57,35 +57,52 @@ class GavinsMod : ModInitializer {
         LOGGER.info("Settings loaded")
         Mods()
         LOGGER.info("GavinsMod initialized")
-        val guiList = java.util.ArrayList<Gui>()
-        guiList.add(GuiMovement())
-        guiList.add(GuiCombat())
-        guiList.add(GuiESP())
-        guiList.add(GuiMisc())
-
+        guiList[ModCategory.MOVEMENT] = GuiMovement()
+        guiList[ModCategory.COMBAT] = GuiCombat()
+        guiList[ModCategory.ESP] = GuiESP()
+        guiList[ModCategory.MISC] = GuiMisc()
         val guiRender = GuiRender()
         // fix for issue #55
         val guis = ModGuiUtil.getGuiToggleFromCategory(
             ModCategory.WAYPOINTS,
-            BoxF(guiRender.position, guiRender.width, guiRender.height)
+            BoxF(guiRender.position, guiRender.width.toFloat(), guiRender.height.toFloat())
         )
         guis.forEach { guiRender.addElement(it) }
-
-
-        guiList.add(guiRender)
-        guiList.add(GuiTracers())
-        guiList.forEach(Consumer { g: Gui -> g.isParent = true })
-        gui = GuiMainMenu(guiList)
+        guiList[ModCategory.RENDER] = guiRender
+        guiList[ModCategory.TRACERS] = GuiTracers()
+        guiList.values.forEach(Consumer { g: Gui -> g.isParent = true })
+        // remove all the guis that have no children
+        guiList.values.removeIf { g: Gui -> g.children.isEmpty() }
+        // collect all the guis that have children into an array list
+        val guisWithChildren = ArrayList<Gui>()
+        guiList.values.forEach { guisWithChildren.add(it) }
+        gui = GuiMainMenu(guisWithChildren)
         guiSettings = GuiSettings()
         modCommands = ModCommands()
     }
 
     companion object {
+
+        val guiList = HashMap<ModCategory, GuiMod>()
+
+
         /**
          * The logger of the mod.
          */
         @JvmField
         val LOGGER: Logger = LoggerFactory.getLogger("gavinsmod")
+
+        @JvmStatic
+        fun addMod(mod: Mod) {
+            Mods.addMod(mod)
+            val category = mod.modCategory
+            guiList[category] = guiList[category]!!.reload()
+            guiList.values.forEach(Consumer { g: Gui -> g.isParent = true })
+            val guisWithChildren = ArrayList<Gui>()
+            guiList.values.forEach { guisWithChildren.add(it) }
+            gui = GuiMainMenu(guisWithChildren)
+            LOGGER.info("Added mod: " + mod.name)
+        }
 
         /**
          * The current version of the mod.
@@ -165,9 +182,8 @@ class GavinsMod : ModInitializer {
          * @param enabled - Whether the mod should be enabled.
          */
         @JvmStatic
-        fun setEnabled(mod: Type, enabled: Boolean) {
-            // find mod via stream and set it to enabled.
-            val theMod = Mods.mods.stream().filter { m: Mod -> m.type === mod }.findFirst().get()
+        fun setEnabled(chatCommand: String, enabled: Boolean) {
+            val theMod = Mods.mods.stream().filter { m: Mod -> m.chatCommand == chatCommand }.findFirst().get()
             if (enabled) theMod.activate() else theMod.deactivate()
         }
 
@@ -194,7 +210,7 @@ class GavinsMod : ModInitializer {
              * @return A list of mods used for the text overlay.
              */
             get() = Mods.mods.stream()
-                .filter { mod: Mod -> mod.isActive && mod.modCategory !== ModCategory.GUI && mod.type !== Type.MOD_GUI_TEXT_OVERLAY }
+                .filter { mod: Mod -> mod.isActive && mod.modCategory !== ModCategory.GUI && mod.chatCommand.equals("textoverlay") }
                 .sorted(Comparator.comparing(Mod::name))
     }
 }

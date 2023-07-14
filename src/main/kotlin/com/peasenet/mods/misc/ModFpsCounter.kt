@@ -25,7 +25,6 @@ import com.peasenet.gavui.util.GavUISettings
 import com.peasenet.gavui.util.GuiUtil
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
-import com.peasenet.mods.Mod
 import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.listeners.InGameHudRenderListener
@@ -37,7 +36,11 @@ import net.minecraft.text.Text
  * @version 03-02-2023
  * A mod that renders the current frames per second in the top right corner of the screen.
  */
-class ModFpsCounter : Mod(Type.MOD_FPS_COUNTER), InGameHudRenderListener {
+class ModFpsCounter : MiscMod(
+    "FPS Counter",
+    "gavinsmod.mod.misc.fpscounter",
+    "fpscounter",
+), InGameHudRenderListener {
     init {
 //        val fpsSetting = SubSetting(100, 10, "gavinsmod.settings.misc.fpscolors")
         val fpsSetting = SettingBuilder()

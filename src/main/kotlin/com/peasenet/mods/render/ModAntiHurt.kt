@@ -19,8 +19,6 @@
  */
 package com.peasenet.mods.render
 
-import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
 import com.peasenet.util.event.data.CameraBob
 import com.peasenet.util.listeners.CameraHurtListener
 
@@ -29,7 +27,11 @@ import com.peasenet.util.listeners.CameraHurtListener
  * @version 03-02-2023
  * A mod that disables the view bob when the player is damaged.
  */
-class ModAntiHurt : Mod(Type.ANTI_HURT), CameraHurtListener {
+class ModAntiHurt : RenderMod(
+    "Anti Hurt",
+    "gavinsmod.mod.render.antihurt",
+    "antihurt"
+), CameraHurtListener {
     override fun onEnable() {
         super.onEnable()
         em.subscribe(CameraHurtListener::class.java, this)

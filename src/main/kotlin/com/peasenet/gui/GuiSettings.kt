@@ -29,7 +29,6 @@ import com.peasenet.main.GavinsMod.Companion.setEnabled
 import com.peasenet.main.Mods.Companion.mods
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
-import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
 import net.minecraft.text.Text
 import java.util.function.Consumer
@@ -74,7 +73,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
     }
 
     override fun close() {
-        setEnabled(Type.SETTINGS, false)
+        setEnabled("settings", false)
         super.close()
     }
 
@@ -86,17 +85,23 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
         guis.clear()
         miscSettings()
         addSettings(tracerDropdown, ModCategory.TRACERS)
-        addSettings(espDropdown, ModCategory.ESPS)
+        addSettings(espDropdown, ModCategory.ESP)
         addSettings(renderDropdown, ModCategory.RENDER)
         addSettings(miscDropdown, ModCategory.MISC)
         addSettings(guiDropdown, ModCategory.GUI)
         addSettings(waypointDropdown, ModCategory.WAYPOINTS)
-        guis.add(tracerDropdown)
-        guis.add(espDropdown)
-        guis.add(renderDropdown)
-        guis.add(miscDropdown)
-        guis.add(guiDropdown)
-        guis.add(waypointDropdown)
+        if (tracerDropdown.hasChildren())
+            guis.add(tracerDropdown)
+        if (espDropdown.hasChildren())
+            guis.add(espDropdown)
+        if (renderDropdown.hasChildren())
+            guis.add(renderDropdown)
+        if (miscDropdown.hasChildren())
+            guis.add(miscDropdown)
+        if (guiDropdown.hasChildren())
+            guis.add(guiDropdown)
+        if (waypointDropdown.hasChildren())
+            guis.add(waypointDropdown)
         guis.forEach(Consumer { g: Gui -> g.isParent = true })
         guis.add(resetButton)
     }

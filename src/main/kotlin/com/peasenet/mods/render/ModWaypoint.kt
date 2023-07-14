@@ -22,6 +22,7 @@ package com.peasenet.mods.render
 import com.peasenet.gui.mod.waypoint.GuiWaypoint
 import com.peasenet.main.GavinsModClient
 import com.peasenet.mods.Mod
+import com.peasenet.mods.ModCategory
 import com.peasenet.mods.Type
 import com.peasenet.mods.render.waypoints.Waypoint
 import com.peasenet.settings.ClickSetting
@@ -44,7 +45,12 @@ import java.util.function.Function
  * @version 03-02-2023
  * Creates a new mod to control waypoints.
  */
-class ModWaypoint : Mod(Type.WAYPOINT), EntityRenderListener, CameraBobListener {
+class ModWaypoint : RenderMod(
+    "Waypoints",
+    "gavinsmod.mod.render.waypoints",
+    "waypoints",
+    ModCategory.WAYPOINTS
+), EntityRenderListener, CameraBobListener {
     init {
         reloadSettings()
     }

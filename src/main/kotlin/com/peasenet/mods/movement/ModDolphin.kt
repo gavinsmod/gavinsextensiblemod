@@ -19,11 +19,13 @@
  */
 package com.peasenet.mods.movement
 
-import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
 
-class ModDolphin : Mod(Type.DOLPHIN) {
+class ModDolphin : MovementMod(
+    "Dolphin",
+    "gavinsmod.mod.movement.dolphin",
+    "dolphin"
+) {
     override fun onTick() {
         // check if the player is swimming
         if (client.getPlayer().isTouchingWater) {

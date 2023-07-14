@@ -20,8 +20,6 @@
 package com.peasenet.mods.misc
 
 import com.peasenet.main.GavinsMod
-import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.FakePlayer
 import com.peasenet.util.PlayerUtils
@@ -44,7 +42,11 @@ import net.minecraft.util.math.Vec3d
  * @author GT3CH1
  * @version 04-11-2023
  */
-class ModFreeCam : Mod(Type.FREECAM), PacketSendListener, WorldRenderListener, AirStrafeListener {
+class ModFreeCam : MiscMod(
+    "Freecam",
+    "gavinsmod.mod.misc.freecam",
+    "freecam"
+), PacketSendListener, WorldRenderListener, AirStrafeListener {
     private var fake: FakePlayer? = null
 
     init {
