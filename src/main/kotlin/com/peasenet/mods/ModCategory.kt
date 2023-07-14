@@ -17,7 +17,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package com.peasenet
+package com.peasenet.mods
 
 enum class ModCategory
 /**
@@ -28,15 +28,16 @@ enum class ModCategory
     /**
      * The translation key for the category.
      */
-    @JvmField val translationKey: String
+    @JvmField val translationKey: String,
+    @JvmField val keybindCategory: String
 ) {
-    MOVEMENT("gavinsmod.gui.movement"),
-    RENDER("gavinsmod.gui.render"),
-    COMBAT("gavinsmod.gui.combat"),
-    MISC("gavinsmod.gui.misc"),
-    ESPS("gavinsmod.gui.esps"),
-    WAYPOINTS("gavinsmod.mod.render.waypoints"),
-    TRACERS("gavinsmod.gui.tracers"),
-    GUI("gavinsmod.gui.gui"),
-    NONE("none")
+    MOVEMENT("gavinsmod.gui.movement", "gavinsmod.keybinds.movement"),
+    RENDER("gavinsmod.gui.render", "gavinsmod.keybinds.render"),
+    COMBAT("gavinsmod.gui.combat", "gavinsmod.keybinds.combat"),
+    MISC("gavinsmod.gui.misc", "gavinsmod.keybinds.misc"),
+    ESPS("gavinsmod.gui.esps", "gavinsmod.keybinds.esps"),
+    WAYPOINTS("gavinsmod.mod.render.waypoints", "gavinsmod.keybinds.waypoints"),
+    TRACERS("gavinsmod.gui.tracers", "gavinsmod.keybinds.tracers"),
+    GUI("gavinsmod.gui.gui", "gavinsmod.keybinds.gui"),
+    NONE("none", "none")
 }

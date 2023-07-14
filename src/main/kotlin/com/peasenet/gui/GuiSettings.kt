@@ -28,6 +28,7 @@ import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsMod.Companion.setEnabled
 import com.peasenet.main.Mods.Companion.mods
 import com.peasenet.mods.Mod
+import com.peasenet.mods.ModCategory
 import com.peasenet.mods.Type
 import com.peasenet.settings.SettingBuilder
 import net.minecraft.text.Text
@@ -84,12 +85,12 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
         guis.forEach(Consumer { obj: Gui -> obj.clearChildren() })
         guis.clear()
         miscSettings()
-        addSettings(tracerDropdown, Type.Category.TRACERS)
-        addSettings(espDropdown, Type.Category.ESPS)
-        addSettings(renderDropdown, Type.Category.RENDER)
-        addSettings(miscDropdown, Type.Category.MISC)
-        addSettings(guiDropdown, Type.Category.GUI)
-        addSettings(waypointDropdown, Type.Category.WAYPOINTS)
+        addSettings(tracerDropdown, ModCategory.TRACERS)
+        addSettings(espDropdown, ModCategory.ESPS)
+        addSettings(renderDropdown, ModCategory.RENDER)
+        addSettings(miscDropdown, ModCategory.MISC)
+        addSettings(guiDropdown, ModCategory.GUI)
+        addSettings(waypointDropdown, ModCategory.WAYPOINTS)
         guis.add(tracerDropdown)
         guis.add(espDropdown)
         guis.add(renderDropdown)
@@ -106,7 +107,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
      * @param parent   - The parent gui.
      * @param category - The category of mod types to add to the parent gui.
      */
-    private fun addSettings(parent: Gui, category: Type.Category) {
+    private fun addSettings(parent: Gui, category: ModCategory) {
         val modList = ArrayList<Mod>()
         // get all mods in esp category and have settings then add them to espDropdown
         mods.stream().filter { m: Mod -> m.modCategory === category && m.hasSettings() }

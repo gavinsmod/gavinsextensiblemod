@@ -19,7 +19,6 @@
  */
 package com.peasenet.mods
 
-import com.peasenet.ModCategory
 import com.peasenet.gavui.Gui
 import net.minecraft.client.world.ClientWorld
 
@@ -105,13 +104,6 @@ interface IMod {
     val chatCommand: String?
 
     /**
-     * Gets the type of the mod.
-     *
-     * @return The type of the mod.
-     */
-    val type: Type?
-
-    /**
      * Whether the mod is in a deactivation state (where the mod is disabled, but there still needs work to be done).
      *
      * @return True if the mod is in a deactivation state.
@@ -144,5 +136,4 @@ interface IMod {
      */
     val world: ClientWorld?
 
-    val keyBindCategory: KeyBindCategory?
 }

@@ -24,7 +24,7 @@ import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
 import com.peasenet.main.GavinsMod.Companion.getModsInCategory
-import com.peasenet.mods.Type
+import com.peasenet.mods.ModCategory
 
 /**
  * @author gt3ch1
@@ -39,7 +39,7 @@ object ModGuiUtil {
      * @param box      - The box that contains the gui.
      * @return A list of toggleable gui elements.
      */
-    fun getGuiToggleFromCategory(category: Type.Category?, box: BoxF): ArrayList<Gui> {
+    fun getGuiToggleFromCategory(category: ModCategory?, box: BoxF): ArrayList<Gui> {
         val guis = ArrayList<Gui>()
         val mods = getModsInCategory(category!!)
         for (i in mods.indices) {

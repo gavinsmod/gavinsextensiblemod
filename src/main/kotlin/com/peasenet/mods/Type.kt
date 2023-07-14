@@ -343,37 +343,6 @@ enum class Type
     MOD_GUI("GUI", "gavinsmod.gui", "gavinsmod.keybinds.gui", GLFW.GLFW_KEY_I, Category.GUI, "gui"),
     SETTINGS("Settings", "gavinsmod.gui.settings", "gavinsmod.keybinds.gui", GLFW.GLFW_KEY_O, Category.GUI, "settings");
     /**
-     * Gets the translation key of the mod.
-     *
-     * @return The translation key of the mod.
-     */
-    /**
-     * Gets the name of the mod.
-     *
-     * @return The name of the mod.
-     */
-    /**
-     * Gets the settings category of the mod.
-     *
-     * @return The settings category of the mod.
-     */
-    /**
-     * Gets the chat command of this enum.
-     *
-     * @return The chat command of this enum.
-     */
-    /**
-     * Gets the keybinding of the mod.
-     *
-     * @return The keybinding of the mod.
-     */
-    /**
-     * Gets the mod category of the mod.
-     *
-     * @return The mod category of the mod.
-     */
-
-    /**
      * Creates a new mod type with an empty keybinding.
      *
      * @param name           - The name of the mod.

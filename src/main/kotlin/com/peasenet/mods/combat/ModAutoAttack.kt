@@ -20,7 +20,7 @@
 package com.peasenet.mods.combat
 
 import com.peasenet.mods.Mod
-import com.peasenet.mods.Type
+import com.peasenet.mods.ModCategory
 import com.peasenet.util.PlayerUtils
 import net.minecraft.util.hit.EntityHitResult
 
@@ -30,7 +30,12 @@ import net.minecraft.util.hit.EntityHitResult
  * @author gt3ch1
  * @version 03-02-2023
  */
-class ModAutoAttack : Mod(Type.AUTO_ATTACK) {
+class ModAutoAttack : Mod(
+    "Auto Attack",
+    "gavinsmod.mod.autoattack",
+    "autoattack",
+    ModCategory.COMBAT
+) {
     override fun onTick() {
         val target = client.crosshairTarget() as? EntityHitResult ?: return
         val entity = target.entity

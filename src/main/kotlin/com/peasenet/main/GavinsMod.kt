@@ -27,6 +27,7 @@ import com.peasenet.gui.GuiMainMenu
 import com.peasenet.gui.GuiSettings
 import com.peasenet.gui.mod.*
 import com.peasenet.mods.Mod
+import com.peasenet.mods.ModCategory
 import com.peasenet.mods.Type
 import com.peasenet.util.ModCommands
 import net.fabricmc.api.ModInitializer
@@ -64,7 +65,10 @@ class GavinsMod : ModInitializer {
 
         val guiRender = GuiRender()
         // fix for issue #55
-        val guis = ModGuiUtil.getGuiToggleFromCategory(Type.Category.WAYPOINTS, BoxF(guiRender.position, guiRender.width, guiRender.height))
+        val guis = ModGuiUtil.getGuiToggleFromCategory(
+            ModCategory.WAYPOINTS,
+            BoxF(guiRender.position, guiRender.width, guiRender.height)
+        )
         guis.forEach { guiRender.addElement(it) }
 
 
@@ -174,13 +178,13 @@ class GavinsMod : ModInitializer {
          * @return The mods in the given category.
          */
         @JvmStatic
-        fun getModsInCategory(category: Type.Category): java.util.ArrayList<Mod> {
+        fun getModsInCategory(category: ModCategory): java.util.ArrayList<Mod> {
             // use stream to filter by category and sort by mod name
             return Mods.mods.stream().filter { mod: Mod -> mod.modCategory === category }
                 .sorted(Comparator.comparing(Mod::name)).collect({ ArrayList() },
-                { obj: java.util.ArrayList<Mod>, e: Mod -> obj.add(e) }) { obj: java.util.ArrayList<Mod>, c: java.util.ArrayList<Mod>? ->
-                obj.addAll(c!!)
-            }
+                    { obj: java.util.ArrayList<Mod>, e: Mod -> obj.add(e) }) { obj: java.util.ArrayList<Mod>, c: java.util.ArrayList<Mod>? ->
+                    obj.addAll(c!!)
+                }
         }
 
         val modsForTextOverlay: Stream<Mod>
@@ -190,7 +194,7 @@ class GavinsMod : ModInitializer {
              * @return A list of mods used for the text overlay.
              */
             get() = Mods.mods.stream()
-                .filter { mod: Mod -> mod.isActive && mod.modCategory !== Type.Category.GUI && mod.type !== Type.MOD_GUI_TEXT_OVERLAY }
+                .filter { mod: Mod -> mod.isActive && mod.modCategory !== ModCategory.GUI && mod.type !== Type.MOD_GUI_TEXT_OVERLAY }
                 .sorted(Comparator.comparing(Mod::name))
     }
 }

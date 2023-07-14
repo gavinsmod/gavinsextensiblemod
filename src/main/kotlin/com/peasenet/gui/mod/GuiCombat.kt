@@ -22,7 +22,7 @@ package com.peasenet.gui.mod
 import com.peasenet.gavui.GuiScroll
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
-import com.peasenet.mods.Type
+import com.peasenet.mods.ModCategory
 import net.minecraft.text.Text
 
 /**
@@ -49,7 +49,7 @@ class GuiCombat
     title: Text? = Text.translatable("gavinsmod.gui.combat")
 ) : GuiScroll(
     position, width, height, title, 4, ModGuiUtil.getGuiToggleFromCategory(
-        Type.Category.COMBAT,
+        ModCategory.COMBAT,
         BoxF(position, width.toFloat(), height.toFloat())
     )
 )

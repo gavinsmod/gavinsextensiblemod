@@ -19,7 +19,6 @@
  */
 package com.peasenet.mods
 
-import com.peasenet.ModCategory
 import com.peasenet.config.*
 import com.peasenet.gavui.Gui
 import com.peasenet.main.GavinsMod
@@ -41,9 +40,10 @@ import net.minecraft.text.Text
  * and a gui button based off of the given category.
  */
 abstract class Mod(
+    override val name: String,
     override val translationKey: String,
+    override val chatCommand: String,
     final override var modCategory: ModCategory,
-    final override var keyBindCategory: KeyBindCategory,
     private var keyBinding: KeyBinding
 ) : IMod {
     /**
@@ -81,11 +81,12 @@ abstract class Mod(
     }
 
 
-    constructor(translationKey: String, modCategory: ModCategory, keyBindCategory: KeyBindCategory) : this(
+    constructor(name: String, translationKey: String, chatCommand: String, modCategory: ModCategory) : this(
+        name,
         translationKey,
+        chatCommand,
         modCategory,
-        keyBindCategory,
-        KeyBindUtils.registerKeyBindForType(translationKey, keyBindCategory)
+        KeyBindUtils.registerKeyBindForType(translationKey, modCategory)
     )
 
 //
@@ -110,7 +111,7 @@ abstract class Mod(
     override fun onEnable() {
         sendMessage(
             GAVINS_MOD_STRING + I18n.translate(
-                type.translationKey
+                translationKey
             ) + " §a§lenabled§r!"
         )
         isActive = true
@@ -120,7 +121,7 @@ abstract class Mod(
     override fun onDisable() {
         sendMessage(
             GAVINS_MOD_STRING + I18n.translate(
-                type.translationKey
+                translationKey
             ) + " §c§ldisabled§r!"
         )
         isEnabled = false
@@ -180,11 +181,6 @@ abstract class Mod(
         activate()
         reloading = false
     }
-
-    override val name
-        get() = type.modName
-    override val chatCommand
-        get() = type.chatCommand
 
     override fun reloadSettings() {
         modSettings = ArrayList(settings)
