@@ -22,9 +22,6 @@ package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
 import com.peasenet.mixinterface.IMinecraftClient;
-import com.peasenet.mods.Type;
-import com.peasenet.util.event.EventManager;
-import com.peasenet.util.event.PlayerAttackEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
@@ -87,7 +84,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     @Inject(at = @At(value = "HEAD"), method = "isAmbientOcclusionEnabled()Z", cancellable = true)
     private static void isXrayOrFullBright(CallbackInfoReturnable<Boolean> ci) {
-        boolean disabled = GavinsMod.isEnabled(Type.XRAY) || GavinsMod.isEnabled(Type.FULL_BRIGHT);
+        boolean disabled = GavinsMod.isEnabled("xray") || GavinsMod.isEnabled("fullbright");
         ci.setReturnValue(!disabled);
         ci.cancel();
     }
