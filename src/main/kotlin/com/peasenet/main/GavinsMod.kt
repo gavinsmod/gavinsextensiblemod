@@ -102,6 +102,8 @@ class GavinsMod : ModInitializer {
             guiList.values.forEach { guisWithChildren.add(it) }
             gui = GuiMainMenu(guisWithChildren)
             LOGGER.info("Added mod: " + mod.name)
+            if(mod.hasSettings())
+                guiSettings.reloadGui()
         }
 
         /**
