@@ -84,7 +84,7 @@ object KeyBindUtils {
     ): KeyBinding {
         if (keyBind == GLFW.GLFW_KEY_UNKNOWN)
             return registerEmptyKeyBind(translationKey, modCategory.keybindCategory)
-        return KeyBindingHelper.registerKeyBinding(getKeyBinding(translationKey, modCategory))
+        return KeyBindingHelper.registerKeyBinding(getKeyBinding(translationKey, modCategory,keyBind))
     }
 
     /**
