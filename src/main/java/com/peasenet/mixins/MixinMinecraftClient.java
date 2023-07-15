@@ -95,13 +95,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Shadow
     public abstract MessageHandler getMessageHandler();
 
-    @Inject(at = @At(value = "FIELD",
-            target = "Lnet/minecraft/client/MinecraftClient;crosshairTarget:Lnet/minecraft/util/hit/HitResult;",
-            ordinal = 0), method = "doAttack()Z")
-    private void doAttack(CallbackInfoReturnable<Boolean> cir) {
-        PlayerAttackEvent event = new PlayerAttackEvent();
-        EventManager.getEventManager().call(event);
-    }
+
 
     @Override
     public void setItemUseCooldown(int cooldown) {

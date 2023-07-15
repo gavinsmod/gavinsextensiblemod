@@ -26,6 +26,8 @@ sourceSets {
     main {
         java {
             srcDirs += 'gavui/src/main/java'
+            srcDirs += 'gavinsmod-events/src/main/java'
+            srcDirs += "mods/**/src/main/java"
         }
         kotlin {
             srcDirs += 'gavinsmod-events/src/main/kotlin'
@@ -71,8 +73,8 @@ sourceSets {
             srcDirs += 'mods/waypoint/src/main/kotlin'
             srcDirs += 'mods/waypoints/src/main/kotlin'
             srcDirs += 'mods/xray/src/main/kotlin'
-
         }
+
     }
 }
 
