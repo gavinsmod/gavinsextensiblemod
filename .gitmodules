@@ -7,146 +7,146 @@
 	path = gavinsmod-events
 	url = git@github.com:gavinsmod/gavinsmod-events
 [submodule "chestesp"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/chestesp
 	path = mods/chestesp
 [submodule "mobesp"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/mobesp
 	path = mods/mobesp
 [submodule "beehiveesp"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/beehiveesp
 	path = mods/beehiveesp
 [submodule "entityplayeresp"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/entityplayeresp
 	path = mods/entityplayeresp
 [submodule "furnaceesp"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/furnaceesp
 	path = mods/furnaceesp
 [submodule "entityitemesp"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/entityitemesp
 	path = mods/entityitemesp
 [submodule "esp"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/esp
 	path = mods/esp
 [submodule "climb"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/climb
 	path = mods/climb
 [submodule "fly"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/fly
 	path = mods/fly
 [submodule "noclip"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/noclip
 	path = mods/noclip
 [submodule "autojump"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/autojump
 	path = mods/autojump
 [submodule "movement"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/movement
 	path = mods/movement
 [submodule "nofall"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/nofall
 	path = mods/nofall
 [submodule "dolphin"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/dolphin
 	path = mods/dolphin
 [submodule "speed"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/speed
 	path = mods/speed
 [submodule "fastmine"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/fastmine
 	path = mods/fastmine
 [submodule "fastplace"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/fastplace
 	path = mods/fastplace
 [submodule "antitrample"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/antitrample
 	path = mods/antitrample
 [submodule "entityplayertracer"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/entityplayertracer
 	path = mods/entityplayertracer
 [submodule "entityitemtracer"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/entityitemtracer
 	path = mods/entityitemtracer
 [submodule "tracer"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/tracer
 	path = mods/tracer
 [submodule "chesttracer"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/chesttracer
 	path = mods/chesttracer
 [submodule "mobtracer"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/mobtracer
 	path = mods/mobtracer
 [submodule "furnacetracer"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/furnacetracer
 	path = mods/furnacetracer
 [submodule "beehivetracer"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/beehivetracer
 	path = mods/beehivetracer
 [submodule "waypoints"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/waypoints
 	path = mods/waypoints
 [submodule "radar"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/radar
 	path = mods/radar
 [submodule "render"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/render
 	path = mods/render
 [submodule "nonausea"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/nonausea
 	path = mods/nonausea
 [submodule "antifire"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/antifire
 	path = mods/antifire
 [submodule "novignette"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/novignette
 	path = mods/novignette
 [submodule "fullbright"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/fullbright
 	path = mods/fullbright
 [submodule "nooverlay"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/nooverlay
 	path = mods/nooverlay
 [submodule "antihurt"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/antihurt
 	path = mods/antihurt
 [submodule "barrierdetect"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/barrierdetect
 	path = mods/barrierdetect
 [submodule "xray"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/xray
 	path = mods/xray
 [submodule "antipumpkin"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/antipumpkin
 	path = mods/antipumpkin
 [submodule "waypoint"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/waypoint
 	path = mods/waypoint
 [submodule "norain"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/norain
 	path = mods/norain
 [submodule "healthtag"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/healthtag
 	path = mods/healthtag
 [submodule "killaura"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/killaura
 	path = mods/killaura
 [submodule "autocrit"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/autocrit
 	path = mods/autocrit
 [submodule "autoattack"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/autoattack
 	path = mods/autoattack
 [submodule "combat"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/combat
 	path = mods/combat
 [submodule "freecam"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/freecam
 	path = mods/freecam
 [submodule "misc"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/misc
 	path = mods/misc
 [submodule "guitextoverlay"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/guitextoverlay
 	path = mods/guitextoverlay
 [submodule "fpscounter"]
-	url = https://github.com/gavinsmod/mod-template
+	url = https://github.com/gavinsmod/fpscounter
 	path = mods/fpscounter
