@@ -329,7 +329,7 @@ class GuiXray
         if (GavinsMod.xrayConfig.isInList(block)) GavinsMod.xrayConfig.removeBlock(block) else GavinsMod.xrayConfig.addBlock(
             block
         )
-        getMod(Type.XRAY)!!.reload()
+        getMod("xray")!!.reload()
         return super.mouseClicked(mouseX, mouseY, button)
     }
 

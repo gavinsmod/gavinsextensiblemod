@@ -192,7 +192,7 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
 
     @Inject(method = "updateNausea", at = @At("HEAD"), cancellable = true)
     public void cancelNausea(CallbackInfo ci) {
-        if (Mods.getMod(Type.NO_NAUSEA).isActive()) {
+        if (Mods.getMod("nonausea").isActive()) {
             this.prevNauseaIntensity = 0.0f;
             this.nauseaIntensity = 0.0f;
             ci.cancel();

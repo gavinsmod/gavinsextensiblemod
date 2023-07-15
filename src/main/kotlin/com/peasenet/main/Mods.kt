@@ -123,29 +123,13 @@ class Mods {
          */
         @JvmStatic
         fun getMod(name: String): Mod {
+            if(modMap[name] == null) throw NullPointerException("Mod $name does not exist.");
             return modMap[name]!!
         }
-
-        /**
-         * Gets the mod from the given type.
-         *
-         * @param type - The type of the mod.
-         * @return The mod with the given type.
-         */
+        
         @JvmStatic
-        fun getMod(type: Type): Mod? {
-            return modMap[type.chatCommand]
-        }
-
-        /**
-         * Whether the given mod is active.
-         *
-         * @param type - The type of the mod.
-         * @return Whether the mod is active.
-         */
-        @JvmStatic
-        fun isActive(type: Type): Boolean {
-            return getMod(type)!!.isActive
+        fun isActive(name: String): Boolean {
+            return getMod(name).isActive
         }
 
         /**

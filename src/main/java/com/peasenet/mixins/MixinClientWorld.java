@@ -34,7 +34,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinClientWorld {
     @Inject(at = @At("HEAD"), method = "getBlockParticle", cancellable = true)
     public void getBlockParticle(CallbackInfoReturnable<Block> cir) {
-        if (Mods.isActive(Type.BARRIER_DETECT))
+        if (Mods.isActive("barrierdetect"))
+            
             cir.setReturnValue(Blocks.BARRIER);
     }
 }

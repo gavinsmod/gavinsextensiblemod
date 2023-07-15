@@ -64,5 +64,5 @@ open class FullbrightConfig : Config<FullbrightConfig>() {
          * If it is not, then it will be between 1 and 4 inclusive.
          * @return max gamma value.
          */
-        get() = if (Mods.isActive(Type.XRAY)) 16F else 1 + 15 * gamma
+        get() = if (Mods.isActive("xray")) 16F else 1 + 15 * gamma
 }
