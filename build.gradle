@@ -13,7 +13,7 @@ plugins {
     id 'maven-publish'
 }
 apply plugin: 'kotlin'
-
+apply plugin: 'java'
 repositories {
     mavenLocal()
     mavenCentral()
@@ -25,97 +25,31 @@ allprojects { apply plugin: "idea" }
 sourceSets {
     main {
         java {
-            srcDirs += 'gavui/src/main/java'
+            // get all folders under the mods folder
+            srcDirs += 'gemclient-core/src/main/java'
             srcDirs += 'gavinsmod-events/src/main/java'
-            srcDirs += 'mods/antifire/src/main/java'
-            srcDirs += 'mods/antihurt/src/main/java'
-            srcDirs += 'mods/antipumpkin/src/main/java'
-            srcDirs += 'mods/antitrample/src/main/java'
-            srcDirs += 'mods/autoattack/src/main/java'
-            srcDirs += 'mods/autocrit/src/main/java'
-            srcDirs += 'mods/autojump/src/main/java'
-            srcDirs += 'mods/barrierdetect/src/main/java'
-            srcDirs += 'mods/beehiveesp/src/main/java'
-            srcDirs += 'mods/beehivetracer/src/main/java'
-            srcDirs += 'mods/chestesp/src/main/java'
-            srcDirs += 'mods/chesttracer/src/main/java'
-            srcDirs += 'mods/climb/src/main/java'
-            srcDirs += 'mods/dolphin/src/main/java'
-            srcDirs += 'mods/entityitemesp/src/main/java'
-            srcDirs += 'mods/entityitemtracer/src/main/java'
-            srcDirs += 'mods/entityplayeresp/src/main/java'
-            srcDirs += 'mods/entityplayertracer/src/main/java'
-            srcDirs += 'mods/fastmine/src/main/java'
-            srcDirs += 'mods/fastplace/src/main/java'
-            srcDirs += 'mods/fly/src/main/java'
-            srcDirs += 'mods/fpscounter/src/main/java'
-            srcDirs += 'mods/freecam/src/main/java'
-            srcDirs += 'mods/fullbright/src/main/java'
-            srcDirs += 'mods/furnaceesp/src/main/java'
-            srcDirs += 'mods/furnacetracer/src/main/java'
-            srcDirs += 'mods/guitextoverlay/src/main/java'
-            srcDirs += 'mods/healthtag/src/main/java'
-            srcDirs += 'mods/killaura/src/main/java'
-            srcDirs += 'mods/mobesp/src/main/java'
-            srcDirs += 'mods/mobtracer/src/main/java'
-            srcDirs += 'mods/noclip/src/main/java'
-            srcDirs += 'mods/nofall/src/main/java'
-            srcDirs += 'mods/nonausea/src/main/java'
-            srcDirs += 'mods/nooverlay/src/main/java'
-            srcDirs += 'mods/norain/src/main/java'
-            srcDirs += 'mods/novignette/src/main/java'
-            srcDirs += 'mods/radar/src/main/java'
-            srcDirs += 'mods/speed/src/main/java'
-            srcDirs += 'mods/waypoint/src/main/java'
-            srcDirs += 'mods/waypoints/src/main/java'
-            srcDirs += 'mods/xray/src/main/java'
+            srcDirs += 'gavui/src/main/java'
+            File modsDir = file('mods')
+            for (File modDir : modsDir.listFiles()) {
+                if (modDir.isDirectory()) {
+                    // add the src/main/java folder for each mod
+                    srcDirs += "mods/${modDir.name}/src/main/java"
+                }
+            }
         }
         kotlin {
+            srcDirs += 'gemclient-core/src/main/kotlin'
             srcDirs += 'gavinsmod-events/src/main/kotlin'
-            srcDirs += 'mods/antifire/src/main/kotlin'
-            srcDirs += 'mods/antihurt/src/main/kotlin'
-            srcDirs += 'mods/antipumpkin/src/main/kotlin'
-            srcDirs += 'mods/antitrample/src/main/kotlin'
-            srcDirs += 'mods/autoattack/src/main/kotlin'
-            srcDirs += 'mods/autocrit/src/main/kotlin'
-            srcDirs += 'mods/autojump/src/main/kotlin'
-            srcDirs += 'mods/barrierdetect/src/main/kotlin'
-            srcDirs += 'mods/beehiveesp/src/main/kotlin'
-            srcDirs += 'mods/beehivetracer/src/main/kotlin'
-            srcDirs += 'mods/chestesp/src/main/kotlin'
-            srcDirs += 'mods/chesttracer/src/main/kotlin'
-            srcDirs += 'mods/climb/src/main/kotlin'
-            srcDirs += 'mods/dolphin/src/main/kotlin'
-            srcDirs += 'mods/entityitemesp/src/main/kotlin'
-            srcDirs += 'mods/entityitemtracer/src/main/kotlin'
-            srcDirs += 'mods/entityplayeresp/src/main/kotlin'
-            srcDirs += 'mods/entityplayertracer/src/main/kotlin'
-            srcDirs += 'mods/fastmine/src/main/kotlin'
-            srcDirs += 'mods/fastplace/src/main/kotlin'
-            srcDirs += 'mods/fly/src/main/kotlin'
-            srcDirs += 'mods/fpscounter/src/main/kotlin'
-            srcDirs += 'mods/freecam/src/main/kotlin'
-            srcDirs += 'mods/fullbright/src/main/kotlin'
-            srcDirs += 'mods/furnaceesp/src/main/kotlin'
-            srcDirs += 'mods/furnacetracer/src/main/kotlin'
-            srcDirs += 'mods/guitextoverlay/src/main/kotlin'
-            srcDirs += 'mods/healthtag/src/main/kotlin'
-            srcDirs += 'mods/killaura/src/main/kotlin'
-            srcDirs += 'mods/mobesp/src/main/kotlin'
-            srcDirs += 'mods/mobtracer/src/main/kotlin'
-            srcDirs += 'mods/noclip/src/main/kotlin'
-            srcDirs += 'mods/nofall/src/main/kotlin'
-            srcDirs += 'mods/nonausea/src/main/kotlin'
-            srcDirs += 'mods/nooverlay/src/main/kotlin'
-            srcDirs += 'mods/norain/src/main/kotlin'
-            srcDirs += 'mods/novignette/src/main/kotlin'
-            srcDirs += 'mods/radar/src/main/kotlin'
-            srcDirs += 'mods/speed/src/main/kotlin'
-            srcDirs += 'mods/waypoint/src/main/kotlin'
-            srcDirs += 'mods/waypoints/src/main/kotlin'
-            srcDirs += 'mods/xray/src/main/kotlin'
+            // get all folders under the mods folder
+            File modsDir = file('mods')
+            var mySrcDirs = []
+            for (File modDir : modsDir.listFiles()) {
+                if (modDir.isDirectory()) {
+                    // add the src/main/java folder for each mod
+                    srcDirs += "mods/${modDir.name}/src/main/kotlin"
+                }
+            }
         }
-
     }
 }
 
@@ -161,6 +95,7 @@ jar {
     from("LICENSE") {
         rename { "${it}_${project.archivesBaseName}" }
     }
+    exclude "mods/**/src/main/java/com/peasenet/mod"
 }
 
 // configure the maven publication

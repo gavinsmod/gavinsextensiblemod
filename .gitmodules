@@ -150,3 +150,6 @@
 [submodule "fpscounter"]
 	url = https://github.com/gavinsmod/fpscounter
 	path = mods/fpscounter
+[submodule "gemclient-core"]
+	path = gemclient-core
+	url = git@github.com:gavinsmod/gemclient-core
