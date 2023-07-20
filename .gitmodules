@@ -5,7 +5,7 @@
 	branch = master
 [submodule "gavinsmod-events"]
 	path = gavinsmod-events
-	url = git@github.com:gavinsmod/gavinsmod-events
+	url = https://github.com/gavinsmod/gavinsmod-events
 [submodule "chestesp"]
 	url = https://github.com/gavinsmod/chestesp
 	path = mods/chestesp
@@ -152,4 +152,4 @@
 	path = mods/fpscounter
 [submodule "gemclient-core"]
 	path = gemclient-core
-	url = git@github.com:gavinsmod/gemclient-core
+	url = https://github.com/gavinsmod/gemclient-core
