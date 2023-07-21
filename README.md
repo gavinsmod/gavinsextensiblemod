@@ -1,4 +1,4 @@
-# Gavin's Extensible Mod v1.0.0
+# Gavin's Extensible Mod v1.0.2
 
 A successor to the non-extensible [gavinsmod](https://github.com/gavinsmod/minecraft-mod) Minecraft client.
 
