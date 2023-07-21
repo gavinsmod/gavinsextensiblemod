@@ -24,10 +24,12 @@ parser.add_argument('--clean',required=False, action='store_true',
                     help="Whether to clean before buildling")
 parser.add_argument('--directory',required=False,
                     help="A directory to a project")
-parser.add_argument('--minecraft-dir',required=False,default='~/.minecraft/',
+parser.add_argument('--minecraft-dir',required=False,default='~/.minecraft/mods',
                     help="The directory to your Minecraft installation")
 parser.add_argument('--all',required=False, action='store_true',
                     help="Whether to build all modules in this project.")
+parser.add_argument('--build',required=False,action='store_true',
+                     help="Whether to build everything in this project.")
 args = parser.parse_args()
 print(args)
 CLEAN = args.clean
@@ -35,7 +37,7 @@ MINECRAFT_DIR = args.minecraft_dir
 COPY = args.copy
 ALL = args.all
 DIRECTORY = args.directory
-
+BUILD = args.build
 
 
 
@@ -51,10 +53,11 @@ def do_build(build_locs: []):
                     logging.error("Failed to clean %s", name)
                     exit(1)
             logging.info("Building %s", name)
-            res = os.system("gradle build >/dev/null")
-            if res != 0:
-                logging.error("Failed to build %s", name)
-                exit(1)
+            if BUILD:
+                res = os.system("gradle build >/dev/null")
+                if res != 0:
+                    logging.error("Failed to build %s", name)
+                    exit(1)
             if COPY:
                 # get the right file by matching for gem-<file>-[0-9]*-[0-9]*-[0-9]*.jar file
                 jar_file = None
@@ -72,7 +75,7 @@ def do_build(build_locs: []):
                     logging.error("Failed to find jar file for %s", name)
                     exit(1)
                 logging.info("Copying %s to %s", jar_file.name, MINECRAFT_DIR)
-                res = os.system("cp %s %s/mods" % (jar_file, MINECRAFT_DIR))
+                res = os.system("cp %s %s" % (jar_file, MINECRAFT_DIR))
             
 if ALL:
     logging.info("Building all!")

@@ -7,6 +7,21 @@ A successor to the non-extensible [gavinsmod](https://github.com/gavinsmod/minec
 - **GEM**: A Minecraft mod that is built with the gemclient-core, gavui, or gavinsmod-events libraries.
   These mods are meant to be extensible, and exist without dependencies to other GEMs.
 
+## How do I install everything?
+
+1. Download fabric for Minecraft 1.20.1: [https://fabricmc.net/use/installer/](https://fabricmc.net/use/installer/)
+
+Download the following jar files (not sources jar!) and copy them to your 
+Minecraft's `mods` folder (for Windows, it's usually under `%appdata%\.minecraft\mods`, Linux is `~/.minecraft/mods`)
+
+2. Download GavUI `v0.0.10`: [https://github.com/GT3CH1/gavui/releases](https://github.com/GT3CH1/gavui/releases)
+
+3. Download gavinsmod-events `v0.0.4`: [https://github.com/gavinsmod/gavinsmod-events/releases](https://github.com/gavinsmod/gavinsmod-events/releases)
+4. Download any combination of the files prefixed with `gem`, and download 
+the `gemclient-core` file from here: [https://github.com/gavinsmod/gavinsmod-client/releases](https://github.com/gavinsmod/gavinsmod-client/releases)
+
+Start Minecraft!
+
 ## What is this repository?
 
 This repository serves as a conglomerate of the following projects:
@@ -65,10 +80,16 @@ help you with building this project.
     - Builds only one of the projects under the given directory. For example,
       `./build.py --directory mods/xray`
     - Default: `None`
+- `--build`
+    - Builds the project with the above parameters. Example: `./build.py --all
+      --copy --build`
+    - Default: `False`
 
 As an example, if you want to build everything from scratch and copy to an alternative
-Minecraft installation, you may do so by calling: `./build.py --all --copy
---minecraft-dir=/some/other/directory`
+Minecraft installation, you may do so by calling: `./build.py --build --all --copy
+--minecraft-dir=/some/other/directory`. If you want to only copy everything
+(without building again), you will need to run the previous command, but omit
+the `--build` directive.
 
 ## How can I create my own GEM?
 
