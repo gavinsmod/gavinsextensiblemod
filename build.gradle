@@ -24,6 +24,9 @@ allprojects { apply plugin: "idea" }
 
 sourceSets {
     main {
+        resources {
+            srcDirs += 'gemclient-core/src/main/resources'
+        }
         java {
             // get all folders under the mods folder
             srcDirs += 'gemclient-core/src/main/java'
@@ -90,6 +93,35 @@ java {
     // If you remove this line, sources will not be generated.
     withSourcesJar()
 }
+
+tasks.register('allMods', Copy) {
+    dependsOn('allModsMixins')
+    from 'templates/ModsAll.kt'
+    into 'gemclient-core/src/main/kotlin/com/peasenet/main/'
+    rename 'ModsAll.kt', 'Mods.kt'
+}
+
+tasks.register('allModsMixins', Copy) {
+    from 'templates/allmods.json'
+    into 'gemclient-core/src/main/resources/'
+    // rename 'ModsAll.kt' to 'Mods.kt'
+    rename 'allmods.json', 'gavinsmod.mixins.json'
+}
+
+tasks.register('coreMods', Copy) {
+    dependsOn('coreModsMixins')
+    from 'templates/ModsCore.kt'
+    into 'gemclient-core/src/main/kotlin/com/peasenet/main/'
+    rename 'ModsCore.kt', 'Mods.kt'
+
+}
+
+tasks.register('coreModsMixins', Copy) {
+    from 'templates/coremods.json'
+    into 'gemclient-core/src/main/resources/'
+    rename 'coremods.json', 'gavinsmod.mixins.json'
+}
+
 
 jar {
     from("LICENSE") {
