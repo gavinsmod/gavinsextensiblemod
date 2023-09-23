@@ -75,7 +75,7 @@ def do_build(build_locs: []):
                     logging.error("Failed to find jar file for %s", name)
                     exit(1)
                 logging.info("Copying %s to %s", jar_file.name, MINECRAFT_DIR)
-                res = os.system("cp %s %s" % (jar_file, MINECRAFT_DIR))
+                res = os.system('cp "%s" "%s"' % (jar_file, MINECRAFT_DIR))
             
 if ALL:
     logging.info("Building all!")
