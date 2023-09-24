@@ -1,6 +1,4 @@
-# Gavin's Extensible Mod v1.0.2
-
-A successor to the non-extensible [gavinsmod](https://github.com/gavinsmod/minecraft-mod) Minecraft client.
+# Gavin's Extensible Mod v1.4.5
 
 ## Quick Terminology
 
@@ -10,15 +8,12 @@ A successor to the non-extensible [gavinsmod](https://github.com/gavinsmod/minec
 ## How do I install everything?
 
 1. Download fabric for Minecraft 1.20.1: [https://fabricmc.net/use/installer/](https://fabricmc.net/use/installer/)
-
-Download the following jar files (not sources jar!) and copy them to your 
-Minecraft's `mods` folder (for Windows, it's usually under `%appdata%\.minecraft\mods`, Linux is `~/.minecraft/mods`)
-
-2. Download GavUI `v0.0.10`: [https://github.com/GT3CH1/gavui/releases](https://github.com/GT3CH1/gavui/releases)
-
-3. Download gavinsmod-events `v0.0.4`: [https://github.com/gavinsmod/gavinsmod-events/releases](https://github.com/gavinsmod/gavinsmod-events/releases)
-4. Download any combination of the files prefixed with `gem`, and download 
-the `gemclient-core` file from here: [https://github.com/gavinsmod/gavinsmod-client/releases](https://github.com/gavinsmod/gavinsmod-client/releases)
+2.
+Download `fabric-language-kotlin`: [https://www.curseforge.com/minecraft/mc-mods/fabric-language-kotlin/files/4654791](https://www.curseforge.com/minecraft/mc-mods/fabric-language-kotlin/files/4654791)
+3. Download `gemclient-core` under the releases tab.
+4. Download `gavui` under the releases tab.
+5. Download `gavinsmod-events` under the releases tab.
+6. Mix and match the GEMs you want to use from the releases tab.
 
 Start Minecraft!
 
@@ -29,22 +24,19 @@ This repository serves as a conglomerate of the following projects:
 - [gavui](https://github.com/GT3CH1/gavui)
 - [gavinsmod-events](https://github.com/gavinsmod/gavinsmod-events)
 - [gemclient-core](https://github.com/gavinsmod/gemclient-core)
-- And all of the other mod-* repositories seen in the [gavinsmod organization](https://github.com/gavinsmod)
+- And all the other `mod-*` repositories seen in the [gavinsmod organization](https://github.com/gavinsmod)
   The sole purpose of repository is to aid in the development of _preexisting_ GEMs and the core
-  projects that make up the GEM client. This repository is not meant to be used as a dependency
-  nor is it meant to be used as a standalone mod. However, there is a helper script that will allow you
-  to build all the GEMs and the core projects into their respective jars, as well as install them into
-  your Minecraft directory if wanted (see the [How do I build this
-  project?](#how-do-i-build-this-project) section)
+  projects that make up the GEM client. There is a helper script that will allow you to build all the GEMs and the
+  core projects into their respective jars, as well as install them into your Minecraft directory if wanted.
+- (see the [How do I build this project?](#how-do-i-build-this-project) section)
 
 This repository will also be the repository to get up-to-date releases of the
 GEMs contained within this repository (for example: fullbright, xray, tracers),
 as well an up-to-date release of the gemclient-core library, which is required
 for all GEMs to work.
 
-This repository will _not_ host an up-to-date release of GavUI nor
-gavinsmod-events. You will need to get releases for those at the following
-locations:
+This repository will also host an up-to-date release of GavUI and gavinsmod-events.
+The home location for these projects are at the following locations:
 - GavUI: [https://github.com/GT3CH1/gavui](https://github.com/GT3CH1/gavui)
 - gavinsmod-events: [https://github.com/gavinsmod/gavinsmod-events](https://github.com/gavinsmod/gavinsmod-events)
 
