@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "gemclient-core",
+  "version": "${version}",
+  "name": "GEM Client",
+  "description": "A simple modded client containing some hacks!",
+  "authors": [
+    "GT3CH1",
+    "Starmism"
+  ],
+  "contact": {
+    "homepage": "https://github.com/gt3ch1/minecraft-mod",
+    "sources": "https://github.com/gt3ch1/minecraft-mod"
+  },
+    "license": "MIT",
+    "icon": "assets/gavinsmod/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "com.peasenet.main.GavinsMod"
+        ],
+        "client": [
+            "com.peasenet.main.GavinsModClient"
+        ]
+    },
+    "mixins": [
+        "gavinsmod.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=0.13.3",
+        "fabric": "*",
+        "minecraft": "~1.20-beta.1",
+        "java": ">=17",
+        "fabric-key-binding-api-v1": "*",
+        "fabric-language-kotlin": "*"
+    }
+}
