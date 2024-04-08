@@ -37,45 +37,16 @@ import java.util.stream.Stream
 
 /**
  * @author gt3ch1
- * @version 07-17-2023
+ * @version 04-08-2024
  * The main initializer of the mod.
  */
 class GavinsMod : ModInitializer {
-    override fun onInitialize() {
-        GavUI.initialize()
-        espConfig = Settings.settings["esp"] as EspConfig
-        tracerConfig = Settings.settings["tracer"] as TracerConfig
-        miscConfig = Settings.settings["misc"] as MiscConfig
-        LOGGER.info("Settings loaded")
-        Settings()
-        Mods()
-        modsToLoad.forEach(Consumer { m: Mod -> Mods.addMod(m) })
-        guiList[ModCategory.MOVEMENT] = GuiMovement()
-        guiList[ModCategory.COMBAT] = GuiCombat()
-        guiList[ModCategory.ESP] = GuiESP()
-        guiList[ModCategory.MISC] = GuiMisc()
-        val guiRender = GuiRender()
-        // fix for issue #55
-        val guis = ModGuiUtil.getGuiToggleFromCategory(
-            ModCategory.WAYPOINTS, BoxF(guiRender.position, guiRender.width.toFloat(), guiRender.height.toFloat())
-        )
-        guis.forEach { guiRender.addElement(it) }
-        guiList[ModCategory.RENDER] = guiRender
-        guiList[ModCategory.TRACERS] = GuiTracers()
-        guiList.values.forEach(Consumer { g: Gui -> g.isParent = true })
-        // remove all the guis that have no children
-        guiList.values.removeIf { g: Gui -> g.children.isEmpty() }
-        // collect all the guis that have children into an array list
-        val guisWithChildren = ArrayList<Gui>()
-        guiList.values.forEach { guisWithChildren.add(it) }
-        gui = GuiMainMenu(guisWithChildren)
-        guiSettings = GuiSettings()
-        modCommands = ModCommands()
-
-        LOGGER.info("GavinsMod initialized")
-    }
 
     companion object {
+        /**
+         * The current version of the mod.
+         */
+        const val VERSION = "v1.4.7"
 
         /**
          * A hashmap containing the category of each mod category and the corresponding gui.
@@ -101,11 +72,6 @@ class GavinsMod : ModInitializer {
         fun addMod(mod: Mod) {
             modsToLoad.add(mod)
         }
-
-        /**
-         * The current version of the mod.
-         */
-        const val VERSION = "v1.4.6"
 
         /**
          * The gui used to display the main mod menu.
@@ -187,5 +153,39 @@ class GavinsMod : ModInitializer {
             val mod = Mods.getMod(chatCommand) ?: return false
             return mod.isActive
         }
+    }
+
+    override fun onInitialize() {
+        GavUI.initialize()
+        espConfig = Settings.settings["esp"] as EspConfig
+        tracerConfig = Settings.settings["tracer"] as TracerConfig
+        miscConfig = Settings.settings["misc"] as MiscConfig
+        LOGGER.info("Settings loaded")
+        Settings()
+        Mods()
+        modsToLoad.forEach(Consumer { m: Mod -> Mods.addMod(m) })
+        guiList[ModCategory.MOVEMENT] = GuiMovement()
+        guiList[ModCategory.COMBAT] = GuiCombat()
+        guiList[ModCategory.ESP] = GuiESP()
+        guiList[ModCategory.MISC] = GuiMisc()
+        val guiRender = GuiRender()
+        // fix for issue #55
+        val guis = ModGuiUtil.getGuiToggleFromCategory(
+            ModCategory.WAYPOINTS, BoxF(guiRender.position, guiRender.width.toFloat(), guiRender.height.toFloat())
+        )
+        guis.forEach { guiRender.addElement(it) }
+        guiList[ModCategory.RENDER] = guiRender
+        guiList[ModCategory.TRACERS] = GuiTracers()
+        guiList.values.forEach(Consumer { g: Gui -> g.isParent = true })
+        // remove all the guis that have no children
+        guiList.values.removeIf { g: Gui -> g.children.isEmpty() }
+        // collect all the guis that have children into an array list
+        val guisWithChildren = ArrayList<Gui>()
+        guiList.values.forEach { guisWithChildren.add(it) }
+        gui = GuiMainMenu(guisWithChildren)
+        guiSettings = GuiSettings()
+        modCommands = ModCommands()
+
+        LOGGER.info("GavinsMod initialized")
     }
 }
