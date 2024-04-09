@@ -164,7 +164,7 @@ class GavinsMod : ModInitializer {
         val guiRender = GuiRender()
         // fix for issue #55
         val guis = ModGuiUtil.getGuiToggleFromCategory(
-            ModCategory.WAYPOINTS, BoxF(guiRender.position, guiRender.width.toFloat(), guiRender.height.toFloat())
+            ModCategory.WAYPOINTS, BoxF(guiRender.position, guiRender.width, guiRender.height)
         )
         guis.forEach { guiRender.addElement(it) }
         guiList[ModCategory.RENDER] = guiRender
