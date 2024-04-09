@@ -23,13 +23,13 @@
  */
 package com.peasenet.mods.tracer
 
+import com.peasenet.config.TracerConfig
 import com.peasenet.gui.mod.tracer.GuiMobTracer
+import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.event.data.EntityRender
-import com.peasenet.main.Settings
-import com.peasenet.config.TracerConfig
 import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.mob.MobEntity
 

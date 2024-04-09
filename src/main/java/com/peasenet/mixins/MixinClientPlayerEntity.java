@@ -25,11 +25,7 @@
 package com.peasenet.mixins;
 
 import com.mojang.authlib.GameProfile;
-import com.peasenet.main.Mods;
 import com.peasenet.mixinterface.IClientPlayerEntity;
-import com.peasenet.mods.Type;
-import com.peasenet.util.event.AirStrafeEvent;
-import com.peasenet.util.event.EventManager;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -47,9 +43,6 @@ import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * @author gt3ch1

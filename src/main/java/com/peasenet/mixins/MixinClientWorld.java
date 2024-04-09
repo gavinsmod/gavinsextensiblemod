@@ -25,7 +25,6 @@
 package com.peasenet.mixins;
 
 import com.peasenet.main.Mods;
-import com.peasenet.mods.Type;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.world.ClientWorld;

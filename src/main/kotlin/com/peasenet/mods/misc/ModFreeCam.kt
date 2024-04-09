@@ -23,11 +23,10 @@
  */
 package com.peasenet.mods.misc
 
-import com.peasenet.main.GavinsMod
-import com.peasenet.main.Settings
-import com.peasenet.config.TracerConfig
 import com.peasenet.config.EspConfig
 import com.peasenet.config.MiscConfig
+import com.peasenet.config.TracerConfig
+import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.FakePlayer
 import com.peasenet.util.PlayerUtils

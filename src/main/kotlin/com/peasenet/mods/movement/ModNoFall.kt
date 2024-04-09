@@ -23,9 +23,7 @@
  */
 package com.peasenet.mods.movement
 
-import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
-import com.peasenet.util.PlayerUtils
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
 
 /**

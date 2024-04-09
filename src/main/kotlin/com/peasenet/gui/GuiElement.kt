@@ -23,7 +23,6 @@
  */
 package com.peasenet.gui
 
-import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiScroll
@@ -31,11 +30,9 @@ import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.util.GavUISettings
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
-import com.peasenet.util.RenderUtils
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
-import net.minecraft.client.render.GameRenderer
 import net.minecraft.text.Text
 import java.util.function.Consumer
 

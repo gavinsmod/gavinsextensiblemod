@@ -29,7 +29,6 @@ import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
 import com.peasenet.mixinterface.ISimpleOption
 import com.peasenet.settings.SettingBuilder
-import com.peasenet.util.RenderUtils
 
 /**
  * @author gt3ch1

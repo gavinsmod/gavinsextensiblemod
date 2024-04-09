@@ -23,9 +23,8 @@
  */
 package com.peasenet.mods.esp
 
-import com.peasenet.main.GavinsMod
-import com.peasenet.main.Settings
 import com.peasenet.config.EspConfig
+import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender

@@ -23,10 +23,9 @@
  */
 package com.peasenet.mods.render
 
-import com.peasenet.config.WaypointConfig
 import com.peasenet.config.TracerConfig
+import com.peasenet.config.WaypointConfig
 import com.peasenet.gui.mod.waypoint.GuiWaypoint
-import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
 import com.peasenet.mods.ModCategory
 import com.peasenet.mods.render.waypoints.Waypoint
@@ -41,7 +40,6 @@ import com.peasenet.util.event.data.EntityRender
 import com.peasenet.util.listeners.CameraBobListener
 import com.peasenet.util.listeners.EntityRenderListener
 import net.minecraft.client.MinecraftClient
-
 import net.minecraft.text.Text
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box

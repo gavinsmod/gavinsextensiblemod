@@ -23,7 +23,9 @@
  */
 package com.peasenet.main
 
-import com.peasenet.config.*
+import com.peasenet.config.EspConfig
+import com.peasenet.config.MiscConfig
+import com.peasenet.config.TracerConfig
 import com.peasenet.gavui.GavUI
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.math.BoxF
