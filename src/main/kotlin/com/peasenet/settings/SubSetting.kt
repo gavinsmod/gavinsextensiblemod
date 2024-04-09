@@ -36,25 +36,14 @@ class SubSetting(builder: SettingBuilder) : Setting() {
     /**
      * The dropdown menu that contains the sub settings.
      */
-    override val gui: GuiScroll
-
-    /**
-     * Creates a new subsetting element. You can call #add(Setting) to add subsettings to this element.
-     *
-     * @param width          - The width of the dropdown element.
-     * @param height         - The height of the dropdown element.
-     * @param translationKey - The translation key.
-     */
-    init {
-        gui = GuiBuilder()
-            .setWidth(builder.getWidth())
-            .setHeight(builder.getHeight())
-            .setTitle(builder.getTitle())
-            .setMaxChildren(builder.getMaxChildren())
-            .setDefaultMaxChildren(builder.getDefaultMaxChildren())
-            .setDirection(builder.getDirection())
-            .buildScroll()
-    }
+    override val gui: GuiScroll = GuiBuilder()
+        .setWidth(builder.getWidth())
+        .setHeight(builder.getHeight())
+        .setTitle(builder.getTitle())
+        .setMaxChildren(builder.getMaxChildren())
+        .setDefaultMaxChildren(builder.getDefaultMaxChildren())
+        .setDirection(builder.getDirection())
+        .buildScroll()
 
     /**
      * Adds a new subsetting to this element.

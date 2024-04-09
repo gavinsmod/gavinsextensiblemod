@@ -23,9 +23,7 @@
  */
 package com.peasenet.mods
 
-import com.peasenet.config.EspConfig
 import com.peasenet.config.MiscConfig
-import com.peasenet.config.TracerConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Mods
@@ -261,53 +259,6 @@ abstract class Mod(
          */
         @JvmStatic
         protected var em: EventManager = EventManager.eventManager
-
-        /**
-         * The tracer configuration.
-         * @deprecated. See how to use the new config system in the [Settings] class.
-         */
-        @Deprecated(
-            "You should be using the updated settings API as defined in com.peasenet.main.Settings",
-            ReplaceWith(
-                "Settings.getConfig<TracerConfig>(\"tracer\")",
-                "com.peasenet.main.Settings", "com.peasenet.config.TracerConfig"
-            )
-        )
-        protected val tracerConfig: TracerConfig
-            get() {
-                return Settings.getConfig<TracerConfig>("tracer")
-            }
-
-        /**
-         * ESP configuration.
-         */
-        @Deprecated(
-            "You should be using the updated settings API as defined in com.peasenet.main.Settings",
-            ReplaceWith(
-                "Settings.getConfig<EspConfig>(\"esp\")",
-                "com.peasenet.main.Settings", "com.peasenet.config.EspConfig"
-            )
-        )
-        val espConfig: EspConfig
-            get() {
-                return Settings.getConfig<EspConfig>("esp")
-            }
-
-        /**
-         * The miscellaneous configuration.
-         */
-
-        @Deprecated(
-            "You should be using the updated settings API as defined in com.peasenet.main.Settings",
-            ReplaceWith(
-                "Settings.getConfig<MiscConfig>(\"misc\")",
-                "com.peasenet.main.Settings", "com.peasenet.config.MiscConfig"
-            )
-        )
-        protected val miscConfig: MiscConfig
-            get() {
-                return Settings.getConfig<MiscConfig>("misc")
-            }
 
     }
 }

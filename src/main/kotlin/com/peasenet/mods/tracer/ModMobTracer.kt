@@ -44,8 +44,6 @@ class ModMobTracer : TracerMod(
     "mobtracer"
 ) {
     init {
-//        val menu = ClickSetting("gavinsmod.settings.mobtracer")
-//        menu.setCallback { client.setScreen(GuiTracer()) }
         val menu = SettingBuilder()
             .setTitle("gavinsmod.settings.mobtracer")
             .setCallback { MinecraftClient.getInstance().setScreen(GuiMobTracer()) }
@@ -75,9 +73,9 @@ class ModMobTracer : TracerMod(
     }
 
     companion object {
-        val config: TracerConfig 
-        get() {
-            return Settings.getConfig<TracerConfig>("tracer")
-        }
+        val config: TracerConfig
+            get() {
+                return Settings.getConfig<TracerConfig>("tracer")
+            }
     }
 }

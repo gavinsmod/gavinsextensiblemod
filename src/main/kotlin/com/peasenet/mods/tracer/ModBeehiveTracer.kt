@@ -64,10 +64,4 @@ class ModBeehiveTracer : TracerMod(
 
     override fun onEntityRender(er: EntityRender) {
     }
-    companion object {
-        private val config: TracerConfig
-        get() {
-            return Settings.getConfig<TracerConfig>("tracer")
-        }
-    }
 }

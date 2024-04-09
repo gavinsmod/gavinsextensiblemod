@@ -72,10 +72,4 @@ class ModChestEsp : EspMod(
             || er.entity is EnderChestBlockEntity
         ) RenderUtils.drawBox(er.stack, er.buffer, box, config.chestColor, config.alpha)
     }
-    companion object {
-        private val config: EspConfig
-        get() {
-            return Settings.getConfig<EspConfig>("esp")
-        }
-    }
 }

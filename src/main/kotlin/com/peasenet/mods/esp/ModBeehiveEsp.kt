@@ -66,10 +66,4 @@ class ModBeehiveEsp : EspMod(
         val box = Box(er.entity.pos)
         RenderUtils.drawBox(er.stack, er.buffer, box, config.beehiveColor, config.alpha)
     }
-    companion object {
-        private val config: EspConfig
-        get() {
-            return Settings.getConfig<EspConfig>("esp")
-        }
-    }
 }

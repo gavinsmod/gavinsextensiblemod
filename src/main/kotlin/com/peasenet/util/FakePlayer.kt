@@ -33,10 +33,6 @@ import net.minecraft.client.network.OtherClientPlayerEntity
  * @version 03-02-2023
  */
 class FakePlayer : OtherClientPlayerEntity(minecraftClient.getWorld(), player!!.getGameProfile()) {
-    /**
-     * The minecraft world
-     */
-    private val world = minecraftClient.getWorld()
 
     /**
      * The minecraft player

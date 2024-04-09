@@ -37,8 +37,8 @@ import org.lwjgl.glfw.GLFW
  * ~~~
  * class ModExampleTracer() : TracerMod("Example Tracer", "example_tracer", "exampletracer")
  * ~~~
- * This class extends the [Mod] class, so it has all the same methods and properties. 
- * Please note that by extending this class, you will have to implement all 
+ * This class extends the [Mod] class, so it has all the same methods and properties.
+ * Please note that by extending this class, you will have to implement all
  * the methods from the [EntityRenderListener], [CameraBobListener], and [BlockEntityRenderListener] interfaces.
  * You may also need to include gavinsmod-events in your dependencies.
  * @param name The name of the mod.
@@ -80,5 +80,12 @@ abstract class TracerMod(
 
     override fun onCameraViewBob(c: CameraBob) {
         if (Settings.getConfig<TracerConfig>("tracer").viewBobCancel) c.cancel()
+    }
+
+    companion object {
+        val config: TracerConfig
+            get() {
+                return Settings.getConfig("tracer")
+        }
     }
 }

@@ -34,15 +34,15 @@ import net.minecraft.util.math.Vec3i
  * A waypoint is a three-dimensional integer coordinate with a name, color, and can either have
  * an ESP, a tracer, or both.
  */
-class Waypoint {
+class Waypoint(vec: Vec3i) {
     @JvmField
-    var x: Int
+    var x: Int = vec.x
 
     @JvmField
-    var y: Int
+    var y: Int = vec.y
 
     @JvmField
-    var z: Int
+    var z: Int = vec.z
     var name: String? = null
         private set
 
@@ -53,18 +53,6 @@ class Waypoint {
     var isEnabled = false
     var isTracerEnabled = false
     var isEspEnabled = false
-
-    constructor(x: Int, y: Int, z: Int) {
-        this.x = x
-        this.y = y
-        this.z = z
-    }
-
-    constructor(vec: Vec3i) {
-        x = vec.x
-        y = vec.y
-        z = vec.z
-    }
 
     fun addDimension(dim: Dimension) {
         if (dimension == null)

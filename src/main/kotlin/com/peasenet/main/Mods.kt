@@ -143,7 +143,7 @@ class Mods {
             return mod.isActive
         }
 
-        /**
+         /*
          * Adds a mod to the mod hashmap using the mod chat command as the key, and the mod as the value.
          *
          * @param m - The mod to add.

@@ -67,11 +67,4 @@ class ModFurnaceEsp : EspMod(
         val box = Box(er.entity.pos)
         RenderUtils.drawBox(er.stack, er.buffer, box, config.furnaceColor, config.alpha)
     }
-
-    companion object {
-	val config: EspConfig
-	get() {
-		return Settings.getConfig<EspConfig>("esp")
-	}
-    }
 }

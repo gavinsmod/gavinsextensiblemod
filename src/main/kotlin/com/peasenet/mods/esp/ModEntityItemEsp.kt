@@ -67,10 +67,4 @@ class ModEntityItemEsp : EspMod(
         val box = RenderUtils.getEntityBox(er.delta, er.entity)
         RenderUtils.drawBox(er.stack, er.buffer, box, config.itemColor, config.alpha)
     }
-    companion object {
-        private val config: EspConfig
-        get() {
-            return Settings.getConfig<EspConfig>("esp")
-        }
-    }
 }

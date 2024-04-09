@@ -32,8 +32,7 @@ import net.minecraft.text.Text
 
 /**
  * A class that represents a mod setting. This class should not be instantiated directly.
- * For examples of how to use this class, see the [com.peasenet.setitngs] package.
- * @author GT3CH1
+ * For examples of how to use this class, see the [com.peasenet.settings] package. @author GT3CH1
  * @version 07-18-2023
  */
 abstract class Setting() {
@@ -72,7 +71,8 @@ abstract class Setting() {
     /**
      * Sets the position of this setting.
      */
-    @Deprecated("Unused", ReplaceWith("gui!!.position = pos"))  fun setPos(pos: PointF) {
+    @Deprecated("Unused", ReplaceWith("gui!!.position = pos"))
+    fun setPos(pos: PointF) {
         gui!!.position = pos
     }
 }

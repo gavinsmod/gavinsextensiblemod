@@ -63,8 +63,8 @@ class ModMobEsp : EspMod(
         val box = RenderUtils.getEntityBox(er.delta, er.entity)
         if (er.entity !is MobEntity) return
         if (er.buffer == null) return
-        val color = if (er.entityType.spawnGroup.isPeaceful) espConfig.peacefulMobColor else espConfig.hostileMobColor
-        if (espConfig.mobIsShown(er.entityType))
-            RenderUtils.drawBox(er.stack, er.buffer, box, color, espConfig.alpha)
+        val color = if (er.entityType.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
+        if (config.mobIsShown(er.entityType))
+            RenderUtils.drawBox(er.stack, er.buffer, box, color, config.alpha)
     }
 }

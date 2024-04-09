@@ -72,7 +72,7 @@ class ModChestTracer : TracerMod(
     companion object {
         private val config: TracerConfig
         get() {
-            return Settings.getConfig<TracerConfig>("tracer")
+            return Settings.getConfig("tracer")
         }
     }
 }

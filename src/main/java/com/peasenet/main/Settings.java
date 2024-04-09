@@ -43,7 +43,7 @@ import java.util.HashMap;
 /**
  * The core settings class for gemclient-core. This class is responsible for reading, storing, adding, and saving various
  * configurations for any GEM.
- * 
+ *
  * @author GT3CH1
  * @version 7-18-2023
  */
@@ -88,11 +88,12 @@ public class Settings {
     /**
      * Fetches a configuration from the settings file.
      * <pre>
-     * {@code 
+     * {@code
      *  var cfg = Settings.fetchConfig(TracerConfig.class, "tracer");
      *  ...
      * }
      * </pre>
+     *
      * @param clazz - The class of the configuration.
      * @param key   - The key of the configuration.
      * @return - The configuration.
@@ -108,7 +109,7 @@ public class Settings {
         } catch (FileNotFoundException e) {
             ensureCfgCreated(cfgFile);
             settings.put(key, defaultSettings.get(key));
-            save();                                           
+            save();
             return defaultSettings.get(key);
         }
         try {
@@ -120,6 +121,7 @@ public class Settings {
             return defaultSettings.get(key);
         }
     }
+
     /**
      * Saves the current settings to <pre>mods/gavinsmod/settings.json</pre>
      */
@@ -142,26 +144,16 @@ public class Settings {
     /**
      * Adds a config to the settings.
      * <pre>
-     *     {@code
+     *    @code {
      *     Settings.addConfig(new TracerConfig());
      *     }
      * </pre>
+     *
      * @param config - The config to add.
      */
     public static void addConfig(Config<?> config) {
         defaultSettings.put(config.getKey(), config);
         settings.put(config.getKey(), config.readFromSettings());
-    }
-
-    /**
-     * Adds a config to the settings.
-     * @deprecated 
-     * @param key - The key of the config.
-     * @param config - The config to add.
-     */
-    public static void addConfig(String key, Config<?> config) {
-        defaultSettings.put(key, config);
-        settings.put(key, config.readFromSettings());
     }
 
     /**
@@ -172,41 +164,15 @@ public class Settings {
      *      cfg.beehiveTracerColor = ...
      *     }
      * </pre>
+     *
      * @param key - The key of the configuration.
      * @param <T> - The type of the configuration.
      * @return The configuration with the given key.
      */
     @SuppressWarnings("unchecked")
     public static <T extends Config<?>> T getConfig(String key) {
-        var cfg = (T) settings.get(key);
-        if (cfg == null) {
-            try {
-                loadConfig(key);
-            } catch (Exception e) {
-                GavinsMod.LOGGER.error("Error loading config " + key);
-                GavinsMod.LOGGER.error(e.getMessage());
-            }
-            cfg = (T) settings.get(key);
-        }
-        return cfg;
+        return (T) settings.get(key);
     }
-
-    /**
-     * Loads a configuration from the settings file.
-     * @param key - The key of the configuration.
-     */
-    public static void loadConfig(String key) {
-
-    }
-
-    /**
-     * Removes a configuration from the settings.
-     * @param key - The key of the configuration.
-     */
-    public static void removeConfig(String key) {
-        settings.remove(key);
-    }
-
 
     /**
      * Ensures that the configuration file is created.

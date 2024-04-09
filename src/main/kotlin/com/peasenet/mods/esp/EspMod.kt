@@ -19,6 +19,9 @@
 
 package com.peasenet.mods.esp
 
+import com.peasenet.config.EspConfig
+import com.peasenet.config.TracerConfig
+import com.peasenet.main.Settings
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
 import com.peasenet.util.event.data.BlockEntityRender
@@ -59,4 +62,11 @@ open class EspMod(
 ), BlockEntityRenderListener, EntityRenderListener {
     override fun onEntityRender(er: EntityRender) {}
     override fun onRenderBlockEntity(er: BlockEntityRender) {}
+
+    companion object {
+        val config: EspConfig
+            get() {
+                return Settings.getConfig("esp")
+            }
+    }
 }
