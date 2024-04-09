@@ -36,8 +36,6 @@ import net.minecraft.text.Text
 class GuiMainMenu(guis: ArrayList<Gui>) : GuiElement(Text.literal("Gavin's Mod " + GavinsMod.VERSION)) {
     /**
      * Creates a new main menu with a list of guis to display.
-     *
-     * @param guis - The list of guis to display.
      */
     init {
         this.guis = guis

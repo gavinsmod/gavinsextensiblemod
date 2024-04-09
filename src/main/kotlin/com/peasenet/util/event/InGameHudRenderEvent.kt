@@ -36,7 +36,7 @@ class InGameHudRenderEvent
 /**
  * Creates a new world render event.
  *
- * @param stack - The matrix stack.
+ * @param drawContext - The draw context to use.
  * @param delta - The delta.
  */(private var drawContext: DrawContext, var delta: Float) : Event<InGameHudRenderListener>() {
     override fun fire(listeners: ArrayList<InGameHudRenderListener>) {

@@ -29,14 +29,14 @@ import net.minecraft.client.gui.DrawContext
  * A listener for the world render event.
  *
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 04-09-2024
  */
 interface InGameHudRenderListener : Listener {
     /**
      * Called when the world is rendered.
      *
-     * @param stack - The matrix stack.
-     * @param delta - The delta.
+     * @param drawContext - The draw context to use.
+     * @param delta - The time delta.
      */
     fun onRenderInGameHud(drawContext: DrawContext, delta: Float)
 }

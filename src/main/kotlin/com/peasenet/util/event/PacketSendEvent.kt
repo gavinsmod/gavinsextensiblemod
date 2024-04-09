@@ -38,8 +38,6 @@ class PacketSendEvent(packet: Packet<*>) : CancellableEvent<PacketSendListener>(
 
     /**
      * Creates a new PacketSendEvent.
-     *
-     * @param packet - The packet being sent.
      */
     init {
         this.packet = OutputPacket(packet)
