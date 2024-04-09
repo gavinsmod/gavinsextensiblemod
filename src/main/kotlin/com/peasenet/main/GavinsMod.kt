@@ -110,7 +110,7 @@ class GavinsMod : ModInitializer {
         /**
          * Sets whether the given mod is enabled.
          *
-         * @param mod     - The mod type to set.
+         * @param chatCommand - The chat command of the mod to enable.
          * @param enabled - Whether the mod should be enabled.
          */
         @JvmStatic
