@@ -135,16 +135,6 @@ class GavinsMod : ModInitializer {
                 }
         }
 
-        val modsForTextOverlay: Stream<Mod>
-            /**
-             * Gets a stream of all the mods that are active and are not in the "GUI" category.
-             *
-             * @return A list of mods used for the text overlay.
-             */
-            get() = Mods.mods.stream()
-                .filter { mod: Mod -> mod.isActive && mod.modCategory !== ModCategory.GUI && mod.chatCommand.equals("textoverlay") }
-                .sorted(Comparator.comparing(Mod::name))
-
         /**
          * Gets whether the given mod is enabled.
          *
