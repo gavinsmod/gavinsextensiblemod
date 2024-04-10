@@ -31,8 +31,5 @@ bin/
 # fabric
 
 run/
-
 .factorypath
-**/mod/**
-
 gemclient-core/src/main/kotlin/com/peasenet/main/Mods.kt
