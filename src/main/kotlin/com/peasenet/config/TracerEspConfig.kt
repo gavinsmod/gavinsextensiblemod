@@ -158,7 +158,7 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
      * @param spawnEggItem The mob to add (SpawnEggItem)
      */
     fun addMob(spawnEggItem: SpawnEggItem) {
-        addMob(spawnEggItem.getEntityType(null))
+        addMob(spawnEggItem.getEntityType(spawnEggItem.defaultStack))
     }
 
     /**
@@ -176,7 +176,7 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
      * @return Whether the mob is shown.
      */
     fun mobIsShown(egg: SpawnEggItem): Boolean {
-        return mobIsShown(egg.getEntityType(null))
+        return mobIsShown(egg.getEntityType(egg.defaultStack))
     }
 
 

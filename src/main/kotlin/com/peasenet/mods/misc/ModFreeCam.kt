@@ -95,17 +95,21 @@ class ModFreeCam : MiscMod(
 
     override fun onDisable() {
         super.onDisable()
+
         fake!!.remove()
         em.unsubscribe(PacketSendListener::class.java, this)
         em.unsubscribe(WorldRenderListener::class.java, this)
         em.unsubscribe(AirStrafeListener::class.java, this)
         client.getPlayer().abilities.flying = false
+        client.getPlayer().velocity = Vec3d.ZERO
+        client.worldRenderer.reload()
+
     }
 
     override fun onWorldRender(level: ClientWorld, stack: MatrixStack, bufferBuilder: BufferBuilder, delta: Float) {
         val camera = MinecraftClient.getInstance().gameRenderer.camera
         val playerPos = PlayerUtils.getNewPlayerPosition(delta, camera)
-        val aabb = RenderUtils.getEntityBox(delta, fake!!)
+        val aabb = fake!!.boundingBox
         RenderUtils.renderSingleLine(stack, bufferBuilder, playerPos, aabb.center, Settings.getConfig<TracerConfig>("tracer").playerColor)
         RenderUtils.drawBox(stack, bufferBuilder, aabb, Settings.getConfig<EspConfig>("esp").playerColor)
     }

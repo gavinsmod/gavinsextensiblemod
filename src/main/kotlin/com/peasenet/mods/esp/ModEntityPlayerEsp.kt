@@ -65,7 +65,7 @@ class ModEntityPlayerEsp : EspMod(
 
     override fun onEntityRender(er: EntityRender) {
         if (er.entity !is PlayerEntity || er.buffer == null) return
-        val box = RenderUtils.getEntityBox(er.delta, er.entity)
+        val box = er.entity.boundingBox
         RenderUtils.drawBox(er.stack, er.buffer, box, config.playerColor, config.alpha)
     }
 }

@@ -123,7 +123,7 @@ class XrayConfig : Config<XrayConfig>() {
          * @return The name of the block.
          */
         private fun getId(b: Block): String {
-            val path = b.lootTableId.path
+            val path = b.lootTableKey.value.path
             return if (path == "empty") b.translationKey.replace("block.minecraft.", "") else path.replace(
                 "blocks/",
                 ""

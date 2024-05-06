@@ -64,7 +64,7 @@ class ModEntityItemEsp : EspMod(
     override fun onEntityRender(er: EntityRender) {
         if (er.entityType !== EntityType.ITEM) return
         if (er.buffer == null) return
-        val box = RenderUtils.getEntityBox(er.delta, er.entity)
+        val box = er.entity.boundingBox
         RenderUtils.drawBox(er.stack, er.buffer, box, config.itemColor, config.alpha)
     }
 }

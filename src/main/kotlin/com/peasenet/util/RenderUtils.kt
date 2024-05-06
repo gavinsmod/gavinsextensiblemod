@@ -83,7 +83,7 @@ object RenderUtils {
             Vec3d(boxPos.getX() - playerPos.getX(), boxPos.getY() - playerPos.getY(), boxPos.getZ() - playerPos.getZ())
         normal.normalize()
         val matrix4f = stack.peek().positionMatrix
-        val matrix3f = stack.peek().normalMatrix
+        val matrix3f = stack.peek()
         buffer.vertex(matrix4f, playerPos.getX().toFloat(), playerPos.getY().toFloat(), playerPos.getZ().toFloat())
             .color(color.red, color.green, color.blue, alpha)
             .normal(matrix3f, normal.getX().toFloat(), normal.getY().toFloat(), normal.getZ().toFloat()).next()
@@ -110,16 +110,17 @@ object RenderUtils {
         val mainCamera = minecraft.gameRenderer.camera
         val camera = mainCamera.pos
         setupRenderSystem()
-        stack.push()
+        stack?.push()
         val tessellator = Tessellator.getInstance()
         val buffer = tessellator.buffer
         buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR)
         RenderSystem.applyModelViewMatrix()
-        stack.translate(-camera.x, -camera.y, -camera.z)
+        stack?.translate(-camera.x, -camera.y, -camera.z)
         assert(player != null)
         assert(level != null)
-        val event = WorldRenderEvent(level!!, stack, buffer, delta)
-        EventManager.eventManager.call(event)
+        assert(stack != null)
+        val event = stack?.let { WorldRenderEvent(level!!, it, buffer, delta) }
+        EventManager.eventManager.call(event!!)
         tessellator.draw()
         stack.pop()
         resetRenderSystem()
@@ -136,11 +137,12 @@ object RenderUtils {
         val level = minecraft.world
         val player = minecraft.player
         val stack = context.matrixStack()
+        assert(stack != null)
         val delta = context.tickDelta()
         val mainCamera = minecraft.gameRenderer.camera
         val camera = mainCamera.pos
         setupRenderSystem()
-        stack.push()
+        stack!!.push()
         val tessellator = Tessellator.getInstance()
         val buffer = tessellator.buffer
         buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR)
@@ -325,7 +327,7 @@ object RenderUtils {
     ) {
         level!!.entities.forEach(Consumer { e: Entity ->
             if (e.squaredDistanceTo(player) > 64 * CHUNK_RADIUS * 16 || player === e) return@Consumer
-            val aabb = getEntityBox(delta, e)
+            val aabb = e.boundingBox
             val boxPos = aabb.center
             val event = EntityRenderEvent(e, stack, buffer, boxPos, playerPos, delta)
             EventManager.eventManager.call(event)
@@ -339,11 +341,9 @@ object RenderUtils {
      * @param e     The entity.
      * @return The bounding box of the entity.
      */
+    @Deprecated("Use the entity's bounding box instead.", ReplaceWith("e.boundingBox"))
     fun getEntityBox(delta: Float, e: Entity): Box {
-        val x = e.prevX + (e.x - e.prevX) * delta
-        val y = e.prevY + (e.y - e.prevY) * delta
-        val z = e.prevZ + (e.z - e.prevZ) * delta
-        return e.type.createSimpleBoundingBox(x, y, z)
+        return e.boundingBox
     }
 
     /**
@@ -378,7 +378,7 @@ object RenderUtils {
             if (newValue < 0.0) newValue = 0.0
             if (newValue > maxGamma) newValue = maxGamma.toDouble()
             val newGamma = GavinsModClient.minecraftClient.options.gamma
-            if (newGamma.value != newValue ) {
+            if (newGamma.value != newValue) {
                 val newGamma2 = (newGamma as ISimpleOption<Double>)
                 newGamma2.forceSetValue(newValue)
             }
@@ -412,7 +412,7 @@ object RenderUtils {
     }
 
     /**
-     * Increments the gamma value by 0.2f for a smooth transition. 
+     * Increments the gamma value by 0.2f for a smooth transition.
      */
     private fun fadeGammaUp() {
         gamma += 0.2f

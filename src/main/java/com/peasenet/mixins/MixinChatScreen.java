@@ -31,17 +31,19 @@ import net.minecraft.client.gui.screen.ChatScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ChatScreen.class)
 public class MixinChatScreen {
     @Inject(at = @At("HEAD"), method = "sendMessage", cancellable = true)
-    public void onChatMessage(String msg, boolean history, CallbackInfoReturnable<Boolean> cir) {
-        var event = new ChatSendEvent(msg);
+    public void onChatMessage(String chatText, boolean addToHistory, CallbackInfo ci) {
+        var event = new ChatSendEvent(chatText);
         EventManager.getEventManager().call(event);
         if (event.isCancelled()) {
-            MinecraftClient.getInstance().inGameHud.getChatHud().addToMessageHistory(msg);
-            cir.setReturnValue(true);
+            MinecraftClient.getInstance().inGameHud.getChatHud().addToMessageHistory(chatText);
+//            ci.(true);
+            ci.cancel();
         }
     }
 }

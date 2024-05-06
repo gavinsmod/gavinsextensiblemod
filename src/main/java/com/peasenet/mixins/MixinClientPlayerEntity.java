@@ -121,10 +121,10 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
         return super.getVelocity();
     }
 
-    @Override
-    public float getEyeHeight(EntityPose pose) {
-        return super.getEyeHeight(pose);
-    }
+//    @Override
+//    public float getEyeHeight(EntityPose pose) {
+//        return super.getEyeHeight(pose);
+//    }
 
     @Override
     public float getAttackCoolDownProgress(float f) {
