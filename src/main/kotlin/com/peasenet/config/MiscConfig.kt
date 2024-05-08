@@ -27,10 +27,15 @@ package com.peasenet.config
  * The miscellaneous configuration.
  * The key is "misc".
  * @author gt3ch1
- * @version 07-18-2023
+ * @version 05-07-2024
  */
 class MiscConfig : Config<MiscConfig>() {
     var isMessages = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var background = true
         set(value) {
             field = value
             saveConfig()

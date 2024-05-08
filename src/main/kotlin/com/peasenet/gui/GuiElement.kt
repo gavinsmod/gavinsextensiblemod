@@ -23,6 +23,7 @@
  */
 package com.peasenet.gui
 
+import com.peasenet.config.MiscConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiScroll
@@ -30,6 +31,7 @@ import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.util.GavUISettings
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
+import com.peasenet.main.Settings
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
@@ -76,13 +78,12 @@ open class GuiElement(title: Text?) : Screen(title) {
         val clientWidth = client!!.window.scaledWidth
         val clientHeight = client!!.window.scaledHeight
         //TODO: Maybe make this a background?
-//        overlay = Gui(PointF(0f, 0f), clientWidth + 1, clientHeight, Text.of(""))
-//        overlay.setBackground(Colors.BLACK)
         overlay = GuiBuilder()
             .setWidth((clientWidth + 1).toFloat())
             .setHeight(clientHeight.toFloat())
-            .setBackgroundColor(Colors.BLACK)
-            .setTransparency(0.5f)
+            .setBackgroundColor(Colors.INDIGO)
+            .setTransparency(0.25f)
+            .setHoverable(false)
             .build()
         titleBox!!.isHoverable = false
     }
@@ -143,6 +144,10 @@ open class GuiElement(title: Text?) : Screen(title) {
         if (titleBox != null) {
             titleBox!!.setBackground(GavUISettings.getColor("gui.color.background"))
             titleBox!!.render(drawContext, tr, mouseX, mouseY, delta)
+        }
+        val miscConfig = Settings.getConfig<MiscConfig>("misc").background
+        if (miscConfig) {
+            overlay.render(drawContext, tr, mouseX, mouseY, delta)
         }
 //        RenderUtils.resetRenderSystem()
     }

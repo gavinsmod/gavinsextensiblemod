@@ -24,6 +24,7 @@
 package com.peasenet.gui
 
 import com.peasenet.config.EspConfig
+import com.peasenet.config.MiscConfig
 import com.peasenet.config.TracerConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiClick
@@ -175,7 +176,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
          * home.
          */
         private fun miscSettings() {
-            var espConfig = Settings.getConfig<EspConfig>("esp")
+            val espConfig = Settings.getConfig<EspConfig>("esp")
             if (espConfig != null) {
                 val espAlpha = SettingBuilder()
                     .setTitle("gavinsmod.settings.alpha")
@@ -185,6 +186,19 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
                 espDropdown.addElement(espAlpha.gui)
 
             }
+
+            val miscConfig = Settings.getConfig<MiscConfig>("misc")
+            if (miscConfig != null) {
+                val backgroundOverlay = SettingBuilder()
+                    .setTitle("gavinsmod.settings.background")
+                    .setState(Settings.getConfig<MiscConfig>("misc").background)
+                    .buildToggleSetting()
+                backgroundOverlay.setCallback {
+                    Settings.getConfig<MiscConfig>("misc").background = backgroundOverlay.value
+                }
+                miscDropdown.addElement(backgroundOverlay.gui)
+            }
+
             val tracerConfig = Settings.getConfig<TracerConfig>("tracer")
             if (tracerConfig != null) {
                 val tracerAlpha = SettingBuilder()
