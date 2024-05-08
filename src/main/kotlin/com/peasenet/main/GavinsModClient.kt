@@ -30,10 +30,7 @@ import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents.AfterEntities
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents.BeforeBlockOutline
 import net.minecraft.client.MinecraftClient
-import net.minecraft.util.hit.HitResult
 
 /**
  * @author gt3ch1
@@ -50,14 +47,15 @@ class GavinsModClient : ClientModInitializer {
                 if (m.isActive || m.isDeactivating) m.onTick()
             }
         })
-        WorldRenderEvents.AFTER_ENTITIES.register(AfterEntities { context: WorldRenderContext ->
-            RenderUtils.afterEntities(
+//        WorldRenderEvents.AFTER_ENTITIES.register(AfterEntities { context: WorldRenderContext ->
+//            RenderUtils.afterEntities(
+//                context
+//            )
+//        })
+
+        WorldRenderEvents.LAST.register(WorldRenderEvents.Last { context: WorldRenderContext ->
+            RenderUtils.last(
                 context
-            )
-        })
-        WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register(BeforeBlockOutline { renderContext: WorldRenderContext, _: HitResult? ->
-            RenderUtils.beforeBlockOutline(
-                renderContext
             )
         })
     }

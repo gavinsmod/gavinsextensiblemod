@@ -72,12 +72,7 @@ object RenderUtils {
      */
     @JvmOverloads
     fun renderSingleLine(
-        stack: MatrixStack,
-        buffer: VertexConsumer,
-        playerPos: Vec3d,
-        boxPos: Vec3d,
-        color: Color,
-        alpha: Float = 1f
+        stack: MatrixStack, buffer: VertexConsumer, playerPos: Vec3d, boxPos: Vec3d, color: Color, alpha: Float = 1f
     ) {
         val normal =
             Vec3d(boxPos.getX() - playerPos.getX(), boxPos.getY() - playerPos.getY(), boxPos.getZ() - playerPos.getZ())
@@ -93,45 +88,10 @@ object RenderUtils {
     }
 
     /**
-     * Processes events for rendering player, chest, item, and mob tracers or esp's in the world.
-     *
-     * @param context The render context.
-     */
-    @JvmStatic
-    fun afterEntities(context: WorldRenderContext) {
-//        RenderUtils.context = context;
-        CHUNK_RADIUS = GavinsModClient.minecraftClient.options.viewDistance.value / 2
-        // this helps with lag
-        val minecraft = MinecraftClient.getInstance()
-        val level = minecraft.world
-        val player = minecraft.player
-        val stack = context.matrixStack()
-        val delta = context.tickDelta()
-        val mainCamera = minecraft.gameRenderer.camera
-        val camera = mainCamera.pos
-        setupRenderSystem()
-        stack?.push()
-        val tessellator = Tessellator.getInstance()
-        val buffer = tessellator.buffer
-        buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR)
-        RenderSystem.applyModelViewMatrix()
-        stack?.translate(-camera.x, -camera.y, -camera.z)
-        assert(player != null)
-        assert(level != null)
-        assert(stack != null)
-        val event = stack?.let { WorldRenderEvent(level!!, it, buffer, delta) }
-        EventManager.eventManager.call(event!!)
-        tessellator.draw()
-        stack.pop()
-        resetRenderSystem()
-    }
-
-    /**
      * Processes events for rendering block tracers or esp's in the world.
      * @param context The world render context.
      */
-    @JvmStatic
-    fun beforeBlockOutline(context: WorldRenderContext): Boolean {
+    fun last(context: WorldRenderContext): Boolean {
         CHUNK_RADIUS = GavinsModClient.minecraftClient.options.viewDistance.value
         val minecraft = MinecraftClient.getInstance()
         val level = minecraft.world
