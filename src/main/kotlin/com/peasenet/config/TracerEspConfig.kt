@@ -150,7 +150,7 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
      * @param spawnEggItem The mob to remove (SpawnEggItem)
      */
     fun removeMob(spawnEggItem: SpawnEggItem) {
-        removeMob(spawnEggItem.getEntityType(null))
+        removeMob(spawnEggItem.getEntityType(spawnEggItem.defaultStack))
     }
 
     /**
