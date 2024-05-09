@@ -109,13 +109,3 @@ publishing {
         // retrieving dependencies.
     }
 }
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-}
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-}
