@@ -23,18 +23,23 @@
  */
 package com.peasenet.gui
 
+import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.config.MiscConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
+import com.peasenet.gavui.GuiClick
 import com.peasenet.gavui.GuiScroll
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.util.GavUISettings
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
+import com.peasenet.util.RenderUtils
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.render.GameRenderer
+import net.minecraft.client.render.GameRenderer.getPositionProgram
 import net.minecraft.text.Text
 import java.util.function.Consumer
 
@@ -134,13 +139,21 @@ open class GuiElement(title: Text?) : Screen(title) {
     }
 
     override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+        RenderSystem.setShader { getPositionProgram() }
+        RenderSystem.enableBlend()
+        overlay.render(drawContext, textRenderer, mouseX, mouseY, delta)
 
+        for (g in guis) {
+            g.render(drawContext, textRenderer, mouseX, mouseY, delta)
+        }
+//        
 //        super.render(drawContext, mouseX, mouseY, delta)
-        assert(client != null)
+//        assert(client != null)
         val tr = client!!.textRenderer
-//        RenderSystem.setShader { GameRenderer.getPositionProgram() }
-//        RenderSystem.enableBlend()
-        guis.forEach(Consumer { gui: Gui -> gui.render(drawContext, tr, mouseX, mouseY, delta) })
+////        RenderSystem.setShader { GameRenderer.getPositionProgram() }
+////        RenderSystem.enableBlend()
+//        RenderSystem.setShader(GameRenderer::getPositionProgram);
+//        guis.forEach(Consumer { gui: Gui -> gui.render(drawContext, tr, mouseX, mouseY, delta) })
         if (titleBox != null) {
             titleBox!!.setBackground(GavUISettings.getColor("gui.color.background"))
             titleBox!!.render(drawContext, tr, mouseX, mouseY, delta)
@@ -149,7 +162,7 @@ open class GuiElement(title: Text?) : Screen(title) {
         if (miscConfig) {
             overlay.render(drawContext, tr, mouseX, mouseY, delta)
         }
-//        RenderUtils.resetRenderSystem()
+        RenderUtils.resetRenderSystem()
     }
 
     /**
@@ -167,4 +180,6 @@ open class GuiElement(title: Text?) : Screen(title) {
     override fun close() {
         client!!.setScreen(parent)
     }
+
+
 }

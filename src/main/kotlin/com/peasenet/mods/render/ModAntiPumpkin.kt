@@ -48,6 +48,6 @@ class ModAntiPumpkin : RenderMod(
     }
 
     override fun onRenderOverlay(overlay: RenderOverlay) {
-        if (overlay.texture == Identifier("textures/misc/pumpkinblur.png")) overlay.cancel()
+        if (overlay.texture == Identifier.of("textures/misc/pumpkinblur.png")) overlay.cancel()
     }
 }

@@ -81,10 +81,10 @@ object RenderUtils {
         val matrix3f = stack.peek()
         buffer.vertex(matrix4f, playerPos.getX().toFloat(), playerPos.getY().toFloat(), playerPos.getZ().toFloat())
             .color(color.red, color.green, color.blue, alpha)
-            .normal(matrix3f, normal.getX().toFloat(), normal.getY().toFloat(), normal.getZ().toFloat()).next()
+            .normal(matrix3f, normal.getX().toFloat(), normal.getY().toFloat(), normal.getZ().toFloat())
         buffer.vertex(matrix4f, boxPos.getX().toFloat(), boxPos.getY().toFloat(), boxPos.getZ().toFloat())
             .color(color.red, color.green, color.blue, alpha)
-            .normal(matrix3f, normal.getX().toFloat(), normal.getY().toFloat(), normal.getZ().toFloat()).next()
+            .normal(matrix3f, normal.getX().toFloat(), normal.getY().toFloat(), normal.getZ().toFloat())
     }
 
     /**
@@ -98,14 +98,13 @@ object RenderUtils {
         val player = minecraft.player
         val stack = context.matrixStack()
         assert(stack != null)
-        val delta = context.tickDelta()
+        val delta = context.tickCounter().getTickDelta(true)
         val mainCamera = minecraft.gameRenderer.camera
         val camera = mainCamera.pos
         setupRenderSystem()
         stack!!.push()
-        val tessellator = Tessellator.getInstance()
-        val buffer = tessellator.buffer
-        buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR)
+        val tessellator = RenderSystem.renderThreadTesselator()
+        val buffer = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR)
         RenderSystem.applyModelViewMatrix()
         stack.translate(-camera.x, -camera.y, -camera.z)
         assert(player != null)
@@ -117,7 +116,12 @@ object RenderUtils {
         drawEntityMods(level, player, stack, delta, buffer, playerPos)
         val event = WorldRenderEvent(level!!, stack, buffer, delta)
         EventManager.eventManager.call(event)
-        tessellator.draw()
+        try {
+            val e = buffer.end()
+            BufferRenderer.drawWithGlobalProgram(e)
+        } catch (e: IllegalStateException) {
+            return false
+        }
         stack.pop()
         resetRenderSystem()
         return true
@@ -229,41 +233,41 @@ object RenderUtils {
         c: Int
     ) {
         if (x1 == x2) {
-            buffer.vertex(matrix4f, x1, y1, z1).color(c).next()
-            buffer.vertex(matrix4f, x1, y2, z1).color(c).next()
+            buffer.vertex(matrix4f, x1, y1, z1).color(c)
+            buffer.vertex(matrix4f, x1, y2, z1).color(c)
 
-            buffer.vertex(matrix4f, x1, y2, z1).color(c).next()
-            buffer.vertex(matrix4f, x1, y2, z2).color(c).next()
+            buffer.vertex(matrix4f, x1, y2, z1).color(c)
+            buffer.vertex(matrix4f, x1, y2, z2).color(c)
 
-            buffer.vertex(matrix4f, x1, y2, z2).color(c).next()
-            buffer.vertex(matrix4f, x1, y1, z2).color(c).next()
+            buffer.vertex(matrix4f, x1, y2, z2).color(c)
+            buffer.vertex(matrix4f, x1, y1, z2).color(c)
 
-            buffer.vertex(matrix4f, x1, y1, z2).color(c).next()
-            buffer.vertex(matrix4f, x1, y1, z1).color(c).next()
+            buffer.vertex(matrix4f, x1, y1, z2).color(c)
+            buffer.vertex(matrix4f, x1, y1, z1).color(c)
         } else if (z1 == z2) {
-            buffer.vertex(matrix4f, x1, y1, z1).color(c).next()
-            buffer.vertex(matrix4f, x2, y1, z1).color(c).next()
+            buffer.vertex(matrix4f, x1, y1, z1).color(c)
+            buffer.vertex(matrix4f, x2, y1, z1).color(c)
 
-            buffer.vertex(matrix4f, x2, y1, z1).color(c).next()
-            buffer.vertex(matrix4f, x2, y2, z1).color(c).next()
+            buffer.vertex(matrix4f, x2, y1, z1).color(c)
+            buffer.vertex(matrix4f, x2, y2, z1).color(c)
 
-            buffer.vertex(matrix4f, x2, y2, z1).color(c).next()
-            buffer.vertex(matrix4f, x1, y2, z1).color(c).next()
+            buffer.vertex(matrix4f, x2, y2, z1).color(c)
+            buffer.vertex(matrix4f, x1, y2, z1).color(c)
 
-            buffer.vertex(matrix4f, x1, y2, z1).color(c).next()
-            buffer.vertex(matrix4f, x1, y1, z1).color(c).next()
+            buffer.vertex(matrix4f, x1, y2, z1).color(c)
+            buffer.vertex(matrix4f, x1, y1, z1).color(c)
         } else if (y1 == y2) {
-            buffer.vertex(matrix4f, x1, y1, z1).color(c).next()
-            buffer.vertex(matrix4f, x2, y1, z1).color(c).next()
+            buffer.vertex(matrix4f, x1, y1, z1).color(c)
+            buffer.vertex(matrix4f, x2, y1, z1).color(c)
 
-            buffer.vertex(matrix4f, x2, y1, z1).color(c).next()
-            buffer.vertex(matrix4f, x2, y1, z2).color(c).next()
+            buffer.vertex(matrix4f, x2, y1, z1).color(c)
+            buffer.vertex(matrix4f, x2, y1, z2).color(c)
 
-            buffer.vertex(matrix4f, x2, y1, z2).color(c).next()
-            buffer.vertex(matrix4f, x1, y1, z2).color(c).next()
+            buffer.vertex(matrix4f, x2, y1, z2).color(c)
+            buffer.vertex(matrix4f, x1, y1, z2).color(c)
 
-            buffer.vertex(matrix4f, x1, y1, z2).color(c).next()
-            buffer.vertex(matrix4f, x1, y1, z1).color(c).next()
+            buffer.vertex(matrix4f, x1, y1, z2).color(c)
+            buffer.vertex(matrix4f, x1, y1, z1).color(c)
         }
     }
 
@@ -404,11 +408,11 @@ object RenderUtils {
         RenderSystem.setShader { GameRenderer.getPositionProgram() }
         RenderSystem.enableBlend()
         val matrix = matrixStack.peek().positionMatrix
-        val bufferBuilder = Tessellator.getInstance().buffer
+        val tessellator = Tessellator.getInstance()
         RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], newAlpha)
-        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION)
-        drawBox(xt1, yt1, xt2, yt2, matrix, bufferBuilder)
-        Tessellator.getInstance().draw()
+        var bb = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION)
+        drawBox(xt1, yt1, xt2, yt2, matrix, bb)
+        BufferRenderer.drawWithGlobalProgram(bb.end())
     }
 
     /**
@@ -422,9 +426,9 @@ object RenderUtils {
      * @param bufferBuilder - The buffer builder used to draw boxes on screen.
      */
     private fun drawBox(xt1: Int, yt1: Int, xt2: Int, yt2: Int, matrix: Matrix4f, bufferBuilder: BufferBuilder) {
-        bufferBuilder.vertex(matrix, xt1.toFloat(), yt1.toFloat(), 0f).next()
-        bufferBuilder.vertex(matrix, xt1.toFloat(), yt2.toFloat(), 0f).next()
-        bufferBuilder.vertex(matrix, xt2.toFloat(), yt2.toFloat(), 0f).next()
-        bufferBuilder.vertex(matrix, xt2.toFloat(), yt1.toFloat(), 0f).next()
+        bufferBuilder.vertex(matrix, xt1.toFloat(), yt1.toFloat(), 0f)
+        bufferBuilder.vertex(matrix, xt1.toFloat(), yt2.toFloat(), 0f)
+        bufferBuilder.vertex(matrix, xt2.toFloat(), yt2.toFloat(), 0f)
+        bufferBuilder.vertex(matrix, xt2.toFloat(), yt1.toFloat(), 0f)
     }
 }

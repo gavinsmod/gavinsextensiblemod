@@ -32,6 +32,7 @@ import com.peasenet.gavui.math.PointF;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author gt3ch1
@@ -59,17 +60,21 @@ public class GuiUtil {
     public static void drawBox(Color c, BoxF box, MatrixStack matrixStack, float alpha) {
         alpha = Math.max(0, Math.min(1, alpha));
         var acColor = c.getAsFloatArray();
-        var shader = RenderSystem.getShader();
+//        var shader = RenderSystem.getShader();
+//        GL11.glDisable(GL11.GL_CULL_FACE);
+//        GL11.glEnable(GL11.GL_BLEND);
+//        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+//        
         RenderSystem.setShader(GameRenderer::getPositionProgram);
         RenderSystem.enableBlend();
         var shaderColors = RenderSystem.getShaderColor();
         RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], alpha);
-
-        var bufferBuilder = Tessellator.getInstance().getBuffer();
-        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+        var tesselator = RenderSystem.renderThreadTesselator();
+        var bufferBuilder = tesselator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
         var matrix = matrixStack.peek().getPositionMatrix();
         drawBox(box, matrix, bufferBuilder);
-//        RenderSystem.setShader(GameRenderer::get);
+        var e = bufferBuilder.end();
+        BufferRenderer.drawWithGlobalProgram(e);
         RenderSystem.applyModelViewMatrix();
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.disableBlend();
@@ -112,9 +117,11 @@ public class GuiUtil {
         RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], alpha);
 
         var matrix = matrixStack.peek().getPositionMatrix();
-        var bufferBuilder = Tessellator.getInstance().getBuffer();
-        bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
-        drawBox(box, matrix, bufferBuilder);
+        var tess = RenderSystem.renderThreadTesselator();
+        var bb = tess.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
+        drawBox(box, matrix, bb);
+        var e = bb.end();
+        BufferRenderer.drawWithGlobalProgram(e);
         RenderSystem.applyModelViewMatrix();
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.disableBlend();
@@ -132,12 +139,12 @@ public class GuiUtil {
         var yt1 = box.getTopLeft().y();
         var xt2 = box.getBottomRight().x();
         var yt2 = box.getBottomRight().y();
-        bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
-        bufferBuilder.vertex(matrix, xt1, yt2, 0).next();
-        bufferBuilder.vertex(matrix, xt2, yt2, 0).next();
-        bufferBuilder.vertex(matrix, xt2, yt1, 0).next();
-        bufferBuilder.vertex(matrix, xt1, yt1, 0).next();
-        Tessellator.getInstance().draw();
+        bufferBuilder.vertex(matrix, xt1, yt1, 0);
+        bufferBuilder.vertex(matrix, xt1, yt2, 0);
+        bufferBuilder.vertex(matrix, xt2, yt2, 0);
+        bufferBuilder.vertex(matrix, xt2, yt1, 0);
+        bufferBuilder.vertex(matrix, xt1, yt1, 0);
+
     }
 
     /**
@@ -153,12 +160,13 @@ public class GuiUtil {
         RenderSystem.setShader(GameRenderer::getPositionProgram);
         RenderSystem.enableBlend();
         var matrix = matrixStack.peek().getPositionMatrix();
-        var bufferBuilder = Tessellator.getInstance().getBuffer();
+        var tessellator = RenderSystem.renderThreadTesselator();
         RenderSystem.setShaderColor(accColor[0], accColor[1], accColor[2], alpha);
-        bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
-        bufferBuilder.vertex(matrix, p1.x(), p1.y(), 0).next();
-        bufferBuilder.vertex(matrix, p2.x(), p2.y(), 0).next();
-        Tessellator.getInstance().draw();
+        var bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
+        bufferBuilder.vertex(matrix, p1.x(), p1.y(), 0);
+        bufferBuilder.vertex(matrix, p2.x(), p2.y(), 0);
+        var e = bufferBuilder.end();
+        BufferRenderer.drawWithGlobalProgram(e);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.disableBlend();
     }

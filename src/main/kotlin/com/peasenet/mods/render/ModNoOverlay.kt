@@ -48,6 +48,6 @@ class ModNoOverlay : RenderMod(
     }
 
     override fun onRenderOverlay(overlay: RenderOverlay) {
-        if (overlay.texture == Identifier("textures/misc/powder_snow_outline.png")) overlay.cancel()
+        if (overlay.texture == Identifier.of("textures/misc/powder_snow_outline.png")) overlay.cancel()
     }
 }

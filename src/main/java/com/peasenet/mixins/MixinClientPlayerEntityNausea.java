@@ -39,7 +39,7 @@ public class MixinClientPlayerEntityNausea {
     @Shadow
     public float nauseaIntensity;
 
-    @Inject(method = "updateNausea", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "tickNausea", at = @At("HEAD"), cancellable = true)
     public void cancelNausea(CallbackInfo ci) {
         if (Mods.isActive("nonausea")) {
             this.prevNauseaIntensity = 0.0f;

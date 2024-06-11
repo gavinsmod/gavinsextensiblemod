@@ -424,7 +424,6 @@ public class Gui {
                     textColor = Colors.WHITE;
             }
             drawText(drawContext, tr, title, getX() + 2, getY() + 1.5f, textColor);
-
         }
         drawSymbol(drawContext, tr, textColor);
         if (this.drawBorder)

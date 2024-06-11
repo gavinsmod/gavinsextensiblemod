@@ -50,6 +50,6 @@ class ModNoVignette : RenderMod(
 
     override fun onRenderOverlay(overlay: RenderOverlay) {
         val texture = overlay.texture
-        if (texture == Identifier("textures/misc/vignette.png")) overlay.cancel()
+        if (texture == Identifier.of("textures/misc/vignette.png")) overlay.cancel()
     }
 }

@@ -11,7 +11,7 @@
 
 ---
 
-## Features
+## es
 
 - X-Ray
   ![](src/main/resources/assets/gavinsmod/screenshots/xray.png)
@@ -19,6 +19,7 @@
       ![](src/main/resources/assets/gavinsmod/screenshots/xray-menu.png)
 - Full Bright
   ![](src/main/resources/assets/gavinsmod/screenshots/fullbright.png)
+    - Configurable intensity and smooth fade
 - Chest ESP & Tracers (both configured individually)
   ![](src/main/resources/assets/gavinsmod/screenshots/chests.png)
 - Dolphin

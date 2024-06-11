@@ -30,6 +30,7 @@ import com.peasenet.util.event.RenderOverlayEvent;
 import com.peasenet.util.event.data.RenderOverlay;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -44,8 +45,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
     @Inject(at = @At("HEAD"), method = "render")
-    private void mixin(DrawContext context, float tickDelta, CallbackInfo ci) {
-        var event = new InGameHudRenderEvent(context, tickDelta);
+    private void mixin(DrawContext context, RenderTickCounter tickDelta, CallbackInfo ci) {
+        var event = new InGameHudRenderEvent(context, tickDelta.getTickDelta(true));
         EventManager.getEventManager().call(event);
     }
 
@@ -61,7 +62,7 @@ public class MixinInGameHud {
 
     @Inject(at = @At("HEAD"), method = "renderVignetteOverlay", cancellable = true)
     private void antiVignette(CallbackInfo ci) {
-        var overlay = new RenderOverlay(new Identifier("textures/misc/vignette.png"));
+        var overlay = new RenderOverlay(Identifier.of("textures/misc/vignette.png"));
         RenderOverlayEvent event = new RenderOverlayEvent(overlay);
         EventManager.getEventManager().call(event);
         if (event.isCancelled())
