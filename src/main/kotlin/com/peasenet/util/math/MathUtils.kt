@@ -43,7 +43,7 @@ object MathUtils {
     fun getRotationToEntity(entity: Entity): Rotation {
         val player = GavinsModClient.player!!
         val playerPos =
-            Vec3d(player.getPrevX(), player.getPos().y + player.getEyeHeight(player.getPose()), player.getPos().z)
+            Vec3d(player.getPrevX(), player.getPos().y + player.getEyeHeightWithPose(), player.getPos().z)
 
         val diffX = entity.x - playerPos.x
         val diffY = entity.boundingBox.center.y - playerPos.y

@@ -80,7 +80,7 @@ object PlayerUtils {
         val player = GavinsModClient.player
         val px = player!!.getPrevX() + (playerPos.getX() - player.getPrevX()) * deltaTime + look.x()
         val py = (player.getPrevY() + (playerPos.getY() - player.getPrevY()) * deltaTime + look.y()
-                + player.getEyeHeight(player.getPose()))
+                + player.getEyeHeightWithPose())
         val pz = player.getPrevZ() + (playerPos.getZ() - player.getPrevZ()) * deltaTime + look.z()
         return Vec3d(px, py, pz)
     }

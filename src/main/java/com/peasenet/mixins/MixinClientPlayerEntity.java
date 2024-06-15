@@ -40,6 +40,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -105,12 +106,12 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     public double getEyeHeight() {
         return super.getStandingEyeHeight();
     }
-
+    
     @Override
     public EntityPose getPose() {
         return super.getPose();
     }
-
+    
     @Override
     public boolean isNoClip() {
         return super.noClip;
@@ -121,10 +122,10 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
         return super.getVelocity();
     }
 
-//    @Override
-//    public float getEyeHeight(EntityPose pose) {
-//        return super.getEyeHeight(pose);
-//    }
+    @Override
+    public float getEyeHeightWithPose() {
+        return super.getEyeHeight(this.getPose());
+    }
 
     @Override
     public float getAttackCoolDownProgress(float f) {

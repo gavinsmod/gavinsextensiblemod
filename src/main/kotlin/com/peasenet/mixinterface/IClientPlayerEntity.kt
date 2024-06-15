@@ -98,14 +98,8 @@ interface IClientPlayerEntity {
      */
     fun eyeHeight(): Double
 
-    /**
-     * Gets the eye height of the player in the given pose.
-     *
-     * @param pose - The pose to get the eye height for.
-     * @return The eye height of the player in the given pose.
-     */
-    fun getEyeHeight(pose: EntityPose?): Float
-
+    fun getEyeHeightWithPose(): Float
+    
     /**
      * Gets the player's current pose.
      *
