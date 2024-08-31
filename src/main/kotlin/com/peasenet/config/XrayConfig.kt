@@ -34,11 +34,7 @@ import java.util.function.Consumer
  * @author gt3ch1
  * @version 03-02-2023
  */
-class XrayConfig : Config<XrayConfig>() {
-    /**
-     * The list of blocks to xray.
-     */
-    private val blocks: HashSet<String>
+class XrayConfig : BlockListConfig<XrayConfig>({ it is ExperienceDroppingBlock }) {
 
     /**
      * Whether to cull blocks.
@@ -48,86 +44,8 @@ class XrayConfig : Config<XrayConfig>() {
             field = value
             saveConfig()
         }
-
+    
     init {
         key = "xray"
-        blocks = HashSet()
-        defaultBlockList.forEach { b: Block -> blocks.add(getId(b)) }
-    }
-
-    /**
-     * Loads the default block list into the configuration, and saves it.
-     */
-    fun loadDefaultBlocks() {
-        setList(defaultBlockList)
-    }
-
-    /**
-     * Adds a block to the list.
-     *
-     * @param b - The block to add.
-     */
-    fun addBlock(b: Block) {
-        val id = getId(b)
-        blocks.add(id)
-        saveConfig()
-    }
-
-    /**
-     * Sets the xray block list.
-     *
-     * @param list - the list to set to.
-     */
-    private fun setList(list: List<Block>) {
-        blocks.clear()
-        list.forEach(Consumer { b: Block -> addBlock(b) })
-        saveConfig()
-    }
-
-    /**
-     * Removes a block from the list.
-     *
-     * @param b - The block to remove.
-     */
-    fun removeBlock(b: Block) {
-        val id = getId(b)
-        blocks.remove(id)
-        saveConfig()
-    }
-
-    /**
-     * Whether the block is in the list.
-     *
-     * @param b - The block to check.
-     * @return Whether the block is in the list.
-     */
-    fun isInList(b: Block): Boolean {
-        val id = getId(b)
-        return blocks.contains(id)
-    }
-
-    companion object {
-        private val defaultBlockList: List<Block>
-            /**
-             * Gets the default block list.
-             *
-             * @return The default block list.
-             */
-            get() = Registries.BLOCK.stream().filter { b: Block? -> b is ExperienceDroppingBlock }
-                .toList()
-
-        /**
-         * Gets the name of the block, used to identify blocks to xray.
-         *
-         * @param b - The block to get the name of.
-         * @return The name of the block.
-         */
-        private fun getId(b: Block): String {
-            val path = b.lootTableKey.value.path
-            return if (path == "empty") b.translationKey.replace("block.minecraft.", "") else path.replace(
-                "blocks/",
-                ""
-            )
-        }
     }
 }

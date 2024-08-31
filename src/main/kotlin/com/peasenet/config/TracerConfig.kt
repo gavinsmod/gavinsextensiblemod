@@ -29,7 +29,7 @@ package com.peasenet.config
  * @author gt3ch1
  * @version 07-18-2023
  */
-class TracerConfig : TracerEspConfig<EspConfig>() {
+class TracerConfig : TracerEspConfig<TracerConfig>() {
     init {
         key = "tracer"
     }
