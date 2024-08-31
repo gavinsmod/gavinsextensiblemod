@@ -35,6 +35,7 @@ import com.peasenet.gui.mod.*
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
 import com.peasenet.util.ModCommands
+import com.peasenet.util.executor.GemExecutor
 import net.fabricmc.api.ModInitializer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -152,6 +153,7 @@ class GavinsMod : ModInitializer {
 
     override fun onInitialize() {
         GavUI.initialize()
+        GemExecutor.init()
         espConfig = Settings.settings["esp"] as EspConfig
         tracerConfig = Settings.settings["tracer"] as TracerConfig
         miscConfig = Settings.settings["misc"] as MiscConfig

@@ -28,6 +28,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.ToNumberPolicy;
 import com.google.gson.stream.JsonReader;
+import com.peasenet.annotations.GsonExclusionStrategy;
 import com.peasenet.config.Config;
 import com.peasenet.config.EspConfig;
 import com.peasenet.config.MiscConfig;
@@ -130,7 +131,8 @@ public class Settings {
         var cfgFile = getFilePath();
         // ensure the settings file exists
         ensureCfgCreated(cfgFile);
-        var json = new GsonBuilder().setPrettyPrinting().setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE).create();
+        var json = new GsonBuilder().setPrettyPrinting().setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+                .setExclusionStrategies(new GsonExclusionStrategy()).create();
         try {
             var writer = Files.newBufferedWriter(Paths.get(cfgFile));
             json.toJson(settings, writer);

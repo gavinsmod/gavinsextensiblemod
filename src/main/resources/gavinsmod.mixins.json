@@ -8,6 +8,7 @@
     "MixinClientPlayerEntity",
     "MixinClientPlayerEntityAirStrafe",
     "MixinClientPlayerEntityNausea",
+    "MixinClientPlayNetworkHandler",
     "MixinClientWorld",
     "MixinGameRenderer",
     "MixinGameRendererBobView",

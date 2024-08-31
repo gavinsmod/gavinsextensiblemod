@@ -3,5 +3,5 @@
 import net.minecraft.block.BlockState
 import net.minecraft.util.math.BlockPos
 
-class BlockUpdate (var blockPos: BlockPos, var oldState: BlockState, var newState: BlockState){
+class BlockUpdate (var blockPos: BlockPos, var newState: BlockState, var oldState: BlockState){
 }

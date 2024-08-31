@@ -52,7 +52,7 @@ import kotlin.math.ceil
  * @version 04-11-2023
  * A gui that allows the player to search for blocks and add them to the xray list.
  */
-class GuiBlockSelection<T : BlockListConfig<*>>(val translationKey: String, val settingKey: String)
+open class GuiBlockSelection<T : BlockListConfig<*>>(val translationKey: String, private val settingKey: String)
 /**
  * Creates a new GUI menu with the given title.
  */
@@ -246,7 +246,7 @@ class GuiBlockSelection<T : BlockListConfig<*>>(val translationKey: String, val 
             val blockX = i % blocksPerRow * 18 + x + 2
             val blockY = i / blocksPerRow * 18 + y + 5
             val boxF = BoxF(blockX.toFloat(), blockY.toFloat(), 16f, 16f)
-            var isHovering = isHovering(mouseX, blockX, mouseY, blockY)
+            val isHovering = isHovering(mouseX, blockX, mouseY, blockY)
             if (Settings.getConfig<T>(settingKey).isInList(block)) {
                 var c = GavUISettings.getColor("gui.color.enabled")
                 if (isHovering)
@@ -351,7 +351,6 @@ class GuiBlockSelection<T : BlockListConfig<*>>(val translationKey: String, val 
             .forEach { e: Block? -> tmpBlocks.add(e) }
         // get blocks in block list that are within the page.
         val enabled = enabledOnly.isOn
-        var config = Settings.getConfig<T>(settingKey)
         if (enabled) tmpBlocks = ArrayList(tmpBlocks.stream().filter { b: Block? ->
             Settings.getConfig<T>(settingKey).isInList(
                 b!!

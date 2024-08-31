@@ -5,19 +5,20 @@ import net.minecraft.block.Block
 import net.minecraft.registry.Registries
 import java.util.function.Consumer
 
-open class BlockListConfig<E>(blockFilter: (it: Block?) -> Boolean = { false }) : Config<BlockListConfig<E>>() {
+open class BlockListConfig<E>(blockFilter: (it: Block) -> Boolean = { false }) : Config<BlockListConfig<E>>() {
+
     @Exclude
-    private var defaultList = emptyList<String>()
+    private var defaultList = emptyList<Block>()
+
+    var blocks: HashSet<String> = HashSet()
 
     init {
-        val blocks = Registries.BLOCK.filter(blockFilter).toList()
-
-        blocks.forEach {
-            defaultList = defaultList.plus(getId(it))
+        Registries.BLOCK.filter(blockFilter).toList().forEach {
+            defaultList = defaultList.plus(it)
+            blocks.add(getId(it))
         }
     }
 
-    var blocks: HashSet<String> = HashSet()
 
     /**
      * Loads the default block list into the configuration, and saves it.
@@ -33,11 +34,7 @@ open class BlockListConfig<E>(blockFilter: (it: Block?) -> Boolean = { false }) 
      */
     fun addBlock(b: Block) {
         val id = getId(b)
-        addBlock(id)
-    }
-    
-    fun addBlock(b: String) {
-        blocks.add(b)
+        blocks.add(id)
         saveConfig()
     }
 
@@ -46,9 +43,9 @@ open class BlockListConfig<E>(blockFilter: (it: Block?) -> Boolean = { false }) 
      *
      * @param list - the list to set to.
      */
-    private fun setList(list: List<String>) {
+    private fun setList(list: List<Block>) {
         blocks.clear()
-        list.forEach(Consumer { b: String -> addBlock(b) })
+        list.forEach { addBlock(it) }
         saveConfig()
     }
 
@@ -59,11 +56,7 @@ open class BlockListConfig<E>(blockFilter: (it: Block?) -> Boolean = { false }) 
      */
     fun removeBlock(b: Block) {
         val id = getId(b)
-        removeBlock(id)
-    }
-    
-    fun removeBlock(b: String) {
-        blocks.remove(b)
+        blocks.remove(id)
         saveConfig()
     }
 
@@ -92,6 +85,7 @@ open class BlockListConfig<E>(blockFilter: (it: Block?) -> Boolean = { false }) 
                 ""
             )
         }
+
 
     }
 }

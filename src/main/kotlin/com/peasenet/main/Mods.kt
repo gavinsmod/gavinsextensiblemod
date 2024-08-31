@@ -50,6 +50,7 @@ class Mods {
         Settings.addConfig(FpsColorConfig())
         Settings.addConfig(FullbrightConfig())
         Settings.addConfig(XrayConfig())
+        Settings.addConfig(BlockEspConfig())
         Settings.addConfig(RadarConfig())
         Settings.addConfig(WaypointConfig())
         /*@MODS@*/
@@ -144,11 +145,11 @@ class Mods {
             return mod.isActive
         }
 
-         /*
-         * Adds a mod to the mod hashmap using the mod chat command as the key, and the mod as the value.
-         *
-         * @param m - The mod to add.
-         */
+        /*
+        * Adds a mod to the mod hashmap using the mod chat command as the key, and the mod as the value.
+        *
+        * @param m - The mod to add.
+        */
         fun addMod(m: Mod) {
             modMap[m.chatCommand] = m
         }
