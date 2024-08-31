@@ -99,6 +99,15 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
         }
 
     /**
+     * The color for block esp. Default value is [Colors.SHADOW_BLUE]
+     */
+    var blockColor: Color = Colors.SHADOW_BLUE
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    /**
      * The alpha value for rendering. Default value is 0.5f. Valid values are 0.0f to 1.0f.
      */
     var alpha: Float = 0.5f

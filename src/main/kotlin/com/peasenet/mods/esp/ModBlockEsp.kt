@@ -2,12 +2,11 @@
 
 import com.peasenet.gavui.color.Color
 import com.peasenet.main.GavinsMod
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.GavBlock
 import com.peasenet.util.GavChunk
 import com.peasenet.util.RenderUtils
-import com.peasenet.util.event.data.BlockRender
 import com.peasenet.util.event.data.BlockUpdate
-import com.peasenet.util.listeners.BlockRenderListener
 import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.WorldRenderListener
 import net.minecraft.block.Blocks
@@ -18,13 +17,24 @@ import net.minecraft.util.math.Box
 import net.minecraft.util.math.ChunkPos
 
 class ModBlockEsp : EspMod(
-    "Beehive ESP",
+    "Block ESP",
     "gavinsmod.mod.esp.blockesp",
     "blockesp"
 ), BlockUpdateListener, WorldRenderListener {
 
     private val espChunks = HashMap<Long, GavChunk>()
 
+    init {
+        val colorSetting = SettingBuilder()
+            .setTitle("gavinsmod.settings.esp.block.color")
+            .setColor(config.blockColor)
+            .buildColorSetting()
+        colorSetting.setCallback {
+            config.blockColor = colorSetting.color
+        }
+        addSetting(colorSetting)
+    }
+    
     override fun onEnable() {
         super.onEnable()
         em.subscribe(BlockUpdateListener::class.java, this)
@@ -80,7 +90,7 @@ class ModBlockEsp : EspMod(
                     block.y + 1.0,
                     block.z + 1.0
                 )
-                RenderUtils.drawBox(stack, bufferBuilder, box, Color(150, 150, 150))
+                RenderUtils.drawBox(stack, bufferBuilder, box, config.blockColor, config.alpha)
             }
 //            RenderUtils.drawBox(stack, bufferBuilder, box, Color(150, 150, 150), delta)
         }
