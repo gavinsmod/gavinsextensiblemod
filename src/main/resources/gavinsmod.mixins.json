@@ -29,7 +29,8 @@
     "MixinClientPlayerEntityFastMine",
     "MixinLivingEntity",
     "MixinPlayerEntityFastMine",
-    "MixinSodiumblockOcclusionCache"
+    "MixinSodiumblockOcclusionCache",
+    "MixinWorldChunk"
   ],
   "package": "com.peasenet.mixins",
   "required": true

@@ -26,19 +26,19 @@ package com.peasenet.util
 import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.gavui.color.Color
 import com.peasenet.main.GavinsModClient
+import com.peasenet.main.Mods
 import com.peasenet.mixinterface.ISimpleOption
 import com.peasenet.util.PlayerUtils.getNewPlayerPosition
-import com.peasenet.util.event.BlockEntityRenderEvent
-import com.peasenet.util.event.EntityRenderEvent
-import com.peasenet.util.event.EventManager
-import com.peasenet.util.event.WorldRenderEvent
+import com.peasenet.util.event.*
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
+import net.minecraft.block.Blocks
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.client.render.*
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.entity.Entity
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 import org.joml.Matrix4f
@@ -170,7 +170,8 @@ object RenderUtils {
                 val chunkX1 = chunkX + x
                 val chunkZ1 = chunkZ + z
                 if (level!!.getChunk(chunkX1, chunkZ1) != null) {
-                    val blockEntities = level.getChunk(chunkX1, chunkZ1).blockEntities
+                    val chunk = level.getChunk(chunkX1, chunkZ1)
+                    val blockEntities = chunk.blockEntities
                     for ((blockPos, blockEntity) in blockEntities) {
                         val aabb = Box(blockPos)
                         val boxPos = aabb.center

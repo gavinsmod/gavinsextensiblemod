@@ -47,12 +47,6 @@ class GavinsModClient : ClientModInitializer {
                 if (m.isActive || m.isDeactivating) m.onTick()
             }
         })
-//        WorldRenderEvents.AFTER_ENTITIES.register(AfterEntities { context: WorldRenderContext ->
-//            RenderUtils.afterEntities(
-//                context
-//            )
-//        })
-
         WorldRenderEvents.LAST.register(WorldRenderEvents.Last { context: WorldRenderContext ->
             RenderUtils.last(
                 context

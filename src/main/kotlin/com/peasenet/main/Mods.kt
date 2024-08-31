@@ -94,6 +94,7 @@ class Mods {
         GavinsMod.addMod(ModEntityPlayerTracer())
         GavinsMod.addMod(ModFurnaceTracer())
         GavinsMod.addMod(ModMobTracer())
+        GavinsMod.addMod(ModBlockEsp())
     }
 
     companion object {
