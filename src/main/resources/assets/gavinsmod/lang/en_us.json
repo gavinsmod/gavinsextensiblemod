@@ -147,5 +147,6 @@
   "gavinsmod.settings.xray.culling": "X-Ray Culling",
   "gavinsmod.generic.settings": "Settings",
   "gavinsmod.generic.color": "Color",
-  "gavinsmod.generic.alpha": "Alpha"
+  "gavinsmod.generic.alpha": "Alpha",
+  "gavinsmod.generic.background": "Background"
 }

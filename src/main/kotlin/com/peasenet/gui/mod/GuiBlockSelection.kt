@@ -134,7 +134,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         val screenWidth = minecraftClient.window.scaledWidth
         val screenHeight = minecraftClient.window.scaledHeight
         width = (screenWidth * 0.9f).toInt()
-        height = (screenHeight * 0.78f).toInt()
+        height = (screenHeight * 0.8f).toInt()
         x = screenWidth / 20
         y = screenHeight / 20 + 20
         box = GuiBuilder()
@@ -190,7 +190,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         val titleW = textRenderer.getWidth(translationKey)
         val resetText = Text.translatable("gavinsmod.settings.reset")
         val width = textRenderer.getWidth(resetText)
-        resetPos = PointF(titleW.toFloat(), 1f)
+        resetPos = PointF(nextButton.x2 + 4f, enabledOnly.y)
         if (resetWidth.toDouble() == 0.0) resetWidth = (width + 4).toFloat()
 //        resetButton = GuiClick(resetPos, width + 8, 10, resetText)
         resetButton = GuiBuilder()
@@ -252,8 +252,8 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
             if (i > visibleBlocks.size - 1) break
             val block = visibleBlocks.toTypedArray()[i]
             val stack = block.asItem().defaultStack
-            val blockX = i % blocksPerRow * 18 + x + 2
-            val blockY = i / blocksPerRow * 18 + y + 5
+            val blockX = i % blocksPerRow * 18 + x + 1
+            val blockY = i / blocksPerRow * 18 + y + 3
             val boxF = BoxF(blockX.toFloat(), blockY.toFloat(), 16f, 16f)
             val isHovering = isHovering(mouseX, blockX, mouseY, blockY)
             if (Settings.getConfig<T>(settingKey).isInList(block)) {
