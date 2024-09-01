@@ -26,5 +26,17 @@ package com.peasenet.gui.mod.esp
 
 import com.peasenet.config.BlockEspConfig
 import com.peasenet.gui.mod.GuiBlockSelection
+import com.peasenet.main.Mods
 
-class GuiBlockEsp : GuiBlockSelection<BlockEspConfig>("gavinsmod.mod.esp.blockesp", "blockesp") 
+/**
+ * A GUI used for block esp to select blocks.
+ *
+ * @author GT3CH1
+ * @version 09-01-2024
+ * @since 09-01-2024
+ *
+ * @see BlockEspConfig
+ * @see GuiBlockSelection
+ */
+class GuiBlockEsp : GuiBlockSelection<BlockEspConfig>("gavinsmod.mod.esp.blockesp", "blockesp"
+) 

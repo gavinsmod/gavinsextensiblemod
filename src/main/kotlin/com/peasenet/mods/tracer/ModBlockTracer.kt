@@ -53,10 +53,21 @@ import net.minecraft.util.math.Box
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.chunk.Chunk
 
+/**
+ * A tracer mod that draws lines to blocks in the world.
+ *
+ * @author GT3CH1
+ * @version 09-01-2024
+ * @since 09-01-2024
+ * @see TracerMod
+ * @see BlockUpdateListener
+ * @see WorldRenderListener
+ * @see ChunkUpdateListener
+ *
+ * TODO: Extract common code to a parent class from @see ModBlockEsp
+ */
 class ModBlockTracer : TracerMod(
-    "Block ESP",
-    "gavinsmod.mod.tracer.blocktracer",
-    "blocktracer"
+    "Block ESP", "gavinsmod.mod.tracer.blocktracer", "blocktracer"
 ), BlockUpdateListener, WorldRenderListener, ChunkUpdateListener {
 
     companion object {
@@ -70,32 +81,22 @@ class ModBlockTracer : TracerMod(
     private val tracerChunks = HashMap<Long, GavChunk>()
 
     init {
-        val subSetting = SettingBuilder()
-            .setTitle("gavinsmod.mod.tracer.blocktracer")
-            .buildSubSetting()
-        val colorSetting = SettingBuilder()
-            .setTitle("gavinsmod.settings.tracer.block.color")
-            .setColor(config.blockColor)
-            .buildColorSetting()
+        val subSetting = SettingBuilder().setTitle("gavinsmod.mod.tracer.blocktracer").buildSubSetting()
+        val colorSetting =
+            SettingBuilder().setTitle("gavinsmod.generic.color").setColor(config.blockColor).buildColorSetting()
         colorSetting.setCallback {
             config.blockColor = colorSetting.color
         }
 
-        val culling = SettingBuilder()
-            .setTitle("gavinsmod.settings.tracer.block.culling")
-            .setCallback {
-                config.culling = !config.culling
-                client.setChunkCulling(config.culling)
-            }
-            .buildToggleSetting()
+        val alphaSetting = SettingBuilder().setTitle("gavinsmod.generic.alpha").setValue(config.alpha).buildSlider()
+        alphaSetting.setCallback {
+            config.alpha = alphaSetting.value
+        }
+        subSetting.add(alphaSetting)
         subSetting.add(colorSetting)
         // add gui setting
-        val menu = SettingBuilder()
-            .setWidth(100f)
-            .setHeight(10f)
-            .setTitle("gavinsmod.settings.tracer.block.menu")
-            .setCallback { minecraftClient.setScreen(GuiBlockTracer()) }
-            .buildClickSetting()
+        val menu = SettingBuilder().setWidth(100f).setHeight(10f).setTitle("gavinsmod.generic.settings")
+            .setCallback { minecraftClient.setScreen(GuiBlockTracer()) }.buildClickSetting()
         subSetting.add(menu)
         addSetting(subSetting)
     }
@@ -107,9 +108,7 @@ class ModBlockTracer : TracerMod(
         em.subscribe(WorldRenderListener::class.java, this)
         em.subscribe(ChunkUpdateListener::class.java, this)
         // search for chunks within render distance
-        GemExecutor.execute {
-            RenderUtils.getVisibleChunks().forEach(this::searchChunk)
-        }
+        RenderUtils.getVisibleChunks().forEach(this::searchChunk)
     }
 
     override fun onDisable() {
@@ -138,18 +137,20 @@ class ModBlockTracer : TracerMod(
      */
     private fun searchChunk(chunk: Chunk) {
         GemExecutor.execute {
-            val searchedChunk =
-                GavChunk.search(chunk, Settings.getConfig<BlockTracerConfig>("blocktracer").blocks.toList())
-            if (searchedChunk.blocks.isNotEmpty()) {
-                synchronized(tracerChunks) {
-                    tracerChunks[chunk.pos.toLong()] = searchedChunk
-                    GavinsMod.LOGGER.debug("(onChunkUpdate) Added chunk: ${chunk.pos.toLong()}")
-                }
-            } else {
-                synchronized(tracerChunks) {
-                    tracerChunks[chunk.pos.toLong()]?.blocks?.clear()
-                    tracerChunks.remove(chunk.pos.toLong())
-                    GavinsMod.LOGGER.debug("(onChunkUpdate) Removed chunk: {}", chunk.pos.toLong())
+            synchronized(tracerChunks) {
+                val searchedChunk =
+                    GavChunk.search(chunk, Settings.getConfig<BlockTracerConfig>("blocktracer").blocks.toList())
+                if (searchedChunk.blocks.isNotEmpty()) {
+                    synchronized(tracerChunks) {
+                        tracerChunks[chunk.pos.toLong()] = searchedChunk
+                        GavinsMod.LOGGER.debug("(onChunkUpdate) Added chunk: ${chunk.pos.toLong()}")
+                    }
+                } else {
+                    synchronized(tracerChunks) {
+                        tracerChunks[chunk.pos.toLong()]?.blocks?.clear()
+                        tracerChunks.remove(chunk.pos.toLong())
+                        GavinsMod.LOGGER.debug("(onChunkUpdate) Removed chunk: {}", chunk.pos.toLong())
+                    }
                 }
             }
         }
@@ -178,10 +179,8 @@ class ModBlockTracer : TracerMod(
                     GavinsMod.LOGGER.debug("(onBlockUpdate) Added chunk: $key")
                     tracerChunk = chunk
                 }
-                if (added)
-                    tracerChunk.blocks[_block.key] = _block
-                else
-                    tracerChunk.blocks.remove(_block.key)
+                if (added) tracerChunk.blocks[_block.key] = _block
+                else tracerChunk.blocks.remove(_block.key)
             }
         }
     }
@@ -201,12 +200,7 @@ class ModBlockTracer : TracerMod(
                     val mainCamera = MinecraftClient.getInstance().gameRenderer.camera
                     val playerPos = PlayerUtils.getNewPlayerPosition(delta, mainCamera)
                     RenderUtils.renderSingleLine(
-                        stack,
-                        bufferBuilder,
-                        playerPos,
-                        box.center,
-                        config.blockColor,
-                        config.alpha
+                        stack, bufferBuilder, playerPos, box.center, config.blockColor, config.alpha
                     )
                 }
             }

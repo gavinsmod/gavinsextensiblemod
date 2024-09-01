@@ -24,32 +24,21 @@
 
 package com.peasenet.config
 
+import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import net.minecraft.block.Blocks
 
+/**
+ * A configuration for block esp.
+ * Default settings are:
+ *  Blocks => Sugar Cane
+ *  Block Color => Dark Spring Green
+ *  Alpha => 0.5
+ * @author gt3ch1
+ * @version 09-01-2024
+ */
 class BlockEspConfig : BlockListConfig<BlockEspConfig>({ it.defaultState == Blocks.SUGAR_CANE.defaultState }) {
     init {
         key = "blockesp"
     }
-
-    /**
-     * Whether to cull blocks.
-     */
-    var culling = false
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var blockColor = Colors.DARK_SPRING_GREEN
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var alpha = 0.5f
-        set(value) {
-            field = value
-            saveConfig()
-        }
 }

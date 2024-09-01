@@ -31,6 +31,8 @@ import com.peasenet.gui.mod.esp.GuiBlockEsp
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
 import com.peasenet.main.Settings
+import com.peasenet.mods.tracer.ModBlockTracer
+import com.peasenet.mods.tracer.ModBlockTracer.Companion
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.GavBlock
 import com.peasenet.util.GavChunk
@@ -48,6 +50,16 @@ import net.minecraft.util.math.Box
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.chunk.Chunk
 
+/**
+ * An ESP mod that draws boxes around user selected blocks in the world.
+ *
+ * @author GT3CH1
+ * @version 09-01-2024
+ * @since 09-01-2024
+ * @see EspMod
+ *
+ * TODO: Extract common code to a parent class from @see ModBlockTracer
+ */
 class ModBlockEsp : EspMod(
     "Block ESP",
     "gavinsmod.mod.esp.blockesp",
@@ -69,26 +81,27 @@ class ModBlockEsp : EspMod(
             .setTitle("gavinsmod.mod.esp.blockesp")
             .buildSubSetting()
         val colorSetting = SettingBuilder()
-            .setTitle("gavinsmod.settings.esp.block.color")
+            .setTitle("gavinsmod.generic.color")
             .setColor(config.blockColor)
             .buildColorSetting()
         colorSetting.setCallback {
             config.blockColor = colorSetting.color
         }
 
-        val culling = SettingBuilder()
-            .setTitle("gavinsmod.settings.esp.block.culling")
-            .setCallback {
-                config.culling = !config.culling
-                client.setChunkCulling(config.culling)
-            }
-            .buildToggleSetting()
+        val alphaSetting = SettingBuilder()
+            .setTitle("gavinsmod.generic.alpha")
+            .setValue(ModBlockTracer.config.alpha)
+            .buildSlider()
+        alphaSetting.setCallback {
+            config.alpha = alphaSetting.value
+        }
+        subSetting.add(alphaSetting)
         subSetting.add(colorSetting)
         // add gui setting
         val menu = SettingBuilder()
             .setWidth(100f)
             .setHeight(10f)
-            .setTitle("gavinsmod.settings.esp.block.menu")
+            .setTitle("gavinsmod.generic.settings")
             .setCallback { minecraftClient.setScreen(GuiBlockEsp()) }
             .buildClickSetting()
         subSetting.add(menu)

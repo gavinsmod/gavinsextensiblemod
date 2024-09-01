@@ -27,6 +27,16 @@ package com.peasenet.annotations
 import com.google.gson.ExclusionStrategy
 import com.google.gson.FieldAttributes
 
+/**
+ * A class that tells Gson to exclude fields or classes from serialization with the @Exclude annotation.
+ *
+ * @see Exclude
+ * @see com.google.gson.GsonBuilder
+ *
+ * @author GT3CH1
+ * @version 09-01-2024
+ * @since 09-01-2024
+ */
 class GsonExclusionStrategy : ExclusionStrategy {
     override fun shouldSkipClass(clazz: Class<*>): Boolean {
         return clazz.isAnnotationPresent(Exclude::class.java)

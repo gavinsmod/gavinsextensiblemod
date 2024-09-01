@@ -144,5 +144,8 @@
   "gavinsmod.settings.tracer.viewbobcancel": "View Bob Disabled",
   "gavinsmod.settings.xray.blocks": "X-Ray Blocks",
   "gavinsmod.settings.xray.chests": "X-Ray Chests",
-  "gavinsmod.settings.xray.culling": "X-Ray Culling"
+  "gavinsmod.settings.xray.culling": "X-Ray Culling",
+  "gavinsmod.generic.settings": "Settings",
+  "gavinsmod.generic.color": "Color",
+  "gavinsmod.generic.alpha": "Alpha"
 }

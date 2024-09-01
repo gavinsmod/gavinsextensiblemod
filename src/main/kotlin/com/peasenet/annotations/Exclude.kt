@@ -23,6 +23,15 @@
  */
 package com.peasenet.annotations
 
+/**
+ * An annotation that tells Gson to exclude fields from serialization.
+ *
+ * @see GsonExclusionStrategy
+ *
+ * @author GT3CH1
+ * @version 09-01-2024
+ * @since 09-01-2024
+ */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FIELD)
 annotation class Exclude 

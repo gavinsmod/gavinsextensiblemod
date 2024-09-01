@@ -36,6 +36,7 @@ import com.peasenet.gavui.util.GuiUtil
 import com.peasenet.gui.GuiElement
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
+import com.peasenet.main.Mods
 import com.peasenet.main.Mods.Companion.getMod
 import com.peasenet.main.Settings
 import net.minecraft.block.Block
@@ -48,11 +49,18 @@ import java.util.*
 import kotlin.math.ceil
 
 /**
+ * A gui that allows the player to search for blocks and add them to a list.
+ * @param T The type of the block list configuration, must extend BlockListConfig.
+ * @param translationKey The translation key for the gui.
+ * @param settingKey The key for the setting.
+ * @see BlockListConfig
  * @author gt3ch1
- * @version 04-11-2023
- * A gui that allows the player to search for blocks and add them to the xray list.
+ * @version 09-01-2024
+ * @since 04-11-2023
  */
-open class GuiBlockSelection<T : BlockListConfig<*>>(val translationKey: String, private val settingKey: String)
+open class GuiBlockSelection<T : BlockListConfig<*>>(
+    val translationKey: String, private val settingKey: String
+)
 /**
  * Creates a new GUI menu with the given title.
  */
@@ -179,10 +187,10 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(val translationKey: String,
             .setHoverable(true)
             .setCallback { page = 0; updateBlockList() }
             .buildToggle()
-        val titleW = textRenderer.getWidth(Text.translatable("gavinsmod.mod.render.xray")) + 16
+        val titleW = textRenderer.getWidth(translationKey)
         val resetText = Text.translatable("gavinsmod.settings.reset")
         val width = textRenderer.getWidth(resetText)
-        if (resetPos == null) resetPos = PointF(titleW.toFloat(), 1f)
+        resetPos = PointF(titleW.toFloat(), 1f)
         if (resetWidth.toDouble() == 0.0) resetWidth = (width + 4).toFloat()
 //        resetButton = GuiClick(resetPos, width + 8, 10, resetText)
         resetButton = GuiBuilder()
@@ -205,6 +213,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(val translationKey: String,
         updateBlockList()
         page = 0
         minecraftClient.worldRenderer.reload()
+        getMod(settingKey)?.reload()
     }
 
     /**

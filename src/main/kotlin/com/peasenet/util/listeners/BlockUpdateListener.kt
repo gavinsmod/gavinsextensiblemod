@@ -32,5 +32,9 @@ import com.peasenet.util.event.data.BlockUpdate
  * @version 09-01-2024
  */
 interface BlockUpdateListener : Listener {
+    /**
+     * Called when a block is updated.
+     * @param bue The block update event.
+     */
     fun onBlockUpdate(bue: BlockUpdate)
 }

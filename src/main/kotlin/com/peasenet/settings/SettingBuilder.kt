@@ -34,7 +34,8 @@ import net.minecraft.text.Text
 /**
  * A builder that creates a setting.
  * @author GT3CH1
- * @version 05/18/2023
+ * @version 09-01-2024
+ * @since 05/18/2023
  */
 class SettingBuilder {
 
@@ -328,6 +329,7 @@ class SettingBuilder {
         return this
     }
 
+    //TODO: Clamp
     /**
      * Sets the float value of this setting, used for sliders.
      * @param value The float value to set.

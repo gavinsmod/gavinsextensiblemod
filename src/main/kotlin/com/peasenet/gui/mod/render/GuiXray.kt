@@ -49,14 +49,12 @@ import java.util.*
 import kotlin.math.ceil
 
 /**
- * @author gt3ch1
- * @version 04-11-2023
- * A gui that allows the player to search for blocks and add them to the xray list.
+ * A gui that allows the player to search for blocks and add them to the xray list. Must extend GuiBlockSelection.
+ * @see GuiBlockSelection
+ * @author GT3CH1
+ * @version 09-01-2024
+ * @since 04-11-2023
  */
-class GuiXray
-/**
- * Creates a new GUI menu with the given title.
- */
-    : GuiBlockSelection<XrayConfig>("gavinsmod.mod.render.xray", "xray") {
+class GuiXray : GuiBlockSelection<XrayConfig>("gavinsmod.mod.render.xray", "xray") {
 
 }

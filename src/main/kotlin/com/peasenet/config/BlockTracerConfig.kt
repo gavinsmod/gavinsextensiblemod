@@ -24,32 +24,23 @@
 
 package com.peasenet.config
 
+import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import net.minecraft.block.Blocks
 
+/**
+ * A configuration class for the block tracer.
+ * Defaults:
+ *  Block color => DARK_SPRING_GREEN
+ *  Alpha => 0.5
+ * Key: blocktracer
+ *
+ * @author gt3ch1
+ * @version 09-01-2024
+ * @since 09-01-2024
+ */
 class BlockTracerConfig : BlockListConfig<BlockTracerConfig>({ it.defaultState == Blocks.SUGAR_CANE.defaultState }) {
     init {
         key = "blocktracer"
     }
-
-    /**
-     * Whether to cull blocks.
-     */
-    var culling = false
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var blockColor = Colors.DARK_SPRING_GREEN
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var alpha = 0.5f
-        set(value) {
-            field = value
-            saveConfig()
-        }
 }

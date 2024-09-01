@@ -25,16 +25,47 @@
 package com.peasenet.config
 
 import com.peasenet.annotations.Exclude
+import com.peasenet.gavui.color.Color
+import com.peasenet.gavui.color.Colors
 import net.minecraft.block.Block
 import net.minecraft.registry.Registries
 import java.util.function.Consumer
 
-open class BlockListConfig<E>(blockFilter: (it: Block) -> Boolean = { false }) : Config<BlockListConfig<E>>() {
+/**
+ * A configuration class for mods that need a list of blocks.
+ * @param E The type of the configuration. Must extend Config.
+ * @param blockFilter A filter for the blocks to add to the list.
+ *
+ * @author GT3CH1
+ * @version 09-01-2024
+ * @since 09-01-2024
+ * @see Config
+ */
+open class BlockListConfig<E : Config<*>>(blockFilter: (it: Block) -> Boolean = { false }) :
+    Config<BlockListConfig<E>>() {
 
     @Exclude
+    /**
+     * The default list of blocks, used to reset the list.
+     */
     private var defaultList = emptyList<Block>()
 
+    /**
+     * The list of blocks that are in the configuration.
+     */
     var blocks: HashSet<String> = HashSet()
+
+    var blockColor: Color = Colors.DARK_SPRING_GREEN
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    var alpha = 0.5f
+        set(value) {
+            field = value
+            saveConfig()
+        }
 
     init {
         Registries.BLOCK.filter(blockFilter).toList().forEach {
@@ -109,7 +140,5 @@ open class BlockListConfig<E>(blockFilter: (it: Block) -> Boolean = { false }) :
                 ""
             )
         }
-
-
     }
 }
