@@ -25,6 +25,7 @@ package com.peasenet.util
 
 import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.gavui.color.Color
+import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Mods
 import com.peasenet.mixinterface.ISimpleOption
@@ -41,6 +42,7 @@ import net.minecraft.entity.Entity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
+import net.minecraft.world.chunk.Chunk
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11
 import java.util.function.Consumer
@@ -431,5 +433,27 @@ object RenderUtils {
         bufferBuilder.vertex(matrix, xt1.toFloat(), yt2.toFloat(), 0f)
         bufferBuilder.vertex(matrix, xt2.toFloat(), yt2.toFloat(), 0f)
         bufferBuilder.vertex(matrix, xt2.toFloat(), yt1.toFloat(), 0f)
+    }
+
+    fun getRenderDistance(): Int {
+        val client = GavinsModClient.minecraftClient.options.viewDistance.value + 1
+        val networkView = GavinsModClient.minecraftClient.getWorld().simulationDistance + 1
+        return maxOf(client, networkView)
+    }
+
+    fun getVisibleChunks(): List<Chunk> {
+        val chunks = ArrayList<Chunk>()
+        val player = GavinsModClient.minecraftClient.getPlayer()
+        val chunkX = player.chunkPos.x
+        val chunkZ = player.chunkPos.z
+        val level = GavinsModClient.minecraftClient.getWorld()
+        for (x in -(getRenderDistance() + 1) until (getRenderDistance())) {
+            for (z in -(getRenderDistance() + 1) until (getRenderDistance())) {
+                val chunkX1 = chunkX + x
+                val chunkZ1 = chunkZ + z
+                chunks.add(level.getChunk(chunkX1, chunkZ1))
+            }
+        }
+        return chunks
     }
 }

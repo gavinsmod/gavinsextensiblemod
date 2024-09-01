@@ -1,5 +1,6 @@
 ﻿package com.peasenet.mods.esp
 
+import com.peasenet.annotations.Exclude
 import com.peasenet.config.BlockEspConfig
 import com.peasenet.config.BlockListConfig
 import com.peasenet.gui.mod.esp.GuiBlockEsp
@@ -21,6 +22,7 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.ChunkPos
+import net.minecraft.world.chunk.Chunk
 
 class ModBlockEsp : EspMod(
     "Block ESP",
@@ -28,6 +30,14 @@ class ModBlockEsp : EspMod(
     "blockesp"
 ), BlockUpdateListener, WorldRenderListener, ChunkUpdateListener {
 
+    companion object {
+        val config: BlockEspConfig
+            get() {
+                return Settings.getConfig("blockesp")
+            }
+    }
+
+    @Exclude
     private val espChunks = HashMap<Long, GavChunk>()
 
     init {
@@ -41,6 +51,14 @@ class ModBlockEsp : EspMod(
         colorSetting.setCallback {
             config.blockColor = colorSetting.color
         }
+
+        val culling = SettingBuilder()
+            .setTitle("gavinsmod.settings.esp.block.culling")
+            .setCallback {
+                config.culling = !config.culling
+                client.setChunkCulling(config.culling)
+            }
+            .buildToggleSetting()
         subSetting.add(colorSetting)
         // add gui setting
         val menu = SettingBuilder()
@@ -61,22 +79,7 @@ class ModBlockEsp : EspMod(
         em.subscribe(ChunkUpdateListener::class.java, this)
         // search for chunks within render distance
         GemExecutor.execute {
-            synchronized(espChunks) {
-                val renderDistance = minecraftClient.options.viewDistance.value
-                val playerChunk =
-                    minecraftClient.getWorld()
-                        .getChunk(minecraftClient.getPlayer().chunkPos.x, minecraftClient.getPlayer().chunkPos.z)
-                for (x in playerChunk.pos.x - renderDistance / 2..playerChunk.pos.x + renderDistance / 2) {
-                    for (z in playerChunk.pos.z - renderDistance / 2..playerChunk.pos.z + renderDistance / 2) {
-                        val chunk = minecraftClient.getWorld().getChunk(x, z)
-                        val gavChunk =
-                            GavChunk.search(chunk, Settings.getConfig<BlockEspConfig>("blockesp").blocks.toList())
-                        if (gavChunk.blocks.isNotEmpty()) {
-                            espChunks[gavChunk.key] = gavChunk
-                        }
-                    }
-                }
-            }
+            RenderUtils.getVisibleChunks().forEach(this::searchChunk)
         }
     }
 
@@ -88,16 +91,28 @@ class ModBlockEsp : EspMod(
         espChunks.clear()
     }
 
-    override fun activate() {
-        super.activate()
-    }
-
-    override fun deactivate() {
-        super.deactivate()
-    }
-
     override fun onChunkUpdate(chunkUpdate: ChunkUpdate) {
-        GavChunk.search(chunkUpdate.chunk, Settings.getConfig<BlockEspConfig>("blockesp").blocks.toList())
+        searchChunk(chunkUpdate.chunk)
+    }
+
+
+    private fun searchChunk(chunk: Chunk) {
+        GemExecutor.execute {
+            val searchedChunk =
+                GavChunk.search(chunk, Settings.getConfig<BlockEspConfig>("blockesp").blocks.toList())
+            if (searchedChunk.blocks.isNotEmpty()) {
+                synchronized(espChunks) {
+                    espChunks[chunk.pos.toLong()] = searchedChunk
+                    GavinsMod.LOGGER.info("(onChunkUpdate) Added chunk: ${chunk.pos.toLong()}")
+                }
+            } else {
+                synchronized(espChunks) {
+                    espChunks[chunk.pos.toLong()]?.blocks?.clear()
+                    espChunks.remove(chunk.pos.toLong())
+//                GavinsMod.LOGGER.info("(onChunkUpdate) Removed chunk: ${chunk.key}")
+                }
+            }
+        }
     }
 
     override fun onBlockUpdate(bue: BlockUpdate) {
@@ -112,40 +127,28 @@ class ModBlockEsp : EspMod(
         if (!added && !removed) {
             return
         }
+
+        val _block = GavBlock(bue.blockPos.x, bue.blockPos.y, bue.blockPos.z)
         GemExecutor.execute {
             synchronized(espChunks) {
-//                for(block in enabledBlocks.stream().toList()) {
-                val _block = GavBlock(bue.blockPos.x, bue.blockPos.y, bue.blockPos.z)
-                if (added) {
-                    var espChunk = espChunks[key]
-                    if (espChunk == null) {
-                        val chunk = GavChunk(chunkX, chunkZ)
-                        espChunks[key] = chunk
-                        GavinsMod.LOGGER.info("Added chunk: $key")
-                        espChunk = chunk
-                    }
-                    espChunk.blocks[_block.key] = _block
-                    GavinsMod.LOGGER.info("Added block: ${_block.key}")
-
-                } else {
-                    val espChunk = espChunks[key]
-                    if (espChunk != null) {
-                        espChunk.blocks.remove(_block.key)
-                        GavinsMod.LOGGER.info("Removed block: ${_block.key}")
-                        if (espChunk.blocks.isEmpty()) {
-                            espChunks.remove(key)
-                            GavinsMod.LOGGER.info("Removed chunk: $key")
-                        }
-                    }
+                var espChunk = espChunks[key]
+                if (espChunk == null) {
+                    val chunk = GavChunk(chunkX, chunkZ)
+                    espChunks[key] = chunk
+                    GavinsMod.LOGGER.info("(onBlockUpdate) Added chunk: $key")
+                    espChunk = chunk
                 }
+                if (added)
+                    espChunk.blocks[_block.key] = _block
+                else
+                    espChunk.blocks.remove(_block.key)
             }
-//            }
         }
     }
 
     override fun onWorldRender(level: ClientWorld, stack: MatrixStack, bufferBuilder: BufferBuilder, delta: Float) {
         synchronized(espChunks) {
-            for (chunk in espChunks.values) {
+            for (chunk in espChunks.values.filter { it.inRenderDistance() }) {
                 for (block in chunk.blocks.values) {
                     val box = Box(
                         block.x.toDouble(),
@@ -158,6 +161,8 @@ class ModBlockEsp : EspMod(
                     RenderUtils.drawBox(stack, bufferBuilder, box, config.blockColor, config.alpha)
                 }
             }
+            // clear out all chunks that are not in render distance
+            espChunks.entries.removeIf { !it.value.inRenderDistance() }
         }
     }
 }

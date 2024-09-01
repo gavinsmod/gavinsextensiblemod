@@ -3,4 +3,4 @@
 import com.peasenet.config.BlockEspConfig
 import com.peasenet.gui.mod.GuiBlockSelection
 
-class GuiBlockEsp : GuiBlockSelection<BlockEspConfig>("gavinsmod.mod.render.blockesp", "blockesp") 
+class GuiBlockEsp : GuiBlockSelection<BlockEspConfig>("gavinsmod.mod.esp.blockesp", "blockesp") 
