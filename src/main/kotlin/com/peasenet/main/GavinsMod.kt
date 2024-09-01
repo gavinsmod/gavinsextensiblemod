@@ -52,7 +52,7 @@ class GavinsMod : ModInitializer {
         /**
          * The current version of the mod.
          */
-        const val VERSION = "v1.4.7"
+        const val VERSION = "v1.4.8"
 
         /**
          * A hashmap containing the category of each mod category and the corresponding gui.
