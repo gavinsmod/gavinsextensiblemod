@@ -1,4 +1,28 @@
-﻿package com.peasenet.mods.esp
+﻿/*
+ * MIT License
+ *
+ * Copyright (c) 2022-2024, Gavin C. Pease
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package com.peasenet.mods.esp
 
 import com.peasenet.annotations.Exclude
 import com.peasenet.config.BlockEspConfig
@@ -96,6 +120,10 @@ class ModBlockEsp : EspMod(
     }
 
 
+    /**
+     * Searches the given chunk for blocks that are in the block list.
+     * @param chunk - The Chunk to search.
+     */
     private fun searchChunk(chunk: Chunk) {
         GemExecutor.execute {
             val searchedChunk =
@@ -103,13 +131,13 @@ class ModBlockEsp : EspMod(
             if (searchedChunk.blocks.isNotEmpty()) {
                 synchronized(espChunks) {
                     espChunks[chunk.pos.toLong()] = searchedChunk
-                    GavinsMod.LOGGER.info("(onChunkUpdate) Added chunk: ${chunk.pos.toLong()}")
+                    GavinsMod.LOGGER.debug("(onChunkUpdate) Added chunk: ${chunk.pos.toLong()}")
                 }
             } else {
                 synchronized(espChunks) {
                     espChunks[chunk.pos.toLong()]?.blocks?.clear()
                     espChunks.remove(chunk.pos.toLong())
-//                GavinsMod.LOGGER.info("(onChunkUpdate) Removed chunk: ${chunk.key}")
+                    GavinsMod.LOGGER.debug("(onChunkUpdate) Removed chunk: {}", chunk.pos.toLong())
                 }
             }
         }
@@ -135,7 +163,7 @@ class ModBlockEsp : EspMod(
                 if (espChunk == null) {
                     val chunk = GavChunk(chunkX, chunkZ)
                     espChunks[key] = chunk
-                    GavinsMod.LOGGER.info("(onBlockUpdate) Added chunk: $key")
+                    GavinsMod.LOGGER.debug("(onBlockUpdate) Added chunk: $key")
                     espChunk = chunk
                 }
                 if (added)
