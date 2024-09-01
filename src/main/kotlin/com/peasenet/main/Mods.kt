@@ -56,6 +56,7 @@ class Mods {
         Settings.addConfig(FullbrightConfig())
         Settings.addConfig(XrayConfig())
         Settings.addConfig(BlockEspConfig())
+        Settings.addConfig(BlockTracerConfig())
         Settings.addConfig(RadarConfig())
         Settings.addConfig(WaypointConfig())
         /*@MODS@*/
@@ -101,6 +102,7 @@ class Mods {
         GavinsMod.addMod(ModFurnaceTracer())
         GavinsMod.addMod(ModMobTracer())
         GavinsMod.addMod(ModBlockEsp())
+        GavinsMod.addMod(ModBlockTracer())
     }
 
     companion object {

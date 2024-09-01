@@ -22,34 +22,9 @@
  * SOFTWARE.
  */
 
-package com.peasenet.config
+package com.peasenet.gui.mod.tracer
 
-import com.peasenet.gavui.color.Colors
-import net.minecraft.block.Blocks
+import com.peasenet.config.BlockTracerConfig
+import com.peasenet.gui.mod.GuiBlockSelection
 
-class BlockEspConfig : BlockListConfig<BlockEspConfig>({ it.defaultState == Blocks.SUGAR_CANE.defaultState }) {
-    init {
-        key = "blockesp"
-    }
-
-    /**
-     * Whether to cull blocks.
-     */
-    var culling = false
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var blockColor = Colors.DARK_SPRING_GREEN
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var alpha = 0.5f
-        set(value) {
-            field = value
-            saveConfig()
-        }
-}
+class GuiBlockTracer : GuiBlockSelection<BlockTracerConfig>("gavinsmod.mod.tracer.blocktracer", "blocktracer") 

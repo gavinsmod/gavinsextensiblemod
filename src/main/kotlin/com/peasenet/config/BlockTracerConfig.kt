@@ -27,9 +27,9 @@ package com.peasenet.config
 import com.peasenet.gavui.color.Colors
 import net.minecraft.block.Blocks
 
-class BlockEspConfig : BlockListConfig<BlockEspConfig>({ it.defaultState == Blocks.SUGAR_CANE.defaultState }) {
+class BlockTracerConfig : BlockListConfig<BlockTracerConfig>({ it.defaultState == Blocks.SUGAR_CANE.defaultState }) {
     init {
-        key = "blockesp"
+        key = "blocktracer"
     }
 
     /**
