@@ -60,7 +60,8 @@ class ModMobEsp : EspMod(
     }
 
     override fun onEntityRender(er: EntityRender) {
-        val box = er.entity.boundingBox
+        val box = er.entity.boundingBox 
+//        box.union(box.offset(deltaMinX, deltaMinY, deltaMinZ)).union(box.offset(deltaMaxX, deltaMaxY, deltaMaxZ))
         if (er.entity !is MobEntity) return
         if (er.buffer == null) return
         val color = if (er.entityType.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor

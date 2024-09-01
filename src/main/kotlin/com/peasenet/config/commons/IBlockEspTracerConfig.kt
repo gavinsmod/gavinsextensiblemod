@@ -22,27 +22,23 @@
  * SOFTWARE.
  */
 
-package com.peasenet.config
+package com.peasenet.config.commons
 
-import com.peasenet.config.commons.IBlockEspTracerConfig
 import com.peasenet.gavui.color.Color
-import com.peasenet.gavui.color.Colors
-import net.minecraft.block.Blocks
+import net.minecraft.block.Block
 
 /**
- * A configuration class for the block tracer.
- * Defaults:
- *  Block color => DARK_SPRING_GREEN
- *  Alpha => 0.5
- * Key: blocktracer
+ * An interface for block esp tracer configuration.
  *
- * @author GT3CH1 
+ * @author GT3CH1
  * @version 09-01-2024
  * @since 09-01-2024
+ * 
+ * @see BlockEspConfig
+ * @see BlockTracerConfig
  */
-class BlockTracerConfig : BlockListConfig<BlockTracerConfig>({ it.defaultState == Blocks.SUGAR_CANE.defaultState }),
-    IBlockEspTracerConfig {
-    init {
-        key = "blocktracer"
-    }
+interface IBlockEspTracerConfig {
+    var blockColor: Color
+    var alpha: Float
+    fun isInList(block: Block): Boolean
 }
