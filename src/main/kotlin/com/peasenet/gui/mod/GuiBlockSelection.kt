@@ -190,9 +190,13 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         val titleW = textRenderer.getWidth(translationKey)
         val resetText = Text.translatable("gavinsmod.settings.reset")
         val width = textRenderer.getWidth(resetText)
-        resetPos = PointF(nextButton.x2 + 4f, enabledOnly.y)
+        addSelectableChild(search)
+        updateBlockList()
+        super.init()
+
+        if (titleBox != null)
+            resetPos = PointF(titleBox!!.x2 + 4f, titleBox!!.y)
         if (resetWidth.toDouble() == 0.0) resetWidth = (width + 4).toFloat()
-//        resetButton = GuiClick(resetPos, width + 8, 10, resetText)
         resetButton = GuiBuilder()
             .setTopLeft(resetPos)
             .setWidth(resetWidth)
@@ -203,9 +207,6 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
             .setHoverable(true)
             .buildClick()
         resetButton.setDefaultPosition(resetButton.box)
-        addSelectableChild(search)
-        updateBlockList()
-        super.init()
     }
 
     private fun resetCallback() {
@@ -378,7 +379,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
 
     companion object {
         private var resetWidth = 0f
-        private var resetPos: PointF? = null
+        private var resetPos: PointF = PointF(0, 0)
 
         /**
          * Gets the list of all blocks that do not translate to "air".
