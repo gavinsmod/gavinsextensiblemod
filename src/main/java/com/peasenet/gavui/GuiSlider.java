@@ -31,13 +31,13 @@ import com.peasenet.gavui.util.GuiUtil;
 import com.peasenet.gavui.util.callbacks.GuiCallback;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
 
 /**
  * A gui that allows for controlling a value with a slider.
  *
  * @author gt3ch1
- * @version 01/07/2022
+ * @version 09-02-2024
+ * @since 01/07/2022
  */
 public class GuiSlider extends Gui {
 
@@ -52,17 +52,11 @@ public class GuiSlider extends Gui {
     float value;
 
     /**
-     * Creates a new GUI menu.
+     * Creates a new slider gui element.
      *
-     * @param topLeft - The top left corner of the gui.
-     * @param width   - The width of the gui.
-     * @param height  - The height of the gui.
-     * @param title   - The title of the gui.
+     * @param builder The GuiBuilder to create the slider from.
+     * @see GuiBuilder
      */
-    public GuiSlider(PointF topLeft, int width, int height, Text title) {
-        super(topLeft, width, height, title);
-    }
-
     public GuiSlider(GuiBuilder builder) {
         super(builder);
         if (builder.getCallback() != null)
@@ -139,7 +133,7 @@ public class GuiSlider extends Gui {
         if (button == 0 && mouseWithinGui(mouseX, mouseY) && !isHidden()) {
             setValue(mouseX);
             clickedGui = this;
-            GavUI.LOGGER.info("Clicked on slider " + getUUID());
+            GavUI.LOGGER.debug("Clicked on slider {}", getUUID());
             return true;
         }
         return false;
