@@ -190,7 +190,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
             val miscConfig = Settings.getConfig<MiscConfig>("misc")
             if (miscConfig != null) {
                 val backgroundOverlay = SettingBuilder()
-                    .setTitle("gavinsmod.settings.background")
+                      .setTitle("gavinsmod.generic.background")
                     .setState(Settings.getConfig<MiscConfig>("misc").background)
                     .buildToggleSetting()
                 backgroundOverlay.setCallback {
@@ -202,7 +202,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
             val tracerConfig = Settings.getConfig<TracerConfig>("tracer")
             if (tracerConfig != null) {
                 val tracerAlpha = SettingBuilder()
-                    .setTitle("gavinsmod.settings.alpha")
+                    .setTitle("gavinsmod.generic.alpha")
                     .setValue(Settings.getConfig<TracerConfig>("tracer").alpha)
                     .buildSlider()
                 tracerAlpha.setCallback { Settings.getConfig<TracerConfig>("tracer").alpha = tracerAlpha.value }
