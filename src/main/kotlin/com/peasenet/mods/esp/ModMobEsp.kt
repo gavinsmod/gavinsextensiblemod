@@ -28,8 +28,11 @@ import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.EntityRender
 import com.peasenet.util.listeners.EntityRenderListener
+import com.peasenet.util.math.MathUtils
 import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.mob.MobEntity
+import net.minecraft.util.math.Box
+import net.minecraft.util.math.MathHelper
 
 /**
  * @author gt3ch1
@@ -60,12 +63,17 @@ class ModMobEsp : EspMod(
     }
 
     override fun onEntityRender(er: EntityRender) {
-        val box = er.entity.boundingBox 
+        var box = er.entity.boundingBox
 //        box.union(box.offset(deltaMinX, deltaMinY, deltaMinZ)).union(box.offset(deltaMaxX, deltaMaxY, deltaMaxZ))
         if (er.entity !is MobEntity) return
         if (er.buffer == null) return
         val color = if (er.entityType.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
-        if (config.mobIsShown(er.entityType))
+        if (config.mobIsShown(er.entityType)) {
+            val x = MathHelper.lerp(er.delta, er.entity.lastRenderX.toFloat(), er.entity.x.toFloat()) - er.entity.x
+            val y = MathHelper.lerp(er.delta, er.entity.lastRenderY.toFloat(), er.entity.y.toFloat()) - er.entity.y
+            val z = MathHelper.lerp(er.delta, er.entity.lastRenderZ.toFloat(), er.entity.z.toFloat()) - er.entity.z
+            box = Box(x + box.minX, y + box.minY, z + box.minZ, x + box.maxX, y + box.maxY, z + box.maxZ)
             RenderUtils.drawBox(er.stack, er.buffer, box, color, config.alpha)
+        }
     }
 }
