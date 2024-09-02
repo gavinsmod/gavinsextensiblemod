@@ -35,9 +35,12 @@ import net.minecraft.util.math.Box
 import net.minecraft.util.math.MathHelper
 
 /**
- * @author gt3ch1
- * @version 04-01-2023
  * A mod that allows the client to see boxes around mobs.
+ * @author gt3ch1
+ * @version 09-02-2024
+ * @since 04-01-2023
+ * @see EntityRenderListener
+ * @see EspMod
  */
 class ModMobEsp : EspMod(
     "Mob ESP",
