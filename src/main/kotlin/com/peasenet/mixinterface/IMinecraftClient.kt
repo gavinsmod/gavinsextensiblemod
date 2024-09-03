@@ -30,6 +30,7 @@ import net.minecraft.client.network.ClientPlayerInteractionManager
 import net.minecraft.client.network.message.MessageHandler
 import net.minecraft.client.option.GameOptions
 import net.minecraft.client.render.WorldRenderer
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher
 import net.minecraft.client.render.entity.EntityRenderDispatcher
 import net.minecraft.client.util.Window
 import net.minecraft.client.world.ClientWorld
@@ -134,6 +135,8 @@ interface IMinecraftClient {
      * @return The entity render dispatcher.
      */
     val entityRenderDispatcher: EntityRenderDispatcher
+
+    val blockEntityRenderDispatcher: BlockEntityRenderDispatcher
 
     /**
      * Gets the message handler.

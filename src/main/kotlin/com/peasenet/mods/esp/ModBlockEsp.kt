@@ -24,6 +24,7 @@
 
 package com.peasenet.mods.esp
 
+import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.config.BlockEspConfig
 import com.peasenet.gui.mod.esp.GuiBlockEsp
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
@@ -32,11 +33,17 @@ import com.peasenet.mods.commons.BlockEspTracerCommon
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.ChunkUpdateListener
+import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
+import net.minecraft.client.gl.VertexBuffer
 import net.minecraft.client.render.BufferBuilder
+import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.util.math.Box
+import net.minecraft.util.math.Vec3d
+import net.minecraft.util.math.Vec3i
+import org.lwjgl.opengl.GL11
 
 /**
  * An ESP mod that draws boxes around user selected blocks in the world.
@@ -47,29 +54,48 @@ import net.minecraft.util.math.Box
  * @see EspMod
  *
  */
-class ModBlockEsp : BlockEspTracerCommon<BlockEspConfig>("Block ESP",
+class ModBlockEsp : BlockEspTracerCommon<BlockEspConfig>(
+    "Block ESP",
     "gavinsmod.mod.esp.blockesp",
     "blockesp",
     ModCategory.ESP,
-    { minecraftClient.setScreen(GuiBlockEsp()) }) {
+    { minecraftClient.setScreen(GuiBlockEsp()) }), RenderListener {
+
+    override fun onEnable() {
+        super.onEnable()
+        em.subscribe(RenderListener::class.java, this)
+    }
 
     override fun onWorldRender(level: ClientWorld, stack: MatrixStack, bufferBuilder: BufferBuilder, delta: Float) {
         synchronized(chunks) {
-            for (chunk in chunks.values.filter { it.inRenderDistance() }) {
-                for (block in chunk.blocks.values) {
-                    val box = Box(
-                        block.x.toDouble(),
-                        block.y.toDouble(),
-                        block.z.toDouble(),
-                        block.x + 1.0,
-                        block.y + 1.0,
-                        block.z + 1.0
-                    )
-                    RenderUtils.drawBox(stack, bufferBuilder, box, getSettings().blockColor, getSettings().alpha)
-                }
-            }
-            // clear out all chunks that are not in render distance
             chunks.entries.removeIf { !it.value.inRenderDistance() }
         }
     }
+
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+        RenderUtils.setupRender(matrixStack)
+        synchronized(chunks) {
+            for (chunk in chunks.values.filter { it.inRenderDistance() }) {
+                for (block in chunk.blocks.values) {
+                    matrixStack.push()
+                    val pos = Vec3i(block.x, block.y, block.z).subtract(RenderUtils.getCameraRegionPos().toVec3i())
+                    val box = Box(
+                        pos.x.toDouble(),
+                        pos.y.toDouble(),
+                        pos.z.toDouble(),
+                        pos.x + 1.0,
+                        pos.y + 1.0,
+                        pos.z + 1.0
+                    )
+                    RenderUtils.drawOutlinedBox(
+                        box, vertexBuffer!!, matrixStack, getSettings().blockColor, getSettings().alpha
+                    )
+                    matrixStack.pop()
+                }
+            }
+        }
+        RenderUtils.cleanupRender(matrixStack)
+    }
+
+
 }

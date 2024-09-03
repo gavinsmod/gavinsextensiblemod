@@ -26,12 +26,15 @@ package com.peasenet.mods.esp
 import com.peasenet.config.EspConfig
 import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
+import com.peasenet.util.GavChunk
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.listeners.BlockEntityRenderListener
+import com.peasenet.util.listeners.RenderListener
 import net.minecraft.block.entity.ChestBlockEntity
 import net.minecraft.block.entity.EnderChestBlockEntity
 import net.minecraft.block.entity.ShulkerBoxBlockEntity
+import net.minecraft.client.MinecraftClient
 import net.minecraft.util.math.Box
 
 /**
@@ -43,7 +46,7 @@ class ModChestEsp : EspMod(
     "Chest ESP",
     "gavinsmod.mod.esp.chest",
     "chestesp"
-), BlockEntityRenderListener {
+), RenderListener {
     init {
         val colorSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.esp.chest.color")
@@ -57,12 +60,19 @@ class ModChestEsp : EspMod(
 
     override fun onEnable() {
         super.onEnable()
-        em.subscribe(BlockEntityRenderListener::class.java, this)
+        em.subscribe(RenderListener::class.java, this)
     }
 
     override fun onDisable() {
         super.onDisable()
-        em.unsubscribe(BlockEntityRenderListener::class.java, this)
+        em.unsubscribe(RenderListener::class.java, this)
+    }
+
+
+    override fun onTick() {
+        super.onTick()
+        entityList.clear()
+        var level = MinecraftClient.getInstance().world
     }
 
     override fun onRenderBlockEntity(er: BlockEntityRender) {

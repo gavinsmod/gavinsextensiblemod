@@ -25,6 +25,7 @@ package com.peasenet.util
 
 import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.gavui.color.Color
+import com.peasenet.gavui.color.Colors
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Mods
@@ -34,6 +35,8 @@ import com.peasenet.util.event.*
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.minecraft.block.Blocks
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gl.ShaderProgram
+import net.minecraft.client.gl.VertexBuffer
 import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.client.render.*
 import net.minecraft.client.util.math.MatrixStack
@@ -46,6 +49,8 @@ import net.minecraft.world.chunk.Chunk
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL11
 import java.util.function.Consumer
+import net.minecraft.client.render.BuiltBuffer
+
 
 /**
  * @author gt3ch1
@@ -56,7 +61,7 @@ object RenderUtils {
     /**
      * How many chunks away to render things.
      */
-    private var CHUNK_RADIUS = GavinsModClient.minecraftClient.options.viewDistance.value
+    public var CHUNK_RADIUS = GavinsModClient.minecraftClient.options.viewDistance.value
 
     /**
      * The last player configured gamma.
@@ -455,5 +460,108 @@ object RenderUtils {
             }
         }
         return chunks
+    }
+
+    fun getCameraPos(): Vec3d {
+        val camera = GavinsModClient.minecraftClient.blockEntityRenderDispatcher.camera
+        return camera.pos
+    }
+
+    fun getCameraBlockPos(): BlockPos {
+        val camera = GavinsModClient.minecraftClient.entityRenderDispatcher.camera
+        return camera.blockPos
+    }
+
+    fun getCameraRegionPos(): RegionPos {
+        return RegionPos.fromBlockPos(getCameraBlockPos())
+    }
+
+    fun applyRegionalRenderOffset(stack: MatrixStack, region: RegionPos) {
+        val offset = region.toVec3d().subtract(getCameraPos())
+        stack.translate(offset.x, offset.y, offset.z)
+    }
+
+    fun drawOutlinedBox(bb: Box, vertexBuffer: VertexBuffer, color: Color = Colors.WHITE, alpha: Float = 1f) {
+        var tessellator = RenderSystem.renderThreadTesselator()
+        var bufferBuilder = tessellator
+            .begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION);
+        drawOutlinedBox(bb, bufferBuilder, color, alpha)
+        val buffer = bufferBuilder.end()
+
+        vertexBuffer.bind()
+        vertexBuffer.upload(buffer)
+        VertexBuffer.unbind()
+    }
+
+    fun drawOutlinedBox(
+        bb: Box,
+        vertexBuffer: VertexBuffer,
+        matrixStack: MatrixStack,
+        color: Color = Colors.WHITE,
+        alpha: Float = 1f
+    ) {
+        val viewMatrix = matrixStack.peek().positionMatrix
+        val projMatrix = RenderSystem.getProjectionMatrix()
+        val shader: ShaderProgram? = RenderSystem.getShader()
+
+        drawOutlinedBox(bb, vertexBuffer)
+        RenderSystem.setShaderColor(color.red, color.green, color.blue, alpha)
+        vertexBuffer.bind()
+        vertexBuffer.draw(viewMatrix, projMatrix, shader)
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
+        VertexBuffer.unbind()
+
+    }
+
+    fun drawOutlinedBox(bb: Box, buffer: BufferBuilder, color: Color = Colors.WHITE, alpha: Float = 1f) {
+        RenderSystem.setShaderColor(color.red, color.green, color.blue, alpha)
+        val minX = bb.minX.toFloat()
+        val minY = bb.minY.toFloat()
+        val minZ = bb.minZ.toFloat()
+        val maxX = bb.maxX.toFloat()
+        val maxY = bb.maxY.toFloat()
+        val maxZ = bb.maxZ.toFloat()
+        buffer.vertex(minX, minY, minZ)
+        buffer.vertex(maxX, minY, minZ)
+        buffer.vertex(maxX, minY, minZ)
+        buffer.vertex(maxX, minY, maxZ)
+        buffer.vertex(maxX, minY, maxZ)
+        buffer.vertex(minX, minY, maxZ)
+        buffer.vertex(minX, minY, maxZ)
+        buffer.vertex(minX, minY, minZ)
+        buffer.vertex(minX, minY, minZ)
+        buffer.vertex(minX, maxY, minZ)
+        buffer.vertex(maxX, minY, minZ)
+        buffer.vertex(maxX, maxY, minZ)
+        buffer.vertex(maxX, minY, maxZ)
+        buffer.vertex(maxX, maxY, maxZ)
+        buffer.vertex(minX, minY, maxZ)
+        buffer.vertex(minX, maxY, maxZ)
+        buffer.vertex(minX, maxY, minZ)
+        buffer.vertex(maxX, maxY, minZ)
+        buffer.vertex(maxX, maxY, minZ)
+        buffer.vertex(maxX, maxY, maxZ)
+        buffer.vertex(maxX, maxY, maxZ)
+        buffer.vertex(minX, maxY, maxZ)
+        buffer.vertex(minX, maxY, maxZ)
+        buffer.vertex(minX, maxY, minZ)
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
+    }
+
+    fun cleanupRender(matrixStack: MatrixStack) {
+        matrixStack.pop()
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glDisable(GL11.GL_BLEND);
+    }
+
+    fun setupRender(matrixStack: MatrixStack) {
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        matrixStack.push()
+        val region = getCameraRegionPos()
+        applyRegionalRenderOffset(matrixStack, region);
+        RenderSystem.setShader(GameRenderer::getPositionProgram);
     }
 }

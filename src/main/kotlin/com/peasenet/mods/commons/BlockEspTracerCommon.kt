@@ -36,6 +36,7 @@ import com.peasenet.main.GavinsModClient.Companion.minecraftClient
 import com.peasenet.main.Settings
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
+import com.peasenet.mods.esp.EspMod
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.GavBlock
 import com.peasenet.util.GavChunk
@@ -46,6 +47,8 @@ import com.peasenet.util.executor.GemExecutor
 import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.WorldRenderListener
+import net.minecraft.client.gl.VertexBuffer
+import net.minecraft.util.math.Box
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.chunk.Chunk
 import org.lwjgl.glfw.GLFW
@@ -58,15 +61,13 @@ abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
     onMenuOpen: () -> Unit = {},
     keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN,
 ) : Mod(
-    name,
-    translationKey,
-    chatCommand,
-    category,
-    keyBinding
+    name, translationKey, chatCommand, category, keyBinding
 ), BlockUpdateListener, WorldRenderListener, ChunkUpdateListener {
     fun getSettings(): T {
         return Settings.getConfig(chatCommand)
     }
+
+    protected var vertexBuffer: VertexBuffer? = null
 
 
     init {
@@ -102,6 +103,9 @@ abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
         em.subscribe(BlockUpdateListener::class.java, this)
         em.subscribe(WorldRenderListener::class.java, this)
         em.subscribe(ChunkUpdateListener::class.java, this)
+        vertexBuffer = VertexBuffer(VertexBuffer.Usage.STATIC)
+        val box = Box(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5)
+        RenderUtils.drawOutlinedBox(box, vertexBuffer!!)
         // search for chunks within render distance
         RenderUtils.getVisibleChunks().forEach(this::searchChunk)
     }
@@ -125,8 +129,7 @@ abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
      */
     private fun searchChunk(chunk: Chunk) {
         GemExecutor.execute {
-            val searchedChunk =
-                GavChunk.search(chunk, Settings.getConfig<BlockEspConfig>("blockesp").blocks.toList())
+            val searchedChunk = GavChunk.search(chunk, Settings.getConfig<BlockEspConfig>("blockesp").blocks.toList())
             if (searchedChunk.blocks.isNotEmpty()) {
                 synchronized(chunks) {
                     chunks[chunk.pos.toLong()] = searchedChunk
@@ -165,10 +168,8 @@ abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
                     GavinsMod.LOGGER.debug("(onBlockUpdate) Added chunk: $key")
                     espChunk = chunk
                 }
-                if (added)
-                    espChunk.blocks[_block.key] = _block
-                else
-                    espChunk.blocks.remove(_block.key)
+                if (added) espChunk.blocks[_block.key] = _block
+                else espChunk.blocks.remove(_block.key)
             }
         }
     }

@@ -24,10 +24,15 @@
 
 package com.peasenet.mixins;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import com.peasenet.util.event.CameraHurtEvent;
 import com.peasenet.util.event.EventManager;
+import com.peasenet.util.event.RenderEvent;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.math.MatrixStack;
+import org.joml.Matrix4f;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -41,5 +46,20 @@ public class MixinGameRenderer {
         EventManager.getEventManager().call(event);
         if (event.isCancelled())
             ci.cancel();
+    }
+
+    @Inject(at = @At(value = "FIELD",
+            target = "Lnet/minecraft/client/render/GameRenderer;renderHand:Z",
+            opcode = Opcodes.GETFIELD,
+            ordinal = 0),
+            method = "renderWorld")
+    public void handleRender(RenderTickCounter tickCounter,
+                             CallbackInfo ci, @Local(ordinal = 1) Matrix4f matrix4f2,
+                             @Local(ordinal = 1) float tickDelta) {
+        var matrixStack = new MatrixStack();
+        matrixStack.multiplyPositionMatrix(matrix4f2);
+        var renderEvent = RenderEvent.Companion.get(matrixStack, tickDelta);
+        // enable line
+        EventManager.getEventManager().call(renderEvent);
     }
 }

@@ -34,6 +34,7 @@ import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.network.message.MessageHandler;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
@@ -125,6 +126,10 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Shadow
     private EntityRenderDispatcher entityRenderDispatcher;
 
+    @Final
+    @Shadow
+    private BlockEntityRenderDispatcher blockEntityRenderDispatcher;
+
     /**
      * The current cool down from using an item.
      */
@@ -140,6 +145,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     /**
      * Mixin for whether ambient occlusion is enabled.
+     *
      * @param ci - ignored
      */
     @Inject(at = @At(value = "HEAD"), method = "isAmbientOcclusionEnabled()Z", cancellable = true)
@@ -157,6 +163,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     /**
      * Sets the current item use cooldown.
+     *
      * @param cooldown - the new cooldown
      */
     @Override
@@ -166,6 +173,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     /**
      * Gets the current FPS.
+     *
      * @return - the current FPS
      */
     @Override
@@ -176,6 +184,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     /**
      * Gets the GameOptions
+     *
      * @return GameOptions
      */
     @Override
@@ -185,6 +194,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     /**
      * Gets the player interaction manager.
+     *
      * @return the player interaction manager
      */
     @Override
@@ -194,6 +204,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     /**
      * Gets the text renderer.
+     *
      * @return - the text renderer
      */
     @Override
@@ -203,6 +214,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     /**
      * Gets the world.
+     *
      * @return - the world
      */
     @Override
@@ -212,6 +224,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     /**
      * Sets the screen.
+     *
      * @param s - the screen to set
      */
     @Shadow
@@ -219,6 +232,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     /**
      * Gets the renderer for the world.
+     *
      * @return the world renderer
      */
     @Override
@@ -228,6 +242,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     /**
      * Sets whether chunk culling is enabled.
+     *
      * @param b - whether chunk culling is enabled
      */
     @Override
@@ -237,6 +252,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     /**
      * Gets the game window.
+     *
      * @return the window
      */
     @Override
@@ -246,6 +262,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     /**
      * Gets the run directory of the game.
+     *
      * @return the run directory
      */
     @Override
@@ -255,6 +272,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     /**
      * Gets the current crosshair target.
+     *
      * @return the crosshair target
      */
     @Override
@@ -264,6 +282,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     /**
      * Gets the entity render dispatcher.
+     *
      * @return the entity render dispatcher
      */
     @Override
@@ -271,8 +290,14 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
         return entityRenderDispatcher;
     }
 
+    @Override
+    public BlockEntityRenderDispatcher getBlockEntityRenderDispatcher() {
+        return blockEntityRenderDispatcher;
+    }
+
     /**
      * Gets the current player.
+     *
      * @return the player
      */
     @Override

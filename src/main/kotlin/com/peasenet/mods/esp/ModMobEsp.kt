@@ -23,19 +23,30 @@
  */
 package com.peasenet.mods.esp
 
+import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.gui.mod.esp.GuiMobEsp
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.EntityRender
 import com.peasenet.util.listeners.EntityRenderListener
-import com.peasenet.util.math.MathUtils
+import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.MinecraftClient
-import net.minecraft.entity.mob.MobEntity
+import net.minecraft.client.gl.ShaderProgram
+import net.minecraft.client.gl.VertexBuffer
+import net.minecraft.client.render.GameRenderer
+import net.minecraft.client.render.VertexFormat
+import net.minecraft.client.render.VertexFormats
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.entity.Entity
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.MathHelper
+import net.minecraft.util.math.Vec3d
+import org.lwjgl.opengl.GL11
+
 
 /**
- * A mod that allows the client to see boxes around mobs.
+ * A mod that allows the client to see boxes around entityList.
  * @author gt3ch1
  * @version 09-02-2024
  * @since 04-01-2023
@@ -46,7 +57,9 @@ class ModMobEsp : EspMod(
     "Mob ESP",
     "gavinsmod.mod.esp.mob",
     "mobesp"
-), EntityRenderListener {
+), RenderListener {
+
+
     init {
         val menu = SettingBuilder()
             .setTitle("gavinsmod.settings.mobesp")
@@ -57,26 +70,51 @@ class ModMobEsp : EspMod(
 
     override fun onEnable() {
         super.onEnable()
-        em.subscribe(EntityRenderListener::class.java, this)
+        em.subscribe(RenderListener::class.java, this)
+
     }
 
     override fun onDisable() {
         super.onDisable()
-        em.unsubscribe(EntityRenderListener::class.java, this)
+        em.unsubscribe(RenderListener::class.java, this)
     }
 
-    override fun onEntityRender(er: EntityRender) {
-        var box = er.entity.boundingBox
-//        box.union(box.offset(deltaMinX, deltaMinY, deltaMinZ)).union(box.offset(deltaMaxX, deltaMaxY, deltaMaxZ))
-        if (er.entity !is MobEntity) return
-        if (er.buffer == null) return
-        val color = if (er.entityType.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
-        if (config.mobIsShown(er.entityType)) {
-            val x = MathHelper.lerp(er.delta, er.entity.lastRenderX.toFloat(), er.entity.x.toFloat()) - er.entity.x
-            val y = MathHelper.lerp(er.delta, er.entity.lastRenderY.toFloat(), er.entity.y.toFloat()) - er.entity.y
-            val z = MathHelper.lerp(er.delta, er.entity.lastRenderZ.toFloat(), er.entity.z.toFloat()) - er.entity.z
-            box = Box(x + box.minX, y + box.minY, z + box.minZ, x + box.maxX, y + box.maxY, z + box.maxZ)
-            RenderUtils.drawBox(er.stack, er.buffer, box, color, config.alpha)
+    override fun onTick() {
+        super.onTick()
+        entityList.clear()
+        entityList.addAll(client.getWorld().entities
+            .filter { e -> e.isLiving }
+            .filter { e -> e !is PlayerEntity }
+            .filter { e -> !e.isRemoved }
+            .filter { e -> config.mobIsShown(e.type) }
+        )
+    }
+
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+        if (entityList.isEmpty())
+            return;
+        RenderUtils.setupRender(matrixStack)
+
+        entityList.forEach { e ->
+            matrixStack.push()
+            val box = e.boundingBox
+            val x = MathHelper.lerp(partialTicks, e.lastRenderX.toFloat(), e.x.toFloat()) - e.x
+            val y = MathHelper.lerp(partialTicks, e.lastRenderY.toFloat(), e.y.toFloat()) - e.y
+            val z = MathHelper.lerp(partialTicks, e.lastRenderZ.toFloat(), e.z.toFloat()) - e.z
+
+            val lerpedPos = Vec3d(x, y, z).subtract(RenderUtils.getCameraRegionPos().toVec3d())
+            matrixStack.translate(lerpedPos.x, lerpedPos.y, lerpedPos.z)
+            val color = if (e.type.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
+            val box2 = Box(x + box.minX, y + box.minY, z + box.minZ, x + box.maxX, y + box.maxY, z + box.maxZ)
+            RenderUtils.drawOutlinedBox(
+                box2,
+                vertexBuffer!!,
+                matrixStack,
+                color,
+                config.alpha
+            )
+            matrixStack.pop()
         }
+        RenderUtils.cleanupRender(matrixStack)
     }
 }

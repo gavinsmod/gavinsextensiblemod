@@ -29,10 +29,16 @@ import com.peasenet.config.TracerConfig
 import com.peasenet.main.Settings
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
+import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.event.data.EntityRender
 import com.peasenet.util.listeners.BlockEntityRenderListener
 import com.peasenet.util.listeners.EntityRenderListener
+import com.peasenet.util.listeners.RenderListener
+import net.minecraft.client.gl.VertexBuffer
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.entity.Entity
+import net.minecraft.util.math.Box
 import org.lwjgl.glfw.GLFW
 
 /**
@@ -51,20 +57,17 @@ import org.lwjgl.glfw.GLFW
  * @see Mod
  *
  * @author GT3CH1
- * @version 07-18-2023
+ * @version 09-03-2024
+ * @since 07-18-2023
  */
 open class EspMod(
-    name: String,
-    translationKey: String,
-    chatCommand: String,
-    keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN
+    name: String, translationKey: String, chatCommand: String, keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN
 ) : Mod(
-    name,
-    translationKey,
-    chatCommand,
-    ModCategory.ESP,
-    keyBinding
-), BlockEntityRenderListener, EntityRenderListener {
+    name, translationKey, chatCommand, ModCategory.ESP, keyBinding
+), BlockEntityRenderListener, EntityRenderListener, RenderListener {
+    protected var entityList: MutableList<Entity> = ArrayList()
+    protected var vertexBuffer: VertexBuffer? = null
+
     override fun onEntityRender(er: EntityRender) {}
     override fun onRenderBlockEntity(er: BlockEntityRender) {}
 
@@ -73,5 +76,20 @@ open class EspMod(
             get() {
                 return Settings.getConfig("esp")
             }
+    }
+
+    override fun onEnable() {
+        super.onEnable()
+        vertexBuffer = VertexBuffer(VertexBuffer.Usage.STATIC)
+        val bb = Box(-0.5, 0.0, -0.5, 0.5, 1.0, 0.5)
+        RenderUtils.drawOutlinedBox(bb, vertexBuffer!!)
+    }
+
+    override fun onDisable() {
+        super.onDisable()
+        vertexBuffer?.close()
+    }
+
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
     }
 }

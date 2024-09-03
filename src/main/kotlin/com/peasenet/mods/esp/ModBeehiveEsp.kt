@@ -36,7 +36,9 @@ import net.minecraft.util.math.Box
  * @author gt3ch1
  * @version 03-02-2023
  * A mod that allows the client to see an esp (a box) around beehives.
+ *
  */
+@Deprecated("This class is deprecated and will be removed in a future release.")
 class ModBeehiveEsp : EspMod(
     "Beehive ESP",
     "gavinsmod.mod.esp.beehive",
