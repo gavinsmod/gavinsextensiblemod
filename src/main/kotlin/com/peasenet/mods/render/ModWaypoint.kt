@@ -125,13 +125,13 @@ class ModWaypoint : RenderMod(
         }.forEach { w: Waypoint ->
             val aabb = Box(BlockPos(w.x, w.y, w.z))
             val boxPos = aabb.center
-            if (w.isTracerEnabled) RenderUtils.renderSingleLine(
-                er.stack,
-                er.buffer!!,
-                er.playerPos!!,
-                boxPos,
-                w.color!!
-            )
+//            if (w.isTracerEnabled) RenderUtils.renderSingleLine(
+//                er.stack,
+//                er.buffer!!,
+//                er.playerPos!!,
+//                boxPos,
+//                w.color!!
+//            )
             if (w.isEspEnabled) RenderUtils.drawBox(er.stack, er.buffer, aabb, w.color!!)
         }
     }

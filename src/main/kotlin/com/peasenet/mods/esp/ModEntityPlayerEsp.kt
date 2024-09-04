@@ -36,7 +36,7 @@ import net.minecraft.entity.player.PlayerEntity
  * @version 03-02-2023
  * A mod that allows the player to see an ESP to other players.
  */
-class ModEntityPlayerEsp : EspMod(
+class ModEntityPlayerEsp : EspMod<PlayerEntity>(
     "Player ESP",
     "gavinsmod.mod.esp.player",
     "playeresp"

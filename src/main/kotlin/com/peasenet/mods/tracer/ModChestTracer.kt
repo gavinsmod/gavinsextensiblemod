@@ -23,56 +23,97 @@
  */
 package com.peasenet.mods.tracer
 
+import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.config.TracerConfig
 import com.peasenet.main.Settings
+import com.peasenet.mods.tracer.TracerMod.Companion
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.event.data.EntityRender
+import com.peasenet.util.listeners.RenderListener
+import net.minecraft.block.entity.BeehiveBlockEntity
+import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.ChestBlockEntity
 import net.minecraft.block.entity.EnderChestBlockEntity
 import net.minecraft.block.entity.ShulkerBoxBlockEntity
+import net.minecraft.client.render.BufferRenderer
+import net.minecraft.client.render.GameRenderer
+import net.minecraft.client.render.VertexFormat
+import net.minecraft.client.render.VertexFormats
+import net.minecraft.client.util.math.MatrixStack
 
 /**
  * @author gt3ch1
  * @version 04-11-2023
  * A mod that allows the player to see tracers towards chests.
  */
-class ModChestTracer : TracerMod(
+class ModChestTracer : TracerMod<BlockEntity>(
     "Chest Tracer",
     "gavinsmod.mod.tracer.chest",
     "chesttracer",
-) {
+), RenderListener {
     init {
-        val colorSetting = SettingBuilder()
-            .setTitle("gavinsmod.settings.tracer.chest.color")
-            .setColor(config.chestColor)
-            .buildColorSetting()
+        val colorSetting =
+            SettingBuilder().setTitle("gavinsmod.settings.tracer.chest.color").setColor(config.chestColor)
+                .buildColorSetting()
         colorSetting.setCallback { config.chestColor = colorSetting.color }
         addSetting(colorSetting)
     }
 
-    override fun onRenderBlockEntity(er: BlockEntityRender) {
-        if (er.buffer == null) return
-        if (er.entity is ChestBlockEntity || er.entity is ShulkerBoxBlockEntity
-            || er.entity is EnderChestBlockEntity
-        ) RenderUtils.renderSingleLine(
-            er.stack!!,
-            er.buffer!!,
-            er.playerPos!!,
-            er.center!!,
-            config.chestColor,
-            config.alpha
-        )
-    }
-
-    override fun onEntityRender(er: EntityRender) {
-
-    }
     companion object {
         private val config: TracerConfig
-        get() {
-            return Settings.getConfig("tracer")
+            get() {
+                return Settings.getConfig("tracer")
+            }
+    }
+
+    override fun onEnable() {
+        super.onEnable()
+        em.subscribe(RenderListener::class.java, this)
+    }
+
+    override fun onDisable() {
+        super.onDisable()
+        em.unsubscribe(RenderListener::class.java, this)
+    }
+
+    override fun onTick() {
+        super.onTick()
+        entityList.clear()
+        val level = client.getWorld()
+        for (x in -RenderUtils.CHUNK_RADIUS..RenderUtils.CHUNK_RADIUS) {
+            for (z in -RenderUtils.CHUNK_RADIUS..RenderUtils.CHUNK_RADIUS) {
+                val chunk = level.getChunk(x + client.getPlayer().chunkPos.x, z + client.getPlayer().chunkPos.z)
+                for ((_, blockEntity) in chunk.blockEntities) {
+                    if (blockEntity is ChestBlockEntity || blockEntity is EnderChestBlockEntity || blockEntity is ShulkerBoxBlockEntity) {
+                        entityList.add(blockEntity)
+                    }
+                }
+            }
         }
+    }
+
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+        if (entityList.isEmpty()) return
+        RenderUtils.setupRender(matrixStack)
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
+        RenderSystem.applyModelViewMatrix()
+        val region = RenderUtils.getCameraRegionPos()
+        val entry = matrixStack.peek().positionMatrix
+        val tessellator = RenderSystem.renderThreadTesselator()
+        var bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+        val regionVec = region.toVec3d();
+        val start = RenderUtils.getLookVec(partialTicks).add(RenderUtils.getCameraPos()).subtract(regionVec);
+        for (e in entityList) {
+            val entityPos = e.pos.subtract(region.toVec3i()).toCenterPos()
+            RenderUtils.drawSingleLine(
+                bufferBuilder, entry, start, entityPos, config.chestColor, config.alpha
+            )
+        }
+        val end = bufferBuilder.end()
+        BufferRenderer.drawWithGlobalProgram(end)
+        RenderUtils.cleanupRender(matrixStack)
     }
 }

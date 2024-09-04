@@ -110,7 +110,7 @@ class ModFreeCam : MiscMod(
         val camera = MinecraftClient.getInstance().gameRenderer.camera
         val playerPos = PlayerUtils.getNewPlayerPosition(delta, camera)
         val aabb = fake!!.boundingBox
-        RenderUtils.renderSingleLine(stack, bufferBuilder, playerPos, aabb.center, Settings.getConfig<TracerConfig>("tracer").playerColor)
+//        RenderUtils.renderSingleLine(stack, bufferBuilder, playerPos, aabb.center, Settings.getConfig<TracerConfig>("tracer").playerColor)
         RenderUtils.drawBox(stack, bufferBuilder, aabb, Settings.getConfig<EspConfig>("esp").playerColor)
     }
 

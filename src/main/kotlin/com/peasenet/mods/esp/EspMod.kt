@@ -60,12 +60,13 @@ import org.lwjgl.glfw.GLFW
  * @version 09-03-2024
  * @since 07-18-2023
  */
-open class EspMod(
+open class EspMod<T>(
     name: String, translationKey: String, chatCommand: String, keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN
 ) : Mod(
     name, translationKey, chatCommand, ModCategory.ESP, keyBinding
 ), BlockEntityRenderListener, EntityRenderListener, RenderListener {
-    protected var entityList: MutableList<Entity> = ArrayList()
+    protected var entityList: MutableList<T> = ArrayList()
+
     protected var vertexBuffer: VertexBuffer? = null
 
     override fun onEntityRender(er: EntityRender) {}

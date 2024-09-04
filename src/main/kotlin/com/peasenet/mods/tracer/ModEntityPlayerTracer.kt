@@ -29,6 +29,7 @@ import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.event.data.EntityRender
+import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.player.PlayerEntity
 
 /**
@@ -36,7 +37,7 @@ import net.minecraft.entity.player.PlayerEntity
  * @version 04-11-2023
  * A mod that allows the player to see a tracer to other players.
  */
-class ModEntityPlayerTracer : TracerMod(
+class ModEntityPlayerTracer : TracerMod<PlayerEntity>(
     "Player Tracers",
     "gavinsmod.mod.tracer.player",
     "playertracer"
@@ -50,26 +51,29 @@ class ModEntityPlayerTracer : TracerMod(
         addSetting(colorSetting)
     }
 
-    override fun onEntityRender(er: EntityRender) {
-        if (er.buffer == null) return
-        if (er.entity !is PlayerEntity) return
-        RenderUtils.renderSingleLine(
-            er.stack,
-            er.buffer!!,
-            er.playerPos!!,
-            er.center!!,
-            config.playerColor,
-            config.alpha
-        )
-    }
-
-    override fun onRenderBlockEntity(er: BlockEntityRender) {
-
-    }
+//    override fun onEntityRender(er: EntityRender) {
+//        if (er.buffer == null) return
+//        if (er.entity !is PlayerEntity) return
+//        RenderUtils.renderSingleLine(
+//            er.stack,
+//            er.buffer!!,
+//            er.playerPos!!,
+//            er.center!!,
+//            config.playerColor,
+//            config.alpha
+//        )
+//    }
+//
+//    override fun onRenderBlockEntity(er: BlockEntityRender) {
+//
+//    }
     companion object {
         private val config: TracerConfig
         get() {
             return Settings.getConfig<TracerConfig>("tracer")
         }
+    }
+
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
     }
 }

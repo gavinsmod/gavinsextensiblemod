@@ -29,6 +29,7 @@ import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.listeners.BlockEntityRenderListener
+import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.FurnaceBlockEntity
 import net.minecraft.util.math.Box
 
@@ -37,7 +38,8 @@ import net.minecraft.util.math.Box
  * @version 04-11-2023
  * A mod that allows the client to see an esp (a box) around furnaces.
  */
-class ModFurnaceEsp : EspMod(
+@Deprecated("This class is deprecated and will be removed in a future release.")
+class ModFurnaceEsp : EspMod<BlockEntity>(
     "Furnace ESP",
     "gavinsmod.mod.esp.furnace",
     "furnaceesp"

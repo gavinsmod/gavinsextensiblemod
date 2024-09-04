@@ -30,6 +30,7 @@ import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.listeners.BlockEntityRenderListener
 import net.minecraft.block.entity.BeehiveBlockEntity
+import net.minecraft.block.entity.BlockEntity
 import net.minecraft.util.math.Box
 
 /**
@@ -39,7 +40,7 @@ import net.minecraft.util.math.Box
  *
  */
 @Deprecated("This class is deprecated and will be removed in a future release.")
-class ModBeehiveEsp : EspMod(
+class ModBeehiveEsp : EspMod<BlockEntity>(
     "Beehive ESP",
     "gavinsmod.mod.esp.beehive",
     "beehiveesp"

@@ -29,14 +29,16 @@ import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.event.data.EntityRender
+import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.FurnaceBlockEntity
+import net.minecraft.client.util.math.MatrixStack
 
 /**
  * @author gt3ch1
  * @version 04-11-2023
  * A mod that allows the player to see tracers towards furnaces.
  */
-class ModFurnaceTracer : TracerMod(
+class ModFurnaceTracer : TracerMod<BlockEntity>(
     "Furnace Tracer",
     "gavinsmod.mod.tracer.furnace",
     "furnacetracer"
@@ -50,20 +52,24 @@ class ModFurnaceTracer : TracerMod(
         addSetting(colorSetting)
     }
 
-    override fun onEntityRender(er: EntityRender) {
-
-    }
-
-    override fun onRenderBlockEntity(er: BlockEntityRender) {
-        if (er.entity is FurnaceBlockEntity) RenderUtils.renderSingleLine(
-            er.stack!!, er.buffer!!, er.playerPos!!, er.center!!, config.furnaceColor, config.alpha
-        )
-    }
+//    override fun onEntityRender(er: EntityRender) {
+//
+//    }
+//
+//    override fun onRenderBlockEntity(er: BlockEntityRender) {
+//        if (er.entity is FurnaceBlockEntity) RenderUtils.renderSingleLine(
+//            er.stack!!, er.buffer!!, er.playerPos!!, er.center!!, config.furnaceColor, config.alpha
+//        )
+//    }
 
     companion object {
         val config: TracerConfig
         get() {
             return Settings.getConfig<TracerConfig>("tracer")
         }
+    }
+
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+
     }
 }

@@ -31,6 +31,8 @@ import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.event.data.EntityRender
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.mob.MobEntity
 
 /**
@@ -38,7 +40,7 @@ import net.minecraft.entity.mob.MobEntity
  * @version 04-01-2023
  * A mod that allows the client to see lines, called tracers, towards mobs.
  */
-class ModMobTracer : TracerMod(
+class ModMobTracer : TracerMod<LivingEntity>(
     "Mob Tracer",
     "gavinsmod.mod.tracer.mob",
     "mobtracer"
@@ -51,31 +53,35 @@ class ModMobTracer : TracerMod(
         addSetting(menu)
     }
 
-    override fun onEntityRender(er: EntityRender) {
-        if (er.buffer == null) return
-        // check if entity is a mob
-        val entity = er.entity
-        val stack = er.stack
-        val buffer = er.buffer
-        val center = er.center
-        val playerPos = er.playerPos
-        if (entity !is MobEntity) return
-        val color =
-            if (er.entityType.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
-        if (config.mobIsShown(entity.type))
-            RenderUtils.renderSingleLine(
-                stack, buffer!!, playerPos!!, center!!, color, config.alpha
-            )
-    }
-
-
-    override fun onRenderBlockEntity(er: BlockEntityRender) {
-    }
+//    override fun onEntityRender(er: EntityRender) {
+//        if (er.buffer == null) return
+//        // check if entity is a mob
+//        val entity = er.entity
+//        val stack = er.stack
+//        val buffer = er.buffer
+//        val center = er.center
+//        val playerPos = er.playerPos
+//        if (entity !is MobEntity) return
+//        val color =
+//            if (er.entityType.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
+//        if (config.mobIsShown(entity.type))
+//            RenderUtils.renderSingleLine(
+//                stack, buffer!!, playerPos!!, center!!, color, config.alpha
+//            )
+//    }
+//
+//
+//    override fun onRenderBlockEntity(er: BlockEntityRender) {
+//    }
 
     companion object {
         val config: TracerConfig
             get() {
                 return Settings.getConfig<TracerConfig>("tracer")
             }
+    }
+
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+
     }
 }

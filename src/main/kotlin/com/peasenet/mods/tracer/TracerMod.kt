@@ -28,10 +28,15 @@ import com.peasenet.config.TracerConfig
 import com.peasenet.main.Settings
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
+import com.peasenet.util.RenderUtils
+import com.peasenet.util.event.RenderEvent
 import com.peasenet.util.event.data.CameraBob
 import com.peasenet.util.listeners.BlockEntityRenderListener
 import com.peasenet.util.listeners.CameraBobListener
 import com.peasenet.util.listeners.EntityRenderListener
+import com.peasenet.util.listeners.RenderListener
+import net.minecraft.client.gl.VertexBuffer
+import net.minecraft.util.math.Box
 import org.lwjgl.glfw.GLFW
 
 /**
@@ -56,7 +61,7 @@ import org.lwjgl.glfw.GLFW
  * @author GT3CH1
  * @version 07-18-2023
  */
-abstract class TracerMod(
+abstract class TracerMod<T>(
     name: String,
     translationKey: String,
     chatCommand: String,
@@ -67,19 +72,24 @@ abstract class TracerMod(
     chatCommand,
     ModCategory.TRACERS,
     keyBinding
-), EntityRenderListener, CameraBobListener, BlockEntityRenderListener {
+), CameraBobListener, RenderListener {
+    protected var entityList: MutableList<T> = ArrayList()
+    protected var vertexBuffer: VertexBuffer? = null
+
     override fun onEnable() {
         super.onEnable()
-        em.subscribe(BlockEntityRenderListener::class.java, this)
-        em.subscribe(EntityRenderListener::class.java, this)
         em.subscribe(CameraBobListener::class.java, this)
+        em.subscribe(RenderListener::class.java, this)
+        vertexBuffer = VertexBuffer(VertexBuffer.Usage.STATIC)
+        val bb = Box(-0.5, 0.0, -0.5, 0.5, 1.0, 0.5)
+        RenderUtils.drawOutlinedBox(bb, vertexBuffer!!)
     }
 
     override fun onDisable() {
         super.onDisable()
-        em.unsubscribe(BlockEntityRenderListener::class.java, this)
-        em.unsubscribe(EntityRenderListener::class.java, this)
         em.unsubscribe(CameraBobListener::class.java, this)
+        em.unsubscribe(RenderListener::class.java, this)
+        vertexBuffer?.close()
     }
 
     override fun onCameraViewBob(c: CameraBob) {
@@ -90,6 +100,6 @@ abstract class TracerMod(
         val config: TracerConfig
             get() {
                 return Settings.getConfig("tracer")
-        }
+            }
     }
 }

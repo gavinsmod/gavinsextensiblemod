@@ -24,7 +24,9 @@
 package com.peasenet.util.math
 
 import com.peasenet.main.GavinsModClient
+import com.peasenet.util.RegionPos
 import net.minecraft.entity.Entity
+import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Vec3d
 import kotlin.math.atan2
 import kotlin.math.sqrt
@@ -52,5 +54,16 @@ object MathUtils {
         val yaw = Math.toDegrees(atan2(diffZ, diffX)).toFloat() - 90f
         val pitch = -Math.toDegrees(atan2(diffY, diffXZ)).toFloat()
         return Rotation(pitch, yaw)
+    }
+
+    fun lerp(delta: Float, pos: Vec3d, oldPos: Vec3d, region: RegionPos): Vec3d {
+        return lerp(delta, pos, oldPos).subtract(region.toVec3d())
+    }
+
+    fun lerp(delta: Float, pos: Vec3d, oldPos: Vec3d): Vec3d {
+        val xLerped = MathHelper.lerp(delta.toDouble(), oldPos.x, pos.x)
+        val yLerped = MathHelper.lerp(delta.toDouble(), oldPos.y, pos.y)
+        val zLerped = MathHelper.lerp(delta.toDouble(), oldPos.z, pos.z)
+        return Vec3d(xLerped, yLerped, zLerped)
     }
 }

@@ -23,26 +23,19 @@
  */
 package com.peasenet.mods.esp
 
-import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.gui.mod.esp.GuiMobEsp
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
-import com.peasenet.util.event.data.EntityRender
 import com.peasenet.util.listeners.EntityRenderListener
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gl.ShaderProgram
-import net.minecraft.client.gl.VertexBuffer
-import net.minecraft.client.render.GameRenderer
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
+import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Vec3d
-import org.lwjgl.opengl.GL11
 
 
 /**
@@ -53,7 +46,8 @@ import org.lwjgl.opengl.GL11
  * @see EntityRenderListener
  * @see EspMod
  */
-class ModMobEsp : EspMod(
+class ModMobEsp : EspMod<Entity>(
+
     "Mob ESP",
     "gavinsmod.mod.esp.mob",
     "mobesp"
