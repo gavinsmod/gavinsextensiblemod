@@ -46,8 +46,12 @@ import com.peasenet.util.event.data.ChunkUpdate
 import com.peasenet.util.executor.GemExecutor
 import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.ChunkUpdateListener
+import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
 import net.minecraft.client.gl.VertexBuffer
+import net.minecraft.client.render.BufferBuilder
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.client.world.ClientWorld
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.chunk.Chunk
@@ -62,7 +66,7 @@ abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
     keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN,
 ) : Mod(
     name, translationKey, chatCommand, category, keyBinding
-), BlockUpdateListener, WorldRenderListener, ChunkUpdateListener {
+), BlockUpdateListener, WorldRenderListener, ChunkUpdateListener, RenderListener {
     fun getSettings(): T {
         return Settings.getConfig(chatCommand)
     }
@@ -103,6 +107,7 @@ abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
         em.subscribe(BlockUpdateListener::class.java, this)
         em.subscribe(WorldRenderListener::class.java, this)
         em.subscribe(ChunkUpdateListener::class.java, this)
+        em.subscribe(RenderListener::class.java, this)
         vertexBuffer = VertexBuffer(VertexBuffer.Usage.STATIC)
         val box = Box(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5)
         RenderUtils.drawOutlinedBox(box, vertexBuffer!!)
@@ -115,6 +120,7 @@ abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
         em.unsubscribe(BlockUpdateListener::class.java, this)
         em.unsubscribe(WorldRenderListener::class.java, this)
         em.unsubscribe(ChunkUpdateListener::class.java, this)
+        em.unsubscribe(RenderListener::class.java, this)
         chunks.clear()
     }
 
@@ -174,4 +180,9 @@ abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
         }
     }
 
+    override fun onWorldRender(level: ClientWorld, stack: MatrixStack, bufferBuilder: BufferBuilder, delta: Float) {
+        synchronized(chunks) {
+            chunks.entries.removeIf { !it.value.inRenderDistance() }
+        }
+    }
 }

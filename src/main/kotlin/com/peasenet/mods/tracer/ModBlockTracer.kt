@@ -38,12 +38,10 @@ import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.WorldRenderListener
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.render.BufferBuilder
-import net.minecraft.client.render.GameRenderer
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormats
+import net.minecraft.client.render.*
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.world.ClientWorld
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 
 /**
@@ -63,43 +61,36 @@ class ModBlockTracer : BlockEspTracerCommon<BlockTracerConfig>("Block Tracer",
     "blocktracer",
     ModCategory.TRACERS,
     { minecraftClient.setScreen(GuiBlockTracer()) }) {
-    override fun onWorldRender(
-        level: ClientWorld,
-        matrixStack: MatrixStack,
-        bufferBuilder: BufferBuilder,
-        partialTicks: Float
-    ) {
-
-        RenderUtils.setupRender(matrixStack)
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-        RenderSystem.applyModelViewMatrix()
-        val region = RenderUtils.getCameraRegionPos()
-        val entry = matrixStack.peek().positionMatrix
-        val tessellator = RenderSystem.renderThreadTesselator()
-        var bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
-        val regionVec = region.toVec3d();
-        val start = RenderUtils.getLookVec(partialTicks).add(RenderUtils.getCameraPos()).subtract(regionVec);
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         synchronized(chunks) {
-            for (chunk in chunks.values.filter { it.inRenderDistance() }) {
+            if(chunks.isEmpty()) return
+
+            RenderUtils.setupRender(matrixStack)
+            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+            RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
+            RenderSystem.applyModelViewMatrix()
+            val region = RenderUtils.getCameraRegionPos()
+            val entry = matrixStack.peek().positionMatrix
+            val tessellator = RenderSystem.renderThreadTesselator()
+            val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+            val regionVec = region.toVec3d();
+            val start = RenderUtils.getLookVec(partialTicks).add(RenderUtils.getCameraPos()).subtract(regionVec);
+            for (chunk in chunks.values) {
                 for (block in chunk.blocks.values) {
-                    val box = Box(
-                        block.x.toDouble(),
-                        block.y.toDouble(),
-                        block.z.toDouble(),
-                        block.x + 1.0,
-                        block.y + 1.0,
-                        block.z + 1.0
+                    val pos = BlockPos(block.x, block.y, block.z)
+                    val center = pos.toCenterPos().subtract(region.toVec3d())
+                    RenderUtils.drawSingleLine(
+                        bufferBuilder, entry, start, center, getSettings().blockColor, getSettings().alpha
                     )
-                    val mainCamera = MinecraftClient.getInstance().gameRenderer.camera
-                    val playerPos = PlayerUtils.getNewPlayerPosition(partialTicks, mainCamera)
-//                    RenderUtils.renderSingleLine(
-//                        stack, bufferBuilder, playerPos, box.center, getSettings().blockColor, getSettings().alpha
-//                    )
                 }
             }
-            // clear out all chunks that are not in render distance
-            chunks.entries.removeIf { !it.value.inRenderDistance() }
+            try {
+                val end = bufferBuilder.end()
+                BufferRenderer.drawWithGlobalProgram(end)
+                RenderUtils.cleanupRender(matrixStack)
+            } catch (_: IllegalStateException) {
+
+            }
         }
     }
 }

@@ -25,6 +25,7 @@ package com.peasenet.mods.tracer
 
 import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.config.TracerConfig
+import com.peasenet.gavui.color.Color
 import com.peasenet.main.Settings
 import com.peasenet.mods.tracer.TracerMod.Companion
 import com.peasenet.settings.SettingBuilder
@@ -46,9 +47,9 @@ import net.minecraft.util.math.Box
  * @version 04-11-2023
  * A mod that allows the player to see tracers towards items.
  */
-class ModEntityItemTracer : TracerMod<ItemEntity>(
-    "Item Tracer", "gavinsmod.mod.tracer.item", "itemtracer"
-), RenderListener {
+class ModEntityItemTracer :
+    EntityTracer<ItemEntity>("Item Tracer", "gavinsmod.mod.tracer.item", "itemtracer", { it is ItemEntity }),
+    RenderListener {
     init {
         val colorSetting = SettingBuilder().setTitle("gavinsmod.settings.tracer.item.color").setColor(config.itemColor)
             .buildColorSetting()
@@ -57,44 +58,9 @@ class ModEntityItemTracer : TracerMod<ItemEntity>(
         addSetting(colorSetting)
     }
 
-    override fun onTick() {
-        super.onTick()
-        entityList.clear()
-        for (entity in client.getWorld().entities) {
-            if (entity.type == EntityType.ITEM) {
-                entityList.add(entity as ItemEntity)
-            }
-        }
+    override fun getColor(entity: ItemEntity): Color {
+        return config.itemColor
     }
 
-    companion object {
-        private val config: TracerConfig
-            get() {
-                return Settings.getConfig<TracerConfig>("tracer")
-            }
-    }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
-        if (entityList.isEmpty()) return
-        RenderUtils.setupRender(matrixStack)
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-        RenderSystem.applyModelViewMatrix()
-        val region = RenderUtils.getCameraRegionPos()
-        val entry = matrixStack.peek().positionMatrix
-        val tessellator = RenderSystem.renderThreadTesselator()
-        var bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
-        val regionVec = region.toVec3d();
-        val start = RenderUtils.getLookVec(partialTicks).add(RenderUtils.getCameraPos()).subtract(regionVec);
-        for (e in entityList) {
-            val entityPos = e.pos.subtract(region.toVec3d())
-            val center = e.boundingBox.center.subtract(region.toVec3d())
-            RenderUtils.drawSingleLine(
-                bufferBuilder, entry, start, center, config.itemColor, config.alpha
-            )
-        }
-        val end = bufferBuilder.end()
-        BufferRenderer.drawWithGlobalProgram(end)
-        RenderUtils.cleanupRender(matrixStack)
-    }
 }

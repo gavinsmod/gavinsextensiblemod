@@ -578,7 +578,7 @@ object RenderUtils {
         color: Color = Colors.WHITE,
         alpha: Float = 1f
     ) {
-        drawSingleLine(buffer, matrix4f, start.toVector3f(), end.toVector3f(), color)
+        drawSingleLine(buffer, matrix4f, start.toVector3f(), end.toVector3f(), color, alpha)
     }
 
     fun drawSingleLine(

@@ -24,14 +24,18 @@
 package com.peasenet.mods.tracer
 
 import com.peasenet.config.TracerConfig
+import com.peasenet.gavui.color.Color
+import com.peasenet.gavui.color.Colors
 import com.peasenet.gui.mod.tracer.GuiMobTracer
 import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.event.data.EntityRender
+import net.fabricmc.fabric.impl.`object`.builder.FabricEntityTypeImpl.Builder.Living
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.mob.MobEntity
 
@@ -40,10 +44,11 @@ import net.minecraft.entity.mob.MobEntity
  * @version 04-01-2023
  * A mod that allows the client to see lines, called tracers, towards mobs.
  */
-class ModMobTracer : TracerMod<LivingEntity>(
+class ModMobTracer : EntityTracer<LivingEntity>(
     "Mob Tracer",
     "gavinsmod.mod.tracer.mob",
-    "mobtracer"
+    "mobtracer",
+    { it is MobEntity && config.mobIsShown(it.type) }
 ) {
     init {
         val menu = SettingBuilder()
@@ -53,35 +58,10 @@ class ModMobTracer : TracerMod<LivingEntity>(
         addSetting(menu)
     }
 
-//    override fun onEntityRender(er: EntityRender) {
-//        if (er.buffer == null) return
-//        // check if entity is a mob
-//        val entity = er.entity
-//        val stack = er.stack
-//        val buffer = er.buffer
-//        val center = er.center
-//        val playerPos = er.playerPos
-//        if (entity !is MobEntity) return
-//        val color =
-//            if (er.entityType.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
-//        if (config.mobIsShown(entity.type))
-//            RenderUtils.renderSingleLine(
-//                stack, buffer!!, playerPos!!, center!!, color, config.alpha
-//            )
-//    }
-//
-//
-//    override fun onRenderBlockEntity(er: BlockEntityRender) {
-//    }
-
-    companion object {
-        val config: TracerConfig
-            get() {
-                return Settings.getConfig<TracerConfig>("tracer")
-            }
+    override fun getColor(entity: LivingEntity): Color {
+        if (entity.type.spawnGroup.isPeaceful)
+            return config.peacefulMobColor
+        return config.hostileMobColor
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
-
-    }
 }

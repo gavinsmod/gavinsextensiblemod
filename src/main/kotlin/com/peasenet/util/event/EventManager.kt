@@ -23,6 +23,7 @@
  */
 package com.peasenet.util.event
 
+import com.peasenet.util.PlayerUtils
 import com.peasenet.util.listeners.Listener
 
 /**
@@ -50,7 +51,11 @@ open class EventManager {
      * @param listener - The listener to remove.
      */
     fun <L : Listener> unsubscribe(event: Class<L>, listener: L) {
-        eventMap[event]!!.remove(listener)
+        try {
+            eventMap[event]!!.remove(listener)
+        } catch (e: NullPointerException) {
+            PlayerUtils.sendMessage("Listener not found. Please report this error.", true)
+        }
     }
 
     /**
