@@ -25,8 +25,12 @@ package com.peasenet.mods.esp
 
 import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.config.EspConfig
+import com.peasenet.gavui.color.Color
+import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
+import com.peasenet.mods.tracer.EntityTracer
 import com.peasenet.settings.SettingBuilder
+import com.peasenet.util.PlayerUtils
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.RenderUtils.CHUNK_RADIUS
 import com.peasenet.util.RenderUtils.getCameraRegionPos
@@ -47,9 +51,11 @@ import net.minecraft.util.math.Vec3d
  * @version 03-02-2023
  * A mod that allows the player to see an esp (a box) around items.
  */
-class ModEntityItemEsp : EspMod<ItemEntity>(
-    "Item ESP", "gavinsmod.mod.esp.item", "itemesp"
-), RenderListener {
+class ModEntityItemEsp : EntityEsp<ItemEntity>("Item ESP",
+    "gavinsmod.mod.esp.item",
+    "itemesp",
+    { it is ItemEntity && it.squaredDistanceTo(GavinsModClient.player!!.getPos()) < 64 * 16 * CHUNK_RADIUS }),
+    RenderListener {
     init {
         val colorSetting = SettingBuilder().setTitle("gavinsmod.settings.esp.item.color").setColor(config.itemColor)
             .buildColorSetting()
@@ -58,44 +64,7 @@ class ModEntityItemEsp : EspMod<ItemEntity>(
         addSetting(colorSetting)
     }
 
-    override fun onEnable() {
-        super.onEnable()
-        em.subscribe(RenderListener::class.java, this)
+    override fun getColor(entity: ItemEntity): Color = getColor()
 
-    }
-
-    override fun onDisable() {
-        super.onDisable()
-        em.unsubscribe(RenderListener::class.java, this)
-    }
-
-    override fun onTick() {
-        super.onTick()
-        val level = client.getWorld()
-
-        entityList.clear()
-        level.entities.filter { e ->
-            e.type == EntityType.ITEM && e.squaredDistanceTo(client.getPlayer()) < CHUNK_RADIUS * 64 * 8
-        }.forEach { entityList.add(it as ItemEntity) }
-
-    }
-
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
-        RenderUtils.setupRender(matrixStack)
-        RenderSystem.setShader(GameRenderer::getPositionProgram)
-        entityList.forEach { e ->
-            matrixStack.push()
-            val pos = MathUtils.lerp(partialTicks, e.pos, Vec3d(e.prevX, e.prevY, e.prevX))
-            val side = e.boundingBox.averageSideLength / 2
-            val boxHeight = e.boundingBox.maxY - e.boundingBox.minY
-            val bb = Box(
-                pos.x + side, pos.y, pos.z + side, pos.x - side, pos.y + boxHeight, pos.z - side
-            )
-            RenderUtils.drawOutlinedBox(bb, vertexBuffer!!, matrixStack, config.itemColor, config.alpha)
-            matrixStack.pop()
-        }
-        RenderUtils.cleanupRender(matrixStack)
-    }
-
-
+    override fun getColor(): Color = config.itemColor
 }

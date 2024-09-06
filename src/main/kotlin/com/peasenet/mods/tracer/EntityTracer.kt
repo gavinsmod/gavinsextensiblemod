@@ -21,17 +21,6 @@ abstract class EntityTracer<T : Entity>(
     chatCommand: String,
     val entityFilter: (Entity) -> Boolean
 ) : TracerMod<T>(name, translationKey, chatCommand), RenderListener {
-    override fun onEnable() {
-        super.onEnable()
-        em.subscribe(RenderListener::class.java, this)
-    }
-
-    override fun onDisable() {
-        super.onDisable()
-        em.unsubscribe(RenderListener::class.java, this)
-    }
-
-
     override fun onTick() {
         super.onTick()
         entityList.clear()

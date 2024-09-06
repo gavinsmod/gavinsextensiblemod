@@ -24,6 +24,7 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.config.EspConfig
+import com.peasenet.gavui.color.Color
 import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
@@ -35,38 +36,22 @@ import net.minecraft.util.math.Box
 
 /**
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 09-05-2024
+ * @since 03-02-2023
  * A mod that allows the client to see an esp (a box) around beehives.
  *
  */
-@Deprecated("This class is deprecated and will be removed in a future release.")
-class ModBeehiveEsp : EspMod<BlockEntity>(
-    "Beehive ESP",
+class ModBeehiveEsp : BlockEntityEsp<BeehiveBlockEntity>("Beehive ESP",
     "gavinsmod.mod.esp.beehive",
-    "beehiveesp"
-), BlockEntityRenderListener {
+    "beehiveesp",
+    { it is BeehiveBlockEntity }) {
     init {
-        val colorSetting = SettingBuilder()
-            .setTitle("gavinsmod.settings.esp.beehive.color")
-            .setColor(config.beehiveColor)
-            .buildColorSetting()
+        val colorSetting =
+            SettingBuilder().setTitle("gavinsmod.settings.esp.beehive.color").setColor(config.beehiveColor)
+                .buildColorSetting()
         colorSetting.setCallback { config.beehiveColor = colorSetting.color }
         addSetting(colorSetting)
     }
 
-    override fun onEnable() {
-        super.onEnable()
-        em.subscribe(BlockEntityRenderListener::class.java, this)
-    }
-
-    override fun onDisable() {
-        super.onDisable()
-        em.unsubscribe(BlockEntityRenderListener::class.java, this)
-    }
-
-    override fun onRenderBlockEntity(er: BlockEntityRender) {
-        if (er.entity !is BeehiveBlockEntity) return
-        val box = Box(er.entity.pos)
-        RenderUtils.drawBox(er.stack, er.buffer, box, config.beehiveColor, config.alpha)
-    }
+    override fun getColor(): Color = config.beehiveColor
 }

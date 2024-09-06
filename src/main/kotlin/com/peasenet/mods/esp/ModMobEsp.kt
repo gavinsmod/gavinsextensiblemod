@@ -23,6 +23,8 @@
  */
 package com.peasenet.mods.esp
 
+import com.peasenet.gavui.color.Color
+import com.peasenet.gavui.color.Colors
 import com.peasenet.gui.mod.esp.GuiMobEsp
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
@@ -31,7 +33,6 @@ import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
-import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.MathHelper
@@ -46,69 +47,56 @@ import net.minecraft.util.math.Vec3d
  * @see EntityRenderListener
  * @see EspMod
  */
-class ModMobEsp : EspMod<Entity>(
-
-    "Mob ESP",
+class ModMobEsp : EntityEsp<Entity>("Mob ESP",
     "gavinsmod.mod.esp.mob",
-    "mobesp"
-), RenderListener {
+    "mobesp",
+    { it !is PlayerEntity && it.isLiving && !it.isRemoved && config.mobIsShown(it.type) }), RenderListener {
 
 
     init {
-        val menu = SettingBuilder()
-            .setTitle("gavinsmod.settings.mobesp")
-            .setCallback { MinecraftClient.getInstance().setScreen(GuiMobEsp()) }
-            .buildClickSetting()
+        val menu = SettingBuilder().setTitle("gavinsmod.settings.mobesp")
+            .setCallback { MinecraftClient.getInstance().setScreen(GuiMobEsp()) }.buildClickSetting()
         addSetting(menu)
     }
 
-    override fun onEnable() {
-        super.onEnable()
-        em.subscribe(RenderListener::class.java, this)
-
+    override fun getColor(entity: Entity): Color {
+        return if (entity.type.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
     }
 
-    override fun onDisable() {
-        super.onDisable()
-        em.unsubscribe(RenderListener::class.java, this)
-    }
+    override fun getColor(): Color = Colors.BLUE
 
-    override fun onTick() {
-        super.onTick()
-        entityList.clear()
-        entityList.addAll(client.getWorld().entities
-            .filter { e -> e.isLiving }
-            .filter { e -> e !is PlayerEntity }
-            .filter { e -> !e.isRemoved }
-            .filter { e -> config.mobIsShown(e.type) }
-        )
-    }
+//    override fun onTick() {
+//        super.onTick()
+//        espList.clear()
+//        espList.addAll(client.getWorld().entities.filter { e -> e.isLiving }.filter { e -> e !is PlayerEntity }
+//            .filter { e -> !e.isRemoved }.filter { e -> config.mobIsShown(e.type) })
+//    }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
-        if (entityList.isEmpty())
-            return;
-        RenderUtils.setupRender(matrixStack)
-
-        entityList.forEach { e ->
-            matrixStack.push()
-            val box = e.boundingBox
-            val x = MathHelper.lerp(partialTicks, e.lastRenderX.toFloat(), e.x.toFloat()) - e.x
-            val y = MathHelper.lerp(partialTicks, e.lastRenderY.toFloat(), e.y.toFloat()) - e.y
-            val z = MathHelper.lerp(partialTicks, e.lastRenderZ.toFloat(), e.z.toFloat()) - e.z
-
-            val lerpedPos = Vec3d(x, y, z).subtract(RenderUtils.getCameraRegionPos().toVec3d())
-            matrixStack.translate(lerpedPos.x, lerpedPos.y, lerpedPos.z)
-            val color = if (e.type.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
-            val box2 = Box(x + box.minX, y + box.minY, z + box.minZ, x + box.maxX, y + box.maxY, z + box.maxZ)
-            RenderUtils.drawOutlinedBox(
-                box2,
-                vertexBuffer!!,
-                matrixStack,
-                color,
-                config.alpha
-            )
-            matrixStack.pop()
-        }
-        RenderUtils.cleanupRender(matrixStack)
-    }
+//    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+//        if (espList.isEmpty())
+//            return;
+//        RenderUtils.setupRender(matrixStack)
+//
+//        espList.forEach { e ->
+//            matrixStack.push()
+//            val box = e.boundingBox
+//            val x = MathHelper.lerp(partialTicks, e.lastRenderX.toFloat(), e.x.toFloat()) - e.x
+//            val y = MathHelper.lerp(partialTicks, e.lastRenderY.toFloat(), e.y.toFloat()) - e.y
+//            val z = MathHelper.lerp(partialTicks, e.lastRenderZ.toFloat(), e.z.toFloat()) - e.z
+//
+//            val lerpedPos = Vec3d(x, y, z).subtract(RenderUtils.getCameraRegionPos().toVec3d())
+//            matrixStack.translate(lerpedPos.x, lerpedPos.y, lerpedPos.z)
+//            val color = if (e.type.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
+//            val box2 = Box(x + box.minX, y + box.minY, z + box.minZ, x + box.maxX, y + box.maxY, z + box.maxZ)
+//            RenderUtils.drawOutlinedBox(
+//                box2,
+//                vertexBuffer!!,
+//                matrixStack,
+//                color,
+//                config.alpha
+//            )
+//            matrixStack.pop()
+//        }
+//        RenderUtils.cleanupRender(matrixStack)
+//    }
 }

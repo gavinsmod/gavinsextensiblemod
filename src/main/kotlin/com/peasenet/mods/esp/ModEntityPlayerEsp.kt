@@ -24,6 +24,7 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.config.EspConfig
+import com.peasenet.gavui.color.Color
 import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
@@ -36,36 +37,19 @@ import net.minecraft.entity.player.PlayerEntity
  * @version 03-02-2023
  * A mod that allows the player to see an ESP to other players.
  */
-class ModEntityPlayerEsp : EspMod<PlayerEntity>(
+class ModEntityPlayerEsp : EntityEsp<PlayerEntity>(
     "Player ESP",
     "gavinsmod.mod.esp.player",
-    "playeresp"
-), EntityRenderListener {
+    "playeresp",
+    { it is PlayerEntity },
+) {
     init {
-//        val colorSetting = ColorSetting("gavinsmod.settings.esp.player.color", config.playerColor)
-//        colorSetting.setCallback {
-//            config.playerColor = colorSetting.color
-//        }
-        val colorSetting = SettingBuilder()
-            .setTitle("gavinsmod.settings.esp.player.color")
-            .setColor(config.playerColor)
+        val colorSetting = SettingBuilder().setTitle("gavinsmod.settings.esp.player.color").setColor(config.playerColor)
             .buildColorSetting()
         addSetting(colorSetting)
     }
 
-    override fun onEnable() {
-        super.onEnable()
-        em.subscribe(EntityRenderListener::class.java, this)
-    }
+    override fun getColor(entity: PlayerEntity): Color = getColor()
 
-    override fun onDisable() {
-        super.onDisable()
-        em.unsubscribe(EntityRenderListener::class.java, this)
-    }
-
-    override fun onEntityRender(er: EntityRender) {
-        if (er.entity !is PlayerEntity || er.buffer == null) return
-        val box = er.entity.boundingBox
-        RenderUtils.drawBox(er.stack, er.buffer, box, config.playerColor, config.alpha)
-    }
+    override fun getColor(): Color = config.playerColor
 }

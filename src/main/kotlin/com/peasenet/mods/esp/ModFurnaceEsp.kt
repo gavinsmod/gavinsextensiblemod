@@ -24,6 +24,7 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.config.EspConfig
+import com.peasenet.gavui.color.Color
 import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
@@ -38,12 +39,12 @@ import net.minecraft.util.math.Box
  * @version 04-11-2023
  * A mod that allows the client to see an esp (a box) around furnaces.
  */
-@Deprecated("This class is deprecated and will be removed in a future release.")
-class ModFurnaceEsp : EspMod<BlockEntity>(
+class ModFurnaceEsp : BlockEntityEsp<BlockEntity>(
     "Furnace ESP",
     "gavinsmod.mod.esp.furnace",
-    "furnaceesp"
-), BlockEntityRenderListener {
+    "furnaceesp",
+    { it is FurnaceBlockEntity }
+) {
     init {
         val colorSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.esp.furnace.color")
@@ -53,20 +54,5 @@ class ModFurnaceEsp : EspMod<BlockEntity>(
         addSetting(colorSetting)
     }
 
-    override fun onEnable() {
-        super.onEnable()
-        em.subscribe(BlockEntityRenderListener::class.java, this)
-    }
-
-    override fun onDisable() {
-        super.onDisable()
-        em.unsubscribe(BlockEntityRenderListener::class.java, this)
-    }
-
-    override fun onRenderBlockEntity(er: BlockEntityRender) {
-        if (er.buffer == null) return
-        if (er.entity !is FurnaceBlockEntity) return
-        val box = Box(er.entity.pos)
-        RenderUtils.drawBox(er.stack, er.buffer, box, config.furnaceColor, config.alpha)
-    }
+    override fun getColor(): Color = config.furnaceColor
 }
