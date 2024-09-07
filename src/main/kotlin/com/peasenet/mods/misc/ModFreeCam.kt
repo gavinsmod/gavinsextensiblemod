@@ -139,7 +139,7 @@ class ModFreeCam : MiscMod(
         val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
         val e = fake!!
         var box = e.boundingBox
-        val lerped = MathUtils.lerp(
+        var lerped = MathUtils.lerp(
             partialTicks,
             e.pos,
             Vec3d(e.lastRenderX, e.lastRenderY, e.lastRenderZ),
@@ -157,6 +157,16 @@ class ModFreeCam : MiscMod(
             box,
             bufferBuilder,
             entry,
+            Settings.getConfig<EspConfig>("esp").playerColor,
+            Settings.getConfig<EspConfig>("esp").alpha
+        )
+        val regionVec = RenderUtils.getCameraRegionPos().toVec3d();
+        val start = RenderUtils.getLookVec(partialTicks).add(RenderUtils.getCameraPos()).subtract(regionVec);
+        RenderUtils.drawSingleLine(
+            bufferBuilder,
+            entry,
+            start,
+            e.boundingBox.center.subtract(regionVec),
             Settings.getConfig<EspConfig>("esp").playerColor,
             Settings.getConfig<EspConfig>("esp").alpha
         )

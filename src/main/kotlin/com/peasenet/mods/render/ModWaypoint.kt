@@ -37,24 +37,23 @@ import com.peasenet.util.Dimension
 import com.peasenet.util.PlayerUtils
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.CameraBob
-import com.peasenet.util.event.data.EntityRender
 import com.peasenet.util.listeners.CameraBobListener
-import com.peasenet.util.listeners.EntityRenderListener
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gl.VertexBuffer
+import net.minecraft.client.render.BufferRenderer
 import net.minecraft.client.render.GameRenderer
+import net.minecraft.client.render.VertexFormat
 import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.Text
-import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import java.util.function.Function
 
 /**
- * @author gt3ch1
- * @version 03-02-2023
  * Creates a new mod to control waypoints.
+ * @author gt3ch1
+ * @version 09-06-2024
+ * @since 03-02-2023
  */
 class ModWaypoint : RenderMod(
     "Waypoints",
@@ -63,20 +62,13 @@ class ModWaypoint : RenderMod(
     ModCategory.WAYPOINTS
 ), RenderListener, CameraBobListener {
 
-    private var vertexBuffer: VertexBuffer? = null
-
     init {
-
         reloadSettings()
-
     }
 
 
     override fun onEnable() {
         super.onEnable()
-        vertexBuffer = VertexBuffer(VertexBuffer.Usage.STATIC)
-        val bb = Box(-0.5, 0.0, -0.5, 0.5, 1.0, 0.5)
-        RenderUtils.drawOutlinedBox(bb, vertexBuffer!!)
         em.subscribe(RenderListener::class.java, this)
         em.subscribe(CameraBobListener::class.java, this)
         for (w in Settings.getConfig<WaypointConfig>("waypoints").getLocations()) {
@@ -136,7 +128,11 @@ class ModWaypoint : RenderMod(
         val playerDimension = Dimension.fromValue(MinecraftClient.getInstance().player!!.world.dimension.effects.path!!)
 
         RenderUtils.setupRender(matrixStack)
-        RenderSystem.setShader(GameRenderer::getPositionProgram);
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+
+        val entry = matrixStack.peek().positionMatrix
+        val tessellator = RenderSystem.renderThreadTesselator()
+        val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
         Settings.getConfig<WaypointConfig>("waypoints").getLocations().stream().filter { obj: Waypoint ->
             obj.canRender(playerDimension)
         }.forEach { w: Waypoint ->
@@ -150,8 +146,21 @@ class ModWaypoint : RenderMod(
                 pos.z
             )
             if (w.isEspEnabled)
-                RenderUtils.drawOutlinedBox(bb, vertexBuffer!!, matrixStack, w.color!!)
+                RenderUtils.drawOutlinedBox(bb, bufferBuilder, entry, w.color!!)
+            if (w.isTracerEnabled) {
+                val regionVec = RenderUtils.getCameraRegionPos().toVec3d();
+                val start = RenderUtils.getLookVec(partialTicks).add(RenderUtils.getCameraPos()).subtract(regionVec);
+                RenderUtils.drawSingleLine(
+                    bufferBuilder,
+                    entry,
+                    start,
+                    bb.center,
+                    w.color!!
+                )
+            }
         }
+        val end = bufferBuilder.end()
+        BufferRenderer.drawWithGlobalProgram(end)
         RenderUtils.resetRenderSystem()
     }
 
