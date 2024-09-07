@@ -56,10 +56,7 @@ import java.util.function.Function
  * @since 03-02-2023
  */
 class ModWaypoint : RenderMod(
-    "Waypoints",
-    "gavinsmod.mod.render.waypoints",
-    "waypoints",
-    ModCategory.WAYPOINTS
+    "Waypoints", "gavinsmod.mod.render.waypoints", "waypoints", ModCategory.WAYPOINTS
 ), RenderListener, CameraBobListener {
 
     init {
@@ -74,8 +71,7 @@ class ModWaypoint : RenderMod(
         for (w in Settings.getConfig<WaypointConfig>("waypoints").getLocations()) {
             if (!w.hasDimensions()) {
                 PlayerUtils.sendMessage(
-                    "§6[WARNING]§7 Waypoint \"§b${w.name}§7\" has no dimensions set and will not be rendered.",
-                    true
+                    "§6[WARNING]§7 Waypoint \"§b${w.name}§7\" has no dimensions set and will not be rendered.", true
                 )
             }
         }
@@ -89,16 +85,10 @@ class ModWaypoint : RenderMod(
 
     override fun reloadSettings() {
         modSettings.clear()
-        setting = SettingBuilder()
-            .setWidth(100f)
-            .setHeight(10f)
-            .setTitle("gavinsmod.mod.render.waypoints")
-            .buildSubSetting()
-        openMenu = SettingBuilder()
-            .setTitle("gavinsmod.settings.render.waypoints.add")
-            .setCallback { MinecraftClient.getInstance().setScreen(GuiWaypoint()) }
-            .setSymbol('+')
-            .buildClickSetting()
+        setting =
+            SettingBuilder().setWidth(100f).setHeight(10f).setTitle("gavinsmod.mod.render.waypoints").buildSubSetting()
+        openMenu = SettingBuilder().setTitle("gavinsmod.settings.render.waypoints.add")
+            .setCallback { MinecraftClient.getInstance().setScreen(GuiWaypoint()) }.setSymbol('+').buildClickSetting()
         addSetting(openMenu)
         // get all waypoints and add them to the menu
         val waypoints = Settings.getConfig<WaypointConfig>("waypoints").getLocations().stream()
@@ -112,53 +102,38 @@ class ModWaypoint : RenderMod(
      * @param waypoint - The waypoint to edit.
      */
     private fun createWaypoint(waypoint: Waypoint) {
-        val clickSetting = SettingBuilder()
-            .setTitle(Text.literal(waypoint.name))
-            .setCallback {
+        val clickSetting = SettingBuilder().setTitle(Text.literal(waypoint.name)).setCallback {
                 MinecraftClient.getInstance().setScreen(GuiWaypoint(waypoint))
-            }
-            .setHoverable(true)
-            .setBackgroundColor(waypoint.color!!)
-            .setTransparency(0.5f)
-            .buildClickSetting()
+            }.setHoverable(true).setBackgroundColor(waypoint.color!!).setTransparency(0.5f).buildClickSetting()
         addSetting(clickSetting)
     }
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         val playerDimension = Dimension.fromValue(MinecraftClient.getInstance().player!!.world.dimension.effects.path!!)
-
+        val waypointLocs =
+            Settings.getConfig<WaypointConfig>("waypoints").getLocations().filter { w -> w.canRender(playerDimension) }
+        if (waypointLocs.isEmpty()) return;
         RenderUtils.setupRender(matrixStack)
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
         val entry = matrixStack.peek().positionMatrix
         val tessellator = RenderSystem.renderThreadTesselator()
         val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
-        Settings.getConfig<WaypointConfig>("waypoints").getLocations().stream().filter { obj: Waypoint ->
-            obj.canRender(playerDimension)
-        }.forEach { w: Waypoint ->
+        waypointLocs.forEach { w: Waypoint ->
             val pos = w.pos.subtract(RenderUtils.getCameraRegionPos().toVec3d())
             val bb = Box(
-                pos.x + 1,
-                pos.y,
-                pos.z + 1,
-                pos.x,
-                pos.y + 1.0,
-                pos.z
+                pos.x + 1, pos.y, pos.z + 1, pos.x, pos.y + 1.0, pos.z
             )
-            if (w.isEspEnabled)
-                RenderUtils.drawOutlinedBox(bb, bufferBuilder, entry, w.color!!)
+            if (w.isEspEnabled) RenderUtils.drawOutlinedBox(bb, bufferBuilder, entry, w.color!!)
             if (w.isTracerEnabled) {
                 val regionVec = RenderUtils.getCameraRegionPos().toVec3d();
                 val start = RenderUtils.getLookVec(partialTicks).add(RenderUtils.getCameraPos()).subtract(regionVec);
                 RenderUtils.drawSingleLine(
-                    bufferBuilder,
-                    entry,
-                    start,
-                    bb.center,
-                    w.color!!
+                    bufferBuilder, entry, start, bb.center, w.color!!
                 )
             }
         }
+
         val end = bufferBuilder.end()
         BufferRenderer.drawWithGlobalProgram(end)
         RenderUtils.resetRenderSystem()
