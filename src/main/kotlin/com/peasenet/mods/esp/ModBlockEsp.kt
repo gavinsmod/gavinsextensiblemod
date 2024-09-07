@@ -31,10 +31,12 @@ import com.peasenet.main.GavinsModClient.Companion.minecraftClient
 import com.peasenet.mods.ModCategory
 import com.peasenet.mods.commons.BlockEspTracerCommon
 import com.peasenet.util.RenderUtils
+import com.peasenet.util.executor.GemExecutor
 import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
+import net.minecraft.client.gl.ShaderProgram
 import net.minecraft.client.gl.VertexBuffer
 import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.render.GameRenderer
@@ -49,17 +51,17 @@ import org.lwjgl.opengl.GL11
  * An ESP mod that draws boxes around user selected blocks in the world.
  *
  * @author GT3CH1
- * @version 09-01-2024
+ * @version 09-06-2024
  * @since 09-01-2024
  * @see EspMod
- *
+ * @see BlockEspTracerCommon
  */
-class ModBlockEsp : BlockEspTracerCommon<BlockEspConfig>(
-    "Block ESP",
+class ModBlockEsp : BlockEspTracerCommon<BlockEspConfig>("Block ESP",
     "gavinsmod.mod.esp.blockesp",
     "blockesp",
     ModCategory.ESP,
     { minecraftClient.setScreen(GuiBlockEsp()) }), RenderListener {
+    private var count = 0
 
     override fun onEnable() {
         super.onEnable()
@@ -73,6 +75,8 @@ class ModBlockEsp : BlockEspTracerCommon<BlockEspConfig>(
     }
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+        if (chunks.isEmpty()) return
+        count = 0
         RenderUtils.setupRender(matrixStack)
         synchronized(chunks) {
             for (chunk in chunks.values.filter { it.inRenderDistance() }) {
@@ -80,15 +84,14 @@ class ModBlockEsp : BlockEspTracerCommon<BlockEspConfig>(
                     matrixStack.push()
                     val pos = Vec3i(block.x, block.y, block.z).subtract(RenderUtils.getCameraRegionPos().toVec3i())
                     val box = Box(
-                        pos.x.toDouble(),
-                        pos.y.toDouble(),
-                        pos.z.toDouble(),
-                        pos.x + 1.0,
-                        pos.y + 1.0,
-                        pos.z + 1.0
+                        pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), pos.x + 1.0, pos.y + 1.0, pos.z + 1.0
                     )
                     RenderUtils.drawOutlinedBox(
-                        box, vertexBuffer!!, matrixStack, getSettings().blockColor, getSettings().alpha
+                        box,
+                        vertexBuffer!!,
+                        matrixStack,
+                        color = getSettings().blockColor,
+                        alpha = getSettings().alpha
                     )
                     matrixStack.pop()
                 }

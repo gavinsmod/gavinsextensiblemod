@@ -23,33 +23,18 @@
  */
 package com.peasenet.mods.esp
 
-import com.mojang.blaze3d.systems.RenderSystem
-import com.peasenet.config.EspConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.main.GavinsModClient
-import com.peasenet.main.Settings
-import com.peasenet.mods.tracer.EntityTracer
 import com.peasenet.settings.SettingBuilder
-import com.peasenet.util.PlayerUtils
-import com.peasenet.util.RenderUtils
 import com.peasenet.util.RenderUtils.CHUNK_RADIUS
-import com.peasenet.util.RenderUtils.getCameraRegionPos
-import com.peasenet.util.event.data.EntityRender
-import com.peasenet.util.listeners.EntityRenderListener
 import com.peasenet.util.listeners.RenderListener
-import com.peasenet.util.math.MathUtils
-import net.minecraft.client.render.GameRenderer
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.EntityType
 import net.minecraft.entity.ItemEntity
-import net.minecraft.util.math.Box
-import net.minecraft.util.math.MathHelper
-import net.minecraft.util.math.Vec3d
 
 /**
- * @author gt3ch1
- * @version 03-02-2023
  * A mod that allows the player to see an esp (a box) around items.
+ * @author gt3ch1
+ * @version 09-06-2024
+ * @since 03-02-2023
  */
 class ModEntityItemEsp : EntityEsp<ItemEntity>("Item ESP",
     "gavinsmod.mod.esp.item",

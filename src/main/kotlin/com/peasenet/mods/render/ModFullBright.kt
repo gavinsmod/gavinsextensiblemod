@@ -42,18 +42,14 @@ class ModFullBright : RenderMod(
         lateinit var fullbrightConfig: FullbrightConfig
     }
     init {
-        fullbrightConfig = Settings.getConfig<FullbrightConfig>("fullbright")
+        fullbrightConfig = Settings.getConfig("fullbright")
         val gammaFade = SettingBuilder().setTitle("gavinsmod.settings.render.fullbright.gammafade")
             .setState(fullbrightConfig.gammaFade)
-//            .setWidth(100)
-//            .setHeight(10)
             .buildToggleSetting()
         gammaFade.setCallback { fullbrightConfig.gammaFade = gammaFade.value }
 
         val autoFullBright = SettingBuilder().setTitle("gavinsmod.settings.render.fullbright.autofullbright")
             .setState(fullbrightConfig.autoFullBright)
-//            .setWidth(100)
-//            .setHeight(10)
             .buildToggleSetting()
         autoFullBright.setCallback { fullbrightConfig.autoFullBright = autoFullBright.value }
 
@@ -167,12 +163,12 @@ class ModFullBright : RenderMod(
     val isLastGamma: Boolean
         get() = gamma <= LAST_GAMMA
 
-    fun setLastGamma() {
+    private fun setLastGamma() {
         if (gamma > 1) return
         LAST_GAMMA = gamma
     }
 
-    fun getLastGamma(): Double {
+    private fun getLastGamma(): Double {
         return LAST_GAMMA
     }
 

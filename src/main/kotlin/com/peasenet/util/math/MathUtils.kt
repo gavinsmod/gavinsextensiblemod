@@ -32,8 +32,10 @@ import kotlin.math.atan2
 import kotlin.math.sqrt
 
 /**
+ * A class that contains math utilities.
  * @author gt3ch1
- * @version 03-02-2023
+ * @version 09-06-2024
+ * @since 03-02-2023
  */
 object MathUtils {
     /**
@@ -56,14 +58,28 @@ object MathUtils {
         return Rotation(pitch, yaw)
     }
 
+    /**
+     * Returns the linear interpolation of the given position.
+     * @param delta The delta to lerp by.
+     * @param pos The current position.
+     * @param oldPos The old position.
+     * @return The camera region position.
+     */
     fun lerp(delta: Float, pos: Vec3d, oldPos: Vec3d, region: RegionPos): Vec3d {
         return lerp(delta, pos, oldPos).subtract(region.toVec3d())
     }
 
+    /**
+     * Returns the linear interpolation of the given position.
+     * @param delta The delta to lerp by.
+     * @param pos The current position.
+     * @param oldPos The old position.
+     * @return The lerp position.
+     */
     fun lerp(delta: Float, pos: Vec3d, oldPos: Vec3d): Vec3d {
-        val xLerped = MathHelper.lerp(delta.toDouble(), oldPos.x, pos.x)
-        val yLerped = MathHelper.lerp(delta.toDouble(), oldPos.y, pos.y)
-        val zLerped = MathHelper.lerp(delta.toDouble(), oldPos.z, pos.z)
+        val xLerped = MathHelper.lerp(delta.toDouble(), oldPos.x, pos.x) - pos.x
+        val yLerped = MathHelper.lerp(delta.toDouble(), oldPos.y, pos.y) - pos.y
+        val zLerped = MathHelper.lerp(delta.toDouble(), oldPos.z, pos.z) - pos.z
         return Vec3d(xLerped, yLerped, zLerped)
     }
 }

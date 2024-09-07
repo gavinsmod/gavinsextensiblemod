@@ -23,19 +23,16 @@
  */
 package com.peasenet.mods.esp
 
-import com.peasenet.config.EspConfig
 import com.peasenet.gavui.color.Color
-import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
-import com.peasenet.util.RenderUtils
-import com.peasenet.util.event.data.EntityRender
-import com.peasenet.util.listeners.EntityRenderListener
 import net.minecraft.entity.player.PlayerEntity
 
 /**
- * @author gt3ch1
- * @version 03-02-2023
+ *
  * A mod that allows the player to see an ESP to other players.
+ * @author gt3ch1
+ * @version 09-06-2024
+ * @since 03-02-2023
  */
 class ModEntityPlayerEsp : EntityEsp<PlayerEntity>(
     "Player ESP",

@@ -11,6 +11,19 @@ import net.minecraft.client.render.VertexFormat
 import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.util.math.MatrixStack
 
+/**
+ * A helper class for creating mods that trace block entities.
+ * @param T The type of block entity to trace.
+ * @param name The name of the mod.
+ * @param translationKey The translation key of the mod.
+ * @param chatCommand The chat command of the mod.
+ * @param blockFilter A lambda that filters block entities.
+ * @see TracerMod
+ *
+ * @version 09-06-2024
+ * @since 09-06-2024
+ * @author GT3CH1
+ */
 abstract class BlockEntityTracer<T : BlockEntity>(
     name: String,
     translationKey: String,

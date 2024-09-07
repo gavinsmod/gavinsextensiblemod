@@ -23,6 +23,7 @@
  */
 package com.peasenet.mods.render
 
+import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.config.TracerConfig
 import com.peasenet.config.WaypointConfig
 import com.peasenet.gui.mod.waypoint.GuiWaypoint
@@ -39,7 +40,12 @@ import com.peasenet.util.event.data.CameraBob
 import com.peasenet.util.event.data.EntityRender
 import com.peasenet.util.listeners.CameraBobListener
 import com.peasenet.util.listeners.EntityRenderListener
+import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gl.VertexBuffer
+import net.minecraft.client.render.GameRenderer
+import net.minecraft.client.render.VertexFormats
+import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.Text
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
@@ -55,14 +61,23 @@ class ModWaypoint : RenderMod(
     "gavinsmod.mod.render.waypoints",
     "waypoints",
     ModCategory.WAYPOINTS
-), EntityRenderListener, CameraBobListener {
+), RenderListener, CameraBobListener {
+
+    private var vertexBuffer: VertexBuffer? = null
+
     init {
+
         reloadSettings()
+
     }
+
 
     override fun onEnable() {
         super.onEnable()
-        em.subscribe(EntityRenderListener::class.java, this)
+        vertexBuffer = VertexBuffer(VertexBuffer.Usage.STATIC)
+        val bb = Box(-0.5, 0.0, -0.5, 0.5, 1.0, 0.5)
+        RenderUtils.drawOutlinedBox(bb, vertexBuffer!!)
+        em.subscribe(RenderListener::class.java, this)
         em.subscribe(CameraBobListener::class.java, this)
         for (w in Settings.getConfig<WaypointConfig>("waypoints").getLocations()) {
             if (!w.hasDimensions()) {
@@ -76,13 +91,12 @@ class ModWaypoint : RenderMod(
 
     override fun onDisable() {
         super.onDisable()
-        em.unsubscribe(EntityRenderListener::class.java, this)
+        em.unsubscribe(RenderListener::class.java, this)
         em.unsubscribe(CameraBobListener::class.java, this)
     }
 
     override fun reloadSettings() {
         modSettings.clear()
-//        setting = SubSetting(setting.gui.width.toInt(), 10, "gavinsmod.mod.render.waypoints")
         setting = SettingBuilder()
             .setWidth(100f)
             .setHeight(10f)
@@ -118,22 +132,27 @@ class ModWaypoint : RenderMod(
         addSetting(clickSetting)
     }
 
-    override fun onEntityRender(er: EntityRender) {
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         val playerDimension = Dimension.fromValue(MinecraftClient.getInstance().player!!.world.dimension.effects.path!!)
+
+        RenderUtils.setupRender(matrixStack)
+        RenderSystem.setShader(GameRenderer::getPositionProgram);
         Settings.getConfig<WaypointConfig>("waypoints").getLocations().stream().filter { obj: Waypoint ->
             obj.canRender(playerDimension)
         }.forEach { w: Waypoint ->
-            val aabb = Box(BlockPos(w.x, w.y, w.z))
-            val boxPos = aabb.center
-//            if (w.isTracerEnabled) RenderUtils.renderSingleLine(
-//                er.stack,
-//                er.buffer!!,
-//                er.playerPos!!,
-//                boxPos,
-//                w.color!!
-//            )
-            if (w.isEspEnabled) RenderUtils.drawBox(er.stack, er.buffer, aabb, w.color!!)
+            val pos = w.pos.subtract(RenderUtils.getCameraRegionPos().toVec3d())
+            val bb = Box(
+                pos.x + 1,
+                pos.y,
+                pos.z + 1,
+                pos.x,
+                pos.y + 1.0,
+                pos.z
+            )
+            if (w.isEspEnabled)
+                RenderUtils.drawOutlinedBox(bb, vertexBuffer!!, matrixStack, w.color!!)
         }
+        RenderUtils.resetRenderSystem()
     }
 
     override fun onCameraViewBob(c: CameraBob) {

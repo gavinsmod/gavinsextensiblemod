@@ -40,9 +40,10 @@ import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.mob.MobEntity
 
 /**
- * @author gt3ch1
- * @version 04-01-2023
  * A mod that allows the client to see lines, called tracers, towards mobs.
+ * @author gt3ch1
+ * @version 09-06-2024
+ * @since 04-01-2023
  */
 class ModMobTracer : EntityTracer<LivingEntity>(
     "Mob Tracer",

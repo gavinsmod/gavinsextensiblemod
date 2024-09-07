@@ -45,9 +45,10 @@ import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.util.math.MatrixStack
 
 /**
- * @author gt3ch1
- * @version 04-11-2023
  * A mod that allows the player to see tracers towards chests.
+ * @author gt3ch1
+ * @version 09-06-2024
+ * @since 04-11-2023
  */
 class ModChestTracer : BlockEntityTracer<BlockEntity>(
     "Chest Tracer",

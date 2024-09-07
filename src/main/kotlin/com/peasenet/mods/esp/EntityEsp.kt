@@ -40,7 +40,18 @@ import net.minecraft.util.math.Box
 import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Vec3d
 
-
+/**
+ * A class that represents an ESP mod for entities.
+ * @param T The type of entity to render.
+ * @param name The name of the mod.
+ * @param translationKey The translation key of the mod.
+ * @param chatCommand The chat command of the mod.
+ *
+ * @author GT3CH1
+ * @version 09-01-2024
+ * @since 09-01-2024
+ *
+ */
 abstract class EntityEsp<T : Entity>(
     name: String, translationKey: String, chatCommand: String, val entityFilter: (Entity) -> Boolean
 ) : EspMod<T>(name, translationKey, chatCommand) {
@@ -57,33 +68,27 @@ abstract class EntityEsp<T : Entity>(
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
         RenderSystem.applyModelViewMatrix()
-        val region = RenderUtils.getCameraRegionPos()
         val entry = matrixStack.peek().positionMatrix
         val tessellator = RenderSystem.renderThreadTesselator()
         val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
-        val regionVec = region.toVec3d();
-        val start = RenderUtils.getLookVec(partialTicks).add(RenderUtils.getCameraPos()).subtract(regionVec);
-
-            val box = e.boundingBox
-            val x = MathHelper.lerp(partialTicks, e.lastRenderX.toFloat(), e.x.toFloat()) - e.x
-            val y = MathHelper.lerp(partialTicks, e.lastRenderY.toFloat(), e.y.toFloat()) - e.y
-            val z = MathHelper.lerp(partialTicks, e.lastRenderZ.toFloat(), e.z.toFloat()) - e.z
-
-            val lerpedPos = MathUtils.lerp(
+        for (e in espList) {
+            var box = e.boundingBox
+            val lerped = MathUtils.lerp(
                 partialTicks,
                 e.pos,
                 Vec3d(e.lastRenderX, e.lastRenderY, e.lastRenderZ),
                 RenderUtils.getCameraRegionPos()
             )
-            matrixStack.translate(lerpedPos.x, lerpedPos.y, lerpedPos.z)
-            val color = if (e.type.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
-            val box2 = Box(x + box.minX, y + box.minY, z + box.minZ, x + box.maxX, y + box.maxY, z + box.maxZ)
-
-
-        for (e in espList) {
-            val center = e.boundingBox.center.subtract(region.toVec3d())
+            box = Box(
+                lerped.x + box.minX,
+                lerped.y + box.minY,
+                lerped.z + box.minZ,
+                lerped.x + box.maxX,
+                lerped.y + box.maxY,
+                lerped.z + box.maxZ
+            )
             RenderUtils.drawOutlinedBox(
-                box, vertexBuffer!!, entry, getColor(e), config.alpha
+                box, bufferBuilder, entry, getColor(e), config.alpha
             )
         }
         val end = bufferBuilder.end()
@@ -91,40 +96,11 @@ abstract class EntityEsp<T : Entity>(
         RenderUtils.cleanupRender(matrixStack)
     }
 
-//    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
-//        if (espList.isEmpty()) return;
-//        RenderUtils.setupRender(matrixStack)
-//
-//        val tessellator = RenderSystem.renderThreadTesselator()
-//        val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
-//        espList.forEach { e ->
-//            matrixStack.push()
-//
-//            val entry = matrixStack.peek().positionMatrix
-//            val box = e.boundingBox
-//            val x = MathHelper.lerp(partialTicks, e.lastRenderX.toFloat(), e.x.toFloat()) - e.x
-//            val y = MathHelper.lerp(partialTicks, e.lastRenderY.toFloat(), e.y.toFloat()) - e.y
-//            val z = MathHelper.lerp(partialTicks, e.lastRenderZ.toFloat(), e.z.toFloat()) - e.z
-//
-//            val lerpedPos = MathUtils.lerp(
-//                partialTicks,
-//                e.pos,
-//                Vec3d(e.lastRenderX, e.lastRenderY, e.lastRenderZ),
-//                RenderUtils.getCameraRegionPos()
-//            )
-//            matrixStack.translate(lerpedPos.x, lerpedPos.y, lerpedPos.z)
-//            val color = if (e.type.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
-//            val box2 = Box(x + box.minX, y + box.minY, z + box.minZ, x + box.maxX, y + box.maxY, z + box.maxZ)
-//            RenderUtils.drawOutlinedBox(
-//                box2, bufferBuilder, entry, color, config.alpha
-//            )
-//            matrixStack.pop()
-//        }
-//
-//        val end = bufferBuilder.end()
-//        BufferRenderer.drawWithGlobalProgram(end)
-//        RenderUtils.cleanupRender(matrixStack)
-//    }
 
+    /**
+     * Gets the color of the entity for rendering.
+     * @param entity The entity to get the color of.
+     * @return The color of the entity.
+     */
     abstract fun getColor(entity: T): Color
 }

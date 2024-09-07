@@ -23,24 +23,18 @@
  */
 package com.peasenet.mods.esp
 
-import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.gavui.color.Color
 import com.peasenet.settings.SettingBuilder
-import com.peasenet.util.RenderUtils
 import com.peasenet.util.listeners.RenderListener
-import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.ChestBlockEntity
 import net.minecraft.block.entity.EnderChestBlockEntity
 import net.minecraft.block.entity.ShulkerBoxBlockEntity
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.render.GameRenderer
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.Box
 
 /**
- * @author gt3ch1
- * @version 03-02-2023
  * A mod that allows the client to see an esp (a box) around chests.
+ * @author gt3ch1
+ * @version 03-02-2024
+ * @since 03-02-2023
  */
 class ModChestEsp : BlockEntityEsp<ChestBlockEntity>("Chest ESP",
     "gavinsmod.mod.esp.chest",

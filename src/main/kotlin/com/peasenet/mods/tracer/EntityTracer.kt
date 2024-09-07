@@ -15,6 +15,19 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityType
 
+/**
+ * A tracer mod that traces entities of a specific type.
+ * @param T The type of entity to trace.
+ * @param name The name of the mod.
+ * @param translationKey The translation key of the mod.
+ * @param chatCommand The chat command to toggle the mod.
+ * @param entityFilter A filter to determine which entities to trace.
+ * @see TracerMod
+ *
+ * @version 09-06-2024
+ * @since 09-06-2024
+ * @author GT3CH1
+ */
 abstract class EntityTracer<T : Entity>(
     name: String,
     translationKey: String,

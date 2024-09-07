@@ -27,16 +27,11 @@ package com.peasenet.mods.commons
 import com.peasenet.annotations.Exclude
 import com.peasenet.config.BlockEspConfig
 import com.peasenet.config.BlockListConfig
-import com.peasenet.config.BlockTracerConfig
 import com.peasenet.config.commons.IBlockEspTracerConfig
-import com.peasenet.gui.mod.GuiBlockSelection
-import com.peasenet.gui.mod.tracer.GuiBlockTracer
 import com.peasenet.main.GavinsMod
-import com.peasenet.main.GavinsModClient.Companion.minecraftClient
 import com.peasenet.main.Settings
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
-import com.peasenet.mods.esp.EspMod
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.GavBlock
 import com.peasenet.util.GavChunk
@@ -57,6 +52,22 @@ import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.chunk.Chunk
 import org.lwjgl.glfw.GLFW
 
+/**
+ * A class that contains settings and methods used for Block ESP or tracers.
+ *
+ * @param T A Configuration that extends IBlockEspTracerConfig.
+ * @param name The name of the mod.
+ * @param translationKey The translation key of the mod.
+ * @param chatCommand The chat command of the mod.
+ * @param category The category of the mod.
+ * @param onMenuOpen A lambda that is called when the menu is opened.
+ * @param keyBinding The key binding of the mod.
+ *
+ * @since 09-01-2024
+ * @version 09-01-2024
+ * @author GT3CH1
+ * @see IBlockEspTracerConfig
+ */
 abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
     name: String,
     translationKey: String,
@@ -71,8 +82,8 @@ abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
         return Settings.getConfig(chatCommand)
     }
 
+    // A small vertex buffer for rendering the block outlines.
     protected var vertexBuffer: VertexBuffer? = null
-
 
     init {
         val subSetting = SettingBuilder().setTitle(translationKey).buildSubSetting()
@@ -112,7 +123,9 @@ abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
         val box = Box(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5)
         RenderUtils.drawOutlinedBox(box, vertexBuffer!!)
         // search for chunks within render distance
-        RenderUtils.getVisibleChunks().forEach(this::searchChunk)
+        GemExecutor.execute {
+            RenderUtils.getVisibleChunks().forEach(this::searchChunk)
+        }
     }
 
     override fun onDisable() {

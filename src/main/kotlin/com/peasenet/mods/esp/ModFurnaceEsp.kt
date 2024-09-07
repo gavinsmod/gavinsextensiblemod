@@ -35,9 +35,10 @@ import net.minecraft.block.entity.FurnaceBlockEntity
 import net.minecraft.util.math.Box
 
 /**
- * @author gt3ch1
- * @version 04-11-2023
  * A mod that allows the client to see an esp (a box) around furnaces.
+ * @author gt3ch1
+ * @version 09-06-2024
+ * @since 04-11-2023
  */
 class ModFurnaceEsp : BlockEntityEsp<BlockEntity>(
     "Furnace ESP",

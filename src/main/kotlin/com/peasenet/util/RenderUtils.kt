@@ -28,25 +28,19 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.main.GavinsModClient
 import com.peasenet.mixinterface.ISimpleOption
-import com.peasenet.util.event.*
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gl.ShaderProgram
 import net.minecraft.client.gl.VertexBuffer
-import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.client.render.*
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.client.world.ClientWorld
 import net.minecraft.entity.Entity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.chunk.Chunk
 import org.joml.Matrix4f
-import org.joml.Vector3d
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL11
-import java.util.function.Consumer
 
 
 /**
@@ -58,144 +52,12 @@ object RenderUtils {
     /**
      * How many chunks away to render things.
      */
-    public var CHUNK_RADIUS = GavinsModClient.minecraftClient.options.viewDistance.value
+    var CHUNK_RADIUS: Int = GavinsModClient.minecraftClient.options.viewDistance.value
 
     /**
      * The last player configured gamma.
      */
     private var LAST_GAMMA = 0.0
-
-    /**
-     * Draws a single line in the given color.
-     *
-     * @param stack     The matrix stack to use.
-     * @param buffer    The buffer to write to.
-     * @param playerPos The position of the player.
-     * @param boxPos    The center of the location we want to draw a line to.
-     * @param color     The color to draw the line in.
-     */
-    @JvmOverloads
-    fun renderSingleLine(
-        stack: MatrixStack, vertexBuffer: VertexBuffer, playerPos: Vec3d, boxPos: Vec3d, color: Color, alpha: Float = 1f
-    ) {
-        val matrix4f = stack.peek().positionMatrix
-        val tessellator = RenderSystem.renderThreadTesselator()
-        val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR)
-        bufferBuilder.vertex(playerPos.x.toFloat(), playerPos.y.toFloat(), playerPos.z.toFloat())
-            .color(color.red, color.green, color.blue, alpha)
-        bufferBuilder.vertex(boxPos.x.toFloat(), boxPos.y.toFloat(), boxPos.z.toFloat())
-            .color(color.red, color.green, color.blue, alpha)
-        val buffer = bufferBuilder.end()
-        vertexBuffer.bind()
-        vertexBuffer.upload(buffer)
-        vertexBuffer.draw(matrix4f, RenderSystem.getProjectionMatrix(), RenderSystem.getShader())
-    }
-
-    fun renderSingleLine(
-        vertexBuffer: VertexBuffer,
-        matrixStack: MatrixStack,
-        entityPos: Vec3d,
-        playerPos: Vec3d,
-        color: Color,
-        alpha: Float
-    ) {
-        val viewMatrix = matrixStack.peek().positionMatrix
-        val projMatrix = RenderSystem.getProjectionMatrix()
-        val shader: ShaderProgram? = RenderSystem.getShader()
-        val normal = Vec3d(entityPos.x - playerPos.x, entityPos.y - playerPos.y, entityPos.z - playerPos.z)
-//        normal.normalize()
-        val matrix4f = matrixStack.peek().positionMatrix
-        val matrix3f = matrixStack.peek()
-
-        val tessellator = RenderSystem.renderThreadTesselator()
-        val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR)
-        RenderSystem.setShaderColor(color.red, color.green, color.blue, alpha)
-        bufferBuilder.vertex(
-            matrix4f, playerPos.getX().toFloat(), playerPos.getY().toFloat(), playerPos.getZ().toFloat()
-        ).color(color.red, color.green, color.blue, alpha)
-            .normal(matrix3f, normal.getX().toFloat(), normal.getY().toFloat(), normal.getZ().toFloat())
-        bufferBuilder.vertex(
-            matrix4f, entityPos.getX().toFloat(), entityPos.getY().toFloat(), entityPos.getZ().toFloat()
-        ).color(color.red, color.green, color.blue, alpha)
-            .normal(matrix3f, normal.getX().toFloat(), normal.getY().toFloat(), normal.getZ().toFloat())
-        val buffer = bufferBuilder.end()
-        vertexBuffer.bind()
-        vertexBuffer.upload(buffer)
-        vertexBuffer.draw(viewMatrix, projMatrix, shader)
-
-    }
-
-
-    fun renderSingleLine(
-        vertexBuffer: VertexBuffer,
-        matrixStack: MatrixStack,
-        entity: Entity,
-        player: ClientPlayerEntity?,
-        color: Color,
-        alpha: Float
-    ) {
-        val viewMatrix = matrixStack.peek().positionMatrix
-        val projMatrix = RenderSystem.getProjectionMatrix()
-        val shader: ShaderProgram? = RenderSystem.getShader()
-        val normal = Vec3d(entity.x - player!!.x, entity.y - player.y, entity.z - player.z)
-        normal.normalize()
-
-
-        val tessellator = RenderSystem.renderThreadTesselator()
-        val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR)
-        RenderSystem.setShaderColor(color.red, color.green, color.blue, alpha)
-        bufferBuilder.vertex(entity.x.toFloat(), entity.y.toFloat(), entity.z.toFloat())
-            .color(color.red, color.green, color.blue, alpha)
-            .normal(normal.x.toFloat(), normal.y.toFloat(), normal.z.toFloat())
-        bufferBuilder.vertex(player.x.toFloat(), player.y.toFloat(), player.z.toFloat())
-            .color(color.red, color.green, color.blue, alpha)
-            .normal(normal.x.toFloat(), normal.y.toFloat(), normal.z.toFloat())
-        val buffer = bufferBuilder.end()
-        vertexBuffer.bind()
-        vertexBuffer.upload(buffer)
-        vertexBuffer.draw(viewMatrix, projMatrix, shader)
-
-    }
-
-    /**
-     * Processes events for rendering block tracers or esp's in the world.
-     * @param context The world render context.
-     */
-    fun last(context: WorldRenderContext): Boolean {
-//        CHUNK_RADIUS = GavinsModClient.minecraftClient.options.viewDistance.value
-//        val minecraft = MinecraftClient.getInstance()
-//        val level = minecraft.world
-//        val player = minecraft.player
-//        val stack = context.matrixStack()
-//        assert(stack != null)
-//        val delta = context.tickCounter().getTickDelta(true)
-//        val mainCamera = minecraft.gameRenderer.camera
-//        val camera = mainCamera.pos
-//        setupRenderSystem()
-//        stack!!.push()
-//        val tessellator = RenderSystem.renderThreadTesselator()
-//        val buffer = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR)
-//        RenderSystem.applyModelViewMatrix()
-//        stack.translate(-camera.x, -camera.y, -camera.z)
-//        assert(player != null)
-//        val playerPos = getNewPlayerPosition(delta, mainCamera)
-//        assert(level != null)
-//        val chunkX = player!!.chunkPos.x
-//        val chunkZ = player.chunkPos.z
-////        drawBlockMods(level, stack, buffer, playerPos, chunkX, chunkZ, delta)
-////        drawEntityMods(level, player, stack, delta, buffer, playerPos)
-////        val event = WorldRenderEvent(level!!, stack, buffer, delta)
-////        EventManager.eventManager.call(event)
-//        try {
-//            val e = buffer.end()
-//            BufferRenderer.drawWithGlobalProgram(e)
-//        } catch (e: IllegalStateException) {
-//            return false
-//        }
-//        stack.pop()
-//        resetRenderSystem()
-        return true
-    }
 
     /**
      * Resets the render system to the default state.
@@ -205,168 +67,6 @@ object RenderUtils {
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
         RenderSystem.disableBlend()
         GL11.glDisable(GL11.GL_LINE_SMOOTH)
-    }
-
-    /**
-     * Sets up the render system for the tracers and esps to work.
-     */
-    private fun setupRenderSystem() {
-        RenderSystem.setShader { GameRenderer.getPositionColorProgram() }
-        RenderSystem.enableBlend()
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
-    }
-
-    /**
-     * Draws Chest ESPs and tracers.
-     *
-     * @param level     The world.
-     * @param stack     The matrix stack.
-     * @param buffer    The buffer to write to.
-     * @param playerPos The player's position.
-     * @param chunkX   The player's chunk x.
-     * @param chunkZ   The player's chunk z.
-     */
-    private fun drawBlockMods(
-        level: ClientWorld?,
-        stack: MatrixStack,
-        buffer: BufferBuilder,
-        playerPos: Vec3d,
-        chunkX: Int,
-        chunkZ: Int,
-        delta: Float
-    ) {
-        for (x in -CHUNK_RADIUS..CHUNK_RADIUS) {
-            for (z in -CHUNK_RADIUS..CHUNK_RADIUS) {
-                val chunkX1 = chunkX + x
-                val chunkZ1 = chunkZ + z
-                if (level!!.getChunk(chunkX1, chunkZ1) != null) {
-                    val chunk = level.getChunk(chunkX1, chunkZ1)
-                    val blockEntities = chunk.blockEntities
-                    for ((blockPos, blockEntity) in blockEntities) {
-                        val aabb = Box(blockPos)
-                        val boxPos = aabb.center
-                        val event = BlockEntityRenderEvent(blockEntity, stack, buffer, boxPos, playerPos, delta)
-                        EventManager.eventManager.call(event)
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Draws a box on the world.
-     *
-     * @param stack  The matrix stack.
-     * @param buffer The buffer to write to.
-     * @param aabb   The box to draw.
-     * @param c      The color to draw the box in.
-     */
-    @JvmOverloads
-    fun drawBox(stack: MatrixStack?, buffer: BufferBuilder?, aabb: Box, c: Color, alpha: Float = 1f) {
-        // draw vertices of the box
-        val x1 = aabb.minX.toFloat()
-        val y1 = aabb.minY.toFloat()
-        val z1 = aabb.minZ.toFloat()
-        val x2 = aabb.maxX.toFloat()
-        val y2 = aabb.maxY.toFloat()
-        val z2 = aabb.maxZ.toFloat()
-        val matrix4f = stack!!.peek().positionMatrix
-        val color = c.getAsInt(alpha)
-        stack.push()
-        renderPlane(buffer!!, matrix4f, x1, x2, y1, y1, z1, z2, color)
-        renderPlane(buffer, matrix4f, x2, x2, y1, y2, z1, z2, color)
-        renderPlane(buffer, matrix4f, x1, x2, y2, y2, z1, z2, color)
-        renderPlane(buffer, matrix4f, x1, x1, y1, y2, z1, z2, color)
-        stack.pop()
-    }
-
-    /**
-     * Renders a 2 dimensional plane.
-     * @param buffer The buffer to write to.
-     * @param matrix4f The matrix to use.
-     * @param x1 The first x coordinate.
-     * @param x2 The second x coordinate.
-     * @param y1 The first y coordinate.
-     * @param y2 The second y coordinate.
-     * @param z1 The first z coordinate.
-     * @param z2 The second z coordinate.
-     * @param c The color to draw the plane in.
-     */
-    private fun renderPlane(
-        buffer: BufferBuilder,
-        matrix4f: Matrix4f,
-        x1: Float,
-        x2: Float,
-        y1: Float,
-        y2: Float,
-        z1: Float,
-        z2: Float,
-        c: Int
-    ) {
-        if (x1 == x2) {
-            buffer.vertex(matrix4f, x1, y1, z1).color(c)
-            buffer.vertex(matrix4f, x1, y2, z1).color(c)
-
-            buffer.vertex(matrix4f, x1, y2, z1).color(c)
-            buffer.vertex(matrix4f, x1, y2, z2).color(c)
-
-            buffer.vertex(matrix4f, x1, y2, z2).color(c)
-            buffer.vertex(matrix4f, x1, y1, z2).color(c)
-
-            buffer.vertex(matrix4f, x1, y1, z2).color(c)
-            buffer.vertex(matrix4f, x1, y1, z1).color(c)
-        } else if (z1 == z2) {
-            buffer.vertex(matrix4f, x1, y1, z1).color(c)
-            buffer.vertex(matrix4f, x2, y1, z1).color(c)
-
-            buffer.vertex(matrix4f, x2, y1, z1).color(c)
-            buffer.vertex(matrix4f, x2, y2, z1).color(c)
-
-            buffer.vertex(matrix4f, x2, y2, z1).color(c)
-            buffer.vertex(matrix4f, x1, y2, z1).color(c)
-
-            buffer.vertex(matrix4f, x1, y2, z1).color(c)
-            buffer.vertex(matrix4f, x1, y1, z1).color(c)
-        } else if (y1 == y2) {
-            buffer.vertex(matrix4f, x1, y1, z1).color(c)
-            buffer.vertex(matrix4f, x2, y1, z1).color(c)
-
-            buffer.vertex(matrix4f, x2, y1, z1).color(c)
-            buffer.vertex(matrix4f, x2, y1, z2).color(c)
-
-            buffer.vertex(matrix4f, x2, y1, z2).color(c)
-            buffer.vertex(matrix4f, x1, y1, z2).color(c)
-
-            buffer.vertex(matrix4f, x1, y1, z2).color(c)
-            buffer.vertex(matrix4f, x1, y1, z1).color(c)
-        }
-    }
-
-    /**
-     * Draws the Entity based ESP's and tracers.
-     *
-     * @param level     The world.
-     * @param player    The player.
-     * @param stack     The matrix stack.
-     * @param delta     The change in time.
-     * @param buffer    The buffer to write to.
-     * @param playerPos The player's position.
-     */
-    private fun drawEntityMods(
-        level: ClientWorld?,
-        player: ClientPlayerEntity?,
-        stack: MatrixStack,
-        delta: Float,
-        buffer: BufferBuilder,
-        playerPos: Vec3d
-    ) {
-        level!!.entities.forEach(Consumer { e: Entity ->
-            if (e.squaredDistanceTo(player) > CHUNK_RADIUS * 64 * 8 || player === e) return@Consumer
-            val aabb = e.boundingBox
-            val boxPos = aabb.center
-            val event = EntityRenderEvent(e, stack, buffer, boxPos, playerPos, delta)
-            EventManager.eventManager.call(event)
-        })
     }
 
     /**
@@ -432,33 +132,10 @@ object RenderUtils {
         get() = gamma <= LAST_GAMMA
 
     /**
-     * Stores the current gamma value as the last gamma value.
-     */
-    fun setLastGamma() {
-        if (gamma > 1) return
-        LAST_GAMMA = gamma
-    }
-
-    /**
      * Returns the last gamma value before the gamma was set to full bright.
      */
-    fun getLastGamma(): Double {
+    private fun getLastGamma(): Double {
         return LAST_GAMMA
-    }
-
-    /**
-     * Increments the gamma value by 0.2f for a smooth transition.
-     */
-    private fun fadeGammaUp() {
-        gamma += 0.2f
-    }
-
-    /**
-     * Decrements the gamma value by 0.2f for a smooth transition.
-     */
-    private fun fadeGammaDown() {
-        gamma -= 0.2f
-        if (gamma < getLastGamma()) gamma = getLastGamma()
     }
 
     /**
@@ -530,7 +207,7 @@ object RenderUtils {
         return camera.pos
     }
 
-    fun getCameraBlockPos(): BlockPos {
+    private fun getCameraBlockPos(): BlockPos {
         val camera = GavinsModClient.minecraftClient.entityRenderDispatcher.camera
         return camera.blockPos
     }
@@ -539,17 +216,16 @@ object RenderUtils {
         return RegionPos.fromBlockPos(getCameraBlockPos())
     }
 
-    fun applyRegionalRenderOffset(stack: MatrixStack, region: RegionPos) {
+    private fun applyRegionalRenderOffset(stack: MatrixStack, region: RegionPos) {
         val offset = region.toVec3d().subtract(getCameraPos())
         stack.translate(offset.x, offset.y, offset.z)
     }
 
     fun drawOutlinedBox(bb: Box, vertexBuffer: VertexBuffer, color: Color = Colors.WHITE, alpha: Float = 1f) {
-        var tessellator = RenderSystem.renderThreadTesselator()
-        var bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION);
+        val tessellator = RenderSystem.renderThreadTesselator()
+        val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION);
         drawOutlinedBox(bb, bufferBuilder)
         val buffer = bufferBuilder.end()
-
         vertexBuffer.bind()
         vertexBuffer.upload(buffer)
         VertexBuffer.unbind()
@@ -687,7 +363,6 @@ object RenderUtils {
         matrixStack.push()
         val region = getCameraRegionPos()
         applyRegionalRenderOffset(matrixStack, region);
-//        RenderSystem.setShader(GameRenderer::getPositionProgram);
     }
 }
 

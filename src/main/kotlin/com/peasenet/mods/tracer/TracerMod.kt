@@ -62,16 +62,9 @@ import org.lwjgl.glfw.GLFW
  * @version 07-18-2023
  */
 abstract class TracerMod<T>(
-    name: String,
-    translationKey: String,
-    chatCommand: String,
-    keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN
+    name: String, translationKey: String, chatCommand: String, keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN
 ) : Mod(
-    name,
-    translationKey,
-    chatCommand,
-    ModCategory.TRACERS,
-    keyBinding
+    name, translationKey, chatCommand, ModCategory.TRACERS, keyBinding
 ), CameraBobListener, RenderListener {
     protected var entityList: MutableList<T> = ArrayList()
     protected var vertexBuffer: VertexBuffer? = null

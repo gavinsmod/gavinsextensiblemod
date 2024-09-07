@@ -32,6 +32,18 @@ import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.Box
 
+/**
+ * A class that represents an ESP mod for block entities.
+ * @param T The type of block entity to render.
+ * @param name The name of the mod.
+ * @param translationKey The translation key of the mod.
+ * @param chatCommand The chat command of the mod.
+ *
+ * @author GT3CH1
+ * @version 09-01-2024
+ * @since 09-01-2024
+ *
+ */
 abstract class BlockEntityEsp<T : BlockEntity>(
     name: String, translationKey: String, chatCommand: String, val filter: (BlockEntity) -> Boolean
 ) : EspMod<T>(
@@ -46,6 +58,7 @@ abstract class BlockEntityEsp<T : BlockEntity>(
             for (z in -RenderUtils.CHUNK_RADIUS..RenderUtils.CHUNK_RADIUS) {
                 val chunk = level!!.getChunk(x + client.getPlayer().chunkPos.x, z + client.getPlayer().chunkPos.z)
                 for ((_, blockEntity) in chunk.blockEntities.filter { filter(it.value) }) {
+                    if (espList.size > 100) return
                     espList.add(blockEntity as T)
                 }
             }

@@ -64,39 +64,4 @@ class ModMobEsp : EntityEsp<Entity>("Mob ESP",
     }
 
     override fun getColor(): Color = Colors.BLUE
-
-//    override fun onTick() {
-//        super.onTick()
-//        espList.clear()
-//        espList.addAll(client.getWorld().entities.filter { e -> e.isLiving }.filter { e -> e !is PlayerEntity }
-//            .filter { e -> !e.isRemoved }.filter { e -> config.mobIsShown(e.type) })
-//    }
-
-//    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
-//        if (espList.isEmpty())
-//            return;
-//        RenderUtils.setupRender(matrixStack)
-//
-//        espList.forEach { e ->
-//            matrixStack.push()
-//            val box = e.boundingBox
-//            val x = MathHelper.lerp(partialTicks, e.lastRenderX.toFloat(), e.x.toFloat()) - e.x
-//            val y = MathHelper.lerp(partialTicks, e.lastRenderY.toFloat(), e.y.toFloat()) - e.y
-//            val z = MathHelper.lerp(partialTicks, e.lastRenderZ.toFloat(), e.z.toFloat()) - e.z
-//
-//            val lerpedPos = Vec3d(x, y, z).subtract(RenderUtils.getCameraRegionPos().toVec3d())
-//            matrixStack.translate(lerpedPos.x, lerpedPos.y, lerpedPos.z)
-//            val color = if (e.type.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
-//            val box2 = Box(x + box.minX, y + box.minY, z + box.minZ, x + box.maxX, y + box.maxY, z + box.maxZ)
-//            RenderUtils.drawOutlinedBox(
-//                box2,
-//                vertexBuffer!!,
-//                matrixStack,
-//                color,
-//                config.alpha
-//            )
-//            matrixStack.pop()
-//        }
-//        RenderUtils.cleanupRender(matrixStack)
-//    }
 }

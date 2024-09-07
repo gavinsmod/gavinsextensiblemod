@@ -23,21 +23,15 @@
  */
 package com.peasenet.mods.tracer
 
-import com.peasenet.config.TracerConfig
 import com.peasenet.gavui.color.Color
-import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
-import com.peasenet.util.RenderUtils
-import com.peasenet.util.event.data.BlockEntityRender
-import com.peasenet.util.event.data.EntityRender
-import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.FurnaceBlockEntity
-import net.minecraft.client.util.math.MatrixStack
 
 /**
- * @author gt3ch1
- * @version 04-11-2023
  * A mod that allows the player to see tracers towards furnaces.
+ * @author gt3ch1
+ * @version 09-06-2024
+ * @since 04-11-2023
  */
 class ModFurnaceTracer : BlockEntityTracer<FurnaceBlockEntity>("Furnace Tracer",
     "gavinsmod.mod.tracer.furnace",

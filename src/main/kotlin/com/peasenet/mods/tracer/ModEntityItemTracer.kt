@@ -43,9 +43,10 @@ import net.minecraft.entity.ItemEntity
 import net.minecraft.util.math.Box
 
 /**
- * @author gt3ch1
- * @version 04-11-2023
  * A mod that allows the player to see tracers towards items.
+ * @author gt3ch1
+ * @version 09-06-2024
+ * @since 04-11-2023
  */
 class ModEntityItemTracer :
     EntityTracer<ItemEntity>("Item Tracer", "gavinsmod.mod.tracer.item", "itemtracer", { it is ItemEntity }),

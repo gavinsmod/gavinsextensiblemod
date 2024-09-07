@@ -23,22 +23,15 @@
  */
 package com.peasenet.mods.tracer
 
-import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.gavui.color.Color
 import com.peasenet.settings.SettingBuilder
-import com.peasenet.util.RenderUtils
-import com.peasenet.util.listeners.RenderListener
 import net.minecraft.block.entity.BeehiveBlockEntity
-import net.minecraft.client.render.BufferRenderer
-import net.minecraft.client.render.GameRenderer
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormats
-import net.minecraft.client.util.math.MatrixStack
 
 /**
- * @author gt3ch1
- * @version 04-11-2023
  * A mod that allows the player to see tracers towards beehives.
+ * @author gt3ch1
+ * @version 09-06-2024
+ * @since 04-11-2023
  */
 class ModBeehiveTracer : BlockEntityTracer<BeehiveBlockEntity>("Beehive Tracer",
     "gavinsmod.mod.tracer.beehive",

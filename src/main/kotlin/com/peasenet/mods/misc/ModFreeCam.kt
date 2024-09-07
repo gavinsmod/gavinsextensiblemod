@@ -23,10 +23,13 @@
  */
 package com.peasenet.mods.misc
 
+import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.config.EspConfig
 import com.peasenet.config.MiscConfig
 import com.peasenet.config.TracerConfig
 import com.peasenet.main.Settings
+import com.peasenet.mods.esp.EspMod
+import com.peasenet.mods.esp.EspMod.Companion
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.FakePlayer
 import com.peasenet.util.PlayerUtils
@@ -35,12 +38,15 @@ import com.peasenet.util.event.AirStrafeEvent
 import com.peasenet.util.event.data.OutputPacket
 import com.peasenet.util.listeners.AirStrafeListener
 import com.peasenet.util.listeners.PacketSendListener
+import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
+import com.peasenet.util.math.MathUtils
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.render.BufferBuilder
+import net.minecraft.client.render.*
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
+import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 
 /**
@@ -53,7 +59,7 @@ class ModFreeCam : MiscMod(
     "Freecam",
     "gavinsmod.mod.misc.freecam",
     "freecam"
-), PacketSendListener, WorldRenderListener, AirStrafeListener {
+), PacketSendListener, RenderListener, AirStrafeListener {
     private var fake: FakePlayer? = null
 
     init {
@@ -75,7 +81,7 @@ class ModFreeCam : MiscMod(
         super.activate()
         fake = FakePlayer()
         em.subscribe(PacketSendListener::class.java, this)
-        em.subscribe(WorldRenderListener::class.java, this)
+        em.subscribe(RenderListener::class.java, this)
         em.subscribe(AirStrafeListener::class.java, this)
     }
 
@@ -98,7 +104,7 @@ class ModFreeCam : MiscMod(
 
         fake!!.remove()
         em.unsubscribe(PacketSendListener::class.java, this)
-        em.unsubscribe(WorldRenderListener::class.java, this)
+        em.unsubscribe(RenderListener::class.java, this)
         em.unsubscribe(AirStrafeListener::class.java, this)
         client.getPlayer().abilities.flying = false
         client.getPlayer().velocity = Vec3d.ZERO
@@ -106,13 +112,6 @@ class ModFreeCam : MiscMod(
 
     }
 
-    override fun onWorldRender(level: ClientWorld, stack: MatrixStack, bufferBuilder: BufferBuilder, delta: Float) {
-        val camera = MinecraftClient.getInstance().gameRenderer.camera
-        val playerPos = PlayerUtils.getNewPlayerPosition(delta, camera)
-        val aabb = fake!!.boundingBox
-//        RenderUtils.renderSingleLine(stack, bufferBuilder, playerPos, aabb.center, Settings.getConfig<TracerConfig>("tracer").playerColor)
-        RenderUtils.drawBox(stack, bufferBuilder, aabb, Settings.getConfig<EspConfig>("esp").playerColor)
-    }
 
     override fun onPacketSend(packet: OutputPacket) {
         if (packet.packet is PlayerMoveC2SPacket) packet.cancel()
@@ -125,9 +124,46 @@ class ModFreeCam : MiscMod(
 
     companion object {
         private val config: MiscConfig
-        get() {
-            return Settings.getConfig<MiscConfig>("misc")
-        }
+            get() {
+                return Settings.getConfig<MiscConfig>("misc")
+            }
+    }
+
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+        RenderUtils.setupRender(matrixStack)
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
+        RenderSystem.applyModelViewMatrix()
+        val entry = matrixStack.peek().positionMatrix
+        val tessellator = RenderSystem.renderThreadTesselator()
+        val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+        val e = fake!!
+        var box = e.boundingBox
+        val lerped = MathUtils.lerp(
+            partialTicks,
+            e.pos,
+            Vec3d(e.lastRenderX, e.lastRenderY, e.lastRenderZ),
+            RenderUtils.getCameraRegionPos()
+        )
+        box = Box(
+            lerped.x + box.minX,
+            lerped.y + box.minY,
+            lerped.z + box.minZ,
+            lerped.x + box.maxX,
+            lerped.y + box.maxY,
+            lerped.z + box.maxZ
+        )
+        RenderUtils.drawOutlinedBox(
+            box,
+            bufferBuilder,
+            entry,
+            Settings.getConfig<EspConfig>("esp").playerColor,
+            Settings.getConfig<EspConfig>("esp").alpha
+        )
+        val end = bufferBuilder.end()
+        BufferRenderer.drawWithGlobalProgram(end)
+        RenderUtils.cleanupRender(matrixStack)
+
     }
 
 }
