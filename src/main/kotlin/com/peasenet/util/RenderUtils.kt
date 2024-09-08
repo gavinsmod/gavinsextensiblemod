@@ -237,6 +237,18 @@ object RenderUtils {
         )
     }
 
+    fun drawOutlinedPlane(
+        start: Vec3d,
+        end: Vec3d,
+        buffer: BufferBuilder,
+        matrix4f: Matrix4f,
+        color: Color = Colors.WHITE,
+        alpha: Float = 1f
+    ) {
+        val box = Box(start.x, start.y, start.z, end.x, end.y, end.z)
+        drawOutlinedBox(box, buffer, matrix4f, color, alpha)
+    }
+
     /**
      * Draws an outlined box.
      * @param bb The box to draw.
