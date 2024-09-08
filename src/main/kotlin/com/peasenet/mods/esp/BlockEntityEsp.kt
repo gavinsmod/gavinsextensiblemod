@@ -67,9 +67,9 @@ abstract class BlockEntityEsp<T : BlockEntity>(
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         if (espList.isEmpty()) return
-        RenderUtils.setupRender(matrixStack)
-        RenderSystem.setShader(GameRenderer::getPositionProgram);
-        espList.forEach { e ->
+        RenderUtils.setupRenderWithShader(matrixStack)
+        val bufferBuilder = RenderUtils.getBufferBuilder()
+        for (e in espList) {
             matrixStack.push()
             val pos = e.pos.subtract(RenderUtils.getCameraRegionPos().toVec3i())
             val bb = Box(
@@ -80,9 +80,15 @@ abstract class BlockEntityEsp<T : BlockEntity>(
                 pos.y + 1.0,
                 pos.z.toDouble()
             )
-            RenderUtils.drawOutlinedBox(bb, vertexBuffer!!, matrixStack, getColor(), getAlpha())
+            RenderUtils.drawOutlinedBox(
+                bb,
+                bufferBuilder,
+                matrixStack.peek().positionMatrix,
+                getColor(),
+                getAlpha()
+            )
             matrixStack.pop()
         }
-        RenderUtils.cleanupRender(matrixStack)
+        RenderUtils.drawBuffer(bufferBuilder, matrixStack)
     }
 }

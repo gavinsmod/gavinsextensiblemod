@@ -69,6 +69,10 @@ object MathUtils {
         return lerp(delta, pos, oldPos).subtract(region.toVec3d())
     }
 
+    fun lerp(delta: Float, pos: Vec3d, entity: Entity, region: RegionPos): Vec3d {
+        return lerp(delta, pos, Vec3d(entity.prevX, entity.prevY, entity.prevZ)).subtract(region.toVec3d())
+    }
+
     /**
      * Returns the linear interpolation of the given position.
      * @param delta The delta to lerp by.

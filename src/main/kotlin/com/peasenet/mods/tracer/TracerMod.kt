@@ -29,7 +29,6 @@ import com.peasenet.main.Settings
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
 import com.peasenet.util.RenderUtils
-import com.peasenet.util.event.RenderEvent
 import com.peasenet.util.event.data.CameraBob
 import com.peasenet.util.listeners.BlockEntityRenderListener
 import com.peasenet.util.listeners.CameraBobListener
@@ -67,22 +66,17 @@ abstract class TracerMod<T>(
     name, translationKey, chatCommand, ModCategory.TRACERS, keyBinding
 ), CameraBobListener, RenderListener {
     protected var entityList: MutableList<T> = ArrayList()
-    protected var vertexBuffer: VertexBuffer? = null
 
     override fun onEnable() {
         super.onEnable()
         em.subscribe(CameraBobListener::class.java, this)
         em.subscribe(RenderListener::class.java, this)
-        vertexBuffer = VertexBuffer(VertexBuffer.Usage.STATIC)
-        val bb = Box(-0.5, 0.0, -0.5, 0.5, 1.0, 0.5)
-        RenderUtils.drawOutlinedBox(bb, vertexBuffer!!)
     }
 
     override fun onDisable() {
         super.onDisable()
         em.unsubscribe(CameraBobListener::class.java, this)
         em.unsubscribe(RenderListener::class.java, this)
-        vertexBuffer?.close()
     }
 
     override fun onCameraViewBob(c: CameraBob) {

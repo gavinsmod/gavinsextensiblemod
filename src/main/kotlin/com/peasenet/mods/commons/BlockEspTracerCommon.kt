@@ -83,7 +83,6 @@ abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
     }
 
     // A small vertex buffer for rendering the block outlines.
-    protected var vertexBuffer: VertexBuffer? = null
 
     init {
         val subSetting = SettingBuilder().setTitle(translationKey).buildSubSetting()
@@ -119,9 +118,6 @@ abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
         em.subscribe(WorldRenderListener::class.java, this)
         em.subscribe(ChunkUpdateListener::class.java, this)
         em.subscribe(RenderListener::class.java, this)
-        vertexBuffer = VertexBuffer(VertexBuffer.Usage.STATIC)
-        val box = Box(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5)
-        RenderUtils.drawOutlinedBox(box, vertexBuffer!!)
         // search for chunks within render distance
         GemExecutor.execute {
             RenderUtils.getVisibleChunks().forEach(this::searchChunk)

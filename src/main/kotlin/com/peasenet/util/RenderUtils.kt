@@ -28,9 +28,8 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.main.GavinsModClient
 import com.peasenet.mixinterface.ISimpleOption
+import com.peasenet.util.math.MathUtils
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gl.ShaderProgram
-import net.minecraft.client.gl.VertexBuffer
 import net.minecraft.client.render.*
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
@@ -44,9 +43,10 @@ import org.lwjgl.opengl.GL11
 
 
 /**
- * @author gt3ch1
- * @version 07-18-2023
  * A utility class for rendering tracers and esp's.
+ * @author gt3ch1
+ * @version 09-08-2024
+ * @since 07-18-2023
  */
 object RenderUtils {
     /**
@@ -132,60 +132,21 @@ object RenderUtils {
         get() = gamma <= LAST_GAMMA
 
     /**
-     * Returns the last gamma value before the gamma was set to full bright.
+     * Gets the current render distance based off of the maximum of the client and simulation render distances.
+     * @return The current render distance.
      */
-    private fun getLastGamma(): Double {
-        return LAST_GAMMA
-    }
-
-    /**
-     * Draws a box on screen.
-     *
-     * @param acColor     The color of the box as a 4 point float array.
-     * @param xt1         The x coordinate of the top left corner of the box.
-     * @param yt1         The y coordinate of the top left corner of the box.
-     * @param xt2         The x coordinate of the bottom right corner of the box.
-     * @param yt2         The y coordinate of the bottom right corner of the box.
-     * @param matrixStack The matrix stack used to draw boxes on screen.
-     * @param alpha       The alpha value of the box.
-     */
-    fun drawBox(acColor: FloatArray, xt1: Int, yt1: Int, xt2: Int, yt2: Int, matrixStack: MatrixStack, alpha: Float) {
-        // set alpha to be between 0 and 1
-        var newAlpha = alpha
-        newAlpha = 0f.coerceAtLeast(1f.coerceAtMost(newAlpha))
-        RenderSystem.setShader { GameRenderer.getPositionProgram() }
-        RenderSystem.enableBlend()
-        val matrix = matrixStack.peek().positionMatrix
-        val tessellator = Tessellator.getInstance()
-        RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], newAlpha)
-        var bb = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION)
-        drawBox(xt1, yt1, xt2, yt2, matrix, bb)
-        BufferRenderer.drawWithGlobalProgram(bb.end())
-    }
-
-    /**
-     * Draws a box from the given points
-     *
-     * @param xt1           - The x coordinate of the top left corner of the box.
-     * @param yt1           - The y coordinate of the top left corner of the box.
-     * @param xt2           - The x coordinate of the bottom right corner of the box.
-     * @param yt2           - The y coordinate of the bottom right corner of the box.
-     * @param matrix        - The matrix stack used to draw boxes on screen.
-     * @param bufferBuilder - The buffer builder used to draw boxes on screen.
-     */
-    private fun drawBox(xt1: Int, yt1: Int, xt2: Int, yt2: Int, matrix: Matrix4f, bufferBuilder: BufferBuilder) {
-        bufferBuilder.vertex(matrix, xt1.toFloat(), yt1.toFloat(), 0f)
-        bufferBuilder.vertex(matrix, xt1.toFloat(), yt2.toFloat(), 0f)
-        bufferBuilder.vertex(matrix, xt2.toFloat(), yt2.toFloat(), 0f)
-        bufferBuilder.vertex(matrix, xt2.toFloat(), yt1.toFloat(), 0f)
-    }
-
     fun getRenderDistance(): Int {
         val client = GavinsModClient.minecraftClient.options.viewDistance.value + 1
         val networkView = GavinsModClient.minecraftClient.getWorld().simulationDistance + 1
         return maxOf(client, networkView)
     }
 
+    /**
+     * Gets the visible chunks around the player based off of the render distance.
+     * @return The visible chunks around the player.
+     *
+     * @see getRenderDistance
+     */
     fun getVisibleChunks(): List<Chunk> {
         val chunks = ArrayList<Chunk>()
         val player = GavinsModClient.minecraftClient.getPlayer()
@@ -202,50 +163,88 @@ object RenderUtils {
         return chunks
     }
 
+    /**
+     * Gets the camera position.
+     * @return The camera position.
+     */
     fun getCameraPos(): Vec3d {
         val camera = MinecraftClient.getInstance().blockEntityRenderDispatcher.camera
         return camera.pos
     }
 
+    /**
+     * Gets the camera block position.
+     * @return The camera block position.
+     */
     private fun getCameraBlockPos(): BlockPos {
         val camera = GavinsModClient.minecraftClient.entityRenderDispatcher.camera
         return camera.blockPos
     }
 
+    /**
+     * Gets the camera region position.
+     * @return The camera region position.
+     */
     fun getCameraRegionPos(): RegionPos {
         return RegionPos.fromBlockPos(getCameraBlockPos())
     }
 
+    /**
+     * Applies the regional render offset to the given matrix stack.
+     * @param stack The matrix stack to apply the offset to.
+     * @param region The region to apply the offset from.
+     */
     private fun applyRegionalRenderOffset(stack: MatrixStack, region: RegionPos) {
         val offset = region.toVec3d().subtract(getCameraPos())
         stack.translate(offset.x, offset.y, offset.z)
     }
 
-    fun drawOutlinedBox(bb: Box, vertexBuffer: VertexBuffer, color: Color = Colors.WHITE, alpha: Float = 1f) {
-        val tessellator = RenderSystem.renderThreadTesselator()
-        val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION);
-        drawOutlinedBox(bb, bufferBuilder)
-        val buffer = bufferBuilder.end()
-        vertexBuffer.bind()
-        vertexBuffer.upload(buffer)
-        VertexBuffer.unbind()
-    }
-
+    /**
+     * Draws an outlined box. This will lerp the box to the current position of the entity.
+     * @param partialTicks The delta time.
+     * @param bufferBuilder The buffer builder to draw with.
+     * @param matrix4f The matrix to draw with.
+     * @param entity The entity to draw the box around.
+     * @param color The color of the box.
+     * @param alpha The alpha of the box.
+     */
     fun drawOutlinedBox(
-        bb: Box, vertexBuffer: VertexBuffer, matrixStack: MatrixStack, color: Color = Colors.WHITE, alpha: Float = 1f
+        partialTicks: Float,
+        bufferBuilder: BufferBuilder,
+        matrix4f: Matrix4f,
+        entity: Entity,
+        color: Color,
+        alpha: Float
     ) {
-        val viewMatrix = matrixStack.peek().positionMatrix
-        val projMatrix = RenderSystem.getProjectionMatrix()
-        val shader: ShaderProgram? = RenderSystem.getShader()
-        RenderSystem.setShader(GameRenderer::getPositionProgram);
-        RenderSystem.setShaderColor(color.red, color.green, color.blue, alpha)
-        drawOutlinedBox(bb, vertexBuffer)
-        vertexBuffer.bind()
-        vertexBuffer.draw(viewMatrix, projMatrix, shader)
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
-        VertexBuffer.unbind()
+
+        var box = entity.boundingBox
+        val lerped = MathUtils.lerp(
+            partialTicks,
+            entity.pos,
+            entity,
+            getCameraRegionPos()
+        )
+        box = Box(
+            lerped.x + box.minX,
+            lerped.y + box.minY,
+            lerped.z + box.minZ,
+            lerped.x + box.maxX,
+            lerped.y + box.maxY,
+            lerped.z + box.maxZ
+        )
+        drawOutlinedBox(
+            box, bufferBuilder, matrix4f, color, alpha
+        )
     }
 
+    /**
+     * Draws an outlined box.
+     * @param bb The box to draw.
+     * @param buffer The buffer builder to draw with.
+     * @param matrix4f The matrix to draw with.
+     * @param color The color of the box.
+     * @param alpha The alpha of the box.
+     */
     fun drawOutlinedBox(
         bb: Box, buffer: BufferBuilder, matrix4f: Matrix4f, color: Color = Colors.WHITE, alpha: Float = 1f
     ) {
@@ -255,6 +254,7 @@ object RenderUtils {
         val maxX = bb.maxX.toFloat()
         val maxY = bb.maxY.toFloat()
         val maxZ = bb.maxZ.toFloat()
+        // bottom face
         buffer.vertex(matrix4f, minX, minY, minZ).color(color.red, color.green, color.blue, alpha)
         buffer.vertex(matrix4f, maxX, minY, minZ).color(color.red, color.green, color.blue, alpha)
         buffer.vertex(matrix4f, maxX, minY, minZ).color(color.red, color.green, color.blue, alpha)
@@ -263,6 +263,16 @@ object RenderUtils {
         buffer.vertex(matrix4f, minX, minY, maxZ).color(color.red, color.green, color.blue, alpha)
         buffer.vertex(matrix4f, minX, minY, maxZ).color(color.red, color.green, color.blue, alpha)
         buffer.vertex(matrix4f, minX, minY, minZ).color(color.red, color.green, color.blue, alpha)
+        // top face
+        buffer.vertex(matrix4f, minX, maxY, minZ).color(color.red, color.green, color.blue, alpha)
+        buffer.vertex(matrix4f, maxX, maxY, minZ).color(color.red, color.green, color.blue, alpha)
+        buffer.vertex(matrix4f, maxX, maxY, minZ).color(color.red, color.green, color.blue, alpha)
+        buffer.vertex(matrix4f, maxX, maxY, maxZ).color(color.red, color.green, color.blue, alpha)
+        buffer.vertex(matrix4f, maxX, maxY, maxZ).color(color.red, color.green, color.blue, alpha)
+        buffer.vertex(matrix4f, minX, maxY, maxZ).color(color.red, color.green, color.blue, alpha)
+        buffer.vertex(matrix4f, minX, maxY, maxZ).color(color.red, color.green, color.blue, alpha)
+        buffer.vertex(matrix4f, minX, maxY, minZ).color(color.red, color.green, color.blue, alpha)
+        // corners
         buffer.vertex(matrix4f, minX, minY, minZ).color(color.red, color.green, color.blue, alpha)
         buffer.vertex(matrix4f, minX, maxY, minZ).color(color.red, color.green, color.blue, alpha)
         buffer.vertex(matrix4f, maxX, minY, minZ).color(color.red, color.green, color.blue, alpha)
@@ -271,16 +281,113 @@ object RenderUtils {
         buffer.vertex(matrix4f, maxX, maxY, maxZ).color(color.red, color.green, color.blue, alpha)
         buffer.vertex(matrix4f, minX, minY, maxZ).color(color.red, color.green, color.blue, alpha)
         buffer.vertex(matrix4f, minX, maxY, maxZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, minX, maxY, minZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, maxX, maxY, minZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, maxX, maxY, minZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, maxX, maxY, maxZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, maxX, maxY, maxZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, minX, maxY, maxZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, minX, maxY, maxZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, minX, maxY, minZ).color(color.red, color.green, color.blue, alpha)
     }
 
+    /**
+     * Draws a line from the center of the clients screen to the given end point.
+     * @param buffer The buffer builder to draw with.
+     * @param matrix4f The matrix to draw with.
+     * @param partialTicks The delta time.
+     * @param end The end point of the line.
+     * @param color The color of the line.
+     * @param alpha The alpha of the line.
+     * @param offsetEnd Whether to offset the end point by the camera region position.
+     */
+    fun drawSingleLine(
+        buffer: BufferBuilder,
+        matrix4f: Matrix4f,
+        partialTicks: Float,
+        end: Vec3d,
+        color: Color = Colors.WHITE,
+        alpha: Float = 1f,
+        offsetEnd: Boolean = false
+    ) {
+        if (offsetEnd) {
+            drawSingleLine(
+                buffer,
+                matrix4f,
+                getCenterOfScreen(partialTicks),
+                end.subtract(getCameraRegionPos().toVec3d()),
+                color,
+                alpha
+            )
+        } else {
+            drawSingleLine(buffer, matrix4f, getCenterOfScreen(partialTicks), end, color, alpha)
+        }
+    }
+
+    /**
+     * Draws a line from the center of the clients screen to the given end point. This will lerp the end point to
+     * the current position of the entity.
+     * @param buffer The buffer builder to draw with.
+     * @param matrix4f The matrix to draw with.
+     * @param partialTicks The delta time.
+     * @param end The end point of the line.
+     * @param color The color of the line.
+     * @param alpha The alpha of the line.
+     */
+    fun drawSingleLine(
+        buffer: BufferBuilder,
+        matrix4f: Matrix4f,
+        partialTicks: Float,
+        entity: Entity,
+        color: Color = Colors.WHITE,
+        alpha: Float = 1f,
+    ) {
+        val lerpedPos = MathUtils.lerp(
+            partialTicks, entity.pos, Vec3d(
+                entity.prevX,
+                entity.prevY,
+                entity.prevZ
+            ), getCameraRegionPos()
+        )
+        val box = Box(
+            lerpedPos.x + entity.boundingBox.minX,
+            lerpedPos.y + entity.boundingBox.minY,
+            lerpedPos.z + entity.boundingBox.minZ,
+            lerpedPos.x + entity.boundingBox.maxX,
+            lerpedPos.y + entity.boundingBox.maxY,
+            lerpedPos.z + entity.boundingBox.maxZ
+        )
+        val center = box.center
+        drawSingleLine(buffer, matrix4f, getCenterOfScreen(partialTicks), center, color, alpha)
+    }
+
+    /**
+     * Draws a line from the center of the clients screen to the given end point.
+     * @param buffer The buffer builder to draw with.
+     * @param matrix4f The matrix to draw with.
+     * @param partialTicks The delta time.
+     * @param end The end point of the line.
+     * @param color The color of the line.
+     * @param alpha The alpha of the line.
+     */
+    fun drawSingleLine(
+        buffer: BufferBuilder,
+        matrix4f: Matrix4f,
+        partialTicks: Float,
+        end: BlockPos,
+        color: Color = Colors.WHITE,
+        alpha: Float = 1f
+    ) {
+        drawSingleLine(
+            buffer,
+            matrix4f,
+            getCenterOfScreen(partialTicks),
+            end.subtract(getCameraRegionPos().toVec3i()).toCenterPos(),
+            color,
+            alpha
+        )
+    }
+
+    /**
+     * Draws a line from the center of the clients screen to the given end point.
+     * @param buffer The buffer builder to draw with.
+     * @param matrix4f The matrix to draw with.
+     * @param end The end point of the line.
+     * @param color The color of the line.
+     * @param alpha The alpha of the line.
+     */
     fun drawSingleLine(
         buffer: BufferBuilder,
         matrix4f: Matrix4f,
@@ -292,7 +399,16 @@ object RenderUtils {
         drawSingleLine(buffer, matrix4f, start.toVector3f(), end.toVector3f(), color, alpha)
     }
 
-    fun drawSingleLine(
+    /**
+     * Draws a line from the center of the clients screen to the given end point.
+     * @param bufferBuilder The buffer builder to draw with.
+     * @param matrix4f The matrix to draw with.
+     * @param start The start point of the line.
+     * @param end The end point of the line.
+     * @param color The color of the line.
+     * @param alpha The alpha of the line.
+     */
+    private fun drawSingleLine(
         bufferBuilder: BufferBuilder,
         matrix4f: Matrix4f,
         start: Vector3f,
@@ -308,7 +424,12 @@ object RenderUtils {
         ).color(color.red, color.green, color.blue, alpha)
     }
 
-    fun drawOutlinedBox(bb: Box, buffer: BufferBuilder) {
+    /**
+     * Draws an outlined box.
+     * @param bb The box to draw.
+     * @param buffer The buffer builder to draw with.
+     */
+    private fun drawOutlinedBox(bb: Box, buffer: BufferBuilder) {
         val minX = bb.minX.toFloat()
         val minY = bb.minY.toFloat()
         val minZ = bb.minZ.toFloat()
@@ -341,6 +462,10 @@ object RenderUtils {
         buffer.vertex(minX, maxY, minZ)
     }
 
+    /**
+     * Cleans up the render system by popping the matrix stack, resetting the shader color, and enabling depth testing.
+     * @param matrixStack The matrix stack to clean up.
+     */
     fun cleanupRender(matrixStack: MatrixStack) {
         matrixStack.pop()
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
@@ -348,6 +473,11 @@ object RenderUtils {
         GL11.glDisable(GL11.GL_BLEND);
     }
 
+    /**
+     * Gets the look vector of the player.
+     * @param delta The delta time.
+     * @return The look vector of the player.
+     */
     fun getLookVec(delta: Float): Vec3d {
         val mc = MinecraftClient.getInstance()
         val pitch = mc.player!!.getPitch(delta)
@@ -356,6 +486,10 @@ object RenderUtils {
 
     }
 
+    /**
+     * Sets up the render by enabling blending, disabling depth testing, pushing the matrix stack and
+     * applying the regional render offset.
+     */
     fun setupRender(matrixStack: MatrixStack) {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -364,5 +498,59 @@ object RenderUtils {
         val region = getCameraRegionPos()
         applyRegionalRenderOffset(matrixStack, region);
     }
+
+    /**
+     * Sets up the render with the position color shader.
+     */
+    fun setupRenderWithShader(matrixStack: MatrixStack) {
+        setupRender(matrixStack)
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
+        RenderSystem.applyModelViewMatrix()
+    }
+
+    /**
+     * Gets a buffer builder for rendering.
+     *
+     * @return A buffer builder for rendering.
+     */
+    fun getBufferBuilder(): BufferBuilder {
+        val tessellator = Tessellator.getInstance()
+        return tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR)
+    }
+
+    /**
+     * Gets the center of the screen based on the players look vector.
+     * @param partialTicks The delta time.
+     */
+    private fun getCenterOfScreen(partialTicks: Float): Vec3d {
+        val regionVec = getCameraRegionPos().toVec3d();
+        return getLookVec(partialTicks).add(getCameraPos()).subtract(regionVec);
+    }
+
+    /**
+     * Draws the given buffer builder with the global program.
+     */
+    fun drawBuffer(bufferBuilder: BufferBuilder) {
+        val end = bufferBuilder.end()
+        BufferRenderer.drawWithGlobalProgram(end)
+        resetRenderSystem()
+    }
+
+    /**
+     * Draws the given buffer builder with the global program, then cleans up the render.
+     */
+    fun drawBuffer(buffer: BufferBuilder, matrixStack: MatrixStack) {
+        drawBuffer(buffer)
+        cleanupRender(matrixStack)
+    }
+
+    /**
+     * Offsets the given position by the camera region position.
+     */
+    fun offsetPosWithCamera(pos: Vec3d): Vec3d {
+        return pos.subtract(getCameraRegionPos().toVec3d())
+    }
+
 }
 

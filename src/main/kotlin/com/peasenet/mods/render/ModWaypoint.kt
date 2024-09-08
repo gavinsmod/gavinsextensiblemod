@@ -40,10 +40,7 @@ import com.peasenet.util.event.data.CameraBob
 import com.peasenet.util.listeners.CameraBobListener
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.render.BufferRenderer
 import net.minecraft.client.render.GameRenderer
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.Text
 import net.minecraft.util.math.Box
@@ -103,8 +100,8 @@ class ModWaypoint : RenderMod(
      */
     private fun createWaypoint(waypoint: Waypoint) {
         val clickSetting = SettingBuilder().setTitle(Text.literal(waypoint.name)).setCallback {
-                MinecraftClient.getInstance().setScreen(GuiWaypoint(waypoint))
-            }.setHoverable(true).setBackgroundColor(waypoint.color!!).setTransparency(0.5f).buildClickSetting()
+            MinecraftClient.getInstance().setScreen(GuiWaypoint(waypoint))
+        }.setHoverable(true).setBackgroundColor(waypoint.color!!).setTransparency(0.5f).buildClickSetting()
         addSetting(clickSetting)
     }
 
@@ -117,26 +114,20 @@ class ModWaypoint : RenderMod(
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
         val entry = matrixStack.peek().positionMatrix
-        val tessellator = RenderSystem.renderThreadTesselator()
-        val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
-        waypointLocs.forEach { w: Waypoint ->
-            val pos = w.pos.subtract(RenderUtils.getCameraRegionPos().toVec3d())
+        val bufferBuilder = RenderUtils.getBufferBuilder()
+        for (w in waypointLocs) {
+            val pos = RenderUtils.offsetPosWithCamera(w.pos)
             val bb = Box(
                 pos.x + 1, pos.y, pos.z + 1, pos.x, pos.y + 1.0, pos.z
             )
             if (w.isEspEnabled) RenderUtils.drawOutlinedBox(bb, bufferBuilder, entry, w.color!!)
             if (w.isTracerEnabled) {
-                val regionVec = RenderUtils.getCameraRegionPos().toVec3d();
-                val start = RenderUtils.getLookVec(partialTicks).add(RenderUtils.getCameraPos()).subtract(regionVec);
                 RenderUtils.drawSingleLine(
-                    bufferBuilder, entry, start, bb.center, w.color!!
+                    bufferBuilder, entry, partialTicks, bb.center, w.color!!
                 )
             }
         }
-
-        val end = bufferBuilder.end()
-        BufferRenderer.drawWithGlobalProgram(end)
-        RenderUtils.resetRenderSystem()
+        RenderUtils.drawBuffer(bufferBuilder)
     }
 
     override fun onCameraViewBob(c: CameraBob) {

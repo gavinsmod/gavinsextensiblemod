@@ -62,20 +62,14 @@ abstract class BlockEntityTracer<T : BlockEntity>(
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
         RenderSystem.applyModelViewMatrix()
-        val region = RenderUtils.getCameraRegionPos()
         val entry = matrixStack.peek().positionMatrix
-        val tessellator = RenderSystem.renderThreadTesselator()
-        val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
-        val regionVec = region.toVec3d();
-        val start = RenderUtils.getLookVec(partialTicks).add(RenderUtils.getCameraPos()).subtract(regionVec);
+        val bufferBuilder = RenderUtils.getBufferBuilder()
         for (e in entityList) {
-            val entityPos = e.pos.subtract(region.toVec3i()).toCenterPos()
             RenderUtils.drawSingleLine(
-                bufferBuilder, entry, start, entityPos, getColor(), config.alpha
+                bufferBuilder, entry, partialTicks, e.pos, getColor(), config.alpha
             )
         }
-        val end = bufferBuilder.end()
-        BufferRenderer.drawWithGlobalProgram(end)
+        RenderUtils.drawBuffer(bufferBuilder)
         RenderUtils.cleanupRender(matrixStack)
     }
 

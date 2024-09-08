@@ -24,19 +24,17 @@
 
 package com.peasenet.mods.esp
 
+import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.config.EspConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.main.Settings
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
 import com.peasenet.util.RenderUtils
-import com.peasenet.util.event.data.BlockEntityRender
-import com.peasenet.util.event.data.EntityRender
 import com.peasenet.util.listeners.BlockEntityRenderListener
-import com.peasenet.util.listeners.EntityRenderListener
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.gl.VertexBuffer
-import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.client.render.GameRenderer
 import net.minecraft.util.math.Box
 import org.lwjgl.glfw.GLFW
 
@@ -56,7 +54,7 @@ import org.lwjgl.glfw.GLFW
  * @see Mod
  *
  * @author GT3CH1
- * @version 09-03-2024
+ * @version 09-08-2024
  * @since 07-18-2023
  */
 abstract class EspMod<T>(
@@ -65,8 +63,6 @@ abstract class EspMod<T>(
     name, translationKey, chatCommand, ModCategory.ESP, keyBinding
 ), RenderListener {
     protected var espList: MutableList<T> = ArrayList()
-
-    protected var vertexBuffer: VertexBuffer? = null
 
     companion object {
         val config: EspConfig
@@ -78,16 +74,11 @@ abstract class EspMod<T>(
     override fun onEnable() {
         super.onEnable()
         em.subscribe(RenderListener::class.java, this)
-        vertexBuffer = VertexBuffer(VertexBuffer.Usage.STATIC)
-        val bb = Box(-0.5, 0.0, -0.5, 0.5, 1.0, 0.5)
-        RenderUtils.drawOutlinedBox(bb, vertexBuffer!!)
-
     }
 
     override fun onDisable() {
         super.onDisable()
         em.unsubscribe(RenderListener::class.java, this)
-        vertexBuffer?.close()
     }
 
     abstract fun getColor(): Color

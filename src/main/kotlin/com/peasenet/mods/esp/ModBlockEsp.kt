@@ -77,7 +77,8 @@ class ModBlockEsp : BlockEspTracerCommon<BlockEspConfig>("Block ESP",
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         if (chunks.isEmpty()) return
         count = 0
-        RenderUtils.setupRender(matrixStack)
+        RenderUtils.setupRenderWithShader(matrixStack)
+        val bufferBuilder = RenderUtils.getBufferBuilder()
         synchronized(chunks) {
             for (chunk in chunks.values.filter { it.inRenderDistance() }) {
                 for (block in chunk.blocks.values) {
@@ -88,8 +89,8 @@ class ModBlockEsp : BlockEspTracerCommon<BlockEspConfig>("Block ESP",
                     )
                     RenderUtils.drawOutlinedBox(
                         box,
-                        vertexBuffer!!,
-                        matrixStack,
+                        bufferBuilder,
+                        matrixStack.peek().positionMatrix,
                         color = getSettings().blockColor,
                         alpha = getSettings().alpha
                     )
@@ -97,7 +98,7 @@ class ModBlockEsp : BlockEspTracerCommon<BlockEspConfig>("Block ESP",
                 }
             }
         }
-        RenderUtils.cleanupRender(matrixStack)
+        RenderUtils.drawBuffer(bufferBuilder, matrixStack)
     }
 
 

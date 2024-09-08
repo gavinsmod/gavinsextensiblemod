@@ -64,36 +64,15 @@ abstract class EntityEsp<T : Entity>(
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         if (espList.isEmpty()) return
-        RenderUtils.setupRender(matrixStack)
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-        RenderSystem.applyModelViewMatrix()
+        RenderUtils.setupRenderWithShader(matrixStack)
         val entry = matrixStack.peek().positionMatrix
-        val tessellator = RenderSystem.renderThreadTesselator()
-        val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+        val bufferBuilder = RenderUtils.getBufferBuilder()
         for (e in espList) {
-            var box = e.boundingBox
-            val lerped = MathUtils.lerp(
-                partialTicks,
-                e.pos,
-                Vec3d(e.lastRenderX, e.lastRenderY, e.lastRenderZ),
-                RenderUtils.getCameraRegionPos()
-            )
-            box = Box(
-                lerped.x + box.minX,
-                lerped.y + box.minY,
-                lerped.z + box.minZ,
-                lerped.x + box.maxX,
-                lerped.y + box.maxY,
-                lerped.z + box.maxZ
-            )
             RenderUtils.drawOutlinedBox(
-                box, bufferBuilder, entry, getColor(e), config.alpha
+                partialTicks, bufferBuilder, entry, e, getColor(e), config.alpha
             )
         }
-        val end = bufferBuilder.end()
-        BufferRenderer.drawWithGlobalProgram(end)
-        RenderUtils.cleanupRender(matrixStack)
+        RenderUtils.drawBuffer(bufferBuilder, matrixStack)
     }
 
 
