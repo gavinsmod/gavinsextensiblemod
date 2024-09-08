@@ -544,11 +544,8 @@ object RenderUtils {
      * Draws the given buffer builder with the global program.
      */
     fun drawBuffer(bufferBuilder: BufferBuilder) {
-        try {
-            val end = bufferBuilder.end()
-            BufferRenderer.drawWithGlobalProgram(end)
-        } catch (_: IllegalStateException) {
-        }
+        val end = bufferBuilder.end()
+        BufferRenderer.drawWithGlobalProgram(end)
         resetRenderSystem()
     }
 
