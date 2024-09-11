@@ -43,11 +43,9 @@ import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
-import net.minecraft.client.gl.VertexBuffer
 import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.world.ClientWorld
-import net.minecraft.util.math.Box
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.chunk.Chunk
 import org.lwjgl.glfw.GLFW

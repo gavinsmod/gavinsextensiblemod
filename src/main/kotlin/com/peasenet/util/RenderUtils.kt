@@ -35,6 +35,7 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
+import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.chunk.Chunk
 import org.joml.Matrix4f
@@ -239,13 +240,20 @@ object RenderUtils {
 
     fun drawOutlinedPlane(
         start: Vec3d,
-        end: Vec3d,
         buffer: BufferBuilder,
         matrix4f: Matrix4f,
+        direction: Direction,
         color: Color = Colors.WHITE,
         alpha: Float = 1f
     ) {
-        val box = Box(start.x, start.y, start.z, end.x, end.y, end.z)
+        val box = when (direction) {
+            Direction.UP -> Box(start.x, start.y, start.z, start.x + 1.0, start.y, start.z + 1.0)
+            Direction.DOWN -> Box(start.x, start.y, start.z, start.x + 1.0, start.y, start.z + 1.0)
+            Direction.NORTH -> Box(start.x, start.y, start.z, start.x + 1.0, start.y + 1.0, start.z)
+            Direction.SOUTH -> Box(start.x, start.y, start.z + 1.0, start.x + 1.0, start.y + 1.0, start.z + 1.0)
+            Direction.EAST -> Box(start.x + 1.0, start.y, start.z, start.x + 1.0, start.y + 1.0, start.z + 1.0)
+            Direction.WEST -> Box(start.x, start.y, start.z, start.x, start.y + 1.0, start.z + 1.0)
+        }
         drawOutlinedBox(box, buffer, matrix4f, color, alpha)
     }
 
@@ -260,12 +268,23 @@ object RenderUtils {
     fun drawOutlinedBox(
         bb: Box, buffer: BufferBuilder, matrix4f: Matrix4f, color: Color = Colors.WHITE, alpha: Float = 1f
     ) {
-        val minX = bb.minX.toFloat()
-        val minY = bb.minY.toFloat()
-        val minZ = bb.minZ.toFloat()
-        val maxX = bb.maxX.toFloat()
-        val maxY = bb.maxY.toFloat()
-        val maxZ = bb.maxZ.toFloat()
+
+        var minX = bb.minX.toFloat()
+        var minY = bb.minY.toFloat()
+        var minZ = bb.minZ.toFloat()
+        var maxX = bb.maxX.toFloat()
+        var maxY = bb.maxY.toFloat()
+        var maxZ = bb.maxZ.toFloat()
+        var max = Vec3d(maxX.toDouble(), maxY.toDouble(), maxZ.toDouble()).subtract(getCameraRegionPos().toVec3d())
+        var min = Vec3d(minX.toDouble(), minY.toDouble(), minZ.toDouble()).subtract(getCameraRegionPos().toVec3d())
+        val newBB = Box(min, max)
+        minX = newBB.minX.toFloat()
+        minY = newBB.minY.toFloat()
+        minZ = newBB.minZ.toFloat()
+        maxX = newBB.maxX.toFloat()
+        maxY = newBB.maxY.toFloat()
+        maxZ = newBB.maxZ.toFloat()
+
         // bottom face
         buffer.vertex(matrix4f, minX, minY, minZ).color(color.red, color.green, color.blue, alpha)
         buffer.vertex(matrix4f, maxX, minY, minZ).color(color.red, color.green, color.blue, alpha)
@@ -392,6 +411,30 @@ object RenderUtils {
         )
     }
 
+
+    fun drawOutlinedPlane(
+        buffer: BufferBuilder,
+        matrix4f: Matrix4f,
+        start: Vec3d,
+        end: Vec3d,
+        color: Color = Colors.WHITE,
+        alpha: Float = 1f,
+        withOffset: Boolean = false
+    ) {
+        if (!withOffset) {
+            val box = Box(
+                start.x, start.y, start.z, end.x, end.y, end.z
+            )
+            drawOutlinedBox(box, buffer, matrix4f, color, alpha)
+        } else {
+            val box = Box(
+                start.subtract(getCameraRegionPos().toVec3d()),
+                end.subtract(getCameraRegionPos().toVec3d())
+            )
+            drawOutlinedBox(box, buffer, matrix4f, color, alpha)
+        }
+    }
+
     /**
      * Draws a line from the center of the clients screen to the given end point.
      * @param buffer The buffer builder to draw with.
@@ -406,9 +449,41 @@ object RenderUtils {
         start: Vec3d,
         end: Vec3d,
         color: Color = Colors.WHITE,
-        alpha: Float = 1f
+        alpha: Float = 1f,
+        withOffset: Boolean = false
     ) {
+        if (withOffset) {
+            drawSingleLine(
+                buffer,
+                matrix4f,
+                start.subtract(getCameraRegionPos().toVec3d()).toVector3f(),
+                end.subtract(getCameraRegionPos().toVec3d()).toVector3f(),
+                color,
+                alpha
+            )
+            return
+        }
         drawSingleLine(buffer, matrix4f, start.toVector3f(), end.toVector3f(), color, alpha)
+    }
+
+    fun drawSingleLine(
+        buffer: BufferBuilder,
+        matrix4f: Matrix4f,
+        start: Vec3d,
+        direction: Direction,
+        color: Color = Colors.WHITE,
+        alpha: Float = 1f,
+        withOffset: Boolean = false
+    ) {
+        val end = when (direction) {
+            Direction.UP -> start.add(0.0, 1.0, 0.0)
+            Direction.DOWN -> start.add(0.0, -1.0, 0.0)
+            Direction.NORTH -> start.add(0.0, 0.0, -1.0)
+            Direction.SOUTH -> start.add(0.0, 0.0, 1.0)
+            Direction.EAST -> start.add(1.0, 0.0, 0.0)
+            Direction.WEST -> start.add(-1.0, 0.0, 0.0)
+        }
+        drawSingleLine(buffer, matrix4f, start, end, color, alpha, withOffset)
     }
 
     /**
@@ -544,8 +619,12 @@ object RenderUtils {
      * Draws the given buffer builder with the global program.
      */
     fun drawBuffer(bufferBuilder: BufferBuilder) {
-        val end = bufferBuilder.end()
-        BufferRenderer.drawWithGlobalProgram(end)
+        try {
+            val end = bufferBuilder.end()
+            BufferRenderer.drawWithGlobalProgram(end)
+        } catch (_: Exception) {
+
+        }
         resetRenderSystem()
     }
 

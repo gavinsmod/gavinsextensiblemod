@@ -24,8 +24,8 @@
 
 package com.peasenet.mods.esp
 
-import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.config.BlockEspConfig
+import com.peasenet.gavui.color.Color
 import com.peasenet.gui.mod.esp.GuiBlockEsp
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
 import com.peasenet.mods.ModCategory
@@ -33,23 +33,11 @@ import com.peasenet.mods.commons.BlockEspTracerCommon
 import com.peasenet.util.GavBlock
 import com.peasenet.util.GavChunk
 import com.peasenet.util.RenderUtils
-import com.peasenet.util.executor.GemExecutor
-import com.peasenet.util.listeners.BlockUpdateListener
-import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.RenderListener
-import com.peasenet.util.listeners.WorldRenderListener
-import net.minecraft.client.gl.ShaderProgram
-import net.minecraft.client.gl.VertexBuffer
 import net.minecraft.client.render.BufferBuilder
-import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.world.ClientWorld
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Box
-import net.minecraft.util.math.ChunkPos
-import net.minecraft.util.math.Vec3d
-import net.minecraft.util.math.Vec3i
-import org.lwjgl.opengl.GL11
+import net.minecraft.util.math.*
 import java.util.*
 
 /**
@@ -79,52 +67,16 @@ class ModBlockEsp : BlockEspTracerCommon<BlockEspConfig>("Block ESP",
         }
     }
 
-    /*   override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
-           if (chunks.isEmpty()) return
-           count = 0
-           RenderUtils.setupRenderWithShader(matrixStack)
-           val bufferBuilder = RenderUtils.getBufferBuilder()
-           synchronized(chunks) {
-               for (chunk in chunks.values.filter { it.inRenderDistance() }) {
-                   for (block in chunk.blocks.values) {
-                       // somehow do breadth first search
-
-                       matrixStack.push()
-                       val pos = Vec3i(block.x, block.y, block.z).subtract(RenderUtils.getCameraRegionPos().toVec3i())
-                       val box = Box(
-                           pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), pos.x + 1.0, pos.y + 1.0, pos.z + 1.0
-                       )
-                       RenderUtils.drawOutlinedBox(
-                           box,
-                           bufferBuilder,
-                           matrixStack.peek().positionMatrix,
-                           color = getSettings().blockColor,
-                           alpha = getSettings().alpha
-                       )
-                       matrixStack.pop()
-                   }
-               }
-           }
-           RenderUtils.drawBuffer(bufferBuilder, matrixStack)
-       }
-
-   */
-
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         if (chunks.isEmpty()) return
         count = 0
         RenderUtils.setupRenderWithShader(matrixStack)
         val bufferBuilder = RenderUtils.getBufferBuilder()
         synchronized(chunks) {
-            for (chunk in chunks.values.filter { it.inRenderDistance() }) {
-                val visited = mutableSetOf<Long>()
-                for (block in chunk.blocks.values) {
-                    if (!visited.contains(block.key)) {
-                        val connectedBlocks = bfs(chunk, block)
-                        drawConnectedBlocks(matrixStack, bufferBuilder, connectedBlocks)
-                        visited.addAll(connectedBlocks.map { it.key })
-                    }
-                }
+            val renderableChunks = chunks.values.filter { it.inRenderDistance() }.sortedBy { it.getRenderDistance() }
+            val structures = GavChunk.getAllStructures(renderableChunks)
+            for (structure in structures) {
+                structure.render(matrixStack, bufferBuilder, getSettings().blockColor)
             }
         }
         RenderUtils.drawBuffer(bufferBuilder, matrixStack)

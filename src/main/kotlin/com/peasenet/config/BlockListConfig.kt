@@ -72,6 +72,7 @@ open class BlockListConfig<E : Config<*>>(blockFilter: (it: Block) -> Boolean = 
             defaultList = defaultList.plus(it)
             blocks.add(getId(it))
         }
+
     }
 
 
