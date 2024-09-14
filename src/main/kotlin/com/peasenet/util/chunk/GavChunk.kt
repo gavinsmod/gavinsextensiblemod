@@ -36,6 +36,8 @@ import net.minecraft.world.Heightmap
 import net.minecraft.world.chunk.Chunk
 import kotlin.collections.HashMap
 import kotlin.math.abs
+import kotlin.math.sqrt
+import kotlin.time.times
 
 /**
  * A GavChunk is a chunk that contains a list of GavBlocks used for
@@ -56,7 +58,13 @@ class GavChunk(val x: Int, val z: Int) {
     /**
      * A map of GavBlocks in the chunk.
      */
-    val blocks: HashMap<Long, GavBlock> = HashMap()
+    private val blocks: HashMap<Long, GavBlock> = HashMap()
+
+    private val visibleBlocks = HashSet<GavBlock>()
+
+    fun getBlocks(): Collection<GavBlock> {
+        return blocks.values
+    }
 
     /**
      * Adds a block to the chunk.
@@ -65,8 +73,33 @@ class GavChunk(val x: Int, val z: Int) {
      */
     fun addBlock(pos: BlockPos) {
         val block = GavBlock(pos.x, pos.y, pos.z)
-        blocks[block.key] = block
+        addBlock(block)
     }
+
+    fun addBlock(block: GavBlock) {
+        blocks[block.key] = block
+        block.update()
+        if (block.isVisible()) {
+            visibleBlocks.add(block)
+        }
+    }
+
+    fun removeBlock(pos: BlockPos) {
+        removeBlock(GavBlock(pos.x, pos.y, pos.z))
+    }
+
+    fun removeBlock(block: GavBlock) {
+        blocks.remove(block.key)
+        visibleBlocks.remove(block)
+    }
+
+    fun clear() {
+        blocks.clear()
+        visibleBlocks.clear()
+    }
+
+    val hasBlocks: Boolean
+        get() = blocks.isNotEmpty()
 
     /**
      * Updates the blocks in the chunk.
@@ -74,6 +107,11 @@ class GavChunk(val x: Int, val z: Int) {
     fun updateBlocks() {
         for (block in blocks.values) {
             block.update()
+            if (block.isVisible()) {
+                visibleBlocks.add(block)
+            } else {
+                visibleBlocks.remove(block)
+            }
         }
     }
 
@@ -83,8 +121,10 @@ class GavChunk(val x: Int, val z: Int) {
      * @return True if the chunk is in the render distance, false otherwise.
      */
     fun inRenderDistance(): Boolean {
-        val distance = RenderUtils.getRenderDistance()
-        return getRenderDistance() <= distance
+        val distance = RenderUtils.getRenderDistance() - 1
+        val currentDistance = this.getRenderDistance()
+        val res = currentDistance <= distance
+        return res
     }
 
     /**
@@ -92,13 +132,13 @@ class GavChunk(val x: Int, val z: Int) {
      *
      * @return The render distance of the chunk.
      */
-    fun getRenderDistance(): Int {
-        val distance = RenderUtils.getRenderDistance()
-        val playerPos = GavinsModClient.player?.getBlockPos()!!
-        val chunkX = ChunkSectionPos.getSectionCoord(playerPos.x)
-        val chunkZ = ChunkSectionPos.getSectionCoord(playerPos.z)
-        val currentDistance = abs(chunkX - x).coerceAtLeast(abs(chunkZ - z))
-        return distance - currentDistance
+    fun getRenderDistance(): Double {
+        // get the distance from the player to the chunk
+        val playerPos = GavinsModClient.minecraftClient.getPlayer().blockPos
+        val chunkPos = this.pos
+        val x = abs(playerPos.x - chunkPos.x.times(16))
+        val z = abs(playerPos.z - chunkPos.z.times(16))
+        return sqrt((x * x + z * z).toDouble()).div(16)
     }
 
     /**
@@ -110,9 +150,11 @@ class GavChunk(val x: Int, val z: Int) {
      * @param alpha The alpha of the block.
      * @param structureEsp True if structure ESP is enabled, false otherwise.
      */
-    fun render(matrixStack: MatrixStack, bufferBuilder: BufferBuilder, blockColor: Color, alpha: Float,
-               structureEsp: Boolean = false) {
-        for (block in blocks.values) {
+    fun render(
+        matrixStack: MatrixStack, bufferBuilder: BufferBuilder, blockColor: Color, alpha: Float,
+        structureEsp: Boolean = false
+    ) {
+        for (block in visibleBlocks) {
             block.render(matrixStack, bufferBuilder, blockColor, alpha, structureEsp)
         }
     }

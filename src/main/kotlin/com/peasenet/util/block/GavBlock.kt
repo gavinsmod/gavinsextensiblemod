@@ -1,9 +1,7 @@
 package com.peasenet.util.block
 
-import com.peasenet.config.BlockEspConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.main.GavinsModClient
-import com.peasenet.main.Settings
 import com.peasenet.mods.esp.ModBlockEsp
 import com.peasenet.util.RenderUtils
 import net.minecraft.client.render.BufferBuilder
@@ -21,15 +19,27 @@ import net.minecraft.util.math.Vec3d
  * @since 09-12-2024
  */
 class GavBlock(val x: Int, val y: Int, val z: Int) {
+    companion object {
+        fun getKey(x: Int, y: Int, z: Int): Long {
+            return ((x.toLong() and 0x3FFFFFF shl 38) or (z.toLong() and 0x3FFFFFF shl 12) or (y.toLong() and 0xFFF))
+        }
+    }
+
     /**
      * The key of the block.
      */
-    val key: Long = ((x.toLong() and 0x3FFFFFF shl 38) or (z.toLong() and 0x3FFFFFF shl 12) or (y.toLong() and 0xFFF))
+    val key = getKey(x, y, z)
 
     /**
      * What edges are visible.
      */
     private var visibleEdges = Edge.All.mask
+
+    fun isVisible(): Boolean {
+        return !(hasNeighborTopMiddle() && hasNeighborMiddleLeft() && hasNeighborMiddleRight()
+                && hasNeighborBottomMiddle())
+    }
+
 
     override fun hashCode(): Int {
         return ((x and 0x3FFFFFF shl 38) or (z and 0x3FFFFFF shl 12) or (y and 0xFFF))
@@ -39,44 +49,44 @@ class GavBlock(val x: Int, val y: Int, val z: Int) {
      * Updates the edges of the block.
      */
     fun update() {
-        val topLeft = hasNeighbor(1, 0, -1)
         val topMiddle = hasNeighbor(1, 0, 0)
-        val topRight = hasNeighbor(1, 0, 1)
         val middleLeft = hasNeighbor(0, 0, -1)
         val middleRight = hasNeighbor(0, 0, 1)
-        val bottomLeft = hasNeighbor(-1, 0, -1)
         val bottomMiddle = hasNeighbor(-1, 0, 0)
-        val bottomRight = hasNeighbor(-1, 0, 1)
         val above = hasNeighbor(0, 1, 0)
         val below = hasNeighbor(0, -1, 0)
-        val zTopLeft = hasNeighbor(1, 1, -1)
-        val zTopRight = hasNeighbor(1, 1, 1)
-        val zBottomLeft = hasNeighbor(-1, 1, -1)
-        val zBottomRight = hasNeighbor(-1, 1, 1)
-        val xTopLeft = hasNeighbor(1, 1, -1)
-        val xTopRight = hasNeighbor(1, 1, 1)
-        val xBottomLeft = hasNeighbor(-1, 1, -1)
-        val xBottomRight = hasNeighbor(-1, 1, 1)
         val mask =
-            Neighbors.TopLeft.mask * topLeft or
             Neighbors.TopMiddle.mask * topMiddle or
-            Neighbors.TopRight.mask * topRight or
-            Neighbors.MiddleLeft.mask * middleLeft or
-            Neighbors.MiddleRight.mask * middleRight or
-            Neighbors.BottomLeft.mask * bottomLeft or
-            Neighbors.BottomMiddle.mask * bottomMiddle or
-            Neighbors.BottomRight.mask * bottomRight or
-            Neighbors.Above.mask * above or
-            Neighbors.Below.mask * below or
-            Neighbors.ZTopLeft.mask * zTopLeft or
-            Neighbors.ZTopRight.mask * zTopRight or
-            Neighbors.ZBottomLeft.mask * zBottomLeft or
-            Neighbors.ZBottomRight.mask * zBottomRight or
-            Neighbors.XTopLeft.mask * xTopLeft or
-            Neighbors.XTopRight.mask * xTopRight or
-            Neighbors.XBottomLeft.mask * xBottomLeft or
-            Neighbors.XBottomRight.mask * xBottomRight
+                    Neighbors.MiddleLeft.mask * middleLeft or
+                    Neighbors.MiddleRight.mask * middleRight or
+                    Neighbors.BottomMiddle.mask * bottomMiddle or
+                    Neighbors.Above.mask * above or
+                    Neighbors.Below.mask * below
         setVisibleEdges(mask)
+    }
+
+    fun hasNeighborTopMiddle(): Boolean {
+        return hasNeighbor(1, 0, 0) == 1
+    }
+
+    fun hasNeighborMiddleLeft(): Boolean {
+        return hasNeighbor(0, 0, -1) == 1
+    }
+
+    fun hasNeighborMiddleRight(): Boolean {
+        return hasNeighbor(0, 0, 1) == 1
+    }
+
+    fun hasNeighborBottomMiddle(): Boolean {
+        return hasNeighbor(-1, 0, 0) == 1
+    }
+
+    fun hasNeighborAbove(): Boolean {
+        return hasNeighbor(0, 1, 0) == 1
+    }
+
+    fun hasNeighborBelow(): Boolean {
+        return hasNeighbor(0, -1, 0) == 1
     }
 
     /**
