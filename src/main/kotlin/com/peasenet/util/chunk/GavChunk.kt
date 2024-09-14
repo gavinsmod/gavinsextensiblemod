@@ -37,7 +37,6 @@ import net.minecraft.world.chunk.Chunk
 import kotlin.collections.HashMap
 import kotlin.math.abs
 import kotlin.math.sqrt
-import kotlin.time.times
 
 /**
  * A GavChunk is a chunk that contains a list of GavBlocks used for
@@ -61,11 +60,6 @@ class GavChunk(val x: Int, val z: Int) {
     private val blocks: HashMap<Long, GavBlock> = HashMap()
 
     private val visibleBlocks = HashSet<GavBlock>()
-
-    fun getBlocks(): Collection<GavBlock> {
-        return blocks.values
-    }
-
     /**
      * Adds a block to the chunk.
      *
@@ -82,10 +76,6 @@ class GavChunk(val x: Int, val z: Int) {
         if (block.isVisible()) {
             visibleBlocks.add(block)
         }
-    }
-
-    fun removeBlock(pos: BlockPos) {
-        removeBlock(GavBlock(pos.x, pos.y, pos.z))
     }
 
     fun removeBlock(block: GavBlock) {
@@ -105,12 +95,11 @@ class GavChunk(val x: Int, val z: Int) {
      * Updates the blocks in the chunk.
      */
     fun updateBlocks() {
+        visibleBlocks.clear()
         for (block in blocks.values) {
             block.update()
             if (block.isVisible()) {
                 visibleBlocks.add(block)
-            } else {
-                visibleBlocks.remove(block)
             }
         }
     }
@@ -146,16 +135,20 @@ class GavChunk(val x: Int, val z: Int) {
      *
      * @param matrixStack The matrix stack.
      * @param bufferBuilder The buffer builder.
-     * @param blockColor The color of the block.
+     * @param blockColor The color of the block.q
+     * @param partialTicks The partial ticks.
      * @param alpha The alpha of the block.
      * @param structureEsp True if structure ESP is enabled, false otherwise.
+     * @param blockTracer True if block tracers are enabled, false otherwise.
      */
     fun render(
-        matrixStack: MatrixStack, bufferBuilder: BufferBuilder, blockColor: Color, alpha: Float,
-        structureEsp: Boolean = false
+        matrixStack: MatrixStack, bufferBuilder: BufferBuilder, blockColor: Color,
+        partialTicks: Float,
+        alpha: Float,
+        structureEsp: Boolean = false, blockTracer: Boolean
     ) {
         for (block in visibleBlocks) {
-            block.render(matrixStack, bufferBuilder, blockColor, alpha, structureEsp)
+            block.render(matrixStack, bufferBuilder, blockColor, partialTicks, alpha, structureEsp, blockTracer)
         }
     }
 

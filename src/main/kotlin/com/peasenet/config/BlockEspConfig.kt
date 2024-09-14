@@ -49,4 +49,10 @@ class BlockEspConfig : BlockListConfig<BlockEspConfig>({ it.defaultState == Bloc
             field = value
             saveConfig()
         }
+
+    var blockTracer: Boolean = false
+        set(value) {
+            field = value
+            saveConfig()
+        }
 }

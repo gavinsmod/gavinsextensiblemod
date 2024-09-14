@@ -368,6 +368,7 @@ class GavBlock(val x: Int, val y: Int, val z: Int) {
      * @param matrixStack The matrix stack to render with.
      * @param bufferBuilder The buffer builder to render with.
      * @param color The color to render with.
+     * @param partialTicks The partial ticks to render with.
      * @param alpha The alpha to render with.
      * @param structureEsp Whether to render the block as a structure.
      */
@@ -375,11 +376,20 @@ class GavBlock(val x: Int, val y: Int, val z: Int) {
         matrixStack: MatrixStack,
         bufferBuilder: BufferBuilder,
         color: Color,
+        partialTicks: Float,
         alpha: Float,
-        structureEsp: Boolean = false
+        structureEsp: Boolean = false,
+        tracers: Boolean = false,
     ) {
         if (structureEsp) renderEdges(visibleEdges, pos, matrixStack, bufferBuilder, color, alpha)
         else renderEdges(Edge.All.mask, pos, matrixStack, bufferBuilder, color, alpha)
+        if (tracers) {
+            val regionVec = RenderUtils.getCameraRegionPos().toVec3d()
+            val center = pos.toCenterPos().subtract(regionVec)
+            RenderUtils.drawSingleLine(
+                bufferBuilder, matrixStack.peek().positionMatrix, partialTicks, center, color, alpha
+            )
+        }
     }
 
     override fun equals(other: Any?): Boolean {

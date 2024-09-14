@@ -102,7 +102,6 @@ class Mods {
         GavinsMod.addMod(ModFurnaceTracer())
         GavinsMod.addMod(ModMobTracer())
         GavinsMod.addMod(ModBlockEsp())
-        GavinsMod.addMod(ModBlockTracer())
     }
 
     companion object {

@@ -29,7 +29,6 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import net.minecraft.block.Block
 import net.minecraft.registry.Registries
-import java.util.function.Consumer
 
 /**
  * A configuration class for mods that need a list of blocks.

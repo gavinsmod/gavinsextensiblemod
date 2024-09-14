@@ -148,5 +148,7 @@
   "gavinsmod.generic.settings": "Settings",
   "gavinsmod.generic.color": "Color",
   "gavinsmod.generic.alpha": "Alpha",
-  "gavinsmod.generic.background": "Background"
+  "gavinsmod.generic.background": "Background",
+  "gavinsmod.generic.tracers": "Tracers",
+  "gavinsmod.mod.esp.blockesp.structure": "Structure ESP"
 }
