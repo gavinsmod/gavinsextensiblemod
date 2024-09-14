@@ -33,9 +33,10 @@ import com.peasenet.main.Settings
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
 import com.peasenet.settings.SettingBuilder
-import com.peasenet.util.GavBlock
-import com.peasenet.util.GavChunk
+import com.peasenet.settings.SubSetting
+import com.peasenet.util.chunk.GavChunk
 import com.peasenet.util.RenderUtils
+import com.peasenet.util.block.GavBlock
 import com.peasenet.util.event.data.BlockUpdate
 import com.peasenet.util.event.data.ChunkUpdate
 import com.peasenet.util.executor.GemExecutor
@@ -80,7 +81,7 @@ abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
         return Settings.getConfig(chatCommand)
     }
 
-    // A small vertex buffer for rendering the block outlines.
+    open fun preInit(subSetting: SubSetting) {}
 
     init {
         val subSetting = SettingBuilder().setTitle(translationKey).buildSubSetting()
@@ -97,11 +98,9 @@ abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
         }
         subSetting.add(alphaSetting)
         subSetting.add(colorSetting)
+        preInit(subSetting)
         // add gui setting
         val menu = SettingBuilder().setWidth(100f).setHeight(10f).setTitle("gavinsmod.generic.settings")
-            // open class "M" gui
-
-
             .setCallback { onMenuOpen() }.buildClickSetting()
         subSetting.add(menu)
         addSetting(subSetting)
@@ -135,6 +134,17 @@ abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
         searchChunk(chunkUpdate.chunk)
     }
 
+    /**
+     * Updates the neighbor chunks of the given chunk.
+     * @param chunk - The Chunk to update the neighbors of.
+     */
+    private fun updateNeighborChunks(chunk: GavChunk) {
+        chunk.updateBlocks()
+        chunks[ChunkPos.toLong(chunk.x + 1, chunk.z)]?.updateBlocks()
+        chunks[ChunkPos.toLong(chunk.x + -1, chunk.z)]?.updateBlocks()
+        chunks[ChunkPos.toLong(chunk.x, chunk.z + 1)]?.updateBlocks()
+        chunks[ChunkPos.toLong(chunk.x, chunk.z + -1)]?.updateBlocks()
+    }
 
     /**
      * Searches the given chunk for blocks that are in the block list.
@@ -146,6 +156,7 @@ abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
             if (searchedChunk.blocks.isNotEmpty()) {
                 synchronized(chunks) {
                     chunks[chunk.pos.toLong()] = searchedChunk
+                    updateNeighborChunks(searchedChunk)
                     GavinsMod.LOGGER.debug("(onChunkUpdate) Added chunk: ${chunk.pos.toLong()}")
                 }
             } else {
@@ -171,7 +182,7 @@ abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
             return
         }
 
-        val _block = GavBlock(bue.blockPos.x, bue.blockPos.y, bue.blockPos.z)
+        val gavBlock = GavBlock(bue.blockPos.x, bue.blockPos.y, bue.blockPos.z)
         GemExecutor.execute {
             synchronized(chunks) {
                 var espChunk = chunks[key]
@@ -181,8 +192,9 @@ abstract class BlockEspTracerCommon<T : IBlockEspTracerConfig>(
                     GavinsMod.LOGGER.debug("(onBlockUpdate) Added chunk: $key")
                     espChunk = chunk
                 }
-                if (added) espChunk.blocks[_block.key] = _block
-                else espChunk.blocks.remove(_block.key)
+                if (added) espChunk.blocks[gavBlock.key] = gavBlock
+                else espChunk.blocks.remove(gavBlock.key)
+                updateNeighborChunks(espChunk)
             }
         }
     }

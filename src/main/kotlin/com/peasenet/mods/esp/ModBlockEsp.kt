@@ -25,20 +25,18 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.config.BlockEspConfig
-import com.peasenet.gavui.color.Color
 import com.peasenet.gui.mod.esp.GuiBlockEsp
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
+import com.peasenet.main.Settings
 import com.peasenet.mods.ModCategory
 import com.peasenet.mods.commons.BlockEspTracerCommon
-import com.peasenet.util.GavBlock
-import com.peasenet.util.GavChunk
+import com.peasenet.settings.SettingBuilder
+import com.peasenet.settings.SubSetting
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.world.ClientWorld
-import net.minecraft.util.math.*
-import java.util.*
 
 /**
  * An ESP mod that draws boxes around user selected blocks in the world.
@@ -54,11 +52,26 @@ class ModBlockEsp : BlockEspTracerCommon<BlockEspConfig>("Block ESP",
     "blockesp",
     ModCategory.ESP,
     { minecraftClient.setScreen(GuiBlockEsp()) }), RenderListener {
+
     private var count = 0
 
     override fun onEnable() {
         super.onEnable()
         em.subscribe(RenderListener::class.java, this)
+    }
+
+    companion object {
+        fun getSettings(): BlockEspConfig = Settings.getConfig("blockesp") as BlockEspConfig
+    }
+
+    override fun preInit(subSetting: SubSetting) {
+        // add structure toggle
+        val toggleSetting = SettingBuilder()
+            .setTitle("structure")
+            .setState(getSettings().structureEsp)
+            .buildToggleSetting()
+        toggleSetting.setCallback { getSettings().structureEsp = toggleSetting.value }
+        subSetting.add(toggleSetting)
     }
 
     override fun onWorldRender(level: ClientWorld, stack: MatrixStack, bufferBuilder: BufferBuilder, delta: Float) {
@@ -74,92 +87,16 @@ class ModBlockEsp : BlockEspTracerCommon<BlockEspConfig>("Block ESP",
         val bufferBuilder = RenderUtils.getBufferBuilder()
         synchronized(chunks) {
             val renderableChunks = chunks.values.filter { it.inRenderDistance() }.sortedBy { it.getRenderDistance() }
-            val structures = GavChunk.getAllStructures(renderableChunks)
-            for (structure in structures) {
-                structure.render(matrixStack, bufferBuilder, getSettings().blockColor)
+            renderableChunks.forEach {
+                it.render(
+                    matrixStack,
+                    bufferBuilder,
+                    getSettings().blockColor,
+                    getSettings().alpha,
+                    getSettings().structureEsp
+                )
             }
         }
         RenderUtils.drawBuffer(bufferBuilder, matrixStack)
-    }
-
-
-    private fun bfs(chunk: GavChunk, startBlock: GavBlock): List<GavBlock> {
-        val queue: Queue<GavBlock> = LinkedList()
-        val visited = mutableSetOf<Long>()
-        val connectedBlocks = mutableListOf<GavBlock>()
-
-        queue.add(startBlock)
-        visited.add(startBlock.key)
-
-        while (queue.isNotEmpty()) {
-            val block = queue.poll()
-            connectedBlocks.add(block)
-
-            val neighbors = getNeighbors(chunk, block)
-            for (neighbor in neighbors) {
-                if (!visited.contains(neighbor.key)) {
-                    queue.add(neighbor)
-                    visited.add(neighbor.key)
-                }
-            }
-        }
-
-        return connectedBlocks
-    }
-
-    private fun getNeighbors(chunk: GavChunk, block: GavBlock): List<GavBlock> {
-        val neighbors = mutableListOf<GavBlock>()
-        val directions = listOf(
-            Vec3i(1, 0, 0), Vec3i(-1, 0, 0),
-            Vec3i(0, 1, 0), Vec3i(0, -1, 0),
-            Vec3i(0, 0, 1), Vec3i(0, 0, -1)
-        )
-
-        for (dir in directions) {
-            val neighborPos = BlockPos(block.x + dir.x, block.y + dir.y, block.z + dir.z)
-            val neighbor = GavBlock(neighborPos.x, neighborPos.y, neighborPos.z)
-            val neighborKey = neighbor.key
-            if (chunk.blocks.containsKey(neighborKey)) {
-                neighbors.add(chunk.blocks[neighborKey]!!)
-            }
-        }
-
-        return neighbors
-    }
-
-    private fun drawConnectedBlocks(matrixStack: MatrixStack, bufferBuilder: BufferBuilder, blocks: List<GavBlock>) {
-        val minBlockX: Int = blocks.minOf { it.x }
-        val minBlockY: Int = blocks.minOf { it.y }
-        val minBlockZ: Int = blocks.minOf { it.z }
-        val maxBlockX: Int = blocks.maxOf { it.x + 1 }
-        val maxBlockY: Int = blocks.maxOf { it.y + 1 }
-        val maxBlockZ: Int = blocks.maxOf { it.z + 1 }
-        for (block in blocks) {
-
-            matrixStack.push()
-            val minPos = Vec3d(minBlockX.toDouble(), minBlockY.toDouble(), minBlockZ.toDouble()).subtract(
-                RenderUtils.getCameraRegionPos().toVec3d()
-            )
-            val maxPos = Vec3d(maxBlockX.toDouble(), maxBlockY.toDouble(), maxBlockZ.toDouble()).subtract(
-                RenderUtils.getCameraRegionPos().toVec3d()
-            )
-            val box = Box(minPos, maxPos)
-            RenderUtils.drawOutlinedBox(
-                box,
-                bufferBuilder,
-                matrixStack.peek().positionMatrix,
-                color = getSettings().blockColor,
-                alpha = getSettings().alpha
-            )
-            matrixStack.pop()
-        }
-    }
-
-
-    private fun isSameType(block1: GavBlock, block2: GavBlock, chunkPos: ChunkPos): Boolean {
-        val chunk = minecraftClient.getWorld().getChunk(chunkPos.x, chunkPos.z)
-        val blockState1 = chunk.getBlockState(BlockPos(block1.x, block1.y, block1.z))
-        val blockState2 = chunk.getBlockState(BlockPos(block2.x, block2.y, block2.z))
-        return blockState1.block == blockState2.block
     }
 }

@@ -43,4 +43,10 @@ class BlockEspConfig : BlockListConfig<BlockEspConfig>({ it.defaultState == Bloc
     init {
         key = "blockesp"
     }
+
+    var structureEsp: Boolean = false
+        set(value) {
+            field = value
+            saveConfig()
+        }
 }
