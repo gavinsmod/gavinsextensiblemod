@@ -63,7 +63,6 @@ class ModFullBright : RenderMod(
             .buildSubSetting()
 
         subSetting.add(gammaFade)
-        subSetting.add(autoFullBright)
         subSetting.add(gamma)
 
         addSetting(subSetting)
