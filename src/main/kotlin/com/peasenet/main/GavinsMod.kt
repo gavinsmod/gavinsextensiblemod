@@ -23,9 +23,6 @@
  */
 package com.peasenet.main
 
-import com.peasenet.config.EspConfig
-import com.peasenet.config.MiscConfig
-import com.peasenet.config.TracerConfig
 import com.peasenet.gavui.GavUI
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.math.BoxF
@@ -89,21 +86,6 @@ class GavinsMod : ModInitializer {
          */
         lateinit var guiSettings: GuiSettings
 
-        /**
-         * The ESP config.
-         */
-        lateinit var espConfig: EspConfig
-
-        /**
-         * The tracer config.
-         */
-        lateinit var tracerConfig: TracerConfig
-
-
-        /**
-         * The misc config.
-         */
-        lateinit var miscConfig: MiscConfig
 
         /**
          * Hook for chat commands.
@@ -154,11 +136,8 @@ class GavinsMod : ModInitializer {
     override fun onInitialize() {
         GavUI.initialize()
         GemExecutor.init()
-        espConfig = Settings.settings["esp"] as EspConfig
-        tracerConfig = Settings.settings["tracer"] as TracerConfig
-        miscConfig = Settings.settings["misc"] as MiscConfig
-        LOGGER.info("Settings loaded")
         Settings()
+        LOGGER.info("Settings loaded")
         Mods()
         modsToLoad.forEach(Consumer { m: Mod -> Mods.addMod(m) })
         guiList[ModCategory.MOVEMENT] = GuiMovement()

@@ -23,10 +23,12 @@
  */
 package com.peasenet.gui.mod.tracer
 
+import com.peasenet.config.TracerConfig
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gui.mod.GuiMobSelection
 import com.peasenet.main.GavinsMod
+import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
 import net.minecraft.item.ItemStack
 import net.minecraft.item.SpawnEggItem
@@ -38,25 +40,25 @@ import net.minecraft.text.Text
  * A gui that allows the player to search for blocks and add them to the xray list.
  */
 class GuiMobTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtracer")) {
-
+    private val settings = Settings.getConfig<TracerConfig>("tracer")
 
     override fun init() {
         val height = 24f
         var pos = PointF(10f, height)
         hostileColor = SettingBuilder()
             .setTitle("gavinsmod.settings.tracer.mob.hostile.color")
-            .setColor(GavinsMod.tracerConfig.hostileMobColor)
+            .setColor(settings.hostileMobColor)
             .setTopLeft(pos)
             .buildColorSetting()
-        hostileColor.setCallback { GavinsMod.tracerConfig.hostileMobColor = hostileColor.color }
+        hostileColor.setCallback { settings.hostileMobColor = hostileColor.color }
         pos = pos.add(0f, 12f)
 
         peacefulColor = SettingBuilder()
             .setTitle("gavinsmod.settings.tracer.mob.peaceful.color")
-            .setColor(GavinsMod.tracerConfig.peacefulMobColor)
+            .setColor(settings.peacefulMobColor)
             .setTopLeft(pos)
             .buildColorSetting()
-        peacefulColor.setCallback { GavinsMod.tracerConfig.peacefulMobColor = peacefulColor.color }
+        peacefulColor.setCallback { settings.peacefulMobColor = peacefulColor.color }
         pos = pos.add(0f, 12f)
         enabledOnly = GuiBuilder()
             .setTopLeft(pos)
@@ -69,29 +71,29 @@ class GuiMobTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtr
 
         peacefulToggle = SettingBuilder()
             .setTitle("gavinsmod.settings.tracer.mob.hostile")
-            .setState(GavinsMod.tracerConfig.showHostileMobs)
+            .setState(settings.showHostileMobs)
             .setTopLeft(pos)
             .buildToggleSetting()
-        peacefulToggle.setCallback { GavinsMod.tracerConfig.showHostileMobs = peacefulToggle.value }
+        peacefulToggle.setCallback { settings.showHostileMobs = peacefulToggle.value }
         pos = pos.add(0f, 12f)
 
         hostileToggle = SettingBuilder()
             .setTitle("gavinsmod.settings.tracer.mob.peaceful")
-            .setState(GavinsMod.tracerConfig.showPeacefulMobs)
+            .setState(settings.showPeacefulMobs)
             .setTopLeft(pos)
             .buildToggleSetting()
-        hostileToggle.setCallback { GavinsMod.tracerConfig.showPeacefulMobs = hostileToggle.value }
+        hostileToggle.setCallback { settings.showPeacefulMobs = hostileToggle.value }
         super.init()
     }
 
     override fun isItemEnabled(item: ItemStack): Boolean {
-        return GavinsMod.tracerConfig.mobIsShown(item.item as SpawnEggItem)
+        return settings.mobIsShown(item.item as SpawnEggItem)
     }
 
     override fun handleItemToggle(item: ItemStack) {
         val spawnEgg = (item.item as SpawnEggItem)
-        if (isItemEnabled(item)) GavinsMod.tracerConfig.removeMob(spawnEgg)
-        else GavinsMod.tracerConfig.addMob(spawnEgg)
+        if (isItemEnabled(item)) settings.removeMob(spawnEgg)
+        else settings.addMob(spawnEgg)
 
     }
 }

@@ -30,9 +30,6 @@ import com.google.gson.ToNumberPolicy;
 import com.google.gson.stream.JsonReader;
 import com.peasenet.annotations.GsonExclusionStrategy;
 import com.peasenet.config.Config;
-import com.peasenet.config.EspConfig;
-import com.peasenet.config.MiscConfig;
-import com.peasenet.config.TracerConfig;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -60,9 +57,6 @@ public class Settings {
     public static final HashMap<String, Config<?>> defaultSettings = new HashMap<>();
 
     static {
-        addConfig(new EspConfig());
-        addConfig(new TracerConfig());
-        addConfig(new MiscConfig());
         defaultSettings.putAll(settings);
         // check if the config file exists
         var path = getFilePath();
@@ -100,7 +94,7 @@ public class Settings {
      * @return - The configuration.
      */
     @SuppressWarnings("rawtypes")
-    public static Config fetchConfig(Class<? extends Config> clazz, String key) {
+    private static Config fetchConfig(Class<? extends Config> clazz, String key) {
         // open the settings file
         var cfgFile = getFilePath();
         var json = new GsonBuilder().create();
@@ -155,7 +149,7 @@ public class Settings {
      */
     public static void addConfig(Config<?> config) {
         defaultSettings.put(config.getKey(), config);
-        settings.put(config.getKey(), config.readFromSettings());
+        settings.put(config.getKey(), fetchConfig(config.getClass(), config.getKey()));
     }
 
     /**

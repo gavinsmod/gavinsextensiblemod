@@ -60,6 +60,10 @@ class Mods {
         Settings.addConfig(RadarConfig())
         Settings.addConfig(WaypointConfig())
         Settings.addConfig(FreeCamConfig())
+        Settings.addConfig(EspConfig());
+        Settings.addConfig(TracerConfig());
+        Settings.addConfig(MiscConfig());
+
         /*@MODS@*/
         GavinsMod.addMod(ModAutoAttack())
         GavinsMod.addMod(ModAutoCrit())

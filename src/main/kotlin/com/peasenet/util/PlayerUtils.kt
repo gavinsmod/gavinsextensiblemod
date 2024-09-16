@@ -23,8 +23,10 @@
  */
 package com.peasenet.util
 
+import com.peasenet.config.MiscConfig
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
+import com.peasenet.main.Settings
 import com.peasenet.mods.Mod
 import com.peasenet.util.event.EventManager
 import com.peasenet.util.event.PlayerAttackEvent
@@ -180,7 +182,8 @@ object PlayerUtils {
     @JvmStatic
     fun sendMessage(message: String, withPrefix: Boolean) {
         var newMessage = message
+        val sendMessage = Settings.getConfig<MiscConfig>("misc").isMessages
         if (withPrefix) newMessage = Mod.GAVINS_MOD_STRING + newMessage
-        if (GavinsMod.miscConfig.isMessages) GavinsModClient.player!!.sendMessage(Text.literal(newMessage), false)
+        if (sendMessage) GavinsModClient.player!!.sendMessage(Text.literal(newMessage), false)
     }
 }

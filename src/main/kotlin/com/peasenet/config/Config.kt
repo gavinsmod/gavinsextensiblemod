@@ -40,7 +40,7 @@ import com.peasenet.main.Settings
  *   init {
  *      key = "myConfig"
  *   }
- *   val somethingEnabled: Boolean 
+ *   val somethingEnabled: Boolean
  *   set(value) {
  *      field = value
  *      saveConfig()
@@ -79,7 +79,7 @@ abstract class Config<E : Config<E>> {
      *
      * @return The instance of the configuration.
      */
-    fun readFromSettings(): Config<*> {
-        return Settings.fetchConfig(javaClass, key!!)
+    fun readFromSettings(): Config<E> {
+        return Settings.getConfig(key)
     }
 }
