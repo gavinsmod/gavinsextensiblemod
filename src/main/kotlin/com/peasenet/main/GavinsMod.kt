@@ -100,7 +100,7 @@ class GavinsMod : ModInitializer {
          */
         @JvmStatic
         fun setEnabled(chatCommand: String, enabled: Boolean) {
-            val theMod = Mods.mods.stream().filter { m: Mod -> m.chatCommand == chatCommand }.findFirst().get()
+            val theMod = Mods.mods.first { m: Mod -> m.chatCommand == chatCommand }
             if (enabled) theMod.activate() else theMod.deactivate()
         }
 
@@ -136,7 +136,7 @@ class GavinsMod : ModInitializer {
     override fun onInitialize() {
         GavUI.initialize()
         GemExecutor.init()
-        Settings
+        Settings.init()
         LOGGER.info("Settings loaded")
         Mods()
         modsToLoad.forEach(Consumer { m: Mod -> Mods.addMod(m) })
