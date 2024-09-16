@@ -21,30 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.peasenet.util.executor
 
-package com.peasenet.util.executor;
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicInteger
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
+object GemExecutor {
+    private var executorService: ExecutorService? = null
 
-public class GemExecutor {
-    public static ExecutorService executorService;
-
-    private GemExecutor() {
+    fun init() {
+        val corePoolSize = AtomicInteger(1)
+        executorService = Executors.newCachedThreadPool { task: Runnable? ->
+            val thread = Thread(task)
+            thread.isDaemon = true
+            thread.name = "gem-executor-" + corePoolSize.getAndIncrement()
+            thread
+        }
     }
 
-    public static void init() {
-        AtomicInteger corePoolSize = new AtomicInteger(1);
-        executorService = Executors.newCachedThreadPool((task) -> {
-            Thread thread = new Thread(task);
-            thread.setDaemon(true);
-            thread.setName("gem-executor-" + corePoolSize.getAndIncrement());
-            return thread;
-        });
-    }
-
-    public static void execute(Runnable task) {
-        executorService.execute(task);
+    fun execute(task: Runnable) {
+        executorService!!.execute(task)
     }
 }
