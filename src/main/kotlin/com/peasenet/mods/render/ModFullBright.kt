@@ -31,9 +31,10 @@ import com.peasenet.mixinterface.ISimpleOption
 import com.peasenet.settings.SettingBuilder
 
 /**
- * @author gt3ch1
- * @version 03-02-2023
  * A mod that allows the client to see very clearly in the absence of a light source.
+ * @author gt3ch1
+ * @version 09-16-2024
+ * @since 03-02-2023
  */
 class ModFullBright : RenderMod(
     "Full Bright", "gavinsmod.mod.render.fullbright", "fullbright"
@@ -41,6 +42,7 @@ class ModFullBright : RenderMod(
     companion object {
         lateinit var fullbrightConfig: FullbrightConfig
     }
+
     init {
         fullbrightConfig = Settings.getConfig("fullbright")
         val gammaFade = SettingBuilder().setTitle("gavinsmod.settings.render.fullbright.gammafade")
@@ -48,16 +50,10 @@ class ModFullBright : RenderMod(
             .buildToggleSetting()
         gammaFade.setCallback { fullbrightConfig.gammaFade = gammaFade.value }
 
-//        val gamma = SlideSetting("gavinsmod.settings.render.fullbright.gamma")
-//        gamma.setCallback { fullbrightConfig.gamma = gamma.value }
-//        gamma.value = fullbrightConfig.gamma
         val gamma =
             SettingBuilder().setTitle("gavinsmod.settings.render.fullbright.gamma").setValue(fullbrightConfig.gamma)
                 .setWidth(100).setHeight(10).buildSlider()
         gamma.setCallback { fullbrightConfig.gamma = gamma.value }
-
-
-//        val subSetting = SubSetting(100, 10, translationKey)
 
         val subSetting = SettingBuilder().setWidth(100).setHeight(10).setTitle(translationKey).setDefaultMaxChildren(4)
             .buildSubSetting()
@@ -97,7 +93,6 @@ class ModFullBright : RenderMod(
 
     override fun deactivate() {
         deactivating = true
-//        gamma = fullbrightConfig.gamma.toDouble()
         super.deactivate()
     }
 
@@ -105,7 +100,7 @@ class ModFullBright : RenderMod(
     /**
      * Sets the gamma of the game to the full bright value of 10000.0 while storing the last gamma value.
      */
-    fun setHighGamma() {
+    private fun setHighGamma() {
         if (fullbrightConfig.gammaFade) {
             fadeGammaUp()
         } else {
@@ -116,20 +111,20 @@ class ModFullBright : RenderMod(
     /**
      * The last player configured gamma.
      */
-    private var LAST_GAMMA = 0.0
-    
+    private var lastGamma = 0.0
+
     /**
      * Resets the gamma to the players last configured value.
      */
-    fun setLowGamma() {
+    private fun setLowGamma() {
         if (fullbrightConfig.gammaFade) {
             fadeGammaDown()
         } else {
-            gamma = LAST_GAMMA
+            gamma = lastGamma
         }
     }
 
-    var gamma: Double
+    private var gamma: Double
         /**
          * Gets the current game gamma.
          *
@@ -142,28 +137,25 @@ class ModFullBright : RenderMod(
          * @param gamma The value to set the gamma to.
          */
         set(gamma) {
-            var newValue = gamma
+            val newValue = gamma
             val maxGamma = fullbrightConfig.maxGamma
-            if (newValue < 0.0) newValue = 0.0
-            if (newValue > maxGamma) newValue = maxGamma.toDouble()
+            newValue.coerceAtLeast(0.0)
+                .coerceAtMost(maxGamma.toDouble())
             val newGamma = GavinsModClient.minecraftClient.options.gamma
-            if (newGamma.value != newValue) {
-                val newGamma2 = (newGamma as ISimpleOption<Double>)
-                newGamma2.forceSetValue(newValue)
-            }
+            (newGamma as ISimpleOption<Double>).forceSetValue(newValue)
         }
-    val isHighGamma: Boolean
+    private val isHighGamma: Boolean
         get() = gamma == 16.0
-    val isLastGamma: Boolean
-        get() = gamma <= LAST_GAMMA
+    private val isLastGamma: Boolean
+        get() = gamma <= lastGamma
 
     private fun setLastGamma() {
         if (gamma > 1) return
-        LAST_GAMMA = gamma
+        lastGamma = gamma
     }
 
     private fun getLastGamma(): Double {
-        return LAST_GAMMA
+        return lastGamma
     }
 
     private fun fadeGammaUp() {
@@ -172,7 +164,7 @@ class ModFullBright : RenderMod(
 
     private fun fadeGammaDown() {
         gamma -= 0.2f
-        if (gamma < getLastGamma()) gamma = getLastGamma()
+        gamma.coerceAtLeast(getLastGamma())
     }
 
 }
