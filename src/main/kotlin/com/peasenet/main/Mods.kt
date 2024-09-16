@@ -59,6 +59,7 @@ class Mods {
         Settings.addConfig(BlockTracerConfig())
         Settings.addConfig(RadarConfig())
         Settings.addConfig(WaypointConfig())
+        Settings.addConfig(FreeCamConfig())
         /*@MODS@*/
         GavinsMod.addMod(ModAutoAttack())
         GavinsMod.addMod(ModAutoCrit())

@@ -215,46 +215,59 @@ object RenderUtils {
         matrix4f: Matrix4f,
         entity: Entity,
         color: Color,
-        alpha: Float
+        alpha: Float,
+        lerp: Boolean = true
     ) {
 
         var box = entity.boundingBox
+        if (lerp) {
+            val lerped = MathUtils.lerp(
+                partialTicks,
+                entity.pos,
+                entity,
+                getCameraRegionPos()
+            )
+            box = Box(
+                lerped.x + box.minX,
+                lerped.y + box.minY,
+                lerped.z + box.minZ,
+                lerped.x + box.maxX,
+                lerped.y + box.maxY,
+                lerped.z + box.maxZ
+            )
+        }
+        drawOutlinedBox(
+            box, bufferBuilder, matrix4f, color, alpha
+        )
+    }
+
+    fun drawOutlinedBox(
+        partialTicks: Float,
+        bufferBuilder: BufferBuilder,
+        matrix4f: Matrix4f,
+        entity: Entity,
+        entityBox: Box,
+        color: Color,
+        alpha: Float
+    ) {
+
         val lerped = MathUtils.lerp(
             partialTicks,
             entity.pos,
             entity,
             getCameraRegionPos()
         )
-        box = Box(
-            lerped.x + box.minX,
-            lerped.y + box.minY,
-            lerped.z + box.minZ,
-            lerped.x + box.maxX,
-            lerped.y + box.maxY,
-            lerped.z + box.maxZ
+        val box = Box(
+            lerped.x + entityBox.minX,
+            lerped.y + entityBox.minY,
+            lerped.z + entityBox.minZ,
+            lerped.x + entityBox.maxX,
+            lerped.y + entityBox.maxY,
+            lerped.z + entityBox.maxZ
         )
         drawOutlinedBox(
             box, bufferBuilder, matrix4f, color, alpha
         )
-    }
-
-    fun drawOutlinedPlane(
-        start: Vec3d,
-        buffer: BufferBuilder,
-        matrix4f: Matrix4f,
-        direction: Direction,
-        color: Color = Colors.WHITE,
-        alpha: Float = 1f
-    ) {
-        val box = when (direction) {
-            Direction.UP -> Box(start.x, start.y, start.z, start.x + 1.0, start.y, start.z + 1.0)
-            Direction.DOWN -> Box(start.x, start.y, start.z, start.x + 1.0, start.y, start.z + 1.0)
-            Direction.NORTH -> Box(start.x, start.y, start.z, start.x + 1.0, start.y + 1.0, start.z)
-            Direction.SOUTH -> Box(start.x, start.y, start.z + 1.0, start.x + 1.0, start.y + 1.0, start.z + 1.0)
-            Direction.EAST -> Box(start.x + 1.0, start.y, start.z, start.x + 1.0, start.y + 1.0, start.z + 1.0)
-            Direction.WEST -> Box(start.x, start.y, start.z, start.x, start.y + 1.0, start.z + 1.0)
-        }
-        drawOutlinedBox(box, buffer, matrix4f, color, alpha)
     }
 
     /**

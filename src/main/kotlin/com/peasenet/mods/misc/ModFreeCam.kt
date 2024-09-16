@@ -24,29 +24,21 @@
 package com.peasenet.mods.misc
 
 import com.mojang.blaze3d.systems.RenderSystem
-import com.peasenet.config.EspConfig
-import com.peasenet.config.MiscConfig
+import com.peasenet.config.FreeCamConfig
 import com.peasenet.config.TracerConfig
+import com.peasenet.gavui.color.Colors
 import com.peasenet.main.Settings
-import com.peasenet.mods.esp.EspMod
-import com.peasenet.mods.esp.EspMod.Companion
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.FakePlayer
-import com.peasenet.util.PlayerUtils
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.AirStrafeEvent
 import com.peasenet.util.event.data.OutputPacket
 import com.peasenet.util.listeners.AirStrafeListener
 import com.peasenet.util.listeners.PacketSendListener
 import com.peasenet.util.listeners.RenderListener
-import com.peasenet.util.listeners.WorldRenderListener
-import com.peasenet.util.math.MathUtils
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.render.*
+import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.client.world.ClientWorld
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
-import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 
 /**
@@ -62,17 +54,51 @@ class ModFreeCam : MiscMod(
 ), PacketSendListener, RenderListener, AirStrafeListener {
     private var fake: FakePlayer? = null
 
+    companion object {
+        private val config: FreeCamConfig
+            get() {
+                return Settings.getConfig("freecam")
+            }
+    }
+
     init {
         val freeCamSpeed = SettingBuilder()
-            .setTitle("gavinsmod.settings.misc.freecam.speed")
+            .setTitle("gavinsmod.generic.speed")
             .setValue(config.freeCamSpeed)
             .buildSlider()
         freeCamSpeed.setCallback { config.freeCamSpeed = freeCamSpeed.value }
+        val espEnabled = SettingBuilder()
+            .setTitle("gavinsmod.generic.esp")
+            .setState(config.espEnabled)
+            .buildToggleSetting()
+        espEnabled.setCallback { config.espEnabled = espEnabled.value }
+        val tracerEnabled = SettingBuilder()
+            .setTitle("gavinsmod.generic.tracer")
+            .setState(config.tracerEnabled)
+            .buildToggleSetting()
+        tracerEnabled.setCallback { config.tracerEnabled = tracerEnabled.value }
+        val color = SettingBuilder()
+            .setTitle("gavinsmod.generic.color")
+            .setColor(config.color)
+            .buildColorSetting()
+        color.setCallback { config.color = color.color }
+        val alpha = SettingBuilder()
+            .setTitle("gavinsmod.generic.alpha")
+            .setValue(1f)
+            .buildSlider()
+        alpha.setCallback { config.alpha = alpha.value }
         val subSetting = SettingBuilder()
             .setWidth(100f)
             .setHeight(10f)
             .setTitle(translationKey)
+            .setMaxChildren(5)
+            .setDefaultMaxChildren(5)
             .buildSubSetting()
+
+        subSetting.add(espEnabled)
+        subSetting.add(tracerEnabled)
+        subSetting.add(color)
+        subSetting.add(alpha)
         subSetting.add(freeCamSpeed)
         addSetting(subSetting)
     }
@@ -122,58 +148,47 @@ class ModFreeCam : MiscMod(
         event.speed = speed
     }
 
-    companion object {
-        private val config: MiscConfig
-            get() {
-                return Settings.getConfig<MiscConfig>("misc")
-            }
-    }
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+        if (config.espEnabled)
+            renderEsp(matrixStack, partialTicks)
+        if (config.tracerEnabled)
+            renderTracer(matrixStack, partialTicks)
+    }
+
+    private fun renderTracer(matrixStack: MatrixStack, partialTicks: Float) {
         RenderUtils.setupRender(matrixStack)
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
         RenderSystem.applyModelViewMatrix()
         val entry = matrixStack.peek().positionMatrix
-        val tessellator = RenderSystem.renderThreadTesselator()
-        val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
-        val e = fake!!
-        var box = e.boundingBox
-        var lerped = MathUtils.lerp(
-            partialTicks,
-            e.pos,
-            Vec3d(e.lastRenderX, e.lastRenderY, e.lastRenderZ),
-            RenderUtils.getCameraRegionPos()
-        )
-        box = Box(
-            lerped.x + box.minX,
-            lerped.y + box.minY,
-            lerped.z + box.minZ,
-            lerped.x + box.maxX,
-            lerped.y + box.maxY,
-            lerped.z + box.maxZ
-        )
-        RenderUtils.drawOutlinedBox(
-            box,
-            bufferBuilder,
-            entry,
-            Settings.getConfig<EspConfig>("esp").playerColor,
-            Settings.getConfig<EspConfig>("esp").alpha
-        )
-        val regionVec = RenderUtils.getCameraRegionPos().toVec3d();
-        val start = RenderUtils.getLookVec(partialTicks).add(RenderUtils.getCameraPos()).subtract(regionVec);
+        val bufferBuilder = RenderUtils.getBufferBuilder()
         RenderUtils.drawSingleLine(
             bufferBuilder,
             entry,
-            start,
-            e.boundingBox.center.subtract(regionVec),
-            Settings.getConfig<EspConfig>("esp").playerColor,
-            Settings.getConfig<EspConfig>("esp").alpha
+            partialTicks,
+            fake!!.boundingBox.center,
+            config.color,
+            config.alpha,
+            true
         )
-        val end = bufferBuilder.end()
-        BufferRenderer.drawWithGlobalProgram(end)
-        RenderUtils.cleanupRender(matrixStack)
+        RenderUtils.drawBuffer(bufferBuilder, matrixStack)
+    }
 
+    private fun renderEsp(matrixStack: MatrixStack, partialTicks: Float) {
+        RenderUtils.setupRenderWithShader(matrixStack)
+        val entry = matrixStack.peek().positionMatrix
+        val bufferBuilder = RenderUtils.getBufferBuilder()
+        RenderUtils.drawOutlinedBox(
+            partialTicks,
+            bufferBuilder,
+            entry,
+            fake!!,
+            config.color,
+            config.alpha,
+            false
+        )
+        RenderUtils.drawBuffer(bufferBuilder, matrixStack)
     }
 
 }

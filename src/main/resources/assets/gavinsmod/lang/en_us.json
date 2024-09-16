@@ -150,5 +150,8 @@
   "gavinsmod.generic.alpha": "Alpha",
   "gavinsmod.generic.background": "Background",
   "gavinsmod.generic.tracers": "Tracers",
+  "gavinsmod.generic.tracer": "Tracer",
+  "gavinsmod.generic.esp": "ESP",
+  "gavinsmod.generic.speed": "Speed",
   "gavinsmod.mod.esp.blockesp.structure": "Structure ESP"
 }
