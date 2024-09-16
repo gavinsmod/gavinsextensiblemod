@@ -39,15 +39,6 @@ open class FullbrightConfig : Config<FullbrightConfig>() {
         }
 
     /**
-     * Whether to automatically enable fullbright when the player is in a dark area.
-     */
-    var autoFullBright = true
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    /**
      * Whether to fade the brightness.
      */
     var gammaFade = true

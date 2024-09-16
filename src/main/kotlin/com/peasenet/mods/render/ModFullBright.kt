@@ -48,11 +48,6 @@ class ModFullBright : RenderMod(
             .buildToggleSetting()
         gammaFade.setCallback { fullbrightConfig.gammaFade = gammaFade.value }
 
-        val autoFullBright = SettingBuilder().setTitle("gavinsmod.settings.render.fullbright.autofullbright")
-            .setState(fullbrightConfig.autoFullBright)
-            .buildToggleSetting()
-        autoFullBright.setCallback { fullbrightConfig.autoFullBright = autoFullBright.value }
-
 //        val gamma = SlideSetting("gavinsmod.settings.render.fullbright.gamma")
 //        gamma.setCallback { fullbrightConfig.gamma = gamma.value }
 //        gamma.value = fullbrightConfig.gamma
