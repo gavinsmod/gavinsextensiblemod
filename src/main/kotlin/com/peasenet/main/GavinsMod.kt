@@ -136,7 +136,7 @@ class GavinsMod : ModInitializer {
     override fun onInitialize() {
         GavUI.initialize()
         GemExecutor.init()
-        Settings()
+        Settings
         LOGGER.info("Settings loaded")
         Mods()
         modsToLoad.forEach(Consumer { m: Mod -> Mods.addMod(m) })
