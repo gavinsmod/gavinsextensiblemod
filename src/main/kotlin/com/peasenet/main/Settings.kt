@@ -163,7 +163,7 @@ object Settings {
          * Gets the file path to the settings file.
          */
         get() {
-            val modDir = "$GavinsModClient.minecraftClient.runDirectory.absolutePath/mods/gavinsmod"
+            val modDir = "${GavinsModClient.minecraftClient.runDirectory.absolutePath}/mods/gavinsmod"
             val cfgFile = "$modDir/settings.json"
             val settingsDir = File(modDir)
             if (!settingsDir.exists()) {

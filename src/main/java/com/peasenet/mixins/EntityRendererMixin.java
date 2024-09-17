@@ -24,6 +24,7 @@
 
 package com.peasenet.mixins;
 
+import com.peasenet.main.Mods;
 import com.peasenet.util.event.EntityRenderNameEvent;
 import com.peasenet.util.event.EventManager;
 import net.minecraft.client.font.TextRenderer;
@@ -41,17 +42,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderer.class)
 public abstract class EntityRendererMixin<T extends Entity> {
-    @Shadow
-    @Final
-    protected EntityRenderDispatcher dispatcher;
+    //SEE: EntityRenderer#renderLabelIfPresent
 
-    @Shadow
-    @Final
-    private TextRenderer textRenderer;
-
-    @Inject(at = @At("HEAD"), method = "render")
+    @Inject(at = @At("HEAD"), method = "render", cancellable = true)
     private void renderHealth(T entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
-        var event = new EntityRenderNameEvent(entity, yaw, tickDelta, matrices, vertexConsumers, light);
+        if (!Mods.getMod("hptags").isActive()) return;
+        var event = new EntityRenderNameEvent(entity, matrices, vertexConsumers, tickDelta, light);
         EventManager.getEventManager().call(event);
+        ci.cancel();
     }
+
+
 }

@@ -4,7 +4,6 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vec3i
 
-@JvmRecord
 data class RegionPos(val x: Int, val z: Int) {
     fun toVec3d(): Vec3d {
         return Vec3d(x.toDouble(), 0.0, z.toDouble())

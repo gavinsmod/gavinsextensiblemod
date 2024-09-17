@@ -36,6 +36,7 @@ import net.minecraft.entity.Entity
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Direction
+import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.chunk.Chunk
 import org.joml.Matrix4f
@@ -221,19 +222,16 @@ object RenderUtils {
 
         var box = entity.boundingBox
         if (lerp) {
-            val lerped = MathUtils.lerp(
-                partialTicks,
-                entity.pos,
-                entity,
-                getCameraRegionPos()
-            )
+            val lerpedX = MathHelper.lerp(partialTicks.toDouble(), entity.prevX, entity.x) - entity.x
+            val lerpedY = MathHelper.lerp(partialTicks.toDouble(), entity.prevY, entity.y) - entity.y
+            val lerpedZ = MathHelper.lerp(partialTicks.toDouble(), entity.prevZ, entity.z) - entity.z
             box = Box(
-                lerped.x + box.minX,
-                lerped.y + box.minY,
-                lerped.z + box.minZ,
-                lerped.x + box.maxX,
-                lerped.y + box.maxY,
-                lerped.z + box.maxZ
+                lerpedX + box.minX,
+                lerpedY + box.minY,
+                lerpedZ + box.minZ,
+                lerpedX + box.maxX,
+                lerpedY + box.maxY,
+                lerpedZ + box.maxZ
             )
         }
         drawOutlinedBox(

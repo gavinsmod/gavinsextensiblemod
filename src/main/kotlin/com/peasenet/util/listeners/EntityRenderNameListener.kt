@@ -23,7 +23,7 @@
  */
 package com.peasenet.util.listeners
 
-import com.peasenet.util.event.data.EntityRender
+import com.peasenet.util.event.data.EntityNameRender
 
 /**
  * A listener for the world render event.
@@ -35,5 +35,5 @@ interface EntityRenderNameListener : Listener {
     /**
      * Called when the world is rendered.
      */
-    fun onEntityRender(er: EntityRender)
+    fun onEntityNameRender(er: EntityNameRender)
 }

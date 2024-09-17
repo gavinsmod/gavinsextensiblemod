@@ -23,11 +23,12 @@
  */
 package com.peasenet.util.event
 
-import com.peasenet.util.event.data.EntityRender
+import com.peasenet.util.event.data.EntityNameRender
 import com.peasenet.util.listeners.EntityRenderNameListener
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
+import net.minecraft.text.Text
 
 /**
  * The event for the world render event.
@@ -37,24 +38,22 @@ import net.minecraft.entity.Entity
  */
 class EntityRenderNameEvent(
     entity: Entity,
-    yaw: Float,
-    tickDelta: Float,
     matrices: MatrixStack,
     vertexConsumers: VertexConsumerProvider?,
+    tickDelta: Float,
     light: Int
 ) : Event<EntityRenderNameListener>() {
-    private var entityRender: EntityRender
-
-    /**
-     * Creates a new world render event.
-     */
-    init {
-        entityRender = EntityRender(entity, yaw, tickDelta, matrices, vertexConsumers, light)
-    }
+    private var entityRender: EntityNameRender = EntityNameRender(
+        entity,
+        matrices,
+        vertexConsumers!!,
+        tickDelta,
+        light,
+    )
 
     override fun fire(listeners: ArrayList<EntityRenderNameListener>) {
         for (listener in listeners) {
-            listener.onEntityRender(entityRender)
+            listener.onEntityNameRender(entityRender)
         }
     }
 
