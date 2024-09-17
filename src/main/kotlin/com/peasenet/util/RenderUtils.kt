@@ -234,36 +234,7 @@ object RenderUtils {
                 lerpedZ + box.maxZ
             )
         }
-        drawOutlinedBox(
-            box, bufferBuilder, matrix4f, color, alpha
-        )
-    }
-
-    fun drawOutlinedBox(
-        partialTicks: Float,
-        bufferBuilder: BufferBuilder,
-        matrix4f: Matrix4f,
-        entity: Entity,
-        entityBox: Box,
-        color: Color,
-        alpha: Float
-    ) {
-
-        val lerped = MathUtils.lerp(
-            partialTicks,
-            entity.pos,
-            entity,
-            getCameraRegionPos()
-        )
-        val box = Box(
-            lerped.x + entityBox.minX,
-            lerped.y + entityBox.minY,
-            lerped.z + entityBox.minZ,
-            lerped.x + entityBox.maxX,
-            lerped.y + entityBox.maxY,
-            lerped.z + entityBox.maxZ
-        )
-        drawOutlinedBox(
+         drawOutlinedBox(
             box, bufferBuilder, matrix4f, color, alpha
         )
     }
@@ -277,7 +248,8 @@ object RenderUtils {
      * @param alpha The alpha of the box.
      */
     fun drawOutlinedBox(
-        bb: Box, buffer: BufferBuilder, matrix4f: Matrix4f, color: Color = Colors.WHITE, alpha: Float = 1f
+        bb: Box, buffer: BufferBuilder, matrix4f: Matrix4f, color: Color = Colors.WHITE, alpha: Float = 1f,
+        withOffset: Boolean = true
     ) {
 
         var minX = bb.minX.toFloat()
@@ -286,8 +258,13 @@ object RenderUtils {
         var maxX = bb.maxX.toFloat()
         var maxY = bb.maxY.toFloat()
         var maxZ = bb.maxZ.toFloat()
-        var max = Vec3d(maxX.toDouble(), maxY.toDouble(), maxZ.toDouble()).subtract(getCameraRegionPos().toVec3d())
-        var min = Vec3d(minX.toDouble(), minY.toDouble(), minZ.toDouble()).subtract(getCameraRegionPos().toVec3d())
+
+        var max = Vec3d(maxX.toDouble(), maxY.toDouble(), maxZ.toDouble())
+        var min = Vec3d(minX.toDouble(), minY.toDouble(), minZ.toDouble())
+        if(withOffset) {
+            max = max.subtract(getCameraRegionPos().toVec3d())
+            min = min.subtract(getCameraRegionPos().toVec3d())
+        }
         val newBB = Box(min, max)
         minX = newBB.minX.toFloat()
         minY = newBB.minY.toFloat()

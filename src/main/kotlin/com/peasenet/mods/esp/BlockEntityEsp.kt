@@ -85,7 +85,8 @@ abstract class BlockEntityEsp<T : BlockEntity>(
                 bufferBuilder,
                 matrixStack.peek().positionMatrix,
                 getColor(),
-                getAlpha()
+                getAlpha(),
+                false
             )
             matrixStack.pop()
         }

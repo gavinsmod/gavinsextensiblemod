@@ -24,6 +24,7 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.gavui.color.Color
+import com.peasenet.main.GavinsModClient
 import com.peasenet.settings.SettingBuilder
 import net.minecraft.entity.player.PlayerEntity
 
@@ -38,7 +39,7 @@ class ModEntityPlayerEsp : EntityEsp<PlayerEntity>(
     "Player ESP",
     "gavinsmod.mod.esp.player",
     "playeresp",
-    { it is PlayerEntity },
+    { it is PlayerEntity && it != GavinsModClient.player },
 ) {
     init {
         val colorSetting = SettingBuilder().setTitle("gavinsmod.settings.esp.player.color").setColor(config.playerColor)
