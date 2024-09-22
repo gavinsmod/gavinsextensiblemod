@@ -72,7 +72,6 @@ class ModHealthTag : RenderMod(
         val attachmentVec =
             entity.attachments.getPointNullable(EntityAttachmentType.NAME_TAG, 0, entity.getYaw(tickDelta))
                 ?: return
-        val bl = !entity.isSneaky
         val i = if ("deadmau5" == text.string) -10 else 0
         matrices.push()
         matrices.translate(attachmentVec.x, attachmentVec.y + 0.5, attachmentVec.z)

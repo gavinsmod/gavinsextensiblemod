@@ -39,8 +39,9 @@ open class EventManager {
      * @param event    - The event class.
      * @param listener - The listener to add.
      */
+    @Suppress("UNCHECKED_CAST")
     fun <L : Listener> subscribe(event: Class<L>, listener: L) {
-        eventMap.computeIfAbsent(event) { k: Class<out Listener?>? -> ArrayList() }
+        eventMap.computeIfAbsent(event) { _: Class<out Listener?>? -> ArrayList() }
         (eventMap[event] as ArrayList<L>).add(listener)
     }
 
@@ -63,6 +64,7 @@ open class EventManager {
      *
      * @param event - The event to fire.
      */
+    @Suppress("UNCHECKED_CAST")
     fun <L : Listener, E : Event<L>> call(event: E) {
         // get all listeners for the event
         val listeners = eventMap[event.event] ?: return

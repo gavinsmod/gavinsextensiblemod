@@ -187,7 +187,6 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
             .setHoverable(true)
             .setCallback { page = 0; updateBlockList() }
             .buildToggle()
-        val titleW = textRenderer.getWidth(translationKey)
         val resetText = Text.translatable("gavinsmod.settings.reset")
         val width = textRenderer.getWidth(resetText)
         addSelectableChild(search)

@@ -24,57 +24,15 @@
 package com.peasenet.util.event.data
 
 import net.minecraft.client.render.BufferBuilder
-import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
-import net.minecraft.entity.EntityType
 import net.minecraft.util.math.Vec3d
 
-class EntityRender {
-    var entity: Entity
-    var stack: MatrixStack
-    var buffer: BufferBuilder?
-    var center: Vec3d?
-    var playerPos: Vec3d?
+class EntityRender(
+    var entity: Entity,
+    var stack: MatrixStack,
+    var buffer: BufferBuilder?,
+    var center: Vec3d?,
+    var playerPos: Vec3d?,
     var delta: Float
-    var vertexConsumers: VertexConsumerProvider?
-    var light = 0
-
-    constructor(
-        entity: Entity,
-        stack: MatrixStack,
-        buffer: BufferBuilder?,
-        center: Vec3d?,
-        playerPos: Vec3d?,
-        delta: Float
-    ) {
-        this.entity = entity
-        this.stack = stack
-        this.buffer = buffer
-        this.center = center
-        this.playerPos = playerPos
-        this.delta = delta
-        vertexConsumers = null
-    }
-
-    constructor(
-        entity: Entity,
-        yaw: Float,
-        tickDelta: Float,
-        matrices: MatrixStack,
-        vertexConsumers: VertexConsumerProvider?,
-        light: Int
-    ) {
-        this.entity = entity
-        stack = matrices
-        buffer = null
-        center = null
-        playerPos = null
-        delta = tickDelta
-        this.vertexConsumers = vertexConsumers
-        this.light = light
-    }
-
-    val entityType: EntityType<*>
-        get() = entity.type
-}
+)

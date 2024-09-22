@@ -30,6 +30,7 @@ import kotlin.math.floor
  * @since 09-06-2024
  * @author GT3CH1
  */
+@Suppress("UNCHECKED_CAST")
 abstract class EntityTracer<T : Entity>(
     name: String, translationKey: String, chatCommand: String, val entityFilter: (Entity) -> Boolean
 ) : TracerMod<T>(name, translationKey, chatCommand), RenderListener {

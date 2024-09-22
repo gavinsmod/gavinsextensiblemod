@@ -56,6 +56,7 @@ abstract class EntityEsp<T : Entity>(
     name: String, translationKey: String, chatCommand: String, val entityFilter: (Entity) -> Boolean
 ) : EspMod<T>(name, translationKey, chatCommand) {
 
+    @Suppress("UNCHECKED_CAST")
     override fun onTick() {
         super.onTick()
         espList.clear()

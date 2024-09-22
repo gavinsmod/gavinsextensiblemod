@@ -24,6 +24,7 @@ import net.minecraft.client.util.math.MatrixStack
  * @since 09-06-2024
  * @author GT3CH1
  */
+@Suppress("UNCHECKED_CAST")
 abstract class BlockEntityTracer<T : BlockEntity>(
     name: String,
     translationKey: String,

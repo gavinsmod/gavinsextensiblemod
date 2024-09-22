@@ -37,7 +37,15 @@ class ToggleSetting(builder: SettingBuilder) : Setting() {
     /**
      * The gui element that is used to display this toggle setting.
      */
-    override lateinit var gui: GuiToggle
+    override var gui: GuiToggle = GuiBuilder()
+        .setWidth(90F)
+        .setHeight(10F)
+        .setTitle(builder.getTitle())
+        .setIsOn(builder.getState())
+        .setCallback(builder.getCallback())
+        .setHoverable(builder.isHoverable())
+        .setTopLeft(builder.getTopLeft())
+        .buildToggle()
 
     /**
      * The current value of this toggle setting.
@@ -49,22 +57,4 @@ class ToggleSetting(builder: SettingBuilder) : Setting() {
             gui.setBackground(if (value) GavUISettings.getColor("gui.color.enabled") else GavUISettings.getColor("gui.color.background"))
             gui.setState(value)
         }
-
-    /**
-     * Creates a new toggle setting.
-     *
-     * @param key - The translation key of this toggle setting.
-     */
-    init {
-        gui = GuiBuilder()
-            .setWidth(90F)
-            .setHeight(10F)
-            .setTitle(builder.getTitle())
-            .setIsOn(builder.getState())
-            .setCallback(builder.getCallback())
-            .setHoverable(builder.isHoverable())
-            .setTopLeft(builder.getTopLeft())
-            .buildToggle()
-
-    }
 }

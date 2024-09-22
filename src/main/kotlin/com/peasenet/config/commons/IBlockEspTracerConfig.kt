@@ -25,7 +25,6 @@
 package com.peasenet.config.commons
 
 import com.peasenet.gavui.color.Color
-import net.minecraft.block.Block
 
 /**
  * An interface for block esp tracer configuration.
@@ -40,5 +39,4 @@ import net.minecraft.block.Block
 interface IBlockEspTracerConfig {
     var blockColor: Color
     var alpha: Float
-    fun isInList(block: Block): Boolean
 }

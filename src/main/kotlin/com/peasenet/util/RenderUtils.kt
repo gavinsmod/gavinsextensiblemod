@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+@file:Suppress("KotlinConstantConditions","UNCHECKED_CAST")
 package com.peasenet.util
 
 import com.mojang.blaze3d.systems.RenderSystem
@@ -42,7 +43,6 @@ import net.minecraft.world.chunk.Chunk
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL11
-
 
 /**
  * A utility class for rendering tracers and esp's.
@@ -72,18 +72,6 @@ object RenderUtils {
     }
 
     /**
-     * Gets the bounding box of an entity.
-     *
-     * @param delta The delta time.
-     * @param e     The entity.
-     * @return The bounding box of the entity.
-     */
-    @Deprecated("Use the entity's bounding box instead.", ReplaceWith("e.boundingBox"))
-    fun getEntityBox(delta: Float, e: Entity): Box {
-        return e.boundingBox
-    }
-
-    /**
      * Sets the gamma of the game to the full bright value of 10000.0 while storing the last gamma value.
      */
     fun setHighGamma() {
@@ -110,10 +98,8 @@ object RenderUtils {
          * @param gamma The value to set the gamma to.
          */
         set(gamma) {
-            var newValue = gamma
-            val maxGamma = 16f
-            if (newValue < 0.0) newValue = 0.0
-            if (newValue > maxGamma) newValue = maxGamma.toDouble()
+            val newValue = gamma
+            newValue.coerceAtLeast(0.0).coerceAtMost(16.0)
             val newGamma = GavinsModClient.minecraftClient.options.gamma
             if (newGamma.value != newValue) {
                 val newGamma2 = (newGamma as ISimpleOption<Double>)
@@ -234,7 +220,7 @@ object RenderUtils {
                 lerpedZ + box.maxZ
             )
         }
-         drawOutlinedBox(
+        drawOutlinedBox(
             box, bufferBuilder, matrix4f, color, alpha
         )
     }
@@ -261,7 +247,7 @@ object RenderUtils {
 
         var max = Vec3d(maxX.toDouble(), maxY.toDouble(), maxZ.toDouble())
         var min = Vec3d(minX.toDouble(), minY.toDouble(), minZ.toDouble())
-        if(withOffset) {
+        if (withOffset) {
             max = max.subtract(getCameraRegionPos().toVec3d())
             min = min.subtract(getCameraRegionPos().toVec3d())
         }

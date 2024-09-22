@@ -66,12 +66,9 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
     private var offsetY: Int = 0
     private var paddingX: Float = 0.0f
     private var paddingY: Float = 0.0f
-    private val width = 115 * 2
-    private val height = 14 * 10
-
 
     companion object {
-        const val padding: Float = 5.0f
+        const val PADDING: Float = 5.0f
         var settings: ArrayList<Setting> = ArrayList()
         var visible: Boolean = false
     }
@@ -81,6 +78,7 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         visible = false
     }
 
+    @Suppress("DuplicatedCode")
     override fun init() {
         visible = true
         this.parent = GavinsMod.guiSettings
@@ -88,17 +86,16 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         guis.clear()
         offsetX = client!!.window.scaledWidth / 2 - (this.width / 2)
         offsetY = client!!.window.scaledHeight / 2 - (this.height / 2)
-        paddingX = padding + padding
-        paddingY = offsetY + padding
+        paddingX = PADDING + PADDING
+        paddingY = offsetY + PADDING
         box = GuiBuilder()
             .setWidth(width)
             .setHeight(height)
-            .setTopLeft(padding, offsetY.toFloat())
+            .setTopLeft(PADDING, offsetY.toFloat())
             .setHoverable(false)
             .setTransparency(0.9f)
             .build()
         val gapY = 12f
-        val gapX = 12f
         var pos = PointF(paddingX, paddingY)
 
         colorTitle = GuiBuilder()
@@ -119,7 +116,7 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
             .buildColorSetting()
         playerEntityColor.setCallback { Settings.getConfig<RadarConfig>("radar").playerColor = playerEntityColor.color }
 
-        pos = pos.add(playerEntityColor.gui.width + padding * 2, 0f)
+        pos = pos.add(playerEntityColor.gui.width + PADDING * 2, 0f)
 
         hostileEntityColor = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.mob.hostile.color")
@@ -141,7 +138,7 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
             Settings.getConfig<RadarConfig>("radar").peacefulMobColor = peacefulEntityColor.color
         }
 
-        pos = pos.add(peacefulEntityColor.gui.width + padding * 2, 0f)
+        pos = pos.add(peacefulEntityColor.gui.width + PADDING * 2, 0f)
 
         entityItemColor = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.item.color")
@@ -179,7 +176,7 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
             .setTopLeft(pos)
             .buildClickSetting()
 
-        pos = pos.add(scaleSetting.gui.width + padding * 2, 0f)
+        pos = pos.add(scaleSetting.gui.width + PADDING * 2, 0f)
 
         pointSizeSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.pointsize")
@@ -290,40 +287,38 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
             it.width = (maxWidth + 10).toFloat()
         }
         pos = PointF(paddingX, paddingY + gapY)
-        playerEntityColor.setPos(pos)
-        pos = pos.add(playerEntityColor.getWidth() + padding, 0f)
-        hostileEntityColor.setPos(pos)
+        playerEntityColor.gui.position = pos
+        pos = pos.add(playerEntityColor.gui.width + PADDING, 0f)
+        hostileEntityColor.gui.position = pos
         pos = PointF(paddingX, pos.y + gapY)
-        peacefulEntityColor.setPos(pos)
-        pos = pos.add(peacefulEntityColor.getWidth() + padding, 0f)
-        entityItemColor.setPos(pos)
+        peacefulEntityColor.gui.position = pos
+        pos = pos.add(peacefulEntityColor.gui.width + PADDING, 0f)
+        entityItemColor.gui.position = pos
         pos = PointF(paddingX, pos.y + gapY)
-        backgroundColor.setPos(pos)
+        backgroundColor.gui.position = pos
         pos = PointF(paddingX, pos.y + gapY)
         scaleTitle.position = (pos)
         pos = PointF(paddingX, pos.y + gapY)
-        pointSizeSetting.setPos(pos)
-        pos = pos.add(pointSizeSetting.getWidth() + padding, 0f)
-        scaleSetting.setPos(pos)
+        pointSizeSetting.gui.position = pos
+        pos = pos.add(pointSizeSetting.gui.width + PADDING, 0f)
+        scaleSetting.gui.position = pos
         pos = PointF(paddingX, pos.y + gapY)
 
         toggleTitle.position = pos
         pos = PointF(paddingX, pos.y + gapY)
-        playerEntityToggle.setPos(pos)
-        pos = pos.add(playerEntityToggle.getWidth() + padding, 0f)
-        hostileEntityToggle.setPos(pos)
+        playerEntityToggle.gui.position = pos
+        pos = pos.add(playerEntityToggle.gui.width + PADDING, 0f)
+        hostileEntityToggle.gui.position = pos
         pos = PointF(paddingX, pos.y + gapY)
-        peacefulEntityToggle.setPos(pos)
-        pos = pos.add(peacefulEntityToggle.getWidth() + padding, 0f)
-        itemToggle.setPos(pos)
+        peacefulEntityToggle.gui.position = pos
+        pos = pos.add(peacefulEntityToggle.gui.width + PADDING, 0f)
+        itemToggle.gui.position = pos
         pos = PointF(paddingX, pos.y + gapY)
         alphaTitle.position = pos
         pos = PointF(paddingX, pos.y + gapY)
-        backgroundAlpha.setPos(pos)
-        pos = pos.add(backgroundAlpha.getWidth() + padding, 0f)
-        pointAlpha.setPos(pos)
-
-
+        backgroundAlpha.gui.position = pos
+        pos = pos.add(backgroundAlpha.gui.width + PADDING, 0f)
+        pointAlpha.gui.position = pos
 
         guis.add(0, box)
         guis.add(colorTitle)
@@ -340,7 +335,7 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
      * Callback method for the scale setting.
      */
     private fun increaseScale() {
-        Settings.getConfig<RadarConfig>("radar").scale = Settings.getConfig<RadarConfig>("radar").scale + 1
+        Settings.getConfig<RadarConfig>("radar").scale += 1
         updateScaleText(scaleSetting, Settings.getConfig<RadarConfig>("radar").scale)
     }
 

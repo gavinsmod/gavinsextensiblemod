@@ -46,10 +46,11 @@ class ModFpsCounter : MiscMod(
     "gavinsmod.mod.misc.fpscounter",
     "fpscounter",
 ), InGameHudRenderListener {
-    
+
     private companion object {
         lateinit var fpsColorConfig: FpsColorConfig
     }
+
     init {
         fpsColorConfig = Settings.getConfig<FpsColorConfig>("fpsColors")
         val fpsSetting = SettingBuilder()
@@ -106,11 +107,10 @@ class ModFpsCounter : MiscMod(
     /**
      * Draws the FPS overlay if enabled.
      *
-     * @param matrixStack - The matrix stack to use.
+     * @param drawContext The draw context ot use.
      */
     private fun drawFpsOverlay(drawContext: DrawContext) {
         val matrixStack = drawContext.matrices
-        val textRenderer = client.textRenderer
         val fps = GavinsModClient.minecraftClient.getFps()
         val fpsString = "FPS: $fps"
         val xCoordinate = GavinsModClient.minecraftClient.window.scaledWidth - (fpsString.length * 5 + 2)

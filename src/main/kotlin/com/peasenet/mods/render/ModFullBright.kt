@@ -21,6 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+@file:Suppress("UNCHECKED_CAST")
+
 package com.peasenet.mods.render
 
 import com.peasenet.config.FullbrightConfig
@@ -36,6 +38,7 @@ import com.peasenet.settings.SettingBuilder
  * @version 09-16-2024
  * @since 03-02-2023
  */
+@Suppress("KotlinConstantConditions")
 class ModFullBright : RenderMod(
     "Full Bright", "gavinsmod.mod.render.fullbright", "fullbright"
 ) {

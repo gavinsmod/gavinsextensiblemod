@@ -176,47 +176,38 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
          * home.
          */
         private fun miscSettings() {
-            val espConfig = Settings.getConfig<EspConfig>("esp")
-            if (espConfig != null) {
-                val espAlpha = SettingBuilder()
-                    .setTitle("gavinsmod.settings.alpha")
-                    .setValue(Settings.getConfig<EspConfig>("esp").alpha)
-                    .buildSlider()
-                espAlpha.setCallback { Settings.getConfig<EspConfig>("esp").alpha = espAlpha.value }
-                espDropdown.addElement(espAlpha.gui)
+            val espAlpha = SettingBuilder()
+                .setTitle("gavinsmod.settings.alpha")
+                .setValue(Settings.getConfig<EspConfig>("esp").alpha)
+                .buildSlider()
+            espAlpha.setCallback { Settings.getConfig<EspConfig>("esp").alpha = espAlpha.value }
+            espDropdown.addElement(espAlpha.gui)
 
+
+            val backgroundOverlay = SettingBuilder()
+                .setTitle("gavinsmod.generic.background")
+                .setState(Settings.getConfig<MiscConfig>("misc").background)
+                .buildToggleSetting()
+            backgroundOverlay.setCallback {
+                Settings.getConfig<MiscConfig>("misc").background = backgroundOverlay.value
             }
+            miscDropdown.addElement(backgroundOverlay.gui)
 
-            val miscConfig = Settings.getConfig<MiscConfig>("misc")
-            if (miscConfig != null) {
-                val backgroundOverlay = SettingBuilder()
-                      .setTitle("gavinsmod.generic.background")
-                    .setState(Settings.getConfig<MiscConfig>("misc").background)
-                    .buildToggleSetting()
-                backgroundOverlay.setCallback {
-                    Settings.getConfig<MiscConfig>("misc").background = backgroundOverlay.value
-                }
-                miscDropdown.addElement(backgroundOverlay.gui)
+            val tracerAlpha = SettingBuilder()
+                .setTitle("gavinsmod.generic.alpha")
+                .setValue(Settings.getConfig<TracerConfig>("tracer").alpha)
+                .buildSlider()
+            tracerAlpha.setCallback { Settings.getConfig<TracerConfig>("tracer").alpha = tracerAlpha.value }
+
+            val tracerViewBob = SettingBuilder()
+                .setTitle("gavinsmod.settings.tracer.viewbobcancel")
+                .setState(Settings.getConfig<TracerConfig>("tracer").viewBobCancel)
+                .buildToggleSetting()
+            tracerViewBob.setCallback {
+                Settings.getConfig<TracerConfig>("tracer").viewBobCancel = tracerViewBob.value
             }
-
-            val tracerConfig = Settings.getConfig<TracerConfig>("tracer")
-            if (tracerConfig != null) {
-                val tracerAlpha = SettingBuilder()
-                    .setTitle("gavinsmod.generic.alpha")
-                    .setValue(Settings.getConfig<TracerConfig>("tracer").alpha)
-                    .buildSlider()
-                tracerAlpha.setCallback { Settings.getConfig<TracerConfig>("tracer").alpha = tracerAlpha.value }
-
-                val tracerViewBob = SettingBuilder()
-                    .setTitle("gavinsmod.settings.tracer.viewbobcancel")
-                    .setState(Settings.getConfig<TracerConfig>("tracer").viewBobCancel)
-                    .buildToggleSetting()
-                tracerViewBob.setCallback {
-                    Settings.getConfig<TracerConfig>("tracer").viewBobCancel = tracerViewBob.value
-                }
-                tracerDropdown.addElement(tracerViewBob.gui)
-                tracerDropdown.addElement(tracerAlpha.gui)
-            }
+            tracerDropdown.addElement(tracerViewBob.gui)
+            tracerDropdown.addElement(tracerAlpha.gui)
         }
     }
 }

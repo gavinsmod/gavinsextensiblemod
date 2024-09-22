@@ -35,23 +35,18 @@ class SlideSetting(builder: SettingBuilder) : Setting() {
     /**
      * The gui used to display the setting.
      */
-    override lateinit var gui: GuiSlider
+    override var gui: GuiSlider = GuiBuilder()
+        .setWidth(builder.getWidth())
+        .setHeight(builder.getHeight())
+        .setSlideValue(builder.getValue())
+        .setTitle(builder.getTitle())
+        .setCallback(builder.getCallback())
+        .setTransparency(builder.getTransparency())
+        .setDefaultMaxChildren(builder.getMaxChildren())
+        .setMaxChildren(builder.getMaxChildren())
+        .setTopLeft(builder.getTopLeft())
+       .buildSlider()
 
-    init {
-         gui =
-             GuiBuilder()
-                 .setWidth(builder.getWidth())
-                 .setHeight(builder.getHeight())
-                 .setSlideValue(builder.getValue())
-                 .setTitle(builder.getTitle())
-                 .setCallback(builder.getCallback())
-                 .setTransparency(builder.getTransparency())
-                 .setDefaultMaxChildren(builder.getMaxChildren())
-                 .setMaxChildren(builder.getMaxChildren())
-                 .setTopLeft(builder.getTopLeft())
-                .buildSlider()
-    }
-    
     companion object;
 
     /**

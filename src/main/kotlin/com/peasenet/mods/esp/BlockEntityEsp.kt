@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+@file:Suppress("UNCHECKED_CAST")
+
 package com.peasenet.mods.esp
 
 import com.mojang.blaze3d.systems.RenderSystem
