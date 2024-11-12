@@ -41,6 +41,8 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation "net.fabricmc:fabric-language-kotlin:1.10.19+kotlin.$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    // add gson as a dependency
+    implementation "com.google.code.gson:gson:2.11.0"
 }
 
 processResources {
