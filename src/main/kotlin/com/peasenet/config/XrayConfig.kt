@@ -23,10 +23,11 @@
  */
 package com.peasenet.config
 
-import net.minecraft.block.Block
+import com.google.gson.TypeAdapter
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonToken
+import com.google.gson.stream.JsonWriter
 import net.minecraft.block.ExperienceDroppingBlock
-import net.minecraft.registry.Registries
-import java.util.function.Consumer
 
 /**
  * The configuration for xray.
@@ -44,8 +45,53 @@ class XrayConfig : BlockListConfig<XrayConfig>({ it is ExperienceDroppingBlock }
             field = value
             saveConfig()
         }
-    
+
     init {
         key = "xray"
     }
+}
+
+
+class XrayConfigGsonAdapter : TypeAdapter<XrayConfig>() {
+    override fun write(out: JsonWriter?, value: XrayConfig?) {
+        // Write the block list
+        out?.beginObject()
+        out?.name("blocks")
+        out?.beginArray()
+        value?.blocks?.forEach {
+            out?.value(it)
+        }
+        out?.endArray()
+        out?.name("blockCulling")
+        out?.value(value?.blockCulling)
+        out?.endObject()
+    }
+
+    override fun read(reader: JsonReader?): XrayConfig {
+        val config = XrayConfig()
+        reader?.beginObject()
+        while (reader?.hasNext() == true) {
+            val token = reader.peek()
+            var fieldName = ""
+            if (token.equals(JsonToken.NAME))
+                fieldName = reader.nextName()
+
+            when (fieldName) {
+                "blocks" -> {
+                    reader.beginArray()
+                    while (reader.hasNext()) {
+                        config.blocks.add(reader.nextString())
+                    }
+                    reader.endArray()
+                }
+
+                "blockCulling" -> {
+                    config.blockCulling = reader.nextBoolean()
+                }
+            }
+        }
+        reader?.endObject()
+        return config
+    }
+
 }

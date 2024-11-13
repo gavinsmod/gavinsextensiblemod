@@ -51,12 +51,7 @@ open class FullbrightConfig : Config<FullbrightConfig>() {
         key = "fullbright"
     }
 
-    val maxGamma: Float
-        /**
-         * Gets the maximum gamma value allowed.
-         * If XRAY is enabled, this will be 16.
-         * If it is not, then it will be between 1 and 4 inclusive.
-         * @return max gamma value.
-         */
-        get() = if (Mods.isActive("xray")) 16F else 1 + 15 * gamma
+    fun maxGamma(): Float  {
+        return if (Mods.isActive("xray")) 16F else 1 + 15 * gamma
+    }
 }

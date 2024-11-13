@@ -107,7 +107,7 @@ class ModFullBright : RenderMod(
         if (fullbrightConfig.gammaFade) {
             fadeGammaUp()
         } else {
-            gamma = fullbrightConfig.maxGamma.toDouble()
+            gamma = fullbrightConfig.maxGamma().toDouble()
         }
     }
 
@@ -141,7 +141,7 @@ class ModFullBright : RenderMod(
          */
         set(gamma) {
             val newValue = gamma
-            val maxGamma = fullbrightConfig.maxGamma
+            val maxGamma = fullbrightConfig.maxGamma()
             newValue.coerceAtLeast(0.0)
                 .coerceAtMost(maxGamma.toDouble())
             val newGamma = GavinsModClient.minecraftClient.options.gamma

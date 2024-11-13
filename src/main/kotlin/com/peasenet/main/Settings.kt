@@ -5,6 +5,8 @@ import com.google.gson.ToNumberPolicy
 import com.google.gson.stream.JsonReader
 import com.peasenet.annotations.GsonExclusionStrategy
 import com.peasenet.config.Config
+import com.peasenet.config.XrayConfig
+import com.peasenet.config.XrayConfigGsonAdapter
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.Path
@@ -38,12 +40,14 @@ object Settings {
         if (!file.exists()) {
             save()
         }
-        val json = GsonBuilder().setPrettyPrinting().create()
+        val json = GsonBuilder().setPrettyPrinting()
+            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .registerTypeAdapter(XrayConfig::class.java, XrayConfigGsonAdapter())
+            .create()
         try {
             val reader = JsonReader(InputStreamReader(FileInputStream(file)))
             val data = json.fromJson<HashMap<String, Config<*>>>(
-                reader,
-                HashMap::class.java
+                reader, HashMap::class.java
             )
             if (data == null) loadDefault()
             reader.close()
@@ -66,10 +70,12 @@ object Settings {
      * @param key   - The key of the configuration.
      * @return - The configuration.
      */
-    private fun fetchConfig(clazz: Class<out Config<*>>, key: String?): Config<*> {
+    private fun fetchConfig(clazz: Config<*>, key: String?): Config<*> {
         // open the settings file
         val cfgFile = filePath
-        val json = GsonBuilder().create()
+        val json = GsonBuilder().registerTypeAdapter(XrayConfig::class.java, XrayConfigGsonAdapter())
+            .setExclusionStrategies(GsonExclusionStrategy()).setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .create()
         val map: Any?
         try {
             map = json.fromJson(FileReader(cfgFile), HashMap::class.java)[key]
@@ -81,7 +87,8 @@ object Settings {
         }
         try {
             val jsonObject = json.toJsonTree(map).asJsonObject
-            return json.fromJson(jsonObject, clazz)
+            // parse the json object to the configuration class
+            return json.fromJson(jsonObject, clazz::class.java)
         } catch (e: IllegalStateException) {
             settings[key] = defaultSettings[key]!!
             save()
@@ -97,7 +104,9 @@ object Settings {
         val cfgFile = filePath
         // ensure the settings file exists
         ensureCfgCreated(cfgFile)
-        val json = GsonBuilder().setPrettyPrinting().setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+        val json = GsonBuilder().setPrettyPrinting().setObjectToNumberStrategy(
+            ToNumberPolicy.LONG_OR_DOUBLE
+        ).registerTypeAdapter(XrayConfig::class.java, XrayConfigGsonAdapter())
             .setExclusionStrategies(GsonExclusionStrategy()).create()
         try {
             val writer = Files.newBufferedWriter(Paths.get(cfgFile))
@@ -121,8 +130,7 @@ object Settings {
      */
     fun addConfig(config: Config<*>) {
         defaultSettings[config.key] = config
-        settings[config.key] =
-            fetchConfig(config.javaClass, config.key)
+        settings[config.key] = fetchConfig(config, config.key)
     }
 
     /**
