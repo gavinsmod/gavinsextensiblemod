@@ -134,7 +134,8 @@ open class BlockListConfig<E : Config<*>>(blockFilter: (it: Block) -> Boolean = 
          * @return The name of the block.
          */
         fun getId(b: Block): String {
-            val path = b.lootTableKey.value.path
+
+            val path = b.translationKey
             return if (path == "empty") b.translationKey.replace("block.minecraft.", "") else path.replace(
                 "blocks/",
                 ""

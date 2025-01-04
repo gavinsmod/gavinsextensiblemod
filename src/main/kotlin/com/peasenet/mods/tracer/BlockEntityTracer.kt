@@ -5,6 +5,7 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.block.entity.BlockEntity
+import net.minecraft.client.gl.ShaderProgramKeys
 import net.minecraft.client.render.BufferRenderer
 import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.render.VertexFormat
@@ -60,9 +61,11 @@ abstract class BlockEntityTracer<T : BlockEntity>(
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         if (entityList.isEmpty()) return
         RenderUtils.setupRender(matrixStack)
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+//        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR)
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-        RenderSystem.applyModelViewMatrix()
+//        RenderSystem.applyModelViewMatrix()
+//        RenderSystem.matrix
         val entry = matrixStack.peek().positionMatrix
         val bufferBuilder = RenderUtils.getBufferBuilder()
         for (e in entityList) {

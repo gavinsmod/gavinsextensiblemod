@@ -29,6 +29,7 @@ import com.peasenet.gavui.GavUI;
 import com.peasenet.gavui.color.Color;
 import com.peasenet.gavui.math.BoxF;
 import com.peasenet.gavui.math.PointF;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
@@ -65,7 +66,8 @@ public class GuiUtil {
 //        GL11.glEnable(GL11.GL_BLEND);
 //        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 //        
-        RenderSystem.setShader(GameRenderer::getPositionProgram);
+//        RenderSystem.setShader(ShaderProgramKeys.POSITION);
+        RenderSystem.setShader(ShaderProgramKeys.POSITION);
         RenderSystem.enableBlend();
         var shaderColors = RenderSystem.getShaderColor();
         RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], alpha);
@@ -75,7 +77,7 @@ public class GuiUtil {
         drawBox(box, matrix, bufferBuilder);
         var e = bufferBuilder.end();
         BufferRenderer.drawWithGlobalProgram(e);
-        RenderSystem.applyModelViewMatrix();
+//        RenderSystem.applyModelViewMatrix();
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.disableBlend();
     }
@@ -112,7 +114,7 @@ public class GuiUtil {
     public static void drawOutline(Color c, BoxF box, MatrixStack matrixStack, float alpha) {
         alpha = Math.max(0, Math.min(1, alpha));
         var acColor = c.getAsFloatArray();
-        RenderSystem.setShader(GameRenderer::getPositionProgram);
+        RenderSystem.setShader(ShaderProgramKeys.POSITION);
         RenderSystem.enableBlend();
         RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], alpha);
 
@@ -122,7 +124,7 @@ public class GuiUtil {
         drawBox(box, matrix, bb);
         var e = bb.end();
         BufferRenderer.drawWithGlobalProgram(e);
-        RenderSystem.applyModelViewMatrix();
+//        RenderSystem.applyModelViewMatrix();
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.disableBlend();
     }
@@ -157,7 +159,7 @@ public class GuiUtil {
     public static void renderSingleLine(Color color, PointF p1, PointF p2, MatrixStack matrixStack, float alpha) {
         alpha = Math.max(0, Math.min(1, alpha));
         var accColor = color.getAsFloatArray();
-        RenderSystem.setShader(GameRenderer::getPositionProgram);
+        RenderSystem.setShader(ShaderProgramKeys.POSITION);
         RenderSystem.enableBlend();
         var matrix = matrixStack.peek().getPositionMatrix();
         var tessellator = RenderSystem.renderThreadTesselator();

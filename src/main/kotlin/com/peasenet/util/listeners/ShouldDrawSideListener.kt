@@ -23,12 +23,12 @@
  */
 package com.peasenet.util.listeners
 
-import com.peasenet.util.event.data.DrawSide
+import com.peasenet.util.event.data.DrawState
 
 /**
  * @author gt3ch1
  * @version 03-02-2023
  */
 interface ShouldDrawSideListener : Listener {
-    fun onDrawSide(event: DrawSide)
+    fun onDrawSide(event: DrawState)
 }

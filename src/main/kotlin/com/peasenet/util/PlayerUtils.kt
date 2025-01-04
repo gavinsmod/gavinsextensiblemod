@@ -174,7 +174,7 @@ object PlayerUtils {
             if (player.getFallDistance() <= (if (isFalling) 1 else 2)) return
             if (player.isSneaking() && !fallSpeedCanDamage() && player.isFallFlying()) return
             if (GavinsMod.isEnabled("noclip")) {
-                player.getNetworkHandler().sendPacket(OnGroundOnly(true))
+                player.getNetworkHandler().sendPacket(OnGroundOnly(true, false))
             }
         }
     }

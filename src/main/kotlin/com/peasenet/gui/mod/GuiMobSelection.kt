@@ -297,7 +297,7 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
                     GavUISettings.getColor("gui.color.foreground").brighten(0.5f).getAsInt(0.5f)
                 )
                 GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack, 1f)
-                drawContext.drawTooltip(textRenderer, Text.translatable(block.translationKey), mouseX, mouseY)
+                drawContext.drawTooltip(textRenderer, Text.translatable(block.item.translationKey), mouseX, mouseY)
             }
             drawContext.drawItem(block, blockX, blockY)
         }
@@ -308,7 +308,7 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
      */
     fun updateItemList() {
         var itms = items.filter {
-            I18n.translate(it.translationKey).lowercase().contains(
+            I18n.translate(it.item.translationKey).lowercase().contains(
                 search.text.lowercase()
             )
         }

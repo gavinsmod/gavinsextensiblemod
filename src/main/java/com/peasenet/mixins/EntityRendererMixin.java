@@ -31,6 +31,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import org.spongepowered.asm.mixin.Final;
@@ -41,15 +42,20 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderer.class)
-public abstract class EntityRendererMixin<T extends Entity> {
+public abstract class EntityRendererMixin<T extends Entity, S extends EntityRenderState> {
     //SEE: EntityRenderer#renderLabelIfPresent
 
+    @Shadow
+    @Final
+    private S state;
+
     @Inject(at = @At("HEAD"), method = "render", cancellable = true)
-    private void renderHealth(T entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
-        if (!Mods.getMod("hptags").isActive()) return;
-        var event = new EntityRenderNameEvent(entity, matrices, vertexConsumers, tickDelta, light);
-        EventManager.getEventManager().call(event);
-        ci.cancel();
+    private void renderHealth(S state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
+        // TODO: Fix HealthTags
+//        if (!Mods.getMod("hptags").isActive()) return;
+//        var event = new EntityRenderNameEvent(state.displayName, matrices, vertexConsumers, 0f, light);
+//        EventManager.getEventManager().call(event);
+//        ci.cancel();
     }
 
 

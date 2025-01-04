@@ -40,10 +40,8 @@ object Settings {
         if (!file.exists()) {
             save()
         }
-        val json = GsonBuilder().setPrettyPrinting()
-            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
-            .registerTypeAdapter(XrayConfig::class.java, XrayConfigGsonAdapter())
-            .create()
+        val json = GsonBuilder().setPrettyPrinting().setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .registerTypeAdapter(XrayConfig::class.java, XrayConfigGsonAdapter()).create()
         try {
             val reader = JsonReader(InputStreamReader(FileInputStream(file)))
             val data = json.fromJson<HashMap<String, Config<*>>>(
@@ -73,9 +71,11 @@ object Settings {
     private fun fetchConfig(clazz: Config<*>, key: String?): Config<*> {
         // open the settings file
         val cfgFile = filePath
-        val json = GsonBuilder().registerTypeAdapter(XrayConfig::class.java, XrayConfigGsonAdapter())
-            .setExclusionStrategies(GsonExclusionStrategy()).setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
-            .create()
+
+        val jsonBuilder = GsonBuilder().setExclusionStrategies(GsonExclusionStrategy())
+            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+        if (key == "xray") jsonBuilder.registerTypeAdapter(XrayConfig::class.java, XrayConfigGsonAdapter())
+        val json = jsonBuilder.create()
         val map: Any?
         try {
             map = json.fromJson(FileReader(cfgFile), HashMap::class.java)[key]
@@ -90,8 +90,9 @@ object Settings {
             // parse the json object to the configuration class
             return json.fromJson(jsonObject, clazz::class.java)
         } catch (e: IllegalStateException) {
+            GavinsMod.LOGGER.error("Error parsing settings file ($key): ", e)
             settings[key] = defaultSettings[key]!!
-            save()
+//            save()
             return defaultSettings[key]!!
         }
     }

@@ -30,7 +30,7 @@ import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
-import com.peasenet.util.event.data.DrawSide
+import com.peasenet.util.event.data.DrawState
 import com.peasenet.util.event.data.TessellateBlock
 import com.peasenet.util.listeners.BlockEntityRenderListener
 import com.peasenet.util.listeners.ShouldDrawSideListener
@@ -122,7 +122,7 @@ class ModXray : RenderMod(
         super.deactivate()
     }
 
-    override fun onDrawSide(event: DrawSide) {
+    override fun onDrawSide(event: DrawState) {
         if (!isActive) return
         event.setShouldDraw(shouldDrawFace(event.state))
     }

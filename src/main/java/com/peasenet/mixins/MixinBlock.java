@@ -26,12 +26,10 @@ package com.peasenet.mixins;
 
 import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.ShouldDrawSideEvent;
-import com.peasenet.util.event.data.DrawSide;
+import com.peasenet.util.event.data.DrawState;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -44,8 +42,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Block.class)
 public class MixinBlock {
     @Inject(at = @At("RETURN"), method = "shouldDrawSide", cancellable = true)
-    private static void xray(BlockState state, BlockView world, BlockPos pos, Direction side, BlockPos otherPos, CallbackInfoReturnable<Boolean> cir) {
-        var drawSide = new DrawSide(pos, state);
+    private static void xray(BlockState state, BlockState otherState, Direction side, CallbackInfoReturnable<Boolean> cir) {
+        var drawSide = new DrawState(state);
         var evt = new ShouldDrawSideEvent(drawSide);
         EventManager.getEventManager().call(evt);
         if (drawSide.shouldDraw() != null) {

@@ -25,6 +25,8 @@
 package com.peasenet.mixins;
 
 import com.mojang.authlib.GameProfile;
+import com.peasenet.main.GavinsMod;
+import com.peasenet.main.GavinsModClient;
 import com.peasenet.mixinterface.IClientPlayerEntity;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -134,7 +136,8 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
 
     @Override
     public boolean tryAttack(Entity target) {
-        return super.tryAttack(target);
+//TODO:        return super.tryAttack(getserverWorld(), target);
+        return false;
     }
 
     @Shadow
@@ -173,7 +176,8 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
 
     @Override
     public boolean isFallFlying() {
-        return super.isFallFlying();
+        // TODO: super.isFallFlying();
+        return false;
     }
 
     @Override

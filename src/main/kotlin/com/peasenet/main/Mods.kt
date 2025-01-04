@@ -54,7 +54,6 @@ class Mods {
 
         Settings.addConfig(FpsColorConfig())
         Settings.addConfig(FullbrightConfig())
-        Settings.addConfig(XrayConfig())
         Settings.addConfig(BlockEspConfig())
         Settings.addConfig(BlockTracerConfig())
         Settings.addConfig(RadarConfig())
@@ -63,6 +62,7 @@ class Mods {
         Settings.addConfig(EspConfig());
         Settings.addConfig(TracerConfig());
         Settings.addConfig(MiscConfig());
+        Settings.addConfig(XrayConfig())
 
         /*@MODS@*/
         GavinsMod.addMod(ModAutoAttack())
@@ -85,14 +85,14 @@ class Mods {
         GavinsMod.addMod(ModFastPlace())
         GavinsMod.addMod(ModFly())
         GavinsMod.addMod(ModNoClip())
-        GavinsMod.addMod(ModNoFall())
+//        GavinsMod.addMod(ModNoFall())
         GavinsMod.addMod(ModSpeed())
         GavinsMod.addMod(ModAntiFire())
         GavinsMod.addMod(ModAntiHurt())
         GavinsMod.addMod(ModAntiPumpkin())
         GavinsMod.addMod(ModBarrierDetect())
         GavinsMod.addMod(ModFullBright())
-        GavinsMod.addMod(ModHealthTag())
+//        GavinsMod.addMod(ModHealthTag())
         GavinsMod.addMod(ModNoNausea())
         GavinsMod.addMod(ModNoOverlay())
         GavinsMod.addMod(ModNoRain())

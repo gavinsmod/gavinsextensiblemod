@@ -41,7 +41,7 @@ class ModNoFall : MovementMod(
         if (player != null && isActive) {
             if (player.getFallDistance() <= (if (isFalling) 1 else 2)) return
             if (player.isSneaking() && !fallSpeedCanDamage && player.isFallFlying()) return
-            player.getNetworkHandler().sendPacket(PlayerMoveC2SPacket.OnGroundOnly(true))
+            player.getNetworkHandler().sendPacket(PlayerMoveC2SPacket.OnGroundOnly(true, false))
         }
     }
 

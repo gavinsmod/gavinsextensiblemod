@@ -34,7 +34,7 @@ import net.minecraft.util.math.BlockPos
  * Draw side data class for the draw side event.
  * @see com.peasenet.util.event.ShouldDrawSideEvent
  */
-class DrawSide(val pos: BlockPos, val state: BlockState) : Cancellable() {
+class DrawState(val state: BlockState) : Cancellable() {
     private var shouldDraw: Boolean? = null
     fun setShouldDraw(shouldDraw: Boolean) {
         this.shouldDraw = shouldDraw
