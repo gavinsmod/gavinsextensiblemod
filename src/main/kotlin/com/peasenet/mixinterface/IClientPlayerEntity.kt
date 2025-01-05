@@ -241,4 +241,7 @@ interface IClientPlayerEntity {
     fun isSubmergedInWater(): Boolean
     fun getEyeHeight(): Double
     fun getWorld(): World
+
+    fun horizontalCollision(): Boolean
+    fun isGliding(): Boolean
 }

@@ -85,7 +85,7 @@ class Mods {
         GavinsMod.addMod(ModFastPlace())
         GavinsMod.addMod(ModFly())
         GavinsMod.addMod(ModNoClip())
-//        GavinsMod.addMod(ModNoFall())
+        GavinsMod.addMod(ModNoFall())
         GavinsMod.addMod(ModSpeed())
         GavinsMod.addMod(ModAntiFire())
         GavinsMod.addMod(ModAntiHurt())
