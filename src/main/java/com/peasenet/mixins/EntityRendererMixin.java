@@ -24,39 +24,45 @@
 
 package com.peasenet.mixins;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.peasenet.main.Mods;
-import com.peasenet.util.event.EntityRenderNameEvent;
-import com.peasenet.util.event.EventManager;
-import net.minecraft.client.font.TextRenderer;
+import com.peasenet.mods.render.ModHealthTag;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
-import org.spongepowered.asm.mixin.Final;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.resource.SynchronousResourceReloader;
+import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(EntityRenderer.class)
-public abstract class EntityRendererMixin<T extends Entity, S extends EntityRenderState> {
-    //SEE: EntityRenderer#renderLabelIfPresent
+@Mixin(EntityRenderDispatcher.class)
+public abstract class EntityRendererMixin
+        implements SynchronousResourceReloader {
+    /**
+     * Temporarily replaces an entity's display name to make HealthTags work.
+     */
+    @WrapOperation(at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/client/render/entity/EntityRenderer;render(Lnet/minecraft/client/render/entity/state/EntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"),
+            method = "render(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V")
+    private <E extends Entity, S extends EntityRenderState> void wrapRender(
+            EntityRenderer<? super E, S> renderer, S state, MatrixStack matrices,
+            VertexConsumerProvider vertexConsumers, int light,
+            Operation<Void> original, E entity) {
+        var modHealthTag = (ModHealthTag) Mods.getMod("hptags");
+        var text = state.displayName;
+        if (modHealthTag.isActive()) {
+            state.nameLabelPos = entity.getEyePos().add(0, 1f, 0);
+            if (text == null)
+                text = Text.of("");
+            state.displayName = modHealthTag.renderLabel((LivingEntity) entity, text.copy());
+        }
+        original.call(renderer, state, matrices, vertexConsumers, light);
+        state.displayName = text;
 
-    @Shadow
-    @Final
-    private S state;
-
-    @Inject(at = @At("HEAD"), method = "render", cancellable = true)
-    private void renderHealth(S state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
-        // TODO: Fix HealthTags
-//        if (!Mods.getMod("hptags").isActive()) return;
-//        var event = new EntityRenderNameEvent(state.displayName, matrices, vertexConsumers, 0f, light);
-//        EventManager.getEventManager().call(event);
-//        ci.cancel();
     }
-
-
 }

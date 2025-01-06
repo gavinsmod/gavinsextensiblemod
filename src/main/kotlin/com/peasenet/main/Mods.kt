@@ -92,7 +92,7 @@ class Mods {
         GavinsMod.addMod(ModAntiPumpkin())
         GavinsMod.addMod(ModBarrierDetect())
         GavinsMod.addMod(ModFullBright())
-//        GavinsMod.addMod(ModHealthTag())
+        GavinsMod.addMod(ModHealthTag())
         GavinsMod.addMod(ModNoNausea())
         GavinsMod.addMod(ModNoOverlay())
         GavinsMod.addMod(ModNoRain())
