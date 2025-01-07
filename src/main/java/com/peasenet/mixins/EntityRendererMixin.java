@@ -26,23 +26,23 @@ package com.peasenet.mixins;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.peasenet.main.Mods;
-import com.peasenet.mods.render.ModHealthTag;
+import com.peasenet.util.event.EntityRenderNameEvent;
+import com.peasenet.util.event.EventManager;
+import com.peasenet.util.event.data.EntityNameRender;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.resource.SynchronousResourceReloader;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
+
+//TODO: This only works ONCE at least ONE entity in the world has been named with a name tag.
 @Mixin(EntityRenderDispatcher.class)
-public abstract class EntityRendererMixin
-        implements SynchronousResourceReloader {
+public abstract class EntityRendererMixin {
     /**
      * Temporarily replaces an entity's display name to make HealthTags work.
      */
@@ -53,14 +53,11 @@ public abstract class EntityRendererMixin
             EntityRenderer<? super E, S> renderer, S state, MatrixStack matrices,
             VertexConsumerProvider vertexConsumers, int light,
             Operation<Void> original, E entity) {
-        var modHealthTag = (ModHealthTag) Mods.getMod("hptags");
         var text = state.displayName;
-        if (modHealthTag.isActive()) {
-            state.nameLabelPos = entity.getEyePos().add(0, 1f, 0);
-            if (text == null)
-                text = Text.of("");
-            state.displayName = modHealthTag.renderLabel((LivingEntity) entity, text.copy());
-        }
+        var tmp = text == null ? Text.of("") : text;
+        var event = new EntityRenderNameEvent(new EntityNameRender(entity, tmp.copy()));
+        EventManager.getEventManager().call(event);
+        state.displayName = event.getEntityRender().getText();
         original.call(renderer, state, matrices, vertexConsumers, light);
         state.displayName = text;
 

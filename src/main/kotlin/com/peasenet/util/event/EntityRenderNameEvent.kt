@@ -28,6 +28,8 @@ import com.peasenet.util.listeners.EntityRenderNameListener
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
+import net.minecraft.entity.LivingEntity
+import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 
 /**
@@ -37,19 +39,9 @@ import net.minecraft.text.Text
  * @version 03-02-2023
  */
 class EntityRenderNameEvent(
-    entity: Entity,
-    matrices: MatrixStack,
-    vertexConsumers: VertexConsumerProvider?,
-    tickDelta: Float,
-    light: Int
+    data: EntityNameRender
 ) : Event<EntityRenderNameListener>() {
-    private var entityRender: EntityNameRender = EntityNameRender(
-        entity,
-        matrices,
-        vertexConsumers!!,
-        tickDelta,
-        light,
-    )
+    var entityRender: EntityNameRender = data
 
     override fun fire(listeners: ArrayList<EntityRenderNameListener>) {
         for (listener in listeners) {
