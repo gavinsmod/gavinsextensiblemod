@@ -30,13 +30,16 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.main.GavinsModClient
 import com.peasenet.mixinterface.ISimpleOption
+import com.peasenet.mods.esp.EspMod.Companion.config
 import com.peasenet.util.math.MathUtils
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gl.ShaderProgramKeys
 import net.minecraft.client.gl.VertexBuffer
 import net.minecraft.client.render.*
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.component.DataComponentTypes
 import net.minecraft.entity.Entity
+import net.minecraft.entity.ItemEntity
 import net.minecraft.util.math.*
 import net.minecraft.world.chunk.Chunk
 import org.joml.Matrix4f
@@ -686,6 +689,28 @@ object RenderUtils {
         val lerpedY = MathHelper.lerp(partialTicks.toDouble(), e.prevY, e.y) - e.y
         val lerpedZ = MathHelper.lerp(partialTicks.toDouble(), e.prevZ, e.z) - e.z
         return Vec3d(lerpedX, lerpedY, lerpedZ)
+    }
+
+    fun renderEntityEsp(
+        matrixStack: MatrixStack,
+        partialTicks: Float,
+        e: Entity,
+        color: Color,
+        alpha: Float,
+        region: RegionPos
+    ) {
+        matrixStack.push()
+        RenderSystem.setShaderColor(color.red, color.green, color.blue, alpha)
+        matrixStack.push()
+        val lerped = getLerpedPos(e, partialTicks).subtract(region.toVec3d())
+        matrixStack.translate(
+            e.x + lerped.x, e.y + lerped.y, e.z + lerped.z
+        );
+        var bb = Box(-0.5, 0.0, -0.5, 0.5, 1.0, 0.5)
+        drawOutlinedBox(bb, matrixStack)
+
+        matrixStack.pop()
+        matrixStack.pop()
     }
 }
 

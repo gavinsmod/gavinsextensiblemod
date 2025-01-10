@@ -34,6 +34,7 @@ import net.minecraft.util.Formatting
  * @author gt3ch1
  * @version 01-06-2025
  * A mod that shows entity's health as a tag above their head.
+ * TODO: This only works after naming at least one entity in the save file. No idea why.
  */
 class ModHealthTag : RenderMod(
     "Health Tags", "gavinsmod.mod.render.hptags", "hptags"
@@ -51,12 +52,11 @@ class ModHealthTag : RenderMod(
 
     private fun renderLabel(
         entity: LivingEntity,
-        text: MutableText?,
+        text: MutableText,
     ): MutableText {
         val currentHp = entity.health.toInt()
         val formattedMutableText = Text.literal("").append(currentHp.toString()).append(" HP")
-        if (text != null) return text.append(formattedMutableText.formatted(getColor(entity)))
-        return formattedMutableText.formatted(getColor(entity))
+        return text.append(formattedMutableText.formatted(getColor(entity)))
     }
 
     private fun getColor(entity: LivingEntity): Formatting {
@@ -74,7 +74,7 @@ class ModHealthTag : RenderMod(
     override fun onEntityNameRender(er: EntityNameRender) {
         if (er.entity !is LivingEntity) return
         val tmpName = er.text ?: Text.of("")
-        var entity = er.entity
+        val entity = er.entity
         er.text = renderLabel(entity, tmpName.copy())
     }
 }

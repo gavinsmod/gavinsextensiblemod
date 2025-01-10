@@ -28,7 +28,11 @@ import com.peasenet.main.GavinsModClient
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils.CHUNK_RADIUS
 import com.peasenet.util.listeners.RenderListener
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.component.DataComponentTypes
 import net.minecraft.entity.ItemEntity
+import net.minecraft.text.PlainTextContent
+import net.minecraft.text.Text
 
 /**
  * A mod that allows the player to see an esp (a box) around items.
@@ -47,6 +51,21 @@ class ModEntityItemEsp : EntityEsp<ItemEntity>("Item ESP",
 
         colorSetting.setCallback { config.itemColor = colorSetting.color }
         addSetting(colorSetting)
+    }
+
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+        /* TODO: Work on setting filters for items
+        if (espList.isEmpty()) return
+        espList = espList.filter {
+            var stack = it.stack
+            var customName = stack.get(DataComponentTypes.CUSTOM_NAME) ?: return@filter false
+            return@filter (customName.content as PlainTextContent.Literal).string.equals("Discoverer")
+        }.toMutableList()
+        espList.forEach {
+            render(matrixStack,partialTicks)
+        }
+         */
+        super.onRender(matrixStack, partialTicks)
     }
 
     override fun getColor(entity: ItemEntity): Color = getColor()

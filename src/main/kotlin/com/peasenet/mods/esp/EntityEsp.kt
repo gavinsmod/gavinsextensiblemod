@@ -24,15 +24,10 @@
 
 package com.peasenet.mods.esp
 
-import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.gavui.color.Color
-import com.peasenet.mods.misc.ModFreeCam
-import com.peasenet.mods.misc.ModFreeCam.Companion
-import com.peasenet.util.RegionPos
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.RenderUtils.applyRegionalRenderOffset
 import net.minecraft.client.gl.GlUsage
-import net.minecraft.client.gl.ShaderProgramKeys
 import net.minecraft.client.gl.VertexBuffer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
@@ -74,6 +69,10 @@ abstract class EntityEsp<T : Entity>(
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         if (espList.isEmpty()) return
 
+        render(matrixStack, partialTicks)
+    }
+
+    protected fun render(matrixStack: MatrixStack, partialTicks: Float) {
         val region = RenderUtils.getCameraRegionPos()
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -82,20 +81,14 @@ abstract class EntityEsp<T : Entity>(
         matrixStack.push()
         applyRegionalRenderOffset(matrixStack, region)
         for (e in espList) {
-
-            matrixStack.push()
-            val color = getColor(e)
-            RenderSystem.setShaderColor(color.red, color.green, color.blue, config.alpha)
-            matrixStack.push()
-            val lerped = RenderUtils.getLerpedPos(e, partialTicks).subtract(region.toVec3d())
-            matrixStack.translate(
-                e.x + lerped.x, e.y + lerped.y, e.z + lerped.z
-            );
-            var bb = Box(-0.5, 0.0, -0.5, 0.5, 1.0, 0.5)
-            RenderUtils.drawOutlinedBox(bb, matrixStack)
-
-            matrixStack.pop()
-            matrixStack.pop()
+            RenderUtils.renderEntityEsp(
+                matrixStack,
+                partialTicks,
+                e,
+                getColor(e),
+                config.alpha,
+                region
+            )
         }
         RenderUtils.cleanupRender(matrixStack)
     }

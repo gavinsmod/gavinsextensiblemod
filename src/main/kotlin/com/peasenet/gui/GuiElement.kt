@@ -136,6 +136,7 @@ open class GuiElement(title: Text?) : Screen(title) {
         return super.mouseReleased(mouseX, mouseY, button)
     }
 
+
     override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
         RenderSystem.setShader(ShaderProgramKeys.POSITION)
         RenderSystem.enableBlend()
