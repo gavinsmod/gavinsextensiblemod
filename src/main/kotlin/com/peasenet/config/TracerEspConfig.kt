@@ -26,6 +26,7 @@ package com.peasenet.config
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.main.GavinsModClient
+import com.peasenet.mods.esp.ItemEspFilter
 import net.minecraft.entity.EntityType
 import net.minecraft.item.SpawnEggItem
 
@@ -35,6 +36,7 @@ import net.minecraft.item.SpawnEggItem
  * @version 04-01-2023
  */
 open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
+
 
     /**
      * The color for chests. Default value is [Colors.PURPLE]
@@ -140,6 +142,18 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
      * The list is populated with the translation keys of the mobs.
      */
     var shownMobs: ArrayList<String> = ArrayList()
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    var itemEspFilterList: ArrayList<ItemEspFilter> = ArrayList()
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    var useItemEspFilter: Boolean = false
         set(value) {
             field = value
             saveConfig()

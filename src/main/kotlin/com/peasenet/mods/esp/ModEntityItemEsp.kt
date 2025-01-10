@@ -24,6 +24,7 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.gavui.color.Color
+import com.peasenet.gui.mod.esp.item.GuiItemEsp
 import com.peasenet.main.GavinsModClient
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils.CHUNK_RADIUS
@@ -32,7 +33,6 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.component.DataComponentTypes
 import net.minecraft.entity.ItemEntity
 import net.minecraft.text.PlainTextContent
-import net.minecraft.text.Text
 
 /**
  * A mod that allows the player to see an esp (a box) around items.
@@ -40,7 +40,8 @@ import net.minecraft.text.Text
  * @version 09-06-2024
  * @since 03-02-2023
  */
-class ModEntityItemEsp : EntityEsp<ItemEntity>("Item ESP",
+class ModEntityItemEsp : EntityEsp<ItemEntity>(
+    "Item ESP",
     "gavinsmod.mod.esp.item",
     "itemesp",
     { it is ItemEntity && it.squaredDistanceTo(GavinsModClient.player!!.getPos()) < 64 * 16 * CHUNK_RADIUS }),
@@ -50,25 +51,40 @@ class ModEntityItemEsp : EntityEsp<ItemEntity>("Item ESP",
             .buildColorSetting()
 
         colorSetting.setCallback { config.itemColor = colorSetting.color }
+        val menu = SettingBuilder().setTitle("ITEM_ESP_FILTER").buildClickSetting()
+        menu.setCallback {
+            GavinsModClient.minecraftClient.setScreen(GuiItemEsp())
+        }
         addSetting(colorSetting)
+        addSetting(menu)
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
-        /* TODO: Work on setting filters for items
-        if (espList.isEmpty()) return
-        espList = espList.filter {
-            var stack = it.stack
-            var customName = stack.get(DataComponentTypes.CUSTOM_NAME) ?: return@filter false
-            return@filter (customName.content as PlainTextContent.Literal).string.equals("Discoverer")
-        }.toMutableList()
-        espList.forEach {
-            render(matrixStack,partialTicks)
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {/* TODO: Work on setting filters for items */
+        if (config.useItemEspFilter) {
+            espList = espList.filter {
+                config.itemEspFilterList.any { filter -> filter.customNameMatches(it) }
+            }.toMutableList()
         }
-         */
         super.onRender(matrixStack, partialTicks)
     }
 
     override fun getColor(entity: ItemEntity): Color = getColor()
 
     override fun getColor(): Color = config.itemColor
+}
+
+
+class ItemEspFilter(
+    var filterString: String,
+    var filterName: String = "",
+    var enabled: Boolean
+) {
+
+    constructor(filterString: String, filterName: String) : this(filterString, filterName, true)
+
+    fun customNameMatches(itemEntity: ItemEntity): Boolean {
+        val stack = itemEntity.stack
+        val customName = stack.get(DataComponentTypes.CUSTOM_NAME) ?: return false
+        return (customName.content as PlainTextContent.Literal).string.equals(filterString)
+    }
 }

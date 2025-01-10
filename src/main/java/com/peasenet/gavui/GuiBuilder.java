@@ -29,6 +29,7 @@ import com.peasenet.gavui.math.BoxF;
 import com.peasenet.gavui.math.PointF;
 import com.peasenet.gavui.util.callbacks.GuiCallback;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -94,8 +95,9 @@ public class GuiBuilder {
         return children;
     }
 
-    public void setChildren(ArrayList<Gui> children) {
+    public GuiBuilder setChildren(@NotNull ArrayList<Gui> children) {
         this.children = children;
+        return this;
     }
 
     public float getWidth() {
