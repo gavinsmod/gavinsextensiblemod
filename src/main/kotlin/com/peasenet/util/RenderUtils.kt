@@ -706,7 +706,10 @@ object RenderUtils {
         matrixStack.translate(
             e.x + lerped.x, e.y + lerped.y, e.z + lerped.z
         );
-        var bb = Box(-0.5, 0.0, -0.5, 0.5, 1.0, 0.5)
+        /* NOTE: This is something cool...
+            matrixStack.scale(1 / 0.25f, 1 / 0.25f, 1 / 0.25f)
+         */
+        var bb = e.boundingBox.offset(-e.x, -e.y, -e.z)
         drawOutlinedBox(bb, matrixStack)
 
         matrixStack.pop()

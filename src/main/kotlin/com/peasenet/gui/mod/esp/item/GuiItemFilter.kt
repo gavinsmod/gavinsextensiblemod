@@ -30,12 +30,12 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEspFilter) :
     /**
      * The width of the gui.
      */
-    var width = 145
+    var width = 152
 
     /**
      * The height of the gui.
      */
-    var height = 135
+    var height = 115
 
     /**
      * The offset and padding in the x and y planes.
@@ -76,30 +76,34 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEspFilter) :
         box = GuiBuilder().setTopLeft(PointF(offsetX.toFloat(), offsetY.toFloat())).setWidth(width.toFloat())
             .setHeight(height.toFloat()).setTitle(Text.literal("")).setHoverable(false).build()
         filterName = TextFieldWidget(
-            minecraftClient.textRenderer, offsetX + padding, offsetY + 24, 130, 12, Text.of("")
+            minecraftClient.textRenderer,
+            offsetX + padding,
+            offsetY + 24,
+            130,
+            12,
+            Text.literal(itemEspFilter.filterName)
         )
-        var filteredString = itemEspFilter.filterString
+        val filteredString = itemEspFilter.filterString
         filterString = TextFieldWidget(
             minecraftClient.textRenderer, offsetX + padding, offsetY + 60, 130, 12, Text.literal(filteredString)
         )
-        focused = filterName
-        filterString.text = filteredString
-        itemEspFilter.filterName.also { filterName.text = it }
+//        focused = filterName
+        filterName.text = itemEspFilter.filterName
+        filterString.text = itemEspFilter.filterString
 
         addSelectableChild(filterName)
         addSelectableChild(filterString)
 
-        filterEnable = SettingBuilder()
-            .setTitle("gavinsmod.settings.enabled")
-            .setTopLeft(PointF(paddingX, offsetY + 80))
-            .setHoverable(true)
-            .buildToggleSetting()
+        filterEnable =
+            SettingBuilder().setTitle("gavinsmod.settings.enabled").setTopLeft(PointF(paddingX, offsetY + 80))
+                .setHoverable(true).buildToggleSetting()
         filterEnable.value = itemEspFilter.enabled
         filterEnable.gui.width = 130.toFloat()
 
         // save, cancel, delete
-        saveSettings = GuiBuilder().setTopLeft(PointF(paddingX, offsetY + 120)).setTitle("gavinsmod.settings.save")
-            .setWidth(40f).setHeight(10f).setBackgroundColor(Colors.GREEN).buildClick()
+        saveSettings =
+            GuiBuilder().setTopLeft(PointF(paddingX, offsetY + 100)).setTitle("gavinsmod.settings.save").setWidth(40f)
+                .setHeight(10f).setBackgroundColor(Colors.GREEN).buildClick()
 
         saveSettings.setCallback {
             val previousName = itemEspFilter.filterString
@@ -107,29 +111,27 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEspFilter) :
             itemEspFilter.filterName = filterName.text
             itemEspFilter.enabled = filterEnable.value
             val cfg = Settings.getConfig<EspConfig>("esp")
-            cfg.itemEspFilterList.removeIf { it.filterString == previousName }
+            cfg.itemEspFilterList.removeIf { it.uuid == itemEspFilter.uuid }
             cfg.itemEspFilterList.add(itemEspFilter)
             cfg.saveConfig()
+            parent = GuiItemEsp()
             minecraftClient.setScreen(parent)
         }
 
         cancelSettings =
-            GuiBuilder().setTopLeft(PointF(paddingX + 45, offsetY + 120)).setTitle("gavinsmod.settings.cancel")
-                .setWidth(40f).setHeight(10f).setBackgroundColor(Colors.YELLOW)
-                .setCallback {
+            GuiBuilder().setTopLeft(PointF(paddingX + 45, offsetY + 100)).setTitle("gavinsmod.settings.cancel")
+                .setWidth(40f).setHeight(10f).setBackgroundColor(Colors.YELLOW).setCallback {
                     minecraftClient.setScreen(parent)
-                }
-                .buildClick()
+                }.buildClick()
         deleteSettings =
-            GuiBuilder().setTopLeft(PointF(paddingX + 90, offsetY + 120)).setTitle("gavinsmod.settings.delete")
-                .setWidth(40f).setHeight(10f).setBackgroundColor(Colors.RED)
-                .setCallback {
+            GuiBuilder().setTopLeft(PointF(paddingX + 90, offsetY + 100)).setTitle("gavinsmod.settings.delete")
+                .setWidth(40f).setHeight(10f).setBackgroundColor(Colors.RED).setCallback {
                     val cfg = Settings.getConfig<EspConfig>("esp")
-                    cfg.itemEspFilterList.removeIf { it.filterString == itemEspFilter.filterString }
+                    cfg.itemEspFilterList.removeIf { it.uuid == itemEspFilter.uuid }
                     cfg.saveConfig()
+                    parent = GuiItemEsp()
                     minecraftClient.setScreen(parent)
-                }
-                .buildClick()
+                }.buildClick()
         guis.add(filterEnable.gui)
         guis.add(saveSettings)
         guis.add(cancelSettings)
@@ -144,6 +146,8 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEspFilter) :
         offsetY = minecraftClient.window.scaledHeight / 2 - height / 2
         val textRenderer = client!!.textRenderer
         box!!.render(drawContext, textRenderer, mouseX, mouseY, delta)
+
+        super.render(drawContext, mouseX, mouseY, delta)
         offsetY += 12
         drawContext.drawText(
             textRenderer,
@@ -151,7 +155,7 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEspFilter) :
             offsetX + padding,
             offsetY,
             GavUISettings.getColor("gui.color.foreground").asInt,
-            false
+            false,
         )
         offsetY += 36
         drawContext.drawText(
@@ -162,9 +166,17 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEspFilter) :
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
         )
+        offsetY = minecraftClient.window.scaledHeight - 12
+        drawContext.drawText(
+            textRenderer,
+            Text.of("Filter UUID: ${itemEspFilter.uuid}"),
+            10,
+            offsetY,
+            GavUISettings.getColor("gui.color.foreground").asInt,
+            false
+        )
         filterName.render(drawContext, mouseX, mouseY, delta)
         filterString.render(drawContext, mouseX, mouseY, delta)
-        super.render(drawContext, mouseX, mouseY, delta)
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {

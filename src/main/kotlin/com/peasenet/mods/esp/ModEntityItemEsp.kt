@@ -33,6 +33,7 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.component.DataComponentTypes
 import net.minecraft.entity.ItemEntity
 import net.minecraft.text.PlainTextContent
+import java.util.UUID
 
 /**
  * A mod that allows the player to see an esp (a box) around items.
@@ -47,15 +48,13 @@ class ModEntityItemEsp : EntityEsp<ItemEntity>(
     { it is ItemEntity && it.squaredDistanceTo(GavinsModClient.player!!.getPos()) < 64 * 16 * CHUNK_RADIUS }),
     RenderListener {
     init {
-        val colorSetting = SettingBuilder().setTitle("gavinsmod.settings.esp.item.color").setColor(config.itemColor)
-            .buildColorSetting()
 
-        colorSetting.setCallback { config.itemColor = colorSetting.color }
-        val menu = SettingBuilder().setTitle("ITEM_ESP_FILTER").buildClickSetting()
+//        colorSetting.setCallback { config.itemColor = colorSetting.color }
+        val menu = SettingBuilder().setTitle("gavinsmod.mod.esp.item").buildClickSetting()
         menu.setCallback {
             GavinsModClient.minecraftClient.setScreen(GuiItemEsp())
         }
-        addSetting(colorSetting)
+//        addSetting(colorSetting)
         addSetting(menu)
     }
 
@@ -77,14 +76,31 @@ class ModEntityItemEsp : EntityEsp<ItemEntity>(
 class ItemEspFilter(
     var filterString: String,
     var filterName: String = "",
-    var enabled: Boolean
+    var enabled: Boolean,
+    val uuid: UUID = UUID.randomUUID()
 ) {
 
     constructor(filterString: String, filterName: String) : this(filterString, filterName, true)
 
     fun customNameMatches(itemEntity: ItemEntity): Boolean {
+        if (!this.enabled) return false
         val stack = itemEntity.stack
-        val customName = stack.get(DataComponentTypes.CUSTOM_NAME) ?: return false
-        return (customName.content as PlainTextContent.Literal).string.equals(filterString)
+        val customName = stack.get(DataComponentTypes.CUSTOM_NAME)
+        val lore = stack.get(DataComponentTypes.LORE)
+        var matches = false
+        val regex = Regex(filterString,setOf(RegexOption.DOT_MATCHES_ALL)) // TODO: Add
+        regex.options
+        if (customName != null) {
+            val content = (customName.content as PlainTextContent.Literal).string
+            matches = content.contains(filterString)
+            matches = matches || regex.containsMatchIn(content)
+        }
+        if (lore != null) {
+            matches =
+                matches || lore.lines.any { (it.content as PlainTextContent.Literal).string.contains(filterString) }
+            matches =
+                matches || lore.lines.any { regex.containsMatchIn((it.content as PlainTextContent.Literal).string) }
+        }
+        return matches
     }
 }
