@@ -31,6 +31,7 @@ import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.PlayerUtils
 import com.peasenet.util.math.MathUtils
 import net.minecraft.entity.Entity
+import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.mob.MobEntity
 import java.util.stream.StreamSupport
 
@@ -62,17 +63,17 @@ class ModKillAura : CombatMod(
     override fun onTick() {
         if (isActive) {
             var stream = StreamSupport.stream(GavinsModClient.minecraftClient.getWorld().entities.spliterator(), false)
-                .filter { e: Entity? -> e is MobEntity }
+                .filter { e: Entity? -> e is LivingEntity }
                 .filter { obj: Entity -> obj.isAlive }
                 .filter { e: Entity? -> PlayerUtils.distanceToEntity(e) <= 16 }
                 .sorted { e1: Entity?, e2: Entity? ->
                     (PlayerUtils.distanceToEntity(e1).toInt() - PlayerUtils.distanceToEntity(e2)).toInt()
                 }
-                .map { e: Entity? -> e as MobEntity? }
+                .map { e: Entity? -> e as LivingEntity? }
             if (config.shownMobs.isNotEmpty()) {
-                stream = stream.filter { entity: MobEntity? -> config.mobIsShown(entity!!.type!!) }
+                stream = stream.filter { entity: LivingEntity? -> config.mobIsShown(entity!!.type!!) }
             }
-            stream.forEach { entity: MobEntity? ->
+            stream.forEach { entity: LivingEntity? ->
                 entity?.let { MathUtils.getRotationToEntity(it) }?.let { PlayerUtils.setRotation(it) }
                 PlayerUtils.attackEntity(entity)
             }
