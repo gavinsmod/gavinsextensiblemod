@@ -156,5 +156,6 @@
   "gavinsmod.generic.tracer": "Tracer",
   "gavinsmod.generic.esp": "ESP",
   "gavinsmod.generic.speed": "Speed",
-  "gavinsmod.mod.esp.blockesp.structure": "Structure ESP"
+  "gavinsmod.mod.esp.blockesp.structure": "Structure ESP",
+  "gavinsmod.gui.itemFilterConfig": "Item Filter Config"
 }

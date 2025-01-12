@@ -1,6 +1,6 @@
-package com.peasenet.gui.mod.esp.item
+package com.peasenet.gui.mod
 
-import com.peasenet.config.EspConfig
+import com.peasenet.config.TracerEspConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiClick
@@ -9,11 +9,9 @@ import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GavUISettings
 import com.peasenet.gui.GuiElement
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
-import com.peasenet.main.Settings
-import com.peasenet.mods.esp.ItemEspFilter
-import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.settings.ToggleSetting
+import com.peasenet.util.data.ItemEntityFilter
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.TextFieldWidget
@@ -21,11 +19,22 @@ import net.minecraft.text.Text
 
 /**
  *
+ * A GUI that allows the player to configure item filters for ESP/Tracers.
+ *
+ * @param parentScreen The parent screen that this GUI will be returning to.
+ * @param filter The [ItemEntityFilter] that this GUI will be configuring.
+ * @param config The [TracerEspConfig] that this GUI will be configuring.
+ *
+ * @see ItemEntityFilter
+ * @see TracerEspConfig
+ *
+ * @sample GuiItemEspTracerConfig
+ *
  * @author GT3CH1
- * @version 01-10-2025
+ * @version 01-12-2025
  * @since 01-10-2025
  */
-class GuiItemFilter(private val parentScreen: Screen, filter: ItemEspFilter) :
+class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, val config: TracerEspConfig<*>) :
     GuiElement(Text.of(filter.filterString)) {
     /**
      * The width of the gui.
@@ -47,7 +56,7 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEspFilter) :
     private var padding = 5
     private var box: Gui? = null
 
-    private var itemEspFilter: ItemEspFilter = filter
+    private var itemEspFilter: ItemEntityFilter = filter
     private lateinit var filterEnable: ToggleSetting
     private lateinit var filterString: TextFieldWidget
     private lateinit var filterName: TextFieldWidget
@@ -106,15 +115,13 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEspFilter) :
                 .setHeight(10f).setBackgroundColor(Colors.GREEN).buildClick()
 
         saveSettings.setCallback {
-            val previousName = itemEspFilter.filterString
             itemEspFilter.filterString = filterString.text
             itemEspFilter.filterName = filterName.text
             itemEspFilter.enabled = filterEnable.value
-            val cfg = Settings.getConfig<EspConfig>("esp")
-            cfg.itemEspFilterList.removeIf { it.uuid == itemEspFilter.uuid }
-            cfg.itemEspFilterList.add(itemEspFilter)
-            cfg.saveConfig()
-            parent = GuiItemEsp()
+            config.itemFilterList.removeIf { it.uuid == itemEspFilter.uuid }
+            config.itemFilterList.add(itemEspFilter)
+            config.saveConfig()
+            parent = GuiItemEspTracerConfig(config)
             minecraftClient.setScreen(parent)
         }
 
@@ -126,10 +133,9 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEspFilter) :
         deleteSettings =
             GuiBuilder().setTopLeft(PointF(paddingX + 90, offsetY + 100)).setTitle("gavinsmod.settings.delete")
                 .setWidth(40f).setHeight(10f).setBackgroundColor(Colors.RED).setCallback {
-                    val cfg = Settings.getConfig<EspConfig>("esp")
-                    cfg.itemEspFilterList.removeIf { it.uuid == itemEspFilter.uuid }
-                    cfg.saveConfig()
-                    parent = GuiItemEsp()
+                    config.itemFilterList.removeIf { it.uuid == itemEspFilter.uuid }
+                    config.saveConfig()
+                    parent = GuiItemEspTracerConfig(config)
                     minecraftClient.setScreen(parent)
                 }.buildClick()
         guis.add(filterEnable.gui)

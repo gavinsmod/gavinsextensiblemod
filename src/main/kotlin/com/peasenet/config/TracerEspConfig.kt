@@ -26,7 +26,7 @@ package com.peasenet.config
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.main.GavinsModClient
-import com.peasenet.mods.esp.ItemEspFilter
+import com.peasenet.util.data.ItemEntityFilter
 import net.minecraft.entity.EntityType
 import net.minecraft.item.SpawnEggItem
 
@@ -147,7 +147,7 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
             saveConfig()
         }
 
-    var itemEspFilterList: ArrayList<ItemEspFilter> = ArrayList()
+    var itemFilterList: ArrayList<ItemEntityFilter> = ArrayList()
         set(value) {
             field = value
             saveConfig()
