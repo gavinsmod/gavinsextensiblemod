@@ -31,6 +31,9 @@ object Settings {
      */
     private val defaultSettings: HashMap<String?, Config<*>> = HashMap()
 
+    private val gson = GsonBuilder().setExclusionStrategies(GsonExclusionStrategy())
+        .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE).registerTypeHierarchyAdapter(XrayConfig::class.java, XrayConfigGsonAdapter())
+        .create()
 
     fun init() {
         defaultSettings.putAll(settings)
@@ -40,11 +43,9 @@ object Settings {
         if (!file.exists()) {
             save()
         }
-        val json = GsonBuilder().setPrettyPrinting().setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
-            .registerTypeAdapter(XrayConfig::class.java, XrayConfigGsonAdapter()).create()
         try {
             val reader = JsonReader(InputStreamReader(FileInputStream(file)))
-            val data = json.fromJson<HashMap<String, Config<*>>>(
+            val data = gson.fromJson<HashMap<String, Config<*>>>(
                 reader, HashMap::class.java
             )
             if (data == null) loadDefault()
@@ -70,25 +71,22 @@ object Settings {
      */
     private fun fetchConfig(clazz: Config<*>, key: String?): Config<*> {
         // open the settings file
-        val cfgFile = filePath
+         val cfgFile = filePath
 
-        val jsonBuilder = GsonBuilder().setExclusionStrategies(GsonExclusionStrategy())
-            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
-        if (key == "xray") jsonBuilder.registerTypeAdapter(XrayConfig::class.java, XrayConfigGsonAdapter())
-        val json = jsonBuilder.create()
         val map: Any?
         try {
-            map = json.fromJson(FileReader(cfgFile), HashMap::class.java)[key]
+            map = gson.fromJson(FileReader(cfgFile), Map::class.java)[key]
         } catch (e: FileNotFoundException) {
             ensureCfgCreated(cfgFile)
             settings[key] = defaultSettings[key]!!
-            save()
+            GavinsMod.LOGGER.error("Error reading settings file ($key), file not found.")
+//            save()
             return defaultSettings[key]!!
         }
         try {
-            val jsonObject = json.toJsonTree(map).asJsonObject
+            val jsonObject = gson.toJsonTree(map).asJsonObject
             // parse the json object to the configuration class
-            return json.fromJson(jsonObject, clazz::class.java)
+            return gson.fromJson(jsonObject, clazz::class.java)
         } catch (e: IllegalStateException) {
             GavinsMod.LOGGER.error("Error parsing settings file ($key): ", e)
             settings[key] = defaultSettings[key]!!
@@ -101,9 +99,7 @@ object Settings {
      * Saves the current settings to <pre>mods/gavinsmod/settings.json</pre>
      */
     fun save() {
-        // open the mods folder
         val cfgFile = filePath
-        // ensure the settings file exists
         ensureCfgCreated(cfgFile)
         val json = GsonBuilder().setPrettyPrinting().setObjectToNumberStrategy(
             ToNumberPolicy.LONG_OR_DOUBLE
@@ -113,6 +109,7 @@ object Settings {
             val writer = Files.newBufferedWriter(Paths.get(cfgFile))
             json.toJson(settings, writer)
             writer.close()
+            GavinsMod.LOGGER.info("Settings saved.")
         } catch (e: Exception) {
             GavinsMod.LOGGER.error("Error writing settings to file.")
             GavinsMod.LOGGER.error(e.message)
