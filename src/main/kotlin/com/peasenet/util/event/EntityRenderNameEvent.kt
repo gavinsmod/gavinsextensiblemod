@@ -33,15 +33,22 @@ import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 
 /**
- * The event for the world render event.
+ * An event that is fired when an entity's name is about to be rendered.
+ *
+ * @see EntityRenderNameListener
+ * @see com.peasenet.mods.render.ModHealthTag
+ * @see EntityNameRender
  *
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 01-12-2025
+ * @since 03-02-2023
+ *
+ * @sample com.peasenet.mods.render.ModHealthTag
  */
 class EntityRenderNameEvent(
     data: EntityNameRender
 ) : Event<EntityRenderNameListener>() {
-    var entityRender: EntityNameRender = data
+    private var entityRender: EntityNameRender = data
 
     override fun fire(listeners: ArrayList<EntityRenderNameListener>) {
         for (listener in listeners) {

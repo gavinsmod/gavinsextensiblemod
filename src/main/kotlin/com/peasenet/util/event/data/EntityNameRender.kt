@@ -11,10 +11,23 @@ import net.minecraft.text.Text
 /**
  *
  * @author GT3CH1
- * @version 01-06-2025
+ * @version 01-12-2025
  * @since 09-16-2024
+ *
+ * A data class that contains the data needed for [ModHealthTag][com.peasenet.mods.render.ModHealthTag].
+ * @param entity The entity to render the health tag for.
+ * @param matrixStack The matrix stack to render the health tag with.
+ * @param vertexConsumerProvider The vertex consumer provider to render the health tag with.
+ * @param light The light level to render the health tag with.
+ * @see com.peasenet.mods.render.ModHealthTag
+ * @see com.peasenet.util.event.EntityRenderNameEvent
+ * @see com.peasenet.util.listeners.EntityRenderNameListener
+ *
+ * @sample com.peasenet.mods.render.ModHealthTag
  */
 data class EntityNameRender(
     val entity: Entity,
-    var text: MutableText?,
+    val matrixStack: MatrixStack,
+    var vertexConsumerProvider: VertexConsumerProvider?,
+    var light: Int,
 )
