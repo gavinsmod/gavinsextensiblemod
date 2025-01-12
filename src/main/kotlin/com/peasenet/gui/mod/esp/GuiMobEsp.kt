@@ -34,9 +34,13 @@ import net.minecraft.item.SpawnEggItem
 import net.minecraft.text.Text
 
 /**
- * @author gt3ch1
- * @version 04-11-2023
- * A gui that allows the player to search for blocks and add them to the xray list.
+ * A gui that allows the player to filter what mobs are shown in MobESP.
+ *
+ * @see EspConfig
+ *
+ * @author GT3CH1
+ * @version 01-12-2025
+ * @since 04-11-2023
  */
 class GuiMobEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")) {
     private companion object {
@@ -51,7 +55,7 @@ class GuiMobEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")
             .setColor(config.hostileMobColor)
             .setTopLeft(pos)
             .buildColorSetting()
-        hostileColor.setCallback { config.hostileMobColor = hostileColor.color }
+        hostileColor!!.setCallback { config.hostileMobColor = hostileColor!!.color }
         pos = pos.add(0f, 12f)
 
         peacefulColor = SettingBuilder()
@@ -59,12 +63,12 @@ class GuiMobEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")
             .setColor(config.peacefulMobColor)
             .setTopLeft(pos)
             .buildColorSetting()
-        peacefulColor.setCallback { config.peacefulMobColor = peacefulColor.color }
+        peacefulColor!!.setCallback { config.peacefulMobColor = peacefulColor!!.color }
         pos = pos.add(0f, 12f)
 
         enabledOnly = GuiBuilder()
             .setTopLeft(pos)
-            .setTitle(Text.literal("Enabled Only"))
+            .setTitle("gavinsmod.generic.enabledOnly")
             .buildToggle()
         enabledOnly.setCallback {
             updateItemList()
@@ -75,7 +79,7 @@ class GuiMobEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")
             .setTitle("gavinsmod.settings.esp.mob.hostile")
             .setTopLeft(pos)
             .buildToggleSetting()
-        hostileToggle.setCallback { config.showHostileMobs = hostileToggle.value }
+        hostileToggle!!.setCallback { config.showHostileMobs = hostileToggle!!.value }
         pos = pos.add(0f, 12f)
 
         peacefulToggle = SettingBuilder()
@@ -83,7 +87,7 @@ class GuiMobEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")
             .setState(config.showPeacefulMobs)
             .setTopLeft(pos)
             .buildToggleSetting()
-        peacefulToggle.setCallback { config.showPeacefulMobs = peacefulToggle.value }
+        peacefulToggle!!.setCallback { config.showPeacefulMobs = peacefulToggle!!.value }
         super.init()
     }
 

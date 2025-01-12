@@ -32,11 +32,15 @@ import net.minecraft.item.SpawnEggItem
 
 /**
  * This is the shared configuration for tracers and esps, as they tend to have very similar settings.
- * @author gt3ch1
+ *
+ * @see Config
+ * @example [com.peasenet.config.EspConfig]
+ *
+ * @author GT3CH1
+ * @version 01-12-2025
  * @version 04-01-2023
  */
 open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
-
 
     /**
      * The color for chests. Default value is [Colors.PURPLE]
@@ -160,7 +164,6 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
         }
 
     /** * The key for this configuration is "esp".
-
      * Removes a mob from the shown mobs list.
      * @param mob The mob to remove (EntityType)
      */
@@ -202,7 +205,6 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
      * @return Whether the mob is shown.
      */
     fun mobIsShown(egg: SpawnEggItem): Boolean {
-
         val registryManager = GavinsModClient.minecraftClient.getWorld().registryManager;
         return mobIsShown(egg.getEntityType(registryManager, egg.defaultStack))
     }

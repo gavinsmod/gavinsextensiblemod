@@ -82,6 +82,7 @@
   "gavinsmod.settings.esp.mob.peaceful.color": "Peaceful Mob Color",
   "gavinsmod.settings.esp.player.color": "Player Color",
   "gavinsmod.settings.gui": "GUI Settings",
+  "gavinsmod.settings.combat": "Combat Settings",
   "gavinsmod.settings.gui.alpha": "GUI Alpha",
   "gavinsmod.settings.gui.color.background": "Background Color",
   "gavinsmod.settings.gui.color.border": "Border Color",
@@ -156,6 +157,8 @@
   "gavinsmod.generic.tracer": "Tracer",
   "gavinsmod.generic.esp": "ESP",
   "gavinsmod.generic.speed": "Speed",
+  "gavinsmod.generic.excludePlayers": "Exclude Players",
+  "gavinsmod.generic.enabledOnly": "Enabled Only",
   "gavinsmod.mod.esp.blockesp.structure": "Structure ESP",
   "gavinsmod.gui.itemFilterConfig": "Item Filter Config"
 }

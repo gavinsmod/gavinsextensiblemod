@@ -50,8 +50,9 @@ import net.minecraft.text.Text
  *
  * The base class for all gui mob selection elements, such as the tracer and esp gui.
  *
- * @author gt3ch1
- * @version 04-11-2023
+ * @author GT3CH1
+ * @version 01-12-2025
+ * @since 04-11-2023
  */
 abstract class GuiMobSelection(label: Text) : GuiElement(label) {
 
@@ -94,22 +95,52 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
     /**
      * The hostile color setting.
      */
-    protected lateinit var hostileColor: ColorSetting
+    protected var hostileColor: ColorSetting? = null
 
     /**
      * The peaceful color setting.
      */
-    protected lateinit var peacefulColor: ColorSetting
+    protected var peacefulColor: ColorSetting? = null
 
     /**
      * The toggle element to show only peaceful mobs.
      */
-    protected lateinit var peacefulToggle: ToggleSetting
+    protected var peacefulToggle: ToggleSetting? = null
 
     /**
      * The toggle element to show only hostile mobs.
      */
-    protected lateinit var hostileToggle: ToggleSetting
+    protected var hostileToggle: ToggleSetting? = null
+
+    /**
+     * The additional guis to be displayed.
+     */
+    protected var additionalGuis: ArrayList<Gui> = ArrayList()
+
+    /**
+     * Whether to show the peaceful color setting.
+     */
+    var showPeacefulColor = true
+
+    /**
+     * Whether to show the hostile color setting.
+     */
+    var showHostileColor = true
+
+    /**
+     * Whether to show the peaceful toggle setting.
+     */
+    var showPeacefulToggle = true
+
+    /**
+     * Whether to show the hostile toggle setting.
+     */
+    var showHostileToggle = true
+
+    /**
+     * Whether to show the enabled only toggle setting.
+     */
+    var showEnabledOnly = true
 
     protected companion object {
         const val blocksPerRow: Int = 10
@@ -167,15 +198,8 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
         val screenHeight = GavinsModClient.minecraftClient.window.scaledHeight
         x = screenWidth - screenWidth / 2 - pageWidth / 2
         y = screenHeight - screenHeight / 2 - pageHeight / 2
-//        box = Gui(PointF(x.toFloat(), y.toFloat()), pageWidth, pageHeight, Text.literal(""))
-//        box.setBackground(Colors.INDIGO)
-        box = GuiBuilder()
-            .setTopLeft(PointF(x.toFloat(), y.toFloat()))
-            .setWidth(pageWidth.toFloat())
-            .setHeight(pageHeight.toFloat())
-            .setBackgroundColor(Colors.INDIGO)
-            .setHoverable(false)
-            .build()
+        box = GuiBuilder().setTopLeft(PointF(x.toFloat(), y.toFloat())).setWidth(pageWidth.toFloat())
+            .setHeight(pageHeight.toFloat()).setBackgroundColor(Colors.INDIGO).setHoverable(false).build()
         parent = GavinsMod.guiSettings
         items = ArrayList()
         Registries.ENTITY_TYPE.forEach {
@@ -183,23 +207,12 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
             if (spawnEgg != null) items.add(spawnEgg.defaultStack)
         }
         visibleItems = items
-//        nextButton = GuiClick(PointF((x + pageWidth - 30f), (y + pageHeight).toFloat()), 30, 10, Text.literal("Next"))
-        nextButton = GuiBuilder()
-            .setTopLeft(PointF((x + pageWidth - 30f), (y + pageHeight).toFloat()))
-            .setWidth(30f)
-            .setHeight(10f)
-            .setTitle(Text.literal("Next"))
-            .setCallback { pageUp() }
-            .buildClick()
+        nextButton = GuiBuilder().setTopLeft(PointF((x + pageWidth - 30f), (y + pageHeight).toFloat())).setWidth(30f)
+            .setHeight(10f).setTitle(Text.literal("Next")).setCallback { pageUp() }.buildClick()
         nextButton.setCallback { pageUp() }
-//        prevButton = GuiClick(PointF(x.toFloat(), (y + pageHeight).toFloat()), 30, 10, Text.literal("Prev"))
-        prevButton = GuiBuilder()
-            .setTopLeft(PointF(x.toFloat(), (y + pageHeight).toFloat()))
-            .setWidth(30f)
-            .setHeight(10f)
-            .setTitle(Text.literal("Prev"))
-            .setCallback { pageDown() }
-            .buildClick()
+        prevButton =
+            GuiBuilder().setTopLeft(PointF(x.toFloat(), (y + pageHeight).toFloat())).setWidth(30f).setHeight(10f)
+                .setTitle(Text.literal("Prev")).setCallback { pageDown() }.buildClick()
         prevButton.setCallback { pageDown() }
         val searchWidth = searchMaxWidth.coerceAtMost(pageWidth)
         search = object :
@@ -220,28 +233,39 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
         }
 
         addSelectableChild(search)
-
         var tw = textRenderer.getWidth("Enabled Only")
-        tw = tw.coerceAtLeast(textRenderer.getWidth(hostileColor.getTitle()))
-        tw = tw.coerceAtLeast(textRenderer.getWidth(peacefulColor.getTitle()))
-        tw = tw.coerceAtLeast(textRenderer.getWidth(hostileToggle.getTitle()))
-        tw = tw.coerceAtLeast(textRenderer.getWidth(peacefulToggle.getTitle()))
+        if (showHostileColor) tw = tw.coerceAtLeast(textRenderer.getWidth(hostileColor?.getTitle()))
+        if (showPeacefulColor) tw = tw.coerceAtLeast(textRenderer.getWidth(peacefulColor?.getTitle()))
+        if (showHostileToggle) tw = tw.coerceAtLeast(textRenderer.getWidth(hostileToggle?.getTitle()))
+        if (showPeacefulToggle) tw = tw.coerceAtLeast(textRenderer.getWidth(peacefulToggle?.getTitle()))
+        if (additionalGuis.isNotEmpty()) {
+            for (gui in additionalGuis) {
+                tw = tw.coerceAtLeast(textRenderer.getWidth(gui.title))
+            }
+        }
         tw += 12
-        hostileColor.gui.width = (tw).toFloat()
-        peacefulColor.gui.width = (tw).toFloat()
-        hostileToggle.gui.width = (tw).toFloat()
-        peacefulToggle.gui.width = (tw).toFloat()
+
+        if (showHostileColor) hostileColor?.gui?.width = (tw).toFloat()
+        if (showPeacefulColor) peacefulColor?.gui?.width = (tw).toFloat()
+        if (showHostileToggle) hostileToggle?.gui?.width = (tw).toFloat()
+        if (showPeacefulToggle) peacefulToggle?.gui?.width = (tw).toFloat()
+        if (additionalGuis.isNotEmpty()) {
+            for (gui in additionalGuis) {
+                gui.width = (tw).toFloat()
+            }
+        }
         enabledOnly.width = (tw).toFloat()
 
         guis.clear()
         guis.add(box)
         guis.add(enabledOnly)
-        guis.add(hostileToggle.gui)
-        guis.add(peacefulColor.gui)
-        guis.add(peacefulToggle.gui)
-        guis.add(hostileColor.gui)
+        if (showHostileToggle) guis.add(hostileToggle!!.gui)
+        if (showPeacefulColor) guis.add(peacefulColor!!.gui)
+        if (showPeacefulToggle) guis.add(peacefulToggle!!.gui)
+        if (showHostileColor) guis.add(hostileColor!!.gui)
         guis.add(nextButton)
         guis.add(prevButton)
+        guis.addAll(additionalGuis)
         updateItemList()
         super.init()
     }
@@ -269,7 +293,6 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
 
     override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
         val matrixStack = drawContext.matrices
-//        guis.forEach { it.render(drawContext, textRenderer, mouseX, mouseY, delta) }
         super.render(drawContext, mouseX, mouseY, delta)
         search.render(drawContext, mouseX, mouseY, delta)
         for (i in 0 until itemsPerPage) {
@@ -280,11 +303,7 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
             val boxF = BoxF(blockX.toFloat(), blockY.toFloat(), 16f, 16f)
             if (isItemEnabled(block)) {
                 drawContext.fill(
-                    blockX,
-                    blockY,
-                    blockX + 16,
-                    blockY + 16,
-                    GavUISettings.getColor("gui.color.enabled").getAsInt(0.5f)
+                    blockX, blockY, blockX + 16, blockY + 16, GavUISettings.getColor("gui.color.enabled").getAsInt(0.5f)
                 )
                 GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack, 0.5f)
             }

@@ -23,7 +23,11 @@
  */
 package com.peasenet.mods.combat
 
+import com.peasenet.config.KillAuraConfig
+import com.peasenet.gui.mod.combat.GuiKillAura
 import com.peasenet.main.GavinsModClient
+import com.peasenet.main.Settings
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.PlayerUtils
 import com.peasenet.util.math.MathUtils
 import net.minecraft.entity.Entity
@@ -31,18 +35,33 @@ import net.minecraft.entity.mob.MobEntity
 import java.util.stream.StreamSupport
 
 /**
- * @author gt3ch1
- * @version 03-02-2023
  * A mod that makes the player face and attack the nearest mob.
+ *
+ * @author GT3CH1
+ * @version 01-12-2025
+ * @since 03-02-2023
  */
 class ModKillAura : CombatMod(
     "Kill Aura",
     "gavinsmod.mod.combat.killaura",
     "killaura",
 ) {
+
+    private companion object {
+        val config = Settings.getConfig<KillAuraConfig>("killaura")
+    }
+
+    init {
+        val click = SettingBuilder().setTitle("gavinsmod.mod.combat.killaura").buildClickSetting()
+        click.setCallback {
+            client.setScreen(GuiKillAura())
+        }
+        addSetting(click)
+    }
+
     override fun onTick() {
         if (isActive) {
-            val stream = StreamSupport.stream(GavinsModClient.minecraftClient.getWorld().entities.spliterator(), false)
+            var stream = StreamSupport.stream(GavinsModClient.minecraftClient.getWorld().entities.spliterator(), false)
                 .filter { e: Entity? -> e is MobEntity }
                 .filter { obj: Entity -> obj.isAlive }
                 .filter { e: Entity? -> PlayerUtils.distanceToEntity(e) <= 16 }
@@ -50,6 +69,9 @@ class ModKillAura : CombatMod(
                     (PlayerUtils.distanceToEntity(e1).toInt() - PlayerUtils.distanceToEntity(e2)).toInt()
                 }
                 .map { e: Entity? -> e as MobEntity? }
+            if (config.shownMobs.isNotEmpty()) {
+                stream = stream.filter { entity: MobEntity? -> config.mobIsShown(entity!!.type!!) }
+            }
             stream.forEach { entity: MobEntity? ->
                 entity?.let { MathUtils.getRotationToEntity(it) }?.let { PlayerUtils.setRotation(it) }
                 PlayerUtils.attackEntity(entity)
