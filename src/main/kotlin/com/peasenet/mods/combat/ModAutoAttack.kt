@@ -44,7 +44,7 @@ class ModAutoAttack : CombatMod(
     "autoattack",
 ) {
     init {
-        val click = SettingBuilder().setTitle("gavinsmod.mod.combat.autoattack").buildClickSetting()
+        val click = SettingBuilder().setTitle(translationKey).buildClickSetting()
         click.setCallback {
             client.setScreen(GuiAutoAttack())
         }
@@ -59,7 +59,6 @@ class ModAutoAttack : CombatMod(
         if (!config.excludePlayers)
             PlayerUtils.attackEntity(entity)
     }
-
 
     companion object {
         val config: AutoAttackConfig

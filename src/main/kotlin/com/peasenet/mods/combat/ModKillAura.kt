@@ -32,7 +32,7 @@ import com.peasenet.util.PlayerUtils
 import com.peasenet.util.math.MathUtils
 import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
-import net.minecraft.entity.mob.MobEntity
+import net.minecraft.entity.player.PlayerEntity
 import java.util.stream.StreamSupport
 
 /**
@@ -72,6 +72,9 @@ class ModKillAura : CombatMod(
                 .map { e: Entity? -> e as LivingEntity? }
             if (config.shownMobs.isNotEmpty()) {
                 stream = stream.filter { entity: LivingEntity? -> config.mobIsShown(entity!!.type!!) }
+            }
+            if (config.excludePlayers) {
+                stream = stream.filter { it !is PlayerEntity }
             }
             stream.forEach { entity: LivingEntity? ->
                 entity?.let { MathUtils.getRotationToEntity(it) }?.let { PlayerUtils.setRotation(it) }
