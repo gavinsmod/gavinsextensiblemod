@@ -40,13 +40,13 @@ class ItemEntityFilter(
         var matches = false
         val regex = Regex(filterString, setOf(RegexOption.DOT_MATCHES_ALL))
         if (customName != null) {
-            val content = (customName.content as PlainTextContent.Literal).string
+            val content = (customName.toString())
             matches = content.contains(filterString)
             matches = matches || regex.containsMatchIn(content)
         }
         if (lore != null) {
             matches =
-                matches || lore.lines.any { (it.content as PlainTextContent.Literal).string.contains(filterString) }
+                matches || lore.lines.any { it.content.toString().contains(filterString) }
             matches =
                 matches || lore.lines.any { regex.containsMatchIn((it.content as PlainTextContent.Literal).string) }
         }
