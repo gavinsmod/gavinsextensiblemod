@@ -91,8 +91,8 @@ class GuiItemEspTracerConfig(
                     minecraftClient.setScreen(
                         GuiItemFilter(
                             this, ItemEntityFilter(
-                                "Filter String",
-                                "Filter Name",
+                                "A Cool Name",
+                                "A cool item name",
                             ), config
                         )
                     )

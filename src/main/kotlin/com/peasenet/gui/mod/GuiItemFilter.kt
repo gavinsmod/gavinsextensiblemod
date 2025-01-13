@@ -11,6 +11,7 @@ import com.peasenet.gui.GuiElement
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.settings.ToggleSetting
+import com.peasenet.util.PlayerUtils
 import com.peasenet.util.data.ItemEntityFilter
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
@@ -35,7 +36,7 @@ import net.minecraft.text.Text
  * @since 01-10-2025
  */
 class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, val config: TracerEspConfig<*>) :
-    GuiElement(Text.of(filter.filterString)) {
+    GuiElement(Text.of(filter.filterName)) {
     /**
      * The width of the gui.
      */
@@ -115,6 +116,24 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
                 .setHeight(10f).setBackgroundColor(Colors.GREEN).buildClick()
 
         saveSettings.setCallback {
+            val tmpFilter = ItemEntityFilter(
+                filterName.text,
+                filterString.text,
+                filterEnable.value,
+                itemEspFilter.uuid
+            )
+            if (!ItemEntityFilter.validate(tmpFilter)) {
+                PlayerUtils.sendMessage(
+                    "Invalid filter! Please ensure that the name and filter string are not empty and valid.",
+                    true
+                )
+                config.itemFilterList.removeIf { it.uuid == tmpFilter.uuid }
+                config.itemFilterList.add(tmpFilter)
+                config.saveConfig()
+                parent = GuiItemEspTracerConfig(config)
+                minecraftClient.setScreen(parent)
+                return@setCallback
+            }
             itemEspFilter.filterString = filterString.text
             itemEspFilter.filterName = filterName.text
             itemEspFilter.enabled = filterEnable.value
