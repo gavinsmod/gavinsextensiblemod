@@ -193,9 +193,10 @@ public class GuiScroll extends GuiDropdown {
             drawScrollBox(matrixStack);
             drawScrollBar(matrixStack);
         }
-        if (!child.isParent() && !(child instanceof GuiCycle)) {
-            child.setBackground(GavUI.backgroundColor());
-        }
+        // NOTE: Why was this ever here? This doesn't make sense. This is overwriting the background color of the children.
+//        if (!child.isParent() && !(child instanceof GuiCycle)) {
+//            child.setBackground(GavUI.backgroundColor());
+//        }
         child.render(drawContext, tr, mouseX, mouseY, delta);
     }
 

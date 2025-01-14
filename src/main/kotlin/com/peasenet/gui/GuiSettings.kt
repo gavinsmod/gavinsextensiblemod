@@ -40,6 +40,8 @@ import com.peasenet.mods.ModCategory
 import com.peasenet.settings.SettingBuilder
 import net.minecraft.text.Text
 import java.util.function.Consumer
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * A settings gui to control certain features of the mod.
@@ -189,6 +191,15 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
             espAlpha.setCallback { Settings.getConfig<EspConfig>("esp").alpha = espAlpha.value }
             espDropdown.addElement(espAlpha.gui)
 
+            val espSizeSlider = SettingBuilder()
+                .setTitle("gavinsmod.settings.size")
+                .setValue(Settings.getConfig<EspConfig>("esp").espSize)
+                .buildSlider()
+            espSizeSlider.setCallback {
+                val size = 0.25f + (espSizeSlider.value * 0.75f)
+                Settings.getConfig<EspConfig>("esp").espSize = size
+            }
+            espDropdown.addElement(espSizeSlider.gui)
 
             val backgroundOverlay = SettingBuilder()
                 .setTitle("gavinsmod.generic.background")
