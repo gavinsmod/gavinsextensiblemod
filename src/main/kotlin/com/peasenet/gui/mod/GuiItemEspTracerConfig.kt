@@ -98,7 +98,9 @@ class GuiItemEspTracerConfig(
                             ), config
                         )
                     )
-                }.buildClick()
+                }
+                .setSymbol('+')
+                .buildClick()
         startY += 12f
         var filterChildren: ArrayList<Gui> = ArrayList()
         for (filter in config.itemFilterList) {
@@ -109,6 +111,8 @@ class GuiItemEspTracerConfig(
         }
         filterDropdown =
             GuiBuilder().setTitle("gavinsmod.settings.filters").setTopLeft(startX, startY).setMaxChildren(8)
+                .setIsParent(true)
+                .setDraggable(false)
                 .setWidth(screenWidth - padding).setChildren(filterChildren).buildScroll()
     }
 }

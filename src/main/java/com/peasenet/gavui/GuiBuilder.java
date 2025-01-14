@@ -47,7 +47,8 @@ public class GuiBuilder {
     private boolean frozen;
     private boolean isOpen;
     private boolean isOn;
-
+    private boolean isParent;
+    private boolean isDraggable;
     private boolean drawBorder = true;
 
     private Text title;
@@ -68,6 +69,7 @@ public class GuiBuilder {
     private String translationKey;
     private float transparency = -1;
     private GuiDropdown.Direction direction = GuiDropdown.Direction.DOWN;
+
 
     public GuiDropdown.Direction getDirection() {
         return direction;
@@ -353,6 +355,24 @@ public class GuiBuilder {
 
     public GuiBuilder setIsOn(boolean isOn) {
         this.isOn = isOn;
+        return this;
+    }
+
+    public GuiBuilder setIsParent(boolean isParent) {
+        this.isParent = isParent;
+        return this;
+    }
+
+    public boolean isParent() {
+        return isParent;
+    }
+
+    public boolean isDraggable() {
+        return isDraggable;
+    }
+
+    public GuiBuilder setDraggable(boolean isDraggable) {
+        this.isDraggable = isDraggable;
         return this;
     }
 
