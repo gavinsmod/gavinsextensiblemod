@@ -75,13 +75,11 @@ class ItemEntityFilter(
         }
         if (customName != null && searchCustomName) {
             val content = (customName.toString())
-            matches = content.contains(filterString)
-            matches = matches || regex.containsMatchIn(content)
+            matches = regex.containsMatchIn(content)
         }
         if (lore != null && searchLore) {
-            matches = matches || lore.lines.any { it.content.toString().contains(filterString) }
             matches = matches || lore.lines.any {
-                regex.containsMatchIn((it.content.toString()))
+                regex.containsMatchIn((it.toString()))
             }
         }
         return matches
