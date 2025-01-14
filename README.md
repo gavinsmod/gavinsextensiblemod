@@ -11,7 +11,7 @@
 
 ---
 
-## es
+## Features
 
 - X-Ray
   ![](src/main/resources/assets/gavinsmod/screenshots/xray.png)
