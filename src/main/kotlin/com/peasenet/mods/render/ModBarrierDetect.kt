@@ -24,7 +24,7 @@
 package com.peasenet.mods.render
 
 import com.peasenet.mixinterface.ISimpleOption
-import net.minecraft.client.option.ParticlesMode
+import net.minecraft.particle.ParticlesMode
 
 /**
  * @author gt3ch1

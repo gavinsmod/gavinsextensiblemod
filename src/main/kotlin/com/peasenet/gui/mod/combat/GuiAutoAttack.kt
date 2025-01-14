@@ -1,4 +1,4 @@
-/*
+﻿/*
  * MIT License
  *
  * Copyright (c) 2022-2024, Gavin C. Pease
@@ -22,32 +22,16 @@
  * SOFTWARE.
  */
 
-package com.peasenet.mixins;
-
-import com.peasenet.util.event.EventManager;
-import com.peasenet.util.event.ShouldDrawSideEvent;
-import com.peasenet.util.event.data.DrawState;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.Direction;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+package com.peasenet.gui.mod.combat
 
 /**
- * @author gt3ch1
- * @version 01/01/2023
+ * A GUI that allows the player to filter what mobs are attacked, and whether players should be targeted as well.
+ *
+ * @see GuiAttackFilter
+ *
+ * @author GT3CH1
+ * @version 01-12-2025
+ * @since 01-12-2025
  */
-@Mixin(Block.class)
-public class MixinBlock {
-    @Inject(at = @At("RETURN"), method = "shouldDrawSide", cancellable = true)
-    private static void xray(BlockState state, BlockState otherState, Direction side, CallbackInfoReturnable<Boolean> cir) {
-        var drawSide = new DrawState(state);
-        var evt = new ShouldDrawSideEvent(drawSide);
-        EventManager.getEventManager().call(evt);
-        if (drawSide.shouldDraw() != null) {
-            cir.setReturnValue(drawSide.shouldDraw());
-        }
-    }
+class GuiAutoAttack : GuiAttackFilter("autoattack", "gavinsmod.mod.combat.autoattack") {
 }

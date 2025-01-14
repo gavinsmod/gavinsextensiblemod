@@ -27,62 +27,63 @@ import com.peasenet.util.event.data.EntityNameRender
 import com.peasenet.util.listeners.EntityRenderNameListener
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.font.TextRenderer.TextLayerType
-import net.minecraft.client.render.VertexConsumerProvider
-import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.EntityAttachmentType
 import net.minecraft.entity.LivingEntity
-import net.minecraft.text.MutableText
 import net.minecraft.text.Text
-import net.minecraft.util.Colors
 import net.minecraft.util.Formatting
 
 /**
+ *
+ * A mod that shows entity's health as a tag above their head. Listening for [EntityNameRender][com.peasenet.util.event.EntityRenderNameEvent] events.
+ *
+ * @see EntityRenderNameListener
+ * @see com.peasenet.util.event.EntityRenderNameEvent
+ * @see com.peasenet.util.event.data.EntityNameRender
+ * @see com.peasenet.mods.render.RenderMod
+ *
  * @author gt3ch1
- * @version 04-10-2023
- * A mod that shows entity's health as a tag above their head.
+ * @version 01-12-2025
+ * @since 09-16-2024
+ *
  */
 class ModHealthTag : RenderMod(
-    "Health Tags",
-    "gavinsmod.mod.render.hptags",
-    "hptags"
+    "Health Tags", "gavinsmod.mod.render.hptags", "hptags"
 ), EntityRenderNameListener {
+
     override fun onEnable() {
-        super.onEnable()
         em.subscribe(EntityRenderNameListener::class.java, this)
+        super.onEnable()
     }
 
     override fun onDisable() {
-        super.onDisable()
         em.unsubscribe(EntityRenderNameListener::class.java, this)
+        super.onDisable()
     }
 
-    //SEE: EntityRenderer#renderLabelIfPresent
-    private fun renderLabel(
-        entity: LivingEntity,
-        text: Text,
-        matrices: MatrixStack,
-        vertexConsumers: VertexConsumerProvider,
-        light: Int,
-        tickDelta: Float
+    /**
+     * Renders a health tag above an entities head.
+     */
+    private fun renderHealthTag(
+        er: EntityNameRender
     ) {
+        val entity = er.entity as LivingEntity
+        val matrixStack = er.matrixStack
+        val vertexConsumers = er.vertexConsumerProvider
+        val light = er.light
+        val textRenderer = MinecraftClient.getInstance().textRenderer
         val dispatcher = MinecraftClient.getInstance().entityRenderDispatcher
-        val d: Double = dispatcher.getSquaredDistanceToCamera(entity)
-        if (d > 4096) return
-        val attachmentVec =
-            entity.attachments.getPointNullable(EntityAttachmentType.NAME_TAG, 0, entity.getYaw(tickDelta))
-                ?: return
-        val i = if ("deadmau5" == text.string) -10 else 0
-        matrices.push()
-        matrices.translate(attachmentVec.x, attachmentVec.y + 0.5, attachmentVec.z)
-        matrices.multiply(dispatcher.rotation)
-        matrices.scale(0.025f, -0.025f, 0.025f)
-        val matrix4f = matrices.peek().positionMatrix
+        val attachmentVec = entity.attachments.getPointNullable(EntityAttachmentType.NAME_TAG, 0, entity.getYaw(0f))
+        matrixStack.push()
+        matrixStack.translate(-attachmentVec!!.x, attachmentVec.y + 0.75, -attachmentVec.z)
+        matrixStack.multiply(dispatcher.rotation)
+        matrixStack.scale(0.025f, -0.025f, 0.025f)
+        val currentHp = entity.health.toInt()
+        val text = Text.literal("").append(currentHp.toString()).append(" HP").formatted(getColor(entity))
+        val g = -textRenderer.getWidth(text) / 2.0f
+        val i = if (er.entity.name.string == "deadmau5") -10 else 0
+        val matrix4f = matrixStack.peek().positionMatrix
         val f = MinecraftClient.getInstance().options.getTextBackgroundColor(0.25f)
-
-        val renderer: TextRenderer = MinecraftClient.getInstance().textRenderer
-        val g = -renderer.getWidth(text) / 2.0f
-        renderer.draw(
+        textRenderer.draw(
             text,
             g,
             i.toFloat(),
@@ -90,11 +91,11 @@ class ModHealthTag : RenderMod(
             false,
             matrix4f,
             vertexConsumers,
-            TextLayerType.NORMAL,
+            TextRenderer.TextLayerType.NORMAL,
             f,
             light
         )
-        renderer.draw(
+        textRenderer.draw(
             text,
             g,
             i.toFloat(),
@@ -102,19 +103,16 @@ class ModHealthTag : RenderMod(
             false,
             matrix4f,
             vertexConsumers,
-            TextLayerType.SEE_THROUGH,
+            TextRenderer.TextLayerType.SEE_THROUGH,
             0,
             light
         )
-        matrices.pop()
+        matrixStack.pop()
     }
 
-    private fun addHealth(entity: LivingEntity, tag: Text): MutableText {
-        val currentHp = entity.health.toInt()
-        val formattedMutableText = Text.literal(" ").append(currentHp.toString()).append(" HP")
-        return (tag as MutableText).append(formattedMutableText.formatted(getColor(entity)))
-    }
-
+    /**
+     * Gets the color formatting for the health tag.
+     */
     private fun getColor(entity: LivingEntity): Formatting {
         return if (entity.health > entity.maxHealth * 0.8) {
             Formatting.GREEN
@@ -129,13 +127,6 @@ class ModHealthTag : RenderMod(
 
     override fun onEntityNameRender(er: EntityNameRender) {
         if (er.entity !is LivingEntity) return
-        renderLabel(
-            er.entity,
-            addHealth(er.entity, er.entity.name),
-            er.matrixStack,
-            er.vertexConsumerProvider,
-            er.light,
-            er.tickDelta
-        )
+        renderHealthTag(er)
     }
 }

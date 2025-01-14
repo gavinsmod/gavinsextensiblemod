@@ -35,9 +35,13 @@ import net.minecraft.item.SpawnEggItem
 import net.minecraft.text.Text
 
 /**
+ * A GUI that allows the player to filter what mobs they want to have tracers rendered for.
+ *
+ * @see TracerConfig
+ *
  * @author gt3ch1
- * @version 04-11-2023
- * A gui that allows the player to search for blocks and add them to the xray list.
+ * @version 01-12-2025
+ * @since 04-11-2023
  */
 class GuiMobTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtracer")) {
     private val settings = Settings.getConfig<TracerConfig>("tracer")
@@ -50,7 +54,7 @@ class GuiMobTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtr
             .setColor(settings.hostileMobColor)
             .setTopLeft(pos)
             .buildColorSetting()
-        hostileColor.setCallback { settings.hostileMobColor = hostileColor.color }
+        hostileColor!!.setCallback { settings.hostileMobColor = hostileColor!!.color }
         pos = pos.add(0f, 12f)
 
         peacefulColor = SettingBuilder()
@@ -58,7 +62,7 @@ class GuiMobTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtr
             .setColor(settings.peacefulMobColor)
             .setTopLeft(pos)
             .buildColorSetting()
-        peacefulColor.setCallback { settings.peacefulMobColor = peacefulColor.color }
+        peacefulColor!!.setCallback { settings.peacefulMobColor = peacefulColor!!.color }
         pos = pos.add(0f, 12f)
         enabledOnly = GuiBuilder()
             .setTopLeft(pos)
@@ -74,7 +78,7 @@ class GuiMobTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtr
             .setState(settings.showHostileMobs)
             .setTopLeft(pos)
             .buildToggleSetting()
-        peacefulToggle.setCallback { settings.showHostileMobs = peacefulToggle.value }
+        peacefulToggle!!.setCallback { settings.showHostileMobs = peacefulToggle!!.value }
         pos = pos.add(0f, 12f)
 
         hostileToggle = SettingBuilder()
@@ -82,7 +86,7 @@ class GuiMobTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtr
             .setState(settings.showPeacefulMobs)
             .setTopLeft(pos)
             .buildToggleSetting()
-        hostileToggle.setCallback { settings.showPeacefulMobs = hostileToggle.value }
+        hostileToggle!!.setCallback { settings.showPeacefulMobs = hostileToggle!!.value }
         super.init()
     }
 

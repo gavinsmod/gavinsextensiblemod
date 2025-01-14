@@ -248,6 +248,9 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
 
     override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
         val matrixStack = drawContext.matrices
+
+        box.render(drawContext, textRenderer, mouseX, mouseY, delta)
+        super.render(drawContext, mouseX, mouseY, delta)
         for (i in 0 until blocksPerPage) {
             if (i > visibleBlocks.size - 1) break
             val block = visibleBlocks.toTypedArray()[i]
@@ -279,11 +282,15 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
                 GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack, 1f)
             }
             if (isHovering)
-                drawContext.drawTooltip(client!!.textRenderer, Text.translatable(stack.translationKey), mouseX, mouseY)
+                drawContext.drawTooltip(
+                    client!!.textRenderer,
+                    Text.translatable(stack.item.translationKey),
+                    mouseX,
+                    mouseY
+                )
             drawContext.drawItem(stack, blockX, blockY)
         }
         box.isHoverable = false
-        box.render(drawContext, textRenderer, mouseX, mouseY, delta)
         search.render(drawContext, mouseX, mouseY, delta)
         prevButton.render(drawContext, textRenderer, mouseX, mouseY, delta)
         nextButton.render(drawContext, textRenderer, mouseX, mouseY, delta)
@@ -305,7 +312,6 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
             Colors.WHITE.asInt,
             false
         )
-        super.render(drawContext, mouseX, mouseY, delta)
     }
 
     private fun isHovering(mouseX: Int, blockX: Int, mouseY: Int, blockY: Int) =

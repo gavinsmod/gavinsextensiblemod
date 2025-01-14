@@ -43,8 +43,10 @@ import com.peasenet.mods.tracer.*
  *
  * The class that handles keeping track of GEMs. Initializing this class will also initialize
  * the main GUI and the settings GUI.
- * @author gt3ch1
- * @version 07-18-2023
+ *
+ * @author GT3CH1
+ * @version 01-12-2025
+ * @since 07-18-2023
  */
 class Mods {
 
@@ -54,7 +56,6 @@ class Mods {
 
         Settings.addConfig(FpsColorConfig())
         Settings.addConfig(FullbrightConfig())
-        Settings.addConfig(XrayConfig())
         Settings.addConfig(BlockEspConfig())
         Settings.addConfig(BlockTracerConfig())
         Settings.addConfig(RadarConfig())
@@ -63,6 +64,9 @@ class Mods {
         Settings.addConfig(EspConfig());
         Settings.addConfig(TracerConfig());
         Settings.addConfig(MiscConfig());
+        Settings.addConfig(XrayConfig())
+        Settings.addConfig(AutoAttackConfig())
+        Settings.addConfig(KillAuraConfig())
 
         /*@MODS@*/
         GavinsMod.addMod(ModAutoAttack())

@@ -23,40 +23,42 @@
  */
 package com.peasenet.mods.tracer
 
-import com.mojang.blaze3d.systems.RenderSystem
-import com.peasenet.config.TracerConfig
 import com.peasenet.gavui.color.Color
-import com.peasenet.main.Settings
-import com.peasenet.mods.tracer.TracerMod.Companion
+import com.peasenet.gui.mod.GuiItemEspTracerConfig
 import com.peasenet.settings.SettingBuilder
-import com.peasenet.util.RenderUtils
-import com.peasenet.util.event.data.BlockEntityRender
-import com.peasenet.util.event.data.EntityRender
 import com.peasenet.util.listeners.RenderListener
-import net.minecraft.client.render.BufferRenderer
-import net.minecraft.client.render.GameRenderer
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.EntityType
 import net.minecraft.entity.ItemEntity
-import net.minecraft.util.math.Box
 
 /**
  * A mod that allows the player to see tracers towards items.
+ *
+ * @see EntityTracer
+ * @see RenderListener
+ * @see GuiItemEspTracerConfig
+ *
  * @author gt3ch1
- * @version 09-06-2024
+ * @version 01-12-2025
  * @since 04-11-2023
  */
 class ModEntityItemTracer :
     EntityTracer<ItemEntity>("Item Tracer", "gavinsmod.mod.tracer.item", "itemtracer", { it is ItemEntity }),
     RenderListener {
     init {
-        val colorSetting = SettingBuilder().setTitle("gavinsmod.settings.tracer.item.color").setColor(config.itemColor)
-            .buildColorSetting()
-        colorSetting.setCallback { config.itemColor = colorSetting.color }
-        colorSetting.color = config.itemColor
-        addSetting(colorSetting)
+        val menu = SettingBuilder().setTitle("gavinsmod.mod.tracer.item").buildClickSetting()
+        menu.setCallback {
+            client.setScreen(GuiItemEspTracerConfig(config))
+        }
+        addSetting(menu)
+    }
+
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {/* TODO: Work on setting filters for items */
+        if (config.useItemEspFilter) {
+            entityList = entityList.filter {
+                config.itemFilterList.any { filter -> filter.customNameMatches(it) }
+            }.toMutableList()
+        }
+        super.onRender(matrixStack, partialTicks)
     }
 
     override fun getColor(entity: ItemEntity): Color {

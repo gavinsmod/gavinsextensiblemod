@@ -174,7 +174,7 @@ object PlayerUtils {
             if (player.getFallDistance() <= (if (isFalling) 1 else 2)) return
             if (player.isSneaking() && !fallSpeedCanDamage() && player.isFallFlying()) return
             if (GavinsMod.isEnabled("noclip")) {
-                player.getNetworkHandler().sendPacket(OnGroundOnly(true))
+                player.getNetworkHandler().sendPacket(OnGroundOnly(true, false))
             }
         }
     }
@@ -183,6 +183,14 @@ object PlayerUtils {
     fun sendMessage(message: String, withPrefix: Boolean) {
         var newMessage = message
         val sendMessage = Settings.getConfig<MiscConfig>("misc").isMessages
+        if (withPrefix) newMessage = Mod.GAVINS_MOD_STRING + newMessage
+        if (sendMessage) GavinsModClient.player!!.sendMessage(Text.literal(newMessage), false)
+    }
+
+    @JvmStatic
+    fun sendMessage(message: Text, withPrefix: Boolean) {
+        val sendMessage = Settings.getConfig<MiscConfig>("misc").isMessages
+        var newMessage = message.string
         if (withPrefix) newMessage = Mod.GAVINS_MOD_STRING + newMessage
         if (sendMessage) GavinsModClient.player!!.sendMessage(Text.literal(newMessage), false)
     }

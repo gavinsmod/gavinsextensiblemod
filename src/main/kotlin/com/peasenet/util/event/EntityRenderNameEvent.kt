@@ -28,28 +28,27 @@ import com.peasenet.util.listeners.EntityRenderNameListener
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
+import net.minecraft.entity.LivingEntity
+import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 
 /**
- * The event for the world render event.
+ * An event that is fired when an entity's name is about to be rendered.
+ *
+ * @see EntityRenderNameListener
+ * @see com.peasenet.mods.render.ModHealthTag
+ * @see EntityNameRender
  *
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 01-12-2025
+ * @since 03-02-2023
+ *
+ * @sample com.peasenet.mods.render.ModHealthTag
  */
 class EntityRenderNameEvent(
-    entity: Entity,
-    matrices: MatrixStack,
-    vertexConsumers: VertexConsumerProvider?,
-    tickDelta: Float,
-    light: Int
+    data: EntityNameRender
 ) : Event<EntityRenderNameListener>() {
-    private var entityRender: EntityNameRender = EntityNameRender(
-        entity,
-        matrices,
-        vertexConsumers!!,
-        tickDelta,
-        light,
-    )
+    private var entityRender: EntityNameRender = data
 
     override fun fire(listeners: ArrayList<EntityRenderNameListener>) {
         for (listener in listeners) {

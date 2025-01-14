@@ -42,6 +42,7 @@ class ModDolphin : MovementMod(
                     player.x,
                     player.y + 0.1,
                     player.z,
+                    false,
                     false
                 )
             )

@@ -40,7 +40,7 @@ class ColorSetting(builder: SettingBuilder) : Setting() {
      */
     override val gui: GuiCycle
 
-    var color: Color = builder.getColor()
+    var color: Color = builder.getColor() ?: Colors.INDIGO
 
     init {
         gui = GuiBuilder()

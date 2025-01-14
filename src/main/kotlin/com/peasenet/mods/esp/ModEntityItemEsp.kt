@@ -24,29 +24,47 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.gavui.color.Color
+import com.peasenet.gui.mod.GuiItemEspTracerConfig
 import com.peasenet.main.GavinsModClient
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils.CHUNK_RADIUS
 import com.peasenet.util.listeners.RenderListener
+import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.ItemEntity
 
 /**
  * A mod that allows the player to see an esp (a box) around items.
+ *
+ * @see RenderListener
+ * @see GuiItemEspTracerConfig
+ * @see com.peasenet.util.data.ItemEntityFilter
+ *
  * @author gt3ch1
- * @version 09-06-2024
+ * @version 01-12-2025
  * @since 03-02-2023
  */
-class ModEntityItemEsp : EntityEsp<ItemEntity>("Item ESP",
+class ModEntityItemEsp : EntityEsp<ItemEntity>(
+    "Item ESP",
     "gavinsmod.mod.esp.item",
     "itemesp",
     { it is ItemEntity && it.squaredDistanceTo(GavinsModClient.player!!.getPos()) < 64 * 16 * CHUNK_RADIUS }),
     RenderListener {
     init {
-        val colorSetting = SettingBuilder().setTitle("gavinsmod.settings.esp.item.color").setColor(config.itemColor)
-            .buildColorSetting()
 
-        colorSetting.setCallback { config.itemColor = colorSetting.color }
-        addSetting(colorSetting)
+        val menu = SettingBuilder().setTitle("gavinsmod.mod.esp.item").buildClickSetting()
+        menu.setCallback {
+            client.setScreen(GuiItemEspTracerConfig(config))
+        }
+        addSetting(menu)
+    }
+
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {/* TODO: Work on setting filters for items */
+        if (config.useItemEspFilter) {
+            espList = espList.filter {
+                config.itemFilterList.any { filter -> filter.customNameMatches(it) }
+            }.toMutableList()
+        }
+        super.onRender(matrixStack, partialTicks)
     }
 
     override fun getColor(entity: ItemEntity): Color = getColor()

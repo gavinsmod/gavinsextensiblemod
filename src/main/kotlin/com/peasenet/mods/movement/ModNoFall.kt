@@ -24,6 +24,7 @@
 package com.peasenet.mods.movement
 
 import com.peasenet.main.GavinsModClient
+import com.peasenet.main.Mods
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
 
 /**
@@ -37,12 +38,16 @@ class ModNoFall : MovementMod(
     "nofall"
 ) {
     override fun onTick() {
-        val player = GavinsModClient.player
-        if (player != null && isActive) {
-            if (player.getFallDistance() <= (if (isFalling) 1 else 2)) return
-            if (player.isSneaking() && !fallSpeedCanDamage && player.isFallFlying()) return
-            player.getNetworkHandler().sendPacket(PlayerMoveC2SPacket.OnGroundOnly(true))
-        }
+        val player = GavinsModClient.player!!
+        if (!isActive)
+            return;
+        if (player.isSneaking())
+            return;
+        if (isFalling && !fallSpeedCanDamage)
+            return;
+        player.getNetworkHandler().sendPacket(
+            PlayerMoveC2SPacket.OnGroundOnly(true, player.horizontalCollision())
+        )
     }
 
     /**

@@ -26,8 +26,13 @@ package com.peasenet.config
 /**
  * The configuration for ESPs. This is stored in the core client as there are multiple GEMs that require an EspConfig.
  * The key for this configuration is "esp".
+ *
+ * @see TracerConfig
+ * @see EspConfig
+ *
  * @author GT3CH1
  * @version 07-18-2023
+ * @since 07-18-2023
  */
 class EspConfig : TracerEspConfig<EspConfig>() {
     init {

@@ -25,6 +25,8 @@
 package com.peasenet.mixins;
 
 import com.mojang.authlib.GameProfile;
+import com.peasenet.main.GavinsMod;
+import com.peasenet.main.GavinsModClient;
 import com.peasenet.mixinterface.IClientPlayerEntity;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -51,7 +53,7 @@ import org.spongepowered.asm.mixin.Shadow;
  */
 @Mixin(ClientPlayerEntity.class)
 public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implements IClientPlayerEntity {
-    
+
     /**
      * The network handler used to send and receive packets.
      */
@@ -61,7 +63,8 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
 
     /**
      * Creates a new MixinClientPlayerEntity. You do not need to call this.
-     * @param world - The world the player is in.
+     *
+     * @param world   - The world the player is in.
      * @param profile - The player's profile.
      */
     public MixinClientPlayerEntity(ClientWorld world, GameProfile profile) {
@@ -106,12 +109,12 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     public double getEyeHeight() {
         return super.getStandingEyeHeight();
     }
-    
+
     @Override
     public EntityPose getPose() {
         return super.getPose();
     }
-    
+
     @Override
     public boolean isNoClip() {
         return super.noClip;
@@ -134,7 +137,8 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
 
     @Override
     public boolean tryAttack(Entity target) {
-        return super.tryAttack(target);
+//TODO:        return super.tryAttack(getserverWorld(), target);
+        return false;
     }
 
     @Shadow
@@ -173,7 +177,8 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
 
     @Override
     public boolean isFallFlying() {
-        return super.isFallFlying();
+        // TODO: super.isFallFlying();
+        return false;
     }
 
     @Override
@@ -190,7 +195,7 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     public float getHeadYaw() {
         return super.headYaw;
     }
-    
+
     @Override
     public double eyeHeight() {
         return 0;
@@ -204,5 +209,15 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     @Override
     public @NotNull World getWorld() {
         return super.getWorld();
+    }
+
+    @Override
+    public boolean horizontalCollision() {
+        return super.horizontalCollision;
+    }
+
+    @Override
+    public boolean isGliding() {
+        return super.isGliding();
     }
 }

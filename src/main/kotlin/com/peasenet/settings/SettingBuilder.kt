@@ -52,7 +52,7 @@ class SettingBuilder {
     /**
      * The background color for this setting.
      */
-    private var color: Color = Colors.INDIGO
+    private var color: Color? = null
 
     /**
      * The current state of this setting.
@@ -329,7 +329,6 @@ class SettingBuilder {
         return this
     }
 
-    //TODO: Clamp
     /**
      * Sets the float value of this setting, used for sliders.
      * @param value The float value to set.
@@ -363,7 +362,7 @@ class SettingBuilder {
     /**
      * Gets the background color of this setting.
      */
-    fun getColor(): Color {
+    fun getColor(): Color? {
         return this.color
     }
 

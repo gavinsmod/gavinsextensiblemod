@@ -146,6 +146,7 @@ public class Gui {
         setHoverable(builder.isHoverable());
         setTransparency(builder.getTransparency());
         setDrawBorder(builder.getDrawBorder());
+        setParent(builder.isParent());
     }
 
     public static Gui getClickedGui() {
@@ -614,7 +615,7 @@ public class Gui {
 
     //NOTE: I wrote this so that I don't have to deal with the API in drawContext and I can just use the textRenderer directly.
     protected void drawText(DrawContext drawContext, TextRenderer textRenderer, Text text, float x, float y, Color color, boolean shadow) {
-        textRenderer.draw(text, x, y, color.getAsInt(), shadow, drawContext.getMatrices().peek().getPositionMatrix(), drawContext.getVertexConsumers(), TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+        drawContext.drawText(textRenderer, text.asOrderedText(), (int) x, (int) y, color.getAsInt(), shadow);
     }
 
     protected void drawText(DrawContext drawContext, TextRenderer textRenderer, String text, float x, float y, Color color) {

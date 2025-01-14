@@ -60,6 +60,8 @@ public class GuiScroll extends GuiDropdown {
      */
     private int page;
 
+    private boolean isDraggable = true;
+
     /**
      * Creates a new scroll like UI element.
      *
@@ -124,6 +126,7 @@ public class GuiScroll extends GuiDropdown {
         this.defaultMaxChildren = builder.getDefaultMaxChildren();
         this.maxChildren = builder.getMaxChildren();
         this.maxChildren = Math.min(children.size(), this.maxChildren);
+        this.isDraggable = builder.isDraggable();
         numPages = (int) Math.ceil((double) children.size() / (double) maxChildren);
         page = 0;
     }
@@ -193,7 +196,7 @@ public class GuiScroll extends GuiDropdown {
             drawScrollBox(matrixStack);
             drawScrollBar(matrixStack);
         }
-        if (!child.isParent() && !(child instanceof GuiCycle)) {
+        if ((!child.isParent() && !(child instanceof GuiCycle) && child.getBackgroundColor() == null)) {
             child.setBackground(GavUI.backgroundColor());
         }
         child.render(drawContext, tr, mouseX, mouseY, delta);
@@ -422,6 +425,7 @@ public class GuiScroll extends GuiDropdown {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if(!isDraggable) return false;
         if (!isOpen() && !isParent()) return false;
         for (Gui child : children) {
             if (child.isHidden()) continue;

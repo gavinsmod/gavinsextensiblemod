@@ -12,26 +12,26 @@
     "homepage": "https://github.com/gt3ch1/minecraft-mod",
     "sources": "https://github.com/gt3ch1/minecraft-mod"
   },
-    "license": "MIT",
-    "icon": "assets/gavinsmod/icon.png",
-    "environment": "*",
-    "entrypoints": {
-        "main": [
-            "com.peasenet.main.GavinsMod"
-        ],
-        "client": [
-            "com.peasenet.main.GavinsModClient"
-        ]
-    },
-    "mixins": [
-        "gavinsmod.mixins.json"
+  "license": "MIT",
+  "icon": "assets/gavinsmod/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.peasenet.main.GavinsMod"
     ],
-    "depends": {
-        "fabricloader": ">=0.13.3",
-        "fabric": "*",
-        "minecraft": ">=1.20",
-        "java": ">=21",
-        "fabric-key-binding-api-v1": "*",
-        "fabric-language-kotlin": "*"
-    }
+    "client": [
+      "com.peasenet.main.GavinsModClient"
+    ]
+  },
+  "mixins": [
+    "gavinsmod.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.9",
+    "fabric": "*",
+    "minecraft": ">=1.21.4",
+    "java": ">=21",
+    "fabric-key-binding-api-v1": "*",
+    "fabric-language-kotlin": "1.13.0"
+  }
 }

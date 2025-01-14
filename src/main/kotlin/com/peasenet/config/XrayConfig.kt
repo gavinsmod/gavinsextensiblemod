@@ -43,12 +43,16 @@ class XrayConfig : BlockListConfig<XrayConfig>({ it is ExperienceDroppingBlock }
     var blockCulling = false
         set(value) {
             field = value
-            saveConfig()
+            if(!readMode)
+                saveConfig()
         }
 
     init {
         key = "xray"
     }
+
+    @Transient
+    var readMode = false
 }
 
 
@@ -69,6 +73,7 @@ class XrayConfigGsonAdapter : TypeAdapter<XrayConfig>() {
 
     override fun read(reader: JsonReader?): XrayConfig {
         val config = XrayConfig()
+        config.readMode = true
         reader?.beginObject()
         while (reader?.hasNext() == true) {
             val token = reader.peek()
@@ -91,6 +96,7 @@ class XrayConfigGsonAdapter : TypeAdapter<XrayConfig>() {
             }
         }
         reader?.endObject()
+        config.readMode = false
         return config
     }
 

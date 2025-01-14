@@ -40,25 +40,28 @@ import com.peasenet.mods.ModCategory
 import com.peasenet.settings.SettingBuilder
 import net.minecraft.text.Text
 import java.util.function.Consumer
+import kotlin.math.max
+import kotlin.math.min
 
 /**
- * @author gt3ch1
- * @version 04-11-2023
  * A settings gui to control certain features of the mod.
+ * @author GT3CH1
+ * @since 04-11-2023
+ * @version 01-12-2025
  */
 class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
     /**
      * Creates a new GUI settings screen.
      */
 
-
     init {
         renderDropdown = GuiScroll(PointF(10f, 20f), 100, 10, Text.translatable("gavinsmod.settings.render"))
         miscDropdown = GuiScroll(PointF(115f, 20f), 100, 10, Text.translatable("gavinsmod.settings.misc"))
         guiDropdown = GuiScroll(PointF(220f, 20f), 100, 10, Text.translatable("gavinsmod.settings.gui"))
-        espDropdown = GuiScroll(PointF(10f, 130f), 110, 10, Text.translatable("gavinsmod.settings.esp"))
-        tracerDropdown = GuiScroll(PointF(125f, 130f), 115, 10, Text.translatable("gavinsmod.settings.tracer"))
-        waypointDropdown = GuiScroll(PointF(245f, 130f), 100, 10, Text.translatable("gavinsmod.mod.render.waypoints"))
+        waypointDropdown = GuiScroll(PointF(325f, 20f), 100, 10, Text.translatable("gavinsmod.mod.render.waypoints"))
+        espDropdown = GuiScroll(PointF(10f, 90f), 110, 10, Text.translatable("gavinsmod.settings.esp"))
+        tracerDropdown = GuiScroll(PointF(125f, 90f), 115, 10, Text.translatable("gavinsmod.settings.tracer"))
+        combatDropdown = GuiScroll(PointF(245f, 90f), 100, 10, Text.translatable("gavinsmod.settings.combat"))
         resetButton = GuiClick(PointF(0f, 1f), 4, 10, Text.translatable("gavinsmod.settings.reset"))
         reloadGui()
         initialized = true
@@ -100,6 +103,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
         addSettings(renderDropdown, ModCategory.RENDER)
         addSettings(miscDropdown, ModCategory.MISC)
         addSettings(guiDropdown, ModCategory.GUI)
+        addSettings(combatDropdown, ModCategory.COMBAT)
         addSettings(waypointDropdown, ModCategory.WAYPOINTS)
         if (tracerDropdown.hasChildren())
             guis.add(tracerDropdown)
@@ -113,6 +117,8 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
             guis.add(guiDropdown)
         if (waypointDropdown.hasChildren())
             guis.add(waypointDropdown)
+        if (combatDropdown.hasChildren())
+            guis.add(combatDropdown)
         guis.forEach(Consumer { g: Gui -> g.isParent = true })
         guis.add(resetButton)
     }
@@ -161,12 +167,14 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
          */
         private lateinit var miscDropdown: GuiScroll
 
+
         private lateinit var waypointDropdown: GuiScroll
 
         /**
          * The dropdown containing gui settings.
          */
         private lateinit var guiDropdown: GuiScroll
+        private lateinit var combatDropdown: GuiScroll
         private lateinit var resetButton: GuiClick
         private var resetWidth = 0f
         private var resetPos: PointF? = null
@@ -183,6 +191,15 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
             espAlpha.setCallback { Settings.getConfig<EspConfig>("esp").alpha = espAlpha.value }
             espDropdown.addElement(espAlpha.gui)
 
+            val espSizeSlider = SettingBuilder()
+                .setTitle("gavinsmod.settings.size")
+                .setValue(Settings.getConfig<EspConfig>("esp").espSize)
+                .buildSlider()
+            espSizeSlider.setCallback {
+                val size = 0.25f + (espSizeSlider.value * 0.75f)
+                Settings.getConfig<EspConfig>("esp").espSize = size
+            }
+            espDropdown.addElement(espSizeSlider.gui)
 
             val backgroundOverlay = SettingBuilder()
                 .setTitle("gavinsmod.generic.background")

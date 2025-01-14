@@ -54,7 +54,7 @@ public class MixinGameRenderer {
             ordinal = 0),
             method = "renderWorld")
     public void handleRender(RenderTickCounter tickCounter,
-                             CallbackInfo ci, @Local(ordinal = 1) Matrix4f matrix4f2,
+                             CallbackInfo ci, @Local(ordinal = 2) Matrix4f matrix4f2,
                              @Local(ordinal = 1) float tickDelta) {
         var matrixStack = new MatrixStack();
         matrixStack.multiplyPositionMatrix(matrix4f2);

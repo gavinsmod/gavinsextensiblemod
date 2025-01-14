@@ -21,28 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@file:Suppress("KotlinConstantConditions","UNCHECKED_CAST")
+@file:Suppress("KotlinConstantConditions", "UNCHECKED_CAST")
+
 package com.peasenet.util
 
 import com.mojang.blaze3d.systems.RenderSystem
+import com.peasenet.config.EspConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.main.GavinsModClient
+import com.peasenet.main.Settings
 import com.peasenet.mixinterface.ISimpleOption
+import com.peasenet.mods.esp.EspMod.Companion.config
 import com.peasenet.util.math.MathUtils
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gl.ShaderProgramKeys
+import net.minecraft.client.gl.VertexBuffer
 import net.minecraft.client.render.*
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.component.DataComponentTypes
 import net.minecraft.entity.Entity
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Box
-import net.minecraft.util.math.Direction
-import net.minecraft.util.math.MathHelper
-import net.minecraft.util.math.Vec3d
+import net.minecraft.entity.ItemEntity
+import net.minecraft.util.math.*
 import net.minecraft.world.chunk.Chunk
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL11
+
 
 /**
  * A utility class for rendering tracers and esp's.
@@ -65,7 +70,7 @@ object RenderUtils {
      * Resets the render system to the default state.
      */
     fun resetRenderSystem() {
-        RenderSystem.applyModelViewMatrix()
+//        RenderSystem.applyModelViewMatrix()
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
         RenderSystem.disableBlend()
         GL11.glDisable(GL11.GL_LINE_SMOOTH)
@@ -182,9 +187,72 @@ object RenderUtils {
      * @param stack The matrix stack to apply the offset to.
      * @param region The region to apply the offset from.
      */
-    private fun applyRegionalRenderOffset(stack: MatrixStack, region: RegionPos) {
+    fun applyRegionalRenderOffset(stack: MatrixStack, region: RegionPos) {
         val offset = region.toVec3d().subtract(getCameraPos())
         stack.translate(offset.x, offset.y, offset.z)
+    }
+
+    fun drawOutlinedBox(box: Box, matrixStack: MatrixStack) {
+        val matrix = matrixStack.peek().positionMatrix
+        val tessellator = RenderSystem.renderThreadTesselator()
+        RenderSystem.setShader(ShaderProgramKeys.POSITION)
+        val bufferBuilder = tessellator
+            .begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION)
+
+        val minX = box.minX.toFloat()
+        val minY = box.minY.toFloat()
+        val minZ = box.minZ.toFloat()
+        val maxX = box.maxX.toFloat()
+        val maxY = box.maxY.toFloat()
+        val maxZ = box.maxZ.toFloat()
+
+        bufferBuilder.vertex(matrix, minX, minY, minZ)
+        bufferBuilder.vertex(matrix, maxX, minY, minZ)
+
+        bufferBuilder.vertex(matrix, maxX, minY, minZ)
+        bufferBuilder.vertex(matrix, maxX, minY, maxZ)
+
+        bufferBuilder.vertex(matrix, maxX, minY, maxZ)
+        bufferBuilder.vertex(matrix, minX, minY, maxZ)
+
+        bufferBuilder.vertex(matrix, minX, minY, maxZ)
+        bufferBuilder.vertex(matrix, minX, minY, minZ)
+
+        bufferBuilder.vertex(matrix, minX, minY, minZ)
+        bufferBuilder.vertex(matrix, minX, maxY, minZ)
+
+        bufferBuilder.vertex(matrix, maxX, minY, minZ)
+        bufferBuilder.vertex(matrix, maxX, maxY, minZ)
+
+        bufferBuilder.vertex(matrix, maxX, minY, maxZ)
+        bufferBuilder.vertex(matrix, maxX, maxY, maxZ)
+
+        bufferBuilder.vertex(matrix, minX, minY, maxZ)
+        bufferBuilder.vertex(matrix, minX, maxY, maxZ)
+
+        bufferBuilder.vertex(matrix, minX, maxY, minZ)
+        bufferBuilder.vertex(matrix, maxX, maxY, minZ)
+
+        bufferBuilder.vertex(matrix, maxX, maxY, minZ)
+        bufferBuilder.vertex(matrix, maxX, maxY, maxZ)
+
+        bufferBuilder.vertex(matrix, maxX, maxY, maxZ)
+        bufferBuilder.vertex(matrix, minX, maxY, maxZ)
+
+        bufferBuilder.vertex(matrix, minX, maxY, maxZ)
+        bufferBuilder.vertex(matrix, minX, maxY, minZ)
+
+        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end())
+    }
+
+    fun drawOutlinedBox(box: Box, vertexBuffer: VertexBuffer) {
+        val tessellator = RenderSystem.renderThreadTesselator()
+        val bb = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION)
+        drawOutlinedBox(box, bb)
+        var built = bb.end()
+        vertexBuffer.bind()
+        vertexBuffer.upload(built)
+        VertexBuffer.unbind()
     }
 
     /**
@@ -565,9 +633,9 @@ object RenderUtils {
      */
     fun setupRenderWithShader(matrixStack: MatrixStack) {
         setupRender(matrixStack)
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR)
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-        RenderSystem.applyModelViewMatrix()
+//        RenderSystem.applyModelViewMatrix()
     }
 
     /**
@@ -617,5 +685,36 @@ object RenderUtils {
         return pos.subtract(getCameraRegionPos().toVec3d())
     }
 
+
+    fun getLerpedPos(e: Entity, partialTicks: Float): Vec3d {
+        val lerpedX = MathHelper.lerp(partialTicks.toDouble(), e.prevX, e.x) - e.x
+        val lerpedY = MathHelper.lerp(partialTicks.toDouble(), e.prevY, e.y) - e.y
+        val lerpedZ = MathHelper.lerp(partialTicks.toDouble(), e.prevZ, e.z) - e.z
+        return Vec3d(lerpedX, lerpedY, lerpedZ)
+    }
+
+    fun renderEntityEsp(
+        matrixStack: MatrixStack,
+        partialTicks: Float,
+        e: Entity,
+        color: Color,
+        alpha: Float,
+        region: RegionPos,
+        config: EspConfig = Settings.getConfig("esp")
+    ) {
+        matrixStack.push()
+        RenderSystem.setShaderColor(color.red, color.green, color.blue, alpha)
+        matrixStack.push()
+        val lerped = getLerpedPos(e, partialTicks).subtract(region.toVec3d())
+        matrixStack.translate(
+            e.x + lerped.x, e.y + lerped.y, e.z + lerped.z
+        );
+        matrixStack.scale(config.espSize / 0.25f, config.espSize / 0.25f, config.espSize / 0.25f)
+        var bb = e.boundingBox.offset(-e.x, -e.y, -e.z)
+        drawOutlinedBox(bb, matrixStack)
+
+        matrixStack.pop()
+        matrixStack.pop()
+    }
 }
 

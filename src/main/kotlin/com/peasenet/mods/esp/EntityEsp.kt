@@ -24,21 +24,16 @@
 
 package com.peasenet.mods.esp
 
-import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.gavui.color.Color
-import com.peasenet.mods.tracer.TracerMod
-import com.peasenet.mods.tracer.TracerMod.Companion
 import com.peasenet.util.RenderUtils
-import com.peasenet.util.math.MathUtils
-import net.minecraft.client.render.BufferRenderer
-import net.minecraft.client.render.GameRenderer
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormats
+import com.peasenet.util.RenderUtils.applyRegionalRenderOffset
+import net.minecraft.client.gl.GlUsage
+import net.minecraft.client.gl.VertexBuffer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
 import net.minecraft.util.math.Box
-import net.minecraft.util.math.MathHelper
-import net.minecraft.util.math.Vec3d
+import org.lwjgl.opengl.GL11
+
 
 /**
  * A class that represents an ESP mod for entities.
@@ -56,6 +51,14 @@ abstract class EntityEsp<T : Entity>(
     name: String, translationKey: String, chatCommand: String, val entityFilter: (Entity) -> Boolean
 ) : EspMod<T>(name, translationKey, chatCommand) {
 
+    private lateinit var vertexBuffer: VertexBuffer
+    override fun onEnable() {
+        vertexBuffer = VertexBuffer(GlUsage.STATIC_WRITE)
+        val bb = Box(-1.0, 0.0, -1.0, 1.0, 1.0, 1.0)
+        RenderUtils.drawOutlinedBox(bb, vertexBuffer)
+        super.onEnable()
+    }
+
     @Suppress("UNCHECKED_CAST")
     override fun onTick() {
         super.onTick()
@@ -65,15 +68,28 @@ abstract class EntityEsp<T : Entity>(
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         if (espList.isEmpty()) return
-        RenderUtils.setupRenderWithShader(matrixStack)
-        val entry = matrixStack.peek().positionMatrix
-        val bufferBuilder = RenderUtils.getBufferBuilder()
+
+        render(matrixStack, partialTicks)
+    }
+
+    protected fun render(matrixStack: MatrixStack, partialTicks: Float) {
+        val region = RenderUtils.getCameraRegionPos()
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        matrixStack.push()
+        applyRegionalRenderOffset(matrixStack, region)
         for (e in espList) {
-            RenderUtils.drawOutlinedBox(
-                partialTicks, bufferBuilder, entry, e, getColor(e), config.alpha
+            RenderUtils.renderEntityEsp(
+                matrixStack,
+                partialTicks,
+                e,
+                getColor(e),
+                config.alpha,
+                region
             )
         }
-        RenderUtils.drawBuffer(bufferBuilder, matrixStack)
+        RenderUtils.cleanupRender(matrixStack)
     }
 
 

@@ -63,6 +63,6 @@ class ModAutoCrit : CombatMod(
     private fun sendPos(x: Double, y: Double, z: Double, onGround: Boolean) {
         val player = GavinsModClient.player
 
-        player!!.getNetworkHandler().sendPacket(PositionAndOnGround(x, y, z, onGround))
+        player!!.getNetworkHandler().sendPacket(PositionAndOnGround(x, y, z, onGround, false))
     }
 }

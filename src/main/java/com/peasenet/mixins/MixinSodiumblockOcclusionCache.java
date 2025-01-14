@@ -26,7 +26,7 @@ package com.peasenet.mixins;
 
 import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.ShouldDrawSideEvent;
-import com.peasenet.util.event.data.DrawSide;
+import com.peasenet.util.event.data.DrawState;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -48,7 +48,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinSodiumblockOcclusionCache {
     @Inject(at = @At("HEAD"), method = "shouldDrawSide", cancellable = true)
     private void xray(BlockState state, BlockView world, BlockPos pos, Direction side, CallbackInfoReturnable<Boolean> cir) {
-        var drawSide = new DrawSide(pos, state);
+        var drawSide = new DrawState(state);
         var evt = new ShouldDrawSideEvent(drawSide);
         EventManager.getEventManager().call(evt);
         if (drawSide.shouldDraw() != null) {

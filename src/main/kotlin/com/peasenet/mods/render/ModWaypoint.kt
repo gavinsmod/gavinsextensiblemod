@@ -40,6 +40,7 @@ import com.peasenet.util.event.data.CameraBob
 import com.peasenet.util.listeners.CameraBobListener
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gl.ShaderProgramKeys
 import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.Text
@@ -89,7 +90,7 @@ class ModWaypoint : RenderMod(
         addSetting(openMenu)
         // get all waypoints and add them to the menu
         val waypoints = Settings.getConfig<WaypointConfig>("waypoints").getLocations().stream()
-            .sorted(Comparator.comparing(Function<Waypoint, String> { obj: Waypoint -> obj.name }))
+            .sorted(Comparator.comparing { obj: Waypoint -> obj.name ?: "" })
         for (w in waypoints.toArray()) createWaypoint(w as Waypoint)
     }
 
@@ -111,8 +112,8 @@ class ModWaypoint : RenderMod(
             Settings.getConfig<WaypointConfig>("waypoints").getLocations().filter { w -> w.canRender(playerDimension) }
         if (waypointLocs.isEmpty()) return;
         RenderUtils.setupRender(matrixStack)
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-
+//        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR)
         val entry = matrixStack.peek().positionMatrix
         val bufferBuilder = RenderUtils.getBufferBuilder()
         for (w in waypointLocs) {

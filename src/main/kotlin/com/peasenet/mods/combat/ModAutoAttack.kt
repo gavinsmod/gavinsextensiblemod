@@ -23,23 +23,47 @@
  */
 package com.peasenet.mods.combat
 
+import com.peasenet.config.AutoAttackConfig
+import com.peasenet.config.EspConfig
+import com.peasenet.gui.mod.combat.GuiAutoAttack
+import com.peasenet.main.Settings
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.PlayerUtils
 import net.minecraft.util.hit.EntityHitResult
 
 /**
  * A mod that makes the player attack the entity that it is currently looking at.
  *
- * @author gt3ch1
- * @version 03-02-2023
+ * @author GT3CH1
+ * @version 01-12-2025
+ * @since 03-02-2023
  */
 class ModAutoAttack : CombatMod(
     "Auto Attack",
     "gavinsmod.mod.combat.autoattack",
     "autoattack",
 ) {
+    init {
+        val click = SettingBuilder().setTitle(translationKey).buildClickSetting()
+        click.setCallback {
+            client.setScreen(GuiAutoAttack())
+        }
+        addSetting(click)
+    }
+
     override fun onTick() {
         val target = client.crosshairTarget() as? EntityHitResult ?: return
         val entity = target.entity
-        PlayerUtils.attackEntity(entity)
+        if (config.mobIsShown(entity.type))
+            PlayerUtils.attackEntity(entity)
+        if (!config.excludePlayers)
+            PlayerUtils.attackEntity(entity)
+    }
+
+    companion object {
+        val config: AutoAttackConfig
+            get() {
+                return Settings.getConfig("autoattack")
+            }
     }
 }

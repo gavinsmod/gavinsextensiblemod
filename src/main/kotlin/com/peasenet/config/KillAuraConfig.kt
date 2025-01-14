@@ -1,4 +1,4 @@
-/*
+﻿/*
  * MIT License
  *
  * Copyright (c) 2022-2024, Gavin C. Pease
@@ -21,26 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.util.event.data
 
-import net.minecraft.block.BlockState
-import net.minecraft.util.math.BlockPos
+package com.peasenet.config
+
+import com.peasenet.config.commons.MobAttackFilterConfig
+import com.peasenet.main.GavinsModClient
+import net.minecraft.entity.EntityType
+import net.minecraft.item.SpawnEggItem
 
 /**
- * @author gt3ch1
- * @version 03-02-2023
+ * The configuration settings for [ModKillAura][com.peasenet.mods.combat.ModKillAura].
  *
+ * @see KillAuraConfig
+ * @see MobAttackFilterConfig
  *
- * Draw side data class for the draw side event.
- * @see com.peasenet.util.event.ShouldDrawSideEvent
+ * @author GT3CH1
+ * @version 01-12-2025
+ * @since 01-12-2025
  */
-class DrawSide(val pos: BlockPos, val state: BlockState) : Cancellable() {
-    private var shouldDraw: Boolean? = null
-    fun setShouldDraw(shouldDraw: Boolean) {
-        this.shouldDraw = shouldDraw
-    }
-
-    fun shouldDraw(): Boolean? {
-        return shouldDraw
+class KillAuraConfig : MobAttackFilterConfig<KillAuraConfig>() {
+    init {
+        key = "killaura"
     }
 }

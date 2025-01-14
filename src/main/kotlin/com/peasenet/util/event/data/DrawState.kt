@@ -21,33 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.peasenet.util.event.data
 
-package com.peasenet.mixins;
-
-import com.peasenet.util.event.EventManager;
-import com.peasenet.util.event.ShouldDrawSideEvent;
-import com.peasenet.util.event.data.DrawState;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.Direction;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import net.minecraft.block.BlockState
+import net.minecraft.util.math.BlockPos
 
 /**
  * @author gt3ch1
- * @version 01/01/2023
+ * @version 03-02-2023
+ *
+ *
+ * Draw side data class for the draw side event.
+ * @see com.peasenet.util.event.ShouldDrawSideEvent
  */
-@Mixin(Block.class)
-public class MixinBlock {
-    @Inject(at = @At("RETURN"), method = "shouldDrawSide", cancellable = true)
-    private static void xray(BlockState state, BlockState otherState, Direction side, CallbackInfoReturnable<Boolean> cir) {
-        var drawSide = new DrawState(state);
-        var evt = new ShouldDrawSideEvent(drawSide);
-        EventManager.getEventManager().call(evt);
-        if (drawSide.shouldDraw() != null) {
-            cir.setReturnValue(drawSide.shouldDraw());
-        }
+class DrawState(val state: BlockState) : Cancellable() {
+    private var shouldDraw: Boolean? = null
+    fun setShouldDraw(shouldDraw: Boolean) {
+        this.shouldDraw = shouldDraw
+    }
+
+    fun shouldDraw(): Boolean? {
+        return shouldDraw
     }
 }
