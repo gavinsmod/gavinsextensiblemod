@@ -1,6 +1,7 @@
 package com.peasenet.gui.mod
 
 import com.peasenet.config.TracerEspConfig
+import com.peasenet.gavui.GavUI
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiClick
@@ -35,6 +36,7 @@ class GuiItemEspTracerConfig(
     private var filterDropdown: GuiScroll
     private var addFilterButton: GuiClick
     private var colorSetting: ColorSetting
+
 
     private var box: Gui
 
@@ -77,7 +79,7 @@ class GuiItemEspTracerConfig(
         }
         startY += 12f
         filterCheckbox =
-            GuiBuilder().setTitle("gavinsmod.settings.esp.item.filtering").setHeight(10f).setTopLeft(startX, startY)
+            GuiBuilder().setTitle("gavinsmod.settings.filter.custom").setHeight(10f).setTopLeft(startX, startY)
                 .setWidth(screenWidth - padding).buildToggle()
         startY += 12f
         filterCheckbox.setCallback {
@@ -86,7 +88,7 @@ class GuiItemEspTracerConfig(
         }
         filterCheckbox.setState(config.useItemEspFilter)
         addFilterButton =
-            GuiBuilder().setTitle("gavinsmod.settings.esp.item.addFilter").setTopLeft(startX, startY).setHeight(10f)
+            GuiBuilder().setTitle("gavinsmod.settings.filter.add").setTopLeft(startX, startY).setHeight(10f)
                 .setWidth(screenWidth - padding).setCallback {
                     minecraftClient.setScreen(
                         GuiItemFilter(
@@ -101,11 +103,12 @@ class GuiItemEspTracerConfig(
         var filterChildren: ArrayList<Gui> = ArrayList()
         for (filter in config.itemFilterList) {
             val guiClick = GuiBuilder().setTitle(filter.filterName).setHeight(10f).setWidth(100f)
+                .setBackgroundColor(if (filter.enabled) GavUI.enabledColor() else GavUI.backgroundColor())
                 .setCallback { minecraftClient.setScreen(GuiItemFilter(this, filter, config)) }.buildClick()
             filterChildren.add(guiClick)
         }
         filterDropdown =
-            GuiBuilder().setTitle("gavinsmod.settings.esp.item.filterList").setTopLeft(startX, startY).setMaxChildren(8)
+            GuiBuilder().setTitle("gavinsmod.settings.filters").setTopLeft(startX, startY).setMaxChildren(8)
                 .setWidth(screenWidth - padding).setChildren(filterChildren).buildScroll()
     }
 }

@@ -123,6 +123,12 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
             saveConfig()
         }
 
+    var espSize: Float = 0.5f
+        set(value) {
+            field = value.coerceAtLeast(0.0f).coerceAtMost(1.0f)
+            saveConfig()
+        }
+
     /**
      * Whether hostile mobs are shown. Default value is true.
      */

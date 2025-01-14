@@ -186,4 +186,12 @@ object PlayerUtils {
         if (withPrefix) newMessage = Mod.GAVINS_MOD_STRING + newMessage
         if (sendMessage) GavinsModClient.player!!.sendMessage(Text.literal(newMessage), false)
     }
+
+    @JvmStatic
+    fun sendMessage(message: Text, withPrefix: Boolean) {
+        val sendMessage = Settings.getConfig<MiscConfig>("misc").isMessages
+        var newMessage = message.string
+        if (withPrefix) newMessage = Mod.GAVINS_MOD_STRING + newMessage
+        if (sendMessage) GavinsModClient.player!!.sendMessage(Text.literal(newMessage), false)
+    }
 }

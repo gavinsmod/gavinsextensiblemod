@@ -4,6 +4,7 @@ import com.peasenet.config.TracerEspConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiClick
+import com.peasenet.gavui.GuiToggle
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GavUISettings
@@ -45,7 +46,7 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
     /**
      * The height of the gui.
      */
-    var height = 115
+    var height = 98
 
     /**
      * The offset and padding in the x and y planes.
@@ -54,7 +55,7 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
     private var paddingX = 0
     private var offsetY = 0
     private var paddingY = 0
-    private var padding = 5
+    private var padding = 2
     private var box: Gui? = null
 
     private var itemEspFilter: ItemEntityFilter = filter
@@ -77,25 +78,32 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
      */
     private lateinit var deleteSettings: GuiClick
 
+    private lateinit var searchLore: ToggleSetting
+    private lateinit var searchName: ToggleSetting
+
     private fun setup() {
         parent = parentScreen
         offsetX = minecraftClient.window.scaledWidth / 2 - width / 2
         offsetY = minecraftClient.window.scaledHeight / 2 - height / 2
         paddingX = offsetX + padding
         paddingY = offsetY + padding
+        var elementWidth = width - padding * 2
         box = GuiBuilder().setTopLeft(PointF(offsetX.toFloat(), offsetY.toFloat())).setWidth(width.toFloat())
             .setHeight(height.toFloat()).setTitle(Text.literal("")).setHoverable(false).build()
+
+        offsetY += 12
+        val filteredString = itemEspFilter.filterString
         filterName = TextFieldWidget(
             minecraftClient.textRenderer,
             offsetX + padding,
-            offsetY + 24,
-            130,
+            offsetY,
+            elementWidth,
             12,
             Text.literal(itemEspFilter.filterName)
         )
-        val filteredString = itemEspFilter.filterString
+        offsetY += 24
         filterString = TextFieldWidget(
-            minecraftClient.textRenderer, offsetX + padding, offsetY + 60, 130, 12, Text.literal(filteredString)
+            minecraftClient.textRenderer, offsetX + padding, offsetY, elementWidth, 12, Text.literal(filteredString)
         )
 //        focused = filterName
         filterName.text = itemEspFilter.filterName
@@ -103,28 +111,46 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
 
         addSelectableChild(filterName)
         addSelectableChild(filterString)
-
+        offsetY += 14
         filterEnable =
-            SettingBuilder().setTitle("gavinsmod.settings.enabled").setTopLeft(PointF(paddingX, offsetY + 80))
+            SettingBuilder().setTitle("gavinsmod.settings.enabled").setTopLeft(PointF(paddingX, offsetY))
+                .setWidth(elementWidth)
                 .setHoverable(true).buildToggleSetting()
         filterEnable.value = itemEspFilter.enabled
-        filterEnable.gui.width = 130.toFloat()
-
+        filterEnable.gui.width = elementWidth.toFloat()
+        offsetY += 12
+        searchLore =
+            SettingBuilder().setTitle("gavinsmod.settings.searchLore")
+                .setTopLeft(PointF(paddingX, offsetY))
+                .setHoverable(true).buildToggleSetting()
+        searchLore.value = itemEspFilter.searchLore
+        searchLore.gui.width = elementWidth.toFloat()
+        offsetY += 12
+        searchName =
+            SettingBuilder().setTitle("gavinsmod.settings.searchName").setTopLeft(PointF(paddingX, offsetY))
+                .setHoverable(true)
+                .buildToggleSetting()
+        searchName.value = itemEspFilter.searchCustomName
+        searchName.gui.width = elementWidth.toFloat()
+        offsetY += 12
         // save, cancel, delete
+        var threeButtonWidth = (elementWidth / 3).toFloat() + (-padding * 0.5f)
         saveSettings =
-            GuiBuilder().setTopLeft(PointF(paddingX, offsetY + 100)).setTitle("gavinsmod.settings.save").setWidth(40f)
+            GuiBuilder().setTopLeft(PointF(paddingX, offsetY)).setTitle("gavinsmod.settings.save")
+                .setWidth(threeButtonWidth)
                 .setHeight(10f).setBackgroundColor(Colors.GREEN).buildClick()
-
         saveSettings.setCallback {
             val tmpFilter = ItemEntityFilter(
                 filterName.text,
                 filterString.text,
+                searchName.value,
+                searchLore.value,
                 filterEnable.value,
                 itemEspFilter.uuid
             )
             if (!ItemEntityFilter.validate(tmpFilter)) {
                 PlayerUtils.sendMessage(
-                    "Invalid filter! Please ensure that the name and filter string are not empty and valid.",
+                    Text.translatable("gavinsmod.settings.filter.invalid"),
                     true
                 )
                 config.itemFilterList.removeIf { it.uuid == tmpFilter.uuid }
@@ -134,9 +160,12 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
                 minecraftClient.setScreen(parent)
                 return@setCallback
             }
-            itemEspFilter.filterString = filterString.text
             itemEspFilter.filterName = filterName.text
+            itemEspFilter.filterString = filterString.text
             itemEspFilter.enabled = filterEnable.value
+            itemEspFilter.searchCustomName = searchName.value
+            itemEspFilter.searchLore = searchLore.value
+
             config.itemFilterList.removeIf { it.uuid == itemEspFilter.uuid }
             config.itemFilterList.add(itemEspFilter)
             config.saveConfig()
@@ -145,13 +174,15 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
         }
 
         cancelSettings =
-            GuiBuilder().setTopLeft(PointF(paddingX + 45, offsetY + 100)).setTitle("gavinsmod.settings.cancel")
-                .setWidth(40f).setHeight(10f).setBackgroundColor(Colors.YELLOW).setCallback {
+            GuiBuilder().setTopLeft(PointF(paddingX + threeButtonWidth + padding, offsetY.toFloat()))
+                .setTitle("gavinsmod.settings.cancel")
+                .setWidth(threeButtonWidth).setHeight(10f).setBackgroundColor(Colors.YELLOW).setCallback {
                     minecraftClient.setScreen(parent)
                 }.buildClick()
         deleteSettings =
-            GuiBuilder().setTopLeft(PointF(paddingX + 90, offsetY + 100)).setTitle("gavinsmod.settings.delete")
-                .setWidth(40f).setHeight(10f).setBackgroundColor(Colors.RED).setCallback {
+            GuiBuilder().setTopLeft(PointF(paddingX + (threeButtonWidth + padding) * 2, offsetY.toFloat()))
+                .setTitle("gavinsmod.settings.delete")
+                .setWidth(threeButtonWidth).setHeight(10f).setBackgroundColor(Colors.RED).setCallback {
                     config.itemFilterList.removeIf { it.uuid == itemEspFilter.uuid }
                     config.saveConfig()
                     parent = GuiItemEspTracerConfig(config)
@@ -161,6 +192,8 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
         guis.add(saveSettings)
         guis.add(cancelSettings)
         guis.add(deleteSettings)
+        guis.add(searchLore.gui)
+        guis.add(searchName.gui)
     }
 
     init {
@@ -173,19 +206,19 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
         box!!.render(drawContext, textRenderer, mouseX, mouseY, delta)
 
         super.render(drawContext, mouseX, mouseY, delta)
-        offsetY += 12
+        offsetY += 2
         drawContext.drawText(
             textRenderer,
-            Text.of("Filter Name"),
+            Text.translatable("gavinsmod.settings.name"),
             offsetX + padding,
             offsetY,
             GavUISettings.getColor("gui.color.foreground").asInt,
             false,
         )
-        offsetY += 36
+        offsetY += 24
         drawContext.drawText(
             textRenderer,
-            Text.of("Filter String"),
+            Text.translatable("gavinsmod.settings.filter"),
             offsetX + padding,
             offsetY,
             GavUISettings.getColor("gui.color.foreground").asInt,

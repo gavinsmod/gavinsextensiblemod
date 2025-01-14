@@ -26,6 +26,8 @@ import java.util.regex.PatternSyntaxException
 class ItemEntityFilter(
     var filterName: String = "",
     var filterString: String,
+    var searchCustomName: Boolean = true,
+    var searchLore: Boolean = true,
     var enabled: Boolean = true,
     val uuid: UUID = UUID.randomUUID()
 ) {
@@ -43,7 +45,6 @@ class ItemEntityFilter(
             try {
                 Regex(filter.filterString)
             } catch (e: PatternSyntaxException) {
-                PlayerUtils.sendMessage("Invalid regex! Disabling filter: ${filter.filterName}", true)
                 filter.enabled = false
                 return false
             }
@@ -72,15 +73,15 @@ class ItemEntityFilter(
                 "Invalid regex! Did you change something manually and that broke it?", filterString, 0
             )
         }
-        if (customName != null) {
+        if (customName != null && searchCustomName) {
             val content = (customName.toString())
             matches = content.contains(filterString)
-            matches = matches || (regex?.containsMatchIn(content) ?: false)
+            matches = matches || regex.containsMatchIn(content)
         }
-        if (lore != null) {
+        if (lore != null && searchLore) {
             matches = matches || lore.lines.any { it.content.toString().contains(filterString) }
             matches = matches || lore.lines.any {
-                regex?.containsMatchIn((it.content.toString())) ?: false
+                regex.containsMatchIn((it.content.toString()))
             }
         }
         return matches
