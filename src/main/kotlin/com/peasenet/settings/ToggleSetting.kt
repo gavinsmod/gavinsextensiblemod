@@ -38,7 +38,7 @@ class ToggleSetting(builder: SettingBuilder) : Setting() {
      * The gui element that is used to display this toggle setting.
      */
     override var gui: GuiToggle = GuiBuilder()
-        .setWidth(90F)
+        .setWidth(builder.getWidth())
         .setHeight(10F)
         .setTitle(builder.getTitle())
         .setIsOn(builder.getState())

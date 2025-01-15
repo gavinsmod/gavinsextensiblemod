@@ -24,74 +24,51 @@
 package com.peasenet.mods.render.waypoints
 
 import com.peasenet.gavui.color.Color
+import com.peasenet.gavui.color.Colors
 import com.peasenet.util.Dimension
-import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vec3i
+import java.util.UUID
 
 /**
- * @author gt3ch1
- * @version 03-23-2023
  * A waypoint is a three-dimensional integer coordinate with a name, color, and can either have
  * an ESP, a tracer, or both.
+ *
+ * @param coordinates The x, y, z coordinates of the waypoint.
+ * @param name The name of the waypoint.
+ * @param dimensions The list of dimensions this waypoint will be rendered in.
+ * @param color The color of this waypoint.
+ * @param isEnabled Whether this waypoint should be rendered.
+ * @param renderEsp Whether to render this waypoints esp.
+ * @param renderTracer Whether to render this waypoints tracer.
+ * @param uuid The waypoints UUID. Defaults to a randomly generated UUID.
+ *
+ * @see com.peasenet.config.WaypointConfig
+ * @see com.peasenet.gui.mod.waypoint.GuiWaypoint
+ * @see com.peasenet.mods.render.waypoints
+ *
+ * @author GT3CH1
+ * @version 01-14-2025
+ * @since 03-23-2023
  */
-class Waypoint(vec: Vec3i) {
-    @JvmField
-    var x: Int = vec.x
-
-    @JvmField
-    var y: Int = vec.y
-
-    @JvmField
-    var z: Int = vec.z
-    var name: String? = null
-        private set
-
-    private var dimension: ArrayList<String>? = null
-
-    @JvmField
-    var color: Color? = null
-    var isEnabled = false
-    var isTracerEnabled = false
-    var isEspEnabled = false
-
+class Waypoint(
+    val coordinates: Vec3i = Vec3i.ZERO,
+    val name: String = "",
+    val dimensions: ArrayList<String> = ArrayList(),
+    val color: Color = Colors.WHITE,
+    val isEnabled: Boolean = true,
+    val renderEsp: Boolean = true,
+    val renderTracer: Boolean = true,
+    val uuid: UUID = UUID.randomUUID()
+) {
     fun addDimension(dim: Dimension) {
-        if (dimension == null)
-            dimension = ArrayList()
-        this.dimension!!.add(dim.dimension)
+        if (hasDimension(dim)) return
+        dimensions.add(dim.dimension)
     }
 
-    fun hasDimension(dim: Dimension): Boolean {
-        return dimension != null && dimension!!.contains(dim.dimension)
-    }
+    fun hasDimension(dim: Dimension): Boolean = dimensions.any { it == dim.dimension }
+    fun hasDimensions(): Boolean = dimensions.isNotEmpty()
+    override fun equals(other: Any?): Boolean = this.uuid == (other as Waypoint).uuid
+    override fun hashCode(): Int = this.uuid.hashCode()
+    fun canRender(dim: Dimension): Boolean = dimensions.contains(dim.dimension) && isEnabled
 
-    fun clearDimensions() {
-        dimension = ArrayList()
-    }
-
-    fun hasDimensions(): Boolean {
-        return dimension != null && dimension!!.isNotEmpty()
-    }
-
-    fun setName(name: String) {
-        var name1 = name
-        if (name1.isEmpty()) name1 = "Waypoint"
-        this.name = name1
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (other == null) return false
-        if (other !is Waypoint) return false
-        return other.hashCode() == hashCode()
-    }
-
-    override fun hashCode(): Int {
-        return name.hashCode()
-    }
-
-    fun canRender(dim: Dimension): Boolean {
-        return dimension != null && dimension!!.contains(dim.dimension) && isEnabled
-    }
-
-    val pos: Vec3d
-        get() = Vec3d(x.toDouble(), y.toDouble(), z.toDouble())
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * MIT License
  *
  * Copyright (c) 2022-2024, Gavin C. Pease
@@ -21,55 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.config
 
-import com.peasenet.mods.render.waypoints.Waypoint
+package com.peasenet.extensions
+
+import net.minecraft.util.math.Vec3d
+import net.minecraft.util.math.Vec3i
 
 /**
- * The configuration for waypoints.
  *
- * @author gt3ch1
- * @version 03-02-2023
+ * @author GT3CH1
+ * @version 01-14-2025
+ * @since 01-14-2025
  */
-class WaypointConfig : Config<WaypointConfig>() {
-    /**
-     * The list of waypoints.
-     */
-    private var waypoints: ArrayList<Waypoint>
-
-    init {
-        key = "waypoints"
-        waypoints = ArrayList()
-    }
-
-    /**
-     * Adds/updates a waypoint to the list.
-     *
-     * @param w - The waypoint to add.
-     */
-    fun addWaypoint(w: Waypoint) {
-        waypoints.removeIf { it.uuid == w.uuid }
-        waypoints.add(w)
-        saveConfig()
-    }
-
-    /**
-     * Removes a waypoint from the list.
-     *
-     * @param w - The waypoint to remove.
-     */
-    fun removeWaypoint(w: Waypoint) {
-        waypoints.removeIf { it.uuid == w.uuid }
-        saveConfig()
-    }
-
-    /**
-     * Gets the list of waypoints.
-     *
-     * @return The list of waypoints.
-     */
-    fun getLocations(): ArrayList<Waypoint> {
-        return waypoints
-    }
-
+fun Vec3i.toVec3d(): Vec3d {
+    return Vec3d(x.toDouble(), y.toDouble(), z.toDouble())
 }
