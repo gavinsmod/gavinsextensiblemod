@@ -39,6 +39,7 @@ enum class ChatCommand(val chatCommand: String) {
     ChestEsp("chestesp"),
     ItemEsp("itemesp"),
     PlayerEsp("playeresp"),
+    SignEsp("signesp"),
     FurnaceEsp("furnaceesp"),
     MobEsp("mobesp"),
     FpsCounter("fpscounter"),

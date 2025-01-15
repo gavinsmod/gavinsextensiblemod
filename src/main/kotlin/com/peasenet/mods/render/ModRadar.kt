@@ -50,8 +50,9 @@ import kotlin.math.sqrt
 /**
  * A mod that allows for a radar-like view of the world.
  *
- * @author gt3ch1
- * @version 04-11-2023
+ * @author GT3CH1
+ * @version 01-15-2025
+ * @since 04-11-2023
  */
 class ModRadar : RenderMod(
     "Radar",
@@ -80,8 +81,7 @@ class ModRadar : RenderMod(
     }
 
     override fun onRenderInGameHud(drawContext: DrawContext, delta: Float) {
-        var canRender = isActive && !Mods.isActive("gui") && !Mods.isActive("settings")
-        canRender = canRender || GuiRadar.visible
+        val canRender = isActive && !Mods.isActive("gui") && !Mods.isActive("settings")
         if (!canRender) return
         val stack = drawContext.matrices
         RadarConfig.x = client.window.scaledWidth - config.size - 10
@@ -100,7 +100,7 @@ class ModRadar : RenderMod(
     /**
      * Draws all applicable entities on the radar.
      *
-     * @param stack - The matrix stack.
+     * @param stack The matrix stack.
      */
     private fun drawEntitiesOnRadar(stack: MatrixStack) {
         val player = client.getPlayer()
@@ -121,6 +121,13 @@ class ModRadar : RenderMod(
         }
     }
 
+    /**
+     * Gets the color for the entity on the radar.
+     *
+     * @param entity The entity to get the color for.
+     *
+     * @return The color for the entity on the radar. Defaults to white.
+     */
     private fun getColorFromEntity(entity: Entity): Color {
         if (entity is PlayerEntity) return config.playerColor
         if (entity is ItemEntity) return config.itemColor
@@ -131,7 +138,7 @@ class ModRadar : RenderMod(
     /**
      * Gets the scaled position relative to the radar.
      *
-     * @param location - The location to scale.
+     * @param location The location to scale.
      * @return A scaled position relative to the radar, clamped to the radar.
      */
     private fun getScaledPos(location: PointF): PointF {
@@ -149,7 +156,7 @@ class ModRadar : RenderMod(
     /**
      * Clamps the given point to the edges of the radar.
      *
-     * @param point - The point to clamp.
+     * @param point The point to clamp.
      * @return The clamped point.
      */
     private fun clampPoint(point: PointF): PointF {
@@ -176,7 +183,7 @@ class ModRadar : RenderMod(
     /**
      * Whether the given entity can be rendered on the radar.
      *
-     * @param entity - The entity to check.
+     * @param entity The entity to check.
      * @return Whether the given entity can be rendered on the radar.
      */
     private fun canRenderEntity(entity: Entity): Boolean {
@@ -190,8 +197,8 @@ class ModRadar : RenderMod(
     /**
      * Gets the point relative to the waypoint and the player's yaw.
      *
-     * @param loc - The waypoint to get the position of.
-     * @param yaw - The yaw of the player.
+     * @param loc The waypoint to get the position of.
+     * @param yaw The yaw of the player.
      * @return A new PointF with the x and z values.
      */
     private fun getPointRelativeToYaw(loc: Vec3d?, yaw: Float): PointF {
@@ -205,25 +212,24 @@ class ModRadar : RenderMod(
     companion object {
 
 
-        val config: RadarConfig
-            get() {
-                return Settings.getConfig<RadarConfig>("radar")
-            }
+        /**
+         * The configuration for this mod.
+         */
+        val config: RadarConfig = Settings.getConfig("radar")
 
-        val pointOffset: Float
-            /**
-             * Calculates the offset to draw the points on the radar.
-             *
-             * @return The offset to draw the points on the radar.
-             */
-            get() = if (config.pointSize == 1) 0F else (config.pointSize - 1) / 2F
+        /**
+         * Calculates the offset to draw the points on the radar.
+         *
+         * @return The offset to draw the points on the radar.
+         */
+        val pointOffset: Float = if (config.pointSize == 1) 0F else (config.pointSize - 1) / 2F
 
         /**
          * Calculates the position and distance of the given coordinates from the player.
          *
-         * @param yaw - The player yaw.
-         * @param x   - The x coordinate.
-         * @param z   - The z coordinate.
+         * @param yaw The player yaw.
+         * @param x   The x coordinate.
+         * @param z   The z coordinate.
          * @return The position and distance of the given coordinates from the player.
          */
         private fun calculateDistance(yaw: Float, x: Double, z: Double): PointF {

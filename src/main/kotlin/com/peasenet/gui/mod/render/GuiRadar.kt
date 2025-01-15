@@ -30,14 +30,24 @@ import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gui.GuiElement
 import com.peasenet.main.GavinsMod
+import com.peasenet.main.Mods
 import com.peasenet.main.Settings
+import com.peasenet.mods.render.ModRadar
 import com.peasenet.settings.*
+import com.peasenet.util.ChatCommand
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Text
 
 /**
+ * A GUI that allows the user to modify settings for the radar mod. This interface will show a preview of what the
+ * radar will look like when the user activates the mod.
  *
- * @author gt3ch1
- * @version 06/18/2023
+ * @see ModRadar
+ * @see GuiElement
+ *
+ * @author GT3CH1
+ * @version 01-15-2025
+ * @since 06/18/2023
  */
 class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
 
@@ -67,7 +77,7 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
     private var paddingX: Float = 0.0f
     private var paddingY: Float = 0.0f
 
-    companion object {
+    private companion object {
         const val PADDING: Float = 5.0f
         var settings: ArrayList<Setting> = ArrayList()
         var visible: Boolean = false
@@ -88,15 +98,9 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         offsetY = client!!.window.scaledHeight / 2 - (this.height / 2)
         paddingX = PADDING + PADDING
         paddingY = offsetY + PADDING
-        box = GuiBuilder()
-            .setWidth(width)
-            .setHeight(height)
-            .setTopLeft(PADDING, offsetY.toFloat())
-            .setHoverable(false)
-            .setTransparency(0.9f)
-            .build()
+
         val gapY = 12f
-        var pos = PointF(paddingX, paddingY)
+        var pos = PointF(paddingX, paddingY + gapY)
 
         colorTitle = GuiBuilder()
             .setHeight(12)
@@ -106,18 +110,21 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
             .setTransparency(0.0f)
             .setDrawBorder(false)
             .build()
-
-        pos = pos.add(0f, gapY)
-
+        box = GuiBuilder()
+            .setWidth(width - 161 - paddingX * 2)
+            .setHeight(height - (81 - paddingY * 1 + PADDING))
+            .setTopLeft(paddingX - PADDING, colorTitle.y - paddingY)
+            .setHoverable(false)
+            .setTransparency(0.5f)
+            .build()
+        pos = pos.add(0f, gapY * 4)
         playerEntityColor = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.player.color")
             .setColor(Settings.getConfig<RadarConfig>("radar").playerColor)
             .setTopLeft(pos)
             .buildColorSetting()
         playerEntityColor.setCallback { Settings.getConfig<RadarConfig>("radar").playerColor = playerEntityColor.color }
-
         pos = pos.add(playerEntityColor.gui.width + PADDING * 2, 0f)
-
         hostileEntityColor = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.mob.hostile.color")
             .setColor(Settings.getConfig<RadarConfig>("radar").hostileMobColor)
@@ -286,7 +293,7 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         guis.forEach {
             it.width = (maxWidth + 10).toFloat()
         }
-        pos = PointF(paddingX, paddingY + gapY)
+        pos = PointF(paddingX, paddingY + gapY * 2)
         playerEntityColor.gui.position = pos
         pos = pos.add(playerEntityColor.gui.width + PADDING, 0f)
         hostileEntityColor.gui.position = pos
@@ -347,9 +354,18 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         updateScaleText(pointSizeSetting, Settings.getConfig<RadarConfig>("radar").pointSize)
     }
 
+    /**
+     * Callback for update the scale text.
+     */
     private fun updateScaleText(setting: ClickSetting, value: Int) {
         setting.gui.title =
             (Text.translatable(setting.gui.translationKey).append(Text.literal(" (%s)".format(value))))
+    }
+
+    override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+        super.render(drawContext, mouseX, mouseY, delta)
+        val mod = Mods.getMod<ModRadar>(ChatCommand.Radar)
+        mod.onRenderInGameHud(drawContext, delta)
     }
 
 }

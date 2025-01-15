@@ -37,6 +37,7 @@ import com.peasenet.mods.misc.ModGuiTextOverlay
 import com.peasenet.mods.movement.*
 import com.peasenet.mods.render.*
 import com.peasenet.mods.tracer.*
+import com.peasenet.util.ChatCommand
 
 
 /**
@@ -73,6 +74,7 @@ class Mods {
         GavinsMod.addMod(ModAutoCrit())
         GavinsMod.addMod(ModKillAura())
         GavinsMod.addMod(ModBeehiveEsp())
+        GavinsMod.addMod(ModSignEsp())
         GavinsMod.addMod(ModChestEsp())
         GavinsMod.addMod(ModEntityItemEsp())
         GavinsMod.addMod(ModEntityPlayerEsp())
@@ -147,6 +149,12 @@ class Mods {
             if (modMap[chatCommand] == null)
                 return null;
             return modMap[chatCommand]!!
+        }
+
+        @JvmStatic
+        fun <T : Mod?> getMod(chatCommand: ChatCommand): T {
+            var mod = getMod(chatCommand.chatCommand)
+            return mod as T
         }
 
         /**
