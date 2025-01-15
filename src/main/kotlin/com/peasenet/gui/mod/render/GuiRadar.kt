@@ -33,7 +33,9 @@ import com.peasenet.main.GavinsMod
 import com.peasenet.main.Mods
 import com.peasenet.main.Settings
 import com.peasenet.mods.render.ModRadar
-import com.peasenet.settings.*
+import com.peasenet.settings.ClickSetting
+import com.peasenet.settings.Setting
+import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.ChatCommand
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Text
@@ -51,26 +53,7 @@ import net.minecraft.text.Text
  */
 class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
 
-    private lateinit var playerEntityColor: ColorSetting
-    private lateinit var hostileEntityColor: ColorSetting
-    private lateinit var peacefulEntityColor: ColorSetting
-    private lateinit var entityItemColor: ColorSetting
-    private lateinit var backgroundColor: ColorSetting
-    private lateinit var scaleSetting: ClickSetting
-    private lateinit var pointSizeSetting: ClickSetting
-    private lateinit var peacefulEntityToggle: ToggleSetting
-    private lateinit var hostileEntityToggle: ToggleSetting
-    private lateinit var itemToggle: ToggleSetting
-    private lateinit var playerEntityToggle: ToggleSetting
-    private lateinit var backgroundAlpha: SlideSetting
-    private lateinit var pointAlpha: SlideSetting
-
     private lateinit var box: Gui
-
-    private lateinit var colorTitle: Gui
-    private lateinit var scaleTitle: Gui
-    private lateinit var toggleTitle: Gui
-    private lateinit var alphaTitle: Gui
 
     private var offsetX: Int = 0
     private var offsetY: Int = 0
@@ -81,6 +64,7 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         const val PADDING: Float = 5.0f
         var settings: ArrayList<Setting> = ArrayList()
         var visible: Boolean = false
+        val config = Settings.getConfig<RadarConfig>(ChatCommand.Radar.chatCommand)
     }
 
     override fun close() {
@@ -102,7 +86,7 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         val gapY = 12f
         var pos = PointF(paddingX, paddingY + gapY)
 
-        colorTitle = GuiBuilder()
+        val colorTitle = GuiBuilder()
             .setHeight(12)
             .setTopLeft(pos)
             .setHoverable(false)
@@ -118,54 +102,54 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
             .setTransparency(0.5f)
             .build()
         pos = pos.add(0f, gapY * 4)
-        playerEntityColor = SettingBuilder()
+        val playerEntityColor = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.player.color")
-            .setColor(Settings.getConfig<RadarConfig>("radar").playerColor)
+            .setColor(config.playerColor)
             .setTopLeft(pos)
             .buildColorSetting()
-        playerEntityColor.setCallback { Settings.getConfig<RadarConfig>("radar").playerColor = playerEntityColor.color }
+        playerEntityColor.setCallback { config.playerColor = playerEntityColor.color }
         pos = pos.add(playerEntityColor.gui.width + PADDING * 2, 0f)
-        hostileEntityColor = SettingBuilder()
+        val hostileEntityColor = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.mob.hostile.color")
-            .setColor(Settings.getConfig<RadarConfig>("radar").hostileMobColor)
+            .setColor(config.hostileMobColor)
             .setTopLeft(pos)
             .buildColorSetting()
         hostileEntityColor.setCallback {
-            Settings.getConfig<RadarConfig>("radar").hostileMobColor = hostileEntityColor.color
+            config.hostileMobColor = hostileEntityColor.color
         }
 
         pos = PointF(paddingX, pos.y + gapY)
 
-        peacefulEntityColor = SettingBuilder()
+        val peacefulEntityColor = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.mob.peaceful.color")
-            .setColor(Settings.getConfig<RadarConfig>("radar").peacefulMobColor)
+            .setColor(config.peacefulMobColor)
             .setTopLeft(pos)
             .buildColorSetting()
         peacefulEntityColor.setCallback {
-            Settings.getConfig<RadarConfig>("radar").peacefulMobColor = peacefulEntityColor.color
+            config.peacefulMobColor = peacefulEntityColor.color
         }
 
         pos = pos.add(peacefulEntityColor.gui.width + PADDING * 2, 0f)
 
-        entityItemColor = SettingBuilder()
+        val entityItemColor = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.item.color")
-            .setColor(Settings.getConfig<RadarConfig>("radar").itemColor)
+            .setColor(config.itemColor)
             .setTopLeft(pos)
             .buildColorSetting()
-        entityItemColor.setCallback { Settings.getConfig<RadarConfig>("radar").itemColor = entityItemColor.color }
+        entityItemColor.setCallback { config.itemColor = entityItemColor.color }
 
         pos = PointF(paddingX, pos.y + gapY)
 
-        backgroundColor = SettingBuilder()
+        val backgroundColor = SettingBuilder()
             .setTitle("gavinsmod.settings.background.color")
-            .setColor(Settings.getConfig<RadarConfig>("radar").backgroundColor)
+            .setColor(config.backgroundColor)
             .setTopLeft(pos)
             .buildColorSetting()
-        backgroundColor.setCallback { Settings.getConfig<RadarConfig>("radar").backgroundColor = backgroundColor.color }
+        backgroundColor.setCallback { config.backgroundColor = backgroundColor.color }
 
         pos = PointF(paddingX, pos.y + gapY)
 
-        scaleTitle = GuiBuilder()
+        val scaleTitle = GuiBuilder()
             .setHeight(12)
             .setTopLeft(pos)
             .setHoverable(false)
@@ -177,23 +161,29 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         pos = pos.add(0f, gapY)
 
 
-        scaleSetting = SettingBuilder()
+        val scaleSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.scale")
-            .setCallback(this::increaseScale)
             .setTopLeft(pos)
             .buildClickSetting()
+        scaleSetting.setCallback {
+            config.scale += 1
+            updateScaleText(scaleSetting, config.scale)
+        }
 
         pos = pos.add(scaleSetting.gui.width + PADDING * 2, 0f)
 
-        pointSizeSetting = SettingBuilder()
+        val pointSizeSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.pointsize")
-            .setCallback(this::togglePointSize)
+//            .setCallback(this::togglePointSize)
             .setTopLeft(pos)
             .buildClickSetting()
-
+        pointSizeSetting.setCallback {
+            config.updatePointSizeCallback()
+            updateScaleText(pointSizeSetting, config.pointSize)
+        }
         pos = PointF(paddingX, pos.y + gapY)
 
-        toggleTitle = GuiBuilder()
+        val toggleTitle = GuiBuilder()
             .setHeight(12)
             .setTopLeft(pos)
             .setHoverable(false)
@@ -204,42 +194,42 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
 
         pos = pos.add(0f, gapY)
 
-        peacefulEntityToggle = SettingBuilder()
+        val peacefulEntityToggle = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.mob.peaceful")
-            .setState(Settings.getConfig<RadarConfig>("radar").isShowPeacefulMob)
+            .setState(config.isShowPeacefulMob)
             .setTopLeft(pos)
             .buildToggleSetting()
         peacefulEntityToggle.setCallback {
-            Settings.getConfig<RadarConfig>("radar").isShowPeacefulMob = peacefulEntityToggle.value
+            config.isShowPeacefulMob = peacefulEntityToggle.value
         }
 
 
-        hostileEntityToggle = SettingBuilder()
+        val hostileEntityToggle = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.mob.hostile")
-            .setState(Settings.getConfig<RadarConfig>("radar").isShowHostileMob)
+            .setState(config.isShowHostileMob)
             .setTopLeft(pos)
             .buildToggleSetting()
         hostileEntityToggle.setCallback {
-            Settings.getConfig<RadarConfig>("radar").isShowHostileMob = hostileEntityToggle.value
+            config.isShowHostileMob = hostileEntityToggle.value
         }
 
-        itemToggle = SettingBuilder()
+        val itemToggle = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.item")
-            .setState(Settings.getConfig<RadarConfig>("radar").isShowItem)
+            .setState(config.isShowItem)
             .setTopLeft(pos)
             .buildToggleSetting()
-        itemToggle.setCallback { Settings.getConfig<RadarConfig>("radar").isShowItem = itemToggle.value }
+        itemToggle.setCallback { config.isShowItem = itemToggle.value }
 
-        playerEntityToggle = SettingBuilder()
+        val playerEntityToggle = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.player")
-            .setState(Settings.getConfig<RadarConfig>("radar").isShowPlayer)
+            .setState(config.isShowPlayer)
             .setTopLeft(pos)
             .buildToggleSetting()
         playerEntityToggle.setCallback {
-            Settings.getConfig<RadarConfig>("radar").isShowPlayer = playerEntityToggle.value
+            config.isShowPlayer = playerEntityToggle.value
         }
 
-        alphaTitle = GuiBuilder()
+        val alphaTitle = GuiBuilder()
             .setHeight(12)
             .setTopLeft(pos)
             .setHoverable(false)
@@ -251,21 +241,21 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         pos = pos.add(0f, gapY)
 
 
-        backgroundAlpha = SettingBuilder()
+        val backgroundAlpha = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.background.alpha")
-            .setValue(Settings.getConfig<RadarConfig>("radar").backgroundAlpha)
+            .setValue(config.backgroundAlpha)
             .setTopLeft(pos)
             .buildSlider()
-        backgroundAlpha.setCallback { Settings.getConfig<RadarConfig>("radar").backgroundAlpha = backgroundAlpha.value }
+        backgroundAlpha.setCallback { config.backgroundAlpha = backgroundAlpha.value }
 
         pos = pos.add(0f, gapY)
 
-        pointAlpha = SettingBuilder()
+        val pointAlpha = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.point.alpha")
-            .setValue(Settings.getConfig<RadarConfig>("radar").pointAlpha)
+            .setValue(config.pointAlpha)
             .setTopLeft(pos)
             .buildSlider()
-        pointAlpha.setCallback { Settings.getConfig<RadarConfig>("radar").pointAlpha = pointAlpha.value }
+        pointAlpha.setCallback { config.pointAlpha = pointAlpha.value }
         // add all settings to the list
         guis.add(playerEntityColor.gui)
         guis.add(hostileEntityColor.gui)
@@ -333,26 +323,26 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         guis.add(toggleTitle)
         guis.add(scaleTitle)
         guis.add(alphaTitle)
-        updateScaleText(scaleSetting, Settings.getConfig<RadarConfig>("radar").scale)
-        updateScaleText(pointSizeSetting, Settings.getConfig<RadarConfig>("radar").pointSize)
+        updateScaleText(scaleSetting, config.scale)
+        updateScaleText(pointSizeSetting, config.pointSize)
         super.init()
     }
 
     /**
      * Callback method for the scale setting.
      */
-    private fun increaseScale() {
-        Settings.getConfig<RadarConfig>("radar").scale += 1
-        updateScaleText(scaleSetting, Settings.getConfig<RadarConfig>("radar").scale)
-    }
+//    private fun increaseScale() {
+//        Settings.getConfig<RadarConfig>("radar").scale += 1
+//        updateScaleText(scaleSetting, Settings.getConfig<RadarConfig>("radar").scale)
+//    }
 
     /**
      * Callback for the point size setting.
      */
-    private fun togglePointSize() {
-        Settings.getConfig<RadarConfig>("radar").updatePointSizeCallback()
-        updateScaleText(pointSizeSetting, Settings.getConfig<RadarConfig>("radar").pointSize)
-    }
+//    private fun togglePointSize() {
+//        Settings.getConfig<RadarConfig>("radar").updatePointSizeCallback()
+//        updateScaleText(pointSizeSetting, Settings.getConfig<RadarConfig>("radar").pointSize)
+//    }
 
     /**
      * Callback for update the scale text.
@@ -365,7 +355,7 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
     override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
         super.render(drawContext, mouseX, mouseY, delta)
         val mod = Mods.getMod<ModRadar>(ChatCommand.Radar)
-        mod.onRenderInGameHud(drawContext, delta)
+        mod.onRenderInGameHud(drawContext, delta, true)
     }
-
 }
+

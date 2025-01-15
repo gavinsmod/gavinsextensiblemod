@@ -99,8 +99,8 @@ class ModFpsCounter : MiscMod(
         em.unsubscribe(InGameHudRenderListener::class.java, this)
     }
 
-    override fun onRenderInGameHud(drawContext: DrawContext, delta: Float) {
-        if (GavinsMod.isEnabled("gui") || GavinsMod.isEnabled("settings") || !isActive) return
+    override fun onRenderInGameHud(drawContext: DrawContext, delta: Float, forceRender: Boolean) {
+        if (GavinsMod.isEnabled("gui") || GavinsMod.isEnabled("settings") || !isActive || !forceRender) return
         drawFpsOverlay(drawContext)
     }
 

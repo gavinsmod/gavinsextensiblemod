@@ -59,9 +59,9 @@ class ModGuiTextOverlay : MiscMod(
         em.unsubscribe(InGameHudRenderListener::class.java, this)
     }
 
-    override fun onRenderInGameHud(drawContext: DrawContext, delta: Float) {
+    override fun onRenderInGameHud(drawContext: DrawContext, delta: Float, forceRender: Boolean) {
         modList = Mods.mods.filter { mod: Mod -> mod !is GuiMod && mod !is ModGuiTextOverlay && mod.isActive }
-        if (GavinsMod.isEnabled("gui") || GavinsMod.isEnabled("settings") || modList.isEmpty()) return
+        if (GavinsMod.isEnabled("gui") || GavinsMod.isEnabled("settings") || modList.isEmpty() || forceRender) return
         drawTextOverlay(drawContext)
     }
 

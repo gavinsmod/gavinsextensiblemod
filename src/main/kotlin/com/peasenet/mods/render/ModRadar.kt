@@ -80,8 +80,8 @@ class ModRadar : RenderMod(
         em.unsubscribe(InGameHudRenderListener::class.java, this)
     }
 
-    override fun onRenderInGameHud(drawContext: DrawContext, delta: Float) {
-        val canRender = isActive && !Mods.isActive("gui") && !Mods.isActive("settings")
+    override fun onRenderInGameHud(drawContext: DrawContext, delta: Float, forceRender: Boolean) {
+        val canRender = !Mods.isActive("gui") && !Mods.isActive("settings") || forceRender
         if (!canRender) return
         val stack = drawContext.matrices
         RadarConfig.x = client.window.scaledWidth - config.size - 10
@@ -203,10 +203,14 @@ class ModRadar : RenderMod(
      */
     private fun getPointRelativeToYaw(loc: Vec3d?, yaw: Float): PointF {
         val player = client.getPlayer()
-
         val x = loc!!.getX() - player.x
         val z = loc.getZ() - player.z
-        return calculateDistance(yaw, x, z)
+        return calculateDistance(yaw, x, z).subtract(
+            PointF(
+                config.pointSize / 2f,
+                config.pointSize / 2f
+            )
+        )
     }
 
     companion object {

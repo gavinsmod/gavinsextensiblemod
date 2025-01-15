@@ -38,5 +38,5 @@ interface InGameHudRenderListener : Listener {
      * @param drawContext - The draw context to use.
      * @param delta - The time delta.
      */
-    fun onRenderInGameHud(drawContext: DrawContext, delta: Float)
+    fun onRenderInGameHud(drawContext: DrawContext, delta: Float, forceRender: Boolean = false)
 }

@@ -25,12 +25,9 @@ package com.peasenet.mods.tracer
 
 import com.peasenet.gavui.color.Color
 import com.peasenet.gui.mod.tracer.GuiMobTracer
-import com.peasenet.mods.esp.EspMod
-import com.peasenet.mods.esp.EspMod.Companion
 import com.peasenet.settings.SettingBuilder
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.mob.MobEntity
 
