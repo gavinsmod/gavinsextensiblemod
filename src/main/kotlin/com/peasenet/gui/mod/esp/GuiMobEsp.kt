@@ -92,12 +92,14 @@ class GuiMobEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")
     }
 
     override fun isItemEnabled(item: ItemStack): Boolean {
-        return config.mobIsShown(item.item as SpawnEggItem)
+        return config.inList(item.item as SpawnEggItem)
     }
 
     override fun handleItemToggle(item: ItemStack) {
         val spawnEgg = (item.item as SpawnEggItem)
-        if (isItemEnabled(item)) config.removeMob(spawnEgg)
-        else config.addMob(spawnEgg)
+        if (isItemEnabled(item))
+            config.removeMob(spawnEgg)
+        else
+            config.addMob(spawnEgg)
     }
 }

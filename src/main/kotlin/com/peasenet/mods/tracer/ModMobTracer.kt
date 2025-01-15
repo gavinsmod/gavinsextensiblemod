@@ -23,16 +23,11 @@
  */
 package com.peasenet.mods.tracer
 
-import com.peasenet.config.TracerConfig
 import com.peasenet.gavui.color.Color
-import com.peasenet.gavui.color.Colors
 import com.peasenet.gui.mod.tracer.GuiMobTracer
-import com.peasenet.main.Settings
+import com.peasenet.mods.esp.EspMod
+import com.peasenet.mods.esp.EspMod.Companion
 import com.peasenet.settings.SettingBuilder
-import com.peasenet.util.RenderUtils
-import com.peasenet.util.event.data.BlockEntityRender
-import com.peasenet.util.event.data.EntityRender
-import net.fabricmc.fabric.impl.`object`.builder.FabricEntityTypeImpl.Builder.Living
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
@@ -49,7 +44,7 @@ class ModMobTracer : EntityTracer<LivingEntity>(
     "Mob Tracer",
     "gavinsmod.mod.tracer.mob",
     "mobtracer",
-    { it is MobEntity && config.mobIsShown(it.type) }
+    { it is MobEntity && config.inList(it.type) }
 ) {
     init {
         val menu = SettingBuilder()
@@ -65,4 +60,15 @@ class ModMobTracer : EntityTracer<LivingEntity>(
         return config.hostileMobColor
     }
 
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+        val newList: MutableList<LivingEntity> = ArrayList()
+        if (config.showPeacefulMobs) {
+            newList.addAll(entityList.filter { it.type.spawnGroup.isPeaceful })
+        }
+        if (config.showHostileMobs) {
+            newList.addAll(entityList.filter { !it.type.spawnGroup.isPeaceful })
+        }
+        entityList = newList
+        super.onRender(matrixStack, partialTicks)
+    }
 }

@@ -174,7 +174,7 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
      * @param mob The mob to remove (EntityType)
      */
     fun removeMob(mob: EntityType<*>) {
-        shownMobs.remove(mob.toString())
+        shownMobs.removeIf { it == mob.translationKey }
         saveConfig()
     }
 
@@ -210,24 +210,20 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
      * @param egg The mob to check (SpawnEggItem)
      * @return Whether the mob is shown.
      */
-    fun mobIsShown(egg: SpawnEggItem): Boolean {
+    fun inList(egg: SpawnEggItem): Boolean {
         val registryManager = GavinsModClient.minecraftClient.getWorld().registryManager;
-        return mobIsShown(egg.getEntityType(registryManager, egg.defaultStack))
+        return inList(egg.getEntityType(registryManager, egg.defaultStack))
     }
 
 
     /**
-     * Checks if a mob is shown.
+     * Checks if a mob is in the entity list.
      * @param mob The mob to check (EntityType)
-     * @return Whether the mob is shown.
+     * @return Whether the mob is in the entity list.
      */
-    fun mobIsShown(mob: EntityType<*>): Boolean {
+    fun inList(mob: EntityType<*>): Boolean {
         val inList = shownMobs.contains(mob.translationKey);
-        if (mob.spawnGroup.isPeaceful && showPeacefulMobs)
-            return inList
-        if (!mob.spawnGroup.isPeaceful && showHostileMobs)
-            return inList
-        return false
+        return inList
     }
 }
 

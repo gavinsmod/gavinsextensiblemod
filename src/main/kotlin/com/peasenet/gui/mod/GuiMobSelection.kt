@@ -184,7 +184,9 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
             return true
         }
         if (!(mouseX > x && mouseX < x + pageWidth && mouseY > y && mouseY < y + pageHeight)) return false
-        val blockIndex = ((mouseY - y) / 19).toInt() * blocksPerRow + ((mouseX - x) / 18).toInt()
+        // get the cell that the mouse has been clicked on
+        val blockIndex =
+            ((mouseX - x) / blockOffset).toInt() + ((mouseY - y) / blockOffset).toInt() * blocksPerRow + pageOffset
         if (blockIndex > visibleItems.size - 1) return false
         val block = visibleItems[blockIndex]
         if (button != 0) return false
@@ -196,8 +198,8 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
     override fun init() {
         val screenWidth = GavinsModClient.minecraftClient.window.scaledWidth
         val screenHeight = GavinsModClient.minecraftClient.window.scaledHeight
-        x = screenWidth - screenWidth / 2 - pageWidth / 2
-        y = screenHeight - screenHeight / 2 - pageHeight / 2
+        x = screenWidth - screenWidth / 2 - pageWidth / 3
+        y = 38
         box = GuiBuilder().setTopLeft(PointF(x.toFloat(), y.toFloat())).setWidth(pageWidth.toFloat())
             .setHeight(pageHeight.toFloat()).setBackgroundColor(Colors.INDIGO).setHoverable(false).build()
         parent = GavinsMod.guiSettings

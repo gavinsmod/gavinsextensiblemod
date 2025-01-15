@@ -27,7 +27,6 @@ import com.peasenet.config.TracerConfig
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gui.mod.GuiMobSelection
-import com.peasenet.main.GavinsMod
 import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
 import net.minecraft.item.ItemStack
@@ -91,7 +90,7 @@ class GuiMobTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtr
     }
 
     override fun isItemEnabled(item: ItemStack): Boolean {
-        return settings.mobIsShown(item.item as SpawnEggItem)
+        return settings.inList(item.item as SpawnEggItem)
     }
 
     override fun handleItemToggle(item: ItemStack) {
