@@ -37,14 +37,13 @@ import net.minecraft.entity.player.PlayerEntity
 
 /**
  * A mod that allows the client to see boxes around entityList.
- * @author gt3ch1
- * @version 09-02-2024
+ * @author GT3CH1
+ * @version 01-15-2025
  * @since 04-01-2023
  * @see EntityRenderListener
  * @see EspMod
  */
-class ModMobEsp : EntityEsp<Entity>("Mob ESP",
-    "gavinsmod.mod.esp.mob",
+class ModMobEsp : EntityEsp<Entity>("gavinsmod.mod.esp.mob",
     "mobesp",
     { it !is PlayerEntity && it.isLiving && !it.isRemoved && config.inList(it.type) }), RenderListener {
 

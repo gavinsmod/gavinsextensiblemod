@@ -29,7 +29,7 @@ import com.peasenet.main.GavinsMod.Companion.setEnabled
 import net.minecraft.text.Text
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  * The main menu for the mod.
  */

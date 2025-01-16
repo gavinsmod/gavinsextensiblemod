@@ -9,7 +9,7 @@ import net.minecraft.block.entity.SignBlockEntity
 /**
  *
  * @author GT3CH1
- * @version 01-14-2025
+ * @version 01-15-2025
  * @since 01-14-2025
  */
 class ModSignEsp : BlockEntityEsp<SignBlockEntity>(
@@ -19,11 +19,11 @@ class ModSignEsp : BlockEntityEsp<SignBlockEntity>(
     { it is SignBlockEntity }) {
     init {
         val colorSetting =
-            SettingBuilder().setTitle("gavinsmod.settings.esp.sign.color").setColor(config.beehiveColor)
+            SettingBuilder().setTitle("gavinsmod.settings.color.sign").setColor(config.signColor)
                 .buildColorSetting()
-        colorSetting.setCallback { config.beehiveColor = colorSetting.color }
+        colorSetting.setCallback { config.signColor = colorSetting.color }
         addSetting(colorSetting)
     }
 
-    override fun getColor(): Color = config.beehiveColor
+    override fun getColor(): Color = config.signColor
 }

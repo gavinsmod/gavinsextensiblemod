@@ -27,7 +27,7 @@ package com.peasenet.gavui.color;
 import java.io.Serializable;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 01/07/2022
  * A representation of a color. The maximum value for each channel is 255, and the minimum is 0.
  */

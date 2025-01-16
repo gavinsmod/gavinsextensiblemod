@@ -39,12 +39,11 @@ import net.minecraft.text.Text
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
- * @author gt3ch1
- * @version 04-11-2023
+ * @author GT3CH1
+ * @version 01-15-2025
  * A mod that shows the currently active mods in the top left screen.
  */
 class ModGuiTextOverlay : MiscMod(
-    "Text Overlay",
     "gavinsmod.mod.misc.textoverlay",
     "textoverlay",
 ), InGameHudRenderListener {

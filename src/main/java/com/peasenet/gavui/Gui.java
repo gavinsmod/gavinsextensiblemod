@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 2/28/2023
  * The base class for all gui elements.
  */

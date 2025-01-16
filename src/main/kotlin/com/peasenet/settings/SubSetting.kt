@@ -29,7 +29,7 @@ import com.peasenet.gavui.GuiScroll
 /**
  * A setting that contains multiple sub settings within a dropdown element.
  * @param builder The SettingBuilder to use.
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  */
 class SubSetting(builder: SettingBuilder) : Setting() {

@@ -21,32 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.config
+package com.peasenet.mods.tracer
+
+import com.peasenet.gavui.color.Color
+import com.peasenet.settings.SettingBuilder
+import com.peasenet.util.ChatCommand
+import net.minecraft.block.entity.BeehiveBlockEntity
+import net.minecraft.block.entity.SignBlockEntity
 
 /**
- * The miscellaneous configuration.
- * The key is "misc".
+ * A mod that allows the player to see tracers towards beehives.
  * @author GT3CH1
- * @version 05-07-2024
+ * @version 01-15-2025
+ * @since 04-11-2023
  */
-class MiscConfig : Config<MiscConfig>() {
-    var isMessages = true
-        set(value) {
-            field = value
-            saveConfig()
-        }
-    var background = true
-        set(value) {
-            field = value
-            saveConfig()
-        }
-    var freeCamSpeed = 0.1f
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
+class ModSignTracer : BlockEntityTracer<BeehiveBlockEntity>("gavinsmod.mod.tracer.sign",
+    ChatCommand.SignTracer.chatCommand,
+    { it is SignBlockEntity }) {
     init {
-        key = "misc"
+        val colorSetting =
+            SettingBuilder().setTitle("gavinsmod.settings.color.sign").setColor(config.signColor)
+                .buildColorSetting()
+        colorSetting.setCallback { config.signColor = colorSetting.color }
+        addSetting(colorSetting)
     }
+
+    override fun getColor(): Color {
+        return config.signColor
+    }
+
 }

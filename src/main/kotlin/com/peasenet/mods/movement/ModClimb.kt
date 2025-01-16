@@ -24,12 +24,11 @@
 package com.peasenet.mods.movement
 
 /**
- * @author gt3ch1
- * @version 03-02-2023
+ * @author GT3CH1
+ * @version 01-15-2025
  * A mod that allows the player to climb up walls despite a lack of ladders.
  */
 class ModClimb : MovementMod(
-    "Climb",
     "gavinsmod.mod.movement.climb",
     "climb"
 )

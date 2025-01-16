@@ -24,7 +24,6 @@
 package com.peasenet.mods.combat
 
 import com.peasenet.config.AutoAttackConfig
-import com.peasenet.config.EspConfig
 import com.peasenet.gui.mod.combat.GuiAutoAttack
 import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
@@ -35,11 +34,10 @@ import net.minecraft.util.hit.EntityHitResult
  * A mod that makes the player attack the entity that it is currently looking at.
  *
  * @author GT3CH1
- * @version 01-12-2025
+ * @version 01-15-2025
  * @since 03-02-2023
  */
 class ModAutoAttack : CombatMod(
-    "Auto Attack",
     "gavinsmod.mod.combat.autoattack",
     "autoattack",
 ) {

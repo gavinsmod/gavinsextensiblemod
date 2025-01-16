@@ -41,7 +41,7 @@ import net.minecraft.util.math.Vec3d
 
 /**
  * A helper class with utilities relating to the player.
- * @author gt3ch1
+ * @author GT3CH1
  * @version 04-11-2023
  */
 object PlayerUtils {

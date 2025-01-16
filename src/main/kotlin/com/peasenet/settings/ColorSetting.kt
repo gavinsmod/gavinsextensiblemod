@@ -31,7 +31,7 @@ import com.peasenet.gavui.color.Colors
 /**
  * A setting that allows the user to change a color value.
  * @param builder - The setting builder.
- * @author gt3ch1
+ * @author GT3CH1
  * @version 07-18-2023
  */
 class ColorSetting(builder: SettingBuilder) : Setting() {

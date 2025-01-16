@@ -29,17 +29,16 @@ import net.minecraft.block.entity.BeehiveBlockEntity
 
 /**
  * A mod that allows the player to see tracers towards beehives.
- * @author gt3ch1
- * @version 09-06-2024
+ * @author GT3CH1
+ * @version 01-15-2025
  * @since 04-11-2023
  */
-class ModBeehiveTracer : BlockEntityTracer<BeehiveBlockEntity>("Beehive Tracer",
-    "gavinsmod.mod.tracer.beehive",
+class ModBeehiveTracer : BlockEntityTracer<BeehiveBlockEntity>("gavinsmod.mod.tracer.beehive",
     "beehivetracer",
     { it is BeehiveBlockEntity }) {
     init {
         val colorSetting =
-            SettingBuilder().setTitle("gavinsmod.settings.tracer.beehive.color").setColor(config.beehiveColor)
+            SettingBuilder().setTitle("gavinsmod.settings.color.beehive").setColor(config.beehiveColor)
                 .buildColorSetting()
         colorSetting.setCallback { config.beehiveColor = colorSetting.color }
         addSetting(colorSetting)

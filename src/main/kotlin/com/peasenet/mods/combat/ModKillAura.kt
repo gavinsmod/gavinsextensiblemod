@@ -39,11 +39,10 @@ import java.util.stream.StreamSupport
  * A mod that makes the player face and attack the nearest mob.
  *
  * @author GT3CH1
- * @version 01-12-2025
+ * @version 01-15-2025
  * @since 03-02-2023
  */
 class ModKillAura : CombatMod(
-    "Kill Aura",
     "gavinsmod.mod.combat.killaura",
     "killaura",
 ) {

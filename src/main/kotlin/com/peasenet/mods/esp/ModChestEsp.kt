@@ -32,8 +32,8 @@ import net.minecraft.block.entity.ShulkerBoxBlockEntity
 
 /**
  * A mod that allows the client to see an esp (a box) around chests.
- * @author gt3ch1
- * @version 03-02-2024
+ * @author GT3CH1
+ * @version 01-15-2025
  * @since 03-02-2023
  */
 class ModChestEsp : BlockEntityEsp<ChestBlockEntity>("Chest ESP",
@@ -41,7 +41,7 @@ class ModChestEsp : BlockEntityEsp<ChestBlockEntity>("Chest ESP",
     "chestesp",
     { it is ChestBlockEntity || it is EnderChestBlockEntity || it is ShulkerBoxBlockEntity }), RenderListener {
     init {
-        val colorSetting = SettingBuilder().setTitle("gavinsmod.settings.esp.chest.color").setColor(config.chestColor)
+        val colorSetting = SettingBuilder().setTitle("gavinsmod.settings.color.chest").setColor(config.chestColor)
             .buildColorSetting()
         colorSetting.setCallback {
             config.chestColor = colorSetting.color

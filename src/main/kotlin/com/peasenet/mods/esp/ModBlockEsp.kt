@@ -53,12 +53,11 @@ import net.minecraft.world.chunk.Chunk
  * An ESP mod that draws boxes around user selected blocks in the world.
  *
  * @author GT3CH1
- * @version 09-06-2024
+ * @version 01-15-2025
  * @since 09-01-2024
  * @see EspMod
  */
 class ModBlockEsp : EspMod<BlockEspConfig>(
-    "Block ESP",
     "gavinsmod.mod.esp.blockesp",
     "blockesp"
 ), BlockUpdateListener, WorldRenderListener, ChunkUpdateListener, RenderListener {

@@ -25,7 +25,7 @@
 package com.peasenet.gavui.math;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 12/30/2022
  * A BoxD is a box created by two PointF's - a top left and a bottom right.
  * The coordinates of the box are as follows:

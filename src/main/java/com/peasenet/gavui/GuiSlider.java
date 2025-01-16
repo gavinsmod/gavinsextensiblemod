@@ -35,7 +35,7 @@ import net.minecraft.client.gui.DrawContext;
 /**
  * A gui that allows for controlling a value with a slider.
  *
- * @author gt3ch1
+ * @author GT3CH1
  * @version 09-02-2024
  * @since 01/07/2022
  */

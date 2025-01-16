@@ -51,7 +51,7 @@ import org.lwjgl.opengl.GL11
 
 /**
  * A utility class for rendering tracers and esp's.
- * @author gt3ch1
+ * @author GT3CH1
  * @version 09-08-2024
  * @since 07-18-2023
  */

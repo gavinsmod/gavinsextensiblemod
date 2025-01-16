@@ -32,7 +32,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 7/1/2022
  * Creates a GUI that allows the user to toggle mods on and off by clicking.
  */

@@ -26,7 +26,7 @@ package com.peasenet.util.listeners
 import com.peasenet.util.event.data.DrawState
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  */
 interface ShouldDrawSideListener : Listener {

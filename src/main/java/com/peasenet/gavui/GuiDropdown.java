@@ -36,7 +36,7 @@ import net.minecraft.text.Text;
 import java.util.ArrayList;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 7/1/2022
  * A simple dropdown gui element
  */

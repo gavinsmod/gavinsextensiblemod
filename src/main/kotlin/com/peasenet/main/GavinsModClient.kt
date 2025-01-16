@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.minecraft.client.MinecraftClient
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 04-11-2023
  * The main part of the mod that handles checking mods.
  */

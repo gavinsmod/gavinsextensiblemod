@@ -30,7 +30,7 @@ import com.peasenet.gavui.util.GavUISettings
 /**
  * A setting that contains one of two finite states - on or off.
  * @param builder - The builder used to create this toggle setting.
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  */
 class ToggleSetting(builder: SettingBuilder) : Setting() {

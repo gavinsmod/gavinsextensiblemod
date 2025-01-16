@@ -34,13 +34,13 @@ import com.peasenet.settings.SettingBuilder
 
 /**
  * A mod that allows the client to see very clearly in the absence of a light source.
- * @author gt3ch1
- * @version 09-16-2024
+ * @author GT3CH1
+ * @version 01-15-2025
  * @since 03-02-2023
  */
 @Suppress("KotlinConstantConditions")
 class ModFullBright : RenderMod(
-    "Full Bright", "gavinsmod.mod.render.fullbright", "fullbright"
+    "gavinsmod.mod.render.fullbright", "fullbright"
 ) {
     companion object {
         lateinit var fullbrightConfig: FullbrightConfig

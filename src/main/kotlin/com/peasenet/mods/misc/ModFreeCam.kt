@@ -50,10 +50,10 @@ import org.lwjgl.opengl.GL11
  * A mod that allows the camera to be moved freely.
  *
  * @author GT3CH1
- * @version 04-11-2023
+ * @version 01-15-2025
  */
 class ModFreeCam : MiscMod(
-    "Freecam", "gavinsmod.mod.misc.freecam", "freecam"
+     "gavinsmod.mod.misc.freecam", "freecam"
 ), PacketSendListener, RenderListener, AirStrafeListener {
     private var fake: FakePlayer? = null
 

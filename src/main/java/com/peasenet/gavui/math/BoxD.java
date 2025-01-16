@@ -25,7 +25,7 @@
 package com.peasenet.gavui.math;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 6/14/2022
  * A BoxD is a box created by two PointD's - a top left and a bottom right.
  */

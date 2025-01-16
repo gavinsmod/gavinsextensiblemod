@@ -28,7 +28,7 @@ import com.peasenet.util.event.data.BlockUpdate
 
 /**
  * An interface for listening to block updates.
- * @author gt3ch1
+ * @author GT3CH1
  * @version 09-01-2024
  */
 interface BlockUpdateListener : Listener {

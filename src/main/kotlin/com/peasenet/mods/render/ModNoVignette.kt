@@ -30,11 +30,10 @@ import net.minecraft.util.Identifier
 /**
  * A mod that removes the vignette overlay.
  *
- * @author gt3ch1
- * @version 03-02-2023
+ * @author GT3CH1
+ * @version 01-15-2025
  */
 class ModNoVignette : RenderMod(
-    "No Vignette",
     "gavinsmod.mod.render.novignette",
     "novignette",
 ), RenderOverlayListener {

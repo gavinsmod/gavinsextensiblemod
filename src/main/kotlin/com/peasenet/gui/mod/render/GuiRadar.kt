@@ -103,14 +103,14 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
             .build()
         pos = pos.add(0f, gapY * 4)
         val playerEntityColor = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.player.color")
+            .setTitle("gavinsmod.settings.color.player")
             .setColor(config.playerColor)
             .setTopLeft(pos)
             .buildColorSetting()
         playerEntityColor.setCallback { config.playerColor = playerEntityColor.color }
         pos = pos.add(playerEntityColor.gui.width + PADDING * 2, 0f)
         val hostileEntityColor = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.mob.hostile.color")
+            .setTitle("gavinsmod.settings.color.hostileMob")
             .setColor(config.hostileMobColor)
             .setTopLeft(pos)
             .buildColorSetting()
@@ -121,7 +121,7 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         pos = PointF(paddingX, pos.y + gapY)
 
         val peacefulEntityColor = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.mob.peaceful.color")
+            .setTitle("gavinsmod.settings.color.peacefulMob")
             .setColor(config.peacefulMobColor)
             .setTopLeft(pos)
             .buildColorSetting()
@@ -193,7 +193,7 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         pos = pos.add(0f, gapY)
 
         val peacefulEntityToggle = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.mob.peaceful")
+            .setTitle("gavinsmod.settings.mob.peaceful")
             .setState(config.isShowPeacefulMob)
             .setTopLeft(pos)
             .buildToggleSetting()
@@ -203,7 +203,7 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
 
 
         val hostileEntityToggle = SettingBuilder()
-            .setTitle("gavinsmod.settings.radar.mob.hostile")
+            .setTitle("gavinsmod.settings.mob.hostile")
             .setState(config.isShowHostileMob)
             .setTopLeft(pos)
             .buildToggleSetting()

@@ -32,7 +32,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 01/07/2023
  * A gui element that cycles through a list of settings when clicked on.
  * A callback is called when clicked on.

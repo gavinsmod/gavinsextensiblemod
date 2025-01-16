@@ -36,7 +36,7 @@ import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 01/07/2023
  * A utility class for drawing gui elements.
  */

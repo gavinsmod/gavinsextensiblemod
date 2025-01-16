@@ -26,7 +26,6 @@ package com.peasenet.mods.movement
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
 
 class ModDolphin : MovementMod(
-    "Dolphin",
     "gavinsmod.mod.movement.dolphin",
     "dolphin"
 ) {

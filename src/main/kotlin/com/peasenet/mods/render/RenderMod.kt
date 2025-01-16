@@ -33,24 +33,22 @@ import org.lwjgl.glfw.GLFW
  * as well as a chat command, GUI element, and an optional keybind.
  * For example,
  * ~~~
- * class ModExampleRender() : RenderMod("Example Render", "example_render", "examplerender")
+ * class ModExampleRender() : RenderMod("example_render", "examplerender")
  * ~~~
- * This class extends the [Mod] class, so it has all of the same methods and properties.
+ * This class extends the [Mod] class, so it has all the same methods and properties.
  *
- * @param name The name of the mod.
  * @param translationKey The translation key for the mod's name.
  * @param chatCommand The chat command for the mod.
  * @param keyBinding The keybind for the mod. Defaults to [GLFW.GLFW_KEY_UNKNOWN].
  * @see Mod
  *
  * @author GT3CH1
- * @version 07-18-2023
+ * @version 01-15-2025
  */
 abstract class RenderMod(
-    name: String, translationKey: String, chatCommand: String,
-    modCategory: ModCategory = ModCategory.RENDER, keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN
+    translationKey: String, chatCommand: String, modCategory: ModCategory = ModCategory.RENDER,
+    keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN
 ) : Mod(
-    name,
     translationKey,
     chatCommand,
     modCategory,

@@ -32,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 6/14/2022
  */
 @Mixin(Biome.class)

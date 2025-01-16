@@ -33,26 +33,23 @@ import org.lwjgl.glfw.GLFW
  * as well as a chat command, GUI element, and an optional keybind.
  * For example,
  * ~~~
- * class ModExampleCombat() : CombatMod("Example Combat", "example_combat", "examplecombat")
+ * class ModExampleCombat() : CombatMod("example_combat", "examplecombat")
  * ~~~
  * This class extends the [Mod] class, so it has all the same methods and properties.
  * 
- * @param name The name of the mod.
  * @param translationKey The translation key for the mod's name.
  * @param chatCommand The chat command for the mod.
  * @param keyBinding The keybind for the mod. Defaults to [GLFW.GLFW_KEY_UNKNOWN].
  * @see Mod
  * 
  * @author GT3CH1
- * @version 07-18-2023
+ * @version 01-15-2025
  */
 abstract class CombatMod(
-    name: String,
     translationKey: String,
     chatCommand: String,
     keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN
 ) : Mod(
-    name,
     translationKey,
     chatCommand,
     ModCategory.COMBAT,

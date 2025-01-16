@@ -31,7 +31,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 7/1/2022
  * A simple toggleable gui element.
  */

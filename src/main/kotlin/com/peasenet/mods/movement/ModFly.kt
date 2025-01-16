@@ -26,12 +26,11 @@ package com.peasenet.mods.movement
 import com.peasenet.util.PlayerUtils
 
 /**
- * @author gt3ch1
- * @version 03-02-2023
+ * @author GT3CH1
+ * @version 01-15-2025
  * A mod that allows the player to fly.
  */
 class ModFly : MovementMod(
-    "Fly",
     "gavinsmod.mod.movement.fly",
     "fly",
 ) {

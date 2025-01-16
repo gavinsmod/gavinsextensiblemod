@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 05/18/2023
  * A builder for all GavUI GUIs.
  */

@@ -37,12 +37,12 @@ import net.minecraft.entity.ItemEntity
  * @see RenderListener
  * @see GuiItemEspTracerConfig
  *
- * @author gt3ch1
- * @version 01-12-2025
+ * @author GT3CH1
+ * @version 01-15-2025
  * @since 04-11-2023
  */
 class ModEntityItemTracer :
-    EntityTracer<ItemEntity>("Item Tracer", "gavinsmod.mod.tracer.item", "itemtracer", { it is ItemEntity }),
+    EntityTracer<ItemEntity>("gavinsmod.mod.tracer.item", "itemtracer", { it is ItemEntity }),
     RenderListener {
     init {
         val menu = SettingBuilder().setTitle("gavinsmod.mod.tracer.item").buildClickSetting()

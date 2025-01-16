@@ -35,7 +35,7 @@ import net.minecraft.block.Blocks
  *  Blocks => Sugar Cane
  *  Block Color => Dark Spring Green
  *  Alpha => 0.5
- * @author gt3ch1
+ * @author GT3CH1
  * @version 09-01-2024
  */
 class BlockEspConfig : BlockListConfig<BlockEspConfig>({ it.defaultState == Blocks.SUGAR_CANE.defaultState }),

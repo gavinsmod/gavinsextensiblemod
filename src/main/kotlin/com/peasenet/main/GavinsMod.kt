@@ -39,8 +39,8 @@ import org.slf4j.LoggerFactory
 import java.util.function.Consumer
 
 /**
- * @author gt3ch1
- * @version 04-08-2024
+ * @author GT3CH1
+ * @version 01-15-2025
  * The main initializer of the mod.
  */
 class GavinsMod : ModInitializer {
@@ -114,7 +114,7 @@ class GavinsMod : ModInitializer {
         fun getModsInCategory(category: ModCategory): java.util.ArrayList<Mod> {
             // use stream to filter by category and sort by mod name
             return Mods.mods.stream().filter { mod: Mod -> mod.modCategory === category }
-                .sorted(Comparator.comparing(Mod::name)).collect({ ArrayList() },
+                .sorted(Comparator.comparing(Mod::translationKey)).collect({ ArrayList() },
                     { obj: java.util.ArrayList<Mod>, e: Mod -> obj.add(e) }) { obj: java.util.ArrayList<Mod>, c: java.util.ArrayList<Mod>? ->
                     obj.addAll(c!!)
                 }

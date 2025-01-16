@@ -28,7 +28,7 @@ import com.peasenet.gavui.math.PointF;
 import net.minecraft.text.Text;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 6/28/2022
  * A draggable ui element.
  */

@@ -39,7 +39,7 @@ import net.minecraft.text.Text
  * @see EspConfig
  *
  * @author GT3CH1
- * @version 01-12-2025
+ * @version 01-15-2025
  * @since 04-11-2023
  */
 class GuiMobEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")) {
@@ -51,7 +51,7 @@ class GuiMobEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")
         val height = 24f
         var pos = PointF(10f, height)
         hostileColor = SettingBuilder()
-            .setTitle("gavinsmod.settings.esp.mob.hostile.color")
+            .setTitle("gavinsmod.settings.color.hostileMob")
             .setColor(config.hostileMobColor)
             .setTopLeft(pos)
             .buildColorSetting()
@@ -59,7 +59,7 @@ class GuiMobEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")
         pos = pos.add(0f, 12f)
 
         peacefulColor = SettingBuilder()
-            .setTitle("gavinsmod.settings.esp.mob.peaceful.color")
+            .setTitle("gavinsmod.settings.color.peacefulMob")
             .setColor(config.peacefulMobColor)
             .setTopLeft(pos)
             .buildColorSetting()
@@ -76,14 +76,14 @@ class GuiMobEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")
         pos = pos.add(0f, 12f)
 
         hostileToggle = SettingBuilder()
-            .setTitle("gavinsmod.settings.esp.mob.hostile")
+            .setTitle("gavinsmod.settings.mob.hostile")
             .setTopLeft(pos)
             .buildToggleSetting()
         hostileToggle!!.setCallback { config.showHostileMobs = hostileToggle!!.value }
         pos = pos.add(0f, 12f)
 
         peacefulToggle = SettingBuilder()
-            .setTitle("gavinsmod.settings.esp.mob.peaceful")
+            .setTitle("gavinsmod.settings.mob.peaceful")
             .setState(config.showPeacefulMobs)
             .setTopLeft(pos)
             .buildToggleSetting()

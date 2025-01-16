@@ -48,17 +48,15 @@ import org.lwjgl.glfw.GLFW
  * ~~~
  * This example will create a mod that uses the name "My Mod" for sorting, a translation key of "translation.key.mymod" for the name of the mod in the GUI and in chat,
  * a chat command of "mymod" to toggle the mod, and a category of [ModCategory.MISC], as well as an unset keybinding.
- * @param name - The name of the mod, used for sorting purposes only.
  * @param translationKey - The translation key, used for rendering the mod's name in the GUI and in chat.
  * @param chatCommand - The chat command, used for toggling the mod. This does not need to be prefixed by anything.
  * @param modCategory - The category of the mod. See [ModCategory] for more information.
  * @param keyBinding - The keybinding used for this mod, by default it should be [GLFW.GLFW_KEY_UNKNOWN], which will not bind a key to this mod.
- * @author gt3ch1
- * @version 07-18-2023
+ * @author GT3CH1
+ * @version 01-15-2025
  *
  */
 abstract class Mod(
-    override val name: String,
     override val translationKey: String,
     override val chatCommand: String,
     final override var modCategory: ModCategory,
@@ -114,7 +112,6 @@ abstract class Mod(
     /**
      * Creates a mod with the given parameters.
      *
-     * @param name - The name of the mod, used for sorting purposes only.
      * @param translationKey - The translation key, used for rendering the mod's name in the GUI and in chat.
      * @param chatCommand - The chat command, used for toggling the mod. This does not need to be prefixed by anything.
      * @param modCategory - The category of the mod. See [ModCategory] for more information.
@@ -122,13 +119,11 @@ abstract class Mod(
      * but will allow the player to bind a key from the Minecraft controls menu.
      */
     constructor(
-        name: String,
         translationKey: String,
         chatCommand: String,
         modCategory: ModCategory,
         keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN
     ) : this(
-        name,
         translationKey,
         chatCommand,
         modCategory,

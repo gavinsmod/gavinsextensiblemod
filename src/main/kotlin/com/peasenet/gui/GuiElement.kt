@@ -42,7 +42,7 @@ import net.minecraft.text.Text
 import java.util.function.Consumer
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  * A parent class that holds all that is needed to render an in game gui.
  */

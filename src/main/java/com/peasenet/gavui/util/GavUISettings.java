@@ -46,7 +46,7 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 01/07/2023
  * A class that contains all the settings for the mod.
  */

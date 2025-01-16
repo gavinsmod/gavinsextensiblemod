@@ -23,35 +23,21 @@
  */
 package com.peasenet.mods.tracer
 
-import com.mojang.blaze3d.systems.RenderSystem
-import com.peasenet.config.TracerConfig
 import com.peasenet.gavui.color.Color
-import com.peasenet.main.Settings
-import com.peasenet.mods.tracer.TracerMod.Companion
 import com.peasenet.settings.SettingBuilder
-import com.peasenet.util.RenderUtils
-import com.peasenet.util.event.data.BlockEntityRender
-import com.peasenet.util.event.data.EntityRender
 import com.peasenet.util.listeners.RenderListener
-import net.minecraft.block.entity.BeehiveBlockEntity
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.ChestBlockEntity
 import net.minecraft.block.entity.EnderChestBlockEntity
 import net.minecraft.block.entity.ShulkerBoxBlockEntity
-import net.minecraft.client.render.BufferRenderer
-import net.minecraft.client.render.GameRenderer
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormats
-import net.minecraft.client.util.math.MatrixStack
 
 /**
  * A mod that allows the player to see tracers towards chests.
- * @author gt3ch1
- * @version 09-06-2024
+ * @author GT3CH1
+ * @version 01-15-2025
  * @since 04-11-2023
  */
 class ModChestTracer : BlockEntityTracer<BlockEntity>(
-    "Chest Tracer",
     "gavinsmod.mod.tracer.chest",
     "chesttracer",
     { it is ChestBlockEntity || it is EnderChestBlockEntity || it is ShulkerBoxBlockEntity }

@@ -32,7 +32,7 @@ import net.minecraft.block.ExperienceDroppingBlock
 /**
  * The configuration for xray.
  *
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  */
 class XrayConfig : BlockListConfig<XrayConfig>({ it is ExperienceDroppingBlock }) {

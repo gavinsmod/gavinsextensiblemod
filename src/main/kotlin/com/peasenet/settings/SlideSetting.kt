@@ -27,7 +27,7 @@ import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiSlider
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  * A setting that can be clicked. This is purely dependant on the given callback.
  */

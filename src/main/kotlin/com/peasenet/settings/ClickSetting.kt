@@ -30,7 +30,7 @@ import com.peasenet.gavui.GuiClick
  * A setting that can be clicked. This is purely dependent on the given callback.
  * 
  * @param builder - The [SettingBuilder] used to create this setting.
- * @author gt3ch1
+ * @author GT3CH1
  * @version 07-18-2023
  */
 class ClickSetting(builder: SettingBuilder) : Setting() {

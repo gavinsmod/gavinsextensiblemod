@@ -36,7 +36,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 01/01/2023
  */
 @Mixin(Block.class)

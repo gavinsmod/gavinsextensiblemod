@@ -37,8 +37,8 @@ import net.minecraft.item.SpawnEggItem
  * @example [com.peasenet.config.EspConfig]
  *
  * @author GT3CH1
- * @version 01-12-2025
- * @version 04-01-2023
+ * @version 01-15-2025
+ * @version 01-15-2025
  */
 open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
 
@@ -158,6 +158,15 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
         }
 
     var itemFilterList: ArrayList<ItemEntityFilter> = ArrayList()
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    /**
+     * The color for signs. Default value is [Colors.DESERT_SAND]
+     */
+    var signColor: Color = Colors.DESERT_SAND
         set(value) {
             field = value
             saveConfig()

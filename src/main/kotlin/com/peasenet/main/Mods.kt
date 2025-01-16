@@ -38,6 +38,7 @@ import com.peasenet.mods.movement.*
 import com.peasenet.mods.render.*
 import com.peasenet.mods.tracer.*
 import com.peasenet.util.ChatCommand
+import net.minecraft.client.resource.language.I18n
 
 
 /**
@@ -46,7 +47,7 @@ import com.peasenet.util.ChatCommand
  * the main GUI and the settings GUI.
  *
  * @author GT3CH1
- * @version 01-12-2025
+ * @version 01-15-2025
  * @since 07-18-2023
  */
 class Mods {
@@ -75,6 +76,7 @@ class Mods {
         GavinsMod.addMod(ModKillAura())
         GavinsMod.addMod(ModBeehiveEsp())
         GavinsMod.addMod(ModSignEsp())
+        GavinsMod.addMod(ModSignTracer())
         GavinsMod.addMod(ModChestEsp())
         GavinsMod.addMod(ModEntityItemEsp())
         GavinsMod.addMod(ModEntityPlayerEsp())
@@ -134,7 +136,7 @@ class Mods {
                 val values: Collection<Mod> = modMap.values
                 // sort the list by name
                 val list = ArrayList(values)
-                list.sortWith(Comparator.comparing(Mod::name))
+                list.sortWith(Comparator.comparing(Mod::translationKey))
                 return list
             }
 

@@ -25,7 +25,7 @@
 package com.peasenet.gavui.util.callbacks;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 7/1/2022
  * A callback interface for when settings are changed.
  */

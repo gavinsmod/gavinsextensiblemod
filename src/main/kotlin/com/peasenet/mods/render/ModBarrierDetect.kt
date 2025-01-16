@@ -27,12 +27,11 @@ import com.peasenet.mixinterface.ISimpleOption
 import net.minecraft.particle.ParticlesMode
 
 /**
- * @author gt3ch1
- * @version 03-02-2023
+ * @author GT3CH1
+ * @version 01-15-2025
  */
 @Suppress("UNCHECKED_CAST")
 class ModBarrierDetect : RenderMod(
-    "Barrier Detect",
     "gavinsmod.mod.render.barrierdetect",
     "barrierdetect"
 ) {

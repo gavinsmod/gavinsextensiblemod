@@ -29,7 +29,7 @@ import com.peasenet.util.listeners.TessellateBlockListener
 /**
  * Event called when block tessellation occurs.
  *
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  */
 class TessellateBlockEvent(

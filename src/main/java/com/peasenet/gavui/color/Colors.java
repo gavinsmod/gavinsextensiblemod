@@ -27,7 +27,7 @@ package com.peasenet.gavui.color;
 import java.util.Random;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 7/1/2022
  * A class containing pre-defined colors.
  * Note: Use this site to generate color names: <a href="https://www.color-name.com/hex/">color-name.com</a>

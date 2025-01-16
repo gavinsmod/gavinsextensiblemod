@@ -24,18 +24,13 @@
 
 package com.peasenet.mods.esp
 
-import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.config.EspConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.main.Settings
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
-import com.peasenet.util.RenderUtils
 import com.peasenet.util.listeners.BlockEntityRenderListener
 import com.peasenet.util.listeners.RenderListener
-import net.minecraft.client.gl.VertexBuffer
-import net.minecraft.client.render.GameRenderer
-import net.minecraft.util.math.Box
 import org.lwjgl.glfw.GLFW
 
 /**
@@ -43,24 +38,23 @@ import org.lwjgl.glfw.GLFW
  * as well as a chat command, GUI element, and an optional keybind.
  * For example,
  * ~~~
- * class ModExampleEsp() : EspMod("Example Esp", "example_esp", "exampleesp")
+ * class ModExampleEsp() : EspMod("example_esp", "exampleesp")
  * ~~~
  * This class extends the [Mod] class, so it has all the same methods and properties.
  * By extending this class, you must implement the [BlockEntityRenderListener] interface.
- * @param name The name of the mod.
  * @param translationKey The translation key for the mod's name.
  * @param chatCommand The chat command for the mod.
  * @param keyBinding The keybind for the mod. Defaults to [GLFW.GLFW_KEY_UNKNOWN].
  * @see Mod
  *
  * @author GT3CH1
- * @version 09-08-2024
+ * @version 01-15-2025
  * @since 07-18-2023
  */
 abstract class EspMod<T>(
-    name: String, translationKey: String, chatCommand: String, keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN
+    translationKey: String, chatCommand: String, keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN
 ) : Mod(
-    name, translationKey, chatCommand, ModCategory.ESP, keyBinding
+    translationKey, chatCommand, ModCategory.ESP, keyBinding
 ), RenderListener {
     protected var espList: MutableList<T> = ArrayList()
 

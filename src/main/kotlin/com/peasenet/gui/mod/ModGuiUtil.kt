@@ -31,7 +31,7 @@ import com.peasenet.main.GavinsMod.Companion.getModsInCategory
 import com.peasenet.mods.ModCategory
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  * A utility class used to get the gui elements that are needed for each gui category.
  */

@@ -27,7 +27,7 @@ package com.peasenet.mixinterface
  * Interface for the option class.
  *
  * @param <T> - The type of the option.
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
 </T> */
 interface ISimpleOption<T> {

@@ -27,7 +27,7 @@ import net.minecraft.block.BlockState
 import net.minecraft.util.math.BlockPos
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  *
  *

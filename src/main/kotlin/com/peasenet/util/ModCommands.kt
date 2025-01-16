@@ -37,8 +37,8 @@ import net.minecraft.client.resource.language.I18n
 
 /**
  * A class that handles chat commands for all mods.
- * @author gt3ch1
- * @version 04-11-2023
+ * @author GT3CH1
+ * @version 01-15-2025
  */
 class ModCommands : OnChatSendListener {
     init {
@@ -78,7 +78,7 @@ class ModCommands : OnChatSendListener {
                 // get all mod types
                 sendMessage("§bEach command is preceded by a period (§l.§r§b)", true)
                 val mods = Mods.mods.toMutableList()
-                mods.sortWith(compareBy<Mod> { it.modCategory }.thenBy { it.name })
+                mods.sortWith(compareBy<Mod> { it.modCategory }.thenBy { it.translationKey })
                 var previousCategory = ModCategory.NONE
                 for (t in mods) {
                     if (t.modCategory == ModCategory.GUI) continue

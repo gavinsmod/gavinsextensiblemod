@@ -39,7 +39,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /**
  * Mixin to rendering block entities.
  *
- * @author gt3ch1
+ * @author GT3CH1
  * @version 01/03/2023
  */
 

@@ -55,7 +55,6 @@ import kotlin.math.sqrt
  * @since 04-11-2023
  */
 class ModRadar : RenderMod(
-    "Radar",
     "gavinsmod.mod.render.radar",
     "radar"
 ), InGameHudRenderListener {

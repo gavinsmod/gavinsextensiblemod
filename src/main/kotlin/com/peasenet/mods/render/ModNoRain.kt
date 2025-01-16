@@ -24,12 +24,11 @@
 package com.peasenet.mods.render
 
 /**
- * @author gt3ch1
- * @version 03-02-2023
+ * @author GT3CH1
+ * @version 01-15-2025
  * A mod that disables rain.
  */
 class ModNoRain : RenderMod(
-    "No Rain",
     "gavinsmod.mod.render.norain",
     "norain"
 )

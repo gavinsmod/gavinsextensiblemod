@@ -27,7 +27,7 @@ package com.peasenet.gavui.math;
 /**
  * @param x The x coordinate of the point.
  * @param y The y coordinate of the point.
- * @author gt3ch1
+ * @author GT3CH1
  * @version 6/14/2022
  * A point in 2D space.
  */

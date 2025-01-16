@@ -29,7 +29,7 @@ import net.minecraft.client.network.OtherClientPlayerEntity
 
 /**
  * A fake player entity that can be used to render a player model in the getWorld().
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  */
 class FakePlayer : OtherClientPlayerEntity(minecraftClient.getWorld(), player!!.getGameProfile()) {

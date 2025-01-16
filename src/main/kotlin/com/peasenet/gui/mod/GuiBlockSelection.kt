@@ -54,7 +54,7 @@ import kotlin.math.ceil
  * @param translationKey The translation key for the gui.
  * @param settingKey The key for the setting.
  * @see BlockListConfig
- * @author gt3ch1
+ * @author GT3CH1
  * @version 09-01-2024
  * @since 04-11-2023
  */

@@ -26,12 +26,11 @@ package com.peasenet.mods.movement
 import net.minecraft.block.Blocks
 
 /**
- * @author gt3ch1
- * @version 03-02-2023
+ * @author GT3CH1
+ * @version 01-15-2025
  * AntiTrample prevents the player from trampling over farm blocks.
  */
 class ModAntiTrample : MovementMod(
-    "Anti Trample",
     "gavinsmod.mod.movement.antitrample",
     "antitrample"
 ) {

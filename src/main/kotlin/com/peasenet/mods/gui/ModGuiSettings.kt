@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,11 +32,11 @@ import org.lwjgl.glfw.GLFW
 
 /**
  * A mod that allows the player to configure certain settings of gavinsmod.
- * @author gt3ch1
- * @version 03-13-2023
+ * @author GT3CH1
+ * @since 03-13-2023
+ * @version 01-15-2025
  */
 class ModGuiSettings : GuiMod(
-    "Settings",
     "gavinsmod.settings.gui",
     "settings",
     GLFW.GLFW_KEY_O

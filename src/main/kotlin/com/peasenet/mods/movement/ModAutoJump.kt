@@ -24,12 +24,11 @@
 package com.peasenet.mods.movement
 
 /**
- * @author gt3ch1
- * @version 03-16-2023
+ * @author GT3CH1
+ * @version 01-15-2025
  * A mod that allows the player to jump as if they were pressing the jump key.
  */
 class ModAutoJump : MovementMod(
-    "Auto Jump",
     "gavinsmod.mod.movement.autojump",
     "autojump"
 ) {

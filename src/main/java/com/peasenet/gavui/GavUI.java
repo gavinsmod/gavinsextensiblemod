@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 7/13/2022
  * The main initializer class for GavUI
  */

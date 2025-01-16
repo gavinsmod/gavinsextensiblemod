@@ -29,11 +29,10 @@ import org.lwjgl.glfw.GLFW
 
 /**
  * A mod that allows the player to see a menu of all the mods by pressing the keybind.
- * @author gt3ch1
- * @version 03-02-2023
+ * @author GT3CH1
+ * @version 01-15-2025
  */
 class ModGui : GuiMod(
-    "GUI",
     "gavinsmod.mod.gui",
     "gui",
     GLFW.GLFW_KEY_I

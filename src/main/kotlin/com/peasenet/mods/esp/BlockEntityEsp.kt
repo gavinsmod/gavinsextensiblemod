@@ -26,30 +26,27 @@
 
 package com.peasenet.mods.esp
 
-import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.util.RenderUtils
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.Box
 
 /**
  * A class that represents an ESP mod for block entities.
  * @param T The type of block entity to render.
- * @param name The name of the mod.
  * @param translationKey The translation key of the mod.
  * @param chatCommand The chat command of the mod.
  *
  * @author GT3CH1
- * @version 09-01-2024
+ * @version 01-15-2025
  * @since 09-01-2024
  *
  */
 abstract class BlockEntityEsp<T : BlockEntity>(
     name: String, translationKey: String, chatCommand: String, val filter: (BlockEntity) -> Boolean
 ) : EspMod<T>(
-    name, translationKey, chatCommand
+    translationKey, chatCommand
 ) {
 
     override fun onTick() {

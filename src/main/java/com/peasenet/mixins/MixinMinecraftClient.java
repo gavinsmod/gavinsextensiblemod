@@ -49,7 +49,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.io.File;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 5/18/2022
  */
 @Mixin(MinecraftClient.class)

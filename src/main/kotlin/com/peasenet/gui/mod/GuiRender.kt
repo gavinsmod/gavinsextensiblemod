@@ -28,7 +28,7 @@ import com.peasenet.mods.ModCategory
 import net.minecraft.text.Text
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  * Creates a new gui for render mods as a dropdown.
  */

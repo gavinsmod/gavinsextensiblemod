@@ -48,12 +48,12 @@ import net.minecraft.util.math.Box
 
 /**
  * Creates a new mod to control waypoints.
- * @author gt3ch1
- * @version 09-06-2024
+ * @author GT3CH1
+ * @version 01-15-2025
  * @since 03-02-2023
  */
 class ModWaypoint : RenderMod(
-    "Waypoints", "gavinsmod.mod.render.waypoints", "waypoints", ModCategory.WAYPOINTS
+    "gavinsmod.mod.render.waypoints", "waypoints", ModCategory.WAYPOINTS
 ), RenderListener, CameraBobListener {
 
     init {

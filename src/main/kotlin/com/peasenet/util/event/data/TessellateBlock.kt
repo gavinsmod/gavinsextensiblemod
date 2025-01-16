@@ -31,7 +31,7 @@ import net.minecraft.util.math.BlockPos
 /**
  * Data class for the tessellate block event.
  *
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  */
 class TessellateBlock
