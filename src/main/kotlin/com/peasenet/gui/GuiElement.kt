@@ -95,7 +95,7 @@ open class GuiElement(title: Text?) : Screen(title) {
         mouseX: Double,
         mouseY: Double,
         horizontalAmount: Double,
-        verticalAmount: Double
+        verticalAmount: Double,
     ): Boolean {
         guis.forEach(Consumer { gui: Gui -> gui.mouseScrolled(mouseX, mouseY, verticalAmount) })
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)
@@ -117,7 +117,6 @@ open class GuiElement(title: Text?) : Screen(title) {
         for (gui in guis) {
             if (Gui.getClickedGui() != null && gui.uuid == Gui.getClickedGui().uuid) {
                 gui.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)
-                GavinsMod.LOGGER.info(gui.uuid.toString() + " " + Gui.getClickedGui().toString())
                 return true
             } else if (gui is GuiScroll) {
                 if (gui.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) return true

@@ -23,13 +23,15 @@
  */
 package com.peasenet.config
 
+import com.peasenet.extensions.wrapAround
 import com.peasenet.gavui.color.Colors
 
 /**
  * A class in which controls the configurations of the radar.
  *
- * @author gt3ch1
- * @version 03-02-2023
+ * @author GT3CH1
+ * @version 01-15-2025
+ * @since 03-02-2023
  */
 class RadarConfig : Config<RadarConfig>() {
     /**
@@ -37,12 +39,7 @@ class RadarConfig : Config<RadarConfig>() {
      */
     var scale = 4
         set(value) {
-            field = value
-            // cooerce field to be between 1 and 8 inclusive
-            if (field > MAX_SCALE)
-                field = 1
-            if (field < 1)
-                field = MAX_SCALE
+            field = value.wrapAround(1, MAX_SCALE)
             saveConfig()
         }
 
@@ -62,15 +59,7 @@ class RadarConfig : Config<RadarConfig>() {
      *
      * @return The color used to draw players on the radar.
      */
-    /**
-     * The default color used to draw players on the radar.
-     */
     var playerColor = Colors.GOLD!!
-        /**
-         * Sets the color used to draw players on the radar.
-         *
-         * @param playerColor - The color used to draw players on the radar.
-         */
         set(playerColor) {
             field = playerColor
             saveConfig()
@@ -88,185 +77,78 @@ class RadarConfig : Config<RadarConfig>() {
      *
      * @return The color used to draw hostile mobs on the radar.
      */
-    /**
-     * The default color used to draw hostile mobs on the radar.
-     */
     var hostileMobColor = Colors.RED!!
-        /**
-         * Sets the color used to draw hostile mobs on the radar.
-         *
-         * @param hostileMobColor - The color used to draw hostile mobs on the radar.
-         */
         set(hostileMobColor) {
             field = hostileMobColor
             saveConfig()
         }
+
     /**
      * Gets the color used to draw peaceful mobs on the radar.
      *
      * @return The color used to draw peaceful mobs on the radar.
      */
-    /**
-     * The default color used to draw peaceful mobs on the radar.
-     */
     var peacefulMobColor = Colors.GREEN!!
-        /**
-         * Sets the color used to draw peaceful mobs on the radar.
-         *
-         * @param peacefulMobColor - The color used to draw peaceful mobs on the radar.
-         */
         set(peacefulMobColor) {
             field = peacefulMobColor
             saveConfig()
         }
+
     /**
      * Gets the color used to draw items on the radar.
      *
      * @return The color used to draw items on the radar.
      */
-    /**
-     * The default color used to draw items on the radar.
-     */
     var itemColor = Colors.CYAN!!
-        /**
-         * Sets the color used to draw items on the radar.
-         *
-         * @param itemColor - The color used to draw items on the radar.
-         */
         set(itemColor) {
             field = itemColor
             saveConfig()
         }
-    /**
-     * Sets the color used to draw waypoints on the radar. Will use this color if isUseWaypointColor is false.
-     *
-     * @return The color used to draw waypoints on the radar.
-     * @see .isUseWaypointColor
-     */
-    /**
-     * The default color used to draw waypoints on the radar.
-     */
-    var waypointColor = Colors.WHITE!!
-        /**
-         * Sets the color used to draw waypoints on the radar.
-         *
-         * @param waypointColor - The color used to draw waypoints on the radar.
-         */
-        set(waypointColor) {
-            field = waypointColor
-            saveConfig()
-        }
-    /**
-     * Whether to show players on the radar.
-     *
-     * @return True if players should be shown on the radar.
-     */
+
     /**
      * Whether to show players on the radar.
      */
     var isShowPlayer = true
-        /**
-         * Sets whether to show players on the radar.
-         *
-         * @param showPlayer - True if players should be shown on the radar.
-         */
         set(showPlayer) {
             field = showPlayer
             saveConfig()
         }
+
     /**
      * Whether to show hostile mobs on the radar.
      *
      * @return True if hostile mobs should be shown on the radar.
      */
-    /**
-     * Whether to show hostile mobs on the radar.
-     */
     var isShowHostileMob = true
-        /**
-         * Sets whether to show hostile mobs on the radar.
-         *
-         * @param showHostileMob - True if hostile mobs should be shown on the radar.
-         */
         set(showHostileMob) {
             field = showHostileMob
             saveConfig()
         }
+
     /**
      * Whether to show peaceful mobs on the radar.
      *
      * @return True if peaceful mobs should be shown on the radar.
      */
-    /**
-     * Whether to show peaceful mobs on the radar.
-     */
     var isShowPeacefulMob = true
-        /**
-         * Sets whether to show peaceful mobs on the radar.
-         *
-         * @param showPeacefulMob - True if peaceful mobs should be shown on the radar.
-         */
         set(showPeacefulMob) {
             field = showPeacefulMob
             saveConfig()
         }
+
     /**
      * Whether to show items on the radar.
      *
      * @return True if items should be shown on the radar.
      */
-    /**
-     * Whether to show items on the radar.
-     */
     var isShowItem = true
-        /**
-         * Sets whether to show items on the radar.
-         *
-         * @param showItem - True if items should be shown on the radar.
-         */
         set(showItem) {
             field = showItem
             saveConfig()
         }
-    /**
-     * Whether to show waypoints on the radar.
-     *
-     * @return True if waypoints should be shown on the radar.
-     */
-    /**
-     * Whether to show waypoints on the radar.
-     */
-    var isShowWaypoint = true
-        /**
-         * Sets whether to show waypoints on the radar.
-         *
-         * @param showWaypoint - True if waypoints should be shown on the radar.
-         */
-        set(showWaypoint) {
-            field = showWaypoint
-            saveConfig()
-        }
-    /**
-     * Whether to use the waypoint color to draw waypoints on the radar.
-     *
-     * @return True if the waypoint color should be used to draw waypoints on the radar.
-     */
-    /**
-     * Whether to use the waypoint color to draw waypoints on the radar.
-     */
-    var isUseWaypointColor = true
-        /**
-         * Sets whether to use the waypoint color to draw waypoints on the radar.
-         *
-         * @param useWaypointColor - True if the color defined by the waypoint should be used to draw waypoints on the radar.
-         */
-        set(useWaypointColor) {
-            field = useWaypointColor
-            saveConfig()
-        }
 
     /**
-     * The alpha value for points on the radar.
+     * The alpha value of points on the radar.
      */
     var pointAlpha = 0.5f
         set(value) {
@@ -279,15 +161,7 @@ class RadarConfig : Config<RadarConfig>() {
      *
      * @return The current alpha value for the radar background.
      */
-    /**
-     * The alpha value for the radar background.
-     */
     var backgroundAlpha = 0.5f
-        /**
-         * Sets the current alpha value for the radar background.
-         *
-         * @param backgroundAlpha The new alpha value for the radar background.
-         */
         set(backgroundAlpha) {
             field = backgroundAlpha
             saveConfig()
@@ -301,25 +175,7 @@ class RadarConfig : Config<RadarConfig>() {
     }
 
     val size: Int
-        get() = scale * 16 + 1
-
-
-    /**
-     * The call back used to increase the scale.
-     */
-    fun increaseScaleCallback() {
-        scale = scale + 1
-        if (scale > MAX_SCALE) scale = 1
-        saveConfig()
-    }
-
-    /**
-     * The callback used to update the point size.
-     */
-    fun updatePointSizeCallback() {
-        pointSize += 2
-        saveConfig()
-    }
+        get() { return scale * 16 }
 
     companion object {
         /**
@@ -328,7 +184,6 @@ class RadarConfig : Config<RadarConfig>() {
         @JvmField
         var y = 12
 
-        @JvmField
         var MAX_SCALE = 10
 
         /**

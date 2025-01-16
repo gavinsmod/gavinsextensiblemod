@@ -133,7 +133,6 @@ public class GuiSlider extends Gui {
         if (button == 0 && mouseWithinGui(mouseX, mouseY) && !isHidden()) {
             setValue(mouseX);
             clickedGui = this;
-            GavUI.LOGGER.debug("Clicked on slider {}", getUUID());
             return true;
         }
         return false;

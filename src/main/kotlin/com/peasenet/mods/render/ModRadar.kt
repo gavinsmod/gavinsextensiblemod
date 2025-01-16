@@ -112,9 +112,10 @@ class ModRadar : RenderMod(
             // get entity x and z relative to player
             val color = getColorFromEntity(entity)
             val point = getScaledPos(getPointRelativeToYaw(entity.pos, yaw))
+            val box = BoxF(point, config.pointSize.toFloat(), config.pointSize.toFloat())
             GuiUtil.drawBox(
                 color,
-                BoxF(point, config.pointSize.toFloat(), config.pointSize.toFloat()),
+                box,
                 stack,
                 config.pointAlpha
             )
@@ -142,15 +143,12 @@ class ModRadar : RenderMod(
      * @return A scaled position relative to the radar, clamped to the radar.
      */
     private fun getScaledPos(location: PointF): PointF {
-        // check the distance of w to the player.
-        var newLoc = clampPoint(location)
-
+        val halfConfigSize = config.size / 2f
         // offset the point to the center of the radar.
-        newLoc = PointF(
-            newLoc.x + RadarConfig.x + config.size / 2f,
-            newLoc.y + RadarConfig.y + config.size / 2f
-        )
-        return newLoc
+        return clampPoint(location)
+            .add(RadarConfig.x, RadarConfig.y)
+            .add(halfConfigSize, halfConfigSize)
+            .subtract(PointF(pointOffset(), pointOffset()))
     }
 
     /**
@@ -160,24 +158,19 @@ class ModRadar : RenderMod(
      * @return The clamped point.
      */
     private fun clampPoint(point: PointF): PointF {
-        var newPoint = point
-        val offset = config.pointSize - pointOffset
-        // if the point is touching any edges of the radar, clamp it to the edge.
-        // right side
-        if (newPoint.x >= config.size / 2f - offset) newPoint =
-            PointF(config.size / 2f - offset, newPoint.y)
-        // left side
-        if (newPoint.x <= -config.size / 2f + pointOffset) newPoint =
-            PointF(-config.size / 2f + pointOffset, newPoint.y)
-        // bottom side
-        if (newPoint.y >= config.size / 2f - offset) newPoint =
-            PointF(newPoint.x, config.size / 2f - offset)
-        // top side
-        if (newPoint.y <= -config.size / 2f + pointOffset) newPoint =
-            PointF(newPoint.x, -config.size / 2f + pointOffset)
-        // offset the point to be centered
-
-        return newPoint.subtract(PointF(pointOffset, pointOffset))
+        // scale point so that (0,0) is the center of the radar
+        var newLoc = point
+        val distance = newLoc.distance()
+        val halfConfig = config.size / 2f
+        val halfConfigOffset = halfConfig - pointOffset()
+        val scale = (halfConfig) / distance
+        if (distance > halfConfig)
+            newLoc = newLoc.multiply(scale)
+        if (newLoc.x < -halfConfigOffset) newLoc = PointF(-halfConfigOffset, newLoc.y)
+        if (newLoc.x > halfConfigOffset) newLoc = PointF(halfConfigOffset, newLoc.y)
+        if (newLoc.y < -halfConfigOffset) newLoc = PointF(newLoc.x, -halfConfigOffset)
+        if (newLoc.y > halfConfigOffset) newLoc = PointF(newLoc.x, halfConfigOffset)
+        return newLoc
     }
 
     /**
@@ -205,16 +198,10 @@ class ModRadar : RenderMod(
         val player = client.getPlayer()
         val x = loc!!.getX() - player.x
         val z = loc.getZ() - player.z
-        return calculateDistance(yaw, x, z).subtract(
-            PointF(
-                config.pointSize / 2f,
-                config.pointSize / 2f
-            )
-        )
+        return calculateDistance(yaw, x, z)
     }
 
     companion object {
-
 
         /**
          * The configuration for this mod.
@@ -226,7 +213,9 @@ class ModRadar : RenderMod(
          *
          * @return The offset to draw the points on the radar.
          */
-        val pointOffset: Float = if (config.pointSize == 1) 0F else (config.pointSize - 1) / 2F
+        fun pointOffset(): Float {
+            return (config.pointSize.toFloat()).div(2f)
+        }
 
         /**
          * Calculates the position and distance of the given coordinates from the player.
@@ -239,8 +228,8 @@ class ModRadar : RenderMod(
         private fun calculateDistance(yaw: Float, x: Double, z: Double): PointF {
             var x1 = x
             var z1 = z
-            val arctan = atan2(z1, x1)
-            val angle = Math.toDegrees(arctan) - yaw
+            val atan = atan2(z1, x1)
+            val angle = Math.toDegrees(atan) - yaw
             val distance = sqrt(x1 * x1 + z1 * z1)
             x1 = cos(Math.toRadians(angle)) * distance * -1
             z1 = sin(Math.toRadians(angle)) * distance * -1

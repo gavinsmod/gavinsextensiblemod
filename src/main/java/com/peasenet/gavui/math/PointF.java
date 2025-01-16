@@ -120,4 +120,12 @@ public record PointF(float x, float y) {
         return (float) Math.sqrt(Math.pow(x - other.x, 2) + Math.pow(y - other.y, 2));
     }
 
+    /**
+     * Calculates the distance between the origin and the point.
+     *
+     * @return The distance between the origin and the point.
+     */
+    public float distance() {
+        return (float) Math.sqrt(x * x + y * y);
+    }
 }

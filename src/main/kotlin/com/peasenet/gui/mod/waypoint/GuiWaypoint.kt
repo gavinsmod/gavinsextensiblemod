@@ -188,6 +188,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
      * Callback used for saving the waypoint after editing.
      */
     private fun saveCallback() {
+        w.clearDimensions()
         if (overworldToggle.value) w.addDimension(Dimension.OVERWORLD)
         if (netherToggle.value) w.addDimension(Dimension.NETHER)
         if (endToggle.value) w.addDimension(Dimension.END)
@@ -206,7 +207,6 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         GavinsMod.guiSettings.reloadGui()
         parent = GavinsMod.guiSettings
         close()
-
     }
 
     /**
@@ -387,7 +387,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
 
     override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
         offsetY = minecraftClient.window.scaledHeight / 2 - height / 2
-        box!!.render(drawContext, client!!.textRenderer, mouseX, mouseY, delta)
+        box.render(drawContext, client!!.textRenderer, mouseX, mouseY, delta)
         super.render(drawContext, mouseX, mouseY, delta)
         guis.forEach(Consumer { obj: Gui -> obj.show() })
         drawContext.drawText(

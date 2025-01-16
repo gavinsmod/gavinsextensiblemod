@@ -159,8 +159,6 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
             .build()
 
         pos = pos.add(0f, gapY)
-
-
         val scaleSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.scale")
             .setTopLeft(pos)
@@ -174,12 +172,12 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
 
         val pointSizeSetting = SettingBuilder()
             .setTitle("gavinsmod.settings.radar.pointsize")
-//            .setCallback(this::togglePointSize)
             .setTopLeft(pos)
             .buildClickSetting()
         pointSizeSetting.setCallback {
-            config.updatePointSizeCallback()
+            config.pointSize += 2
             updateScaleText(pointSizeSetting, config.pointSize)
+            config.saveConfig()
         }
         pos = PointF(paddingX, pos.y + gapY)
 
@@ -327,22 +325,6 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         updateScaleText(pointSizeSetting, config.pointSize)
         super.init()
     }
-
-    /**
-     * Callback method for the scale setting.
-     */
-//    private fun increaseScale() {
-//        Settings.getConfig<RadarConfig>("radar").scale += 1
-//        updateScaleText(scaleSetting, Settings.getConfig<RadarConfig>("radar").scale)
-//    }
-
-    /**
-     * Callback for the point size setting.
-     */
-//    private fun togglePointSize() {
-//        Settings.getConfig<RadarConfig>("radar").updatePointSizeCallback()
-//        updateScaleText(pointSizeSetting, Settings.getConfig<RadarConfig>("radar").pointSize)
-//    }
 
     /**
      * Callback for update the scale text.

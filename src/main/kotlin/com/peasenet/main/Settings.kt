@@ -32,7 +32,8 @@ object Settings {
     private val defaultSettings: HashMap<String?, Config<*>> = HashMap()
 
     private val gson = GsonBuilder().setExclusionStrategies(GsonExclusionStrategy())
-        .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE).registerTypeHierarchyAdapter(XrayConfig::class.java, XrayConfigGsonAdapter())
+        .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+        .registerTypeHierarchyAdapter(XrayConfig::class.java, XrayConfigGsonAdapter())
         .create()
 
     fun init() {
@@ -71,7 +72,7 @@ object Settings {
      */
     private fun fetchConfig(clazz: Config<*>, key: String?): Config<*> {
         // open the settings file
-         val cfgFile = filePath
+        val cfgFile = filePath
 
         val map: Any?
         try {
@@ -109,7 +110,7 @@ object Settings {
             val writer = Files.newBufferedWriter(Paths.get(cfgFile))
             json.toJson(settings, writer)
             writer.close()
-            GavinsMod.LOGGER.info("Settings saved.")
+//            GavinsMod.LOGGER.info("Settings saved.")
         } catch (e: Exception) {
             GavinsMod.LOGGER.error("Error writing settings to file.")
             GavinsMod.LOGGER.error(e.message)

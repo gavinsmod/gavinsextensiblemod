@@ -47,28 +47,44 @@ import java.util.UUID
  * @see com.peasenet.mods.render.waypoints
  *
  * @author GT3CH1
- * @version 01-14-2025
+ * @version 01-15-2025
  * @since 03-23-2023
  */
 class Waypoint(
     val coordinates: Vec3i = Vec3i.ZERO,
     val name: String = "",
-    val dimensions: ArrayList<String> = ArrayList(),
+    val dimensions: MutableSet<String> = mutableSetOf(),
     val color: Color = Colors.WHITE,
     val isEnabled: Boolean = true,
     val renderEsp: Boolean = true,
     val renderTracer: Boolean = true,
-    val uuid: UUID = UUID.randomUUID()
+    val uuid: UUID = UUID.randomUUID(),
 ) {
-    fun addDimension(dim: Dimension) {
-        if (hasDimension(dim)) return
-        dimensions.add(dim.dimension)
-    }
+    /**
+     * Adds a dimension to the list of dimensions.
+     * If the dimension is already in the list, this will do nothing.
+     */
+    fun addDimension(dim: Dimension): Boolean = dimensions.add(dim.dimension)
 
+    /**
+     * Clear all dimensions from the list.
+     */
+    fun clearDimensions() = dimensions.clear()
+
+    /**
+     * Checks if the dimension is in the list of dimensions.
+     */
     fun hasDimension(dim: Dimension): Boolean = dimensions.any { it == dim.dimension }
+
+    /**
+     * Checks if the waypoint has any dimensions.
+     */
     fun hasDimensions(): Boolean = dimensions.isNotEmpty()
+
+    /**
+     * Checks whether if the waypoint can render in the given dimension.
+     */
+    fun canRender(dim: Dimension): Boolean = dimensions.contains(dim.dimension) && isEnabled
     override fun equals(other: Any?): Boolean = this.uuid == (other as Waypoint).uuid
     override fun hashCode(): Int = this.uuid.hashCode()
-    fun canRender(dim: Dimension): Boolean = dimensions.contains(dim.dimension) && isEnabled
-
 }
