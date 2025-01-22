@@ -21,74 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.config
 
+package com.peasenet.config.misc
+
+import com.peasenet.config.Config
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 
 /**
- * The configuration for the FPS colors.
  *
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 09-16-2024
+ * @since 09-16-2024
  */
-class FpsColorConfig : Config<FpsColorConfig>() {
-    var slowFps: Color = Colors.RED
-        /**
-         * Sets the color for slow FPS.
-         * @param slowFps - The color for slow FPS.
-         */
-        set(slowFps) {
-            field = slowFps
-            saveConfig()
-        }
-
-    /**
-     * Gets the color for ok FPS.
-     * The color for 50% to 85% of the FPS - default is yellow.
-     *
-     * @return The color for ok FPS.
-     */
-    var okFps: Color = Colors.YELLOW
-        /**
-         * Sets the color for ok FPS.
-         * @param okFps - The color for ok FPS.
-         */
-        set(okFps) {
-            field = okFps
-            saveConfig()
-        }
-
-    /**
-     * Gets the color for fast FPS.
-     * @return The color for fast FPS.
-     */
-    var fastFps: Color = Colors.GREEN
-        /**
-         * Sets the color for fast FPS.
-         * @param fastFps - The color for fast FPS.
-         */
-        set(fastFps) {
-            field = fastFps
-            saveConfig()
-        }
-
-    /**
-     * Gets whether the FPS colors are enabled.
-     * @return Whether the FPS colors are enabled.
-     */
-    var isColorsEnabled = true
-        /**
-         * Sets whether the FPS colors are enabled.
-         * @param colorsEnabled - Whether the FPS colors are enabled.
-         */
-        set(colorsEnabled) {
-            field = colorsEnabled
-            saveConfig()
-        }
-
+class FreeCamConfig : Config<FreeCamConfig>() {
     init {
-        key = "fpsColors"
+        key = "freecam"
     }
+
+    var tracerEnabled: Boolean = false
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    var espEnabled: Boolean = false
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    var freeCamSpeed: Float = 1f
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    var alpha = 0.5f
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    var color: Color = Colors.GOLD
+        set(value) {
+            field = value
+            saveConfig()
+        }
 
 }

@@ -23,7 +23,7 @@
  */
 package com.peasenet.mods.render
 
-import com.peasenet.config.XrayConfig
+import com.peasenet.config.render.XrayConfig
 import com.peasenet.gui.mod.render.GuiXray
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.Settings
@@ -131,7 +131,7 @@ class ModXray : RenderMod(
     }
 
     override fun onRenderBlockEntity(er: BlockEntityRender) {
-        if (!shouldDrawFace(client.getWorld().getBlockState(er.entity.pos))) er.cancel()
+        if (!shouldDrawFace(client.getWorld().getBlockState(er.entity!!.pos))) er.cancel()
     }
 
     companion object {

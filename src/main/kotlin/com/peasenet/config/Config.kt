@@ -52,8 +52,8 @@ import com.peasenet.main.Settings
  * You may then get the current state of your config by calling [Settings.getConfig] with the key specified.
  * @param <E> The type of the config.
  * @author GT3CH1
- * @version 07-18-2023
- * @see MiscConfig
+ * @since 07-18-2023
+ * @version 01-18-2025
  * @see Settings
  */
 abstract class Config<E : Config<E>> {

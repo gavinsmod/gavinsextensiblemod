@@ -21,21 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.config
+package com.peasenet.config.misc
+
+import com.peasenet.config.Config
 
 /**
- * The configuration for ESPs. This is stored in the core client as there are multiple GEMs that require an EspConfig.
- * The key for this configuration is "esp".
- *
- * @see TracerConfig
- * @see EspConfig
- *
+ * The miscellaneous configuration.
+ * The key is "misc".
  * @author GT3CH1
- * @version 07-18-2023
- * @since 07-18-2023
+ * @version 05-07-2024
  */
-class EspConfig : TracerEspConfig<EspConfig>() {
+class MiscConfig : Config<MiscConfig>() {
+    var isMessages = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var background = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var freeCamSpeed = 0.1f
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
     init {
-        key = "esp"
+        key = "misc"
     }
 }

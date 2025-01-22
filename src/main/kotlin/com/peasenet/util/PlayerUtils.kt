@@ -23,7 +23,7 @@
  */
 package com.peasenet.util
 
-import com.peasenet.config.MiscConfig
+import com.peasenet.config.misc.MiscConfig
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings

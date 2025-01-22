@@ -42,9 +42,6 @@ class ModGuiSettings : GuiMod(
     GLFW.GLFW_KEY_O
 ) {
     init {
-//        val guiSounds = ToggleSetting("gavinsmod.settings.gui.sound")
-//        guiSounds.setCallback { GavUISettings.add("gui.sound", guiSounds.value) }
-//        guiSounds.value = GavUISettings.getBool("gui.sound")
         val guiSounds = SettingBuilder()
             .setTitle("gavinsmod.settings.gui.sound")
             .setState(GavUISettings.getBool("gui.sound"))

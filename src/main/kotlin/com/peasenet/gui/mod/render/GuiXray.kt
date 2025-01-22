@@ -23,30 +23,8 @@
  */
 package com.peasenet.gui.mod.render
 
-import com.peasenet.config.XrayConfig
-import com.peasenet.gavui.Gui
-import com.peasenet.gavui.GuiBuilder
-import com.peasenet.gavui.GuiClick
-import com.peasenet.gavui.GuiToggle
-import com.peasenet.gavui.color.Colors
-import com.peasenet.gavui.math.BoxF
-import com.peasenet.gavui.math.PointF
-import com.peasenet.gavui.util.GavUISettings
-import com.peasenet.gavui.util.GuiUtil
-import com.peasenet.gui.GuiElement
+import com.peasenet.config.render.XrayConfig
 import com.peasenet.gui.mod.GuiBlockSelection
-import com.peasenet.main.GavinsMod
-import com.peasenet.main.GavinsModClient.Companion.minecraftClient
-import com.peasenet.main.Mods.Companion.getMod
-import com.peasenet.main.Settings
-import net.minecraft.block.Block
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.gui.widget.TextFieldWidget
-import net.minecraft.client.resource.language.I18n
-import net.minecraft.registry.Registries
-import net.minecraft.text.Text
-import java.util.*
-import kotlin.math.ceil
 
 /**
  * A gui that allows the player to search for blocks and add them to the xray list. Must extend GuiBlockSelection.

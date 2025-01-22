@@ -23,7 +23,7 @@
  */
 package com.peasenet.mods.combat
 
-import com.peasenet.config.AutoAttackConfig
+import com.peasenet.config.combat.AutoAttackConfig
 import com.peasenet.gui.mod.combat.GuiAutoAttack
 import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder

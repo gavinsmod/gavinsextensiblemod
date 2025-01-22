@@ -1,4 +1,4 @@
-/*
+﻿/*
  * MIT License
  *
  * Copyright (c) 2022-2025, Gavin C. Pease
@@ -21,37 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.config
 
-import com.peasenet.main.Mods
+package com.peasenet.config.combat
+
+import com.peasenet.config.commons.MobAttackFilterConfig
 
 /**
- * Configuration file for fullbright.
+ * Configuration settings for [ModAutoAttack][com.peasenet.mods.combat.ModAutoAttack]
  *
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 01-12-2025
+ * @since 01-12-2025
  */
-open class FullbrightConfig : Config<FullbrightConfig>() {
-    var gamma: Float = 1.0F
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    /**
-     * Whether to fade the brightness.
-     */
-    var gammaFade = true
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
+class AutoAttackConfig : MobAttackFilterConfig<AutoAttackConfig>() {
     init {
-        key = "fullbright"
-    }
-
-    fun maxGamma(): Float  {
-        return if (Mods.isActive("xray")) 16F else 1 + 15 * gamma
+        key = "autoattack"
     }
 }

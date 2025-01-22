@@ -23,7 +23,20 @@
  */
 package com.peasenet.main
 
-import com.peasenet.config.*
+import com.peasenet.config.combat.AutoAttackConfig
+import com.peasenet.config.combat.KillAuraConfig
+import com.peasenet.config.esp.BlockEspConfig
+import com.peasenet.config.esp.CaveEspConfig
+import com.peasenet.config.esp.EspConfig
+import com.peasenet.config.misc.FpsColorConfig
+import com.peasenet.config.misc.FreeCamConfig
+import com.peasenet.config.misc.MiscConfig
+import com.peasenet.config.render.FullbrightConfig
+import com.peasenet.config.render.RadarConfig
+import com.peasenet.config.render.XrayConfig
+import com.peasenet.config.tracer.BlockTracerConfig
+import com.peasenet.config.tracer.TracerConfig
+import com.peasenet.config.waypoint.WaypointConfig
 import com.peasenet.mods.Mod
 import com.peasenet.mods.combat.ModAutoAttack
 import com.peasenet.mods.combat.ModAutoCrit
@@ -38,7 +51,6 @@ import com.peasenet.mods.movement.*
 import com.peasenet.mods.render.*
 import com.peasenet.mods.tracer.*
 import com.peasenet.util.ChatCommand
-import net.minecraft.client.resource.language.I18n
 
 
 /**
@@ -135,8 +147,7 @@ class Mods {
                 // get all values from the map and add them to the list
                 val values: Collection<Mod> = modMap.values
                 // sort the list by name
-                val list = ArrayList(values)
-                list.sortWith(Comparator.comparing(Mod::translationKey))
+                val list = ArrayList(values.sortedBy { it.translationKey })
                 return list
             }
 

@@ -24,6 +24,9 @@
 
 package com.peasenet.extensions
 
+import com.peasenet.util.block.Edge
+import com.peasenet.util.block.Neighbors
+
 /**
  *
  * @author GT3CH1
@@ -36,4 +39,40 @@ fun Int.wrapAround(minVal: Int, maxVal: Int): Int {
     if (this < minVal) return maxVal
     if (this > maxVal) return minVal
     return this
+}
+
+fun Int.or(other: Neighbors) {
+    this or other.mask
+}
+
+fun Int.and(other: Neighbors) {
+    this and other.mask
+}
+
+fun Int.not(other: Neighbors) {
+    this and other.mask.inv()
+}
+
+infix fun Int.nand(other: Neighbors) {
+    this and other.mask.inv()
+}
+
+infix fun Int.or(other: Edge): Int {
+    return this or other.mask
+}
+
+infix fun Int.and(other: Edge): Int {
+    return this and other.mask
+}
+
+infix fun Int.not(other: Edge) {
+    this and other.mask.inv()
+}
+
+infix fun Int.nand(other: Edge): Int {
+    return this and other.mask.inv()
+}
+
+infix operator fun Int.times(other: Neighbors): Int {
+    return this * other.mask
 }

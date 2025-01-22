@@ -32,18 +32,18 @@ import com.peasenet.util.listeners.Listener
  * @author GT3CH1
  * @version 03-02-2023
 </T> */
-abstract class Event<T : Listener> {
+interface Event<T : Listener> {
     /**
      * Fires the event.
      *
      * @param listeners - The listeners to fire the event to.
      */
-    abstract fun fire(listeners: ArrayList<T>)
+    fun fire(listeners: ArrayList<T>)
 
     /**
      * Gets the event class.
      *
      * @return The event class.
      */
-    abstract val event: Class<T>
+    val event: Class<T>
 }

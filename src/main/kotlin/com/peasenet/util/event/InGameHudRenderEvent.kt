@@ -38,7 +38,8 @@ class InGameHudRenderEvent
  *
  * @param drawContext - The draw context to use.
  * @param delta - The delta.
- */(private var drawContext: DrawContext, var delta: Float) : Event<InGameHudRenderListener>() {
+ */
+    (private var drawContext: DrawContext, var delta: Float) : Event<InGameHudRenderListener> {
     override fun fire(listeners: ArrayList<InGameHudRenderListener>) {
         for (listener in listeners) {
             listener.onRenderInGameHud(drawContext, delta)

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * MIT License
  *
  * Copyright (c) 2022-2025, Gavin C. Pease
@@ -21,20 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.config
+
+package com.peasenet.config.esp
+
+import com.peasenet.config.commons.BlockListConfig
+import com.peasenet.config.commons.IBlockEspTracerConfig
+import net.minecraft.block.Blocks
 
 /**
- * The configuration for tracers. This is stored in the core library as there are multiple GEMs that use this.
- * The key is "tracer".
+ * A configuration for block esp.
+ * Default settings are:
+ *  Blocks => Sugar Cane
+ *  Block Color => Dark Spring Green
+ *  Alpha => 0.5
  * @author GT3CH1
- * @version 07-18-2023
+ * @version 09-01-2024
  */
-class TracerConfig : TracerEspConfig<TracerConfig>() {
+class BlockEspConfig : BlockListConfig<BlockEspConfig>({ it.defaultState == Blocks.SUGAR_CANE.defaultState }),
+    IBlockEspTracerConfig {
     init {
-        key = "tracer"
+        key = "blockesp"
     }
 
-    var viewBobCancel: Boolean = true
+    override var structureEsp: Boolean = false
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    override var blockTracer: Boolean = false
         set(value) {
             field = value
             saveConfig()

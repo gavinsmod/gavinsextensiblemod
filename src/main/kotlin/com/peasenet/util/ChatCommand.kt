@@ -75,4 +75,5 @@ enum class ChatCommand(val chatCommand: String) {
     FurnaceTracer("furnacetracer"),
     MobTracer("mobtracer"),
     SignTracer("signtracer"),
+    CaveEsp("caveesp")
 }

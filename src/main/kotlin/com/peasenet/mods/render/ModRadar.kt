@@ -23,7 +23,7 @@
  */
 package com.peasenet.mods.render
 
-import com.peasenet.config.RadarConfig
+import com.peasenet.config.render.RadarConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.BoxF

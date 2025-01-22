@@ -24,13 +24,8 @@
 
 package com.peasenet.gui.mod
 
-import com.peasenet.config.TracerEspConfig
-import com.peasenet.gavui.GavUI
-import com.peasenet.gavui.Gui
-import com.peasenet.gavui.GuiBuilder
-import com.peasenet.gavui.GuiClick
-import com.peasenet.gavui.GuiScroll
-import com.peasenet.gavui.GuiToggle
+import com.peasenet.config.commons.TracerEspConfig
+import com.peasenet.gavui.*
 import com.peasenet.gui.GuiElement
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient

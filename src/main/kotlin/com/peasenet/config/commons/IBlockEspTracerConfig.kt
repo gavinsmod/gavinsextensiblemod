@@ -39,4 +39,6 @@ import com.peasenet.gavui.color.Color
 interface IBlockEspTracerConfig {
     var blockColor: Color
     var alpha: Float
+    var structureEsp: Boolean
+    var blockTracer: Boolean
 }

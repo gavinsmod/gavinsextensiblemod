@@ -21,8 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.config
+package com.peasenet.config.waypoint
 
+import com.peasenet.config.Config
 import com.peasenet.mods.render.waypoints.Waypoint
 
 /**

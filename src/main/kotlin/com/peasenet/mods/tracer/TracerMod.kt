@@ -24,7 +24,7 @@
 
 package com.peasenet.mods.tracer
 
-import com.peasenet.config.TracerConfig
+import com.peasenet.config.tracer.TracerConfig
 import com.peasenet.main.Settings
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory

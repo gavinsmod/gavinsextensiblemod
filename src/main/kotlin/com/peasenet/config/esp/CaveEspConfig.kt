@@ -22,35 +22,44 @@
  * SOFTWARE.
  */
 
-package com.peasenet.config
+package com.peasenet.config.esp
 
+import com.peasenet.annotations.Exclude
+import com.peasenet.config.Config
 import com.peasenet.config.commons.IBlockEspTracerConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
-import net.minecraft.block.Blocks
 
 /**
- * A configuration for block esp.
- * Default settings are:
- *  Blocks => Sugar Cane
- *  Block Color => Dark Spring Green
- *  Alpha => 0.5
+ *
  * @author GT3CH1
- * @version 09-01-2024
+ * @version 01-18-2025
+ * @since 01-18-2025
  */
-class BlockEspConfig : BlockListConfig<BlockEspConfig>({ it.defaultState == Blocks.SUGAR_CANE.defaultState }),
-    IBlockEspTracerConfig {
+class CaveEspConfig() : Config<CaveEspConfig>(), IBlockEspTracerConfig {
     init {
-        key = "blockesp"
+        key = "caveesp"
     }
 
-    var structureEsp: Boolean = false
+    override var alpha = 0.5f
         set(value) {
             field = value
             saveConfig()
         }
 
-    var blockTracer: Boolean = false
+    @Exclude
+    override var structureEsp: Boolean = true
+
+    @Exclude
+    override var blockTracer: Boolean = false
+
+    override var blockColor: Color = Colors.MEDIUM_SEA_GREEN
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    var distance: Float = 1f
         set(value) {
             field = value
             saveConfig()

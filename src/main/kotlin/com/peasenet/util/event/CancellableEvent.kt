@@ -32,7 +32,7 @@ import com.peasenet.util.listeners.Listener
  * @author GT3CH1
  * @version 03-02-2023
 </T> */
-abstract class CancellableEvent<T : Listener> : Event<T>() {
+abstract class CancellableEvent<T : Listener> : Event<T> {
     /**
      * Whether this even is cancelled.
      */

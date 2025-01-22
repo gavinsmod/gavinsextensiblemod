@@ -27,7 +27,7 @@ package com.peasenet.util.event
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.util.math.MatrixStack
 
-class RenderEvent : Event<RenderListener>() {
+class RenderEvent : Event<RenderListener> {
     lateinit var matrixStack: MatrixStack
     var partialTicks: Float = 0.0f
 

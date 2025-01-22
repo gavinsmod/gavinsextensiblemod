@@ -24,13 +24,12 @@
 package com.peasenet.gui
 
 import com.mojang.blaze3d.systems.RenderSystem
-import com.peasenet.config.MiscConfig
+import com.peasenet.config.misc.MiscConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiScroll
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.util.GavUISettings
-import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
 import com.peasenet.util.RenderUtils

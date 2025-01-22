@@ -24,8 +24,8 @@
 package com.peasenet.mods.render
 
 import com.mojang.blaze3d.systems.RenderSystem
-import com.peasenet.config.TracerConfig
-import com.peasenet.config.WaypointConfig
+import com.peasenet.config.tracer.TracerConfig
+import com.peasenet.config.waypoint.WaypointConfig
 import com.peasenet.extensions.toVec3d
 import com.peasenet.gui.mod.waypoint.GuiWaypoint
 import com.peasenet.main.Settings

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * MIT License
  *
  * Copyright (c) 2022-2025, Gavin C. Pease
@@ -21,32 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.config
+
+package com.peasenet.config.tracer
+
+import com.peasenet.annotations.Exclude
+import com.peasenet.config.commons.BlockListConfig
+import com.peasenet.config.commons.IBlockEspTracerConfig
+import net.minecraft.block.Blocks
 
 /**
- * The miscellaneous configuration.
- * The key is "misc".
+ * A configuration class for the block tracer.
+ * Defaults:
+ *  Block color => DARK_SPRING_GREEN
+ *  Alpha => 0.5
+ * Key: blocktracer
+ *
  * @author GT3CH1
- * @version 05-07-2024
+ * @version 09-01-2024
+ * @since 09-01-2024
  */
-class MiscConfig : Config<MiscConfig>() {
-    var isMessages = true
-        set(value) {
-            field = value
-            saveConfig()
-        }
-    var background = true
-        set(value) {
-            field = value
-            saveConfig()
-        }
-    var freeCamSpeed = 0.1f
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
+class BlockTracerConfig : BlockListConfig<BlockTracerConfig>({ it.defaultState == Blocks.SUGAR_CANE.defaultState }),
+    IBlockEspTracerConfig {
     init {
-        key = "misc"
+        key = "blocktracer"
     }
+
+    @Exclude
+    override var structureEsp: Boolean = false
+
+    override var blockTracer: Boolean = false
+        set(value) {
+            field = value
+            saveConfig()
+        }
 }

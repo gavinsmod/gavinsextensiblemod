@@ -113,11 +113,9 @@ class GavinsMod : ModInitializer {
         @JvmStatic
         fun getModsInCategory(category: ModCategory): java.util.ArrayList<Mod> {
             // use stream to filter by category and sort by mod name
-            return Mods.mods.stream().filter { mod: Mod -> mod.modCategory === category }
-                .sorted(Comparator.comparing(Mod::translationKey)).collect({ ArrayList() },
-                    { obj: java.util.ArrayList<Mod>, e: Mod -> obj.add(e) }) { obj: java.util.ArrayList<Mod>, c: java.util.ArrayList<Mod>? ->
-                    obj.addAll(c!!)
-                }
+            return Mods.mods.filter {
+                it.modCategory == category
+            }.toCollection(ArrayList())
         }
 
         /**

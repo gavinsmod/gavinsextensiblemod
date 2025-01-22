@@ -24,7 +24,7 @@
 
 package com.peasenet.mods.esp
 
-import com.peasenet.config.EspConfig
+import com.peasenet.config.esp.EspConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.main.Settings
 import com.peasenet.mods.Mod

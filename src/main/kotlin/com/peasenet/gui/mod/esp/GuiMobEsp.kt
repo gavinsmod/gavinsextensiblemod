@@ -23,7 +23,7 @@
  */
 package com.peasenet.gui.mod.esp
 
-import com.peasenet.config.EspConfig
+import com.peasenet.config.esp.EspConfig
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gui.mod.GuiMobSelection

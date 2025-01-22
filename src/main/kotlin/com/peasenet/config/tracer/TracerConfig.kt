@@ -1,4 +1,4 @@
-﻿/*
+/*
  * MIT License
  *
  * Copyright (c) 2022-2025, Gavin C. Pease
@@ -21,20 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.peasenet.config.tracer
 
-package com.peasenet.config
-
-import com.peasenet.config.commons.MobAttackFilterConfig
+import com.peasenet.config.commons.TracerEspConfig
 
 /**
- * Configuration settings for [ModAutoAttack][com.peasenet.mods.combat.ModAutoAttack]
- *
+ * The configuration for tracers. This is stored in the core library as there are multiple GEMs that use this.
+ * The key is "tracer".
  * @author GT3CH1
- * @version 01-12-2025
- * @since 01-12-2025
+ * @version 07-18-2023
  */
-class AutoAttackConfig : MobAttackFilterConfig<AutoAttackConfig>() {
+class TracerConfig : TracerEspConfig<TracerConfig>() {
     init {
-        key = "autoattack"
+        key = "tracer"
     }
+
+    var viewBobCancel: Boolean = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
 }

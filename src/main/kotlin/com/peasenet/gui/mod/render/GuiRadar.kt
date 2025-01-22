@@ -24,7 +24,7 @@
 
 package com.peasenet.gui.mod.render
 
-import com.peasenet.config.RadarConfig
+import com.peasenet.config.render.RadarConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.math.PointF

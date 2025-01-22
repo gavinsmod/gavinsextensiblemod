@@ -21,51 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.peasenet.config.esp
 
-package com.peasenet.config
-
-import com.peasenet.gavui.color.Color
-import com.peasenet.gavui.color.Colors
+import com.peasenet.config.commons.TracerEspConfig
 
 /**
+ * The configuration for ESPs. This is stored in the core client as there are multiple GEMs that require an EspConfig.
+ * The key for this configuration is "esp".
+ *
+ * @see TracerConfig
+ * @see EspConfig
  *
  * @author GT3CH1
- * @version 09-16-2024
- * @since 09-16-2024
+ * @version 07-18-2023
+ * @since 07-18-2023
  */
-class FreeCamConfig : Config<FreeCamConfig>() {
+class EspConfig : TracerEspConfig<EspConfig>() {
     init {
-        key = "freecam"
+        key = "esp"
     }
-
-    var tracerEnabled: Boolean = false
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var espEnabled: Boolean = false
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var freeCamSpeed: Float = 1f
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var alpha = 0.5f
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var color: Color = Colors.GOLD
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
 }

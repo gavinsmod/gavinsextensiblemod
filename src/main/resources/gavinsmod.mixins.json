@@ -25,6 +25,7 @@
   },
   "minVersion": "0.8",
   "mixins": [
+    "HeightmapMixin",
     "MixinBiome",
     "MixinBlock",
     "MixinClientPlayerEntityFastMine",

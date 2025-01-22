@@ -22,25 +22,24 @@
  * SOFTWARE.
  */
 
-package com.peasenet.config
+package com.peasenet.util.event.data
 
-import com.peasenet.config.commons.MobAttackFilterConfig
-import com.peasenet.main.GavinsModClient
-import net.minecraft.entity.EntityType
-import net.minecraft.item.SpawnEggItem
+import net.minecraft.client.render.BufferBuilder
+import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.client.world.ClientWorld
 
 /**
- * The configuration settings for [ModKillAura][com.peasenet.mods.combat.ModKillAura].
+ * A class that holds the data for the [com.peasenet.util.event.WorldRenderEvent] event.
  *
- * @see KillAuraConfig
- * @see MobAttackFilterConfig
+ * @param level The [ClientWorld] that is being rendered.
+ * @param stack The [MatrixStack] that is being used to render the world.
+ * @param buffer The [BufferBuilder] that is being used to render the world.
+ * @param delta The delta time.
  *
  * @author GT3CH1
- * @version 01-12-2025
- * @since 01-12-2025
+ * @version 01-18-2025
+ * @since 01-18-2025
  */
-class KillAuraConfig : MobAttackFilterConfig<KillAuraConfig>() {
-    init {
-        key = "killaura"
-    }
-}
+data class WorldRender(
+    var level: ClientWorld, var stack: MatrixStack, var buffer: BufferBuilder, var delta: Float,
+)

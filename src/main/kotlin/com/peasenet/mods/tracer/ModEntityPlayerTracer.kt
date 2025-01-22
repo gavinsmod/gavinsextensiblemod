@@ -23,7 +23,7 @@
  */
 package com.peasenet.mods.tracer
 
-import com.peasenet.config.TracerConfig
+import com.peasenet.config.tracer.TracerConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings

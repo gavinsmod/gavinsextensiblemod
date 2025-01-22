@@ -23,7 +23,7 @@
  */
 package com.peasenet.gui.mod.tracer
 
-import com.peasenet.config.TracerConfig
+import com.peasenet.config.tracer.TracerConfig
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gui.mod.GuiMobSelection

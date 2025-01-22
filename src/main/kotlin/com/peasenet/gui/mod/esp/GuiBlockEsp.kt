@@ -24,9 +24,8 @@
 
 package com.peasenet.gui.mod.esp
 
-import com.peasenet.config.BlockEspConfig
+import com.peasenet.config.esp.BlockEspConfig
 import com.peasenet.gui.mod.GuiBlockSelection
-import com.peasenet.main.Mods
 
 /**
  * A GUI used for block esp to select blocks.

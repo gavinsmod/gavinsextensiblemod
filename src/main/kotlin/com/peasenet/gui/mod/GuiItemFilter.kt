@@ -24,11 +24,10 @@
 
 package com.peasenet.gui.mod
 
-import com.peasenet.config.TracerEspConfig
+import com.peasenet.config.commons.TracerEspConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiClick
-import com.peasenet.gavui.GuiToggle
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GavUISettings

@@ -31,11 +31,7 @@ import com.peasenet.util.listeners.PlayerAttackListener
  * @author GT3CH1
  * @version 03-02-2023
  */
-class PlayerAttackEvent
-/**
- * Creates a new PacketSendEvent.
- */
-    : Event<PlayerAttackListener>() {
+class PlayerAttackEvent : Event<PlayerAttackListener> {
     override fun fire(listeners: ArrayList<PlayerAttackListener>) {
         for (listener in listeners) {
             listener.onAttackEntity()

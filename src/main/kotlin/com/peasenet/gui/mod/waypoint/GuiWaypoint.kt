@@ -23,7 +23,7 @@
  */
 package com.peasenet.gui.mod.waypoint
 
-import com.peasenet.config.WaypointConfig
+import com.peasenet.config.waypoint.WaypointConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiClick

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * MIT License
  *
  * Copyright (c) 2022-2025, Gavin C. Pease
@@ -21,28 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.peasenet.config.render
 
-package com.peasenet.config
-
-import com.peasenet.config.commons.IBlockEspTracerConfig
-import com.peasenet.gavui.color.Color
-import com.peasenet.gavui.color.Colors
-import net.minecraft.block.Blocks
+import com.peasenet.config.Config
+import com.peasenet.main.Mods
 
 /**
- * A configuration class for the block tracer.
- * Defaults:
- *  Block color => DARK_SPRING_GREEN
- *  Alpha => 0.5
- * Key: blocktracer
+ * Configuration file for fullbright.
  *
- * @author GT3CH1 
- * @version 09-01-2024
- * @since 09-01-2024
+ * @author GT3CH1
+ * @version 03-02-2023
  */
-class BlockTracerConfig : BlockListConfig<BlockTracerConfig>({ it.defaultState == Blocks.SUGAR_CANE.defaultState }),
-    IBlockEspTracerConfig {
+open class FullbrightConfig : Config<FullbrightConfig>() {
+    var gamma: Float = 1.0F
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    /**
+     * Whether to fade the brightness.
+     */
+    var gammaFade = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
     init {
-        key = "blocktracer"
+        key = "fullbright"
+    }
+
+    fun maxGamma(): Float  {
+        return if (Mods.isActive("xray")) 16F else 1 + 15 * gamma
     }
 }

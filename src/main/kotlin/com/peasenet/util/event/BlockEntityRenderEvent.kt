@@ -25,10 +25,6 @@ package com.peasenet.util.event
 
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.listeners.BlockEntityRenderListener
-import net.minecraft.block.entity.BlockEntity
-import net.minecraft.client.render.BufferBuilder
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.Vec3d
 
 /**
  * The event for the world render event.
@@ -36,31 +32,8 @@ import net.minecraft.util.math.Vec3d
  * @author GT3CH1
  * @version 03-02-2023
  */
-class BlockEntityRenderEvent : CancellableEvent<BlockEntityRenderListener> {
-    private var entityRender: BlockEntityRender
-
-    /**
-     * Creates a new world render event.
-     *
-     * @param stack     - The matrix stack.
-     * @param buffer    - The buffer builder.
-     * @param center    - The box.
-     * @param playerPos - The delta.
-     */
-    constructor(
-        entity: BlockEntity,
-        stack: MatrixStack,
-        buffer: BufferBuilder,
-        center: Vec3d,
-        playerPos: Vec3d,
-        delta: Float
-    ) {
-        entityRender = BlockEntityRender(entity, stack, buffer, center, playerPos, delta)
-    }
-
-    constructor(ber: BlockEntityRender) {
-        entityRender = ber
-    }
+class BlockEntityRenderEvent(ber: BlockEntityRender) : CancellableEvent<BlockEntityRenderListener>() {
+    private var entityRender: BlockEntityRender = ber
 
     override fun fire(listeners: ArrayList<BlockEntityRenderListener>) {
         for (listener in listeners) {

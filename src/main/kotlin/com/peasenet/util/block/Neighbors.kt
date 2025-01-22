@@ -62,8 +62,17 @@ enum class Neighbors(val mask: Int) {
      */
     Below(1 shl 11),
 
+    TopMiddleLeft(1 shl 12),
+    TopMiddleRight(1 shl 13),
+    BottomMiddleLeft(1 shl 14),
+    BottomMiddleRight(1 shl 15),
+
     /**
      * No neighbors.
      */
     None(0);
+}
+
+infix operator fun Neighbors.times(other: Int): Int {
+    return this.mask or other
 }

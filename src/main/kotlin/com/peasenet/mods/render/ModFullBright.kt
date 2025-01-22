@@ -25,7 +25,7 @@
 
 package com.peasenet.mods.render
 
-import com.peasenet.config.FullbrightConfig
+import com.peasenet.config.render.FullbrightConfig
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings

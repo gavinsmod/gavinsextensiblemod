@@ -29,8 +29,8 @@ import com.google.gson.ToNumberPolicy
 import com.google.gson.stream.JsonReader
 import com.peasenet.annotations.GsonExclusionStrategy
 import com.peasenet.config.Config
-import com.peasenet.config.XrayConfig
-import com.peasenet.config.XrayConfigGsonAdapter
+import com.peasenet.config.render.XrayConfig
+import com.peasenet.config.render.XrayConfigGsonAdapter
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.Path
@@ -97,26 +97,23 @@ object Settings {
     private fun fetchConfig(clazz: Config<*>, key: String?): Config<*> {
         // open the settings file
         val cfgFile = filePath
-
+        val defaultSetting = defaultSettings[key]!!
         val map: Any?
         try {
             map = gson.fromJson(FileReader(cfgFile), Map::class.java)[key]
         } catch (e: FileNotFoundException) {
             ensureCfgCreated(cfgFile)
-            settings[key] = defaultSettings[key]!!
+            settings[key] = defaultSetting
             GavinsMod.LOGGER.error("Error reading settings file ($key), file not found.")
-//            save()
-            return defaultSettings[key]!!
+            return defaultSetting
         }
         try {
             val jsonObject = gson.toJsonTree(map).asJsonObject
-            // parse the json object to the configuration class
             return gson.fromJson(jsonObject, clazz::class.java)
         } catch (e: IllegalStateException) {
             GavinsMod.LOGGER.error("Error parsing settings file ($key): ", e)
-            settings[key] = defaultSettings[key]!!
-//            save()
-            return defaultSettings[key]!!
+            settings[key] = defaultSetting
+            return defaultSetting
         }
     }
 
@@ -134,7 +131,6 @@ object Settings {
             val writer = Files.newBufferedWriter(Paths.get(cfgFile))
             json.toJson(settings, writer)
             writer.close()
-//            GavinsMod.LOGGER.info("Settings saved.")
         } catch (e: Exception) {
             GavinsMod.LOGGER.error("Error writing settings to file.")
             GavinsMod.LOGGER.error(e.message)
@@ -211,10 +207,8 @@ object Settings {
     private fun loadDefault() {
         GavinsMod.LOGGER.warn("Loading default settings.")
         val cfgFile = filePath
-        // rename settings file to settings.bak
         var bakFile = "$cfgFile.bak"
         var bakCount = 1
-        // if bak file exists, rename it to settings.bak.1, settings.bak.2, etc.
         val bFile = File(bakFile)
         var renamed = false
         while (bFile.exists()) {
@@ -222,8 +216,6 @@ object Settings {
             bakCount++
             renamed = true
         }
-        // move the settings file to the bak file
-        // check if the settings file exists
         val cfg = File(cfgFile)
         if (cfg.exists() && renamed) {
             val res = cfg.renameTo(bFile)

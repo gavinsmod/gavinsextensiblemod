@@ -36,7 +36,7 @@ class AirStrafeEvent
  * Creates a new world render event.
  *
  * @param speed - The speed.
- */(var speed: Float) : Event<AirStrafeListener>() {
+ */(var speed: Float) : Event<AirStrafeListener> {
     override fun fire(listeners: ArrayList<AirStrafeListener>) {
         for (listener in listeners) {
             listener.onAirStrafe(this)

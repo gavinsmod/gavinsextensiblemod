@@ -23,9 +23,9 @@
  */
 package com.peasenet.gui
 
-import com.peasenet.config.EspConfig
-import com.peasenet.config.MiscConfig
-import com.peasenet.config.TracerConfig
+import com.peasenet.config.esp.EspConfig
+import com.peasenet.config.misc.MiscConfig
+import com.peasenet.config.tracer.TracerConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiClick
 import com.peasenet.gavui.GuiScroll
@@ -40,8 +40,6 @@ import com.peasenet.mods.ModCategory
 import com.peasenet.settings.SettingBuilder
 import net.minecraft.text.Text
 import java.util.function.Consumer
-import kotlin.math.max
-import kotlin.math.min
 
 /**
  * A settings gui to control certain features of the mod.

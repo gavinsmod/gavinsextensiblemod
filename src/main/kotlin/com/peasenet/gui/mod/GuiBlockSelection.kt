@@ -23,7 +23,7 @@
  */
 package com.peasenet.gui.mod
 
-import com.peasenet.config.BlockListConfig
+import com.peasenet.config.commons.BlockListConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiClick
@@ -36,7 +36,6 @@ import com.peasenet.gavui.util.GuiUtil
 import com.peasenet.gui.GuiElement
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
-import com.peasenet.main.Mods
 import com.peasenet.main.Mods.Companion.getMod
 import com.peasenet.main.Settings
 import net.minecraft.block.Block

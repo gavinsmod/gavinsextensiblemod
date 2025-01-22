@@ -24,12 +24,8 @@
 package com.peasenet.mods.misc
 
 import com.mojang.blaze3d.systems.RenderSystem
-import com.peasenet.config.FreeCamConfig
-import com.peasenet.config.TracerConfig
-import com.peasenet.gavui.color.Colors
+import com.peasenet.config.misc.FreeCamConfig
 import com.peasenet.main.Settings
-import com.peasenet.mods.tracer.TracerMod
-import com.peasenet.mods.tracer.TracerMod.Companion
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.FakePlayer
 import com.peasenet.util.RenderUtils
@@ -38,8 +34,6 @@ import com.peasenet.util.event.data.OutputPacket
 import com.peasenet.util.listeners.AirStrafeListener
 import com.peasenet.util.listeners.PacketSendListener
 import com.peasenet.util.listeners.RenderListener
-import net.minecraft.client.gl.ShaderProgramKeys
-import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
 import net.minecraft.util.math.Box

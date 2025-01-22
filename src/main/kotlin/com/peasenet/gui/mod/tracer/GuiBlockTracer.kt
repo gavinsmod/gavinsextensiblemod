@@ -24,7 +24,7 @@
 
 package com.peasenet.gui.mod.tracer
 
-import com.peasenet.config.BlockTracerConfig
+import com.peasenet.config.tracer.BlockTracerConfig
 import com.peasenet.gui.mod.GuiBlockSelection
 
-class GuiBlockTracer : GuiBlockSelection<BlockTracerConfig>("gavinsmod.mod.tracer.blocktracer", "blocktracer") 
+class GuiBlockTracer : GuiBlockSelection<BlockTracerConfig>("gavinsmod.mod.tracer.blocktracer", "blocktracer")

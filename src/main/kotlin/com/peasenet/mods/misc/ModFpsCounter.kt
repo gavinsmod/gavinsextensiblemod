@@ -23,7 +23,7 @@
  */
 package com.peasenet.mods.misc
 
-import com.peasenet.config.FpsColorConfig
+import com.peasenet.config.misc.FpsColorConfig
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GavUISettings

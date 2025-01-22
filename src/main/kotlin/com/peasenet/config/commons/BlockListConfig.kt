@@ -22,9 +22,10 @@
  * SOFTWARE.
  */
 
-package com.peasenet.config
+package com.peasenet.config.commons
 
 import com.peasenet.annotations.Exclude
+import com.peasenet.config.Config
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import net.minecraft.block.Block

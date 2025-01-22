@@ -23,7 +23,7 @@
  */
 package com.peasenet.mods.combat
 
-import com.peasenet.config.KillAuraConfig
+import com.peasenet.config.combat.KillAuraConfig
 import com.peasenet.gui.mod.combat.GuiKillAura
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings

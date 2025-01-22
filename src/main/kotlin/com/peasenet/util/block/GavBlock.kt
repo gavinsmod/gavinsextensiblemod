@@ -24,10 +24,12 @@
 
 package com.peasenet.util.block
 
+import com.peasenet.extensions.and
+import com.peasenet.extensions.nand
 import com.peasenet.gavui.color.Color
 import com.peasenet.main.GavinsModClient
-import com.peasenet.mods.esp.ModBlockEsp
 import com.peasenet.util.RenderUtils
+import net.minecraft.block.BlockState
 import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.BlockPos
@@ -42,7 +44,12 @@ import net.minecraft.util.math.Vec3d
  * @version 09-12-2024
  * @since 09-12-2024
  */
-class GavBlock(val x: Int, val y: Int, val z: Int) {
+class GavBlock(
+    val x: Int,
+    val y: Int,
+    val z: Int,
+    val visibleFilter: (BlockState, BlockPos) -> Boolean = { _, _ -> false },
+) {
     companion object {
         fun getKey(x: Int, y: Int, z: Int): Long {
             return ((x.toLong() and 0x3FFFFFF shl 38) or (z.toLong() and 0x3FFFFFF shl 12) or (y.toLong() and 0xFFF))
@@ -60,8 +67,7 @@ class GavBlock(val x: Int, val y: Int, val z: Int) {
     private var visibleEdges = Edge.All.mask
 
     fun isVisible(): Boolean {
-        return !(hasNeighborTopMiddle() && hasNeighborMiddleLeft() && hasNeighborMiddleRight()
-                && hasNeighborBottomMiddle())
+        return !(hasNeighborTopMiddle() && hasNeighborMiddleLeft() && hasNeighborMiddleRight() && hasNeighborBottomMiddle())
     }
 
 
@@ -74,44 +80,40 @@ class GavBlock(val x: Int, val y: Int, val z: Int) {
      */
     fun update() {
         val topMiddle = hasNeighbor(1, 0, 0)
-        val middleLeft = hasNeighbor(0, 0, -1)
-        val middleRight = hasNeighbor(0, 0, 1)
         val bottomMiddle = hasNeighbor(-1, 0, 0)
+        val middleRight = hasNeighbor(0, 0, 1)
+        val middleLeft = hasNeighbor(0, 0, -1)
         val above = hasNeighbor(0, 1, 0)
         val below = hasNeighbor(0, -1, 0)
         val mask =
-            Neighbors.TopMiddle.mask * topMiddle or
-                    Neighbors.MiddleLeft.mask * middleLeft or
-                    Neighbors.MiddleRight.mask * middleRight or
-                    Neighbors.BottomMiddle.mask * bottomMiddle or
-                    Neighbors.Above.mask * above or
-                    Neighbors.Below.mask * below
+            Neighbors.TopMiddle * topMiddle or Neighbors.MiddleLeft * middleLeft or Neighbors.MiddleRight * middleRight or Neighbors.BottomMiddle * bottomMiddle or Neighbors.Above * above or Neighbors.Below * below
         setVisibleEdges(mask)
     }
 
-    fun hasNeighborTopMiddle(): Boolean {
+    private fun hasNeighborTopMiddle(): Boolean {
         return hasNeighbor(1, 0, 0) == 1
     }
 
-    fun hasNeighborMiddleLeft(): Boolean {
+    private fun hasNeighborMiddleLeft(): Boolean {
         return hasNeighbor(0, 0, -1) == 1
     }
 
-    fun hasNeighborMiddleRight(): Boolean {
+    private fun hasNeighborMiddleRight(): Boolean {
         return hasNeighbor(0, 0, 1) == 1
     }
 
-    fun hasNeighborBottomMiddle(): Boolean {
+    private fun hasNeighborBottomMiddle(): Boolean {
         return hasNeighbor(-1, 0, 0) == 1
     }
 
-    fun hasNeighborAbove(): Boolean {
+    private fun hasNeighborAbove(): Boolean {
         return hasNeighbor(0, 1, 0) == 1
     }
 
-    fun hasNeighborBelow(): Boolean {
+    private fun hasNeighborBelow(): Boolean {
         return hasNeighbor(0, -1, 0) == 1
     }
+
 
     /**
      * Gets whether there is a neighbor at the given coordinates.
@@ -120,9 +122,9 @@ class GavBlock(val x: Int, val y: Int, val z: Int) {
      * @param z The z-coordinate of the neighbor.
      */
     private fun hasNeighbor(x: Int, y: Int, z: Int): Int {
-        val neighbor = GavBlock(this.x + x, this.y + y, this.z + z)
-        val neighborState = GavinsModClient.minecraftClient.getWorld().getBlockState(neighbor.pos)
-        val res = ModBlockEsp.getSettings().isInList(neighborState.block)
+        val neighbor = BlockPos(this.x + x, this.y + y, this.z + z)
+        val neighborState = GavinsModClient.minecraftClient.getWorld().getBlockState(neighbor)
+        val res = visibleFilter(neighborState, neighbor)
         return if (res) 1 else 0
     }
 
@@ -135,42 +137,30 @@ class GavBlock(val x: Int, val y: Int, val z: Int) {
         if (neighbors == Neighbors.None.mask) {
             return
         }
-        if (neighbors and Neighbors.TopMiddle.mask != 0) {
-            visibleEdges = (visibleEdges and Edge.Edge3.mask.inv())
-            visibleEdges = (visibleEdges and Edge.Edge11.mask.inv())
-            visibleEdges = (visibleEdges and Edge.Edge7.mask.inv())
-            visibleEdges = (visibleEdges and Edge.Edge8.mask.inv())
-        }
-        if (neighbors and Neighbors.MiddleLeft.mask != 0) {
-            visibleEdges = visibleEdges and Edge.Edge4.mask.inv()
-            visibleEdges = visibleEdges and Edge.Edge12.mask.inv()
-            visibleEdges = visibleEdges and Edge.Edge8.mask.inv()
-            visibleEdges = visibleEdges and Edge.Edge5.mask.inv()
-        }
-        if (neighbors and Neighbors.MiddleRight.mask != 0) {
-            visibleEdges = visibleEdges and Edge.Edge2.mask.inv()
-            visibleEdges = visibleEdges and Edge.Edge10.mask.inv()
-            visibleEdges = visibleEdges and Edge.Edge6.mask.inv()
-            visibleEdges = visibleEdges and Edge.Edge7.mask.inv()
-        }
-        if (neighbors and Neighbors.BottomMiddle.mask != 0) {
-            visibleEdges = visibleEdges and Edge.Edge1.mask.inv()
-            visibleEdges = visibleEdges and Edge.Edge9.mask.inv()
-            visibleEdges = visibleEdges and Edge.Edge5.mask.inv()
-            visibleEdges = visibleEdges and Edge.Edge6.mask.inv()
-        }
-        if (neighbors and Neighbors.Above.mask != 0) {
-            visibleEdges = visibleEdges and Edge.Edge9.mask.inv()
-            visibleEdges = visibleEdges and Edge.Edge10.mask.inv()
-            visibleEdges = visibleEdges and Edge.Edge11.mask.inv()
-            visibleEdges = visibleEdges and Edge.Edge12.mask.inv()
 
+        if (hasNeighborTopMiddle()) {
+            visibleEdges = visibleEdges nand Edge.Edge3 nand Edge.Edge11
+            visibleEdges = visibleEdges nand Edge.Edge7 nand Edge.Edge8
         }
-        if (neighbors and Neighbors.Below.mask != 0) {
-            visibleEdges = visibleEdges and Edge.Edge1.mask.inv()
-            visibleEdges = visibleEdges and Edge.Edge2.mask.inv()
-            visibleEdges = visibleEdges and Edge.Edge3.mask.inv()
-            visibleEdges = visibleEdges and Edge.Edge4.mask.inv()
+        if (hasNeighborBottomMiddle()) {
+            visibleEdges = visibleEdges nand Edge.Edge1 nand Edge.Edge9
+            visibleEdges = visibleEdges nand Edge.Edge5 nand Edge.Edge6
+        }
+        if (hasNeighborMiddleLeft()) {
+            visibleEdges = visibleEdges nand Edge.Edge4 nand Edge.Edge12
+            visibleEdges = visibleEdges nand Edge.Edge8 nand Edge.Edge5
+        }
+        if (hasNeighborMiddleRight()) {
+            visibleEdges = visibleEdges nand Edge.Edge2 nand Edge.Edge10
+            visibleEdges = visibleEdges nand Edge.Edge6 nand Edge.Edge7
+        }
+        if (hasNeighborAbove()) {
+            visibleEdges = visibleEdges nand Edge.Edge9 nand Edge.Edge10
+            visibleEdges = visibleEdges nand Edge.Edge11 nand Edge.Edge12
+        }
+        if (hasNeighborBelow()) {
+            visibleEdges = visibleEdges nand Edge.Edge1 nand Edge.Edge2
+            visibleEdges = visibleEdges nand Edge.Edge3 nand Edge.Edge4
         }
     }
 
@@ -196,9 +186,8 @@ class GavBlock(val x: Int, val y: Int, val z: Int) {
         color: Color,
         alpha: Float,
     ) {
-        for (edge in Edge.entries) {
-            if (edge == Edge.All || edge == Edge.None) continue
-            val maskedVal = edges and edge.mask
+        Edge.entries.filter { it != Edge.All && it != Edge.None }.forEach { edge ->
+            val maskedVal = edges and edge
             if (maskedVal != 0) {
                 renderEdge(edge, blockPos, matrixStack, bufferBuilder, color, alpha)
             }
