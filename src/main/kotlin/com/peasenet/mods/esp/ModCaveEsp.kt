@@ -24,10 +24,9 @@
 
 package com.peasenet.mods.esp
 
-import com.peasenet.config.commons.BlockListConfig
-import com.peasenet.config.esp.BlockEspConfig
+import com.peasenet.config.esp.CaveEspConfig
 import com.peasenet.gavui.color.Color
-import com.peasenet.gui.mod.esp.GuiBlockEsp
+import com.peasenet.main.GavinsMod
 import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.ChatCommand
@@ -35,12 +34,17 @@ import com.peasenet.util.RenderUtils
 import com.peasenet.util.block.GavBlock
 import com.peasenet.util.chunk.GavChunk
 import com.peasenet.util.event.data.BlockUpdate
+import com.peasenet.util.event.data.WorldRender
 import com.peasenet.util.executor.GemExecutor
 import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
+import net.minecraft.block.BlockState
+import net.minecraft.block.LeavesBlock
+import net.minecraft.block.MultifaceGrowthBlock
 import net.minecraft.client.MinecraftClient
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.chunk.Chunk
 
@@ -52,9 +56,14 @@ import net.minecraft.world.chunk.Chunk
  * @since 09-01-2024
  * @see EspMod
  */
-class ModBlockEsp : BlockEsp<BlockEspConfig>(
-    "gavinsmod.mod.esp.blockesp", "blockesp"
-), BlockUpdateListener, WorldRenderListener, ChunkUpdateListener, RenderListener {
+class ModCaveEsp : BlockEsp<CaveEspConfig>(
+    "gavinsmod.mod.esp.cave", ChatCommand.CaveEsp.chatCommand
+) {
+
+    private val chunksToRender: Int
+        get() {
+            return (MinecraftClient.getInstance().options.viewDistance.value)
+        }
 
     init {
         val subSetting = SettingBuilder().setTitle(translationKey).buildSubSetting()
@@ -63,26 +72,13 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
         colorSetting.setCallback {
             getSettings().blockColor = colorSetting.color
         }
-
         val alphaSetting =
             SettingBuilder().setTitle("gavinsmod.generic.alpha").setValue(getSettings().alpha).buildSlider()
         alphaSetting.setCallback {
             getSettings().alpha = alphaSetting.value
         }
-        val toggleSetting =
-            SettingBuilder().setTitle("gavinsmod.mod.esp.blockesp.structure").setState(getSettings().structureEsp)
-                .buildToggleSetting()
-        val blockTracer = SettingBuilder().setTitle("gavinsmod.generic.tracers").setState(getSettings().blockTracer)
-            .buildToggleSetting()
-        toggleSetting.setCallback { getSettings().structureEsp = toggleSetting.value }
-        blockTracer.setCallback { getSettings().blockTracer = blockTracer.value }
-        subSetting.add(toggleSetting)
-        subSetting.add(blockTracer)
         subSetting.add(alphaSetting)
         subSetting.add(colorSetting)
-        val menu = SettingBuilder().setWidth(100f).setHeight(10f).setTitle("gavinsmod.generic.settings")
-            .setCallback { MinecraftClient.getInstance().setScreen(GuiBlockEsp()) }.buildClickSetting()
-        subSetting.add(menu)
         addSetting(subSetting)
     }
 
@@ -96,7 +92,8 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
         em.subscribe(RenderListener::class.java, this)
         // search for chunks within render distance
         GemExecutor.execute {
-            RenderUtils.getVisibleChunks().forEach(this::searchChunk)
+            val visibleChunks: List<Chunk> = RenderUtils.getVisibleChunks(chunksToRender)
+            visibleChunks.forEach(this::searchChunk)
         }
         super.onEnable()
     }
@@ -114,7 +111,47 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
         return getSettings().blockColor
     }
 
-    override fun getSettings(): BlockEspConfig = Settings.getConfig("blockesp") as BlockEspConfig
+
+    override fun getSettings(): CaveEspConfig = Settings.getConfig("caveesp")
+
+
+    override fun searchBlock(chunk: Chunk, blockPos: BlockPos, blockState: BlockState): Boolean {
+        if (!blockState.isAir && blockState.block !is MultifaceGrowthBlock && !blockState.isLiquid)
+            return false
+        return ((canWalkThrough(blockPos, blockState, chunk) || canWalkOn(blockPos, blockState, chunk)) && hasRoof(
+            blockPos,
+            blockState,
+            chunk
+        ))
+    }
+
+    private fun canWalkThrough(blockPos: BlockPos, blockState: BlockState, chunk: Chunk): Boolean {
+        val above = chunk.getBlockState(blockPos.up())
+        val below = chunk.getBlockState(blockPos.down(1))
+        return blockState.isAir && (above.isAir || below.isAir)
+    }
+
+    private fun canWalkOn(blockPos: BlockPos, blockState: BlockState, chunk: Chunk): Boolean {
+        val below = chunk.getBlockState(blockPos.down())
+        return blockState.isAir && !below.isAir && canWalkThrough(blockPos, below, chunk)
+    }
+
+    private fun hasRoof(blockPos: BlockPos, blockState: BlockState, chunk: Chunk): Boolean {
+        var tmpBlockPos = BlockPos.Mutable(blockPos.x, blockPos.y, blockPos.z)
+        try {
+            while (tmpBlockPos.y < 256) {
+                val blockState1 = chunk.getBlockState(tmpBlockPos)
+                if (!blockState1.isAir && blockState1.block !is LeavesBlock) {
+                    return true
+                }
+                tmpBlockPos = tmpBlockPos.up().mutableCopy()
+            }
+        } catch (exception: IllegalArgumentException) {
+            GavinsMod.LOGGER.error("Error for checking roof, blockPos: $blockPos, chunk x: ${chunk.pos.startX}, chunk z: ${chunk.pos.startZ}")
+        }
+        return false
+    }
+
 
     /**
      * Searches the given chunk for blocks that are in the block list.
@@ -122,39 +159,40 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
      */
     override fun searchChunk(chunk: Chunk) {
         GemExecutor.execute {
-            synchronized(chunks) {
-                val blocks = Settings.getConfig<BlockEspConfig>(ChatCommand.BlockEsp.chatCommand)
-                val searchedChunk = GavChunk.search(
-                    chunk, { b, _ -> blocks.blocks.contains(BlockListConfig.getId(b.block)) },
-                )
-                addBlocksFromChunk(searchedChunk, chunk)
+            synchronized(chunk) {
+                GavChunk.search(
+                    chunk
+                ) { blockState, pos ->
+                    searchBlock(chunk, pos, blockState)
+                }.also {
+                    addBlocksFromChunk(it, chunk)
+                }
             }
+        }
+    }
+
+    override fun onWorldRender(worldRender: WorldRender) {
+        synchronized(chunks) {
+            chunks.values.removeIf { !it.inRenderDistance(chunksToRender) }
         }
     }
 
     override fun onBlockUpdate(bue: BlockUpdate) {
-        val enabledBlocks = config.blocks
-        val chunk = client.getWorld().getChunk(bue.blockPos) ?: return
+        val added = bue.newState.isAir && !bue.oldState.isAir
+        val removed = !added && !bue.newState.isAir && bue.oldState.isAir
         val key = ChunkPos.toLong(bue.blockPos)
-        val blockOldId = BlockListConfig.getId(bue.oldState.block)
-        val blockNewId = BlockListConfig.getId(bue.newState.block)
-        val added = enabledBlocks.contains(blockNewId) && !enabledBlocks.contains(blockOldId)
-        val removed = !added && !enabledBlocks.contains(blockNewId) && enabledBlocks.contains(blockOldId)
-        if (!added && !removed) {
+        val chunk = client.getWorld().getChunk(bue.blockPos) ?: return
+        if (!added && !removed && !searchBlock(chunk, bue.blockPos, bue.newState)) {
             return
         }
         val gavBlock = GavBlock(bue.blockPos.x, bue.blockPos.y, bue.blockPos.z) { blockState, blockPos ->
-            config.blocks.contains(BlockListConfig.getId(blockState.block))
+            searchBlock(chunk, blockPos, bue.newState)
         }
-        GemExecutor.execute {
-            synchronized(chunks) {
-                checkChunk(key, bue, added, gavBlock, chunk)
-            }
-        }
+//        checkChunk(key, bue, added, gavBlock, chunk)
+        searchChunk(chunk)
     }
 
-
-    private companion object {
-        val config: BlockEspConfig = Settings.getConfig("blockesp")
+    override fun chunkInRenderDistance(chunk: GavChunk): Boolean {
+        return chunk.inRenderDistance(chunksToRender)
     }
 }

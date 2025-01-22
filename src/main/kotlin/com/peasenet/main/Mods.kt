@@ -81,6 +81,7 @@ class Mods {
         Settings.addConfig(XrayConfig())
         Settings.addConfig(AutoAttackConfig())
         Settings.addConfig(KillAuraConfig())
+        Settings.addConfig(CaveEspConfig())
 
         /*@MODS@*/
         GavinsMod.addMod(ModAutoAttack())
@@ -127,6 +128,7 @@ class Mods {
         GavinsMod.addMod(ModFurnaceTracer())
         GavinsMod.addMod(ModMobTracer())
         GavinsMod.addMod(ModBlockEsp())
+        GavinsMod.addMod(ModCaveEsp())
     }
 
     companion object {
