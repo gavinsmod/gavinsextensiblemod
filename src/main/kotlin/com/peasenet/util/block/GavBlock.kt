@@ -69,7 +69,7 @@ class GavBlock(
      * Gets whether the block is visible.
      */
     fun isVisible(): Boolean {
-        return !(visibleEdges == Edge.None.mask || visibleEdges == Edge.All.mask) && visibleFilter(
+        return visibleEdges != Edge.None.mask && visibleFilter(
             pos
         )
     }
@@ -89,8 +89,11 @@ class GavBlock(
         val west = hasNeighbor(pos.west())
         val south = hasNeighbor(pos.south())
         val north = hasNeighbor(pos.north())
-        val mask =
+        var mask =
             (Neighbors.East and east) + (Neighbors.North and north) + (Neighbors.South and south) + (Neighbors.West and west) + (Neighbors.Above and up) + (Neighbors.Below and below)
+        if (!(up && below && east && west && south && north)) {
+            mask = Neighbors.entries.sumOf { it.mask }
+        }
         setVisibleEdges(mask)
     }
 
@@ -162,6 +165,10 @@ class GavBlock(
         color: Color,
         alpha: Float,
     ) {
+        if (edges and Edge.All == 1) {
+            renderEdge(Edge.All, blockPos, matrixStack, bufferBuilder, color, alpha)
+            return
+        }
         Edge.entries.filter { it != Edge.All && it != Edge.None }.forEach { edge ->
             val maskedVal = edges and edge
             if (maskedVal != 0) {
@@ -370,8 +377,10 @@ class GavBlock(
         structureEsp: Boolean = false,
         tracers: Boolean = false,
     ) {
-        if (structureEsp) renderEdges(visibleEdges, pos, matrixStack, bufferBuilder, color, alpha)
-        else renderEdges(Edge.All.mask, pos, matrixStack, bufferBuilder, color, alpha)
+        if (structureEsp)
+            renderEdges(visibleEdges, pos, matrixStack, bufferBuilder, color, alpha)
+        else
+            renderEdges(Edge.All.mask, pos, matrixStack, bufferBuilder, color, alpha)
         if (tracers) {
             val regionVec = RenderUtils.getCameraRegionPos().toVec3d()
             val center = pos.toCenterPos().subtract(regionVec)

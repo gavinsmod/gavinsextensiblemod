@@ -24,7 +24,6 @@
 
 package com.peasenet.mods.esp
 
-import com.peasenet.annotations.Exclude
 import com.peasenet.config.commons.IBlockEspTracerConfig
 import com.peasenet.extensions.east
 import com.peasenet.extensions.north
@@ -191,9 +190,5 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
         southWest?.updateBlocks()
     }
 
-    companion object {
-        @Exclude
-        @JvmStatic
-        val chunks = HashMap<Long, GavChunk>()
-    }
+    val chunks = HashMap<Long, GavChunk>()
 }

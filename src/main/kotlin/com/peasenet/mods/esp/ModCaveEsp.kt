@@ -219,9 +219,13 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
             }
 
             SearchType.Tunnel -> {
-                canWalkOn(blockPos, newBlockState) && hasRoof(blockPos)
+                return isTunnel(blockPos) && hasRoof(blockPos)
             }
         }
+    }
+
+    private fun isTunnel(blockPos: BlockPos): Boolean {
+        return world.getBlockState(blockPos.up()).isAir && !world.getBlockState(blockPos.up(2)).isAir
     }
 
 

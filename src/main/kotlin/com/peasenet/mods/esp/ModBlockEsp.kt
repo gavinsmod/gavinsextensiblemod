@@ -30,7 +30,6 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.gui.mod.esp.GuiBlockEsp
 import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
-import com.peasenet.util.ChatCommand
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.block.GavBlock
 import com.peasenet.util.chunk.GavChunk
@@ -41,7 +40,7 @@ import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
 import net.minecraft.client.MinecraftClient
-import net.minecraft.util.math.ChunkPos
+import net.minecraft.util.math.BlockPos
 import net.minecraft.world.chunk.Chunk
 
 /**
@@ -114,16 +113,30 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
         return getSettings().blockColor
     }
 
-    override fun getSettings(): BlockEspConfig = Settings.getConfig("blockesp") as BlockEspConfig
+
+    private val blocks
+        get() = getSettings().blocks
+
+    override fun getSettings(): BlockEspConfig = Settings.getConfig("blockesp")
+
+    private fun blockFilter(blockPos: BlockPos): Boolean {
+        return blocks.contains(BlockListConfig.getId(world.getBlockState(blockPos).block))
+    }
+
+    override fun chunkInRenderDistance(chunk: GavChunk): Boolean {
+        return chunk.inRenderDistance()
+    }
 
     override fun searchChunk(chunk: Chunk) {
         GemExecutor.execute {
-            synchronized(chunks) {
-                val blocks = Settings.getConfig<BlockEspConfig>(ChatCommand.BlockEsp.chatCommand)
-                val searchedChunk = GavChunk.search(
-                    chunk,
-                ) { pos -> blocks.blocks.contains(BlockListConfig.getId(chunk.getBlockState(pos).block)) }
-                addBlocksFromChunk(searchedChunk)
+            synchronized(chunk) {
+                GavChunk.search(
+                    chunk
+                ) { pos ->
+                    blockFilter(pos)
+                }.also {
+                    addBlocksFromChunk(it)
+                }
             }
         }
     }
@@ -131,7 +144,6 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
     override fun onBlockUpdate(bue: BlockUpdate) {
         val enabledBlocks = config.blocks
         val chunk = client.getWorld().getChunk(bue.blockPos) ?: return
-        val key = ChunkPos.toLong(bue.blockPos)
         val blockOldId = BlockListConfig.getId(bue.oldState.block)
         val blockNewId = BlockListConfig.getId(bue.newState.block)
         val added = enabledBlocks.contains(blockNewId) && !enabledBlocks.contains(blockOldId)
@@ -140,14 +152,9 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
             return
         }
         val gavBlock = GavBlock(bue.blockPos) { blockPos ->
-            val blockState = chunk.getBlockState(blockPos)
-            config.blocks.contains(BlockListConfig.getId(blockState.block))
+            blockFilter(blockPos)
         }
-        GemExecutor.execute {
-            synchronized(chunks) {
-                updateChunk(added, gavBlock, chunk.pos)
-            }
-        }
+        updateChunk(added, gavBlock, chunk.pos)
     }
 
 
