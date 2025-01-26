@@ -1,17 +1,19 @@
-# Gavin's Extensible Mod v1.4.7
+# Gavin's Extensible Mod
 
 ---
 
 ## How do I install everything?
 
-1. Download fabric for your version of Minecraft: [https://fabricmc.net/use/installer/](https://fabricmc.net/use/installer/)
-2. Download `fabric-language-kotlin`: [https://www.curseforge.com/minecraft/mc-mods/fabric-language-kotlin/files/4654791](https://www.curseforge.com/minecraft/mc-mods/fabric-language-kotlin/files/4654791)
+1. Download fabric for your version of
+   Minecraft: [https://fabricmc.net/use/installer/](https://fabricmc.net/use/installer/)
+2. Download
+   `fabric-language-kotlin`: [https://www.curseforge.com/minecraft/mc-mods/fabric-language-kotlin/files](https://www.curseforge.com/minecraft/mc-mods/fabric-language-kotlin/files/4654791)
 3. Download the release you want from the [releases page](https://github.com/gavinsmod/gavinsextensiblemod/releases).
 4. Start Minecraft!
 
 ---
 
-## es
+## Features
 
 - X-Ray
   ![](src/main/resources/assets/gavinsmod/screenshots/xray.png)
@@ -27,6 +29,23 @@
   ![](src/main/resources/assets/gavinsmod/screenshots/mobs.png)
 - Item ESP & Tracers
   ![](src/main/resources/assets/gavinsmod/screenshots/items.png)
+    - ESPs and Tracers have the ability to use custom filtering, which allows for regex pattern matching on the lore and
+      name of the item.
+      ![](src/main/resources/assets/gavinsmod/screenshots/item_esp_filter_list.png)
+      ![](src/main/resources/assets/gavinsmod/screenshots/item_filter.png)
+- Block ESP
+  ![](src/main/resources/assets/gavinsmod/screenshots/blockesp_list.png)
+    - Configurable by block type. Allows for "structure" ESP, which simplifies the rendering of blocks.
+      ![](src/main/resources/assets/gavinsmod/screenshots/blockesp_structure.png)
+    - Toggling off Structure ESP will render the blocks as individual blocks.
+      ![](src/main/resources/assets/gavinsmod/screenshots/blockesp.png)
+- Cave ESP
+  ![](src/main/resources/assets/gavinsmod/screenshots/caveesp_caves.png)
+    - Configurable to show caves or tunnels
+      ![](src/main/resources/assets/gavinsmod/screenshots/caveesp_tunnels.png)
+- Sign ESP and Tracers
+  ![](src/main/resources/assets/gavinsmod/screenshots/signesp.png)
+- Furnace and Beehive ESP and Tracers
 - Radar
     - ![](src/main/resources/assets/gavinsmod/screenshots/radar.png)
     - Configurable point size, radar size, entities drawn, and colors.
@@ -35,8 +54,13 @@
 - Fast Place
 - Anti Pumpkin Overlay
 - Auto Jump
+- Auto Attack
+  ![](src/main/resources/assets/gavinsmod/screenshots/autoattack.png)
+    - Filters allow you to control what entities you want to attack.
 - Wall Climb
 - Kill Aura
+  ![](src/main/resources/assets/gavinsmod/screenshots/killaura.png)
+    - Filters allow you to control what entities you want to attack.
 - Auto Crit
 - No Fall
 - No Clip
