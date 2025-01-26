@@ -78,7 +78,7 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
         val searchMode = getSettings().searchMode.name.lowercase()
         val searchModeSetting = SettingBuilder()
             .setTitle(searchTranslationKey)
-            .setOptions(SearchType.values().map { it.name.lowercase() })
+            .setOptions(SearchType.entries.map { it.name.lowercase() })
             .setValue(searchMode)
             .buildCycleSetting()
         searchModeSetting.setCallback {
@@ -110,7 +110,8 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
         em.subscribe(RenderListener::class.java, this)
         // search for chunks within render distance
         GemExecutor.execute {
-            chunks.values.forEach { searchChunk(it) }
+//            chunks.values.forEach { searchChunk(it) }
+            RenderUtils.getVisibleChunks(chunksToRender).forEach { searchChunk(it) }
         }
         super.onEnable()
     }
