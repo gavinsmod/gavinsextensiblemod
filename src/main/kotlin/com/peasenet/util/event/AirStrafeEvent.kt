@@ -26,17 +26,13 @@ package com.peasenet.util.event
 import com.peasenet.util.listeners.AirStrafeListener
 
 /**
- * The event for the world render event.
- *
+ * The event when the player is air strafing.
+ * @param speed The speed of the player.
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 01-26-2025
+ * @since 03-02-2023
  */
-class AirStrafeEvent
-/**
- * Creates a new world render event.
- *
- * @param speed - The speed.
- */(var speed: Float) : Event<AirStrafeListener> {
+class AirStrafeEvent(var speed: Float) : Event<AirStrafeListener> {
     override fun fire(listeners: ArrayList<AirStrafeListener>) {
         for (listener in listeners) {
             listener.onAirStrafe(this)

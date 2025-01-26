@@ -24,22 +24,29 @@
 package com.peasenet.util.event.data
 
 import net.minecraft.block.BlockState
-import net.minecraft.util.math.BlockPos
 
 /**
+ * Draw side data class for the draw side event. This event is cancelable.
+ * @param state The current [BlockState]
+ * @see Cancellable
  * @author GT3CH1
- * @version 03-02-2023
- *
- *
- * Draw side data class for the draw side event.
- * @see com.peasenet.util.event.ShouldDrawSideEvent
+ * @version 01-26-2025
+ * @since 03-02-2023
  */
-class DrawState(val state: BlockState) : Cancellable() {
+data class DrawState(val state: BlockState) : Cancellable() {
     private var shouldDraw: Boolean? = null
+
+    /**
+     * Sets whether this state should be drawn.
+     * @param shouldDraw Whether this state should be drawn.
+     */
     fun setShouldDraw(shouldDraw: Boolean) {
         this.shouldDraw = shouldDraw
     }
 
+    /**
+     * Gets whether this state should be drawn. If null, [setShouldDraw] was not called.
+     */
     fun shouldDraw(): Boolean? {
         return shouldDraw
     }

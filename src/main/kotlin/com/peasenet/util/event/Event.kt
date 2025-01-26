@@ -26,12 +26,13 @@ package com.peasenet.util.event
 import com.peasenet.util.listeners.Listener
 
 /**
- * A class that manages events.
- *
- * @param <T> The type of event to manage.
+ * A class that manages events that extend [Listener].
+ * @see Listener
+ * @param T The type of event to manage.
  * @author GT3CH1
- * @version 03-02-2023
-</T> */
+ * @version 01-26-2025
+ * @since 03-02-2023
+ */
 interface Event<T : Listener> {
     /**
      * Fires the event.

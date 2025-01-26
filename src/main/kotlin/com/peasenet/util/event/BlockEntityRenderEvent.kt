@@ -27,10 +27,12 @@ import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.listeners.BlockEntityRenderListener
 
 /**
- * The event for the world render event.
- *
+ * The event for when a block entity is rendered. This event can be cancelled.
+ * @param ber The [BlockEntityRender] data.
+ * @see CancellableEvent
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 01-26-2025
+ * @since 03-02-2023
  */
 class BlockEntityRenderEvent(ber: BlockEntityRender) : CancellableEvent<BlockEntityRenderListener>() {
     private var entityRender: BlockEntityRender = ber

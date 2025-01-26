@@ -27,15 +27,17 @@ import com.peasenet.util.event.data.RenderSubmergedOverlay
 import com.peasenet.util.listeners.RenderSubmergedOverlayListener
 
 /**
- * An event for when a packet is sent.
+ * An event for when the player is submerged in water. This event is cancelable.
+ * @param overlay The [RenderSubmergedOverlay] event.
+ * @see CancellableEvent
+ * @see RenderSubmergedOverlayListener
  *
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 01-26-2025
+ * @since 03-02-2023
  */
 class RenderOverlaySubmergedEvent
-/**
- * Creates a new PacketSendEvent.
- */(private val overlay: RenderSubmergedOverlay) : CancellableEvent<RenderSubmergedOverlayListener>() {
+ (private val overlay: RenderSubmergedOverlay) : CancellableEvent<RenderSubmergedOverlayListener>() {
     override fun fire(listeners: ArrayList<RenderSubmergedOverlayListener>) {
         for (listener in listeners) {
             listener.onRenderOverlay(overlay)

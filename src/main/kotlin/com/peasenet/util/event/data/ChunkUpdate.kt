@@ -26,6 +26,14 @@ package com.peasenet.util.event.data
 
 import net.minecraft.world.chunk.WorldChunk
 
-class ChunkUpdate(
+/**
+ * Called when a chunk is updated.
+ * @param chunk The chunk that was updated.
+ *
+ * @author GT3CH1
+ * @version 01-26-2025
+ * @since 03-02-2023
+ */
+data class ChunkUpdate(
     val chunk: WorldChunk
 )

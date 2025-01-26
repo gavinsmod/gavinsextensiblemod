@@ -29,56 +29,23 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.BlockPos
 
 /**
- * Data class for the tessellate block event.
+ * Data class for the tessellate block event. This event is cancellable.
+ *
+ * @param blockState  The block state.
+ * @param blockPos    The block position.
+ * @param model       The baked model.
+ * @param matrixStack The matrix stack.
+ *
+ * @see Cancellable
  *
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 01-26-2025
+ * @since 03-02-2023
  */
-class TessellateBlock
-/**
- * Creates a new TessellateBlock data class.
- *
- * @param blockState  - The block state.
- * @param blockPos    - The block position.
- * @param model       - The baked model.
- * @param matrixStack - The matrix stack.
- */(
-    /**
-     * The block state.
-     */
+data class TessellateBlock
+    (
     var blockState: BlockState,
-    /**
-     * The block position.
-     */
     var blockPos: BlockPos,
-    /**
-     * The baked model.
-     */
     var model: BakedModel,
-    /**
-     * The matrix stack.
-     */
-    var matrixStack: MatrixStack
-) : Cancellable() {
-    /**
-     * Gets the block state.
-     *
-     * @return The block state.
-     */
-    /**
-     * Gets the block position.
-     *
-     * @return The block position.
-     */
-    /**
-     * Gets the baked model.
-     *
-     * @return The baked model.
-     */
-    /**
-     * Gets the matrix stack.
-     *
-     * @return The matrix stack.
-     */
-
-}
+    var matrixStack: MatrixStack,
+) : Cancellable()

@@ -26,6 +26,14 @@ package com.peasenet.util.event
 import com.peasenet.util.event.data.CameraBob
 import com.peasenet.util.listeners.CameraHurtListener
 
+/**
+ * Called when the camera performs the hurt bob. This event can be cancelled.
+ * @see CancellableEvent
+ *
+ * @author GT3CH1
+ * @version 01-26-2025
+ * @since 03-02-2023
+ */
 class CameraHurtEvent : CancellableEvent<CameraHurtListener>() {
     private var cameraBob: CameraBob = CameraBob()
 

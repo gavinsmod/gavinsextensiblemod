@@ -27,10 +27,16 @@ import com.peasenet.util.event.data.DrawState
 import com.peasenet.util.listeners.ShouldDrawSideListener
 
 /**
+ * Called when a block is rendered and if the side should be drawn. This event is cancellable.
+ * @see CancellableEvent
+ * @see ShouldDrawSideListener
+ * @param evt - The [DrawState] event.
+ *
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 01-26-2025
+ * @since 03-02-2023
  */
-class ShouldDrawSideEvent(var evt: DrawState) : CancellableEvent<ShouldDrawSideListener>() {
+class ShouldDrawSideEvent(private var evt: DrawState) : CancellableEvent<ShouldDrawSideListener>() {
     override fun fire(listeners: ArrayList<ShouldDrawSideListener>) {
         for (listener in listeners) {
             listener.onDrawSide(evt)

@@ -27,13 +27,26 @@ package com.peasenet.util.event
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.util.math.MatrixStack
 
+/**
+ * Called when the game renders.
+ * @see RenderListener
+ *
+ * @author GT3CH1
+ * @version 01-26-2025
+ * @since 03-02-2023
+ */
 class RenderEvent : Event<RenderListener> {
     lateinit var matrixStack: MatrixStack
     var partialTicks: Float = 0.0f
 
     companion object {
-
         private var INSTANCE = RenderEvent()
+
+        /**
+         * Gets the [RenderEvent] instance.
+         * @param matrixStack The matrix stack to use.
+         * @param partialTicks The partial ticks to use.
+         */
         fun get(matrixStack: MatrixStack, partialTicks: Float): RenderEvent {
             INSTANCE.matrixStack = matrixStack
             INSTANCE.partialTicks = partialTicks

@@ -23,6 +23,15 @@
  */
 package com.peasenet.util.event.data
 
+/**
+ * Called when a submerged overlay is rendered. This event is cancellable.
+ * @param type The type of overlay.
+ * @see Cancellable
+ *
+ * @author GT3CH1
+ * @version 01-26-2025
+ * @since 03-02-2023
+ */
 class RenderSubmergedOverlay(var type: SubmergedOverlayType) : Cancellable() {
     enum class SubmergedOverlayType {
         WATER, FIRE

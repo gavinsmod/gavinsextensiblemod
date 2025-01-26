@@ -28,7 +28,13 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
 import net.minecraft.util.math.Vec3d
 
-class EntityRender(
+/**
+ * Called when an entity is rendered.
+ * @author GT3CH1
+ * @version 01-26-2025
+ * @since 03-02-2023
+ */
+data class EntityRender(
     var entity: Entity,
     var stack: MatrixStack,
     var buffer: BufferBuilder?,

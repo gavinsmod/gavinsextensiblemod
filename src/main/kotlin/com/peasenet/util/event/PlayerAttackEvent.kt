@@ -26,10 +26,11 @@ package com.peasenet.util.event
 import com.peasenet.util.listeners.PlayerAttackListener
 
 /**
- * An event for when a packet is sent.
- *
+ * An event for when the player attacks an entity.
+ * @see PlayerAttackListener
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 01-26-2025
+ * @since 03-02-2023
  */
 class PlayerAttackEvent : Event<PlayerAttackListener> {
     override fun fire(listeners: ArrayList<PlayerAttackListener>) {

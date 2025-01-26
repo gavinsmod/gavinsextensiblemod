@@ -26,14 +26,16 @@ package com.peasenet.util.listeners
 import com.peasenet.util.event.data.BlockEntityRender
 
 /**
- * A listener for the world render event.
- *
+ * A listener for [BlockEntityRender] events.
+ * @see BlockEntityRender
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 01-26-2025
+ * @since 03-02-2023
  */
 interface BlockEntityRenderListener : Listener {
     /**
-     * Called when the world is rendered.
+     * Called when a [BlockEntityRender] event is fired.
+     * @param er the [BlockEntityRender] event
      */
     fun onRenderBlockEntity(er: BlockEntityRender)
 }

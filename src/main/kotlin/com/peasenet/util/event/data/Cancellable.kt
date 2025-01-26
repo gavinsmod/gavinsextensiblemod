@@ -23,10 +23,20 @@
  */
 package com.peasenet.util.event.data
 
+/**
+ * Allows for cancellation of an event.
+ */
 open class Cancellable {
+
+    /**
+     * Whether this is cancelled.
+     */
     var isCancelled = false
         private set
 
+    /**
+     * Cancel this event.
+     */
     fun cancel() {
         isCancelled = true
     }

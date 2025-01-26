@@ -27,6 +27,16 @@ package com.peasenet.util.event
 import com.peasenet.util.event.data.ChunkUpdate
 import com.peasenet.util.listeners.ChunkUpdateListener
 
+/**
+ * Called when a chunk is updated.
+ * @param chunkUpdate The [ChunkUpdate] data.
+ * @see Event
+ * @see ChunkUpdate
+ *
+ * @author GT3CH1
+ * @version 01-26-2025
+ * @since 03-02-2023
+ */
 class ChunkUpdateEvent(private val chunkUpdate: ChunkUpdate) : Event<ChunkUpdateListener> {
 
     override fun fire(listeners: ArrayList<ChunkUpdateListener>) {

@@ -26,14 +26,17 @@ package com.peasenet.util.listeners
 import com.peasenet.util.event.AirStrafeEvent
 
 /**
- * A listener for the world render event.
+ * A listener for [AirStrafeEvent].
+ * @see AirStrafeEvent
  *
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 01-26-2025
+ * @since 03-02-2023
  */
 interface AirStrafeListener : Listener {
-    /*
-     * @param delta - The delta.
+    /**
+     *  @param event the [AirStrafeEvent]
+     *  @see AirStrafeEvent
      */
     fun onAirStrafe(event: AirStrafeEvent)
 }

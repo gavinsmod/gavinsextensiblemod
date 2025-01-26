@@ -27,20 +27,16 @@ import com.peasenet.util.event.data.ChatMessage
 import com.peasenet.util.listeners.OnChatSendListener
 
 /**
- * An event for when a packet is sent.
- *
+ * An event for when a chat message is sent. This event can be cancelled.
+ * @see CancellableEvent
+ * @see OnChatSendListener
+ * @param msg The message sent.
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 01-26-2025
+ * @since 03-02-2023
  */
 class ChatSendEvent(msg: String) : CancellableEvent<OnChatSendListener>() {
-    var message: ChatMessage
-
-    /**
-     * Creates a new PacketSendEvent.
-     */
-    init {
-        message = ChatMessage(msg)
-    }
+    var message: ChatMessage = ChatMessage(msg)
 
     override fun fire(listeners: ArrayList<OnChatSendListener>) {
         for (listener in listeners) {
