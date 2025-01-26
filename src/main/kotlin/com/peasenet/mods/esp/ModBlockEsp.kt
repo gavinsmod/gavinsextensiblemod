@@ -125,8 +125,8 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
             synchronized(chunks) {
                 val blocks = Settings.getConfig<BlockEspConfig>(ChatCommand.BlockEsp.chatCommand)
                 val searchedChunk = GavChunk.search(
-                    chunk, { b, _ -> blocks.blocks.contains(BlockListConfig.getId(b.block)) },
-                )
+                    chunk,
+                ) { pos -> blocks.blocks.contains(BlockListConfig.getId(chunk.getBlockState(pos).block)) }
                 addBlocksFromChunk(searchedChunk, chunk)
             }
         }
@@ -143,12 +143,13 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
         if (!added && !removed) {
             return
         }
-        val gavBlock = GavBlock(bue.blockPos.x, bue.blockPos.y, bue.blockPos.z) { blockState, blockPos ->
+        val gavBlock = GavBlock(bue.blockPos.x, bue.blockPos.y, bue.blockPos.z) { blockPos ->
+            val blockState = chunk.getBlockState(blockPos)
             config.blocks.contains(BlockListConfig.getId(blockState.block))
         }
         GemExecutor.execute {
             synchronized(chunks) {
-                checkChunk(key, bue, added, gavBlock, chunk)
+                checkChunk(added, removed, gavBlock, chunk)
             }
         }
     }

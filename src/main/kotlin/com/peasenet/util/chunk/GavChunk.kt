@@ -28,10 +28,11 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.main.GavinsModClient
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.block.GavBlock
-import net.minecraft.block.BlockState
 import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.*
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.ChunkPos
+import net.minecraft.world.Heightmap
 import net.minecraft.world.chunk.Chunk
 import kotlin.math.abs
 import kotlin.math.sqrt
@@ -40,75 +41,49 @@ import kotlin.math.sqrt
  * A GavChunk is a chunk that contains a list of GavBlocks used for
  * block ESP or tracers.
  *
- * @param x The x position of the chunk.
- * @param z The z position of the chunk.
+ * @param chunkPos The position of the chunk.
  * @since 09-12-2024
- * @version 09-12-2024
+ * @version 01-25-2025
  * @author GT3CH1
  */
-class GavChunk(val x: Int, val z: Int) {
-    /**
-     * The position of the chunk.
-     */
-    val pos: BlockPos
-        get() = BlockPos(x, 0, z)
-
-    fun getCoordinate(xOffset: Int = 0, zOffset: Int = 0) = Pair(x + xOffset, z + zOffset)
-
-    constructor(blockPos: BlockPos) : this(blockPos.x, blockPos.z) {
-    }
+class GavChunk(val chunkPos: ChunkPos) {
 
     /**
      * A map of GavBlocks in the chunk.
      */
     private val blocks: HashMap<Long, GavBlock> = HashMap()
 
-    private val visibleBlocks = HashSet<GavBlock>()
+    private val visibleBlocks = HashMap<Long, GavBlock>()
 
     /**
      * Adds a block to the chunk.
      *
      * @param pos The position of the block.
      */
-    fun addBlock(pos: BlockPos, visibleFilter: (BlockState, BlockPos) -> Boolean) {
+    fun addBlock(pos: BlockPos, visibleFilter: (BlockPos) -> Boolean) {
         val block = GavBlock(pos.x, pos.y, pos.z, visibleFilter)
         addBlock(block)
     }
 
     fun addBlock(block: GavBlock) {
         synchronized(this) {
-            blocks[block.key] = block
+            blocks[block.pos.asLong()] = block
             block.update()
             if (block.isVisible()) {
-                visibleBlocks.add(block)
+                visibleBlocks[block.pos.asLong()] = (block)
             }
         }
     }
 
-    private fun updateBlockNeighbors(block: GavBlock) {
+    fun updateBlockNeighbors(block: GavBlock) {
         setOf(
+            block.pos,
             block.pos.up(),
             block.pos.down(),
             block.pos.north(),
             block.pos.south(),
             block.pos.east(),
             block.pos.west(),
-            block.pos.up().north(),
-            block.pos.up().south(),
-            block.pos.up().east(),
-            block.pos.up().west(),
-            block.pos.up().north().east(),
-            block.pos.up().north().west(),
-            block.pos.up().south().east(),
-            block.pos.up().south().west(),
-            block.pos.down().north(),
-            block.pos.down().south(),
-            block.pos.down().east(),
-            block.pos.down().west(),
-            block.pos.down().north().east(),
-            block.pos.down().north().west(),
-            block.pos.down().south().east(),
-            block.pos.down().south().west(),
         ).forEach {
             updateBlock(it)
         }
@@ -116,8 +91,8 @@ class GavChunk(val x: Int, val z: Int) {
 
     fun removeBlock(block: GavBlock) {
         synchronized(this) {
-            blocks.remove(block.key)
-            visibleBlocks.remove(block)
+            blocks.remove(block.pos.asLong())
+            visibleBlocks.remove(block.pos.asLong())
             updateBlockNeighbors(block)
 //            updateBlocks()
         }
@@ -136,14 +111,13 @@ class GavChunk(val x: Int, val z: Int) {
     }
 
     private fun updateBlock(block: GavBlock) {
-
-        val key = block.key
+        val key = block.pos.asLong()
         val gavBlock = blocks[key] ?: return
         gavBlock.update()
         if (gavBlock.isVisible()) {
-            visibleBlocks.add(gavBlock)
+            visibleBlocks[gavBlock.pos.asLong()] = gavBlock
         } else {
-            visibleBlocks.remove(gavBlock)
+            visibleBlocks.remove(gavBlock.pos.asLong())
         }
     }
 
@@ -157,11 +131,7 @@ class GavChunk(val x: Int, val z: Int) {
         synchronized(this) {
             visibleBlocks.clear()
             blocks.values.forEach { block ->
-                updateBlock(block).also {
-                    if (block.isVisible()) {
-                        visibleBlocks.add(block)
-                    }
-                }
+                updateBlock(block)
             }
         }
     }
@@ -185,7 +155,7 @@ class GavChunk(val x: Int, val z: Int) {
     private fun getRenderDistance(): Double {
         // get the distance from the player to the chunk
         val playerPos = GavinsModClient.minecraftClient.getPlayer().blockPos
-        val chunkPos = this.pos
+        val chunkPos = this.chunkPos
         val x = abs(playerPos.x - chunkPos.x.times(16))
         val z = abs(playerPos.z - chunkPos.z.times(16))
         return sqrt((x * x + z * z).toDouble()).div(16f)
@@ -209,7 +179,7 @@ class GavChunk(val x: Int, val z: Int) {
         structureEsp: Boolean = false, blockTracer: Boolean = false,
     ) {
         synchronized(this) {
-            visibleBlocks.forEach { block ->
+            visibleBlocks.values.forEach { block ->
                 block.render(
                     matrixStack, bufferBuilder, blockColor, partialTicks, alpha, structureEsp, blockTracer
                 )
@@ -221,23 +191,23 @@ class GavChunk(val x: Int, val z: Int) {
     companion object {
         /**
          * Searches the given chunk for blocks that are in the block list.
-         * @param chunk - The Chunk to search.
-         * @param blocks - The list of blocks to search for.
+         * @param chunk The Chunk to search.
+         * @param filter The filter to use.
          * @return The GavChunk containing the blocks.
          */
         fun search(
             chunk: Chunk,
-            filter: (BlockState, BlockPos) -> Boolean,
+            filter: (BlockPos) -> Boolean,
         ): GavChunk {
-            val searchChunk = GavChunk(chunk.pos.x, chunk.pos.z)
+            val searchChunk = GavChunk(chunk.pos)
             val tempBlockPos = BlockPos.Mutable()
-            for (x in chunk.pos.startX until chunk.pos.endX) {
+            for (x in chunk.pos.startX..chunk.pos.endX) {
                 for (z in chunk.pos.startZ..chunk.pos.endZ) {
-                    val chunkHeight = 256
+                    val chunkHeight = GavinsModClient.minecraftClient.getWorld()
+                        .getTopPosition(Heightmap.Type.WORLD_SURFACE, BlockPos(x, 0, z)).y + 1
                     for (y in GavinsModClient.minecraftClient.getWorld().bottomY until chunkHeight) {
                         tempBlockPos.set(x, y, z)
-                        val blockState = chunk.getBlockState(tempBlockPos)
-                        if (filter(blockState, tempBlockPos)) {
+                        if (filter(tempBlockPos)) {
                             searchChunk.addBlock(tempBlockPos, filter)
                         }
                     }
@@ -245,7 +215,6 @@ class GavChunk(val x: Int, val z: Int) {
             }
             return searchChunk
         }
-
     }
 }
 

@@ -22,52 +22,42 @@
  * SOFTWARE.
  */
 
-package com.peasenet.util.block
+package com.peasenet.extensions
+
+import net.minecraft.util.math.ChunkPos
 
 /**
- * An enum class that contains the neighbors of a block.
- * @param mask The mask of the neighbor.
+ * Extensions for the [ChunkPos] class.
  * @author GT3CH1
- * @version 09-12-2024
- * @since 09-12-2024
+ * @version 01-25-2025
+ * @since 01-25-2025
  */
-enum class Neighbors(val mask: Int) {
-    /**
-     * The top middle (x+) neighbor.
-     */
-    East(1 shl 2),
 
-    /**
-     * The middle left (z-) neighbor.
-     */
-    North(1 shl 4),
-
-    /**
-     * The middle right (z+) neighbor.
-     */
-    South(1 shl 6),
-
-    /**
-     * The bottom middle (x-) neighbor.
-     */
-    West(1 shl 8),
-
-    /**
-     * The above (y+) neighbor.
-     */
-    Above(1 shl 10),
-
-    /**
-     * The below (y-) neighbor.
-     */
-    Below(1 shl 11),
-
-    /**
-     * No neighbors.
-     */
-    None(0);
+/**
+ * Get one chunk north of this chunk.
+ */
+fun ChunkPos.north(): ChunkPos {
+    return ChunkPos(x, z - 1)
 }
 
-infix fun Neighbors.and(other: Boolean): Int {
-    return if (other) this.mask else 0
+/**
+ * Gets one chunk south of this chunk.
+ */
+fun ChunkPos.south(): ChunkPos {
+    return ChunkPos(x, z + 1)
 }
+
+/**
+ * Gets one chunk east of this chunk.
+ */
+fun ChunkPos.east(): ChunkPos {
+    return ChunkPos(x + 1, z)
+}
+
+/**
+ * Gets one chunk west of this chunk.
+ */
+fun ChunkPos.west(): ChunkPos {
+    return ChunkPos(x - 1, z)
+}
+

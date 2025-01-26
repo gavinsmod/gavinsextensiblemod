@@ -45,7 +45,6 @@ import net.minecraft.block.LeavesBlock
 import net.minecraft.block.MultifaceGrowthBlock
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.chunk.Chunk
 
 /**
@@ -62,7 +61,7 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
 
     private val chunksToRender: Int
         get() {
-            return (MinecraftClient.getInstance().options.viewDistance.value)
+            return (MinecraftClient.getInstance().options.viewDistance.value / 2)
         }
 
     init {
@@ -111,43 +110,59 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
         return getSettings().blockColor
     }
 
-
     override fun getSettings(): CaveEspConfig = Settings.getConfig("caveesp")
 
-
-    override fun searchBlock(chunk: Chunk, blockPos: BlockPos, blockState: BlockState): Boolean {
-        if (!blockState.isAir && blockState.block !is MultifaceGrowthBlock && !blockState.isLiquid)
-            return false
-        return ((canWalkThrough(blockPos, blockState, chunk) || canWalkOn(blockPos, blockState, chunk)) && hasRoof(
-            blockPos,
-            blockState,
-            chunk
-        ))
+    /**
+     * Checks if the given [blockPos] is a valid block to render.
+     * @param blockPos The [BlockPos] to check.
+     * @return True if the block at [blockPos] is air, and that the player can walk through or on it, false otherwise.
+     */
+    private fun searchBlock(blockPos: BlockPos): Boolean {
+        val newBlockState = world.getBlockState(blockPos)
+        if (!newBlockState.isAir && newBlockState.block !is MultifaceGrowthBlock && !newBlockState.isLiquid) return false
+        return ((canWalkThrough(blockPos, newBlockState) || canWalkOn(blockPos, newBlockState)) && hasRoof(blockPos))
     }
 
-    private fun canWalkThrough(blockPos: BlockPos, blockState: BlockState, chunk: Chunk): Boolean {
-        val above = chunk.getBlockState(blockPos.up())
-        val below = chunk.getBlockState(blockPos.down(1))
+    /**
+     * Gets whether the player can walk through this [blockState] at [blockPos], by checking if there is air above or below.
+     * @param blockPos The [BlockPos] to check.
+     * @param blockState The [BlockState] to check.
+     * @return True if the player can walk through this block, false otherwise.
+     */
+    private fun canWalkThrough(blockPos: BlockPos, blockState: BlockState): Boolean {
+        val above = world.getBlockState(blockPos.up())
+        val below = world.getBlockState(blockPos.down())
         return blockState.isAir && (above.isAir || below.isAir)
     }
 
-    private fun canWalkOn(blockPos: BlockPos, blockState: BlockState, chunk: Chunk): Boolean {
-        val below = chunk.getBlockState(blockPos.down())
-        return blockState.isAir && !below.isAir && canWalkThrough(blockPos, below, chunk)
+    /**
+     * Gets whether the player can walk on this [blockState] at [blockPos].
+     * @param blockPos The [BlockPos] to check.
+     * @param blockState The [BlockState] to check.
+     */
+    private fun canWalkOn(blockPos: BlockPos, blockState: BlockState): Boolean {
+        val below = world.getBlockState(blockPos.down())
+        return blockState.isAir && !below.isAir && canWalkThrough(blockPos, below)
     }
 
-    private fun hasRoof(blockPos: BlockPos, blockState: BlockState, chunk: Chunk): Boolean {
+    /**
+     * Checks whether this [blockPos] has a roof, i.e. there is a block above it.
+     * @param blockPos - The [BlockPos] to check.
+     * @return True if there is a block above it, false otherwise.
+     */
+    private fun hasRoof(blockPos: BlockPos): Boolean {
         var tmpBlockPos = BlockPos.Mutable(blockPos.x, blockPos.y, blockPos.z)
         try {
-            while (tmpBlockPos.y < 256) {
-                val blockState1 = chunk.getBlockState(tmpBlockPos)
+            val maxY = world.getChunk(blockPos).topYInclusive
+            while (tmpBlockPos.y < maxY) {
+                val blockState1 = world.getBlockState(tmpBlockPos)
                 if (!blockState1.isAir && blockState1.block !is LeavesBlock) {
                     return true
                 }
                 tmpBlockPos = tmpBlockPos.up().mutableCopy()
             }
         } catch (exception: IllegalArgumentException) {
-            GavinsMod.LOGGER.error("Error for checking roof, blockPos: $blockPos, chunk x: ${chunk.pos.startX}, chunk z: ${chunk.pos.startZ}")
+            GavinsMod.LOGGER.error("Error for checking roof, blockPos: $blockPos")
         }
         return false
     }
@@ -162,8 +177,8 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
             synchronized(chunk) {
                 GavChunk.search(
                     chunk
-                ) { blockState, pos ->
-                    searchBlock(chunk, pos, blockState)
+                ) { pos ->
+                    searchBlock(pos)
                 }.also {
                     addBlocksFromChunk(it, chunk)
                 }
@@ -180,16 +195,12 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
     override fun onBlockUpdate(bue: BlockUpdate) {
         val added = bue.newState.isAir && !bue.oldState.isAir
         val removed = !added && !bue.newState.isAir && bue.oldState.isAir
-        val key = ChunkPos.toLong(bue.blockPos)
-        val chunk = client.getWorld().getChunk(bue.blockPos) ?: return
-        if (!added && !removed && !searchBlock(chunk, bue.blockPos, bue.newState)) {
+        val chunk = world.getChunk(bue.blockPos) ?: return
+        val gavBlock = GavBlock(bue.blockPos) { pos -> searchBlock(pos) }
+        if (!added && !removed) {
             return
         }
-        val gavBlock = GavBlock(bue.blockPos.x, bue.blockPos.y, bue.blockPos.z) { blockState, blockPos ->
-            searchBlock(chunk, blockPos, bue.newState)
-        }
-//        checkChunk(key, bue, added, gavBlock, chunk)
-        searchChunk(chunk)
+        checkChunk(added, removed, gavBlock, chunk)
     }
 
     override fun chunkInRenderDistance(chunk: GavChunk): Boolean {

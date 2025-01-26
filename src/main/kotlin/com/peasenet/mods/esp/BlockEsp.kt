@@ -26,21 +26,20 @@ package com.peasenet.mods.esp
 
 import com.peasenet.annotations.Exclude
 import com.peasenet.config.commons.IBlockEspTracerConfig
-import com.peasenet.main.GavinsMod
+import com.peasenet.extensions.east
+import com.peasenet.extensions.north
+import com.peasenet.extensions.south
+import com.peasenet.extensions.west
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.block.GavBlock
 import com.peasenet.util.chunk.GavChunk
-import com.peasenet.util.event.data.BlockUpdate
 import com.peasenet.util.event.data.ChunkUpdate
 import com.peasenet.util.event.data.WorldRender
 import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
-import net.minecraft.block.BlockState
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.chunk.Chunk
 
 /**
@@ -56,12 +55,10 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
     translationKey, chatCommand
 ), BlockUpdateListener, WorldRenderListener, ChunkUpdateListener, RenderListener {
 
-    @Exclude
-    protected val chunks = HashMap<Long, GavChunk>()
 
     abstract fun getSettings(): T
 
-    open fun chunkInRenderDistance(chunk: GavChunk): Boolean = true
+    open fun chunkInRenderDistance(chunk: GavChunk): Boolean = false
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         synchronized(chunks) {
@@ -69,17 +66,15 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
             RenderUtils.setupRenderWithShader(matrixStack)
             val bufferBuilder = RenderUtils.getBufferBuilder()
             chunks.values.filter { chunkInRenderDistance(it) }.toMutableList().forEach {
-//                synchronized(it) {
-                    it.render(
-                        matrixStack,
-                        bufferBuilder,
-                        getSettings().blockColor,
-                        partialTicks,
-                        getSettings().alpha,
-                        getSettings().structureEsp,
-                        getSettings().blockTracer
-                    )
-//                }
+                it.render(
+                    matrixStack,
+                    bufferBuilder,
+                    getSettings().blockColor,
+                    partialTicks,
+                    getSettings().alpha,
+                    getSettings().structureEsp,
+                    getSettings().blockTracer
+                )
             }
             RenderUtils.drawBuffer(bufferBuilder, matrixStack)
         }
@@ -89,11 +84,6 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
         searchChunk(chunkUpdate.chunk)
     }
 
-
-    open fun searchBlock(chunk: Chunk, blockPos: BlockPos, blockState: BlockState): Boolean {
-        return true
-    }
-
     override fun onWorldRender(worldRender: WorldRender) {
         synchronized(chunks) {
             chunks.entries.removeIf { !it.value.inRenderDistance() }
@@ -101,66 +91,71 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
     }
 
     /**
-     * Updates the neighbor chunks of the given chunk.
+     * Updates the neighbor chunks of the given chunk in a 3x3 grid with the given chunk in the center.
      * @param chunk - The Chunk to update the neighbors of.
      */
-    protected fun updateNeighborChunks(chunk: Chunk) {
-        val main = chunks[ChunkPos.toLong(chunk.pos.x, chunk.pos.z)]
-        val east = chunks[ChunkPos.toLong(chunk.pos.x + 1, chunk.pos.z)]
-        val west = chunks[ChunkPos.toLong(chunk.pos.x - 1, chunk.pos.z)]
-        val south = chunks[ChunkPos.toLong(chunk.pos.x, chunk.pos.z + 1)]
-        val north = chunks[ChunkPos.toLong(chunk.pos.x, chunk.pos.z - 1)]
+    private fun updateNeighborChunks(chunk: Chunk) {
+        val main = chunks[chunk.pos.toLong()]
+        val north = chunks[chunk.pos.north().toLong()]
+        val south = chunks[chunk.pos.south().toLong()]
+        val east = chunks[chunk.pos.east().toLong()]
+        val west = chunks[chunk.pos.west().toLong()]
+        val northEast = chunks[chunk.pos.east().north().toLong()]
+        val northWest = chunks[chunk.pos.west().north().toLong()]
+        val southEast = chunks[chunk.pos.east().south().toLong()]
+        val southWest = chunks[chunk.pos.west().south().toLong()]
         main?.updateBlocks()
         north?.updateBlocks()
         south?.updateBlocks()
         east?.updateBlocks()
         west?.updateBlocks()
+        northEast?.updateBlocks()
+        northWest?.updateBlocks()
+        southEast?.updateBlocks()
+        southWest?.updateBlocks()
     }
 
+    /**
+     * Adds
+     */
     protected fun addBlocksFromChunk(searchedChunk: GavChunk, chunk: Chunk) {
         synchronized(chunks) {
+            chunks[searchedChunk.chunkPos.toLong()]?.clear()
             if (searchedChunk.hasBlocks) {
                 chunks[chunk.pos.toLong()] = searchedChunk
             } else {
-                chunks[chunk.pos.toLong()]?.clear()
                 chunks.remove(chunk.pos.toLong())
             }
+            updateNeighborChunks(chunk)
         }
-    }
-
-    fun updateBlock(x: Int, y: Int, z: Int) {
-        val chunkX = x shr 4
-        val chunkZ = z shr 4
-        val chunk = client.getWorld().getChunk(chunkX, chunkZ) ?: return
-        val key = ChunkPos.toLong(chunkX, chunkZ)
-        val espChunk = chunks[key] ?: return
-        espChunk.updateBlocks();
-        searchChunk(chunk)
-//        updateNeighborChunks(chunk)
     }
 
     protected fun checkChunk(
-        key: Long,
-        bue: BlockUpdate,
         added: Boolean,
+        remove: Boolean,
         gavBlock: GavBlock,
         chunk: Chunk,
     ) {
-//        searchChunk(chunk)
+        val key = chunk.pos.toLong()
         var espChunk = chunks[key]
         if (espChunk == null) {
-            val gavChunk = GavChunk(bue.blockPos)
+            val gavChunk = GavChunk(chunk.pos)
             chunks[key] = gavChunk
-            GavinsMod.LOGGER.debug("(onBlockUpdate) Added chunk: $key")
             espChunk = gavChunk
-
         }
         if (added)
             espChunk.addBlock(gavBlock)
-        else
+        else if (remove)
             espChunk.removeBlock(gavBlock)
+        espChunk.updateBlockNeighbors(gavBlock)
         updateNeighborChunks(chunk)
     }
 
     abstract fun searchChunk(chunk: Chunk)
+
+    companion object {
+        @Exclude
+        @JvmStatic
+        val chunks = HashMap<Long, GavChunk>()
+    }
 }

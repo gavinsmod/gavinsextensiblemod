@@ -27,9 +27,7 @@ package com.peasenet.util.block
 import com.peasenet.extensions.and
 import com.peasenet.extensions.nand
 import com.peasenet.gavui.color.Color
-import com.peasenet.main.GavinsModClient
 import com.peasenet.util.RenderUtils
-import net.minecraft.block.BlockState
 import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.BlockPos
@@ -40,26 +38,27 @@ import net.minecraft.util.math.Vec3d
  * @param x The x-coordinate of the block.
  * @param y The y-coordinate of the block.
  * @param z The z-coordinate of the block.
+ * @param visibleFilter The filter to determine whether the block is visible.
  * @author GT3CH1
- * @version 09-12-2024
+ * @version 01-25-2025
  * @since 09-12-2024
  */
 class GavBlock(
     val x: Int,
     val y: Int,
     val z: Int,
-    val visibleFilter: (BlockState, BlockPos) -> Boolean = { _, _ -> false },
+    val visibleFilter: (BlockPos) -> Boolean = {
+        false
+    },
 ) {
-    companion object {
-        fun getKey(x: Int, y: Int, z: Int): Long {
-            return ((x.toLong() and 0x3FFFFFF shl 38) or (z.toLong() and 0x3FFFFFF shl 12) or (y.toLong() and 0xFFF))
-        }
-    }
 
-    /**
-     * The key of the block.
-     */
-    val key = getKey(x, y, z)
+    constructor(blockPos: BlockPos, visibleFilter: (BlockPos) -> Boolean = { false }) : this(
+        blockPos.x,
+        blockPos.y,
+        blockPos.z,
+        visibleFilter
+    )
+
 
     /**
      * What edges are visible.
@@ -67,7 +66,9 @@ class GavBlock(
     private var visibleEdges = Edge.All.mask
 
     fun isVisible(): Boolean {
-        return !(hasNeighborTopMiddle() && hasNeighborMiddleLeft() && hasNeighborMiddleRight() && hasNeighborBottomMiddle())
+        return !(visibleEdges == Edge.None.mask || visibleEdges == Edge.All.mask) && visibleFilter(
+            pos
+        )
     }
 
 
@@ -79,53 +80,30 @@ class GavBlock(
      * Updates the edges of the block.
      */
     fun update() {
-        val topMiddle = hasNeighbor(1, 0, 0)
-        val bottomMiddle = hasNeighbor(-1, 0, 0)
-        val middleRight = hasNeighbor(0, 0, 1)
-        val middleLeft = hasNeighbor(0, 0, -1)
-        val above = hasNeighbor(0, 1, 0)
-        val below = hasNeighbor(0, -1, 0)
+//        println("Updating block at $pos")
+        if (pos.x == 16 && pos.y == -63 && pos.z == -1) {
+            println("Updating block at $pos - test")
+        }
+
+        val up = hasNeighbor(pos.up())
+        val below = hasNeighbor(pos.down())
+        val east = hasNeighbor(pos.east())
+        val west = hasNeighbor(pos.west())
+        val south = hasNeighbor(pos.south())
+        val north = hasNeighbor(pos.north())
         val mask =
-            Neighbors.TopMiddle * topMiddle or Neighbors.MiddleLeft * middleLeft or Neighbors.MiddleRight * middleRight or Neighbors.BottomMiddle * bottomMiddle or Neighbors.Above * above or Neighbors.Below * below
+            (Neighbors.East and east) + (Neighbors.North and north) + (Neighbors.South and south) + (Neighbors.West and west) + (Neighbors.Above and up) + (Neighbors.Below and below)
         setVisibleEdges(mask)
-    }
-
-    private fun hasNeighborTopMiddle(): Boolean {
-        return hasNeighbor(1, 0, 0) == 1
-    }
-
-    private fun hasNeighborMiddleLeft(): Boolean {
-        return hasNeighbor(0, 0, -1) == 1
-    }
-
-    private fun hasNeighborMiddleRight(): Boolean {
-        return hasNeighbor(0, 0, 1) == 1
-    }
-
-    private fun hasNeighborBottomMiddle(): Boolean {
-        return hasNeighbor(-1, 0, 0) == 1
-    }
-
-    private fun hasNeighborAbove(): Boolean {
-        return hasNeighbor(0, 1, 0) == 1
-    }
-
-    private fun hasNeighborBelow(): Boolean {
-        return hasNeighbor(0, -1, 0) == 1
     }
 
 
     /**
-     * Gets whether there is a neighbor at the given coordinates.
-     * @param x The x-coordinate of the neighbor.
-     * @param y The y-coordinate of the neighbor.
-     * @param z The z-coordinate of the neighbor.
+     * Gets whether there is a neighbor at the given [blockPos] using [visibleFilter].
+     * @param blockPos The position to check.
+     * @return True if [visibleFilter] returns true for the given [blockPos].
      */
-    private fun hasNeighbor(x: Int, y: Int, z: Int): Int {
-        val neighbor = BlockPos(this.x + x, this.y + y, this.z + z)
-        val neighborState = GavinsModClient.minecraftClient.getWorld().getBlockState(neighbor)
-        val res = visibleFilter(neighborState, neighbor)
-        return if (res) 1 else 0
+    private fun hasNeighbor(blockPos: BlockPos): Boolean {
+        return visibleFilter(blockPos)
     }
 
     /**
@@ -135,30 +113,31 @@ class GavBlock(
     private fun setVisibleEdges(neighbors: Int) {
         visibleEdges = Edge.All.mask
         if (neighbors == Neighbors.None.mask) {
+            visibleEdges = Edge.None.mask
             return
         }
 
-        if (hasNeighborTopMiddle()) {
+        if (hasNeighbor(pos.east())) {
             visibleEdges = visibleEdges nand Edge.Edge3 nand Edge.Edge11
             visibleEdges = visibleEdges nand Edge.Edge7 nand Edge.Edge8
         }
-        if (hasNeighborBottomMiddle()) {
+        if (hasNeighbor(pos.west())) {
             visibleEdges = visibleEdges nand Edge.Edge1 nand Edge.Edge9
             visibleEdges = visibleEdges nand Edge.Edge5 nand Edge.Edge6
         }
-        if (hasNeighborMiddleLeft()) {
+        if (hasNeighbor(pos.north())) {
             visibleEdges = visibleEdges nand Edge.Edge4 nand Edge.Edge12
             visibleEdges = visibleEdges nand Edge.Edge8 nand Edge.Edge5
         }
-        if (hasNeighborMiddleRight()) {
+        if (hasNeighbor(pos.south())) {
             visibleEdges = visibleEdges nand Edge.Edge2 nand Edge.Edge10
             visibleEdges = visibleEdges nand Edge.Edge6 nand Edge.Edge7
         }
-        if (hasNeighborAbove()) {
+        if (hasNeighbor(pos.up())) {
             visibleEdges = visibleEdges nand Edge.Edge9 nand Edge.Edge10
             visibleEdges = visibleEdges nand Edge.Edge11 nand Edge.Edge12
         }
-        if (hasNeighborBelow()) {
+        if (hasNeighbor(pos.down())) {
             visibleEdges = visibleEdges nand Edge.Edge1 nand Edge.Edge2
             visibleEdges = visibleEdges nand Edge.Edge3 nand Edge.Edge4
         }
@@ -407,14 +386,10 @@ class GavBlock(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
         other as GavBlock
-
         if (x != other.x) return false
         if (y != other.y) return false
         if (z != other.z) return false
-        if (key != other.key) return false
 
         return true
     }
