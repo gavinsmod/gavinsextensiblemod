@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package com.peasenet.gavui.math;
 /**
  * @param x The x coordinate of the point.
  * @param y The y coordinate of the point.
- * @author gt3ch1
+ * @author GT3CH1
  * @version 6/14/2022
  * A point in 2D space.
  */

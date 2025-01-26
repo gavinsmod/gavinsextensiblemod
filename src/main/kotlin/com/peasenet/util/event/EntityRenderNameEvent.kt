@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,12 +25,6 @@ package com.peasenet.util.event
 
 import com.peasenet.util.event.data.EntityNameRender
 import com.peasenet.util.listeners.EntityRenderNameListener
-import net.minecraft.client.render.VertexConsumerProvider
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.Entity
-import net.minecraft.entity.LivingEntity
-import net.minecraft.text.MutableText
-import net.minecraft.text.Text
 
 /**
  * An event that is fired when an entity's name is about to be rendered.
@@ -47,7 +41,7 @@ import net.minecraft.text.Text
  */
 class EntityRenderNameEvent(
     data: EntityNameRender
-) : Event<EntityRenderNameListener>() {
+) : Event<EntityRenderNameListener> {
     private var entityRender: EntityNameRender = data
 
     override fun fire(listeners: ArrayList<EntityRenderNameListener>) {

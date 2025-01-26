@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,9 @@
 package com.peasenet.mods.render
 
 import com.mojang.blaze3d.systems.RenderSystem
-import com.peasenet.config.TracerConfig
-import com.peasenet.config.WaypointConfig
+import com.peasenet.config.tracer.TracerConfig
+import com.peasenet.config.waypoint.WaypointConfig
+import com.peasenet.extensions.toVec3d
 import com.peasenet.gui.mod.waypoint.GuiWaypoint
 import com.peasenet.main.Settings
 import com.peasenet.mods.ModCategory
@@ -41,20 +42,18 @@ import com.peasenet.util.listeners.CameraBobListener
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gl.ShaderProgramKeys
-import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.Text
 import net.minecraft.util.math.Box
-import java.util.function.Function
 
 /**
  * Creates a new mod to control waypoints.
- * @author gt3ch1
- * @version 09-06-2024
+ * @author GT3CH1
+ * @version 01-15-2025
  * @since 03-02-2023
  */
 class ModWaypoint : RenderMod(
-    "Waypoints", "gavinsmod.mod.render.waypoints", "waypoints", ModCategory.WAYPOINTS
+    "gavinsmod.mod.render.waypoints", "waypoints", ModCategory.WAYPOINTS
 ), RenderListener, CameraBobListener {
 
     init {
@@ -88,9 +87,8 @@ class ModWaypoint : RenderMod(
         openMenu = SettingBuilder().setTitle("gavinsmod.settings.render.waypoints.add")
             .setCallback { MinecraftClient.getInstance().setScreen(GuiWaypoint()) }.setSymbol('+').buildClickSetting()
         addSetting(openMenu)
-        // get all waypoints and add them to the menu
         val waypoints = Settings.getConfig<WaypointConfig>("waypoints").getLocations().stream()
-            .sorted(Comparator.comparing { obj: Waypoint -> obj.name ?: "" })
+            .sorted(Comparator.comparing { obj: Waypoint -> obj.name })
         for (w in waypoints.toArray()) createWaypoint(w as Waypoint)
     }
 
@@ -102,7 +100,7 @@ class ModWaypoint : RenderMod(
     private fun createWaypoint(waypoint: Waypoint) {
         val clickSetting = SettingBuilder().setTitle(Text.literal(waypoint.name)).setCallback {
             MinecraftClient.getInstance().setScreen(GuiWaypoint(waypoint))
-        }.setHoverable(true).setBackgroundColor(waypoint.color!!).setTransparency(0.5f).buildClickSetting()
+        }.setHoverable(true).setBackgroundColor(waypoint.color).setTransparency(0.5f).buildClickSetting()
         addSetting(clickSetting)
     }
 
@@ -112,19 +110,18 @@ class ModWaypoint : RenderMod(
             Settings.getConfig<WaypointConfig>("waypoints").getLocations().filter { w -> w.canRender(playerDimension) }
         if (waypointLocs.isEmpty()) return;
         RenderUtils.setupRender(matrixStack)
-//        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
         RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR)
         val entry = matrixStack.peek().positionMatrix
         val bufferBuilder = RenderUtils.getBufferBuilder()
         for (w in waypointLocs) {
-            val pos = RenderUtils.offsetPosWithCamera(w.pos)
+            val pos = RenderUtils.offsetPosWithCamera(w.coordinates.toVec3d())
             val bb = Box(
                 pos.x + 1, pos.y, pos.z + 1, pos.x, pos.y + 1.0, pos.z
             )
-            if (w.isEspEnabled) RenderUtils.drawOutlinedBox(bb, bufferBuilder, entry, w.color!!)
-            if (w.isTracerEnabled) {
+            if (w.renderEsp) RenderUtils.drawOutlinedBox(bb, bufferBuilder, entry, w.color)
+            if (w.renderTracer) {
                 RenderUtils.drawSingleLine(
-                    bufferBuilder, entry, partialTicks, bb.center, w.color!!
+                    bufferBuilder, entry, partialTicks, bb.center, w.color
                 )
             }
         }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,6 @@ package com.peasenet.mods.movement
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
 
 class ModDolphin : MovementMod(
-    "Dolphin",
     "gavinsmod.mod.movement.dolphin",
     "dolphin"
 ) {

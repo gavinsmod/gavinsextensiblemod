@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,13 +24,12 @@
 package com.peasenet.gui
 
 import com.mojang.blaze3d.systems.RenderSystem
-import com.peasenet.config.MiscConfig
+import com.peasenet.config.misc.MiscConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiScroll
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.util.GavUISettings
-import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
 import com.peasenet.util.RenderUtils
@@ -42,7 +41,7 @@ import net.minecraft.text.Text
 import java.util.function.Consumer
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  * A parent class that holds all that is needed to render an in game gui.
  */
@@ -95,7 +94,7 @@ open class GuiElement(title: Text?) : Screen(title) {
         mouseX: Double,
         mouseY: Double,
         horizontalAmount: Double,
-        verticalAmount: Double
+        verticalAmount: Double,
     ): Boolean {
         guis.forEach(Consumer { gui: Gui -> gui.mouseScrolled(mouseX, mouseY, verticalAmount) })
         return super.mouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)
@@ -117,7 +116,6 @@ open class GuiElement(title: Text?) : Screen(title) {
         for (gui in guis) {
             if (Gui.getClickedGui() != null && gui.uuid == Gui.getClickedGui().uuid) {
                 gui.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)
-                GavinsMod.LOGGER.info(gui.uuid.toString() + " " + Gui.getClickedGui().toString())
                 return true
             } else if (gui is GuiScroll) {
                 if (gui.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) return true

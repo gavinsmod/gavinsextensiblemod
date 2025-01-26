@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,20 +27,31 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 
+/**
+ * The GEM executor is a thread pool that is used to execute compute-intensive tasks.
+ *
+ * @author GT3CH1
+ * @version 01-26-2025
+ * @since 09-16-2024
+ */
 object GemExecutor {
-    private var executorService: ExecutorService? = null
+    private var executorService: ExecutorService
 
-    fun init() {
+    init {
         val corePoolSize = AtomicInteger(1)
-        executorService = Executors.newCachedThreadPool { task: Runnable? ->
-            val thread = Thread(task)
+        executorService = Executors.newCachedThreadPool {
+            val thread = Thread(it)
             thread.isDaemon = true
             thread.name = "gem-executor-" + corePoolSize.getAndIncrement()
             thread
         }
     }
 
+    /**
+     * Executes a task.
+     * @param task The task to execute.
+     */
     fun execute(task: Runnable) {
-        executorService!!.execute(task)
+        executorService.execute(task)
     }
 }

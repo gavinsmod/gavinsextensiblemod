@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,12 +29,11 @@ import net.minecraft.block.entity.FurnaceBlockEntity
 
 /**
  * A mod that allows the player to see tracers towards furnaces.
- * @author gt3ch1
- * @version 09-06-2024
+ * @author GT3CH1
+ * @version 01-15-2025
  * @since 04-11-2023
  */
-class ModFurnaceTracer : BlockEntityTracer<FurnaceBlockEntity>("Furnace Tracer",
-    "gavinsmod.mod.tracer.furnace",
+class ModFurnaceTracer : BlockEntityTracer<FurnaceBlockEntity>("gavinsmod.mod.tracer.furnace",
     "furnacetracer",
     blockFilter = { it is FurnaceBlockEntity }) {
     init {

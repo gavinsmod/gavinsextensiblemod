@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,11 +23,10 @@
  */
 package com.peasenet.gui.mod.tracer
 
-import com.peasenet.config.TracerConfig
+import com.peasenet.config.tracer.TracerConfig
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gui.mod.GuiMobSelection
-import com.peasenet.main.GavinsMod
 import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
 import net.minecraft.item.ItemStack
@@ -39,8 +38,8 @@ import net.minecraft.text.Text
  *
  * @see TracerConfig
  *
- * @author gt3ch1
- * @version 01-12-2025
+ * @author GT3CH1
+ * @version 01-15-2025
  * @since 04-11-2023
  */
 class GuiMobTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtracer")) {
@@ -50,7 +49,7 @@ class GuiMobTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtr
         val height = 24f
         var pos = PointF(10f, height)
         hostileColor = SettingBuilder()
-            .setTitle("gavinsmod.settings.tracer.mob.hostile.color")
+            .setTitle("gavinsmod.settings.color.hostileMob")
             .setColor(settings.hostileMobColor)
             .setTopLeft(pos)
             .buildColorSetting()
@@ -58,7 +57,7 @@ class GuiMobTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtr
         pos = pos.add(0f, 12f)
 
         peacefulColor = SettingBuilder()
-            .setTitle("gavinsmod.settings.tracer.mob.peaceful.color")
+            .setTitle("gavinsmod.settings.color.peacefulMob")
             .setColor(settings.peacefulMobColor)
             .setTopLeft(pos)
             .buildColorSetting()
@@ -74,7 +73,7 @@ class GuiMobTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtr
         pos = pos.add(0f, 12f)
 
         peacefulToggle = SettingBuilder()
-            .setTitle("gavinsmod.settings.tracer.mob.hostile")
+            .setTitle("gavinsmod.settings.mob.hostile")
             .setState(settings.showHostileMobs)
             .setTopLeft(pos)
             .buildToggleSetting()
@@ -82,7 +81,7 @@ class GuiMobTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtr
         pos = pos.add(0f, 12f)
 
         hostileToggle = SettingBuilder()
-            .setTitle("gavinsmod.settings.tracer.mob.peaceful")
+            .setTitle("gavinsmod.settings.mob.peaceful")
             .setState(settings.showPeacefulMobs)
             .setTopLeft(pos)
             .buildToggleSetting()
@@ -91,7 +90,7 @@ class GuiMobTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtr
     }
 
     override fun isItemEnabled(item: ItemStack): Boolean {
-        return settings.mobIsShown(item.item as SpawnEggItem)
+        return settings.inList(item.item as SpawnEggItem)
     }
 
     override fun handleItemToggle(item: ItemStack) {

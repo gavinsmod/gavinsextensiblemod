@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,63 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.config
+package com.peasenet.config.render
 
-import com.peasenet.mods.render.waypoints.Waypoint
+import com.peasenet.config.Config
+import com.peasenet.main.Mods
 
 /**
- * The configuration for waypoints.
+ * Configuration file for fullbright.
  *
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  */
-class WaypointConfig : Config<WaypointConfig>() {
+open class FullbrightConfig : Config<FullbrightConfig>() {
+    var gamma: Float = 1.0F
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
     /**
-     * The list of waypoints.
+     * Whether to fade the brightness.
      */
-    private var locations: ArrayList<Waypoint>
+    var gammaFade = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
 
     init {
-        key = "waypoints"
-        locations = ArrayList()
+        key = "fullbright"
     }
 
-    /**
-     * Adds a waypoint to the list.
-     *
-     * @param w - The waypoint to add.
-     */
-    fun addWaypoint(w: Waypoint) {
-        locations.add(w)
-        saveConfig()
-    }
-
-    /**
-     * Removes a waypoint from the list.
-     *
-     * @param w - The waypoint to remove.
-     */
-    fun removeWaypoint(w: Waypoint) {
-        locations.remove(w)
-        saveConfig()
-    }
-
-    /**
-     * Gets the list of waypoints.
-     *
-     * @return The list of waypoints.
-     */
-    fun getLocations(): ArrayList<Waypoint> {
-        return locations
-    }
-
-    /**
-     * Sets the list of waypoints.
-     *
-     * @param locations - The list of waypoints.
-     */
-    fun setLocations(locations: ArrayList<Waypoint>) {
-        this.locations = locations
-        saveConfig()
+    fun maxGamma(): Float  {
+        return if (Mods.isActive("xray")) 16F else 1 + 15 * gamma
     }
 }

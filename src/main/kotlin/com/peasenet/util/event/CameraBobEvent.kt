@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,15 @@ package com.peasenet.util.event
 import com.peasenet.util.event.data.CameraBob
 import com.peasenet.util.listeners.CameraBobListener
 
+/**
+ * Called when the camera bobs. This event can be cancelled.
+ * @see CancellableEvent
+ * @see CameraBobListener
+ *
+ * @author GT3CH1
+ * @version 01-26-2025
+ * @since 03-02-2023
+ */
 class CameraBobEvent : CancellableEvent<CameraBobListener>() {
     private var cameraBob: CameraBob = CameraBob()
 

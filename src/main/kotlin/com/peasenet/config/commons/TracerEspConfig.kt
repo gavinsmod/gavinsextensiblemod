@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.config
+package com.peasenet.config.commons
 
+import com.peasenet.config.Config
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.main.GavinsModClient
@@ -37,8 +38,8 @@ import net.minecraft.item.SpawnEggItem
  * @example [com.peasenet.config.EspConfig]
  *
  * @author GT3CH1
- * @version 01-12-2025
- * @version 04-01-2023
+ * @version 01-15-2025
+ * @version 01-15-2025
  */
 open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
 
@@ -163,6 +164,15 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
             saveConfig()
         }
 
+    /**
+     * The color for signs. Default value is [Colors.DESERT_SAND]
+     */
+    var signColor: Color = Colors.DESERT_SAND
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
     var useItemEspFilter: Boolean = false
         set(value) {
             field = value
@@ -174,7 +184,7 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
      * @param mob The mob to remove (EntityType)
      */
     fun removeMob(mob: EntityType<*>) {
-        shownMobs.remove(mob.toString())
+        shownMobs.removeIf { it == mob.translationKey }
         saveConfig()
     }
 
@@ -210,24 +220,20 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
      * @param egg The mob to check (SpawnEggItem)
      * @return Whether the mob is shown.
      */
-    fun mobIsShown(egg: SpawnEggItem): Boolean {
+    fun inList(egg: SpawnEggItem): Boolean {
         val registryManager = GavinsModClient.minecraftClient.getWorld().registryManager;
-        return mobIsShown(egg.getEntityType(registryManager, egg.defaultStack))
+        return inList(egg.getEntityType(registryManager, egg.defaultStack))
     }
 
 
     /**
-     * Checks if a mob is shown.
+     * Checks if a mob is in the entity list.
      * @param mob The mob to check (EntityType)
-     * @return Whether the mob is shown.
+     * @return Whether the mob is in the entity list.
      */
-    fun mobIsShown(mob: EntityType<*>): Boolean {
+    fun inList(mob: EntityType<*>): Boolean {
         val inList = shownMobs.contains(mob.translationKey);
-        if (mob.spawnGroup.isPeaceful && showPeacefulMobs)
-            return inList
-        if (!mob.spawnGroup.isPeaceful && showHostileMobs)
-            return inList
-        return false
+        return inList
     }
 }
 

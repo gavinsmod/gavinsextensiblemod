@@ -1,7 +1,7 @@
-/*
+﻿/*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,22 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.config
+
+package com.peasenet.extensions
+
+import net.minecraft.util.math.Vec3d
+import net.minecraft.util.math.Vec3i
 
 /**
- * The configuration for tracers. This is stored in the core library as there are multiple GEMs that use this.
- * The key is "tracer".
- * @author gt3ch1
- * @version 07-18-2023
+ *
+ * @author GT3CH1
+ * @version 01-14-2025
+ * @since 01-14-2025
  */
-class TracerConfig : TracerEspConfig<TracerConfig>() {
-    init {
-        key = "tracer"
-    }
-
-    var viewBobCancel: Boolean = true
-        set(value) {
-            field = value
-            saveConfig()
-        }
+fun Vec3i.toVec3d(): Vec3d {
+    return Vec3d(x.toDouble(), y.toDouble(), z.toDouble())
 }

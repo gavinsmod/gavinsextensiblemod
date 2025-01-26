@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,16 +26,13 @@ package com.peasenet.util.event
 import com.peasenet.util.listeners.PlayerAttackListener
 
 /**
- * An event for when a packet is sent.
- *
+ * An event for when the player attacks an entity.
+ * @see PlayerAttackListener
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 01-26-2025
+ * @since 03-02-2023
  */
-class PlayerAttackEvent
-/**
- * Creates a new PacketSendEvent.
- */
-    : Event<PlayerAttackListener>() {
+class PlayerAttackEvent : Event<PlayerAttackListener> {
     override fun fire(listeners: ArrayList<PlayerAttackListener>) {
         for (listener in listeners) {
             listener.onAttackEntity()

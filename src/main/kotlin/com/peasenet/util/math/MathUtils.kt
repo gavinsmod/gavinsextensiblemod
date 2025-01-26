@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ import kotlin.math.sqrt
 
 /**
  * A class that contains math utilities.
- * @author gt3ch1
+ * @author GT3CH1
  * @version 09-06-2024
  * @since 03-02-2023
  */

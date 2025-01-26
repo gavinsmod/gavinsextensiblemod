@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,18 +31,17 @@ import net.minecraft.entity.player.PlayerEntity
 /**
  *
  * A mod that allows the player to see an ESP to other players.
- * @author gt3ch1
- * @version 09-06-2024
+ * @author GT3CH1
+ * @version 01-15-2025
  * @since 03-02-2023
  */
 class ModEntityPlayerEsp : EntityEsp<PlayerEntity>(
-    "Player ESP",
     "gavinsmod.mod.esp.player",
     "playeresp",
     { it is PlayerEntity && it != GavinsModClient.player },
 ) {
     init {
-        val colorSetting = SettingBuilder().setTitle("gavinsmod.settings.esp.player.color").setColor(config.playerColor)
+        val colorSetting = SettingBuilder().setTitle("gavinsmod.settings.color.player").setColor(config.playerColor)
             .buildColorSetting()
         addSetting(colorSetting)
     }

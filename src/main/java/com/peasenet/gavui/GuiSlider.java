@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ import net.minecraft.client.gui.DrawContext;
 /**
  * A gui that allows for controlling a value with a slider.
  *
- * @author gt3ch1
+ * @author GT3CH1
  * @version 09-02-2024
  * @since 01/07/2022
  */
@@ -133,7 +133,6 @@ public class GuiSlider extends Gui {
         if (button == 0 && mouseWithinGui(mouseX, mouseY) && !isHidden()) {
             setValue(mouseX);
             clickedGui = this;
-            GavUI.LOGGER.debug("Clicked on slider {}", getUUID());
             return true;
         }
         return false;

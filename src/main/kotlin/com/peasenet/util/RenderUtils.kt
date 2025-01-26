@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,22 +26,19 @@
 package com.peasenet.util
 
 import com.mojang.blaze3d.systems.RenderSystem
-import com.peasenet.config.EspConfig
+import com.peasenet.config.esp.EspConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
 import com.peasenet.mixinterface.ISimpleOption
-import com.peasenet.mods.esp.EspMod.Companion.config
 import com.peasenet.util.math.MathUtils
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gl.ShaderProgramKeys
 import net.minecraft.client.gl.VertexBuffer
 import net.minecraft.client.render.*
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.component.DataComponentTypes
 import net.minecraft.entity.Entity
-import net.minecraft.entity.ItemEntity
 import net.minecraft.util.math.*
 import net.minecraft.world.chunk.Chunk
 import org.joml.Matrix4f
@@ -51,7 +48,7 @@ import org.lwjgl.opengl.GL11
 
 /**
  * A utility class for rendering tracers and esp's.
- * @author gt3ch1
+ * @author GT3CH1
  * @version 09-08-2024
  * @since 07-18-2023
  */
@@ -140,20 +137,20 @@ object RenderUtils {
      *
      * @see getRenderDistance
      */
-    fun getVisibleChunks(): List<Chunk> {
-        val chunks = ArrayList<Chunk>()
+    fun getVisibleChunks(renderDistance: Int = getRenderDistance()): List<Chunk> {
+        val chunks = mutableSetOf<Chunk>()
         val player = GavinsModClient.minecraftClient.getPlayer()
         val chunkX = player.chunkPos.x
         val chunkZ = player.chunkPos.z
         val level = GavinsModClient.minecraftClient.getWorld()
-        for (x in -(getRenderDistance() + 1) until (getRenderDistance())) {
-            for (z in -(getRenderDistance() + 1) until (getRenderDistance())) {
+        for (x in -(renderDistance + 1) until (renderDistance)) {
+            for (z in -(renderDistance + 1) until (renderDistance)) {
                 val chunkX1 = chunkX + x
                 val chunkZ1 = chunkZ + z
                 chunks.add(level.getChunk(chunkX1, chunkZ1))
             }
         }
-        return chunks
+        return chunks.toList()
     }
 
     /**
@@ -271,7 +268,7 @@ object RenderUtils {
         entity: Entity,
         color: Color,
         alpha: Float,
-        lerp: Boolean = true
+        lerp: Boolean = true,
     ) {
 
         var box = entity.boundingBox
@@ -303,7 +300,7 @@ object RenderUtils {
      */
     fun drawOutlinedBox(
         bb: Box, buffer: BufferBuilder, matrix4f: Matrix4f, color: Color = Colors.WHITE, alpha: Float = 1f,
-        withOffset: Boolean = true
+        withOffset: Boolean = true,
     ) {
 
         var minX = bb.minX.toFloat()
@@ -373,7 +370,7 @@ object RenderUtils {
         end: Vec3d,
         color: Color = Colors.WHITE,
         alpha: Float = 1f,
-        offsetEnd: Boolean = false
+        offsetEnd: Boolean = false,
     ) {
         if (offsetEnd) {
             drawSingleLine(
@@ -441,7 +438,7 @@ object RenderUtils {
         partialTicks: Float,
         end: BlockPos,
         color: Color = Colors.WHITE,
-        alpha: Float = 1f
+        alpha: Float = 1f,
     ) {
         drawSingleLine(
             buffer,
@@ -461,7 +458,7 @@ object RenderUtils {
         end: Vec3d,
         color: Color = Colors.WHITE,
         alpha: Float = 1f,
-        withOffset: Boolean = false
+        withOffset: Boolean = false,
     ) {
         if (!withOffset) {
             val box = Box(
@@ -492,7 +489,7 @@ object RenderUtils {
         end: Vec3d,
         color: Color = Colors.WHITE,
         alpha: Float = 1f,
-        withOffset: Boolean = false
+        withOffset: Boolean = false,
     ) {
         if (withOffset) {
             drawSingleLine(
@@ -515,7 +512,7 @@ object RenderUtils {
         direction: Direction,
         color: Color = Colors.WHITE,
         alpha: Float = 1f,
-        withOffset: Boolean = false
+        withOffset: Boolean = false,
     ) {
         val end = when (direction) {
             Direction.UP -> start.add(0.0, 1.0, 0.0)
@@ -543,7 +540,7 @@ object RenderUtils {
         start: Vector3f,
         end: Vector3f,
         color: Color = Colors.WHITE,
-        alpha: Float = 1f
+        alpha: Float = 1f,
     ) {
         bufferBuilder.vertex(
             matrix4f, start.x, start.y, start.z
@@ -700,7 +697,7 @@ object RenderUtils {
         color: Color,
         alpha: Float,
         region: RegionPos,
-        config: EspConfig = Settings.getConfig("esp")
+        config: EspConfig = Settings.getConfig("esp"),
     ) {
         matrixStack.push()
         RenderSystem.setShaderColor(color.red, color.green, color.blue, alpha)

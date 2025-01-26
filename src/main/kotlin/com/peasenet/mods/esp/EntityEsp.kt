@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,18 +38,17 @@ import org.lwjgl.opengl.GL11
 /**
  * A class that represents an ESP mod for entities.
  * @param T The type of entity to render.
- * @param name The name of the mod.
  * @param translationKey The translation key of the mod.
  * @param chatCommand The chat command of the mod.
  *
  * @author GT3CH1
- * @version 09-01-2024
+ * @version 01-15-2025
  * @since 09-01-2024
  *
  */
 abstract class EntityEsp<T : Entity>(
-    name: String, translationKey: String, chatCommand: String, val entityFilter: (Entity) -> Boolean
-) : EspMod<T>(name, translationKey, chatCommand) {
+    translationKey: String, chatCommand: String, val entityFilter: (Entity) -> Boolean
+) : EspMod<T>(translationKey, chatCommand) {
 
     private lateinit var vertexBuffer: VertexBuffer
     override fun onEnable() {

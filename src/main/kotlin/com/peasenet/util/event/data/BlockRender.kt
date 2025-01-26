@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,44 +30,26 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 
 /**
- * Data class for the block BlockState render event.
+ * Data class for the block BlockState render event. This can be cancelled.
+ * @see Cancellable
  *
- * @author gt3ch1
- * @version 03-02-2023
+ * @param blockState The block BlockState.
+ * @param stack The matrix stack.
+ * @param buffer The buffer builder.
+ * @param blockPos The center of the block BlockState.
+ * @param playerPos The current player's position.
+ * @param delta Change in ticks.
+ *
+ * @author GT3CH1
+ * @version 01-26-2025
+ * @since 03-02-2023
  */
-class BlockRender
-/**
- * Creates a new block BlockState render event.
- *
- * @param blockState    - The block BlockState.
- * @param stack     - The matrix stack.
- * @param buffer    - The buffer builder.
- * @param center    - The center of the block BlockState.
- * @param playerPos - The current player's position.
- * @param delta     - Change in ticks.
- */(
-    /**
-     * The block BlockState.
-     */
-    var blockState : BlockState,
-    /**
-     * The matrix stack.
-     */
+data class BlockRender
+    (
+    private var blockState: BlockState,
     var stack: MatrixStack?,
-    /**
-     * The buffer builder.
-     */
-    var buffer: BufferBuilder?,
-    /**
-     * The center of the block BlockState.
-     */
+    private var buffer: BufferBuilder?,
     var blockPos: BlockPos?,
-    /**
-     * The current player's position.
-     */
-    var playerPos: Vec3d?,
-    /**
-     * Change in ticks.
-     */
-    var delta: Float
+    private var playerPos: Vec3d?,
+    var delta: Float,
 ) : Cancellable()

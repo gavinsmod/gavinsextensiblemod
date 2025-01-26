@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@ import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 01/07/2023
  * A utility class for drawing gui elements.
  */
@@ -61,15 +61,8 @@ public class GuiUtil {
     public static void drawBox(Color c, BoxF box, MatrixStack matrixStack, float alpha) {
         alpha = Math.max(0, Math.min(1, alpha));
         var acColor = c.getAsFloatArray();
-//        var shader = RenderSystem.getShader();
-//        GL11.glDisable(GL11.GL_CULL_FACE);
-//        GL11.glEnable(GL11.GL_BLEND);
-//        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-//        
-//        RenderSystem.setShader(ShaderProgramKeys.POSITION);
         RenderSystem.setShader(ShaderProgramKeys.POSITION);
         RenderSystem.enableBlend();
-        var shaderColors = RenderSystem.getShaderColor();
         RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], alpha);
         var tesselator = RenderSystem.renderThreadTesselator();
         var bufferBuilder = tesselator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
@@ -77,7 +70,6 @@ public class GuiUtil {
         drawBox(box, matrix, bufferBuilder);
         var e = bufferBuilder.end();
         BufferRenderer.drawWithGlobalProgram(e);
-//        RenderSystem.applyModelViewMatrix();
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.disableBlend();
     }

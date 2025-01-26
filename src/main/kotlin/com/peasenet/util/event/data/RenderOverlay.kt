@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,4 +25,13 @@ package com.peasenet.util.event.data
 
 import net.minecraft.util.Identifier
 
-class RenderOverlay(val texture: Identifier) : Cancellable()
+/**
+ * Called when an overlay is rendered. This event is cancellable.
+ * @param texture The texture [Identifier] of the overlay.
+ * @see Cancellable
+ *
+ * @author GT3CH1
+ * @version 01-26-2025
+ * @since 03-02-2023
+ */
+data class RenderOverlay(val texture: Identifier) : Cancellable()

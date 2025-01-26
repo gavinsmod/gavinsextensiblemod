@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,20 @@
  */
 package com.peasenet.main
 
-import com.peasenet.config.*
+import com.peasenet.config.combat.AutoAttackConfig
+import com.peasenet.config.combat.KillAuraConfig
+import com.peasenet.config.esp.BlockEspConfig
+import com.peasenet.config.esp.CaveEspConfig
+import com.peasenet.config.esp.EspConfig
+import com.peasenet.config.misc.FpsColorConfig
+import com.peasenet.config.misc.FreeCamConfig
+import com.peasenet.config.misc.MiscConfig
+import com.peasenet.config.render.FullbrightConfig
+import com.peasenet.config.render.RadarConfig
+import com.peasenet.config.render.XrayConfig
+import com.peasenet.config.tracer.BlockTracerConfig
+import com.peasenet.config.tracer.TracerConfig
+import com.peasenet.config.waypoint.WaypointConfig
 import com.peasenet.mods.Mod
 import com.peasenet.mods.combat.ModAutoAttack
 import com.peasenet.mods.combat.ModAutoCrit
@@ -37,6 +50,7 @@ import com.peasenet.mods.misc.ModGuiTextOverlay
 import com.peasenet.mods.movement.*
 import com.peasenet.mods.render.*
 import com.peasenet.mods.tracer.*
+import com.peasenet.util.ChatCommand
 
 
 /**
@@ -45,7 +59,7 @@ import com.peasenet.mods.tracer.*
  * the main GUI and the settings GUI.
  *
  * @author GT3CH1
- * @version 01-12-2025
+ * @version 01-15-2025
  * @since 07-18-2023
  */
 class Mods {
@@ -67,12 +81,15 @@ class Mods {
         Settings.addConfig(XrayConfig())
         Settings.addConfig(AutoAttackConfig())
         Settings.addConfig(KillAuraConfig())
+        Settings.addConfig(CaveEspConfig())
 
         /*@MODS@*/
         GavinsMod.addMod(ModAutoAttack())
         GavinsMod.addMod(ModAutoCrit())
         GavinsMod.addMod(ModKillAura())
         GavinsMod.addMod(ModBeehiveEsp())
+        GavinsMod.addMod(ModSignEsp())
+        GavinsMod.addMod(ModSignTracer())
         GavinsMod.addMod(ModChestEsp())
         GavinsMod.addMod(ModEntityItemEsp())
         GavinsMod.addMod(ModEntityPlayerEsp())
@@ -111,6 +128,7 @@ class Mods {
         GavinsMod.addMod(ModFurnaceTracer())
         GavinsMod.addMod(ModMobTracer())
         GavinsMod.addMod(ModBlockEsp())
+        GavinsMod.addMod(ModCaveEsp())
     }
 
     companion object {
@@ -131,8 +149,7 @@ class Mods {
                 // get all values from the map and add them to the list
                 val values: Collection<Mod> = modMap.values
                 // sort the list by name
-                val list = ArrayList(values)
-                list.sortWith(Comparator.comparing(Mod::name))
+                val list = ArrayList(values.sortedBy { it.translationKey })
                 return list
             }
 
@@ -147,6 +164,12 @@ class Mods {
             if (modMap[chatCommand] == null)
                 return null;
             return modMap[chatCommand]!!
+        }
+
+        @JvmStatic
+        fun <T : Mod?> getMod(chatCommand: ChatCommand): T {
+            var mod = getMod(chatCommand.chatCommand)
+            return mod as T
         }
 
         /**

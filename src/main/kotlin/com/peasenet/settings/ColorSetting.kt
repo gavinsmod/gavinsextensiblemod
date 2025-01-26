@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import com.peasenet.gavui.color.Colors
 /**
  * A setting that allows the user to change a color value.
  * @param builder - The setting builder.
- * @author gt3ch1
+ * @author GT3CH1
  * @version 07-18-2023
  */
 class ColorSetting(builder: SettingBuilder) : Setting() {

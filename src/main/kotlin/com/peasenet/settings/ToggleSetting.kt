@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ import com.peasenet.gavui.util.GavUISettings
 /**
  * A setting that contains one of two finite states - on or off.
  * @param builder - The builder used to create this toggle setting.
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  */
 class ToggleSetting(builder: SettingBuilder) : Setting() {
@@ -38,7 +38,7 @@ class ToggleSetting(builder: SettingBuilder) : Setting() {
      * The gui element that is used to display this toggle setting.
      */
     override var gui: GuiToggle = GuiBuilder()
-        .setWidth(90F)
+        .setWidth(builder.getWidth())
         .setHeight(10F)
         .setTitle(builder.getTitle())
         .setIsOn(builder.getState())

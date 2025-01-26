@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,17 +27,16 @@ import com.peasenet.util.event.data.TessellateBlock
 import com.peasenet.util.listeners.TessellateBlockListener
 
 /**
- * Event called when block tessellation occurs.
+ * Event called when block tessellation occurs. This event is cancellable.
+ * @param tessellateBlock The [TessellateBlock] event.
+ * @see CancellableEvent
+ * @see TessellateBlockListener
  *
- * @author gt3ch1
- * @version 03-02-2023
+ * @author GT3CH1
+ * @version 01-26-2025
+ * @since 03-02-2023
  */
-class TessellateBlockEvent(
-    /**
-     * The data for the event.
-     */
-    private val tessellateBlock: TessellateBlock
-) : CancellableEvent<TessellateBlockListener>() {
+class TessellateBlockEvent(private val tessellateBlock: TessellateBlock) : CancellableEvent<TessellateBlockListener>() {
     override fun fire(listeners: ArrayList<TessellateBlockListener>) {
         for (listener in listeners) {
             listener.onTessellateBlock(tessellateBlock)

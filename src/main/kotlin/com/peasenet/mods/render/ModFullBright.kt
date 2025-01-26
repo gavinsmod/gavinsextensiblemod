@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@
 
 package com.peasenet.mods.render
 
-import com.peasenet.config.FullbrightConfig
+import com.peasenet.config.render.FullbrightConfig
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
@@ -34,13 +34,13 @@ import com.peasenet.settings.SettingBuilder
 
 /**
  * A mod that allows the client to see very clearly in the absence of a light source.
- * @author gt3ch1
- * @version 09-16-2024
+ * @author GT3CH1
+ * @version 01-15-2025
  * @since 03-02-2023
  */
 @Suppress("KotlinConstantConditions")
 class ModFullBright : RenderMod(
-    "Full Bright", "gavinsmod.mod.render.fullbright", "fullbright"
+    "gavinsmod.mod.render.fullbright", "fullbright"
 ) {
     companion object {
         lateinit var fullbrightConfig: FullbrightConfig

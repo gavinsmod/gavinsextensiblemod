@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,18 +27,15 @@ import com.peasenet.util.listeners.InGameHudRenderListener
 import net.minecraft.client.gui.DrawContext
 
 /**
- * The event for the world render event.
- *
+ * An event that is fired when the in-game HUD is rendered.
+ * @param drawContext The draw context to use.
+ * @param delta The tick delta.
+ * @see InGameHudRenderListener
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 01-26-2025
+ * @since 03-02-2023
  */
-class InGameHudRenderEvent
-/**
- * Creates a new world render event.
- *
- * @param drawContext - The draw context to use.
- * @param delta - The delta.
- */(private var drawContext: DrawContext, var delta: Float) : Event<InGameHudRenderListener>() {
+class InGameHudRenderEvent(private var drawContext: DrawContext, var delta: Float) : Event<InGameHudRenderListener> {
     override fun fire(listeners: ArrayList<InGameHudRenderListener>) {
         for (listener in listeners) {
             listener.onRenderInGameHud(drawContext, delta)

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,21 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.config
+package com.peasenet.mods.tracer
+
+import com.peasenet.gavui.color.Color
+import com.peasenet.settings.SettingBuilder
+import com.peasenet.util.ChatCommand
+import net.minecraft.block.entity.BeehiveBlockEntity
+import net.minecraft.block.entity.SignBlockEntity
 
 /**
- * The configuration for ESPs. This is stored in the core client as there are multiple GEMs that require an EspConfig.
- * The key for this configuration is "esp".
- *
- * @see TracerConfig
- * @see EspConfig
- *
+ * A mod that allows the player to see tracers towards beehives.
  * @author GT3CH1
- * @version 07-18-2023
- * @since 07-18-2023
+ * @version 01-15-2025
+ * @since 04-11-2023
  */
-class EspConfig : TracerEspConfig<EspConfig>() {
+class ModSignTracer : BlockEntityTracer<BeehiveBlockEntity>("gavinsmod.mod.tracer.sign",
+    ChatCommand.SignTracer.chatCommand,
+    { it is SignBlockEntity }) {
     init {
-        key = "esp"
+        val colorSetting =
+            SettingBuilder().setTitle("gavinsmod.settings.color.sign").setColor(config.signColor)
+                .buildColorSetting()
+        colorSetting.setCallback { config.signColor = colorSetting.color }
+        addSetting(colorSetting)
     }
+
+    override fun getColor(): Color {
+        return config.signColor
+    }
+
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,15 +32,14 @@ import com.peasenet.gui.mod.*
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
 import com.peasenet.util.ModCommands
-import com.peasenet.util.executor.GemExecutor
 import net.fabricmc.api.ModInitializer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.function.Consumer
 
 /**
- * @author gt3ch1
- * @version 04-08-2024
+ * @author GT3CH1
+ * @version 01-15-2025
  * The main initializer of the mod.
  */
 class GavinsMod : ModInitializer {
@@ -113,11 +112,9 @@ class GavinsMod : ModInitializer {
         @JvmStatic
         fun getModsInCategory(category: ModCategory): java.util.ArrayList<Mod> {
             // use stream to filter by category and sort by mod name
-            return Mods.mods.stream().filter { mod: Mod -> mod.modCategory === category }
-                .sorted(Comparator.comparing(Mod::name)).collect({ ArrayList() },
-                    { obj: java.util.ArrayList<Mod>, e: Mod -> obj.add(e) }) { obj: java.util.ArrayList<Mod>, c: java.util.ArrayList<Mod>? ->
-                    obj.addAll(c!!)
-                }
+            return Mods.mods.filter {
+                it.modCategory == category
+            }.toCollection(ArrayList())
         }
 
         /**
@@ -135,7 +132,6 @@ class GavinsMod : ModInitializer {
 
     override fun onInitialize() {
         GavUI.initialize()
-        GemExecutor.init()
         Settings.init()
         LOGGER.info("Settings loaded")
         Mods()

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,13 +41,13 @@ import net.minecraft.util.Formatting
  * @see com.peasenet.util.event.data.EntityNameRender
  * @see com.peasenet.mods.render.RenderMod
  *
- * @author gt3ch1
- * @version 01-12-2025
+ * @author GT3CH1
+ * @version 01-15-2025
  * @since 09-16-2024
  *
  */
 class ModHealthTag : RenderMod(
-    "Health Tags", "gavinsmod.mod.render.hptags", "hptags"
+    "gavinsmod.mod.render.hptags", "hptags"
 ), EntityRenderNameListener {
 
     override fun onEnable() {

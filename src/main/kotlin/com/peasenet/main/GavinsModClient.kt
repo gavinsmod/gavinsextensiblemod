@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,15 +25,12 @@ package com.peasenet.main
 
 import com.peasenet.mixinterface.IClientPlayerEntity
 import com.peasenet.mixinterface.IMinecraftClient
-import com.peasenet.util.RenderUtils
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents
 import net.minecraft.client.MinecraftClient
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 04-11-2023
  * The main part of the mod that handles checking mods.
  */
@@ -51,19 +48,20 @@ class GavinsModClient : ClientModInitializer {
 
 
     companion object {
+        /**
+         * Gets the minecraft client.
+         * @see IMinecraftClient
+         * @return The minecraft client.
+         */
         val minecraftClient: IMinecraftClient
-            /**
-             * Gets the minecraft client.
-             *
-             * @return The minecraft client.
-             */
             get() = MinecraftClient.getInstance() as IMinecraftClient
+
+        /**
+         * Gets the minecraft client player.
+         * @see IClientPlayerEntity
+         * @return The minecraft client player.
+         */
         val player: IClientPlayerEntity?
-            /**
-             * Gets the minecraft client player.
-             *
-             * @return The minecraft client player.
-             */
             get() = MinecraftClient.getInstance().player as IClientPlayerEntity?
     }
 }

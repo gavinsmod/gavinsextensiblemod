@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,18 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.config
+package com.peasenet.config.render
 
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonToken
 import com.google.gson.stream.JsonWriter
+import com.peasenet.config.commons.BlockListConfig
 import net.minecraft.block.ExperienceDroppingBlock
 
 /**
  * The configuration for xray.
  *
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  */
 class XrayConfig : BlockListConfig<XrayConfig>({ it is ExperienceDroppingBlock }) {

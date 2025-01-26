@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,21 +23,15 @@
  */
 package com.peasenet.mods.esp
 
-import com.peasenet.config.EspConfig
 import com.peasenet.gavui.color.Color
-import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
-import com.peasenet.util.RenderUtils
-import com.peasenet.util.event.data.BlockEntityRender
-import com.peasenet.util.listeners.BlockEntityRenderListener
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.FurnaceBlockEntity
-import net.minecraft.util.math.Box
 
 /**
  * A mod that allows the client to see an esp (a box) around furnaces.
- * @author gt3ch1
- * @version 09-06-2024
+ * @author GT3CH1
+ * @version 01-15-2025
  * @since 04-11-2023
  */
 class ModFurnaceEsp : BlockEntityEsp<BlockEntity>(
@@ -48,7 +42,7 @@ class ModFurnaceEsp : BlockEntityEsp<BlockEntity>(
 ) {
     init {
         val colorSetting = SettingBuilder()
-            .setTitle("gavinsmod.settings.esp.furnace.color")
+            .setTitle("gavinsmod.settings.color.furnace")
             .setColor(config.furnaceColor)
             .buildColorSetting()
         colorSetting.setCallback { config.furnaceColor = colorSetting.color }

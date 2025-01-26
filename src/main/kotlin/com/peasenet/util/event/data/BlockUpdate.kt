@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,5 +27,14 @@ package com.peasenet.util.event.data
 import net.minecraft.block.BlockState
 import net.minecraft.util.math.BlockPos
 
-class BlockUpdate (var blockPos: BlockPos, var newState: BlockState, var oldState: BlockState){
-}
+/**
+ * Called when a block is updated.
+ * @param blockPos The position of the block.
+ * @param newState The new state of the block (after update).
+ * @param oldState The old state of the block (before update).
+ *
+ * @author GT3CH1
+ * @version 01-26-2025
+ * @since 03-02-2023
+ */
+data class BlockUpdate(var blockPos: BlockPos, var newState: BlockState, var oldState: BlockState)

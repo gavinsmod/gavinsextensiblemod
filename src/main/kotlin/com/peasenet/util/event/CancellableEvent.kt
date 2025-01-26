@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,14 +27,16 @@ import com.peasenet.util.listeners.Listener
 
 /**
  * An event that can be cancelled.
- *
- * @param <T> The type of listener to manage.
+ * @param T The type of listener to manage.
+ * @see Listener
+ * @see Event
  * @author GT3CH1
- * @version 03-02-2023
-</T> */
-abstract class CancellableEvent<T : Listener> : Event<T>() {
+ * @version 01-26-2025
+ * @since 03-02-2023
+ */
+abstract class CancellableEvent<T : Listener> : Event<T> {
     /**
-     * Whether this even is cancelled.
+     * Whether this event is cancelled.
      */
     var isCancelled = false
         private set

@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,27 +22,36 @@
  * SOFTWARE.
  */
 
-package com.peasenet.config
+package com.peasenet.config.esp
 
+import com.peasenet.config.commons.BlockListConfig
 import com.peasenet.config.commons.IBlockEspTracerConfig
-import com.peasenet.gavui.color.Color
-import com.peasenet.gavui.color.Colors
 import net.minecraft.block.Blocks
 
 /**
- * A configuration class for the block tracer.
- * Defaults:
- *  Block color => DARK_SPRING_GREEN
+ * A configuration for block esp.
+ * Default settings are:
+ *  Blocks => Sugar Cane
+ *  Block Color => Dark Spring Green
  *  Alpha => 0.5
- * Key: blocktracer
- *
- * @author GT3CH1 
+ * @author GT3CH1
  * @version 09-01-2024
- * @since 09-01-2024
  */
-class BlockTracerConfig : BlockListConfig<BlockTracerConfig>({ it.defaultState == Blocks.SUGAR_CANE.defaultState }),
+class BlockEspConfig : BlockListConfig<BlockEspConfig>({ it.defaultState == Blocks.SUGAR_CANE.defaultState }),
     IBlockEspTracerConfig {
     init {
-        key = "blocktracer"
+        key = "blockesp"
     }
+
+    override var structureEsp: Boolean = false
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    override var blockTracer: Boolean = false
+        set(value) {
+            field = value
+            saveConfig()
+        }
 }

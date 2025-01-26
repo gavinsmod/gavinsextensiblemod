@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,12 +39,11 @@ import net.minecraft.text.Text
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
- * @author gt3ch1
- * @version 04-11-2023
+ * @author GT3CH1
+ * @version 01-15-2025
  * A mod that shows the currently active mods in the top left screen.
  */
 class ModGuiTextOverlay : MiscMod(
-    "Text Overlay",
     "gavinsmod.mod.misc.textoverlay",
     "textoverlay",
 ), InGameHudRenderListener {
@@ -59,9 +58,9 @@ class ModGuiTextOverlay : MiscMod(
         em.unsubscribe(InGameHudRenderListener::class.java, this)
     }
 
-    override fun onRenderInGameHud(drawContext: DrawContext, delta: Float) {
+    override fun onRenderInGameHud(drawContext: DrawContext, delta: Float, forceRender: Boolean) {
         modList = Mods.mods.filter { mod: Mod -> mod !is GuiMod && mod !is ModGuiTextOverlay && mod.isActive }
-        if (GavinsMod.isEnabled("gui") || GavinsMod.isEnabled("settings") || modList.isEmpty()) return
+        if (GavinsMod.isEnabled("gui") || GavinsMod.isEnabled("settings") || modList.isEmpty() || forceRender) return
         drawTextOverlay(drawContext)
     }
 

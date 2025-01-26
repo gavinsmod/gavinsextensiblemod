@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,4 +25,13 @@ package com.peasenet.util.event.data
 
 import net.minecraft.network.packet.Packet
 
-class OutputPacket(var packet: Packet<*>) : Cancellable()
+/**
+ * Called when a [Packet] is sent. This event is cancellable.
+ * @param packet The packet sent.
+ * @see Cancellable
+ *
+ * @author GT3CH1
+ * @version 01-26-2025
+ * @since 03-02-2023
+ */
+data class OutputPacket(var packet: Packet<*>) : Cancellable()

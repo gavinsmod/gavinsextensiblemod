@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import net.minecraft.client.network.OtherClientPlayerEntity
 
 /**
  * A fake player entity that can be used to render a player model in the getWorld().
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  */
 class FakePlayer : OtherClientPlayerEntity(minecraftClient.getWorld(), player!!.getGameProfile()) {

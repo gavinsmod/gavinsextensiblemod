@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package com.peasenet.util
 /**
  *
  * @author GT3CH1
- * @version 01-12-2025
+ * @version 01-15-2025
  * @since 01-12-2025
  */
 enum class ChatCommand(val chatCommand: String) {
@@ -39,6 +39,7 @@ enum class ChatCommand(val chatCommand: String) {
     ChestEsp("chestesp"),
     ItemEsp("itemesp"),
     PlayerEsp("playeresp"),
+    SignEsp("signesp"),
     FurnaceEsp("furnaceesp"),
     MobEsp("mobesp"),
     FpsCounter("fpscounter"),
@@ -73,4 +74,6 @@ enum class ChatCommand(val chatCommand: String) {
     PlayerTracer("playertracer"),
     FurnaceTracer("furnacetracer"),
     MobTracer("mobtracer"),
+    SignTracer("signtracer"),
+    CaveEsp("caveesp")
 }

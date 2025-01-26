@@ -1,7 +1,7 @@
-﻿/*
+/*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,38 +21,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.peasenet.config.waypoint
 
-package com.peasenet.config
-
-import com.peasenet.config.commons.IBlockEspTracerConfig
-import com.peasenet.gavui.color.Color
-import com.peasenet.gavui.color.Colors
-import net.minecraft.block.Blocks
+import com.peasenet.config.Config
+import com.peasenet.mods.render.waypoints.Waypoint
 
 /**
- * A configuration for block esp.
- * Default settings are:
- *  Blocks => Sugar Cane
- *  Block Color => Dark Spring Green
- *  Alpha => 0.5
- * @author gt3ch1
- * @version 09-01-2024
+ * The configuration for waypoints.
+ *
+ * @author GT3CH1
+ * @version 03-02-2023
  */
-class BlockEspConfig : BlockListConfig<BlockEspConfig>({ it.defaultState == Blocks.SUGAR_CANE.defaultState }),
-    IBlockEspTracerConfig {
+class WaypointConfig : Config<WaypointConfig>() {
+    /**
+     * The list of waypoints.
+     */
+    private var waypoints: ArrayList<Waypoint>
+
     init {
-        key = "blockesp"
+        key = "waypoints"
+        waypoints = ArrayList()
     }
 
-    var structureEsp: Boolean = false
-        set(value) {
-            field = value
-            saveConfig()
-        }
+    /**
+     * Adds/updates a waypoint to the list.
+     *
+     * @param w - The waypoint to add.
+     */
+    fun addWaypoint(w: Waypoint) {
+        waypoints.removeIf { it.uuid == w.uuid }
+        waypoints.add(w)
+        saveConfig()
+    }
 
-    var blockTracer: Boolean = false
-        set(value) {
-            field = value
-            saveConfig()
-        }
+    /**
+     * Removes a waypoint from the list.
+     *
+     * @param w - The waypoint to remove.
+     */
+    fun removeWaypoint(w: Waypoint) {
+        waypoints.removeIf { it.uuid == w.uuid }
+        saveConfig()
+    }
+
+    /**
+     * Gets the list of waypoints.
+     *
+     * @return The list of waypoints.
+     */
+    fun getLocations(): ArrayList<Waypoint> {
+        return waypoints
+    }
+
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
  */
 package com.peasenet.mods.combat
 
-import com.peasenet.config.KillAuraConfig
+import com.peasenet.config.combat.KillAuraConfig
 import com.peasenet.gui.mod.combat.GuiKillAura
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
@@ -39,11 +39,10 @@ import java.util.stream.StreamSupport
  * A mod that makes the player face and attack the nearest mob.
  *
  * @author GT3CH1
- * @version 01-12-2025
+ * @version 01-15-2025
  * @since 03-02-2023
  */
 class ModKillAura : CombatMod(
-    "Kill Aura",
     "gavinsmod.mod.combat.killaura",
     "killaura",
 ) {

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
  */
 package com.peasenet.mods.render
 
-import com.peasenet.config.RadarConfig
+import com.peasenet.config.render.RadarConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.BoxF
@@ -50,11 +50,11 @@ import kotlin.math.sqrt
 /**
  * A mod that allows for a radar-like view of the world.
  *
- * @author gt3ch1
- * @version 04-11-2023
+ * @author GT3CH1
+ * @version 01-15-2025
+ * @since 04-11-2023
  */
 class ModRadar : RenderMod(
-    "Radar",
     "gavinsmod.mod.render.radar",
     "radar"
 ), InGameHudRenderListener {
@@ -79,9 +79,8 @@ class ModRadar : RenderMod(
         em.unsubscribe(InGameHudRenderListener::class.java, this)
     }
 
-    override fun onRenderInGameHud(drawContext: DrawContext, delta: Float) {
-        var canRender = isActive && !Mods.isActive("gui") && !Mods.isActive("settings")
-        canRender = canRender || GuiRadar.visible
+    override fun onRenderInGameHud(drawContext: DrawContext, delta: Float, forceRender: Boolean) {
+        val canRender = !Mods.isActive("gui") && !Mods.isActive("settings") || forceRender
         if (!canRender) return
         val stack = drawContext.matrices
         RadarConfig.x = client.window.scaledWidth - config.size - 10
@@ -100,7 +99,7 @@ class ModRadar : RenderMod(
     /**
      * Draws all applicable entities on the radar.
      *
-     * @param stack - The matrix stack.
+     * @param stack The matrix stack.
      */
     private fun drawEntitiesOnRadar(stack: MatrixStack) {
         val player = client.getPlayer()
@@ -112,15 +111,23 @@ class ModRadar : RenderMod(
             // get entity x and z relative to player
             val color = getColorFromEntity(entity)
             val point = getScaledPos(getPointRelativeToYaw(entity.pos, yaw))
+            val box = BoxF(point, config.pointSize.toFloat(), config.pointSize.toFloat())
             GuiUtil.drawBox(
                 color,
-                BoxF(point, config.pointSize.toFloat(), config.pointSize.toFloat()),
+                box,
                 stack,
                 config.pointAlpha
             )
         }
     }
 
+    /**
+     * Gets the color for the entity on the radar.
+     *
+     * @param entity The entity to get the color for.
+     *
+     * @return The color for the entity on the radar. Defaults to white.
+     */
     private fun getColorFromEntity(entity: Entity): Color {
         if (entity is PlayerEntity) return config.playerColor
         if (entity is ItemEntity) return config.itemColor
@@ -131,52 +138,44 @@ class ModRadar : RenderMod(
     /**
      * Gets the scaled position relative to the radar.
      *
-     * @param location - The location to scale.
+     * @param location The location to scale.
      * @return A scaled position relative to the radar, clamped to the radar.
      */
     private fun getScaledPos(location: PointF): PointF {
-        // check the distance of w to the player.
-        var newLoc = clampPoint(location)
-
+        val halfConfigSize = config.size / 2f
         // offset the point to the center of the radar.
-        newLoc = PointF(
-            newLoc.x + RadarConfig.x + config.size / 2f,
-            newLoc.y + RadarConfig.y + config.size / 2f
-        )
-        return newLoc
+        return clampPoint(location)
+            .add(RadarConfig.x, RadarConfig.y)
+            .add(halfConfigSize, halfConfigSize)
+            .subtract(PointF(pointOffset(), pointOffset()))
     }
 
     /**
      * Clamps the given point to the edges of the radar.
      *
-     * @param point - The point to clamp.
+     * @param point The point to clamp.
      * @return The clamped point.
      */
     private fun clampPoint(point: PointF): PointF {
-        var newPoint = point
-        val offset = config.pointSize - pointOffset
-        // if the point is touching any edges of the radar, clamp it to the edge.
-        // right side
-        if (newPoint.x >= config.size / 2f - offset) newPoint =
-            PointF(config.size / 2f - offset, newPoint.y)
-        // left side
-        if (newPoint.x <= -config.size / 2f + pointOffset) newPoint =
-            PointF(-config.size / 2f + pointOffset, newPoint.y)
-        // bottom side
-        if (newPoint.y >= config.size / 2f - offset) newPoint =
-            PointF(newPoint.x, config.size / 2f - offset)
-        // top side
-        if (newPoint.y <= -config.size / 2f + pointOffset) newPoint =
-            PointF(newPoint.x, -config.size / 2f + pointOffset)
-        // offset the point to be centered
-
-        return newPoint.subtract(PointF(pointOffset, pointOffset))
+        // scale point so that (0,0) is the center of the radar
+        var newLoc = point
+        val distance = newLoc.distance()
+        val halfConfig = config.size / 2f
+        val halfConfigOffset = halfConfig - pointOffset()
+        val scale = (halfConfig) / distance
+        if (distance > halfConfig)
+            newLoc = newLoc.multiply(scale)
+        if (newLoc.x < -halfConfigOffset) newLoc = PointF(-halfConfigOffset, newLoc.y)
+        if (newLoc.x > halfConfigOffset) newLoc = PointF(halfConfigOffset, newLoc.y)
+        if (newLoc.y < -halfConfigOffset) newLoc = PointF(newLoc.x, -halfConfigOffset)
+        if (newLoc.y > halfConfigOffset) newLoc = PointF(newLoc.x, halfConfigOffset)
+        return newLoc
     }
 
     /**
      * Whether the given entity can be rendered on the radar.
      *
-     * @param entity - The entity to check.
+     * @param entity The entity to check.
      * @return Whether the given entity can be rendered on the radar.
      */
     private fun canRenderEntity(entity: Entity): Boolean {
@@ -190,13 +189,12 @@ class ModRadar : RenderMod(
     /**
      * Gets the point relative to the waypoint and the player's yaw.
      *
-     * @param loc - The waypoint to get the position of.
-     * @param yaw - The yaw of the player.
+     * @param loc The waypoint to get the position of.
+     * @param yaw The yaw of the player.
      * @return A new PointF with the x and z values.
      */
     private fun getPointRelativeToYaw(loc: Vec3d?, yaw: Float): PointF {
         val player = client.getPlayer()
-
         val x = loc!!.getX() - player.x
         val z = loc.getZ() - player.z
         return calculateDistance(yaw, x, z)
@@ -204,33 +202,33 @@ class ModRadar : RenderMod(
 
     companion object {
 
+        /**
+         * The configuration for this mod.
+         */
+        val config: RadarConfig = Settings.getConfig("radar")
 
-        val config: RadarConfig
-            get() {
-                return Settings.getConfig<RadarConfig>("radar")
-            }
-
-        val pointOffset: Float
-            /**
-             * Calculates the offset to draw the points on the radar.
-             *
-             * @return The offset to draw the points on the radar.
-             */
-            get() = if (config.pointSize == 1) 0F else (config.pointSize - 1) / 2F
+        /**
+         * Calculates the offset to draw the points on the radar.
+         *
+         * @return The offset to draw the points on the radar.
+         */
+        fun pointOffset(): Float {
+            return (config.pointSize.toFloat()).div(2f)
+        }
 
         /**
          * Calculates the position and distance of the given coordinates from the player.
          *
-         * @param yaw - The player yaw.
-         * @param x   - The x coordinate.
-         * @param z   - The z coordinate.
+         * @param yaw The player yaw.
+         * @param x   The x coordinate.
+         * @param z   The z coordinate.
          * @return The position and distance of the given coordinates from the player.
          */
         private fun calculateDistance(yaw: Float, x: Double, z: Double): PointF {
             var x1 = x
             var z1 = z
-            val arctan = atan2(z1, x1)
-            val angle = Math.toDegrees(arctan) - yaw
+            val atan = atan2(z1, x1)
+            val angle = Math.toDegrees(atan) - yaw
             val distance = sqrt(x1 * x1 + z1 * z1)
             x1 = cos(Math.toRadians(angle)) * distance * -1
             z1 = sin(Math.toRadians(angle)) * distance * -1

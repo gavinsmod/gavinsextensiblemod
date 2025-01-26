@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,12 +29,13 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.Vec3d
 
 /**
- * Data class for the block entity render event.
- *
- * @author gt3ch1
- * @version 03-02-2023
+ * Data class for the block entity render event. This can be cancelled.
+ * @see Cancellable
+ * @author GT3CH1
+ * @version 01-26-2025
+ * @since 03-02-2023
  */
-class BlockEntityRender
+data class BlockEntityRender
 /**
  * Creates a new block entity render event.
  *
@@ -45,28 +46,10 @@ class BlockEntityRender
  * @param playerPos - The current player's position.
  * @param delta     - Change in ticks.
  */(
-    /**
-     * The block entity.
-     */
     var entity: BlockEntity,
-    /**
-     * The matrix stack.
-     */
     var stack: MatrixStack?,
-    /**
-     * The buffer builder.
-     */
-    var buffer: BufferBuilder?,
-    /**
-     * The center of the block entity.
-     */
-    var center: Vec3d?,
-    /**
-     * The current player's position.
-     */
-    var playerPos: Vec3d?,
-    /**
-     * Change in ticks.
-     */
-    var delta: Float
+    private var buffer: BufferBuilder?,
+    private var center: Vec3d?,
+    private var playerPos: Vec3d?,
+    var delta: Float,
 ) : Cancellable()

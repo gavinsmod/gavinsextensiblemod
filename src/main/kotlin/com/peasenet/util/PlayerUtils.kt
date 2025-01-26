@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
  */
 package com.peasenet.util
 
-import com.peasenet.config.MiscConfig
+import com.peasenet.config.misc.MiscConfig
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
@@ -41,7 +41,7 @@ import net.minecraft.util.math.Vec3d
 
 /**
  * A helper class with utilities relating to the player.
- * @author gt3ch1
+ * @author GT3CH1
  * @version 04-11-2023
  */
 object PlayerUtils {

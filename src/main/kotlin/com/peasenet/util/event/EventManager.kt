@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,21 +23,26 @@
  */
 package com.peasenet.util.event
 
-import com.peasenet.util.PlayerUtils
 import com.peasenet.util.listeners.Listener
 
 /**
- * The event manager. Allows adding/removing listeners and firing events.
+ * An event manager that allows for [Listener]s to subscribe to their corresponding events, as well for calling and
+ * managing those events.
  *
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 01-26-2025
+ * @since 03-02-2023
  */
 open class EventManager {
     /**
-     * Adds a listener to the event manager.
-     *
-     * @param event    - The event class.
-     * @param listener - The listener to add.
+     * Adds a listener to the event manager. For example:
+     * ~~~
+     * subscribe(RenderSubmergedOverlayListener::class.java, this)
+     * ~~~
+     * This will add [listener] to the list of [com.peasenet.util.listeners.RenderSubmergedOverlayListener]s, which
+     * will be called when the corresponding event is fired.
+     * @param event    The event class.
+     * @param listener The listener to add.
      */
     @Suppress("UNCHECKED_CAST")
     fun <L : Listener> subscribe(event: Class<L>, listener: L) {
@@ -46,23 +51,32 @@ open class EventManager {
     }
 
     /**
-     * Removes a listener from the event manager.
-     *
-     * @param event    - The event class.
-     * @param listener - The listener to remove.
+     * Removes the given listener from the event manager. For example:
+     * ~~~
+     * unsubscribe(RenderSubmergedOverlayListener::class.java, this)
+     * ~~~
+     * This will remove [listener] from the list of [com.peasenet.util.listeners.RenderSubmergedOverlayListener]s, which
+     * will prevent it from being called when the corresponding event is fired.
+     * @param event    The event class.
+     * @param listener The listener to remove.
+     * @throws IllegalArgumentException Will be thrown if/when the listener is not found, usually caused by [subscribe]
+     * not being called.
      */
     fun <L : Listener> unsubscribe(event: Class<L>, listener: L) {
         try {
             eventMap[event]!!.remove(listener)
         } catch (e: NullPointerException) {
-            PlayerUtils.sendMessage("Listener not found. Please report this error.", true)
+            throw IllegalArgumentException("Listener not found. Please report this error.")
         }
     }
 
     /**
-     * Calls the event to be fired.
-     *
-     * @param event - The event to fire.
+     * Calls all listeners for the given event. For example:
+     * ~~~
+     * call(EntityRenderNameEvent(EntityNameRender(...)))
+     * ~~~
+     * will call all [com.peasenet.util.listeners.EntityRenderNameListener]s with the given [com.peasenet.util.event.EntityRenderNameEvent]
+     * @param event The event to fire.
      */
     @Suppress("UNCHECKED_CAST")
     fun <L : Listener, E : Event<L>> call(event: E) {
@@ -76,10 +90,7 @@ open class EventManager {
     companion object {
         // a list of event classes with the mod that created them
         protected val eventMap = HashMap<Class<out Listener>, ArrayList<Listener>>()
-
         @JvmStatic
         val eventManager = EventManager()
-
-
     }
 }

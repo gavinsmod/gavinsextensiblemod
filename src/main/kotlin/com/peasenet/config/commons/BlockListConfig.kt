@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,10 @@
  * SOFTWARE.
  */
 
-package com.peasenet.config
+package com.peasenet.config.commons
 
 import com.peasenet.annotations.Exclude
+import com.peasenet.config.Config
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import net.minecraft.block.Block

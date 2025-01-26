@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
  */
 package com.peasenet.gui.mod
 
-import com.peasenet.config.BlockListConfig
+import com.peasenet.config.commons.BlockListConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiClick
@@ -36,7 +36,6 @@ import com.peasenet.gavui.util.GuiUtil
 import com.peasenet.gui.GuiElement
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
-import com.peasenet.main.Mods
 import com.peasenet.main.Mods.Companion.getMod
 import com.peasenet.main.Settings
 import net.minecraft.block.Block
@@ -54,7 +53,7 @@ import kotlin.math.ceil
  * @param translationKey The translation key for the gui.
  * @param settingKey The key for the setting.
  * @see BlockListConfig
- * @author gt3ch1
+ * @author GT3CH1
  * @version 09-01-2024
  * @since 04-11-2023
  */

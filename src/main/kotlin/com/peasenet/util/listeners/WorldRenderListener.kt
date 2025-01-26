@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,24 +23,20 @@
  */
 package com.peasenet.util.listeners
 
-import net.minecraft.client.render.BufferBuilder
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.client.world.ClientWorld
+import com.peasenet.util.event.data.WorldRender
 
 /**
  * A listener for the world render event.
  *
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 01-18-2025
+ * @since 03-02-2023
  */
 interface WorldRenderListener : Listener {
     /**
      * Called when the world is rendered.
      *
-     * @param level         - The world being rendered.
-     * @param stack         - The matrix stack.
-     * @param bufferBuilder - The buffer builder.
-     * @param delta         - The delta.
+     * @param worldRender the [WorldRender] data.
      */
-    fun onWorldRender(level: ClientWorld, stack: MatrixStack, bufferBuilder: BufferBuilder, delta: Float)
+    fun onWorldRender(worldRender: WorldRender)
 }

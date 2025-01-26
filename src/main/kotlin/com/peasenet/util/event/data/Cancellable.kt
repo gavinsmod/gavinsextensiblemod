@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,10 +23,20 @@
  */
 package com.peasenet.util.event.data
 
+/**
+ * Allows for cancellation of an event.
+ */
 open class Cancellable {
+
+    /**
+     * Whether this is cancelled.
+     */
     var isCancelled = false
         private set
 
+    /**
+     * Cancel this event.
+     */
     fun cancel() {
         isCancelled = true
     }

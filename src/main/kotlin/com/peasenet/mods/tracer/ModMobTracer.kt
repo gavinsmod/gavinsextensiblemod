@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,33 +23,24 @@
  */
 package com.peasenet.mods.tracer
 
-import com.peasenet.config.TracerConfig
 import com.peasenet.gavui.color.Color
-import com.peasenet.gavui.color.Colors
 import com.peasenet.gui.mod.tracer.GuiMobTracer
-import com.peasenet.main.Settings
 import com.peasenet.settings.SettingBuilder
-import com.peasenet.util.RenderUtils
-import com.peasenet.util.event.data.BlockEntityRender
-import com.peasenet.util.event.data.EntityRender
-import net.fabricmc.fabric.impl.`object`.builder.FabricEntityTypeImpl.Builder.Living
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.mob.MobEntity
 
 /**
  * A mod that allows the client to see lines, called tracers, towards mobs.
- * @author gt3ch1
- * @version 09-06-2024
+ * @author GT3CH1
+ * @version 01-15-2025
  * @since 04-01-2023
  */
 class ModMobTracer : EntityTracer<LivingEntity>(
-    "Mob Tracer",
     "gavinsmod.mod.tracer.mob",
     "mobtracer",
-    { it is MobEntity && config.mobIsShown(it.type) }
+    { it is MobEntity && config.inList(it.type) }
 ) {
     init {
         val menu = SettingBuilder()
@@ -65,4 +56,15 @@ class ModMobTracer : EntityTracer<LivingEntity>(
         return config.hostileMobColor
     }
 
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+        val newList: MutableList<LivingEntity> = ArrayList()
+        if (config.showPeacefulMobs) {
+            newList.addAll(entityList.filter { it.type.spawnGroup.isPeaceful })
+        }
+        if (config.showHostileMobs) {
+            newList.addAll(entityList.filter { !it.type.spawnGroup.isPeaceful })
+        }
+        entityList = newList
+        super.onRender(matrixStack, partialTicks)
+    }
 }

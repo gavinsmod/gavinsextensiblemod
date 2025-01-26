@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
  */
 package com.peasenet.mods.misc
 
-import com.peasenet.config.FpsColorConfig
+import com.peasenet.config.misc.FpsColorConfig
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GavUISettings
@@ -37,12 +37,11 @@ import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Text
 
 /**
- * @author gt3ch1
- * @version 03-02-2023
+ * @author GT3CH1
+ * @version 01-15-2025
  * A mod that renders the current frames per second in the top right corner of the screen.
  */
 class ModFpsCounter : MiscMod(
-    "FPS Counter",
     "gavinsmod.mod.misc.fpscounter",
     "fpscounter",
 ), InGameHudRenderListener {
@@ -99,8 +98,8 @@ class ModFpsCounter : MiscMod(
         em.unsubscribe(InGameHudRenderListener::class.java, this)
     }
 
-    override fun onRenderInGameHud(drawContext: DrawContext, delta: Float) {
-        if (GavinsMod.isEnabled("gui") || GavinsMod.isEnabled("settings") || !isActive) return
+    override fun onRenderInGameHud(drawContext: DrawContext, delta: Float, forceRender: Boolean) {
+        if (GavinsMod.isEnabled("gui") || GavinsMod.isEnabled("settings") || !isActive || !forceRender) return
         drawFpsOverlay(drawContext)
     }
 

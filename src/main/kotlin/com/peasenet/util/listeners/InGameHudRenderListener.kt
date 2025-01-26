@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,5 +38,5 @@ interface InGameHudRenderListener : Listener {
      * @param drawContext - The draw context to use.
      * @param delta - The time delta.
      */
-    fun onRenderInGameHud(drawContext: DrawContext, delta: Float)
+    fun onRenderInGameHud(drawContext: DrawContext, delta: Float, forceRender: Boolean = false)
 }

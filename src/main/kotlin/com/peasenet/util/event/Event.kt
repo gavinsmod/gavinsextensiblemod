@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,24 +26,25 @@ package com.peasenet.util.event
 import com.peasenet.util.listeners.Listener
 
 /**
- * A class that manages events.
- *
- * @param <T> The type of event to manage.
+ * A class that manages events that extend [Listener].
+ * @see Listener
+ * @param T The type of event to manage.
  * @author GT3CH1
- * @version 03-02-2023
-</T> */
-abstract class Event<T : Listener> {
+ * @version 01-26-2025
+ * @since 03-02-2023
+ */
+interface Event<T : Listener> {
     /**
      * Fires the event.
      *
      * @param listeners - The listeners to fire the event to.
      */
-    abstract fun fire(listeners: ArrayList<T>)
+    fun fire(listeners: ArrayList<T>)
 
     /**
      * Gets the event class.
      *
      * @return The event class.
      */
-    abstract val event: Class<T>
+    val event: Class<T>
 }

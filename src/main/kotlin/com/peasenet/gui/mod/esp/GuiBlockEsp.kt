@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +24,8 @@
 
 package com.peasenet.gui.mod.esp
 
-import com.peasenet.config.BlockEspConfig
+import com.peasenet.config.esp.BlockEspConfig
 import com.peasenet.gui.mod.GuiBlockSelection
-import com.peasenet.main.Mods
 
 /**
  * A GUI used for block esp to select blocks.

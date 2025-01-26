@@ -1,7 +1,7 @@
-/*
+﻿/*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,41 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.util.event
 
-import com.peasenet.util.event.data.EntityRender
-import com.peasenet.util.listeners.EntityRenderListener
-import net.minecraft.client.render.BufferBuilder
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.Entity
-import net.minecraft.util.math.Vec3d
+package com.peasenet.config.combat
+
+import com.peasenet.config.commons.MobAttackFilterConfig
 
 /**
- * The event for the world render event.
+ * The configuration settings for [ModKillAura][com.peasenet.mods.combat.ModKillAura].
+ *
+ * @see KillAuraConfig
+ * @see MobAttackFilterConfig
  *
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 01-12-2025
+ * @since 01-12-2025
  */
-class EntityRenderEvent(
-    entity: Entity,
-    stack: MatrixStack,
-    buffer: BufferBuilder?,
-    center: Vec3d?,
-    playerPos: Vec3d?,
-    delta: Float
-) : Event<EntityRenderListener>() {
-    private var entityRender: EntityRender
-
+class KillAuraConfig : MobAttackFilterConfig<KillAuraConfig>() {
     init {
-        entityRender = EntityRender(entity, stack, buffer, center, playerPos, delta)
+        key = "killaura"
     }
-
-    override fun fire(listeners: ArrayList<EntityRenderListener>) {
-        for (listener in listeners) {
-            listener.onEntityRender(entityRender)
-        }
-    }
-
-    override val event: Class<EntityRenderListener>
-        get() = EntityRenderListener::class.java
 }

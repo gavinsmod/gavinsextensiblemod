@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2022-2025, Gavin C. Pease
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.peasenet.main
 
 import com.google.gson.GsonBuilder
@@ -5,8 +29,8 @@ import com.google.gson.ToNumberPolicy
 import com.google.gson.stream.JsonReader
 import com.peasenet.annotations.GsonExclusionStrategy
 import com.peasenet.config.Config
-import com.peasenet.config.XrayConfig
-import com.peasenet.config.XrayConfigGsonAdapter
+import com.peasenet.config.render.XrayConfig
+import com.peasenet.config.render.XrayConfigGsonAdapter
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.Path
@@ -32,7 +56,8 @@ object Settings {
     private val defaultSettings: HashMap<String?, Config<*>> = HashMap()
 
     private val gson = GsonBuilder().setExclusionStrategies(GsonExclusionStrategy())
-        .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE).registerTypeHierarchyAdapter(XrayConfig::class.java, XrayConfigGsonAdapter())
+        .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+        .registerTypeHierarchyAdapter(XrayConfig::class.java, XrayConfigGsonAdapter())
         .create()
 
     fun init() {
@@ -71,27 +96,24 @@ object Settings {
      */
     private fun fetchConfig(clazz: Config<*>, key: String?): Config<*> {
         // open the settings file
-         val cfgFile = filePath
-
+        val cfgFile = filePath
+        val defaultSetting = defaultSettings[key]!!
         val map: Any?
         try {
             map = gson.fromJson(FileReader(cfgFile), Map::class.java)[key]
         } catch (e: FileNotFoundException) {
             ensureCfgCreated(cfgFile)
-            settings[key] = defaultSettings[key]!!
+            settings[key] = defaultSetting
             GavinsMod.LOGGER.error("Error reading settings file ($key), file not found.")
-//            save()
-            return defaultSettings[key]!!
+            return defaultSetting
         }
         try {
             val jsonObject = gson.toJsonTree(map).asJsonObject
-            // parse the json object to the configuration class
             return gson.fromJson(jsonObject, clazz::class.java)
         } catch (e: IllegalStateException) {
             GavinsMod.LOGGER.error("Error parsing settings file ($key): ", e)
-            settings[key] = defaultSettings[key]!!
-//            save()
-            return defaultSettings[key]!!
+            settings[key] = defaultSetting
+            return defaultSetting
         }
     }
 
@@ -109,7 +131,6 @@ object Settings {
             val writer = Files.newBufferedWriter(Paths.get(cfgFile))
             json.toJson(settings, writer)
             writer.close()
-            GavinsMod.LOGGER.info("Settings saved.")
         } catch (e: Exception) {
             GavinsMod.LOGGER.error("Error writing settings to file.")
             GavinsMod.LOGGER.error(e.message)
@@ -186,10 +207,8 @@ object Settings {
     private fun loadDefault() {
         GavinsMod.LOGGER.warn("Loading default settings.")
         val cfgFile = filePath
-        // rename settings file to settings.bak
         var bakFile = "$cfgFile.bak"
         var bakCount = 1
-        // if bak file exists, rename it to settings.bak.1, settings.bak.2, etc.
         val bFile = File(bakFile)
         var renamed = false
         while (bFile.exists()) {
@@ -197,8 +216,6 @@ object Settings {
             bakCount++
             renamed = true
         }
-        // move the settings file to the bak file
-        // check if the settings file exists
         val cfg = File(cfgFile)
         if (cfg.exists() && renamed) {
             val res = cfg.renameTo(bFile)

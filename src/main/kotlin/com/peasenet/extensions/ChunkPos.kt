@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,37 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.config
 
-import com.peasenet.main.Mods
+package com.peasenet.extensions
+
+import net.minecraft.util.math.ChunkPos
 
 /**
- * Configuration file for fullbright.
- *
- * @author gt3ch1
- * @version 03-02-2023
+ * Extensions for the [ChunkPos] class.
+ * @author GT3CH1
+ * @version 01-25-2025
+ * @since 01-25-2025
  */
-open class FullbrightConfig : Config<FullbrightConfig>() {
-    var gamma: Float = 1.0F
-        set(value) {
-            field = value
-            saveConfig()
-        }
 
-    /**
-     * Whether to fade the brightness.
-     */
-    var gammaFade = true
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    init {
-        key = "fullbright"
-    }
-
-    fun maxGamma(): Float  {
-        return if (Mods.isActive("xray")) 16F else 1 + 15 * gamma
-    }
+/**
+ * Get one chunk north of this chunk.
+ */
+fun ChunkPos.north(): ChunkPos {
+    return ChunkPos(x, z - 1)
 }
+
+/**
+ * Gets one chunk south of this chunk.
+ */
+fun ChunkPos.south(): ChunkPos {
+    return ChunkPos(x, z + 1)
+}
+
+/**
+ * Gets one chunk east of this chunk.
+ */
+fun ChunkPos.east(): ChunkPos {
+    return ChunkPos(x + 1, z)
+}
+
+/**
+ * Gets one chunk west of this chunk.
+ */
+fun ChunkPos.west(): ChunkPos {
+    return ChunkPos(x - 1, z)
+}
+

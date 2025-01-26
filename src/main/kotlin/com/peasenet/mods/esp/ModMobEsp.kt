@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,30 +27,25 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gui.mod.esp.GuiMobEsp
 import com.peasenet.settings.SettingBuilder
-import com.peasenet.util.RenderUtils
 import com.peasenet.util.listeners.EntityRenderListener
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.util.math.Box
-import net.minecraft.util.math.MathHelper
-import net.minecraft.util.math.Vec3d
 
 
 /**
  * A mod that allows the client to see boxes around entityList.
- * @author gt3ch1
- * @version 09-02-2024
+ * @author GT3CH1
+ * @version 01-15-2025
  * @since 04-01-2023
  * @see EntityRenderListener
  * @see EspMod
  */
-class ModMobEsp : EntityEsp<Entity>("Mob ESP",
-    "gavinsmod.mod.esp.mob",
+class ModMobEsp : EntityEsp<Entity>("gavinsmod.mod.esp.mob",
     "mobesp",
-    { it !is PlayerEntity && it.isLiving && !it.isRemoved && config.mobIsShown(it.type) }), RenderListener {
+    { it !is PlayerEntity && it.isLiving && !it.isRemoved && config.inList(it.type) }), RenderListener {
 
 
     init {
@@ -61,6 +56,18 @@ class ModMobEsp : EntityEsp<Entity>("Mob ESP",
 
     override fun getColor(entity: Entity): Color {
         return if (entity.type.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
+    }
+
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+        val newList: MutableList<Entity> = ArrayList()
+        if (config.showPeacefulMobs) {
+            newList.addAll(espList.filter { it.type.spawnGroup.isPeaceful })
+        }
+        if (config.showHostileMobs) {
+            newList.addAll(espList.filter { !it.type.spawnGroup.isPeaceful })
+        }
+        espList = newList
+        super.onRender(matrixStack, partialTicks)
     }
 
     override fun getColor(): Color = Colors.BLUE

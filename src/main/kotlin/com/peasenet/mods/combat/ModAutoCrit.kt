@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,12 +28,11 @@ import com.peasenet.util.listeners.PlayerAttackListener
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket.PositionAndOnGround
 
 /**
- * @author gt3ch1
- * @version 03-02-2023
+ * @author GT3CH1
+ * @version 01-15-2025
  * A combat mod to make the player jump automatically when attacking an entity.
  */
 class ModAutoCrit : CombatMod(
-    "Auto Crit",
     "gavinsmod.mod.combat.autocrit",
     "autocrit",
 ), PlayerAttackListener {

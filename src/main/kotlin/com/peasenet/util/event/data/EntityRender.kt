@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,13 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
 import net.minecraft.util.math.Vec3d
 
-class EntityRender(
+/**
+ * Called when an entity is rendered.
+ * @author GT3CH1
+ * @version 01-26-2025
+ * @since 03-02-2023
+ */
+data class EntityRender(
     var entity: Entity,
     var stack: MatrixStack,
     var buffer: BufferBuilder?,

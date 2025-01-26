@@ -1,7 +1,7 @@
 ﻿/*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,14 +27,16 @@ package com.peasenet.util.listeners
 import com.peasenet.util.event.data.BlockRender
 
 /**
- * A listener for the block render event.
- * 
+ * A listener for [BlockRender] events.
+ *
  * @author GT3CH1
- * @version 08-31-2024
+ * @version 01-26-2025
+ * @since 08-31-2024
  */
 interface BlockRenderListener : Listener {
     /**
      * Called when a block is rendered.
+     * @param blockRender the block render event
      */
     fun onBlockRender(blockRender: BlockRender)
 }

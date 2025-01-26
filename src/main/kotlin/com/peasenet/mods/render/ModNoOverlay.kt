@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,12 +28,11 @@ import com.peasenet.util.listeners.RenderOverlayListener
 import net.minecraft.util.Identifier
 
 /**
- * @author gt3ch1
- * @version 03-02-2023
+ * @author GT3CH1
+ * @version 01-15-2025
  * A mod that disables some overlays that are drawn on screen.
  */
 class ModNoOverlay : RenderMod(
-    "No Overlay",
     "gavinsmod.mod.render.nooverlay",
     "nooverlay"
 ), RenderOverlayListener {

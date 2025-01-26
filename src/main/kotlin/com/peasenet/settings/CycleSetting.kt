@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,32 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.config
+
+package com.peasenet.settings
+
+import com.peasenet.gavui.GuiBuilder
+import com.peasenet.gavui.GuiCycle
 
 /**
- * The miscellaneous configuration.
- * The key is "misc".
- * @author gt3ch1
- * @version 05-07-2024
+ *
+ * @author GT3CH1
+ * @version 01-25-2025
+ * @since 01-25-2025
  */
-class MiscConfig : Config<MiscConfig>() {
-    var isMessages = true
-        set(value) {
-            field = value
-            saveConfig()
-        }
-    var background = true
-        set(value) {
-            field = value
-            saveConfig()
-        }
-    var freeCamSpeed = 0.1f
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
+class CycleSetting(builder: SettingBuilder) : Setting() {
+    override val gui: GuiCycle
     init {
-        key = "misc"
+        gui = GuiBuilder()
+            .setWidth(builder.getWidth())
+            .setHeight(builder.getHeight())
+            .setTitle(builder.getTitle())
+            .setHoverable(builder.isHoverable())
+            .setBackgroundColor(builder.getColor())
+            .setTransparency(builder.getTransparency())
+            .setTranslationKey(builder.getTranslationKey())
+            .setSymbol(builder.getSymbol())
+            .setTopLeft(builder.getTopLeft())
+            .setCycleSize(builder.getOptions().size)
+            .setCurrentCycleIndex(builder.getOptions().indexOf(builder.getOptionsValue()))
+            .setCallback(builder.getCallback())
+            .buildCycle()
     }
 }

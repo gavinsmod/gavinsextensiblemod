@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ import net.minecraft.util.hit.HitResult
 import java.io.File
 
 /**
- * @author gt3ch1
+ * @author GT3CH1
  * @version 03-02-2023
  * A mixin interface for the Minecraft client to allow access for certain members that are not public.
  */

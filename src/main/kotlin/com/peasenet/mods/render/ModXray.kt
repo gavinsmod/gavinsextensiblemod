@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022-2024, Gavin C. Pease
+ * Copyright (c) 2022-2025, Gavin C. Pease
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
  */
 package com.peasenet.mods.render
 
-import com.peasenet.config.XrayConfig
+import com.peasenet.config.render.XrayConfig
 import com.peasenet.gui.mod.render.GuiXray
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.Settings
@@ -39,12 +39,11 @@ import net.minecraft.block.BlockState
 import net.minecraft.client.MinecraftClient
 
 /**
- * @author gt3ch1
- * @version 03-02-2023
+ * @author GT3CH1
+ * @version 01-15-2025
  * A mod for xray like feature, allowing the player to see through certain blocks.
  */
 class ModXray : RenderMod(
-    "Xray",
     "gavinsmod.mod.render.xray",
     "xray"
 ), ShouldDrawSideListener, TessellateBlockListener, BlockEntityRenderListener {
@@ -132,7 +131,7 @@ class ModXray : RenderMod(
     }
 
     override fun onRenderBlockEntity(er: BlockEntityRender) {
-        if (!shouldDrawFace(client.getWorld().getBlockState(er.entity.pos))) er.cancel()
+        if (!shouldDrawFace(client.getWorld().getBlockState(er.entity!!.pos))) er.cancel()
     }
 
     companion object {
