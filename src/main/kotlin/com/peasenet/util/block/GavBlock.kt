@@ -65,6 +65,9 @@ class GavBlock(
      */
     private var visibleEdges = Edge.All.mask
 
+    /**
+     * Gets whether the block is visible.
+     */
     fun isVisible(): Boolean {
         return !(visibleEdges == Edge.None.mask || visibleEdges == Edge.All.mask) && visibleFilter(
             pos
@@ -80,11 +83,6 @@ class GavBlock(
      * Updates the edges of the block.
      */
     fun update() {
-//        println("Updating block at $pos")
-        if (pos.x == 16 && pos.y == -63 && pos.z == -1) {
-            println("Updating block at $pos - test")
-        }
-
         val up = hasNeighbor(pos.up())
         val below = hasNeighbor(pos.down())
         val east = hasNeighbor(pos.east())
@@ -116,7 +114,6 @@ class GavBlock(
             visibleEdges = Edge.None.mask
             return
         }
-
         if (hasNeighbor(pos.east())) {
             visibleEdges = visibleEdges nand Edge.Edge3 nand Edge.Edge11
             visibleEdges = visibleEdges nand Edge.Edge7 nand Edge.Edge8

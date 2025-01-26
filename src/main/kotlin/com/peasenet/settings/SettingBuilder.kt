@@ -26,7 +26,6 @@ package com.peasenet.settings
 
 import com.peasenet.gavui.GuiDropdown.Direction
 import com.peasenet.gavui.color.Color
-import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.callbacks.GuiCallback
 import net.minecraft.text.Text
@@ -441,6 +440,7 @@ class SettingBuilder {
         return this
     }
 
+
     /**
      * Sets the GUI symbol of this setting.
      * @param symbol The symbol to set.
@@ -456,6 +456,32 @@ class SettingBuilder {
      */
     fun getCallback(): GuiCallback? {
         return callback
+    }
+
+    private var options: List<String> = mutableListOf()
+    private var optionsValue = ""
+    fun setOptions(options: List<String>): SettingBuilder {
+        this.options = options
+        return this
+    }
+
+    fun getOptions(): List<String> {
+        return options
+    }
+
+    fun setValue(value: String): SettingBuilder {
+        this.optionsValue = value
+        return this
+    }
+
+    fun getOptionsValue(): String {
+        return optionsValue
+    }
+
+    fun buildCycleSetting(): CycleSetting {
+        if (options.isEmpty())
+            throw IllegalArgumentException("Options must not be empty")
+        return CycleSetting(this)
     }
 
 }

@@ -28,6 +28,7 @@ import com.peasenet.config.esp.CaveEspConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.Settings
+import com.peasenet.settings.CycleSetting
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.ChatCommand
 import com.peasenet.util.RenderUtils
@@ -44,6 +45,7 @@ import net.minecraft.block.BlockState
 import net.minecraft.block.LeavesBlock
 import net.minecraft.block.MultifaceGrowthBlock
 import net.minecraft.client.MinecraftClient
+import net.minecraft.text.Text
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.chunk.Chunk
 
@@ -51,9 +53,11 @@ import net.minecraft.world.chunk.Chunk
  * An ESP mod that draws boxes around user selected blocks in the world.
  *
  * @author GT3CH1
- * @version 01-18-2025
- * @since 09-01-2024
+ * @version 01-25-2025
+ * @since 01-18-2025
  * @see EspMod
+ * @see BlockEsp
+ * @see CaveEspConfig
  */
 class ModCaveEsp : BlockEsp<CaveEspConfig>(
     "gavinsmod.mod.esp.cave", ChatCommand.CaveEsp.chatCommand
@@ -61,7 +65,7 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
 
     private val chunksToRender: Int
         get() {
-            return (MinecraftClient.getInstance().options.viewDistance.value / 2)
+            return (MinecraftClient.getInstance().options.viewDistance.value)
         }
 
     init {
@@ -76,9 +80,42 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
         alphaSetting.setCallback {
             getSettings().alpha = alphaSetting.value
         }
+
+        val searchMode = getSettings().searchMode.name.lowercase()
+        val searchModeSetting = SettingBuilder()
+            .setTitle(searchTranslationKey)
+            .setOptions(SearchType.values().map { it.name.lowercase() })
+            .setValue(searchMode)
+            .buildCycleSetting()
+        searchModeSetting.setCallback {
+            updateSearchMode(searchModeSetting)
+        }
+        searchModeSetting.gui.title = Text.translatable("$searchTranslationKey.$searchMode")
+
         subSetting.add(alphaSetting)
         subSetting.add(colorSetting)
+        subSetting.add(searchModeSetting)
         addSetting(subSetting)
+    }
+
+    /**
+     * Callback for when the search mode is changed. This will update what search parameters the
+     * feature is using.
+     * @param searchMode The new search mode.
+     * @see SearchType
+     */
+    private fun updateSearchMode(searchMode: CycleSetting) {
+        getSettings().searchMode = when (searchMode.gui.currentIndex) {
+            0 -> SearchType.Caves
+            1 -> SearchType.Tunnel
+            else -> SearchType.Caves
+        }
+        val searchModeName = getSettings().searchMode.name.lowercase()
+        searchMode.gui.title = Text.translatable("$searchTranslationKey.$searchModeName")
+        GemExecutor.execute {
+            val visibleChunks: List<Chunk> = RenderUtils.getVisibleChunks(chunksToRender)
+            visibleChunks.forEach(this::searchChunk)
+        }
     }
 
 
@@ -91,8 +128,7 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
         em.subscribe(RenderListener::class.java, this)
         // search for chunks within render distance
         GemExecutor.execute {
-            val visibleChunks: List<Chunk> = RenderUtils.getVisibleChunks(chunksToRender)
-            visibleChunks.forEach(this::searchChunk)
+            chunks.values.forEach { searchChunk(it) }
         }
         super.onEnable()
     }
@@ -113,15 +149,29 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
     override fun getSettings(): CaveEspConfig = Settings.getConfig("caveesp")
 
     /**
-     * Checks if the given [blockPos] is a valid block to render.
+     * Checks if the given [blockPos] is a valid block to render, depending on the [SearchType] setting.
      * @param blockPos The [BlockPos] to check.
      * @return True if the block at [blockPos] is air, and that the player can walk through or on it, false otherwise.
+     *
+     * @see SearchType
      */
     private fun searchBlock(blockPos: BlockPos): Boolean {
         val newBlockState = world.getBlockState(blockPos)
         if (!newBlockState.isAir && newBlockState.block !is MultifaceGrowthBlock && !newBlockState.isLiquid) return false
-        return ((canWalkThrough(blockPos, newBlockState) || canWalkOn(blockPos, newBlockState)) && hasRoof(blockPos))
+        val searchMode = getSettings().searchMode
+        return when (searchMode) {
+            SearchType.Caves -> {
+                ((canWalkThrough(blockPos, newBlockState) || canWalkOn(blockPos, newBlockState)) && hasRoof(
+                    blockPos
+                ))
+            }
+
+            SearchType.Tunnel -> {
+                canWalkOn(blockPos, newBlockState) && hasRoof(blockPos)
+            }
+        }
     }
+
 
     /**
      * Gets whether the player can walk through this [blockState] at [blockPos], by checking if there is air above or below.
@@ -142,7 +192,7 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
      */
     private fun canWalkOn(blockPos: BlockPos, blockState: BlockState): Boolean {
         val below = world.getBlockState(blockPos.down())
-        return blockState.isAir && !below.isAir && canWalkThrough(blockPos, below)
+        return blockState.isAir && !below.isAir && canWalkThrough(blockPos, blockState)
     }
 
     /**
@@ -186,6 +236,11 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
         }
     }
 
+    private fun searchChunk(gavChunk: GavChunk) {
+        val chunk = world.getChunk(gavChunk.chunkPos.x, gavChunk.chunkPos.z) ?: return
+        searchChunk(chunk)
+    }
+
     override fun onWorldRender(worldRender: WorldRender) {
         synchronized(chunks) {
             chunks.values.removeIf { !it.inRenderDistance(chunksToRender) }
@@ -206,4 +261,23 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
     override fun chunkInRenderDistance(chunk: GavChunk): Boolean {
         return chunk.inRenderDistance(chunksToRender)
     }
+
+    companion object {
+        private const val searchTranslationKey = "gavinsmod.mod.esp.cave"
+    }
+}
+
+/**
+ * Different types of CaveESP searches.
+ */
+enum class SearchType {
+    /**
+     * Detects full caves.
+     */
+    Caves,
+
+    /**
+     * Detects tunnels only (at least 2 blocks high).
+     */
+    Tunnel
 }

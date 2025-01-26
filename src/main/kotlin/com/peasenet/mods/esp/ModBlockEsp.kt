@@ -143,7 +143,7 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
         if (!added && !removed) {
             return
         }
-        val gavBlock = GavBlock(bue.blockPos.x, bue.blockPos.y, bue.blockPos.z) { blockPos ->
+        val gavBlock = GavBlock(bue.blockPos) { blockPos ->
             val blockState = chunk.getBlockState(blockPos)
             config.blocks.contains(BlockListConfig.getId(blockState.block))
         }

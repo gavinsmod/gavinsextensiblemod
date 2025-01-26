@@ -1,4 +1,4 @@
-﻿/*
+/*
  * MIT License
  *
  * Copyright (c) 2022-2025, Gavin C. Pease
@@ -22,50 +22,33 @@
  * SOFTWARE.
  */
 
-package com.peasenet.config.esp
+package com.peasenet.settings
 
-import com.peasenet.annotations.Exclude
-import com.peasenet.config.Config
-import com.peasenet.config.commons.IBlockEspTracerConfig
-import com.peasenet.gavui.color.Color
-import com.peasenet.gavui.color.Colors
-import com.peasenet.mods.esp.SearchType
+import com.peasenet.gavui.GuiBuilder
+import com.peasenet.gavui.GuiCycle
 
 /**
  *
  * @author GT3CH1
- * @version 01-18-2025
- * @since 01-18-2025
+ * @version 01-25-2025
+ * @since 01-25-2025
  */
-class CaveEspConfig() : Config<CaveEspConfig>(), IBlockEspTracerConfig {
+class CycleSetting(builder: SettingBuilder) : Setting() {
+    override val gui: GuiCycle
     init {
-        key = "caveesp"
+        gui = GuiBuilder()
+            .setWidth(builder.getWidth())
+            .setHeight(builder.getHeight())
+            .setTitle(builder.getTitle())
+            .setHoverable(builder.isHoverable())
+            .setBackgroundColor(builder.getColor())
+            .setTransparency(builder.getTransparency())
+            .setTranslationKey(builder.getTranslationKey())
+            .setSymbol(builder.getSymbol())
+            .setTopLeft(builder.getTopLeft())
+            .setCycleSize(builder.getOptions().size)
+            .setCurrentCycleIndex(builder.getOptions().indexOf(builder.getOptionsValue()))
+            .setCallback(builder.getCallback())
+            .buildCycle()
     }
-
-    override var alpha = 0.5f
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    @Exclude
-    override var structureEsp: Boolean = true
-
-    @Exclude
-    override var blockTracer: Boolean = false
-
-    override var blockColor: Color = Colors.MEDIUM_SEA_GREEN
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    /**
-     * What [SearchType] to use.
-     */
-    var searchMode: SearchType = SearchType.Caves
-        set(value) {
-            field = value
-            saveConfig()
-        }
 }

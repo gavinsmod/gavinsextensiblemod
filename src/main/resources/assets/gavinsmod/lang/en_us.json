@@ -154,5 +154,8 @@
   "gavinsmod.settings.xray.chests": "X-Ray Chests",
   "gavinsmod.settings.xray.culling": "X-Ray Culling",
   "gavinsmod.mod.esp.sign": "Sign ESP",
-  "gavinsmod.mod.tracer.sign": "Sign Tracers"
+  "gavinsmod.mod.tracer.sign": "Sign Tracers",
+  "gavinsmod.mod.esp.cave": "Cave ESP",
+  "gavinsmod.mod.esp.cave.tunnel": "Tunnels",
+  "gavinsmod.mod.esp.cave.caves": "Caves"
 }

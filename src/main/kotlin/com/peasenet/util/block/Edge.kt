@@ -102,3 +102,10 @@ enum class Edge(val mask: Int) {
     None(0)
 }
 
+infix fun Edge.or(other: Edge): Int {
+    return this.mask or other.mask
+}
+
+infix fun Edge.or(other: Int): Int {
+    return this.mask or other
+}
