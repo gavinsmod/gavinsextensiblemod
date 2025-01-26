@@ -26,6 +26,18 @@ package com.peasenet.util.listeners
 
 import net.minecraft.client.util.math.MatrixStack
 
+/**
+ * An interface that allows for a class to receive [com.peasenet.util.event.RenderEvent].
+ *
+ * @author GT3CH1
+ * @version 01-18-2025
+ * @since 01-18-2025
+ */
 interface RenderListener : Listener {
+    /**
+     * Called when the world is rendered.
+     * @param matrixStack The matrix stack.
+     * @param partialTicks The partial ticks.
+     */
     fun onRender(matrixStack: MatrixStack, partialTicks: Float)
 }

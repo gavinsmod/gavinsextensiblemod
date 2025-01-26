@@ -53,7 +53,7 @@ import net.minecraft.world.chunk.Chunk
  * An ESP mod that draws boxes around user selected blocks in the world.
  *
  * @author GT3CH1
- * @version 01-25-2025
+ * @version 01-26-2025
  * @since 01-18-2025
  * @see EspMod
  * @see BlockEsp
@@ -62,12 +62,6 @@ import net.minecraft.world.chunk.Chunk
 class ModCaveEsp : BlockEsp<CaveEspConfig>(
     "gavinsmod.mod.esp.cave", ChatCommand.CaveEsp.chatCommand
 ) {
-
-    private val chunksToRender: Int
-        get() {
-            return (MinecraftClient.getInstance().options.viewDistance.value)
-        }
-
     init {
         val subSetting = SettingBuilder().setTitle(translationKey).buildSubSetting()
         val colorSetting =
@@ -98,26 +92,14 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
         addSetting(subSetting)
     }
 
-    /**
-     * Callback for when the search mode is changed. This will update what search parameters the
-     * feature is using.
-     * @param searchMode The new search mode.
-     * @see SearchType
-     */
-    private fun updateSearchMode(searchMode: CycleSetting) {
-        getSettings().searchMode = when (searchMode.gui.currentIndex) {
-            0 -> SearchType.Caves
-            1 -> SearchType.Tunnel
-            else -> SearchType.Caves
-        }
-        val searchModeName = getSettings().searchMode.name.lowercase()
-        searchMode.gui.title = Text.translatable("$searchTranslationKey.$searchModeName")
-        GemExecutor.execute {
-            val visibleChunks: List<Chunk> = RenderUtils.getVisibleChunks(chunksToRender)
-            visibleChunks.forEach(this::searchChunk)
-        }
+    companion object {
+        private const val searchTranslationKey = "gavinsmod.mod.esp.cave"
     }
 
+    private val chunksToRender: Int
+        get() {
+            return (MinecraftClient.getInstance().options.viewDistance.value)
+        }
 
     override fun onEnable() {
         em.subscribe(RenderListener::class.java, this)
@@ -147,6 +129,75 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
     }
 
     override fun getSettings(): CaveEspConfig = Settings.getConfig("caveesp")
+
+
+    override fun searchChunk(chunk: Chunk) {
+        GemExecutor.execute {
+            synchronized(chunk) {
+                GavChunk.search(
+                    chunk
+                ) { pos ->
+                    searchBlock(pos)
+                }.also {
+                    addBlocksFromChunk(it)
+                }
+            }
+        }
+    }
+
+
+    override fun onWorldRender(worldRender: WorldRender) {
+        synchronized(chunks) {
+            chunks.values.removeIf { !it.inRenderDistance(chunksToRender) }
+        }
+    }
+
+    override fun onBlockUpdate(bue: BlockUpdate) {
+        val added = bue.newState.isAir && !bue.oldState.isAir
+        val removed = !added && !bue.newState.isAir && bue.oldState.isAir
+        val chunk = world.getChunk(bue.blockPos) ?: return
+        val gavBlock = GavBlock(bue.blockPos) { pos -> searchBlock(pos) }
+        if (!added && !removed) {
+            return
+        }
+        updateChunk(added, gavBlock, chunk.pos)
+    }
+
+    override fun chunkInRenderDistance(chunk: GavChunk): Boolean {
+        return chunk.inRenderDistance(chunksToRender)
+    }
+
+
+    /**
+     * Callback for when the search mode is changed. This will update what search parameters the
+     * feature is using.
+     * @param searchMode The new search mode.
+     * @see SearchType
+     */
+    private fun updateSearchMode(searchMode: CycleSetting) {
+        getSettings().searchMode = when (searchMode.gui.currentIndex) {
+            0 -> SearchType.Caves
+            1 -> SearchType.Tunnel
+            else -> SearchType.Caves
+        }
+        val searchModeName = getSettings().searchMode.name.lowercase()
+        searchMode.gui.title = Text.translatable("$searchTranslationKey.$searchModeName")
+        GemExecutor.execute {
+            val visibleChunks: List<Chunk> = RenderUtils.getVisibleChunks(chunksToRender)
+            visibleChunks.forEach(this::searchChunk)
+        }
+    }
+
+    /**
+     * Helper method to search a [GavChunk] for blocks.
+     * @param gavChunk The [GavChunk] to search.
+     *
+     * @see searchChunk
+     */
+    private fun searchChunk(gavChunk: GavChunk) {
+        val chunk = world.getChunk(gavChunk.chunkPos.x, gavChunk.chunkPos.z) ?: return
+        searchChunk(chunk)
+    }
 
     /**
      * Checks if the given [blockPos] is a valid block to render, depending on the [SearchType] setting.
@@ -215,55 +266,6 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
             GavinsMod.LOGGER.error("Error for checking roof, blockPos: $blockPos")
         }
         return false
-    }
-
-
-    /**
-     * Searches the given chunk for blocks that are in the block list.
-     * @param chunk - The Chunk to search.
-     */
-    override fun searchChunk(chunk: Chunk) {
-        GemExecutor.execute {
-            synchronized(chunk) {
-                GavChunk.search(
-                    chunk
-                ) { pos ->
-                    searchBlock(pos)
-                }.also {
-                    addBlocksFromChunk(it, chunk)
-                }
-            }
-        }
-    }
-
-    private fun searchChunk(gavChunk: GavChunk) {
-        val chunk = world.getChunk(gavChunk.chunkPos.x, gavChunk.chunkPos.z) ?: return
-        searchChunk(chunk)
-    }
-
-    override fun onWorldRender(worldRender: WorldRender) {
-        synchronized(chunks) {
-            chunks.values.removeIf { !it.inRenderDistance(chunksToRender) }
-        }
-    }
-
-    override fun onBlockUpdate(bue: BlockUpdate) {
-        val added = bue.newState.isAir && !bue.oldState.isAir
-        val removed = !added && !bue.newState.isAir && bue.oldState.isAir
-        val chunk = world.getChunk(bue.blockPos) ?: return
-        val gavBlock = GavBlock(bue.blockPos) { pos -> searchBlock(pos) }
-        if (!added && !removed) {
-            return
-        }
-        checkChunk(added, removed, gavBlock, chunk)
-    }
-
-    override fun chunkInRenderDistance(chunk: GavChunk): Boolean {
-        return chunk.inRenderDistance(chunksToRender)
-    }
-
-    companion object {
-        private const val searchTranslationKey = "gavinsmod.mod.esp.cave"
     }
 }
 

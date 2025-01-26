@@ -48,13 +48,13 @@ import net.minecraft.world.chunk.Chunk
  * An ESP mod that draws boxes around user selected blocks in the world.
  *
  * @author GT3CH1
- * @version 01-18-2025
+ * @version 01-26-2025
  * @since 09-01-2024
  * @see EspMod
  */
 class ModBlockEsp : BlockEsp<BlockEspConfig>(
     "gavinsmod.mod.esp.blockesp", "blockesp"
-), BlockUpdateListener, WorldRenderListener, ChunkUpdateListener, RenderListener {
+) {
 
     init {
         val subSetting = SettingBuilder().setTitle(translationKey).buildSubSetting()
@@ -116,10 +116,6 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
 
     override fun getSettings(): BlockEspConfig = Settings.getConfig("blockesp") as BlockEspConfig
 
-    /**
-     * Searches the given chunk for blocks that are in the block list.
-     * @param chunk - The Chunk to search.
-     */
     override fun searchChunk(chunk: Chunk) {
         GemExecutor.execute {
             synchronized(chunks) {
@@ -127,7 +123,7 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
                 val searchedChunk = GavChunk.search(
                     chunk,
                 ) { pos -> blocks.blocks.contains(BlockListConfig.getId(chunk.getBlockState(pos).block)) }
-                addBlocksFromChunk(searchedChunk, chunk)
+                addBlocksFromChunk(searchedChunk)
             }
         }
     }
@@ -149,7 +145,7 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
         }
         GemExecutor.execute {
             synchronized(chunks) {
-                checkChunk(added, removed, gavBlock, chunk)
+                updateChunk(added, gavBlock, chunk.pos)
             }
         }
     }

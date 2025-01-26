@@ -28,9 +28,10 @@ import com.peasenet.util.block.Edge
 import com.peasenet.util.block.Neighbors
 
 /**
+ * Extension functions for the Int class.
  *
  * @author GT3CH1
- * @version 01-15-2025
+ * @version 01-26-2025
  * @since 01-15-2025
  */
 

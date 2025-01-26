@@ -40,12 +40,24 @@ import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.chunk.Chunk
 
 /**
  *
+ * An abstract class for block ESP mods.
+ * @param translationKey The translation key of the mod.
+ * @param chatCommand The chat command of the mod.
+ * @param T The type of the config that must extend [IBlockEspTracerConfig].
+ *
+ * @see EspMod
+ * @see BlockUpdateListener
+ * @see WorldRenderListener
+ * @see ChunkUpdateListener
+ * @see RenderListener
+ *
  * @author GT3CH1
- * @version 01-18-2025
+ * @version 01-26-2025
  * @since 01-18-2025
  */
 abstract class BlockEsp<T : IBlockEspTracerConfig>(
@@ -56,8 +68,28 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
 ), BlockUpdateListener, WorldRenderListener, ChunkUpdateListener, RenderListener {
 
 
+    /**
+     * Gets the settings of type [T].
+     * @see IBlockEspTracerConfig
+     */
     abstract fun getSettings(): T
 
+
+    /**
+     * Performs a search on the given chunk to find blocks to add to a list of [GavChunk]s.
+     * @param chunk The chunk to search.
+     */
+    abstract fun searchChunk(chunk: Chunk)
+
+    /**
+     * Gets if the chunk is in render distance.
+     * ~~~kotlin
+     * val distance = MinecraftClient.getInstance().gameRenderer.viewDistance / 2
+     * return chunk.inRenderDistance(distance)
+     * ~~~
+     * @param chunk The chunk to check.
+     * @return If the chunk is in render distance.
+     */
     open fun chunkInRenderDistance(chunk: GavChunk): Boolean = false
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
@@ -90,20 +122,64 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
         }
     }
 
+
     /**
-     * Updates the neighbor chunks of the given chunk in a 3x3 grid with the given chunk in the center.
-     * @param chunk - The Chunk to update the neighbors of.
+     * Adds the given
      */
-    private fun updateNeighborChunks(chunk: Chunk) {
-        val main = chunks[chunk.pos.toLong()]
-        val north = chunks[chunk.pos.north().toLong()]
-        val south = chunks[chunk.pos.south().toLong()]
-        val east = chunks[chunk.pos.east().toLong()]
-        val west = chunks[chunk.pos.west().toLong()]
-        val northEast = chunks[chunk.pos.east().north().toLong()]
-        val northWest = chunks[chunk.pos.west().north().toLong()]
-        val southEast = chunks[chunk.pos.east().south().toLong()]
-        val southWest = chunks[chunk.pos.west().south().toLong()]
+    protected fun addBlocksFromChunk(searchedChunk: GavChunk) {
+        synchronized(chunks) {
+            chunks[searchedChunk.key]?.clear()
+            if (searchedChunk.hasBlocks) {
+                chunks[searchedChunk.key] = searchedChunk
+            } else {
+                chunks.remove(searchedChunk.key)
+            }
+            updateNeighborChunks(searchedChunk.chunkPos)
+        }
+    }
+
+    /**
+     * Updates the chunk with the given [chunkPos] and [gavBlock]. If [addBlock] is true, the block will be added to the chunk.
+     * Otherwise, the block will be removed from the chunk.
+     *
+     * @param addBlock If the block should be added to the chunk.
+     * @param gavBlock The [GavBlock] to add or remove.
+     * @param chunkPos The [ChunkPos] of the chunk to update.
+     */
+    protected fun updateChunk(
+        addBlock: Boolean,
+        gavBlock: GavBlock,
+        chunkPos: ChunkPos,
+    ) {
+        val key = chunkPos.toLong()
+        var espChunk = chunks[key]
+        if (espChunk == null) {
+            val gavChunk = GavChunk(chunkPos)
+            chunks[key] = gavChunk
+            espChunk = gavChunk
+        }
+        if (addBlock)
+            espChunk.addBlock(gavBlock)
+        else
+            espChunk.removeBlock(gavBlock)
+        espChunk.updateBlockNeighbors(gavBlock)
+        updateNeighborChunks(chunkPos)
+    }
+
+    /**
+     * Updates the neighbor chunks of the given chunk in a 3x3 grid with the given [chunkPos] in the center.
+     * @param chunkPos The center chunk position.
+     */
+    private fun updateNeighborChunks(chunkPos: ChunkPos) {
+        val main = chunks[chunkPos.toLong()]
+        val north = chunks[chunkPos.north().toLong()]
+        val south = chunks[chunkPos.south().toLong()]
+        val east = chunks[chunkPos.east().toLong()]
+        val west = chunks[chunkPos.west().toLong()]
+        val northEast = chunks[chunkPos.east().north().toLong()]
+        val northWest = chunks[chunkPos.west().north().toLong()]
+        val southEast = chunks[chunkPos.east().south().toLong()]
+        val southWest = chunks[chunkPos.west().south().toLong()]
         main?.updateBlocks()
         north?.updateBlocks()
         south?.updateBlocks()
@@ -114,44 +190,6 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
         southEast?.updateBlocks()
         southWest?.updateBlocks()
     }
-
-    /**
-     * Adds
-     */
-    protected fun addBlocksFromChunk(searchedChunk: GavChunk, chunk: Chunk) {
-        synchronized(chunks) {
-            chunks[searchedChunk.chunkPos.toLong()]?.clear()
-            if (searchedChunk.hasBlocks) {
-                chunks[chunk.pos.toLong()] = searchedChunk
-            } else {
-                chunks.remove(chunk.pos.toLong())
-            }
-            updateNeighborChunks(chunk)
-        }
-    }
-
-    protected fun checkChunk(
-        added: Boolean,
-        remove: Boolean,
-        gavBlock: GavBlock,
-        chunk: Chunk,
-    ) {
-        val key = chunk.pos.toLong()
-        var espChunk = chunks[key]
-        if (espChunk == null) {
-            val gavChunk = GavChunk(chunk.pos)
-            chunks[key] = gavChunk
-            espChunk = gavChunk
-        }
-        if (added)
-            espChunk.addBlock(gavBlock)
-        else if (remove)
-            espChunk.removeBlock(gavBlock)
-        espChunk.updateBlockNeighbors(gavBlock)
-        updateNeighborChunks(chunk)
-    }
-
-    abstract fun searchChunk(chunk: Chunk)
 
     companion object {
         @Exclude
