@@ -31,16 +31,16 @@ import com.peasenet.gavui.GuiSlider
  * @version 03-02-2023
  * A setting that can be clicked. This is purely dependant on the given callback.
  */
-class SlideSetting(builder: SettingBuilder) : Setting() {
+class SlideSetting(builder: SettingBuilder<SlideSetting>) : Setting() {
     /**
      * The gui used to display the setting.
      */
-    override var gui: GuiSlider = GuiBuilder()
+    override var gui: GuiSlider = GuiBuilder<GuiSlider>()
         .setWidth(builder.getWidth())
         .setHeight(builder.getHeight())
         .setSlideValue(builder.getValue())
         .setTitle(builder.getTitle())
-        .setCallback(builder.getCallback())
+        .setCallback { builder.settingCallback?.invoke(this) }
         .setTransparency(builder.getTransparency())
         .setDefaultMaxChildren(builder.getMaxChildren())
         .setMaxChildren(builder.getMaxChildren())

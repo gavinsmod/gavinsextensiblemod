@@ -25,6 +25,7 @@ package com.peasenet.mods.tracer
 
 import com.peasenet.gavui.color.Color
 import com.peasenet.gui.mod.GuiItemEspTracerConfig
+import com.peasenet.settings.ClickSetting
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.util.math.MatrixStack
@@ -45,10 +46,8 @@ class ModEntityItemTracer :
     EntityTracer<ItemEntity>("gavinsmod.mod.tracer.item", "itemtracer", { it is ItemEntity }),
     RenderListener {
     init {
-        val menu = SettingBuilder().setTitle("gavinsmod.mod.tracer.item").buildClickSetting()
-        menu.setCallback {
-            client.setScreen(GuiItemEspTracerConfig(config))
-        }
+        val menu = SettingBuilder<ClickSetting>().setTitle("gavinsmod.mod.tracer.item")
+            .setCallback { client.setScreen(GuiItemEspTracerConfig(config)) }.buildClickSetting()
         addSetting(menu)
     }
 

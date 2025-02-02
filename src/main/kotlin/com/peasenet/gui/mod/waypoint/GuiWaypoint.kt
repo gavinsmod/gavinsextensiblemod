@@ -26,7 +26,6 @@ package com.peasenet.gui.mod.waypoint
 import com.peasenet.config.waypoint.WaypointConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
-import com.peasenet.gavui.GuiClick
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GavUISettings
@@ -37,6 +36,7 @@ import com.peasenet.main.GavinsModClient.Companion.player
 import com.peasenet.main.Mods.Companion.getMod
 import com.peasenet.main.Settings
 import com.peasenet.mods.render.waypoints.Waypoint
+import com.peasenet.settings.ClickSetting
 import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.settings.ToggleSetting
@@ -84,17 +84,17 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
     /**
      * The button used to save the waypoint.
      */
-    private lateinit var saveSettings: GuiClick
+    private lateinit var saveSettings: ClickSetting
 
     /**
      * The button used to cancel the waypoint.
      */
-    private lateinit var cancelSettings: GuiClick
+    private lateinit var cancelSettings: ClickSetting
 
     /**
      * The button used to delete the waypoint.
      */
-    private lateinit var deleteSettings: GuiClick
+    private lateinit var deleteSettings: ClickSetting
 
     /**
      * The button used to toggle the waypoint's visibility.
@@ -223,7 +223,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         paddingX = offsetX + padding
         paddingY = offsetY + padding
 
-        box = GuiBuilder()
+        box = GuiBuilder<Gui>()
             .setTopLeft(offsetX, offsetY)
             .setWidth(width)
             .setHeight(height)
@@ -236,7 +236,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
 
 
         offsetY += 20 + padding
-        colorCycle = SettingBuilder()
+        colorCycle = SettingBuilder<ColorSetting>()
             .setTitle("gavinsmod.settings.render.waypoints.color")
             .setColor(w.color)
             .setTopLeft(PointF(paddingX, offsetY))
@@ -244,7 +244,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             .setHoverable(true)
             .buildColorSetting()
         offsetY += 14
-        waypointToggle = SettingBuilder()
+        waypointToggle = SettingBuilder<ToggleSetting>()
             .setTitle("gavinsmod.settings.enabled")
             .setTopLeft(PointF(paddingX, offsetY))
             .setWidth(wholeButtonWidth)
@@ -252,7 +252,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             .setHoverable(true)
             .buildToggleSetting()
         offsetY += 14
-        espToggle = SettingBuilder()
+        espToggle = SettingBuilder<ToggleSetting>()
             .setTitle("gavinsmod.settings.esp")
             .setTopLeft(paddingX.toFloat(), offsetY.toFloat())
             .setWidth((wholeButtonWidth / 2 - padding / 2).toFloat())
@@ -260,7 +260,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             .setState(w.renderEsp)
             .buildToggleSetting()
 
-        tracerToggle = SettingBuilder()
+        tracerToggle = SettingBuilder<ToggleSetting>()
             .setTitle("gavinsmod.settings.tracer")
             .setTopLeft(PointF((offsetX + padding + padding / 2 + wholeButtonWidth / 2).toFloat(), (offsetY).toFloat()))
             .setWidth((wholeButtonWidth / 2 - padding / 2).toFloat())
@@ -268,7 +268,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             .setState(w.renderTracer)
             .buildToggleSetting()
         offsetY += 28
-        overworldToggle = SettingBuilder()
+        overworldToggle = SettingBuilder<ToggleSetting>()
             .setTitle("gavinsmod.settings.overworld")
             .setTopLeft(PointF(paddingX.toFloat(), (offsetY).toFloat()))
             .setWidth(wholeButtonWidth.toFloat())
@@ -276,7 +276,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             .setState(w.hasDimension(Dimension.OVERWORLD))
             .buildToggleSetting()
         offsetY += 14
-        netherToggle = SettingBuilder()
+        netherToggle = SettingBuilder<ToggleSetting>()
             .setTitle("gavinsmod.settings.nether")
             .setTopLeft(PointF(paddingX.toFloat(), (offsetY).toFloat()))
             .setWidth(wholeButtonWidth.toFloat())
@@ -284,7 +284,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             .setState(w.hasDimension(Dimension.NETHER))
             .buildToggleSetting()
         offsetY += 14
-        endToggle = SettingBuilder()
+        endToggle = SettingBuilder<ToggleSetting>()
             .setTitle("gavinsmod.settings.end")
             .setTopLeft(PointF(paddingX.toFloat(), (offsetY).toFloat()))
             .setWidth(wholeButtonWidth.toFloat())
@@ -309,42 +309,42 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         addSelectableChild(zCoordinate)
         offsetY += 14
         saveSettings =
-            GuiBuilder()
+            SettingBuilder<ClickSetting>()
                 .setTitle("gavinsmod.settings.save")
-                .setTopLeft(paddingX, offsetY)
+                .setTopLeft(PointF(paddingX, offsetY))
                 .setWidth(buttonWidth)
                 .setBackgroundColor(Colors.GREEN).setCallback {
                     saveCallback()
                 }
                 .setHoverable(true)
-                .buildClick()
+                .buildClickSetting()
 
-        cancelSettings = GuiBuilder()
+        cancelSettings = SettingBuilder<ClickSetting>()
             .setTitle("gavinsmod.settings.cancel")
-            .setTopLeft((paddingX + padding + buttonWidth), offsetY)
+            .setTopLeft(PointF((paddingX + padding + buttonWidth), offsetY))
             .setWidth(buttonWidth)
             .setBackgroundColor(Colors.YELLOW)
             .setHoverable(true)
             .setCallback {
                 client!!.setScreen(parent)
             }
-            .buildClick()
+            .buildClickSetting()
 
-        deleteSettings = GuiBuilder()
+        deleteSettings = SettingBuilder<ClickSetting>()
             .setTitle("gavinsmod.settings.delete")
-            .setTopLeft(paddingX + padding * 2 + buttonWidth * 2, offsetY)
+            .setTopLeft(PointF(paddingX + padding * 2 + buttonWidth * 2, offsetY))
             .setWidth(buttonWidth.toFloat())
             .setBackgroundColor(Colors.RED)
             .setHoverable(true)
             .setCallback {
                 deleteCallback()
             }
-            .buildClick()
+            .buildClickSetting()
         box.isHoverable = false
 
-        guis.add(saveSettings)
-        guis.add(cancelSettings)
-        guis.add(deleteSettings)
+        guis.add(saveSettings.gui)
+        guis.add(cancelSettings.gui)
+        guis.add(deleteSettings.gui)
         guis.add(waypointToggle.gui)
         guis.add(espToggle.gui)
         guis.add(tracerToggle.gui)

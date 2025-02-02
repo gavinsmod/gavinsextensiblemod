@@ -25,11 +25,13 @@
 package com.peasenet.gavui.math;
 
 /**
+ * A point in 2D space.
+ *
  * @param x The x coordinate of the point.
  * @param y The y coordinate of the point.
  * @author GT3CH1
- * @version 12/30/2022
- * A point in 2D space.
+ * @version 02-02-2025
+ * @since 12/30/2022
  */
 public record PointF(float x, float y) {
 

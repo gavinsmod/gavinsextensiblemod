@@ -32,11 +32,11 @@ import com.peasenet.gavui.GuiScroll
  * @author GT3CH1
  * @version 03-02-2023
  */
-class SubSetting(builder: SettingBuilder) : Setting() {
+class SubSetting(builder: SettingBuilder<SubSetting>) : Setting() {
     /**
      * The dropdown menu that contains the sub settings.
      */
-    override val gui: GuiScroll = GuiBuilder()
+    override val gui: GuiScroll = GuiBuilder<GuiScroll>()
         .setWidth(builder.getWidth())
         .setHeight(builder.getHeight())
         .setTitle(builder.getTitle())
@@ -51,7 +51,7 @@ class SubSetting(builder: SettingBuilder) : Setting() {
      * @param setting - The setting to add.
      */
     fun add(setting: Setting) {
-        gui.addElement(setting.gui)
+        gui.addElement(setting.gui!!)
         setting.gui?.hide()
     }
 }

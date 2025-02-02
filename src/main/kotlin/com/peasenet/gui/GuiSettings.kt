@@ -27,6 +27,7 @@ import com.peasenet.config.esp.EspConfig
 import com.peasenet.config.misc.MiscConfig
 import com.peasenet.config.tracer.TracerConfig
 import com.peasenet.gavui.Gui
+import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiClick
 import com.peasenet.gavui.GuiScroll
 import com.peasenet.gavui.color.Colors
@@ -38,6 +39,8 @@ import com.peasenet.main.Settings
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
 import com.peasenet.settings.SettingBuilder
+import com.peasenet.settings.SlideSetting
+import com.peasenet.settings.ToggleSetting
 import net.minecraft.text.Text
 import java.util.function.Consumer
 
@@ -53,14 +56,62 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
      */
 
     init {
-        renderDropdown = GuiScroll(PointF(10f, 20f), 100, 10, Text.translatable("gavinsmod.settings.render"))
-        miscDropdown = GuiScroll(PointF(115f, 20f), 100, 10, Text.translatable("gavinsmod.settings.misc"))
-        guiDropdown = GuiScroll(PointF(220f, 20f), 100, 10, Text.translatable("gavinsmod.settings.gui"))
-        waypointDropdown = GuiScroll(PointF(325f, 20f), 100, 10, Text.translatable("gavinsmod.mod.render.waypoints"))
-        espDropdown = GuiScroll(PointF(10f, 90f), 110, 10, Text.translatable("gavinsmod.settings.esp"))
-        tracerDropdown = GuiScroll(PointF(125f, 90f), 115, 10, Text.translatable("gavinsmod.settings.tracer"))
-        combatDropdown = GuiScroll(PointF(245f, 90f), 100, 10, Text.translatable("gavinsmod.settings.combat"))
-        resetButton = GuiClick(PointF(0f, 1f), 4, 10, Text.translatable("gavinsmod.settings.reset"))
+        renderDropdown = GuiBuilder<GuiScroll>()
+            .setTopLeft(PointF(10f, 20f))
+            .setWidth(100)
+            .setHeight(10)
+            .setTitle("gavinsmod.settings.render")
+            .setDraggable(true)
+            .buildScroll()
+        miscDropdown = GuiBuilder<GuiScroll>()
+            .setTopLeft(PointF(115f, 20f))
+            .setWidth(100)
+            .setHeight(10)
+            .setTitle("gavinsmod.settings.misc")
+            .setDraggable(true)
+            .buildScroll()
+        guiDropdown = GuiBuilder<GuiScroll>()
+            .setTopLeft(PointF(220f, 20f))
+            .setWidth(100)
+            .setHeight(10)
+            .setTitle("gavinsmod.settings.gui")
+            .setDraggable(true)
+            .buildScroll()
+        waypointDropdown = GuiBuilder<GuiScroll>()
+            .setTopLeft(PointF(325f, 20f))
+            .setWidth(100)
+            .setHeight(10)
+            .setTitle("gavinsmod.mod.render.waypoints")
+            .setDraggable(true)
+            .buildScroll()
+        espDropdown = GuiBuilder<GuiScroll>()
+            .setTopLeft(PointF(10f, 90f))
+            .setWidth(110)
+            .setHeight(10)
+            .setTitle("gavinsmod.settings.esp")
+            .setDraggable(true)
+            .buildScroll()
+        tracerDropdown = GuiBuilder<GuiScroll>()
+            .setTopLeft(PointF(125f, 90f))
+            .setWidth(115)
+            .setHeight(10)
+            .setTitle("gavinsmod.settings.tracer")
+            .setDraggable(true)
+            .buildScroll()
+        combatDropdown = GuiBuilder<GuiScroll>()
+            .setTopLeft(PointF(245f, 90f))
+            .setWidth(100)
+            .setHeight(10)
+            .setTitle("gavinsmod.settings.combat")
+            .setDraggable(true)
+            .buildScroll()
+        resetButton = GuiBuilder<GuiScroll>()
+            .setTopLeft(PointF(0f, 1f))
+            .setWidth(4)
+            .setHeight(10)
+            .setTitle("gavinsmod.settings.reset")
+            .setDraggable(true)
+            .buildClick()
         reloadGui()
         initialized = true
     }
@@ -74,10 +125,10 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
         resetButton.title = resetText
         if (resetWidth.toDouble() == 0.0) resetWidth = (width + 4).toFloat()
         resetButton.width = resetWidth
-        resetButton.position = resetPos
+        resetButton.position = resetPos!!
         resetButton.setDefaultPosition(resetButton.box)
         resetButton.setBackground(Colors.DARK_RED)
-        resetButton.setCallback {
+        resetButton.callback = {
             GavinsMod.gui.reset()
             GavinsMod.guiSettings.reset()
         }
@@ -182,45 +233,41 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
          * home.
          */
         private fun miscSettings() {
-            val espAlpha = SettingBuilder()
+            val espAlpha = SettingBuilder<SlideSetting>()
                 .setTitle("gavinsmod.settings.alpha")
                 .setValue(Settings.getConfig<EspConfig>("esp").alpha)
-                .buildSlider()
-            espAlpha.setCallback { Settings.getConfig<EspConfig>("esp").alpha = espAlpha.value }
+                .setCallback { Settings.getConfig<EspConfig>("esp").alpha = it.value }
+                .buildSlideSetting()
             espDropdown.addElement(espAlpha.gui)
 
-            val espSizeSlider = SettingBuilder()
+            val espSizeSlider = SettingBuilder<SlideSetting>()
                 .setTitle("gavinsmod.settings.size")
                 .setValue(Settings.getConfig<EspConfig>("esp").espSize)
-                .buildSlider()
-            espSizeSlider.setCallback {
-                val size = 0.25f + (espSizeSlider.value * 0.75f)
-                Settings.getConfig<EspConfig>("esp").espSize = size
-            }
+                .setCallback {
+                    val size = 0.25f + (it.value * 0.75f)
+                    Settings.getConfig<EspConfig>("esp").espSize = size
+                }
+                .buildSlideSetting()
             espDropdown.addElement(espSizeSlider.gui)
 
-            val backgroundOverlay = SettingBuilder()
+            val backgroundOverlay = SettingBuilder<ToggleSetting>()
                 .setTitle("gavinsmod.generic.background")
                 .setState(Settings.getConfig<MiscConfig>("misc").background)
+                .setCallback { Settings.getConfig<MiscConfig>("misc").background = it.value }
                 .buildToggleSetting()
-            backgroundOverlay.setCallback {
-                Settings.getConfig<MiscConfig>("misc").background = backgroundOverlay.value
-            }
             miscDropdown.addElement(backgroundOverlay.gui)
 
-            val tracerAlpha = SettingBuilder()
+            val tracerAlpha = SettingBuilder<SlideSetting>()
                 .setTitle("gavinsmod.generic.alpha")
                 .setValue(Settings.getConfig<TracerConfig>("tracer").alpha)
-                .buildSlider()
-            tracerAlpha.setCallback { Settings.getConfig<TracerConfig>("tracer").alpha = tracerAlpha.value }
+                .setCallback { Settings.getConfig<TracerConfig>("tracer").alpha = it.value }
+                .buildSlideSetting()
 
-            val tracerViewBob = SettingBuilder()
+            val tracerViewBob = SettingBuilder<ToggleSetting>()
                 .setTitle("gavinsmod.settings.tracer.viewbobcancel")
                 .setState(Settings.getConfig<TracerConfig>("tracer").viewBobCancel)
+                .setCallback { Settings.getConfig<TracerConfig>("tracer").viewBobCancel = it.value }
                 .buildToggleSetting()
-            tracerViewBob.setCallback {
-                Settings.getConfig<TracerConfig>("tracer").viewBobCancel = tracerViewBob.value
-            }
             tracerDropdown.addElement(tracerViewBob.gui)
             tracerDropdown.addElement(tracerAlpha.gui)
         }

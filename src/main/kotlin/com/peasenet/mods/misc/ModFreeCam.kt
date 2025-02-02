@@ -26,7 +26,7 @@ package com.peasenet.mods.misc
 import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.config.misc.FreeCamConfig
 import com.peasenet.main.Settings
-import com.peasenet.settings.SettingBuilder
+import com.peasenet.settings.*
 import com.peasenet.util.FakePlayer
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.AirStrafeEvent
@@ -47,7 +47,7 @@ import org.lwjgl.opengl.GL11
  * @version 01-15-2025
  */
 class ModFreeCam : MiscMod(
-     "gavinsmod.mod.misc.freecam", "freecam"
+    "gavinsmod.mod.misc.freecam", "freecam"
 ), PacketSendListener, RenderListener, AirStrafeListener {
     private var fake: FakePlayer? = null
 
@@ -60,20 +60,26 @@ class ModFreeCam : MiscMod(
 
     init {
         val freeCamSpeed =
-            SettingBuilder().setTitle("gavinsmod.generic.speed").setValue(config.freeCamSpeed).buildSlider()
-        freeCamSpeed.setCallback { config.freeCamSpeed = freeCamSpeed.value }
+            SettingBuilder<SlideSetting>().setTitle("gavinsmod.generic.speed").setValue(config.freeCamSpeed)
+                .setCallback {
+                    config.freeCamSpeed = it.value
+                }.buildSlideSetting()
         val espEnabled =
-            SettingBuilder().setTitle("gavinsmod.generic.esp").setState(config.espEnabled).buildToggleSetting()
-        espEnabled.setCallback { config.espEnabled = espEnabled.value }
+            SettingBuilder<ToggleSetting>().setTitle("gavinsmod.generic.esp").setState(config.espEnabled)
+                .setCallback { config.espEnabled = it.value }
+                .setCallback { config.espEnabled = it.value }
+                .buildToggleSetting()
         val tracerEnabled =
-            SettingBuilder().setTitle("gavinsmod.generic.tracer").setState(config.tracerEnabled).buildToggleSetting()
-        tracerEnabled.setCallback { config.tracerEnabled = tracerEnabled.value }
-        val color = SettingBuilder().setTitle("gavinsmod.generic.color").setColor(config.color).buildColorSetting()
-        color.setCallback { config.color = color.color }
-        val alpha = SettingBuilder().setTitle("gavinsmod.generic.alpha").setValue(1f).buildSlider()
-        alpha.setCallback { config.alpha = alpha.value }
-        val subSetting = SettingBuilder().setWidth(100f).setHeight(10f).setTitle(translationKey).setMaxChildren(5)
-            .setDefaultMaxChildren(5).buildSubSetting()
+            SettingBuilder<ToggleSetting>().setTitle("gavinsmod.generic.tracer").setState(config.tracerEnabled)
+                .setCallback { config.tracerEnabled = it.value }
+                .buildToggleSetting()
+        val color = SettingBuilder<ColorSetting>().setTitle("gavinsmod.generic.color").setColor(config.color)
+            .setCallback { config.color = it.color }.buildColorSetting()
+        val alpha = SettingBuilder<SlideSetting>().setTitle("gavinsmod.generic.alpha").setValue(1f)
+            .setCallback { config.alpha = it.value }.buildSlideSetting()
+        val subSetting =
+            SettingBuilder<SubSetting>().setWidth(100f).setHeight(10f).setTitle(translationKey).setMaxChildren(5)
+                .setDefaultMaxChildren(5).buildSubSetting()
 
         subSetting.add(espEnabled)
         subSetting.add(tracerEnabled)
@@ -150,14 +156,14 @@ class ModFreeCam : MiscMod(
         matrixStack.push()
         RenderUtils.applyRegionalRenderOffset(matrixStack, region)
         val color = config.color
-        RenderSystem.setShaderColor(color.red, color.green, color.blue, config.alpha)
+        RenderSystem.setShaderColor(color.getRed(), color.getGreen(), color.getBlue(), config.alpha)
         matrixStack.push()
 
         matrixStack.translate(
             fake!!.x - region.x, fake!!.y, fake!!.z - region.z
         );
         matrixStack.scale(
-            fake!!.getWidth() + 0.1F, fake!!.getHeight() + 0.1F, fake!!.getWidth() + 0.1F
+            fake!!.width + 0.1F, fake!!.height + 0.1F, fake!!.width + 0.1F
         );
         var bb = Box(-0.5, 0.0, -0.5, 0.5, 1.0, 0.5)
         RenderUtils.drawOutlinedBox(bb, matrixStack)

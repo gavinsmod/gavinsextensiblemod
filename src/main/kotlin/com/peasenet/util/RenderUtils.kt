@@ -325,32 +325,32 @@ object RenderUtils {
         maxZ = newBB.maxZ.toFloat()
 
         // bottom face
-        buffer.vertex(matrix4f, minX, minY, minZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, maxX, minY, minZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, maxX, minY, minZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, maxX, minY, maxZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, maxX, minY, maxZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, minX, minY, maxZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, minX, minY, maxZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, minX, minY, minZ).color(color.red, color.green, color.blue, alpha)
+        buffer.vertex(matrix4f, minX, minY, minZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, maxX, minY, minZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, maxX, minY, minZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, maxX, minY, maxZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, maxX, minY, maxZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, minX, minY, maxZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, minX, minY, maxZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, minX, minY, minZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
         // top face
-        buffer.vertex(matrix4f, minX, maxY, minZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, maxX, maxY, minZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, maxX, maxY, minZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, maxX, maxY, maxZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, maxX, maxY, maxZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, minX, maxY, maxZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, minX, maxY, maxZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, minX, maxY, minZ).color(color.red, color.green, color.blue, alpha)
+        buffer.vertex(matrix4f, minX, maxY, minZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, maxX, maxY, minZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, maxX, maxY, minZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, maxX, maxY, maxZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, maxX, maxY, maxZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, minX, maxY, maxZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, minX, maxY, maxZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, minX, maxY, minZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
         // corners
-        buffer.vertex(matrix4f, minX, minY, minZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, minX, maxY, minZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, maxX, minY, minZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, maxX, maxY, minZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, maxX, minY, maxZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, maxX, maxY, maxZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, minX, minY, maxZ).color(color.red, color.green, color.blue, alpha)
-        buffer.vertex(matrix4f, minX, maxY, maxZ).color(color.red, color.green, color.blue, alpha)
+        buffer.vertex(matrix4f, minX, minY, minZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, minX, maxY, minZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, maxX, minY, minZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, maxX, maxY, minZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, maxX, minY, maxZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, maxX, maxY, maxZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, minX, minY, maxZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        buffer.vertex(matrix4f, minX, maxY, maxZ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
     }
 
     /**
@@ -544,10 +544,10 @@ object RenderUtils {
     ) {
         bufferBuilder.vertex(
             matrix4f, start.x, start.y, start.z
-        ).color(color.red, color.green, color.blue, alpha)
+        ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
         bufferBuilder.vertex(
             matrix4f, end.x, end.y, end.z
-        ).color(color.red, color.green, color.blue, alpha)
+        ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
     }
 
     /**
@@ -700,7 +700,7 @@ object RenderUtils {
         config: EspConfig = Settings.getConfig("esp"),
     ) {
         matrixStack.push()
-        RenderSystem.setShaderColor(color.red, color.green, color.blue, alpha)
+        RenderSystem.setShaderColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
         matrixStack.push()
         val lerped = getLerpedPos(e, partialTicks).subtract(region.toVec3d())
         matrixStack.translate(

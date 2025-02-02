@@ -24,6 +24,7 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.gavui.color.Color
+import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.block.entity.ChestBlockEntity
@@ -41,11 +42,12 @@ class ModChestEsp : BlockEntityEsp<ChestBlockEntity>("Chest ESP",
     "chestesp",
     { it is ChestBlockEntity || it is EnderChestBlockEntity || it is ShulkerBoxBlockEntity }), RenderListener {
     init {
-        val colorSetting = SettingBuilder().setTitle("gavinsmod.settings.color.chest").setColor(config.chestColor)
-            .buildColorSetting()
-        colorSetting.setCallback {
-            config.chestColor = colorSetting.color
-        }
+        val colorSetting =
+            SettingBuilder<ColorSetting>().setTitle("gavinsmod.settings.color.chest").setColor(config.chestColor)
+                .setCallback {
+                    config.chestColor = it.color
+                }
+                .buildColorSetting()
         addSetting(colorSetting)
     }
 

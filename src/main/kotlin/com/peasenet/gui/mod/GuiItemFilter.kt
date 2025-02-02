@@ -27,12 +27,12 @@ package com.peasenet.gui.mod
 import com.peasenet.config.commons.TracerEspConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
-import com.peasenet.gavui.GuiClick
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GavUISettings
 import com.peasenet.gui.GuiElement
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
+import com.peasenet.settings.ClickSetting
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.settings.ToggleSetting
 import com.peasenet.util.PlayerUtils
@@ -89,17 +89,17 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
     /**
      * The button used to save the waypoint.
      */
-    private lateinit var saveSettings: GuiClick
+    private lateinit var saveSettings: ClickSetting
 
     /**
      * The button used to cancel the waypoint.
      */
-    private lateinit var cancelSettings: GuiClick
+    private lateinit var cancelSettings: ClickSetting
 
     /**
      * The button used to delete the waypoint.
      */
-    private lateinit var deleteSettings: GuiClick
+    private lateinit var deleteSettings: ClickSetting
 
     private lateinit var searchLore: ToggleSetting
     private lateinit var searchName: ToggleSetting
@@ -111,7 +111,7 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
         paddingX = offsetX + padding
         paddingY = offsetY + padding
         var elementWidth = width - padding * 2
-        box = GuiBuilder().setTopLeft(PointF(offsetX.toFloat(), offsetY.toFloat())).setWidth(width.toFloat())
+        box = GuiBuilder<Gui>().setTopLeft(PointF(offsetX.toFloat(), offsetY.toFloat())).setWidth(width.toFloat())
             .setHeight(height.toFloat()).setTitle(Text.literal("")).setHoverable(false).build()
 
         offsetY += 12
@@ -136,85 +136,93 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
         addSelectableChild(filterString)
         offsetY += 14
         filterEnable =
-            SettingBuilder().setTitle("gavinsmod.settings.enabled").setTopLeft(PointF(paddingX, offsetY))
+            SettingBuilder<ToggleSetting>().setTitle("gavinsmod.settings.enabled").setTopLeft(PointF(paddingX, offsetY))
                 .setWidth(elementWidth)
-                .setHoverable(true).buildToggleSetting()
-        filterEnable.value = itemEspFilter.enabled
+                .setHoverable(true)
+                .setState(itemEspFilter.enabled)
+                .buildToggleSetting()
         filterEnable.gui.width = elementWidth.toFloat()
         offsetY += 12
         searchLore =
-            SettingBuilder().setTitle("gavinsmod.settings.searchLore")
+            SettingBuilder<ToggleSetting>().setTitle("gavinsmod.settings.searchLore")
                 .setTopLeft(PointF(paddingX, offsetY))
-                .setHoverable(true).buildToggleSetting()
-        searchLore.value = itemEspFilter.searchLore
+                .setHoverable(true)
+                .setState(itemEspFilter.searchLore)
+                .buildToggleSetting()
         searchLore.gui.width = elementWidth.toFloat()
         offsetY += 12
         searchName =
-            SettingBuilder().setTitle("gavinsmod.settings.searchName").setTopLeft(PointF(paddingX, offsetY))
+            SettingBuilder<ToggleSetting>().setTitle("gavinsmod.settings.searchName")
+                .setTopLeft(PointF(paddingX, offsetY))
                 .setHoverable(true)
+                .setState(itemEspFilter.searchCustomName)
                 .buildToggleSetting()
-        searchName.value = itemEspFilter.searchCustomName
         searchName.gui.width = elementWidth.toFloat()
         offsetY += 12
         // save, cancel, delete
-        var threeButtonWidth = (elementWidth / 3).toFloat() + (-padding * 0.5f)
+        val threeButtonWidth = (elementWidth / 3).toFloat() + (-padding * 0.5f)
         saveSettings =
-            GuiBuilder().setTopLeft(PointF(paddingX, offsetY)).setTitle("gavinsmod.settings.save")
+            SettingBuilder<ClickSetting>().setTopLeft(PointF(paddingX, offsetY)).setTitle("gavinsmod.settings.save")
                 .setWidth(threeButtonWidth)
-                .setHeight(10f).setBackgroundColor(Colors.GREEN).buildClick()
-        saveSettings.setCallback {
-            val tmpFilter = ItemEntityFilter(
-                filterName.text,
-                filterString.text,
-                searchName.value,
-                searchLore.value,
-                filterEnable.value,
-                itemEspFilter.uuid
-            )
-            if (!ItemEntityFilter.validate(tmpFilter)) {
-                PlayerUtils.sendMessage(
-                    Text.translatable("gavinsmod.settings.filter.invalid"),
-                    true
-                )
-                config.itemFilterList.removeIf { it.uuid == tmpFilter.uuid }
-                config.itemFilterList.add(tmpFilter)
-                config.saveConfig()
-                parent = GuiItemEspTracerConfig(config)
-                minecraftClient.setScreen(parent)
-                return@setCallback
-            }
-            itemEspFilter.filterName = filterName.text
-            itemEspFilter.filterString = filterString.text
-            itemEspFilter.enabled = filterEnable.value
-            itemEspFilter.searchCustomName = searchName.value
-            itemEspFilter.searchLore = searchLore.value
+                .setHeight(10f).setBackgroundColor(Colors.GREEN)
+                .setCallback {
+                    val tmpFilter = ItemEntityFilter(
+                        filterName.text,
+                        filterString.text,
+                        searchName.value,
+                        searchLore.value,
+                        filterEnable.value,
+                        itemEspFilter.uuid
+                    )
+                    if (!ItemEntityFilter.validate(tmpFilter)) {
+                        PlayerUtils.sendMessage(
+                            Text.translatable("gavinsmod.settings.filter.invalid"),
+                            true
+                        )
+                        config.itemFilterList.removeIf { it.uuid == tmpFilter.uuid }
+                        config.itemFilterList.add(tmpFilter)
+                        config.saveConfig()
+                        parent = GuiItemEspTracerConfig(config)
+                        minecraftClient.setScreen(parent)
+                        return@setCallback
+                    }
+                    itemEspFilter.filterName = filterName.text
+                    itemEspFilter.filterString = filterString.text
+                    itemEspFilter.enabled = filterEnable.value
+                    itemEspFilter.searchCustomName = searchName.value
+                    itemEspFilter.searchLore = searchLore.value
 
-            config.itemFilterList.removeIf { it.uuid == itemEspFilter.uuid }
-            config.itemFilterList.add(itemEspFilter)
-            config.saveConfig()
-            parent = GuiItemEspTracerConfig(config)
-            minecraftClient.setScreen(parent)
-        }
-
+                    config.itemFilterList.removeIf { it.uuid == itemEspFilter.uuid }
+                    config.itemFilterList.add(itemEspFilter)
+                    config.saveConfig()
+                    parent = GuiItemEspTracerConfig(config)
+                    minecraftClient.setScreen(parent)
+                }
+                .buildClickSetting()
         cancelSettings =
-            GuiBuilder().setTopLeft(PointF(paddingX + threeButtonWidth + padding, offsetY.toFloat()))
+            SettingBuilder<ClickSetting>().setTopLeft(PointF(paddingX + threeButtonWidth + padding, offsetY.toFloat()))
                 .setTitle("gavinsmod.settings.cancel")
                 .setWidth(threeButtonWidth).setHeight(10f).setBackgroundColor(Colors.YELLOW).setCallback {
                     minecraftClient.setScreen(parent)
-                }.buildClick()
+                }.buildClickSetting()
         deleteSettings =
-            GuiBuilder().setTopLeft(PointF(paddingX + (threeButtonWidth + padding) * 2, offsetY.toFloat()))
+            SettingBuilder<ClickSetting>().setTopLeft(
+                PointF(
+                    paddingX + (threeButtonWidth + padding) * 2,
+                    offsetY.toFloat()
+                )
+            )
                 .setTitle("gavinsmod.settings.delete")
                 .setWidth(threeButtonWidth).setHeight(10f).setBackgroundColor(Colors.RED).setCallback {
                     config.itemFilterList.removeIf { it.uuid == itemEspFilter.uuid }
                     config.saveConfig()
                     parent = GuiItemEspTracerConfig(config)
                     minecraftClient.setScreen(parent)
-                }.buildClick()
+                }.buildClickSetting()
         guis.add(filterEnable.gui)
-        guis.add(saveSettings)
-        guis.add(cancelSettings)
-        guis.add(deleteSettings)
+        guis.add(saveSettings.gui)
+        guis.add(cancelSettings.gui)
+        guis.add(deleteSettings.gui)
         guis.add(searchLore.gui)
         guis.add(searchName.gui)
     }

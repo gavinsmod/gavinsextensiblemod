@@ -71,7 +71,7 @@ open class GuiElement(title: Text?) : Screen(title) {
         super.init()
         this.client = MinecraftClient.getInstance()
         this.textRenderer = GavinsModClient.minecraftClient.textRenderer
-        titleBox = GuiBuilder()
+        titleBox = GuiBuilder<Gui>()
             .setTopLeft(10, 1)
             .setWidth(textRenderer.getWidth(title).toFloat() + 4f)
             .setHeight(10f)
@@ -80,7 +80,7 @@ open class GuiElement(title: Text?) : Screen(title) {
         val clientWidth = client!!.window.scaledWidth
         val clientHeight = client!!.window.scaledHeight
         //TODO: Maybe make this a background?
-        overlay = GuiBuilder()
+        overlay = GuiBuilder<Gui>()
             .setWidth((clientWidth + 1).toFloat())
             .setHeight(clientHeight.toFloat())
             .setBackgroundColor(Colors.INDIGO)
@@ -114,13 +114,13 @@ open class GuiElement(title: Text?) : Screen(title) {
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
         for (gui in guis) {
-            if (Gui.getClickedGui() != null && gui.uuid == Gui.getClickedGui().uuid) {
+            if (Gui.clickedGui != null && gui.uUID == Gui.clickedGui!!.uUID) {
                 gui.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)
                 return true
             } else if (gui is GuiScroll) {
                 if (gui.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) return true
-            } else if (!gui.isDragging && gui.mouseWithinGui(mouseX, mouseY) && Gui.getClickedGui() == null) {
-                gui.isDragging = true
+            } else if (!gui.dragging && gui.mouseWithinGui(mouseX, mouseY) && Gui.clickedGui == null) {
+                gui.dragging = true
                 selectedGui = gui
                 return true
             }
@@ -129,7 +129,7 @@ open class GuiElement(title: Text?) : Screen(title) {
     }
 
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        guis.forEach(Consumer { g: Gui -> g.isDragging = false })
+        guis.forEach(Consumer { g: Gui -> g.dragging = false })
         selectedGui = null
         return super.mouseReleased(mouseX, mouseY, button)
     }

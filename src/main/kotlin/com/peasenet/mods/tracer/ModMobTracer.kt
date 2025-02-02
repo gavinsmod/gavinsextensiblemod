@@ -25,6 +25,7 @@ package com.peasenet.mods.tracer
 
 import com.peasenet.gavui.color.Color
 import com.peasenet.gui.mod.tracer.GuiMobTracer
+import com.peasenet.settings.ClickSetting
 import com.peasenet.settings.SettingBuilder
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
@@ -43,7 +44,7 @@ class ModMobTracer : EntityTracer<LivingEntity>(
     { it is MobEntity && config.inList(it.type) }
 ) {
     init {
-        val menu = SettingBuilder()
+        val menu = SettingBuilder<ClickSetting>()
             .setTitle("gavinsmod.settings.mobtracer")
             .setCallback { MinecraftClient.getInstance().setScreen(GuiMobTracer()) }
             .buildClickSetting()

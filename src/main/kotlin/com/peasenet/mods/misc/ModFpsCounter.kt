@@ -31,7 +31,10 @@ import com.peasenet.gavui.util.GuiUtil
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
+import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.SettingBuilder
+import com.peasenet.settings.SubSetting
+import com.peasenet.settings.ToggleSetting
 import com.peasenet.util.listeners.InGameHudRenderListener
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Text
@@ -51,34 +54,34 @@ class ModFpsCounter : MiscMod(
     }
 
     init {
-        fpsColorConfig = Settings.getConfig<FpsColorConfig>("fpsColors")
-        val fpsSetting = SettingBuilder()
+        fpsColorConfig = Settings.getConfig("fpsColors")
+        val fpsSetting = SettingBuilder<SubSetting>()
             .setWidth(100f)
             .setHeight(10f)
             .setTitle("gavinsmod.settings.misc.fpscolors")
             .buildSubSetting()
-        val fpsColors = SettingBuilder()
+        val fpsColors = SettingBuilder<ToggleSetting>()
             .setTitle("gavinsmod.settings.misc.fpscolors.enabled")
             .setState(fpsColorConfig.isColorsEnabled)
+            .setCallback { fpsColorConfig.isColorsEnabled = it.value }
             .buildToggleSetting()
-        fpsColors.setCallback { fpsColorConfig.isColorsEnabled = fpsColors.value }
-        val fpsSlowColor = SettingBuilder()
+        val fpsSlowColor = SettingBuilder<ColorSetting>()
             .setTitle("gavinsmod.settings.misc.fps.color.slow")
             .setColor(fpsColorConfig.slowFps)
+            .setCallback { fpsColorConfig.slowFps = it.color }
             .buildColorSetting()
-        fpsSlowColor.setCallback { fpsColorConfig.slowFps = fpsSlowColor.color }
 
-        val fpsOkColor = SettingBuilder()
+        val fpsOkColor = SettingBuilder<ColorSetting>()
             .setTitle("gavinsmod.settings.misc.fps.color.ok")
             .setColor(fpsColorConfig.okFps)
+            .setCallback { fpsColorConfig.okFps = it.color }
             .buildColorSetting()
-        fpsOkColor.setCallback { fpsColorConfig.okFps = fpsOkColor.color }
 
-        val fpsFastColor = SettingBuilder()
+        val fpsFastColor = SettingBuilder<ColorSetting>()
             .setTitle("gavinsmod.settings.misc.fps.color.fast")
             .setColor(fpsColorConfig.fastFps)
+            .setCallback { fpsColorConfig.fastFps = it.color }
             .buildColorSetting()
-        fpsFastColor.setCallback { fpsColorConfig.fastFps = fpsFastColor.color }
 
         fpsSetting.add(fpsColors)
         fpsSetting.add(fpsSlowColor)

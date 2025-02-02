@@ -21,44 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.peasenet.gavui
 
-package com.peasenet.gavui.math;
+import com.peasenet.gavui.math.PointF
 
 /**
- * @param x The x coordinate of the point.
- * @param y The y coordinate of the point.
  * @author GT3CH1
- * @version 6/14/2022
- * A point in 2D space.
+ * @version 6/28/2022
+ * A draggable ui element.
  */
-public record PointD(double x, double y) {
-
+open class GuiDraggable(builder: GuiBuilder<out GuiDraggable>) : GuiClick(builder) {
     /**
-     * Creates a new point in 2D space.
-     *
-     * @param x The x coordinate.
-     * @param y The y coordinate.
+     * Whether this element is frozen.
      */
-    public PointD {
+    protected var frozen = false
+
+    init {
+        frozen = (builder.isFrozen)
     }
 
-    /**
-     * Adds two points together
-     *
-     * @param other - The other point to add.
-     * @return The sum of the two points.
-     */
-    public PointD add(PointD other) {
-        return new PointD(x + other.x, y + other.y);
+    override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
+        if (frozen) return false
+        setMidPoint(PointF(mouseX, mouseY))
+        return true
     }
 
-    /**
-     * Subtracts two points together
-     *
-     * @param other - The other point to subtract.
-     * @return A point with the difference of the two points.
-     */
-    public PointD subtract(PointD other) {
-        return new PointD(x - other.x, y - other.y);
+    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        if (button == 1) {
+            frozen = !frozen
+            return true
+        }
+        return super.mouseClicked(mouseX, mouseY, button)
     }
 }

@@ -26,6 +26,7 @@ package com.peasenet.mods.esp
 import com.peasenet.gavui.color.Color
 import com.peasenet.gui.mod.GuiItemEspTracerConfig
 import com.peasenet.main.GavinsModClient
+import com.peasenet.settings.ClickSetting
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils.CHUNK_RADIUS
 import com.peasenet.util.listeners.RenderListener
@@ -50,10 +51,10 @@ class ModEntityItemEsp : EntityEsp<ItemEntity>(
     RenderListener {
     init {
 
-        val menu = SettingBuilder().setTitle("gavinsmod.mod.esp.item").buildClickSetting()
-        menu.setCallback {
-            client.setScreen(GuiItemEspTracerConfig(config))
-        }
+        val menu = SettingBuilder<ClickSetting>().setTitle("gavinsmod.mod.esp.item")
+            .setCallback {
+                client.setScreen(GuiItemEspTracerConfig(config))
+            }.buildClickSetting()
         addSetting(menu)
     }
 

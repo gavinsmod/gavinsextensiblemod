@@ -25,9 +25,9 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.gavui.color.Color
+import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.ChatCommand
-import net.minecraft.block.entity.BeehiveBlockEntity
 import net.minecraft.block.entity.SignBlockEntity
 
 /**
@@ -43,9 +43,8 @@ class ModSignEsp : BlockEntityEsp<SignBlockEntity>(
     { it is SignBlockEntity }) {
     init {
         val colorSetting =
-            SettingBuilder().setTitle("gavinsmod.settings.color.sign").setColor(config.signColor)
-                .buildColorSetting()
-        colorSetting.setCallback { config.signColor = colorSetting.color }
+            SettingBuilder<ColorSetting>().setTitle("gavinsmod.settings.color.sign").setColor(config.signColor)
+                .setCallback { config.signColor = it.color }.buildColorSetting()
         addSetting(colorSetting)
     }
 

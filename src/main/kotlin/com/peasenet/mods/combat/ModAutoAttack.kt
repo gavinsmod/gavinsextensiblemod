@@ -26,6 +26,7 @@ package com.peasenet.mods.combat
 import com.peasenet.config.combat.AutoAttackConfig
 import com.peasenet.gui.mod.combat.GuiAutoAttack
 import com.peasenet.main.Settings
+import com.peasenet.settings.ClickSetting
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.PlayerUtils
 import net.minecraft.util.hit.EntityHitResult
@@ -42,20 +43,17 @@ class ModAutoAttack : CombatMod(
     "autoattack",
 ) {
     init {
-        val click = SettingBuilder().setTitle(translationKey).buildClickSetting()
-        click.setCallback {
-            client.setScreen(GuiAutoAttack())
-        }
+        val click = SettingBuilder<ClickSetting>().setTitle(translationKey).setCallback {
+                client.setScreen(GuiAutoAttack())
+            }.buildClickSetting()
         addSetting(click)
     }
 
     override fun onTick() {
         val target = client.crosshairTarget() as? EntityHitResult ?: return
         val entity = target.entity
-        if (config.mobIsShown(entity.type))
-            PlayerUtils.attackEntity(entity)
-        if (!config.excludePlayers)
-            PlayerUtils.attackEntity(entity)
+        if (config.mobIsShown(entity.type)) PlayerUtils.attackEntity(entity)
+        if (!config.excludePlayers) PlayerUtils.attackEntity(entity)
     }
 
     companion object {

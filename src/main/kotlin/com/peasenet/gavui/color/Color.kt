@@ -21,64 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.peasenet.gavui.color
 
-package com.peasenet.gavui.color;
-
-import java.io.Serializable;
+import java.io.Serializable
+import kotlin.math.max
+import kotlin.math.min
 
 /**
- * @author GT3CH1
- * @version 01/07/2022
  * A representation of a color. The maximum value for each channel is 255, and the minimum is 0.
+ *
+ * @author GT3CH1
+ * @version 02-02-2025
+ * @since 01/07/2022
  */
-public class Color implements Serializable {
-
+class Color(red: Int, green: Int, blue: Int) : Serializable {
     /**
      * The red value of this color.
      */
-    private final int red;
+    // Make sure the values are within the range via clamping
+    val red = max(0.0, min(255.0, red.toDouble())).toInt()
 
     /**
      * The green value of this color.
      */
-    private final int green;
+    val green = max(0.0, min(255.0, green.toDouble())).toInt()
 
     /**
      * The blue value of this color.
      */
-    private final int blue;
-
-    /**
-     * Creates a new RGBA color. Must be between 0 and 255.
-     *
-     * @param red   Red value.
-     * @param green Green value.
-     * @param blue  Blue value.
-     */
-    public Color(int red, int green, int blue) {
-        // Make sure the values are within the range via clamping
-        this.red = Math.max(0, Math.min(255, red));
-        this.green = Math.max(0, Math.min(255, green));
-        this.blue = Math.max(0, Math.min(255, blue));
-    }
-
-    /**
-     * Gets a color from an int value.
-     *
-     * @param i - the int value
-     * @return the color
-     */
-    public static Color fromInt(int i) {
-        return new Color(i >> 16 & 0xFF, i >> 8 & 0xFF, i & 0xFF);
-    }
+    val blue = max(0.0, min(255.0, blue.toDouble())).toInt()
 
     /**
      * Gets the red value of this color. Will be within 0 and 1.
      *
      * @return red value
      */
-    public float getRed() {
-        return red / 255f;
+    fun getRed(): Float {
+        return red / 255f
     }
 
     /**
@@ -86,8 +65,8 @@ public class Color implements Serializable {
      *
      * @return green value
      */
-    public float getGreen() {
-        return green / 255f;
+    fun getGreen(): Float {
+        return green / 255f
     }
 
     /**
@@ -95,27 +74,25 @@ public class Color implements Serializable {
      *
      * @return blue value
      */
-    public float getBlue() {
-        return blue / 255f;
+    fun getBlue(): Float {
+        return blue / 255f
     }
 
-    /**
-     * Gets the float array value of this color. values range from 0 to 1.
-     *
-     * @return float array of color values
-     */
-    public float[] getAsFloatArray() {
-        return new float[]{getRed(), getGreen(), getBlue(), 1};
-    }
+    val asFloatArray: FloatArray
+        /**
+         * Gets the float array value of this color. values range from 0 to 1.
+         *
+         * @return float array of color values
+         */
+        get() = floatArrayOf(getRed(), getGreen(), getBlue(), 1f)
 
-    /**
-     * Gets the int value of this color, will be converted to its hex equivalent.
-     *
-     * @return int value of color
-     */
-    public int getAsInt() {
-        return (red << 16) | (green << 8) | blue;
-    }
+    val asInt: Int
+        /**
+         * Gets the int value of this color, will be converted to its hex equivalent.
+         *
+         * @return int value of color
+         */
+        get() = (red shl 16) or (green shl 8) or blue
 
     /**
      * Gets the int value of this color, will be converted to its hex equivalent.
@@ -123,12 +100,11 @@ public class Color implements Serializable {
      * @param alpha - the alpha value
      * @return int value of color
      */
-    public int getAsInt(float alpha) {
-        if (alpha > 1)
-            alpha = alpha / 255f;
-        if (alpha < 0)
-            alpha = 1;
-        return (int) (alpha * 255) << 24 | (red << 16) | (green << 8) | blue;
+    fun getAsInt(alpha: Float): Int {
+        var alpha = alpha
+        if (alpha > 1) alpha = alpha / 255f
+        if (alpha < 0) alpha = 1f
+        return (alpha * 255).toInt() shl 24 or (red shl 16) or (green shl 8) or blue
     }
 
     /**
@@ -137,54 +113,47 @@ public class Color implements Serializable {
      * @param other - The other color.
      * @return True if the RGB channels match.
      */
-    public boolean equals(Color other) {
-        return red == other.red && green == other.green && blue == other.blue;
+    fun equals(other: Color): Boolean {
+        return red == other.red && green == other.green && blue == other.blue
     }
 
-    public Color brighten(float amount) {
-        if (amount < 0)
-            amount = 0;
-        if (amount > 1)
-            amount = 1;
-        var newR = red + (int) (amount * 255);
-        var newG = green + (int) (amount * 255);
-        var newB = blue + (int) (amount * 255);
-        if (newR > 255)
-            newR = 255;
-        if (newG > 255)
-            newG = 255;
-        if (newB > 255)
-            newB = 255;
+    fun brighten(amount: Float): Color {
+        var amount = amount
+        if (amount < 0) amount = 0f
+        if (amount > 1) amount = 1f
+        var newR = red + (amount * 255).toInt()
+        var newG = green + (amount * 255).toInt()
+        var newB = blue + (amount * 255).toInt()
+        if (newR > 255) newR = 255
+        if (newG > 255) newG = 255
+        if (newB > 255) newB = 255
         // check if the color is too bright, if so, darken it
         if (newR + newG + newB > 255 * 3) {
-            newR = red - (int) (amount * 255);
-            newG = green - (int) (amount * 255);
-            newB = blue - (int) (amount * 255);
+            newR = red - (amount * 255).toInt()
+            newG = green - (amount * 255).toInt()
+            newB = blue - (amount * 255).toInt()
         }
         // check if the color is the same. if so, return a new color that is closer to white
         if (newR == red) {
-            newG += (int) (amount * 255);
-            newB += blue + (int) (amount * 255);
-            return new Color(newR, newG, newB);
-
+            newG += (amount * 255).toInt()
+            newB += blue + (amount * 255).toInt()
+            return Color(newR, newG, newB)
         }
         if (newG == green) {
-            newR += red + (int) (amount * 255);
-            newB += blue + (int) (amount * 255);
-            return new Color(newR, newG, newB);
-
+            newR += red + (amount * 255).toInt()
+            newB += blue + (amount * 255).toInt()
+            return Color(newR, newG, newB)
         }
         if (newB == blue) {
-            newR += red + (int) (amount * 255);
-            newG += green + (int) (amount * 255);
-            return new Color(newR, newG, newB);
-
+            newR += red + (amount * 255).toInt()
+            newG += green + (amount * 255).toInt()
+            return Color(newR, newG, newB)
         }
-        return new Color(newR, newG, newB);
+        return Color(newR, newG, newB)
     }
 
-    public Color invert() {
-        return new Color(255 - red, 255 - green, 255 - blue);
+    fun invert(): Color {
+        return Color(255 - red, 255 - green, 255 - blue)
     }
 
     /**
@@ -193,17 +162,30 @@ public class Color implements Serializable {
      * @param other - the other color
      * @return the similarity
      */
-    public float similarity(Color other) {
-        var maxRed = Math.max(red, other.red);
-        var maxGreen = Math.max(green, other.green);
-        var maxBlue = Math.max(blue, other.blue);
-        var minRed = Math.min(red, other.red);
-        var minGreen = Math.min(green, other.green);
-        var minBlue = Math.min(blue, other.blue);
-        var r = (maxRed - minRed);
-        var g = (maxGreen - minGreen);
-        var b = (maxBlue - minBlue);
-        var similarity = (r + g + b) / (255f * 3f);
-        return similarity;
+    fun similarity(other: Color): Float {
+        val maxRed = max(red.toDouble(), other.red.toDouble()).toInt()
+        val maxGreen = max(green.toDouble(), other.green.toDouble()).toInt()
+        val maxBlue = max(blue.toDouble(), other.blue.toDouble()).toInt()
+        val minRed = min(red.toDouble(), other.red.toDouble()).toInt()
+        val minGreen = min(green.toDouble(), other.green.toDouble()).toInt()
+        val minBlue = min(blue.toDouble(), other.blue.toDouble()).toInt()
+        val r = (maxRed - minRed)
+        val g = (maxGreen - minGreen)
+        val b = (maxBlue - minBlue)
+        val similarity = (r + g + b) / (255f * 3f)
+        return similarity
+    }
+
+    companion object {
+        /**
+         * Gets a color from an int value.
+         *
+         * @param i - the int value
+         * @return the color
+         */
+        @JvmStatic
+        fun fromInt(i: Int): Color {
+            return Color(i shr 16 and 0xFF, i shr 8 and 0xFF, i and 0xFF)
+        }
     }
 }

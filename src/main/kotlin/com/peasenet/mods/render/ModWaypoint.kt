@@ -83,8 +83,8 @@ class ModWaypoint : RenderMod(
     override fun reloadSettings() {
         modSettings.clear()
         setting =
-            SettingBuilder().setWidth(100f).setHeight(10f).setTitle("gavinsmod.mod.render.waypoints").buildSubSetting()
-        openMenu = SettingBuilder().setTitle("gavinsmod.settings.render.waypoints.add")
+            SettingBuilder<SubSetting>().setWidth(100f).setHeight(10f).setTitle("gavinsmod.mod.render.waypoints").buildSubSetting()
+        openMenu = SettingBuilder<ClickSetting>().setTitle("gavinsmod.settings.render.waypoints.add")
             .setCallback { MinecraftClient.getInstance().setScreen(GuiWaypoint()) }.setSymbol('+').buildClickSetting()
         addSetting(openMenu)
         val waypoints = Settings.getConfig<WaypointConfig>("waypoints").getLocations().stream()
@@ -98,7 +98,7 @@ class ModWaypoint : RenderMod(
      * @param waypoint - The waypoint to edit.
      */
     private fun createWaypoint(waypoint: Waypoint) {
-        val clickSetting = SettingBuilder().setTitle(Text.literal(waypoint.name)).setCallback {
+        val clickSetting = SettingBuilder<ClickSetting>().setTitle(Text.literal(waypoint.name)).setCallback {
             MinecraftClient.getInstance().setScreen(GuiWaypoint(waypoint))
         }.setHoverable(true).setBackgroundColor(waypoint.color).setTransparency(0.5f).buildClickSetting()
         addSetting(clickSetting)

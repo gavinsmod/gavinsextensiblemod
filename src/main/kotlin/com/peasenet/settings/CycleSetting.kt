@@ -24,6 +24,7 @@
 
 package com.peasenet.settings
 
+import com.peasenet.gavui.GavUI
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiCycle
 
@@ -33,22 +34,23 @@ import com.peasenet.gavui.GuiCycle
  * @version 01-25-2025
  * @since 01-25-2025
  */
-class CycleSetting(builder: SettingBuilder) : Setting() {
+class CycleSetting(builder: SettingBuilder<CycleSetting>) : Setting() {
     override val gui: GuiCycle
+
     init {
-        gui = GuiBuilder()
+        gui = GuiBuilder<GuiCycle>()
             .setWidth(builder.getWidth())
             .setHeight(builder.getHeight())
             .setTitle(builder.getTitle())
             .setHoverable(builder.isHoverable())
-            .setBackgroundColor(builder.getColor())
+            .setBackgroundColor(builder.getColor() ?: GavUI.backgroundColor())
             .setTransparency(builder.getTransparency())
             .setTranslationKey(builder.getTranslationKey())
             .setSymbol(builder.getSymbol())
             .setTopLeft(builder.getTopLeft())
             .setCycleSize(builder.getOptions().size)
             .setCurrentCycleIndex(builder.getOptions().indexOf(builder.getOptionsValue()))
-            .setCallback(builder.getCallback())
+            .setCallback { builder.settingCallback?.invoke(this) }
             .buildCycle()
     }
 }

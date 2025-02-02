@@ -23,17 +23,18 @@
  */
 package com.peasenet.settings
 
+import com.peasenet.gavui.GavUI
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiClick
 
 /**
  * A setting that can be clicked. This is purely dependent on the given callback.
- * 
+ *
  * @param builder - The [SettingBuilder] used to create this setting.
  * @author GT3CH1
  * @version 07-18-2023
  */
-class ClickSetting(builder: SettingBuilder) : Setting() {
+class ClickSetting(builder: SettingBuilder<ClickSetting>) : Setting() {
     /**
      * The gui used to display the setting.
      */
@@ -44,13 +45,15 @@ class ClickSetting(builder: SettingBuilder) : Setting() {
      *
      */
     init {
-        gui = GuiBuilder()
+        gui = GuiBuilder<GuiClick>()
             .setWidth(builder.getWidth())
             .setHeight(builder.getHeight())
             .setTitle(builder.getTitle())
-            .setCallback(builder.getCallback())
+            .setCallback {
+                builder.settingCallback?.invoke(this)
+            }
             .setHoverable(builder.isHoverable())
-            .setBackgroundColor(builder.getColor())
+            .setBackgroundColor(builder.getColor() ?: GavUI.backgroundColor())
             .setTransparency(builder.getTransparency())
             .setTranslationKey(builder.getTranslationKey())
             .setSymbol(builder.getSymbol())

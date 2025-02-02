@@ -24,6 +24,7 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.gavui.color.Color
+import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.SettingBuilder
 import net.minecraft.block.entity.BeehiveBlockEntity
 
@@ -34,15 +35,15 @@ import net.minecraft.block.entity.BeehiveBlockEntity
  * A mod that allows the client to see an esp (a box) around beehives.
  *
  */
-class ModBeehiveEsp : BlockEntityEsp<BeehiveBlockEntity>("Beehive ESP",
+class ModBeehiveEsp : BlockEntityEsp<BeehiveBlockEntity>(
+    "Beehive ESP",
     "gavinsmod.mod.esp.beehive",
     "beehiveesp",
     { it is BeehiveBlockEntity }) {
     init {
         val colorSetting =
-            SettingBuilder().setTitle("gavinsmod.settings.color.beehive").setColor(config.beehiveColor)
-                .buildColorSetting()
-        colorSetting.setCallback { config.beehiveColor = colorSetting.color }
+            SettingBuilder<ColorSetting>().setTitle("gavinsmod.settings.color.beehive").setColor(config.beehiveColor)
+                .setCallback { config.beehiveColor = it.color }.buildColorSetting()
         addSetting(colorSetting)
     }
 

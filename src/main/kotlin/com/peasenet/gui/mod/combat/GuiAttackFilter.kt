@@ -25,7 +25,6 @@
 package com.peasenet.gui.mod.combat
 
 import com.peasenet.config.commons.MobAttackFilterConfig
-import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gui.mod.GuiMobSelection
 import com.peasenet.main.Settings
@@ -67,27 +66,26 @@ open class GuiAttackFilter(settingKey: String, translationKey: String) :
         showPeacefulToggle = false
         val height = 24f
         var pos = PointF(10f, height)
-        excludePlayers = SettingBuilder().setTitle("gavinsmod.generic.excludePlayers").setState(config!!.excludePlayers)
+        excludePlayers = SettingBuilder<ToggleSetting>().setTitle("gavinsmod.generic.excludePlayers")
+            .setState(config!!.excludePlayers)
             .setTopLeft(pos)
             .setWidth(client!!.textRenderer.getWidth(Text.translatable("gavinsmod.generic.excludePlayers")) + 30)
+            .setCallback {
+                config!!.excludePlayers = excludePlayers.value
+            }
             .buildToggleSetting()
-        excludePlayers.setCallback {
-            excludePlayers.value = !excludePlayers.value
-            config!!.excludePlayers = excludePlayers.value
-        }
         pos = pos.add(0f, 12f)
         enabledOnly =
-            GuiBuilder().setTopLeft(pos).setTitle("gavinsmod.generic.enabledOnly").setWidth(excludePlayers.gui.width)
-                .buildToggle()
-        enabledOnly.setCallback {
-            updateItemList()
-        }
+            SettingBuilder<ToggleSetting>().setTopLeft(pos).setTitle("gavinsmod.generic.enabledOnly")
+                .setWidth(excludePlayers.gui.width)
+                .setCallback { updateItemList() }
+                .buildToggleSetting()
         val maxWidth = max(
             client!!.textRenderer.getWidth(Text.translatable("gavinsmod.generic.excludePlayers")) + 14f,
-            enabledOnly.width
+            enabledOnly.gui.width
         )
         excludePlayers.gui.width = maxWidth
-        enabledOnly.width = maxWidth
+        enabledOnly.gui.width = maxWidth
         additionalGuis.add(excludePlayers.gui)
         super.init()
     }

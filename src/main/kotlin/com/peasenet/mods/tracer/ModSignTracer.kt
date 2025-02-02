@@ -24,6 +24,7 @@
 package com.peasenet.mods.tracer
 
 import com.peasenet.gavui.color.Color
+import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.ChatCommand
 import net.minecraft.block.entity.BeehiveBlockEntity
@@ -40,9 +41,9 @@ class ModSignTracer : BlockEntityTracer<BeehiveBlockEntity>("gavinsmod.mod.trace
     { it is SignBlockEntity }) {
     init {
         val colorSetting =
-            SettingBuilder().setTitle("gavinsmod.settings.color.sign").setColor(config.signColor)
+            SettingBuilder<ColorSetting>().setTitle("gavinsmod.settings.color.sign").setColor(config.signColor)
+                .setCallback { config.signColor = it.color }
                 .buildColorSetting()
-        colorSetting.setCallback { config.signColor = colorSetting.color }
         addSetting(colorSetting)
     }
 

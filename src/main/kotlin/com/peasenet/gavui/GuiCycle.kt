@@ -21,42 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.settings
+package com.peasenet.gavui
 
-import com.peasenet.gavui.GuiBuilder
-import com.peasenet.gavui.GuiToggle
 import com.peasenet.gavui.util.GavUISettings
+import net.minecraft.client.MinecraftClient
+import net.minecraft.sound.SoundEvents
 
 /**
- * A setting that contains one of two finite states - on or off.
- * @param builder - The builder used to create this toggle setting.
  * @author GT3CH1
- * @version 03-02-2023
+ * @version 01/07/2023
+ * A gui element that cycles through a list of settings when clicked on.
+ * A callback is called when clicked on.
  */
-class ToggleSetting(builder: SettingBuilder<ToggleSetting>) : Setting() {
+class GuiCycle(builder: GuiBuilder<out GuiClick>) : GuiClick(builder) {
     /**
-     * The gui element that is used to display this toggle setting.
+     * The size of the cycle.
      */
-    override var gui: GuiToggle = GuiBuilder<GuiToggle>()
-        .setWidth(builder.getWidth())
-        .setHeight(10F)
-        .setTitle(builder.getTitle())
-        .setIsOn(builder.getState())
-        .setCallback {
-            builder.settingCallback?.invoke(this)
-        }
-        .setHoverable(builder.isHoverable())
-        .setTopLeft(builder.getTopLeft())
-        .buildToggle()
+    private var cycleSize = 0
+    var currentIndex: Int = 0
 
-    /**
-     * The current value of this toggle setting.
-     */
-    var value = false
-        get() = gui.isOn
-        set(value) {
-            field = value
-            gui.setBackground(if (value) GavUISettings.getColor("gui.color.enabled") else GavUISettings.getColor("gui.color.background"))
-            gui.setState(value)
+
+    init {
+        cycleSize = (builder.cycleSize)
+        currentIndex = builder.currentCycleIndex
+    }
+
+
+    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        val increment = if (button == 0) 1 else -1
+        if (mouseWithinGui(mouseX, mouseY)) {
+            // move the cycle index by the increment, wrapping around if necessary
+            currentIndex = (currentIndex + increment)
+            // y is modulo not working
+            currentIndex %= cycleSize
+            if (GavUISettings.getBool("gui.sound")) {
+                MinecraftClient.getInstance().player!!.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 1.0f, 1.0f)
+            }
+            if (callback != null) callback!!(this)
+
+            return true
         }
+        return false
+    }
+
 }

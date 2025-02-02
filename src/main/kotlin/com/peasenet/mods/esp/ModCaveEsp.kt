@@ -28,8 +28,7 @@ import com.peasenet.config.esp.CaveEspConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.Settings
-import com.peasenet.settings.CycleSetting
-import com.peasenet.settings.SettingBuilder
+import com.peasenet.settings.*
 import com.peasenet.util.ChatCommand
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.block.GavBlock
@@ -63,29 +62,28 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
     "gavinsmod.mod.esp.cave", ChatCommand.CaveEsp.chatCommand
 ) {
     init {
-        val subSetting = SettingBuilder().setTitle(translationKey).buildSubSetting()
+        val subSetting = SettingBuilder<SubSetting>().setTitle(translationKey).buildSubSetting()
         val colorSetting =
-            SettingBuilder().setTitle("gavinsmod.generic.color").setColor(getSettings().blockColor).buildColorSetting()
-        colorSetting.setCallback {
-            getSettings().blockColor = colorSetting.color
-        }
+            SettingBuilder<ColorSetting>().setTitle("gavinsmod.generic.color").setColor(getSettings().blockColor)
+                .setCallback {
+                    getSettings().blockColor = it.color
+                }.buildColorSetting()
         val alphaSetting =
-            SettingBuilder().setTitle("gavinsmod.generic.alpha").setValue(getSettings().alpha).buildSlider()
-        alphaSetting.setCallback {
-            getSettings().alpha = alphaSetting.value
-        }
-
+            SettingBuilder<SlideSetting>().setTitle("gavinsmod.generic.alpha").setValue(getSettings().alpha)
+                .setCallback {
+                    getSettings().alpha = it.value
+                }
+                .buildSlideSetting()
         val searchMode = getSettings().searchMode.name.lowercase()
-        val searchModeSetting = SettingBuilder()
+        val searchModeSetting = SettingBuilder<CycleSetting>()
             .setTitle(searchTranslationKey)
             .setOptions(SearchType.entries.map { it.name.lowercase() })
             .setValue(searchMode)
+            .setCallback {
+                updateSearchMode(it)
+            }
             .buildCycleSetting()
-        searchModeSetting.setCallback {
-            updateSearchMode(searchModeSetting)
-        }
         searchModeSetting.gui.title = Text.translatable("$searchTranslationKey.$searchMode")
-
         subSetting.add(alphaSetting)
         subSetting.add(colorSetting)
         subSetting.add(searchModeSetting)

@@ -32,6 +32,7 @@ import com.peasenet.gavui.util.GuiUtil
 import com.peasenet.gui.mod.render.GuiRadar
 import com.peasenet.main.Mods
 import com.peasenet.main.Settings
+import com.peasenet.settings.ClickSetting
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.listeners.InGameHudRenderListener
 import net.minecraft.client.MinecraftClient
@@ -62,7 +63,7 @@ class ModRadar : RenderMod(
      * Creates a radar overlay in the top-right corner of the screen.
      */
     init {
-        val clickSetting = SettingBuilder()
+        val clickSetting = SettingBuilder<ClickSetting>()
             .setTitle("gavinsmod.settings.radar.drawn")
             .setCallback { MinecraftClient.getInstance().setScreen(GuiRadar()) }
             .buildClickSetting()

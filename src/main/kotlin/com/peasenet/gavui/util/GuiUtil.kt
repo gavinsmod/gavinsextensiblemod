@@ -21,68 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.peasenet.gavui.util
 
-package com.peasenet.gavui.util;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.peasenet.gavui.GavUI;
-import com.peasenet.gavui.color.Color;
-import com.peasenet.gavui.math.BoxF;
-import com.peasenet.gavui.math.PointF;
-import net.minecraft.client.gl.ShaderProgramKeys;
-import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
-import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.systems.RenderSystem
+import com.peasenet.gavui.GavUI.borderColor
+import com.peasenet.gavui.color.Color
+import com.peasenet.gavui.math.BoxF
+import com.peasenet.gavui.math.PointF
+import net.minecraft.client.gl.ShaderProgramKeys
+import net.minecraft.client.render.BufferBuilder
+import net.minecraft.client.render.BufferRenderer
+import net.minecraft.client.render.VertexFormat
+import net.minecraft.client.render.VertexFormats
+import net.minecraft.client.util.math.MatrixStack
+import org.joml.Matrix4f
 
 /**
- * @author GT3CH1
- * @version 01/07/2023
  * A utility class for drawing gui elements.
+ * @author GT3CH1
+ * @version 02-02-2025
+ * @since 01/07/2023
  */
-public class GuiUtil {
-    /**
-     * Draws a box around the given box, with an alpha of 1f.
-     *
-     * @param c           - The color to draw the box with.
-     * @param box         - The box to draw.
-     * @param matrixStack - The matrix stack to draw with.
-     */
-    public static void drawBox(Color c, BoxF box, MatrixStack matrixStack) {
-        drawBox(c, box, matrixStack, 1f);
-    }
-
+object GuiUtil {
     /**
      * @param c           - The color to draw the box with.
      * @param box         - The box to draw.
      * @param matrixStack - The matrix stack to draw with.
      * @param alpha       - The alpha value to draw with.
      */
-    public static void drawBox(Color c, BoxF box, MatrixStack matrixStack, float alpha) {
-        alpha = Math.max(0, Math.min(1, alpha));
-        var acColor = c.getAsFloatArray();
-        RenderSystem.setShader(ShaderProgramKeys.POSITION);
-        RenderSystem.enableBlend();
-        RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], alpha);
-        var tesselator = RenderSystem.renderThreadTesselator();
-        var bufferBuilder = tesselator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-        var matrix = matrixStack.peek().getPositionMatrix();
-        drawBox(box, matrix, bufferBuilder);
-        var e = bufferBuilder.end();
-        BufferRenderer.drawWithGlobalProgram(e);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.disableBlend();
-    }
-
-    /**
-     * Draws an outline of the given box with the given color, with an alpha of 1f.
-     *
-     * @param c           - The color to draw the outline with.
-     * @param box         - The outline of a box to draw.
-     * @param matrixStack - The matrix stack to draw with.
-     */
-    public static void drawOutline(Color c, BoxF box, MatrixStack matrixStack) {
-        drawOutline(c, box, matrixStack, 1.0f);
+    @JvmOverloads
+    fun drawBox(c: Color, box: BoxF, matrixStack: MatrixStack, alpha: Float = 1f) {
+        val newAlpha = alpha.coerceIn(0f, 1f)
+        val acColor = c.asFloatArray
+        RenderSystem.setShader(ShaderProgramKeys.POSITION)
+        RenderSystem.enableBlend()
+        RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], newAlpha)
+        val tesselator = RenderSystem.renderThreadTesselator()
+        val bufferBuilder = tesselator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION)
+        val matrix = matrixStack.peek().positionMatrix
+        drawBox(box, matrix, bufferBuilder)
+        val e = bufferBuilder.end()
+        BufferRenderer.drawWithGlobalProgram(e)
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
+        RenderSystem.disableBlend()
     }
 
     /**
@@ -91,34 +72,35 @@ public class GuiUtil {
      * @param boxF        - The box to draw.
      * @param matrixStack - The matrix stack to draw with.
      */
-    public static void drawOutline(BoxF boxF, MatrixStack matrixStack) {
-        drawOutline(GavUI.borderColor(), boxF, matrixStack);
+    fun drawOutline(boxF: BoxF, matrixStack: MatrixStack) {
+        drawOutline(borderColor(), boxF, matrixStack)
     }
 
+
     /**
-     * Draws an outline of the given box with the given color.
+     * Draws an outline of the given box with the given color
      *
      * @param c           - The color to draw the outline with.
      * @param box         - The outline of a box to draw.
      * @param matrixStack - The matrix stack to draw with.
      * @param alpha       - The alpha value to draw with.
      */
-    public static void drawOutline(Color c, BoxF box, MatrixStack matrixStack, float alpha) {
-        alpha = Math.max(0, Math.min(1, alpha));
-        var acColor = c.getAsFloatArray();
-        RenderSystem.setShader(ShaderProgramKeys.POSITION);
-        RenderSystem.enableBlend();
-        RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], alpha);
+    @JvmOverloads
+    fun drawOutline(c: Color, box: BoxF, matrixStack: MatrixStack, alpha: Float = 1.0f) {
+        val newAlpha = alpha.coerceIn(0.0f, 1.0f)
+        val acColor = c.asFloatArray
+        RenderSystem.setShader(ShaderProgramKeys.POSITION)
+        RenderSystem.enableBlend()
+        RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], newAlpha)
 
-        var matrix = matrixStack.peek().getPositionMatrix();
-        var tess = RenderSystem.renderThreadTesselator();
-        var bb = tess.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
-        drawBox(box, matrix, bb);
-        var e = bb.end();
-        BufferRenderer.drawWithGlobalProgram(e);
-//        RenderSystem.applyModelViewMatrix();
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.disableBlend();
+        val matrix = matrixStack.peek().positionMatrix
+        val tess = RenderSystem.renderThreadTesselator()
+        val bb = tess.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION)
+        drawBox(box, matrix, bb)
+        val e = bb.end()
+        BufferRenderer.drawWithGlobalProgram(e)
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
+        RenderSystem.disableBlend()
     }
 
     /**
@@ -128,17 +110,16 @@ public class GuiUtil {
      * @param matrix        - The matrix to draw with.
      * @param bufferBuilder - The buffer builder to draw with.
      */
-    private static void drawBox(BoxF box, Matrix4f matrix, BufferBuilder bufferBuilder) {
-        var xt1 = box.getTopLeft().x();
-        var yt1 = box.getTopLeft().y();
-        var xt2 = box.getBottomRight().x();
-        var yt2 = box.getBottomRight().y();
-        bufferBuilder.vertex(matrix, xt1, yt1, 0);
-        bufferBuilder.vertex(matrix, xt1, yt2, 0);
-        bufferBuilder.vertex(matrix, xt2, yt2, 0);
-        bufferBuilder.vertex(matrix, xt2, yt1, 0);
-        bufferBuilder.vertex(matrix, xt1, yt1, 0);
-
+    private fun drawBox(box: BoxF, matrix: Matrix4f, bufferBuilder: BufferBuilder) {
+        val xt1 = box.topLeft.x
+        val yt1 = box.topLeft.y
+        val xt2 = box.bottomRight.x
+        val yt2 = box.bottomRight.y
+        bufferBuilder.vertex(matrix, xt1, yt1, 0f)
+        bufferBuilder.vertex(matrix, xt1, yt2, 0f)
+        bufferBuilder.vertex(matrix, xt2, yt2, 0f)
+        bufferBuilder.vertex(matrix, xt2, yt1, 0f)
+        bufferBuilder.vertex(matrix, xt1, yt1, 0f)
     }
 
     /**
@@ -148,20 +129,20 @@ public class GuiUtil {
      * @param matrixStack - The matrix stack to draw with.
      * @param alpha       - The alpha value to draw with.
      */
-    public static void renderSingleLine(Color color, PointF p1, PointF p2, MatrixStack matrixStack, float alpha) {
-        alpha = Math.max(0, Math.min(1, alpha));
-        var accColor = color.getAsFloatArray();
-        RenderSystem.setShader(ShaderProgramKeys.POSITION);
-        RenderSystem.enableBlend();
-        var matrix = matrixStack.peek().getPositionMatrix();
-        var tessellator = RenderSystem.renderThreadTesselator();
-        RenderSystem.setShaderColor(accColor[0], accColor[1], accColor[2], alpha);
-        var bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
-        bufferBuilder.vertex(matrix, p1.x(), p1.y(), 0);
-        bufferBuilder.vertex(matrix, p2.x(), p2.y(), 0);
-        var e = bufferBuilder.end();
-        BufferRenderer.drawWithGlobalProgram(e);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.disableBlend();
+    fun renderSingleLine(color: Color, p1: PointF, p2: PointF, matrixStack: MatrixStack, alpha: Float) {
+        val newAlpha = alpha.coerceIn(0.0f, 1.0f)
+        val accColor = color.asFloatArray
+        RenderSystem.setShader(ShaderProgramKeys.POSITION)
+        RenderSystem.enableBlend()
+        val matrix = matrixStack.peek().positionMatrix
+        val tessellator = RenderSystem.renderThreadTesselator()
+        RenderSystem.setShaderColor(accColor[0], accColor[1], accColor[2], newAlpha)
+        val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION)
+        bufferBuilder.vertex(matrix, p1.x, p1.y, 0f)
+        bufferBuilder.vertex(matrix, p2.x, p2.y, 0f)
+        val e = bufferBuilder.end()
+        BufferRenderer.drawWithGlobalProgram(e)
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
+        RenderSystem.disableBlend()
     }
 }

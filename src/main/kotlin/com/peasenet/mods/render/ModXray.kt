@@ -27,7 +27,10 @@ import com.peasenet.config.render.XrayConfig
 import com.peasenet.gui.mod.render.GuiXray
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.Settings
+import com.peasenet.settings.ClickSetting
 import com.peasenet.settings.SettingBuilder
+import com.peasenet.settings.SubSetting
+import com.peasenet.settings.ToggleSetting
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.event.data.DrawState
@@ -48,25 +51,23 @@ class ModXray : RenderMod(
     "xray"
 ), ShouldDrawSideListener, TessellateBlockListener, BlockEntityRenderListener {
     init {
-        val xraySubSetting = SettingBuilder()
+        val xraySubSetting = SettingBuilder<SubSetting>()
             .setWidth(100f)
             .setHeight(10f)
             .setTitle("gavinsmod.mod.render.xray")
             .buildSubSetting()
 //        val culling = ToggleSetting("gavinsmod.settings.xray.culling")
-        val culling = SettingBuilder()
+        val culling = SettingBuilder<ToggleSetting>()
             .setWidth(100f)
             .setHeight(10f)
             .setTitle("gavinsmod.settings.xray.culling")
             .setState(Settings.getConfig<XrayConfig>("xray").blockCulling)
+            .setCallback {
+                Settings.getConfig<XrayConfig>("xray").blockCulling = it.value
+                if (isActive) reload()
+            }
             .buildToggleSetting()
-        culling.setCallback {
-            Settings.getConfig<XrayConfig>("xray").blockCulling = culling.value
-            if (isActive) reload()
-        }
-//        val menu = ClickSetting("gavinsmod.settings.xray.blocks")
-//        menu.setCallback { client.setScreen(GuiXray()) }
-        val menu = SettingBuilder()
+        val menu = SettingBuilder<ClickSetting>()
             .setWidth(100f)
             .setHeight(10f)
             .setTitle("gavinsmod.settings.xray.blocks")

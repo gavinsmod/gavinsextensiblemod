@@ -31,6 +31,9 @@ import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
 import com.peasenet.mixinterface.ISimpleOption
 import com.peasenet.settings.SettingBuilder
+import com.peasenet.settings.SlideSetting
+import com.peasenet.settings.SubSetting
+import com.peasenet.settings.ToggleSetting
 
 /**
  * A mod that allows the client to see very clearly in the absence of a light source.
@@ -48,18 +51,19 @@ class ModFullBright : RenderMod(
 
     init {
         fullbrightConfig = Settings.getConfig("fullbright")
-        val gammaFade = SettingBuilder().setTitle("gavinsmod.settings.render.fullbright.gammafade")
+        val gammaFade = SettingBuilder<ToggleSetting>().setTitle("gavinsmod.settings.render.fullbright.gammafade")
             .setState(fullbrightConfig.gammaFade)
+            .setCallback { fullbrightConfig.gammaFade = it.value }
             .buildToggleSetting()
-        gammaFade.setCallback { fullbrightConfig.gammaFade = gammaFade.value }
 
         val gamma =
-            SettingBuilder().setTitle("gavinsmod.settings.render.fullbright.gamma").setValue(fullbrightConfig.gamma)
-                .setWidth(100).setHeight(10).buildSlider()
-        gamma.setCallback { fullbrightConfig.gamma = gamma.value }
-
-        val subSetting = SettingBuilder().setWidth(100).setHeight(10).setTitle(translationKey).setDefaultMaxChildren(4)
-            .buildSubSetting()
+            SettingBuilder<SlideSetting>().setTitle("gavinsmod.settings.render.fullbright.gamma")
+                .setValue(fullbrightConfig.gamma)
+                .setWidth(100).setHeight(10).setCallback { fullbrightConfig.gamma = it.value }
+                .buildSlideSetting()
+        val subSetting =
+            SettingBuilder<SubSetting>().setWidth(100).setHeight(10).setTitle(translationKey).setDefaultMaxChildren(4)
+                .buildSubSetting()
 
         subSetting.add(gammaFade)
         subSetting.add(gamma)

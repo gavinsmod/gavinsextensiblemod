@@ -34,44 +34,30 @@ import com.peasenet.gavui.color.Colors
  * @author GT3CH1
  * @version 07-18-2023
  */
-class ColorSetting(builder: SettingBuilder) : Setting() {
+class ColorSetting(builder: SettingBuilder<*>) : Setting() {
     /**
      * The cycle element that allows the user to change the color value.
      */
-    override val gui: GuiCycle
-
-    var color: Color = builder.getColor() ?: Colors.INDIGO
-
-    init {
-        gui = GuiBuilder()
-            .setWidth(builder.getWidth())
-            .setHeight(builder.getHeight())
-            .setTitle(builder.getTitle())
-            .setCycleSize(Colors.COLORS.size)
-            .setCurrentCycleIndex(Colors.getColorIndex(builder.getColor()))
-            .setBackgroundColor(builder.getColor())
-            .setTopLeft(builder.getTopLeft())
-            .setTransparency(builder.getTransparency())
-            .setHoverable(builder.isHoverable())
-            .buildCycle()
-        gui.setOnClick {
-            var index = gui.currentIndex
+    override val gui: GuiCycle = GuiBuilder<GuiCycle>()
+        .setWidth(builder.getWidth())
+        .setHeight(builder.getHeight())
+        .setTitle(builder.getTitle())
+        .setCycleSize(Colors.COLORS.size)
+        .setCurrentCycleIndex(Colors.getColorIndex(builder.getColor()!!))
+        .setBackgroundColor(builder.getColor() ?: Colors.BLACK)
+        .setTopLeft(builder.getTopLeft())
+        .setTransparency(builder.getTransparency())
+        .setHoverable(builder.isHoverable())
+        .setCallback {
+            var index = it.currentIndex
             if (index < 0)
                 index = Colors.COLORS.size - 1
-            gui.currentIndex = index
+            it.currentIndex = index
             color = Colors.COLORS[index]
-            gui.setBackground(Colors.COLORS[index])
+            it.setBackground(Colors.COLORS[index])
+            (builder.settingCallback as? (ColorSetting) -> Unit)?.invoke(this)
         }
-    }
+        .buildCycle()
 
-
-    /**
-     * Sets the color and color index to the given value.
-     *
-     * @param index - The color index.
-     */
-    fun setColorIndex(index: Int) {
-        gui.currentIndex = index
-        gui.setBackground(Colors.COLORS[index])
-    }
+    var color: Color = builder.getColor() ?: Colors.INDIGO
 }

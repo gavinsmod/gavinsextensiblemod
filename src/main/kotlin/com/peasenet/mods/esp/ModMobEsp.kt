@@ -26,6 +26,7 @@ package com.peasenet.mods.esp
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gui.mod.esp.GuiMobEsp
+import com.peasenet.settings.ClickSetting
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.listeners.EntityRenderListener
 import com.peasenet.util.listeners.RenderListener
@@ -49,7 +50,7 @@ class ModMobEsp : EntityEsp<Entity>("gavinsmod.mod.esp.mob",
 
 
     init {
-        val menu = SettingBuilder().setTitle("gavinsmod.settings.mobesp")
+        val menu = SettingBuilder<ClickSetting>().setTitle("gavinsmod.settings.mobesp")
             .setCallback { MinecraftClient.getInstance().setScreen(GuiMobEsp()) }.buildClickSetting()
         addSetting(menu)
     }

@@ -27,7 +27,6 @@ package com.peasenet.settings
 import com.peasenet.gavui.GuiDropdown.Direction
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.math.PointF
-import com.peasenet.gavui.util.callbacks.GuiCallback
 import net.minecraft.text.Text
 
 /**
@@ -36,7 +35,7 @@ import net.minecraft.text.Text
  * @version 09-01-2024
  * @since 05/18/2023
  */
-class SettingBuilder {
+class SettingBuilder<T : Setting> {
 
     /**
      * The symbol for this setting. If set to 0, no symbol will be displayed.
@@ -66,12 +65,13 @@ class SettingBuilder {
     /**
      * The title of this setting.
      */
-    private lateinit var title: Text
+    private var title: Text? = null
 
     /**
      * The callback for this setting.
      */
-    private var callback: GuiCallback? = null
+    var settingCallback: ((T) -> Unit)? = null
+        private set
 
     /**
      * The width of the GUI for this setting.
@@ -118,7 +118,7 @@ class SettingBuilder {
      * Sets whether this setting is hoverable, allowing a slight color change when hovered over.
      * @param hoverable True if this setting is hoverable, false otherwise.
      */
-    fun setHoverable(hoverable: Boolean): SettingBuilder {
+    fun setHoverable(hoverable: Boolean): SettingBuilder<T> {
         this.hoverable = hoverable
         return this
     }
@@ -136,7 +136,7 @@ class SettingBuilder {
      * @param direction The direction to set.
      * @see [Direction]
      */
-    fun setDirection(direction: Direction): SettingBuilder {
+    fun setDirection(direction: Direction): SettingBuilder<T> {
         this.direction = direction
         return this
     }
@@ -157,7 +157,7 @@ class SettingBuilder {
      * @param x The x coordinate of the top left corner.
      * @param y The y coordinate of the top left corner.
      */
-    fun setTopLeft(x: Float, y: Float): SettingBuilder {
+    fun setTopLeft(x: Float, y: Float): SettingBuilder<T> {
         this.guiPosition = PointF(x, y)
         return this
     }
@@ -168,7 +168,7 @@ class SettingBuilder {
      * @param point The point to set the top left corner to.
      * @see [PointF]
      */
-    fun setTopLeft(point: PointF): SettingBuilder {
+    fun setTopLeft(point: PointF): SettingBuilder<T> {
         this.guiPosition = point
         return this
     }
@@ -191,7 +191,7 @@ class SettingBuilder {
      * Sets the maximum number of children to be rendered in one page for this setting.
      * @param maxChildren The maximum number of children to be rendered in one page.
      */
-    fun setMaxChildren(maxChildren: Int): SettingBuilder {
+    fun setMaxChildren(maxChildren: Int): SettingBuilder<T> {
         this.maxChildren = maxChildren
         return this
     }
@@ -208,7 +208,7 @@ class SettingBuilder {
      * Sets the initial number of children to be rendered in one page for this setting.
      * @param defaultMaxChildren The initial number of children to be rendered in one page.
      */
-    fun setDefaultMaxChildren(defaultMaxChildren: Int): SettingBuilder {
+    fun setDefaultMaxChildren(defaultMaxChildren: Int): SettingBuilder<T> {
         this.defaultMaxChildren = defaultMaxChildren
         return this
     }
@@ -218,7 +218,7 @@ class SettingBuilder {
      *
      * @param width The width to set.
      */
-    fun setWidth(width: Float): SettingBuilder {
+    fun setWidth(width: Float): SettingBuilder<T> {
         this.width = width
         return this
     }
@@ -228,7 +228,7 @@ class SettingBuilder {
      *
      * @param width The width to set.
      */
-    fun setWidth(width: Int): SettingBuilder {
+    fun setWidth(width: Int): SettingBuilder<T> {
         this.width = width.toFloat()
         return this
     }
@@ -239,7 +239,7 @@ class SettingBuilder {
      *
      * @param height The height to set.
      */
-    fun setHeight(height: Int): SettingBuilder {
+    fun setHeight(height: Int): SettingBuilder<T> {
         this.height = height.toFloat()
         return this
     }
@@ -248,7 +248,7 @@ class SettingBuilder {
      * Gets the title of this setting.
      * @return The title of this setting.
      */
-    fun getTitle(): Text {
+    fun getTitle(): Text? {
         return this.title
     }
 
@@ -256,7 +256,7 @@ class SettingBuilder {
      * Sets the height of GUI for this setting.
      * @param height The height to set.
      */
-    fun setHeight(height: Float): SettingBuilder {
+    fun setHeight(height: Float): SettingBuilder<T> {
         this.height = height
         return this
     }
@@ -283,7 +283,7 @@ class SettingBuilder {
      *
      * @param translationKey The translation key to translate the title to.
      */
-    fun setTitle(translationKey: String): SettingBuilder {
+    fun setTitle(translationKey: String): SettingBuilder<T> {
         this.translationKey = translationKey
         setTitle(Text.translatable(translationKey))
         return this
@@ -294,7 +294,7 @@ class SettingBuilder {
      *
      * @param title The title to set.
      */
-    fun setTitle(title: Text): SettingBuilder {
+    fun setTitle(title: Text): SettingBuilder<T> {
         this.title = title
         return this
     }
@@ -314,7 +314,7 @@ class SettingBuilder {
      * @param color The color to set.
      * @see [Color]
      */
-    fun setColor(color: Color): SettingBuilder {
+    fun setColor(color: Color): SettingBuilder<T> {
         this.color = color
         return this
     }
@@ -323,7 +323,7 @@ class SettingBuilder {
      * Sets the boolean state of this setting.
      * @param state The boolean state to set.
      */
-    fun setState(state: Boolean): SettingBuilder {
+    fun setState(state: Boolean): SettingBuilder<T> {
         this.state = state
         return this
     }
@@ -332,7 +332,7 @@ class SettingBuilder {
      * Sets the float value of this setting, used for sliders.
      * @param value The float value to set.
      */
-    fun setValue(value: Float): SettingBuilder {
+    fun setValue(value: Float): SettingBuilder<T> {
         this.value = value
         return this
     }
@@ -370,7 +370,8 @@ class SettingBuilder {
      * @return The built [ColorSetting].
      */
     fun buildColorSetting(): ColorSetting {
-        return ColorSetting(this)
+
+        return ColorSetting(this as SettingBuilder<ColorSetting>)
     }
 
     /**
@@ -378,7 +379,7 @@ class SettingBuilder {
      * @return The built [ToggleSetting].
      */
     fun buildToggleSetting(): ToggleSetting {
-        return ToggleSetting(this)
+        return ToggleSetting(this as SettingBuilder<ToggleSetting>)
     }
 
     /**
@@ -386,7 +387,7 @@ class SettingBuilder {
      * @return The built [SubSetting].
      */
     fun buildSubSetting(): SubSetting {
-        return SubSetting(this)
+        return SubSetting(this as SettingBuilder<SubSetting>)
     }
 
     /**
@@ -394,15 +395,15 @@ class SettingBuilder {
      * @return The built [ClickSetting].
      */
     fun buildClickSetting(): ClickSetting {
-        return ClickSetting(this)
+        return ClickSetting(this as SettingBuilder<ClickSetting>)
     }
 
     /**
      * Builds a [SlideSetting] from this builder.
      * @return The built [SlideSetting].
      */
-    fun buildSlider(): SlideSetting {
-        return SlideSetting(this)
+    fun buildSlideSetting(): SlideSetting {
+        return SlideSetting(this as SettingBuilder<SlideSetting>)
     }
 
     /**
@@ -417,7 +418,7 @@ class SettingBuilder {
      * @param transparency The transparency to set.
      * If the transparency is set to -1, the transparency value will be configured from GavUI config.
      */
-    fun setTransparency(transparency: Float): SettingBuilder {
+    fun setTransparency(transparency: Float): SettingBuilder<T> {
         this.transparency = transparency
         return this
     }
@@ -426,7 +427,7 @@ class SettingBuilder {
      * Sets the background color of this setting.
      * @param color The color to set.
      */
-    fun setBackgroundColor(color: Color): SettingBuilder {
+    fun setBackgroundColor(color: Color): SettingBuilder<T> {
         this.color = color
         return this
     }
@@ -435,9 +436,13 @@ class SettingBuilder {
      * Sets the callback function of this setting.
      * @param function The callback function to set.
      */
-    fun setCallback(function: GuiCallback): SettingBuilder {
-        this.callback = function
+    fun setCallback(function: ((T) -> Unit)?): SettingBuilder<T> {
+        this.settingCallback = function
         return this
+    }
+
+    fun getCallback(): ((T) -> Unit)? {
+        return this.settingCallback
     }
 
 
@@ -445,22 +450,14 @@ class SettingBuilder {
      * Sets the GUI symbol of this setting.
      * @param symbol The symbol to set.
      */
-    fun setSymbol(symbol: Char): SettingBuilder {
+    fun setSymbol(symbol: Char): SettingBuilder<T> {
         this.symbol = symbol
         return this
     }
 
-    /**
-     * Gets the callback function of this setting.
-     * @return The callback function of this setting.
-     */
-    fun getCallback(): GuiCallback? {
-        return callback
-    }
-
     private var options: List<String> = mutableListOf()
     private var optionsValue = ""
-    fun setOptions(options: List<String>): SettingBuilder {
+    fun setOptions(options: List<String>): SettingBuilder<T> {
         this.options = options
         return this
     }
@@ -469,7 +466,7 @@ class SettingBuilder {
         return options
     }
 
-    fun setValue(value: String): SettingBuilder {
+    fun setValue(value: String): SettingBuilder<T> {
         this.optionsValue = value
         return this
     }
@@ -481,7 +478,7 @@ class SettingBuilder {
     fun buildCycleSetting(): CycleSetting {
         if (options.isEmpty())
             throw IllegalArgumentException("Options must not be empty")
-        return CycleSetting(this)
+        return CycleSetting(this as SettingBuilder<CycleSetting>)
     }
 
 }

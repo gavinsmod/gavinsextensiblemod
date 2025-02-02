@@ -21,47 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.peasenet.gavui.color
 
-package com.peasenet.gavui.color;
-
-import java.util.Random;
+import com.peasenet.gavui.color.Color.Companion.fromInt
 
 /**
- * @author GT3CH1
- * @version 7/1/2022
  * A class containing pre-defined colors.
- * Note: Use this site to generate color names: <a href="https://www.color-name.com/hex/">color-name.com</a>
+ * Note: Use this site to generate color names: [color-name.com](https://www.color-name.com/hex/)
+ * @author GT3CH1
+ * @version 02-02-2025
+ * @since 7/1/2022
  */
-public class Colors {
-
-    public static final Color RED = new Color(255, 0, 0);
-    public static final Color DARK_RED = Color.fromInt(0x610b0b);
-    public static final Color GREEN = new Color(0, 255, 0);
-    public static final Color DARK_GREEN = new Color(0, 127, 0);
-    public static final Color BLUE = new Color(0, 0, 255);
-    public static final Color YELLOW = new Color(255, 255, 0);
-    public static final Color PURPLE = new Color(255, 0, 255);
-    public static final Color CYAN = new Color(0, 255, 255);
-    public static final Color WHITE = new Color(255, 255, 255);
-    public static final Color BLACK = new Color(0, 0, 0);
-    public static final Color GRAY = new Color(128, 128, 128);
-    public static final Color DARK_GRAY = new Color(16, 16, 16);
-    public static final Color DARK_CYAN = new Color(0, 128, 255);
-    public static final Color GOLD = new Color(255, 215, 0);
-    public static final Color INDIGO = Color.fromInt(0x273859);
-    public static final Color SHADOW_BLUE = Color.fromInt(0x7686A6);
-    public static final Color DARK_SPRING_GREEN = Color.fromInt(0x1D734B);
-    public static final Color MEDIUM_SEA_GREEN = Color.fromInt(0x32a670);
-    public static final Color DESERT_SAND = Color.fromInt(0xD9D2B0);
-    public static final Color RED_ORANGE = Color.fromInt(0xFF4500);
+object Colors {
+    val RED: Color = Color(255, 0, 0)
+    val DARK_RED: Color = fromInt(0x610b0b)
+    val GREEN: Color = Color(0, 255, 0)
+    val DARK_GREEN: Color = Color(0, 127, 0)
+    val BLUE: Color = Color(0, 0, 255)
+    val YELLOW: Color = Color(255, 255, 0)
+    val PURPLE: Color = Color(255, 0, 255)
+    val CYAN: Color = Color(0, 255, 255)
+    val WHITE: Color = Color(255, 255, 255)
+    val BLACK: Color = Color(0, 0, 0)
+    val GRAY: Color = Color(128, 128, 128)
+    val DARK_GRAY: Color = Color(16, 16, 16)
+    val DARK_CYAN: Color = Color(0, 128, 255)
+    val GOLD: Color = Color(255, 215, 0)
+    val INDIGO: Color = fromInt(0x273859)
+    val SHADOW_BLUE: Color = fromInt(0x7686A6)
+    val DARK_SPRING_GREEN: Color = fromInt(0x1D734B)
+    val MEDIUM_SEA_GREEN: Color = fromInt(0x32a670)
+    val DESERT_SAND: Color = fromInt(0xD9D2B0)
+    val RED_ORANGE: Color = fromInt(0xFF4500)
 
     /**
      * The list of all colors.
      */
-    public static final Color[] COLORS = {
-            RED, DARK_RED, GREEN, DARK_GREEN, BLUE, YELLOW, PURPLE, CYAN, WHITE, BLACK, GRAY, DARK_GRAY, DARK_CYAN, GOLD,
-            INDIGO, SHADOW_BLUE, DARK_SPRING_GREEN, MEDIUM_SEA_GREEN, DESERT_SAND, RED_ORANGE
-    };
+    val COLORS: Array<Color> = arrayOf(
+        RED, DARK_RED, GREEN, DARK_GREEN, BLUE, YELLOW, PURPLE, CYAN, WHITE, BLACK, GRAY, DARK_GRAY, DARK_CYAN, GOLD,
+        INDIGO, SHADOW_BLUE, DARK_SPRING_GREEN, MEDIUM_SEA_GREEN, DESERT_SAND, RED_ORANGE
+    )
 
     /**
      * Returns the color with the given index.
@@ -69,21 +68,13 @@ public class Colors {
      * @param color - the index of the color to return
      * @return the color with the given index, -1 if the search failed.
      */
-    public static int getColorIndex(Color color) {
-        for (int i = 0; i < COLORS.length; i++) {
+    fun getColorIndex(color: Color): Int {
+        for (i in COLORS.indices) {
             if (COLORS[i].equals(color)) {
-                return i;
+                return i
             }
         }
-        return -1;
+        return -1
     }
 
-    /**
-     * Gets a random color index from the list of all colors. See #COLORS.
-     *
-     * @return A random color index.
-     */
-    public static int getRandomColor() {
-        return new Random(System.currentTimeMillis()).nextInt(COLORS.length);
-    }
 }
