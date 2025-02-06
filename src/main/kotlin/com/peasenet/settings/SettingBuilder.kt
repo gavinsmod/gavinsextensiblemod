@@ -26,6 +26,7 @@ package com.peasenet.settings
 
 import com.peasenet.gavui.GuiDropdown.Direction
 import com.peasenet.gavui.color.Color
+import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.PointF
 import net.minecraft.text.Text
 
@@ -371,7 +372,18 @@ class SettingBuilder<T : Setting> {
      */
     fun buildColorSetting(): ColorSetting {
 
-        return ColorSetting(this as SettingBuilder<ColorSetting>)
+        return colorSetting {
+            settingOptions = settings {
+                topLeft = getTopLeft()
+                width = getWidth()
+                height = getHeight()
+                title = getTranslationKey()
+                hoverable = isHoverable()
+                cycleSize = Colors.COLORS.size
+                cycleIndex = Colors.COLORS.indexOf(getColor())
+            }
+            callback = { settingCallback?.invoke(it as T) }
+        }
     }
 
     /**
@@ -380,12 +392,15 @@ class SettingBuilder<T : Setting> {
      */
     fun buildToggleSetting(): ToggleSetting {
         return toggleSetting {
-            topLeft = getTopLeft()
-            width = getWidth()
+            settings {
+                topLeft = getTopLeft()
+                width = getWidth()
+                height = getHeight()
+                title = getTranslationKey()
+                state = getState()
+                hoverable = isHoverable()
+            }
             callback = { settingCallback?.invoke(it as T) }
-            title = getTranslationKey()
-            state = getState()
-            hoverable = isHoverable()
         }
     }
 
@@ -483,9 +498,19 @@ class SettingBuilder<T : Setting> {
     }
 
     fun buildCycleSetting(): CycleSetting {
-        if (options.isEmpty())
-            throw IllegalArgumentException("Options must not be empty")
-        return CycleSetting(this as SettingBuilder<CycleSetting>)
+        if (options.isEmpty()) throw IllegalArgumentException("Options must not be empty")
+        return cycleSetting {
+            settings {
+                topLeft = getTopLeft()
+                width = getWidth()
+                height = getHeight()
+                title = getTranslationKey()
+                hoverable = isHoverable()
+                cycleSize = getOptions().size
+                cycleIndex = getOptions().indexOf(getOptionsValue())
+            }
+            callback = { settingCallback?.invoke(it as T) }
+        }
     }
 
 }

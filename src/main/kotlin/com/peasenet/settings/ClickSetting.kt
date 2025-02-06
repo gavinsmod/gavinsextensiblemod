@@ -35,29 +35,19 @@ import com.peasenet.gavui.GuiClick
  * @version 07-18-2023
  */
 class ClickSetting(builder: SettingBuilder<ClickSetting>) : Setting() {
-    /**
-     * The gui used to display the setting.
-     */
-    override val gui: GuiClick
 
-    /**
-     * Creates a new click setting with the given name (?) and translation key.
-     *
-     */
-    init {
-        gui = GuiBuilder<GuiClick>()
-            .setWidth(builder.getWidth())
-            .setHeight(builder.getHeight())
-            .setTitle(builder.getTitle())
-            .setCallback {
-                builder.settingCallback?.invoke(this)
-            }
-            .setHoverable(builder.isHoverable())
-            .setBackgroundColor(builder.getColor() ?: GavUI.backgroundColor())
-            .setTransparency(builder.getTransparency())
-            .setTranslationKey(builder.getTranslationKey())
-            .setSymbol(builder.getSymbol())
-            .setTopLeft(builder.getTopLeft())
-            .buildClick()
-    }
+    override val gui: GuiClick = GuiBuilder<GuiClick>()
+        .setWidth(builder.getWidth())
+        .setHeight(builder.getHeight())
+        .setTitle(builder.getTitle())
+        .setCallback {
+            builder.settingCallback?.invoke(this)
+        }
+        .setHoverable(builder.isHoverable())
+        .setBackgroundColor(builder.getColor() ?: GavUI.backgroundColor())
+        .setTransparency(builder.getTransparency())
+        .setTranslationKey(builder.getTranslationKey())
+        .setSymbol(builder.getSymbol())
+        .setTopLeft(builder.getTopLeft())
+        .buildClick()
 }

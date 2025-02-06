@@ -113,8 +113,18 @@ class Color(red: Int, green: Int, blue: Int) : Serializable {
      * @param other - The other color.
      * @return True if the RGB channels match.
      */
-    fun equals(other: Color): Boolean {
-        return red == other.red && green == other.green && blue == other.blue
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val color = other as Color
+        return red == color.red && green == color.green && blue == color.blue
+    }
+
+    override fun hashCode(): Int {
+        var result = red
+        result = 31 * result + green
+        result = 31 * result + blue
+        return result
     }
 
     fun brighten(amount: Float): Color {

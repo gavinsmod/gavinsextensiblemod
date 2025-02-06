@@ -23,9 +23,9 @@
  */
 package com.peasenet.settings
 
+import com.peasenet.gavui.GavUI
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiToggle
-import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GavUISettings
 
 /**
@@ -34,28 +34,8 @@ import com.peasenet.gavui.util.GavUISettings
  * @author GT3CH1
  * @version 03-02-2023
  */
-class ToggleSetting(
-    var topLeft: PointF = PointF(0F, 0F),
-    var width: Float = 0F,
-    var height: Float = 10F,
-    @JvmField
-    var title: String = "",
-    var state: Boolean = false,
-    var hoverable: Boolean = false,
-    var callback: ((ToggleSetting) -> Unit)? = null,
-) : Setting() {
-    /**
-     * The gui element that is used to display this toggle setting.
-     */
-    override var gui: GuiToggle = GuiBuilder<GuiToggle>()
-        .setTopLeft(topLeft)
-        .setWidth(width)
-        .setHeight(height)
-        .setTitle(title)
-        .setCallback { callback?.invoke(this) }
-        .setHoverable(hoverable)
-        .setIsOn(state)
-        .buildToggle()
+class ToggleSetting : CallbackSetting<ToggleSetting>() {
+    override lateinit var gui: GuiToggle
 
     /**
      * The current value of this toggle setting.
@@ -70,13 +50,19 @@ class ToggleSetting(
 
     fun build(): ToggleSetting {
         gui = GuiBuilder<GuiToggle>()
-            .setTopLeft(topLeft)
-            .setWidth(width)
-            .setHeight(height)
-            .setTitle(title)
-            .setCallback { callback?.invoke(this) }
-            .setHoverable(hoverable)
-            .setIsOn(state)
+            .setWidth(settingOptions.width)
+            .setHeight(settingOptions.height)
+            .setTitle(settingOptions.title)
+            .setCallback {
+                callback?.invoke(this)
+            }
+            .setHoverable(settingOptions.hoverable)
+            .setBackgroundColor(
+                if (settingOptions.state) GavUI.enabledColor() else GavUI.backgroundColor()
+            )
+            .setTransparency(settingOptions.transparency)
+            .setSymbol(settingOptions.symbol)
+            .setTopLeft(settingOptions.topLeft)
             .buildToggle()
         return this
     }

@@ -24,24 +24,36 @@
 package com.peasenet.settings
 
 import com.peasenet.gavui.Gui
-import net.minecraft.text.Text
+import com.peasenet.gavui.math.PointF
 
 /**
  * A class that represents a mod setting. This class should not be instantiated directly.
  * For examples of how to use this class, see the [com.peasenet.settings] package. @author GT3CH1
  * @version 07-18-2023
  */
-abstract class Setting() {
-
-    /**
-     * The GUI used for this setting.
-     */
+abstract class Setting(var settingOptions: SettingOptions = SettingOptions()) {
     open val gui: Gui? = null
 
-    /**
-     * Gets the GUI for this setting.
-     */
-    open fun getTitle(): Text {
-        return gui!!.title ?: Text.of("")
+
+    fun settings(init: SettingOptions.() -> Unit): SettingOptions {
+        val settingOptions = SettingOptions()
+        settingOptions.init()
+        this.settingOptions = settingOptions
+        return settingOptions
     }
 }
+
+
+data class SettingOptions(
+    var topLeft: PointF = PointF(0F, 0F),
+    var width: Float = 0F,
+    var height: Float = 10F,
+    @JvmField
+    var title: String = "",
+    var state: Boolean = false,
+    var hoverable: Boolean = false,
+    var transparency: Float = -1f,
+    var symbol: Char = '\u0000',
+    var cycleIndex: Int = 0,
+    var cycleSize: Int = 0,
+)

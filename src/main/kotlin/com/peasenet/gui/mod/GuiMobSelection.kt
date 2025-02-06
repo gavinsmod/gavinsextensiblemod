@@ -234,10 +234,10 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
 
         addSelectableChild(search)
         var tw = textRenderer.getWidth("Enabled Only")
-        if (showHostileColor) tw = tw.coerceAtLeast(textRenderer.getWidth(hostileColor?.getTitle()))
-        if (showPeacefulColor) tw = tw.coerceAtLeast(textRenderer.getWidth(peacefulColor?.getTitle()))
-        if (showHostileToggle) tw = tw.coerceAtLeast(textRenderer.getWidth(hostileToggle?.getTitle()))
-        if (showPeacefulToggle) tw = tw.coerceAtLeast(textRenderer.getWidth(peacefulToggle?.getTitle()))
+        if (showHostileColor) tw = tw.coerceAtLeast(textRenderer.getWidth(hostileColor?.gui?.title))
+        if (showPeacefulColor) tw = tw.coerceAtLeast(textRenderer.getWidth(peacefulColor?.gui?.title))
+        if (showHostileToggle) tw = tw.coerceAtLeast(textRenderer.getWidth(hostileToggle?.gui?.title))
+        if (showPeacefulToggle) tw = tw.coerceAtLeast(textRenderer.getWidth(peacefulToggle?.gui?.title))
         if (additionalGuis.isNotEmpty()) {
             for (gui in additionalGuis) {
                 tw = tw.coerceAtLeast(textRenderer.getWidth(gui.title))

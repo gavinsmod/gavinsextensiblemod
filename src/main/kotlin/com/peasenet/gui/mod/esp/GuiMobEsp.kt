@@ -67,17 +67,11 @@ class GuiMobEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")
             .setCallback { config.peacefulMobColor = it.color }
             .buildColorSetting()
         pos = pos.add(0f, 12f)
-
-//        enabledOnly = SettingBuilder<ToggleSetting>()
-//            .setTopLeft(pos)
-//            .setTitle("gavinsmod.generic.enabledOnly")
-//            .setCallback {
-//                updateItemList()
-//            }
-//            .buildToggleSetting()
         enabledOnly = toggleSetting {
-            topLeft = pos
-            title = "gavinsmod.generic.enabledOnly"
+            settings {
+                topLeft = pos
+                title = "gavinsmod.generic.enabledOnly"
+            }
             callback = {
                 updateItemList()
             }

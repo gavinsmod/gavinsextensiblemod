@@ -34,23 +34,59 @@ import com.peasenet.gavui.GuiCycle
  * @version 01-25-2025
  * @since 01-25-2025
  */
-class CycleSetting(builder: SettingBuilder<CycleSetting>) : Setting() {
-    override val gui: GuiCycle
+class CycleSetting : CallbackSetting<CycleSetting>() {
+    override lateinit var gui: GuiCycle
 
     init {
-        gui = GuiBuilder<GuiCycle>()
-            .setWidth(builder.getWidth())
-            .setHeight(builder.getHeight())
-            .setTitle(builder.getTitle())
-            .setHoverable(builder.isHoverable())
-            .setBackgroundColor(builder.getColor() ?: GavUI.backgroundColor())
-            .setTransparency(builder.getTransparency())
-            .setTranslationKey(builder.getTranslationKey())
-            .setSymbol(builder.getSymbol())
-            .setTopLeft(builder.getTopLeft())
-            .setCycleSize(builder.getOptions().size)
-            .setCurrentCycleIndex(builder.getOptions().indexOf(builder.getOptionsValue()))
-            .setCallback { builder.settingCallback?.invoke(this) }
-            .buildCycle()
+//        gui = GuiBuilder<GuiCycle>()
+//            .setWidth(builder.getWidth())
+//            .setHeight(builder.getHeight())
+//            .setTitle(builder.getTitle())
+//            .setHoverable(builder.isHoverable())
+//            .setBackgroundColor(builder.getColor() ?: GavUI.backgroundColor())
+//            .setTransparency(builder.getTransparency())
+//            .setTranslationKey(builder.getTranslationKey())
+//            .setSymbol(builder.getSymbol())
+//            .setTopLeft(builder.getTopLeft())
+//            .setCycleSize(builder.getOptions().size)
+//            .setCurrentCycleIndex(builder.getOptions().indexOf(builder.getOptionsValue()))
+//            .setCallback { builder.settingCallback?.invoke(this) }
+//            .buildCycle()
     }
+
+    fun build(): CycleSetting {
+        gui = GuiBuilder<GuiCycle>()
+//            .setHeight(settingOptions.getHeight())
+//            .setTitle(settingOptions.getTitle())
+//            .setHoverable(settingOptions.isHoverable())
+//            .setBackgroundColor(settingOptions.getColor() ?: GavUI.backgroundColor())
+//            .setTransparency(settingOptions.getTransparency())
+//            .setTranslationKey(settingOptions.getTranslationKey())
+//            .setSymbol(settingOptions.getSymbol())
+//            .setTopLeft(settingOptions.getTopLeft())
+//            .setCycleSize(settingOptions.getOptions().size)
+//            .setCurrentCycleIndex(settingOptions.getOptions().indexOf(settingOptions.getOptionsValue()))
+//            .setCallback { settingOptions.settingCallback?.invoke(this) }
+//            .buildCycle()
+
+            .setWidth(settingOptions.width)
+            .setHeight(settingOptions.height)
+            .setTitle(settingOptions.title)
+            .setHoverable(settingOptions.hoverable)
+            .setBackgroundColor(GavUI.backgroundColor())
+            .setTransparency(settingOptions.transparency)
+            .setSymbol(settingOptions.symbol)
+            .setTopLeft(settingOptions.topLeft)
+            .setCycleSize(settingOptions.cycleSize)
+            .setCurrentCycleIndex(settingOptions.cycleIndex)
+            .setCallback { callback?.invoke(this) }
+            .buildCycle()
+        return this
+    }
+}
+
+
+fun cycleSetting(init: CycleSetting.() -> Unit): CycleSetting {
+    val setting = CycleSetting().apply { init() }
+    return setting.build()
 }

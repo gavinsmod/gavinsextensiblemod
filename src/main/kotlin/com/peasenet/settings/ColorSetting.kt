@@ -23,6 +23,7 @@
  */
 package com.peasenet.settings
 
+import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiCycle
 import com.peasenet.gavui.color.Color
@@ -34,30 +35,44 @@ import com.peasenet.gavui.color.Colors
  * @author GT3CH1
  * @version 07-18-2023
  */
-class ColorSetting(builder: SettingBuilder<*>) : Setting() {
-    /**
-     * The cycle element that allows the user to change the color value.
-     */
-    override val gui: GuiCycle = GuiBuilder<GuiCycle>()
-        .setWidth(builder.getWidth())
-        .setHeight(builder.getHeight())
-        .setTitle(builder.getTitle())
-        .setCycleSize(Colors.COLORS.size)
-        .setCurrentCycleIndex(Colors.getColorIndex(builder.getColor()!!))
-        .setBackgroundColor(builder.getColor() ?: Colors.BLACK)
-        .setTopLeft(builder.getTopLeft())
-        .setTransparency(builder.getTransparency())
-        .setHoverable(builder.isHoverable())
-        .setCallback {
-            var index = it.currentIndex
-            if (index < 0)
-                index = Colors.COLORS.size - 1
-            it.currentIndex = index
-            color = Colors.COLORS[index]
-            it.setBackground(Colors.COLORS[index])
-            (builder.settingCallback as? (ColorSetting) -> Unit)?.invoke(this)
-        }
-        .buildCycle()
+class ColorSetting() : CallbackSetting<ColorSetting>() {
+    override lateinit var gui: GuiCycle
 
-    var color: Color = builder.getColor() ?: Colors.INDIGO
+    var color = Colors.WHITE
+        get() = getColor(gui.currentIndex)
+        set(value) {
+            field = value
+            gui.currentIndex = Colors.COLORS.indexOf(value)
+        }
+
+
+    private fun getColor(index: Int): Color {
+        return Colors.COLORS[index]
+    }
+
+    fun build(): ColorSetting {
+        gui = GuiBuilder<GuiCycle>()
+            .setWidth(settingOptions.width)
+            .setHeight(settingOptions.height)
+            .setTitle(settingOptions.title)
+            .setCallback {
+                var index = it.currentIndex
+                index = (index + 1) % Colors.COLORS.size
+                it.currentIndex = index
+                it.setBackground(Colors.COLORS[index])
+                callback?.invoke(this)
+            }
+            .setHoverable(settingOptions.hoverable)
+            .setCycleSize(settingOptions.cycleSize)
+            .setCurrentCycleIndex(settingOptions.cycleIndex)
+            .setBackgroundColor(Colors.COLORS[settingOptions.cycleIndex])
+            .buildCycle()
+        return this
+    }
+}
+
+fun colorSetting(init: ColorSetting.() -> Unit): ColorSetting {
+    val setting = ColorSetting()
+    setting.init()
+    return setting.build()
 }
