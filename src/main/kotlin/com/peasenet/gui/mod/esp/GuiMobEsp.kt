@@ -30,6 +30,7 @@ import com.peasenet.main.Settings
 import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.SettingBuilder
 import com.peasenet.settings.ToggleSetting
+import com.peasenet.settings.toggleSetting
 import net.minecraft.item.ItemStack
 import net.minecraft.item.SpawnEggItem
 import net.minecraft.text.Text
@@ -67,13 +68,20 @@ class GuiMobEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")
             .buildColorSetting()
         pos = pos.add(0f, 12f)
 
-        enabledOnly = SettingBuilder<ToggleSetting>()
-            .setTopLeft(pos)
-            .setTitle("gavinsmod.generic.enabledOnly")
-            .setCallback {
+//        enabledOnly = SettingBuilder<ToggleSetting>()
+//            .setTopLeft(pos)
+//            .setTitle("gavinsmod.generic.enabledOnly")
+//            .setCallback {
+//                updateItemList()
+//            }
+//            .buildToggleSetting()
+        enabledOnly = toggleSetting {
+            topLeft = pos
+            title = "gavinsmod.generic.enabledOnly"
+            callback = {
                 updateItemList()
             }
-            .buildToggleSetting()
+        }
         pos = pos.add(0f, 12f)
 
         hostileToggle = SettingBuilder<ToggleSetting>()

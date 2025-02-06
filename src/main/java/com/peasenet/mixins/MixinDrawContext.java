@@ -54,12 +54,12 @@ public class MixinDrawContext implements IDrawContext {
     private MatrixStack matrices;
 
     @Override
-    public @NotNull VertexConsumerProvider.Immediate getVertexConsumerProvider() {
+    public @NotNull VertexConsumerProvider.Immediate gavins_mod$getVertexConsumerProvider() {
         return this.vertexConsumers;
     }
 
     @Override
-    public void drawText(TextRenderer textRenderer, Text text, float x, float y, Color color, boolean shadow) {
+    public void gavins_mod$drawText(TextRenderer textRenderer, Text text, float x, float y, Color color, boolean shadow) {
         textRenderer.draw(
                 text,
                 x,
@@ -67,7 +67,7 @@ public class MixinDrawContext implements IDrawContext {
                 color.getAsInt(),
                 shadow,
                 matrices.peek().getPositionMatrix(),
-                getVertexConsumerProvider(),
+                gavins_mod$getVertexConsumerProvider(),
                 TextRenderer.TextLayerType.NORMAL,
                 0,
                 15728880
@@ -75,8 +75,8 @@ public class MixinDrawContext implements IDrawContext {
     }
 
     @Override
-    public void drawText(TextRenderer textRenderer, String text, float x, float y, Color color, boolean shadow) {
-        drawText(
+    public void gavins_mod$drawText(TextRenderer textRenderer, String text, float x, float y, Color color, boolean shadow) {
+        gavins_mod$drawText(
                 textRenderer,
                 Text.of(text),
                 x,

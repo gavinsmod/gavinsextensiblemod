@@ -379,7 +379,14 @@ class SettingBuilder<T : Setting> {
      * @return The built [ToggleSetting].
      */
     fun buildToggleSetting(): ToggleSetting {
-        return ToggleSetting(this as SettingBuilder<ToggleSetting>)
+        return toggleSetting {
+            topLeft = getTopLeft()
+            width = getWidth()
+            callback = { settingCallback?.invoke(it as T) }
+            title = getTranslationKey()
+            state = getState()
+            hoverable = isHoverable()
+        }
     }
 
     /**

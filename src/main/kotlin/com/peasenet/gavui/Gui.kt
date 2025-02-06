@@ -330,7 +330,7 @@ open class Gui(builder: GuiBuilder<*>) {
         val iDrawContext = drawContext as IDrawContext
         val oX = x2 - symbolWidth - offsetX
         val oY = y + 1.5f + offsetY
-        iDrawContext.drawText(
+        iDrawContext.`gavins_mod$drawText`(
             tr,
             symbol.toString(),
             oX,
@@ -481,7 +481,7 @@ open class Gui(builder: GuiBuilder<*>) {
         color: Color,
         shadow: Boolean = false,
     ) {
-        (drawContext as IDrawContext).drawText(textRenderer,
+        (drawContext as IDrawContext).`gavins_mod$drawText`(textRenderer,
             text,
             x,
             y,
@@ -497,7 +497,7 @@ open class Gui(builder: GuiBuilder<*>) {
         y: Float,
         color: Color,
     ) {
-        (drawContext as IDrawContext).drawText(textRenderer,
+        (drawContext as IDrawContext).`gavins_mod$drawText`(textRenderer,
             Text.of(text),
             x,
             y,

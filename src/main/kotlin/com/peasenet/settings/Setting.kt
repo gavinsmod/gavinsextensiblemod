@@ -24,7 +24,6 @@
 package com.peasenet.settings
 
 import com.peasenet.gavui.Gui
-import com.peasenet.gavui.math.PointF
 import net.minecraft.text.Text
 
 /**
@@ -44,21 +43,5 @@ abstract class Setting() {
      */
     open fun getTitle(): Text {
         return gui!!.title ?: Text.of("")
-    }
-
-    /**
-     * Gets the width of this setting.
-     */
-    @Deprecated("Unused", ReplaceWith("gui!!.width"))
-    open fun getWidth(): Float {
-        return gui!!.width
-    }
-
-    /**
-     * Sets the position of this setting.
-     */
-    @Deprecated("Unused", ReplaceWith("gui!!.position = pos"))
-    fun setPos(pos: PointF) {
-        gui!!.position = pos
     }
 }

@@ -24,7 +24,6 @@
 
 package com.peasenet.gavui
 
-import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
@@ -84,7 +83,8 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             }
             drawText(drawContext, tr, title!!, x + 2, y + 1.5f, textColor)
         }
-        renderSymbol(drawContext, tr, textColor)
+        updateSymbol()
+        drawSymbol(drawContext, tr, textColor)
         if (drawBorder) GuiUtil.drawOutline(GavUI.borderColor(), box, drawContext.matrices)
         if (!isOpen) return
         resetChildPos()
@@ -95,15 +95,6 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
         for (i in children.indices) renderChildren(drawContext, tr, mouseX, mouseY, delta, i)
 
 
-    }
-
-    private fun renderSymbol(drawContext: DrawContext, tr: TextRenderer, textColor: Color) {
-        updateSymbol()
-        when (direction) {
-            Direction.DOWN -> drawSymbol(drawContext, tr, textColor)
-            Direction.RIGHT ->drawSymbol(drawContext, tr, textColor)
-            else -> {}
-        }
     }
 
     private fun renderChildren(

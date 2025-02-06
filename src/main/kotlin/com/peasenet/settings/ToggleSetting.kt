@@ -25,6 +25,7 @@ package com.peasenet.settings
 
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiToggle
+import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GavUISettings
 
 /**
@@ -33,20 +34,27 @@ import com.peasenet.gavui.util.GavUISettings
  * @author GT3CH1
  * @version 03-02-2023
  */
-class ToggleSetting(builder: SettingBuilder<ToggleSetting>) : Setting() {
+class ToggleSetting(
+    var topLeft: PointF = PointF(0F, 0F),
+    var width: Float = 0F,
+    var height: Float = 10F,
+    @JvmField
+    var title: String = "",
+    var state: Boolean = false,
+    var hoverable: Boolean = false,
+    var callback: ((ToggleSetting) -> Unit)? = null,
+) : Setting() {
     /**
      * The gui element that is used to display this toggle setting.
      */
     override var gui: GuiToggle = GuiBuilder<GuiToggle>()
-        .setWidth(builder.getWidth())
-        .setHeight(10F)
-        .setTitle(builder.getTitle())
-        .setIsOn(builder.getState())
-        .setCallback {
-            builder.settingCallback?.invoke(this)
-        }
-        .setHoverable(builder.isHoverable())
-        .setTopLeft(builder.getTopLeft())
+        .setTopLeft(topLeft)
+        .setWidth(width)
+        .setHeight(height)
+        .setTitle(title)
+        .setCallback { callback?.invoke(this) }
+        .setHoverable(hoverable)
+        .setIsOn(state)
         .buildToggle()
 
     /**
@@ -59,4 +67,23 @@ class ToggleSetting(builder: SettingBuilder<ToggleSetting>) : Setting() {
             gui.setBackground(if (value) GavUISettings.getColor("gui.color.enabled") else GavUISettings.getColor("gui.color.background"))
             gui.setState(value)
         }
+
+    fun build(): ToggleSetting {
+        gui = GuiBuilder<GuiToggle>()
+            .setTopLeft(topLeft)
+            .setWidth(width)
+            .setHeight(height)
+            .setTitle(title)
+            .setCallback { callback?.invoke(this) }
+            .setHoverable(hoverable)
+            .setIsOn(state)
+            .buildToggle()
+        return this
+    }
+}
+
+
+fun toggleSetting(init: ToggleSetting.() -> Unit): ToggleSetting {
+    val setting = ToggleSetting().apply { init() }
+    return setting.build()
 }

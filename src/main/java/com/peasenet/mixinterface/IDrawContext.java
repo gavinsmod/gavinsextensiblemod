@@ -41,9 +41,9 @@ import net.minecraft.text.Text;
  * @since 02-05-2025
  */
 public interface IDrawContext {
-    VertexConsumerProvider.Immediate getVertexConsumerProvider();
+    VertexConsumerProvider.Immediate gavins_mod$getVertexConsumerProvider();
 
-    void drawText(TextRenderer textRenderer, Text text, float x, float y, Color color, boolean shadow);
+    void gavins_mod$drawText(TextRenderer textRenderer, Text text, float x, float y, Color color, boolean shadow);
 
-    void drawText(TextRenderer textRenderer, String text, float x, float y, Color color, boolean shadow);
+    void gavins_mod$drawText(TextRenderer textRenderer, String text, float x, float y, Color color, boolean shadow);
 }
