@@ -99,12 +99,9 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
 
     private fun renderSymbol(drawContext: DrawContext, tr: TextRenderer, textColor: Color) {
         updateSymbol()
-        val s = symbol.toString()
-        val x = x2 + symbolOffsetX
-        val y = y + symbolOffsetY
         when (direction) {
-            Direction.DOWN -> drawText(drawContext, tr, s, x, (y - 1.0f), textColor)
-            Direction.RIGHT -> drawText(drawContext, tr, s, x, (y + 1.5f), textColor)
+            Direction.DOWN -> drawSymbol(drawContext, tr, textColor)
+            Direction.RIGHT ->drawSymbol(drawContext, tr, textColor)
             else -> {}
         }
     }

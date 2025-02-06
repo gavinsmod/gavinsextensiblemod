@@ -70,7 +70,7 @@ open class GuiDropdown : GuiDraggable {
         updateSymbol()
         val textColor =
             if (frozen) GavUISettings.getColor("gui.color.frozen") else GavUISettings.getColor("gui.color.foreground")
-        drawText(drawContext, tr, symbol.toString(), x2 + symbolOffsetX, y + symbolOffsetY, textColor)
+        super.drawSymbol(drawContext, tr, textColor, null, null)
         super.render(drawContext, tr, mouseX, mouseY, delta)
         if (!isOpen) return
         val toRender = children.stream().filter { child: Gui -> !child.isHidden }

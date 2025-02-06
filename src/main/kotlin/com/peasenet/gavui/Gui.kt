@@ -28,6 +28,7 @@ import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GuiUtil
+import com.peasenet.mixinterface.IDrawContext
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
@@ -317,8 +318,26 @@ open class Gui(builder: GuiBuilder<*>) {
      * @param drawContext - The draw context to use.
      * @param tr          - The text renderer to use.
      */
-    private fun drawSymbol(drawContext: DrawContext, tr: TextRenderer, color: Color) {
-        if (symbol != '\u0000') drawText(drawContext, tr, Text.of(symbol.toString()), x2 - 9f, y + 1.5f, color, false)
+    protected fun drawSymbol(
+        drawContext: DrawContext,
+        tr: TextRenderer,
+        color: Color,
+        offsetX: Float = 0f,
+        offsetY: Float = 0f,
+    ) {
+        if (symbol == '\u0000') return
+        val symbolWidth = tr.getWidth(symbol.toString())
+        val iDrawContext = drawContext as IDrawContext
+        val oX = x2 - symbolWidth - offsetX
+        val oY = y + 1.5f + offsetY
+        iDrawContext.drawText(
+            tr,
+            symbol.toString(),
+            oX,
+            oY,
+            color,
+            false,
+        )
     }
 
     /**
@@ -428,6 +447,7 @@ open class Gui(builder: GuiBuilder<*>) {
     fun hasChildren(): Boolean {
         return children.isNotEmpty()
     }
+
     fun setShrunkForScrollbar(b: Boolean) {
         shrunkForScroll = b
         if (hasChildren()) for (c in children) c.setShrunkForScrollbar(b)
@@ -461,7 +481,12 @@ open class Gui(builder: GuiBuilder<*>) {
         color: Color,
         shadow: Boolean = false,
     ) {
-        drawContext.drawText(textRenderer, text.asOrderedText(), x.toInt(), y.toInt(), color.asInt, shadow)
+        (drawContext as IDrawContext).drawText(textRenderer,
+            text,
+            x,
+            y,
+            color,
+            shadow)
     }
 
     protected fun drawText(
@@ -472,7 +497,13 @@ open class Gui(builder: GuiBuilder<*>) {
         y: Float,
         color: Color,
     ) {
-        drawText(drawContext, textRenderer, Text.of(text), x, y, color, false)
+        (drawContext as IDrawContext).drawText(textRenderer,
+            Text.of(text),
+            x,
+            y,
+            color,
+            false
+        )
     }
 
     companion object {

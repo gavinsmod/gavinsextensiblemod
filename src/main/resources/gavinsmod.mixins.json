@@ -10,6 +10,7 @@
     "MixinClientPlayerEntityNausea",
     "MixinClientPlayNetworkHandler",
     "MixinClientWorld",
+    "MixinDrawContext",
     "MixinGameRenderer",
     "MixinGameRendererBobView",
     "MixinInGameHud",
