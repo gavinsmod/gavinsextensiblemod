@@ -24,6 +24,9 @@
 package com.peasenet.settings
 
 import com.peasenet.gavui.Gui
+import com.peasenet.gavui.GuiDropdown
+import com.peasenet.gavui.color.Color
+import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.PointF
 
 /**
@@ -56,4 +59,9 @@ data class SettingOptions(
     var symbol: Char = '\u0000',
     var cycleIndex: Int = 0,
     var cycleSize: Int = 0,
+    var maxChildren: Int = 4,
+    var defaultMaxChildren: Int = 4,
+    var direction: GuiDropdown.Direction = GuiDropdown.Direction.DOWN,
+    var children: MutableList<Setting> = mutableListOf(),
+    var color: Color = Colors.INDIGO,
 )

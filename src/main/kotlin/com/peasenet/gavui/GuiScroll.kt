@@ -270,14 +270,14 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
     }
 
     private fun clickedOnScrollBox(x: Double, y: Double): Boolean {
-        var scrollBoxX = (x + width - 5f).toFloat()
+        var scrollBoxX = x2 - 5
         var scrollBoxY = (y2) + 2
         val scrollBoxHeight = getScrollBoxHeight()
         if (direction == Direction.RIGHT) {
             scrollBoxX = children[page * maxChildren].x2 + 0f
             scrollBoxY = y.toFloat()
         }
-        if (x >= scrollBoxX && x <= scrollBoxX + 5 && y >= scrollBoxY && y <= scrollBoxY + scrollBoxHeight) {
+        if (x >= scrollBoxX && x <= scrollBoxX + 7 && y >= scrollBoxY && y <= scrollBoxY + scrollBoxHeight) {
             var scrollBarY = (scrollBoxHeight * (page / numPages.toDouble())) + y2 + 3
             var scrollBarX = children[page * maxChildren].x2 + 1
             var scrollBarY2 = ((scrollBarY) + (scrollBoxHeight / (numPages)))

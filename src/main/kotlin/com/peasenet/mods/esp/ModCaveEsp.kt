@@ -25,6 +25,7 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.config.esp.CaveEspConfig
+import com.peasenet.gavui.GuiDropdown
 import com.peasenet.gavui.color.Color
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.Settings
@@ -62,7 +63,7 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
     "gavinsmod.mod.esp.cave", ChatCommand.CaveEsp.chatCommand
 ) {
     init {
-        val subSetting = SettingBuilder<SubSetting>().setTitle(translationKey).buildSubSetting()
+//        val subSetting = SettingBuilder<SubSetting>().setTitle(translationKey).buildSubSetting()
         val colorSetting =
             SettingBuilder<ColorSetting>().setTitle("gavinsmod.generic.color").setColor(getSettings().blockColor)
                 .setCallback {
@@ -84,9 +85,16 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
             }
             .buildCycleSetting()
         searchModeSetting.gui.title = Text.translatable("$searchTranslationKey.$searchMode")
-        subSetting.add(alphaSetting)
-        subSetting.add(colorSetting)
-        subSetting.add(searchModeSetting)
+//        subSetting.add(alphaSetting)
+//        subSetting.add(colorSetting)
+//        subSetting.add(searchModeSetting)
+        val subSetting = subSetting {
+            settings {
+                children = mutableListOf(alphaSetting, colorSetting, searchModeSetting)
+                direction = GuiDropdown.Direction.RIGHT
+                title = translationKey
+            }
+        }
         addSetting(subSetting)
     }
 

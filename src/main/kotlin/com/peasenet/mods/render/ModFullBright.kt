@@ -26,14 +26,12 @@
 package com.peasenet.mods.render
 
 import com.peasenet.config.render.FullbrightConfig
+import com.peasenet.gavui.GuiDropdown
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
 import com.peasenet.mixinterface.ISimpleOption
-import com.peasenet.settings.SettingBuilder
-import com.peasenet.settings.SlideSetting
-import com.peasenet.settings.SubSetting
-import com.peasenet.settings.ToggleSetting
+import com.peasenet.settings.*
 
 /**
  * A mod that allows the client to see very clearly in the absence of a light source.
@@ -61,13 +59,19 @@ class ModFullBright : RenderMod(
                 .setValue(fullbrightConfig.gamma)
                 .setWidth(100).setHeight(10).setCallback { fullbrightConfig.gamma = it.value }
                 .buildSlideSetting()
-        val subSetting =
-            SettingBuilder<SubSetting>().setWidth(100).setHeight(10).setTitle(translationKey).setDefaultMaxChildren(4)
-                .buildSubSetting()
-
-        subSetting.add(gammaFade)
-        subSetting.add(gamma)
-
+//        val subSetting =
+//            SettingBuilder<SubSetting>().setWidth(100).setHeight(10).setTitle(translationKey).setDefaultMaxChildren(4)
+//                .buildSubSetting()
+//
+        val subSetting = subSetting {
+            settings {
+                title = translationKey
+                direction = GuiDropdown.Direction.RIGHT
+                add {
+                    setting = gammaFade
+                }
+            }
+        }
         addSetting(subSetting)
     }
 

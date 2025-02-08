@@ -373,7 +373,7 @@ class SettingBuilder<T : Setting> {
     fun buildColorSetting(): ColorSetting {
 
         return colorSetting {
-            settingOptions = settings {
+            settings {
                 topLeft = getTopLeft()
                 width = getWidth()
                 height = getHeight()
@@ -409,7 +409,16 @@ class SettingBuilder<T : Setting> {
      * @return The built [SubSetting].
      */
     fun buildSubSetting(): SubSetting {
-        return SubSetting(this as SettingBuilder<SubSetting>)
+        return subSetting {
+            settings {
+                topLeft = getTopLeft()
+                width = getWidth()
+                height = getHeight()
+                title = getTranslationKey()
+                hoverable = isHoverable()
+                children = ArrayList(children)
+            }
+        }
     }
 
     /**
@@ -417,7 +426,19 @@ class SettingBuilder<T : Setting> {
      * @return The built [ClickSetting].
      */
     fun buildClickSetting(): ClickSetting {
-        return ClickSetting(this as SettingBuilder<ClickSetting>)
+//        return ClickSetting(this as SettingBuilder<ClickSetting>)
+        return clickSetting {
+            settings {
+                topLeft = getTopLeft()
+                width = getWidth()
+                height = getHeight()
+                title = getTranslationKey()
+                hoverable = isHoverable()
+                color = getColor() ?: Colors.INDIGO
+                transparency = getTransparency()
+            }
+            callback = { settingCallback?.invoke(it as T) }
+        }
     }
 
     /**

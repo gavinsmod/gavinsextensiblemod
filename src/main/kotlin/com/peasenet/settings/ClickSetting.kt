@@ -24,6 +24,7 @@
 package com.peasenet.settings
 
 import com.peasenet.gavui.GavUI
+import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiClick
 
@@ -34,20 +35,27 @@ import com.peasenet.gavui.GuiClick
  * @author GT3CH1
  * @version 07-18-2023
  */
-class ClickSetting(builder: SettingBuilder<ClickSetting>) : Setting() {
+class ClickSetting() : CallbackSetting<ClickSetting>() {
+    override lateinit var gui: GuiClick
+    fun build(): ClickSetting {
+        gui = GuiBuilder<GuiClick>()
+            .setWidth(settingOptions.width)
+            .setHeight(settingOptions.height)
+            .setTitle(settingOptions.title)
+            .setCallback {
+                callback?.invoke(this)
+            }
+            .setHoverable(settingOptions.hoverable)
+            .setBackgroundColor(settingOptions.color)
+            .setTransparency(settingOptions.transparency)
+            .setTopLeft(settingOptions.topLeft)
+            .buildClick()
+        return this
+    }
+}
 
-    override val gui: GuiClick = GuiBuilder<GuiClick>()
-        .setWidth(builder.getWidth())
-        .setHeight(builder.getHeight())
-        .setTitle(builder.getTitle())
-        .setCallback {
-            builder.settingCallback?.invoke(this)
-        }
-        .setHoverable(builder.isHoverable())
-        .setBackgroundColor(builder.getColor() ?: GavUI.backgroundColor())
-        .setTransparency(builder.getTransparency())
-        .setTranslationKey(builder.getTranslationKey())
-        .setSymbol(builder.getSymbol())
-        .setTopLeft(builder.getTopLeft())
-        .buildClick()
+fun clickSetting(block: ClickSetting.() -> Unit): ClickSetting {
+    val setting = ClickSetting()
+    setting.block()
+    return setting.build()
 }

@@ -188,7 +188,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
             .setTopLeft(PointF(x + width / 2f - 170f, y - 15f))
             .setWidth(80f)
             .setHeight(10f)
-            .setTitle(Text.literal("Enabled Only"))
+            .setTitle("gavinsmod.generic.enabledOnly")
             .setHoverable(true)
             .setCallback { page = 0; updateBlockList() }
             .buildToggleSetting()
@@ -205,7 +205,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
             .setTopLeft(resetPos)
             .setWidth(resetWidth)
             .setHeight(10f)
-            .setTitle(resetText)
+            .setTitle("gavinsmod.settings.reset")
             .setBackgroundColor(Colors.DARK_RED)
             .setCallback { resetCallback() }
             .setHoverable(true)

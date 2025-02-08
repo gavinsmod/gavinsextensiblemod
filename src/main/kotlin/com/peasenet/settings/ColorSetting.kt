@@ -35,7 +35,9 @@ import com.peasenet.gavui.color.Colors
  * @author GT3CH1
  * @version 07-18-2023
  */
-class ColorSetting() : CallbackSetting<ColorSetting>() {
+class ColorSetting(
+    settingOptions: SettingOptions = SettingOptions(),
+) : CallbackSetting<ColorSetting>(settingOptions = settingOptions) {
     override lateinit var gui: GuiCycle
 
     var color = Colors.WHITE
@@ -66,6 +68,7 @@ class ColorSetting() : CallbackSetting<ColorSetting>() {
             .setCycleSize(settingOptions.cycleSize)
             .setCurrentCycleIndex(settingOptions.cycleIndex)
             .setBackgroundColor(Colors.COLORS[settingOptions.cycleIndex])
+            .setTopLeft(settingOptions.topLeft)
             .buildCycle()
         return this
     }

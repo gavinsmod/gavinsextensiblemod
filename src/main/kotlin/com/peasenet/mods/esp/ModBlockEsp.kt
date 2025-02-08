@@ -26,6 +26,7 @@ package com.peasenet.mods.esp
 
 import com.peasenet.config.commons.BlockListConfig
 import com.peasenet.config.esp.BlockEspConfig
+import com.peasenet.gavui.GuiDropdown
 import com.peasenet.gavui.color.Color
 import com.peasenet.gui.mod.esp.GuiBlockEsp
 import com.peasenet.main.Settings
@@ -56,7 +57,6 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
 ) {
 
     init {
-        val subSetting = SettingBuilder<SubSetting>().setTitle(translationKey).buildSubSetting()
         val colorSetting =
             SettingBuilder<ColorSetting>().setTitle("gavinsmod.generic.color").setColor(getSettings().blockColor)
                 .setCallback {
@@ -78,13 +78,31 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
             SettingBuilder<ToggleSetting>().setTitle("gavinsmod.generic.tracers").setState(getSettings().blockTracer)
                 .setCallback { getSettings().blockTracer = it.value }
                 .buildToggleSetting()
-        subSetting.add(toggleSetting)
-        subSetting.add(blockTracer)
-        subSetting.add(alphaSetting)
-        subSetting.add(colorSetting)
-        val menu = SettingBuilder<ClickSetting>().setWidth(100f).setHeight(10f).setTitle("gavinsmod.generic.settings")
-            .setCallback { MinecraftClient.getInstance().setScreen(GuiBlockEsp()) }.buildClickSetting()
-        subSetting.add(menu)
+
+        val menu = clickSetting {
+            settings {
+                title = "gavinsmod.generic.settings"
+                callback = {
+                    MinecraftClient.getInstance().setScreen(GuiBlockEsp())
+                }
+                width = 100f
+                height = 10f
+            }
+        }
+        val subSetting = subSetting {
+            settings {
+                title = translationKey
+                children = arrayListOf(
+                    toggleSetting,
+                    blockTracer,
+                    alphaSetting,
+                    colorSetting,
+                    menu
+                )
+                direction = GuiDropdown.Direction.RIGHT
+            }
+        }
+
         addSetting(subSetting)
     }
 

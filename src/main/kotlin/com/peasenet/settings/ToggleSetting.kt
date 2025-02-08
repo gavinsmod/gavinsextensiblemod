@@ -34,7 +34,9 @@ import com.peasenet.gavui.util.GavUISettings
  * @author GT3CH1
  * @version 03-02-2023
  */
-class ToggleSetting : CallbackSetting<ToggleSetting>() {
+class ToggleSetting(
+    settingOptions: SettingOptions = SettingOptions(),
+) : CallbackSetting<ToggleSetting>(settingOptions = settingOptions) {
     override lateinit var gui: GuiToggle
 
     /**

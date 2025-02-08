@@ -23,6 +23,7 @@
  */
 package com.peasenet.settings
 
+import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiScroll
 
@@ -32,26 +33,39 @@ import com.peasenet.gavui.GuiScroll
  * @author GT3CH1
  * @version 03-02-2023
  */
-class SubSetting(builder: SettingBuilder<SubSetting>) : Setting() {
-    /**
-     * The dropdown menu that contains the sub settings.
-     */
-    override val gui: GuiScroll = GuiBuilder<GuiScroll>()
-        .setWidth(builder.getWidth())
-        .setHeight(builder.getHeight())
-        .setTitle(builder.getTitle())
-        .setMaxChildren(builder.getMaxChildren())
-        .setDefaultMaxChildren(builder.getDefaultMaxChildren())
-        .setDirection(builder.getDirection())
-        .buildScroll()
+class SubSetting(
+    settingOptions: SettingOptions = SettingOptions(),
+) : Setting(settingOptions) {
+    override lateinit var gui: GuiScroll
 
-    /**
-     * Adds a new subsetting to this element.
-     *
-     * @param setting - The setting to add.
-     */
-    fun add(setting: Setting) {
-        gui.addElement(setting.gui!!)
-        setting.gui?.hide()
+    fun build(): SubSetting {
+        gui = GuiBuilder<GuiScroll>()
+            .setWidth(settingOptions.width)
+            .setHeight(settingOptions.height)
+            .setTitle(settingOptions.title)
+            .setMaxChildren(settingOptions.maxChildren)
+            .setDefaultMaxChildren(settingOptions.defaultMaxChildren)
+            .setDirection(settingOptions.direction)
+            .setChildren(
+                ArrayList(settingOptions.children.map { it.gui!! })
+            )
+            .buildScroll()
+        return this
     }
+
+    //
+//    /**
+//     * Adds a new subsetting to this element.
+//     *
+//     * @param setting - The setting to add.
+//     */
+//    fun add(init: Setting.() -> Unit) {
+//        settingOptions.children.add(Setting().apply(init))
+//    }
+}
+
+fun subSetting(init: SubSetting.() -> Unit): SubSetting {
+    val setting = SubSetting()
+    setting.init()
+    return setting.build()
 }
