@@ -23,27 +23,46 @@
  */
 package com.peasenet.settings
 
+import com.peasenet.gavui.GavUI
 import com.peasenet.gavui.Gui
-import com.peasenet.gavui.GuiDropdown
 import com.peasenet.gavui.color.Color
-import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.PointF
+import com.peasenet.gavui.util.Direction
 
 /**
  * A class that represents a mod setting. This class should not be instantiated directly.
  * For examples of how to use this class, see the [com.peasenet.settings] package. @author GT3CH1
  * @version 07-18-2023
  */
-abstract class Setting(var settingOptions: SettingOptions = SettingOptions()) {
+abstract class Setting(
+    var topLeft: PointF = PointF(0F, 0F),
+    var width: Float = 0F,
+    var height: Float = 10F,
+    @JvmField
+    var title: String = "",
+    open var state: Boolean = false,
+    var hoverable: Boolean = true,
+    var transparency: Float = -1f,
+    var symbol: Char = '\u0000',
+    var cycleIndex: Int = 0,
+    var cycleSize: Int = 0,
+    var maxChildren: Int = 4,
+    var defaultMaxChildren: Int = 4,
+    var direction: Direction = Direction.DOWN,
+    var children: MutableList<Setting> = mutableListOf(),
+    open var color: Color = GavUI.backgroundColor(),
+    open var value: Float = 0.5f,
+) {
     open val gui: Gui? = null
 
 
-    fun settings(init: SettingOptions.() -> Unit): SettingOptions {
+    fun options(init: SettingOptions.() -> Unit): SettingOptions {
         val settingOptions = SettingOptions()
         settingOptions.init()
-        this.settingOptions = settingOptions
+//        this.settingOptions = settingOptions
         return settingOptions
     }
+
 }
 
 
@@ -61,7 +80,8 @@ data class SettingOptions(
     var cycleSize: Int = 0,
     var maxChildren: Int = 4,
     var defaultMaxChildren: Int = 4,
-    var direction: GuiDropdown.Direction = GuiDropdown.Direction.DOWN,
+    var direction: Direction = Direction.DOWN,
     var children: MutableList<Setting> = mutableListOf(),
-    var color: Color = Colors.INDIGO,
+    var color: Color = GavUI.backgroundColor(),
+    var value: Float = 0.5f,
 )

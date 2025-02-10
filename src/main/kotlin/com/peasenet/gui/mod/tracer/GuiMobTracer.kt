@@ -27,9 +27,8 @@ import com.peasenet.config.tracer.TracerConfig
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gui.mod.GuiMobSelection
 import com.peasenet.main.Settings
-import com.peasenet.settings.ColorSetting
-import com.peasenet.settings.SettingBuilder
-import com.peasenet.settings.ToggleSetting
+import com.peasenet.settings.colorSetting
+import com.peasenet.settings.toggleSetting
 import net.minecraft.item.ItemStack
 import net.minecraft.item.SpawnEggItem
 import net.minecraft.text.Text
@@ -50,44 +49,42 @@ class GuiMobTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtr
     override fun init() {
         val height = 24f
         var pos = PointF(10f, height)
-        hostileColor = SettingBuilder<ColorSetting>()
-            .setTitle("gavinsmod.settings.color.hostileMob")
-            .setColor(settings.hostileMobColor)
-            .setTopLeft(pos)
-            .setCallback { settings.hostileMobColor = it.color }
-            .buildColorSetting()
+        hostileColor = colorSetting {
+            title = "gavinsmod.settings.color.hostileMob"
+            color = settings.hostileMobColor
+            topLeft = pos
+            callback = { settings.hostileMobColor = it.color }
+        }
         pos = pos.add(0f, 12f)
-
-        peacefulColor = SettingBuilder<ColorSetting>()
-            .setTitle("gavinsmod.settings.color.peacefulMob")
-            .setColor(settings.peacefulMobColor)
-            .setTopLeft(pos)
-            .setCallback { settings.peacefulMobColor = it.color }
-            .buildColorSetting()
+        peacefulColor = colorSetting {
+            title = "gavinsmod.settings.color.peacefulMob"
+            color = settings.peacefulMobColor
+            topLeft = pos
+            callback = { settings.peacefulMobColor = it.color }
+        }
         pos = pos.add(0f, 12f)
-        enabledOnly = SettingBuilder<ToggleSetting>()
-            .setTopLeft(pos)
-            .setWidth(0f)
-            .setHeight(10f)
-            .setTitle(Text.literal("Enabled Only"))
-            .setCallback { _ -> updateItemList() }
-            .buildToggleSetting()
+        enabledOnly = toggleSetting {
+            options {
+                topLeft = pos
+                this.height = 10f
+                title = "gavinsmod.settings.enabledOnly"
+                callback = { _ -> updateItemList() }
+            }
+        }
         pos = pos.add(0f, 12f)
-
-        peacefulToggle = SettingBuilder<ToggleSetting>()
-            .setTitle("gavinsmod.settings.mob.hostile")
-            .setState(settings.showHostileMobs)
-            .setTopLeft(pos)
-            .setCallback { settings.showHostileMobs = it.value }
-            .buildToggleSetting()
+        peacefulToggle = toggleSetting {
+            topLeft = pos
+            this.height = 10f
+            title = "gavinsmod.settings.mob.hostile"
+            callback = { settings.showHostileMobs = it.state }
+        }
         pos = pos.add(0f, 12f)
-
-        hostileToggle = SettingBuilder<ToggleSetting>()
-            .setTitle("gavinsmod.settings.mob.peaceful")
-            .setState(settings.showPeacefulMobs)
-            .setTopLeft(pos)
-            .setCallback { settings.showPeacefulMobs = it.value }
-            .buildToggleSetting()
+        hostileToggle = toggleSetting {
+            topLeft = pos
+            this.height = 10f
+            title = "gavinsmod.settings.mob.peaceful"
+            callback = { settings.showPeacefulMobs = it.state }
+        }
         super.init()
     }
 

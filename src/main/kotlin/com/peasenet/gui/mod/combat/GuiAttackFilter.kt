@@ -28,8 +28,8 @@ import com.peasenet.config.commons.MobAttackFilterConfig
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gui.mod.GuiMobSelection
 import com.peasenet.main.Settings
-import com.peasenet.settings.SettingBuilder
 import com.peasenet.settings.ToggleSetting
+import com.peasenet.settings.toggleSetting
 import net.minecraft.item.ItemStack
 import net.minecraft.item.SpawnEggItem
 import net.minecraft.text.Text
@@ -66,26 +66,31 @@ open class GuiAttackFilter(settingKey: String, translationKey: String) :
         showPeacefulToggle = false
         val height = 24f
         var pos = PointF(10f, height)
-        excludePlayers = SettingBuilder<ToggleSetting>().setTitle("gavinsmod.generic.excludePlayers")
-            .setState(config!!.excludePlayers)
-            .setTopLeft(pos)
-            .setWidth(client!!.textRenderer.getWidth(Text.translatable("gavinsmod.generic.excludePlayers")) + 30)
-            .setCallback {
-                config!!.excludePlayers = excludePlayers.value
-            }
-            .buildToggleSetting()
-        pos = pos.add(0f, 12f)
-        enabledOnly =
-            SettingBuilder<ToggleSetting>().setTopLeft(pos).setTitle("gavinsmod.generic.enabledOnly")
-                .setWidth(excludePlayers.gui.width)
-                .setCallback { updateItemList() }
-                .buildToggleSetting()
         val maxWidth = max(
             client!!.textRenderer.getWidth(Text.translatable("gavinsmod.generic.excludePlayers")) + 14f,
-            enabledOnly.gui.width
+            client!!.textRenderer.getWidth(Text.translatable("gavinsmod.generic.enabledOnly")) + 14f
         )
-        excludePlayers.gui.width = maxWidth
-        enabledOnly.gui.width = maxWidth
+//        excludePlayers = SettingBuilder<ToggleSetting>().setTitle("gavinsmod.generic.excludePlayers")
+//            .setState(config!!.excludePlayers)
+//            .setTopLeft(pos)
+//            .setWidth(maxWidth)
+//            .setCallback {
+//                config!!.excludePlayers = excludePlayers.state
+//            }
+//            .buildToggleSetting()
+        excludePlayers = toggleSetting {
+            topLeft = pos
+            title = "gavinsmod.generic.excludePlayers"
+            callback = { config!!.excludePlayers = excludePlayers.state }
+            width = maxWidth
+        }
+        pos = pos.add(0f, 12f)
+        enabledOnly = toggleSetting {
+            topLeft = pos
+            title = "gavinsmod.generic.enabledOnly"
+            callback = { updateItemList() }
+            width= maxWidth
+        }
         additionalGuis.add(excludePlayers.gui)
         super.init()
     }

@@ -62,7 +62,7 @@ class GuiToggle(builder: GuiBuilder<out GuiToggle>) : GuiClick(builder) {
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-
+        clickedGui = this
         val tmpIsOn = isOn
         isOn = !isOn
         if (!super.mouseClicked(mouseX, mouseY, button) || isHidden) {

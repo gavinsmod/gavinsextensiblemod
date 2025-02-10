@@ -26,12 +26,11 @@
 package com.peasenet.mods.render
 
 import com.peasenet.config.render.FullbrightConfig
-import com.peasenet.gavui.GuiDropdown
+import com.peasenet.gavui.util.Direction
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
 import com.peasenet.mixinterface.ISimpleOption
-import com.peasenet.settings.*
 
 /**
  * A mod that allows the client to see very clearly in the absence of a light source.
@@ -49,30 +48,22 @@ class ModFullBright : RenderMod(
 
     init {
         fullbrightConfig = Settings.getConfig("fullbright")
-        val gammaFade = SettingBuilder<ToggleSetting>().setTitle("gavinsmod.settings.render.fullbright.gammafade")
-            .setState(fullbrightConfig.gammaFade)
-            .setCallback { fullbrightConfig.gammaFade = it.value }
-            .buildToggleSetting()
-
-        val gamma =
-            SettingBuilder<SlideSetting>().setTitle("gavinsmod.settings.render.fullbright.gamma")
-                .setValue(fullbrightConfig.gamma)
-                .setWidth(100).setHeight(10).setCallback { fullbrightConfig.gamma = it.value }
-                .buildSlideSetting()
-//        val subSetting =
-//            SettingBuilder<SubSetting>().setWidth(100).setHeight(10).setTitle(translationKey).setDefaultMaxChildren(4)
-//                .buildSubSetting()
-//
-        val subSetting = subSetting {
-            settings {
-                title = translationKey
-                direction = GuiDropdown.Direction.RIGHT
-                add {
-                    setting = gammaFade
+        subSettings {
+            title = translationKey
+            direction = Direction.RIGHT
+            toggleSetting {
+                title = "gavinsmod.settings.render.fullbright.gammafade"
+                state = isActive
+                callback = { isActive = it.state }
+            }
+            slideSetting {
+                title = "gavinsmod.settings.render.fullbright.gamma"
+                value = fullbrightConfig.gamma
+                callback = {
+                    fullbrightConfig.gamma = it.value
                 }
             }
         }
-        addSetting(subSetting)
     }
 
     override fun activate() {

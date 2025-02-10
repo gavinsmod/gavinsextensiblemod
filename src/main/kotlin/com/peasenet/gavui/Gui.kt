@@ -481,12 +481,14 @@ open class Gui(builder: GuiBuilder<*>) {
         color: Color,
         shadow: Boolean = false,
     ) {
-        (drawContext as IDrawContext).`gavins_mod$drawText`(textRenderer,
+        (drawContext as? IDrawContext)?.`gavins_mod$drawText`(
+            textRenderer,
             text,
             x,
             y,
             color,
-            shadow)
+            shadow
+        )
     }
 
     protected fun drawText(
@@ -497,13 +499,18 @@ open class Gui(builder: GuiBuilder<*>) {
         y: Float,
         color: Color,
     ) {
-        (drawContext as IDrawContext).`gavins_mod$drawText`(textRenderer,
+        (drawContext as IDrawContext).`gavins_mod$drawText`(
+            textRenderer,
             Text.of(text),
             x,
             y,
             color,
             false
         )
+    }
+
+    override fun hashCode(): Int {
+        return uUID.hashCode()
     }
 
     companion object {

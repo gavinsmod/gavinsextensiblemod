@@ -31,9 +31,6 @@ import com.peasenet.gui.mod.waypoint.GuiWaypoint
 import com.peasenet.main.Settings
 import com.peasenet.mods.ModCategory
 import com.peasenet.mods.render.waypoints.Waypoint
-import com.peasenet.settings.ClickSetting
-import com.peasenet.settings.SettingBuilder
-import com.peasenet.settings.SubSetting
 import com.peasenet.util.Dimension
 import com.peasenet.util.PlayerUtils
 import com.peasenet.util.RenderUtils
@@ -43,7 +40,6 @@ import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gl.ShaderProgramKeys
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.text.Text
 import net.minecraft.util.math.Box
 
 /**
@@ -82,11 +78,11 @@ class ModWaypoint : RenderMod(
 
     override fun reloadSettings() {
         modSettings.clear()
-        setting =
-            SettingBuilder<SubSetting>().setWidth(100f).setHeight(10f).setTitle("gavinsmod.mod.render.waypoints").buildSubSetting()
-        openMenu = SettingBuilder<ClickSetting>().setTitle("gavinsmod.settings.render.waypoints.add")
-            .setCallback { MinecraftClient.getInstance().setScreen(GuiWaypoint()) }.setSymbol('+').buildClickSetting()
-        addSetting(openMenu)
+        clickSetting {
+            title = "gavinsmod.settings.render.waypoints.add"
+            callback = { MinecraftClient.getInstance().setScreen(GuiWaypoint()) }
+            symbol = '+'
+        }
         val waypoints = Settings.getConfig<WaypointConfig>("waypoints").getLocations().stream()
             .sorted(Comparator.comparing { obj: Waypoint -> obj.name })
         for (w in waypoints.toArray()) createWaypoint(w as Waypoint)
@@ -98,17 +94,20 @@ class ModWaypoint : RenderMod(
      * @param waypoint - The waypoint to edit.
      */
     private fun createWaypoint(waypoint: Waypoint) {
-        val clickSetting = SettingBuilder<ClickSetting>().setTitle(Text.literal(waypoint.name)).setCallback {
-            MinecraftClient.getInstance().setScreen(GuiWaypoint(waypoint))
-        }.setHoverable(true).setBackgroundColor(waypoint.color).setTransparency(0.5f).buildClickSetting()
-        addSetting(clickSetting)
+        clickSetting {
+            title = waypoint.name
+            callback = { MinecraftClient.getInstance().setScreen(GuiWaypoint(waypoint)) }
+            hoverable = true
+            color = waypoint.color
+            transparency = 0.5f
+        }
     }
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         val playerDimension = Dimension.fromValue(MinecraftClient.getInstance().player!!.world.dimension.effects.path!!)
         val waypointLocs =
             Settings.getConfig<WaypointConfig>("waypoints").getLocations().filter { w -> w.canRender(playerDimension) }
-        if (waypointLocs.isEmpty()) return;
+        if (waypointLocs.isEmpty()) return
         RenderUtils.setupRender(matrixStack)
         RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR)
         val entry = matrixStack.peek().positionMatrix
@@ -130,10 +129,5 @@ class ModWaypoint : RenderMod(
 
     override fun onCameraViewBob(c: CameraBob) {
         if (Settings.getConfig<TracerConfig>("tracer").viewBobCancel) c.cancel()
-    }
-
-    companion object {
-        private lateinit var setting: SubSetting
-        private lateinit var openMenu: ClickSetting
     }
 }

@@ -23,32 +23,29 @@
  */
 package com.peasenet.settings
 
-import com.peasenet.gavui.GavUI
-import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiClick
 
 /**
  * A setting that can be clicked. This is purely dependent on the given callback.
  *
- * @param builder - The [SettingBuilder] used to create this setting.
  * @author GT3CH1
  * @version 07-18-2023
  */
-class ClickSetting() : CallbackSetting<ClickSetting>() {
+class ClickSetting() : CallbackSetting<ClickSetting>(hoverable = true) {
     override lateinit var gui: GuiClick
     fun build(): ClickSetting {
         gui = GuiBuilder<GuiClick>()
-            .setWidth(settingOptions.width)
-            .setHeight(settingOptions.height)
-            .setTitle(settingOptions.title)
+            .setWidth(width)
+            .setHeight(height)
+            .setTitle(title)
             .setCallback {
                 callback?.invoke(this)
             }
-            .setHoverable(settingOptions.hoverable)
-            .setBackgroundColor(settingOptions.color)
-            .setTransparency(settingOptions.transparency)
-            .setTopLeft(settingOptions.topLeft)
+            .setHoverable(hoverable)
+            .setBackgroundColor(color)
+            .setTransparency(transparency)
+            .setTopLeft(topLeft)
             .buildClick()
         return this
     }

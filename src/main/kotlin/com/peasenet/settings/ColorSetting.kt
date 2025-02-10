@@ -23,55 +23,74 @@
  */
 package com.peasenet.settings
 
-import com.peasenet.gavui.Gui
+import com.peasenet.gavui.GavUI
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiCycle
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
+import com.peasenet.gavui.math.PointF
 
 /**
  * A setting that allows the user to change a color value.
- * @param builder - The setting builder.
  * @author GT3CH1
  * @version 07-18-2023
  */
 class ColorSetting(
-    settingOptions: SettingOptions = SettingOptions(),
-) : CallbackSetting<ColorSetting>(settingOptions = settingOptions) {
-    override lateinit var gui: GuiCycle
-
-    var color = Colors.WHITE
-        get() = getColor(gui.currentIndex)
-        set(value) {
-            field = value
-            gui.currentIndex = Colors.COLORS.indexOf(value)
-        }
-
-
-    private fun getColor(index: Int): Color {
-        return Colors.COLORS[index]
-    }
+    topLeft: PointF = PointF(0F, 0F),
+    width: Float = 0F,
+    height: Float = 10F,
+    title: String = "",
+    hoverable: Boolean = true,
+    transparency: Float = -1f,
+    symbol: Char = '\u0000',
+    cycleIndex: Int = 0,
+    cycleSize: Int = 0,
+    color: Color = GavUI.backgroundColor(),
+    override var callback: ((ColorSetting) -> Unit)? = null,
+) : CallbackSetting<ColorSetting>(
+    topLeft,
+    width,
+    height,
+    title,
+    hoverable = hoverable,
+    transparency = transparency,
+    symbol = symbol,
+    cycleIndex = cycleIndex,
+    cycleSize = cycleSize,
+    color = color,
+    callback = callback
+) {
+    override var gui: GuiCycle = GuiCycle(GuiBuilder())
 
     fun build(): ColorSetting {
         gui = GuiBuilder<GuiCycle>()
-            .setWidth(settingOptions.width)
-            .setHeight(settingOptions.height)
-            .setTitle(settingOptions.title)
+            .setWidth(width)
+            .setHeight(height)
+            .setTitle(title)
             .setCallback {
-                var index = it.currentIndex
-                index = (index + 1) % Colors.COLORS.size
-                it.currentIndex = index
-                it.setBackground(Colors.COLORS[index])
+//                var index = it.currentIndex
+//                index = (index + 1) % Colors.COLORS.size
+//                it.currentIndex = index
+                it.setBackground(Colors.COLORS[it.currentIndex])
                 callback?.invoke(this)
             }
-            .setHoverable(settingOptions.hoverable)
-            .setCycleSize(settingOptions.cycleSize)
-            .setCurrentCycleIndex(settingOptions.cycleIndex)
-            .setBackgroundColor(Colors.COLORS[settingOptions.cycleIndex])
-            .setTopLeft(settingOptions.topLeft)
+            .setHoverable(hoverable)
+            .setCycleSize(Colors.COLORS.size)
+            .setBackgroundColor(color)
+            .setCurrentCycleIndex(Colors.COLORS.indexOf(color))
+            .setTopLeft(topLeft)
             .buildCycle()
         return this
     }
+
+    override var color: Color = color
+        get() {
+            return gui.backgroundColor
+        }
+        set(value) {
+            gui.setBackground(value)
+            field = value
+        }
 }
 
 fun colorSetting(init: ColorSetting.() -> Unit): ColorSetting {

@@ -27,6 +27,8 @@ package com.peasenet.mods.esp
 import com.peasenet.gavui.color.Color
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.RenderUtils.applyRegionalRenderOffset
+import com.peasenet.util.RenderUtils.getLerpedPos
+import com.peasenet.util.RenderUtils.renderEntityEsp
 import net.minecraft.client.gl.GlUsage
 import net.minecraft.client.gl.VertexBuffer
 import net.minecraft.client.util.math.MatrixStack
@@ -73,19 +75,23 @@ abstract class EntityEsp<T : Entity>(
 
     protected fun render(matrixStack: MatrixStack, partialTicks: Float) {
         val region = RenderUtils.getCameraRegionPos()
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glEnable(GL11.GL_BLEND)
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+        GL11.glDisable(GL11.GL_DEPTH_TEST)
         matrixStack.push()
         applyRegionalRenderOffset(matrixStack, region)
         for (e in espList) {
-            RenderUtils.renderEntityEsp(
+            val lerped = getLerpedPos(e, partialTicks).subtract(region.toVec3d())
+            matrixStack.translate(
+                e.x + lerped.x, e.y + lerped.y, e.z + lerped.z
+            )
+            matrixStack.scale(config.espSize / 0.25f, config.espSize / 0.25f, config.espSize / 0.25f)
+            val bb = e.boundingBox.offset(-e.x, -e.y, -e.z)
+            renderEntityEsp(
                 matrixStack,
-                partialTicks,
-                e,
+                bb,
                 getColor(e),
-                config.alpha,
-                region
+                config.alpha
             )
         }
         RenderUtils.cleanupRender(matrixStack)

@@ -26,10 +26,6 @@ package com.peasenet.mods.gui
 import com.peasenet.gavui.util.GavUISettings
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
-import com.peasenet.settings.ColorSetting
-import com.peasenet.settings.SettingBuilder
-import com.peasenet.settings.SlideSetting
-import com.peasenet.settings.ToggleSetting
 import org.lwjgl.glfw.GLFW
 
 /**
@@ -44,67 +40,54 @@ class ModGuiSettings : GuiMod(
     GLFW.GLFW_KEY_O
 ) {
     init {
-        val guiSounds = SettingBuilder<ToggleSetting>()
-            .setTitle("gavinsmod.settings.gui.sound")
-            .setState(GavUISettings.getBool("gui.sound"))
-            .setCallback { GavUISettings.add("gui.sound", it.value) }
-            .buildToggleSetting()
-
         val fgColor = GavUISettings.getColor("gui.color.foreground")
         val bgColor = GavUISettings.getColor("gui.color.background")
         val catColor = GavUISettings.getColor("gui.color.category")
         val enColor = GavUISettings.getColor("gui.color.enabled")
         val borderColor = GavUISettings.getColor("gui.color.border")
         val frozenColor = GavUISettings.getColor("gui.color.frozen")
-
-        val foregroundColorSetting = SettingBuilder<ColorSetting>()
-            .setTitle("gavinsmod.settings.gui.color.foreground")
-            .setColor(fgColor)
-            .setCallback { GavUISettings.add("gui.color.foreground", it.color) }
-            .buildColorSetting()
-
-        val backgroundColorSetting = SettingBuilder<ColorSetting>()
-            .setTitle("gavinsmod.settings.gui.color.background")
-            .setColor(bgColor)
-            .setCallback { GavUISettings.add("gui.color.background", it.color) }
-            .buildColorSetting()
-
-        val categoryColorSetting = SettingBuilder<ColorSetting>()
-            .setTitle("gavinsmod.settings.gui.color.category")
-            .setColor(catColor)
-            .setCallback { GavUISettings.add("gui.color.category", it.color) }
-            .buildColorSetting()
-
-        val enabledColorSetting = SettingBuilder<ColorSetting>()
-            .setTitle("gavinsmod.settings.gui.color.enabled")
-            .setColor(enColor)
-            .setCallback { GavUISettings.add("gui.color.enabled", it.color) }
-            .buildColorSetting()
-
-        val borderColorSetting = SettingBuilder<ColorSetting>()
-            .setTitle("gavinsmod.settings.gui.color.border")
-            .setColor(borderColor)
-            .setCallback { GavUISettings.add("gui.color.border", it.color) }
-            .buildColorSetting()
-
-        val frozenColorSetting = SettingBuilder<ColorSetting>()
-            .setTitle("gavinsmod.settings.gui.color.frozen")
-            .setColor(frozenColor)
-            .setCallback { GavUISettings.add("gui.color.frozen", it.color) }
-            .buildColorSetting()
-
-        val guiAlpha = SettingBuilder<SlideSetting>().setTitle("gavinsmod.settings.alpha")
-            .setValue(GavUISettings.getFloat("gui.alpha"))
-            .setCallback { GavUISettings.add("gui.alpha", it.value) }
-            .buildSlideSetting()
-        addSetting(guiAlpha)
-        addSetting(backgroundColorSetting)
-        addSetting(foregroundColorSetting)
-        addSetting(categoryColorSetting)
-        addSetting(enabledColorSetting)
-        addSetting(frozenColorSetting)
-        addSetting(borderColorSetting)
-        addSetting(guiSounds)
+        colorSetting {
+            title = "gavinsmod.settings.gui.color.foreground"
+            color = fgColor
+            callback = {
+                GavUISettings.add("gui.color.foreground", it.color)
+            }
+        }
+        colorSetting {
+            title = "gavinsmod.settings.gui.color.background"
+            color = bgColor
+            callback = { GavUISettings.add("gui.color.background", it.color) }
+        }
+        colorSetting {
+            title = "gavinsmod.settings.gui.color.category"
+            color = catColor
+            callback = { GavUISettings.add("gui.color.category", it.color) }
+        }
+        colorSetting {
+            title = "gavinsmod.settings.gui.color.enabled"
+            color = enColor
+            callback = { GavUISettings.add("gui.color.enabled", it.color) }
+        }
+        colorSetting {
+            title = "gavinsmod.settings.gui.color.border"
+            color = borderColor
+            callback = { GavUISettings.add("gui.color.border", it.color) }
+        }
+        colorSetting {
+            title = "gavinsmod.settings.gui.color.frozen"
+            color = frozenColor
+            callback = { GavUISettings.add("gui.color.frozen", it.color) }
+        }
+        slideSetting {
+            title = "gavinsmod.settings.alpha"
+            value = GavUISettings.getFloat("gui.alpha")
+            callback = { GavUISettings.add("gui.alpha", it.value) }
+        }
+        toggleSetting {
+            title = "gavinsmod.settings.gui.sound"
+            state = GavUISettings.getBool("gui.sound")
+            callback = { GavUISettings.add("gui.sound", it.state) }
+        }
     }
 
     override fun activate() {

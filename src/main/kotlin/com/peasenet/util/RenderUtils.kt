@@ -26,11 +26,9 @@
 package com.peasenet.util
 
 import com.mojang.blaze3d.systems.RenderSystem
-import com.peasenet.config.esp.EspConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.main.GavinsModClient
-import com.peasenet.main.Settings
 import com.peasenet.mixinterface.ISimpleOption
 import com.peasenet.util.math.MathUtils
 import net.minecraft.client.MinecraftClient
@@ -39,7 +37,10 @@ import net.minecraft.client.gl.VertexBuffer
 import net.minecraft.client.render.*
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
-import net.minecraft.util.math.*
+import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Box
+import net.minecraft.util.math.MathHelper
+import net.minecraft.util.math.Vec3d
 import net.minecraft.world.chunk.Chunk
 import org.joml.Matrix4f
 import org.joml.Vector3f
@@ -246,48 +247,10 @@ object RenderUtils {
         val tessellator = RenderSystem.renderThreadTesselator()
         val bb = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION)
         drawOutlinedBox(box, bb)
-        var built = bb.end()
+        val built = bb.end()
         vertexBuffer.bind()
         vertexBuffer.upload(built)
         VertexBuffer.unbind()
-    }
-
-    /**
-     * Draws an outlined box. This will lerp the box to the current position of the entity.
-     * @param partialTicks The delta time.
-     * @param bufferBuilder The buffer builder to draw with.
-     * @param matrix4f The matrix to draw with.
-     * @param entity The entity to draw the box around.
-     * @param color The color of the box.
-     * @param alpha The alpha of the box.
-     */
-    fun drawOutlinedBox(
-        partialTicks: Float,
-        bufferBuilder: BufferBuilder,
-        matrix4f: Matrix4f,
-        entity: Entity,
-        color: Color,
-        alpha: Float,
-        lerp: Boolean = true,
-    ) {
-
-        var box = entity.boundingBox
-        if (lerp) {
-            val lerpedX = MathHelper.lerp(partialTicks.toDouble(), entity.prevX, entity.x) - entity.x
-            val lerpedY = MathHelper.lerp(partialTicks.toDouble(), entity.prevY, entity.y) - entity.y
-            val lerpedZ = MathHelper.lerp(partialTicks.toDouble(), entity.prevZ, entity.z) - entity.z
-            box = Box(
-                lerpedX + box.minX,
-                lerpedY + box.minY,
-                lerpedZ + box.minZ,
-                lerpedX + box.maxX,
-                lerpedY + box.maxY,
-                lerpedZ + box.maxZ
-            )
-        }
-        drawOutlinedBox(
-            box, bufferBuilder, matrix4f, color, alpha
-        )
     }
 
     /**
@@ -392,7 +355,6 @@ object RenderUtils {
      * @param buffer The buffer builder to draw with.
      * @param matrix4f The matrix to draw with.
      * @param partialTicks The delta time.
-     * @param end The end point of the line.
      * @param color The color of the line.
      * @param alpha The alpha of the line.
      */
@@ -451,29 +413,6 @@ object RenderUtils {
     }
 
 
-    fun drawOutlinedPlane(
-        buffer: BufferBuilder,
-        matrix4f: Matrix4f,
-        start: Vec3d,
-        end: Vec3d,
-        color: Color = Colors.WHITE,
-        alpha: Float = 1f,
-        withOffset: Boolean = false,
-    ) {
-        if (!withOffset) {
-            val box = Box(
-                start.x, start.y, start.z, end.x, end.y, end.z
-            )
-            drawOutlinedBox(box, buffer, matrix4f, color, alpha)
-        } else {
-            val box = Box(
-                start.subtract(getCameraRegionPos().toVec3d()),
-                end.subtract(getCameraRegionPos().toVec3d())
-            )
-            drawOutlinedBox(box, buffer, matrix4f, color, alpha)
-        }
-    }
-
     /**
      * Draws a line from the center of the clients screen to the given end point.
      * @param buffer The buffer builder to draw with.
@@ -503,26 +442,6 @@ object RenderUtils {
             return
         }
         drawSingleLine(buffer, matrix4f, start.toVector3f(), end.toVector3f(), color, alpha)
-    }
-
-    fun drawSingleLine(
-        buffer: BufferBuilder,
-        matrix4f: Matrix4f,
-        start: Vec3d,
-        direction: Direction,
-        color: Color = Colors.WHITE,
-        alpha: Float = 1f,
-        withOffset: Boolean = false,
-    ) {
-        val end = when (direction) {
-            Direction.UP -> start.add(0.0, 1.0, 0.0)
-            Direction.DOWN -> start.add(0.0, -1.0, 0.0)
-            Direction.NORTH -> start.add(0.0, 0.0, -1.0)
-            Direction.SOUTH -> start.add(0.0, 0.0, 1.0)
-            Direction.EAST -> start.add(1.0, 0.0, 0.0)
-            Direction.WEST -> start.add(-1.0, 0.0, 0.0)
-        }
-        drawSingleLine(buffer, matrix4f, start, end, color, alpha, withOffset)
     }
 
     /**
@@ -594,9 +513,9 @@ object RenderUtils {
      */
     fun cleanupRender(matrixStack: MatrixStack) {
         matrixStack.pop()
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDisable(GL11.GL_BLEND);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
+        GL11.glEnable(GL11.GL_DEPTH_TEST)
+        GL11.glDisable(GL11.GL_BLEND)
     }
 
     /**
@@ -604,7 +523,7 @@ object RenderUtils {
      * @param delta The delta time.
      * @return The look vector of the player.
      */
-    fun getLookVec(delta: Float): Vec3d {
+    private fun getLookVec(delta: Float): Vec3d {
         val mc = MinecraftClient.getInstance()
         val pitch = mc.player!!.getPitch(delta)
         val yaw = mc.player!!.getYaw(delta)
@@ -617,12 +536,12 @@ object RenderUtils {
      * applying the regional render offset.
      */
     fun setupRender(matrixStack: MatrixStack) {
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glEnable(GL11.GL_BLEND)
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+        GL11.glDisable(GL11.GL_DEPTH_TEST)
         matrixStack.push()
         val region = getCameraRegionPos()
-        applyRegionalRenderOffset(matrixStack, region);
+        applyRegionalRenderOffset(matrixStack, region)
     }
 
     /**
@@ -650,8 +569,8 @@ object RenderUtils {
      * @param partialTicks The delta time.
      */
     private fun getCenterOfScreen(partialTicks: Float): Vec3d {
-        val regionVec = getCameraRegionPos().toVec3d();
-        return getLookVec(partialTicks).add(getCameraPos()).subtract(regionVec);
+        val regionVec = getCameraRegionPos().toVec3d()
+        return getLookVec(partialTicks).add(getCameraPos()).subtract(regionVec)
     }
 
     /**
@@ -692,25 +611,13 @@ object RenderUtils {
 
     fun renderEntityEsp(
         matrixStack: MatrixStack,
-        partialTicks: Float,
-        e: Entity,
+        box: Box,
         color: Color,
         alpha: Float,
-        region: RegionPos,
-        config: EspConfig = Settings.getConfig("esp"),
     ) {
         matrixStack.push()
         RenderSystem.setShaderColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-        matrixStack.push()
-        val lerped = getLerpedPos(e, partialTicks).subtract(region.toVec3d())
-        matrixStack.translate(
-            e.x + lerped.x, e.y + lerped.y, e.z + lerped.z
-        );
-        matrixStack.scale(config.espSize / 0.25f, config.espSize / 0.25f, config.espSize / 0.25f)
-        var bb = e.boundingBox.offset(-e.x, -e.y, -e.z)
-        drawOutlinedBox(bb, matrixStack)
-
-        matrixStack.pop()
+        drawOutlinedBox(box, matrixStack)
         matrixStack.pop()
     }
 }

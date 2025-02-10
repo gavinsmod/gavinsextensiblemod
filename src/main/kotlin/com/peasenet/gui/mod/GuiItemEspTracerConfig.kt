@@ -29,13 +29,11 @@ import com.peasenet.gavui.GavUI
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiScroll
+import com.peasenet.gavui.math.PointF
 import com.peasenet.gui.GuiElement
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
-import com.peasenet.settings.ClickSetting
-import com.peasenet.settings.ColorSetting
-import com.peasenet.settings.SettingBuilder
-import com.peasenet.settings.ToggleSetting
+import com.peasenet.settings.*
 import com.peasenet.util.data.ItemEntityFilter
 import net.minecraft.text.Text
 
@@ -94,45 +92,81 @@ class GuiItemEspTracerConfig(
         startX = offsetX.toFloat() + 2f
         startY = offsetY.toFloat() + 2f
 
-        colorSetting =
-            SettingBuilder<ColorSetting>().setTitle("gavinsmod.generic.color")
-                .setColor(config.itemColor)
-                .setTopLeft(startX, startY)
-                .setWidth(screenWidth - padding)
-                .setCallback { config.itemColor = it.color }
-                .buildColorSetting()
+//            SettingBuilder<ColorSetting>().setTitle("gavinsmod.generic.color")
+//                .setColor(config.itemColor)
+//                .setTopLeft(startX, startY)
+//                .setWidth(screenWidth - padding)
+//                .setCallback { config.itemColor = it.color }
+//                .buildColorSetting()
+
+        colorSetting = colorSetting {
+            title = "gavinsmod.generic.color"
+            color = config.itemColor
+            topLeft = PointF(startX, startY)
+            width = (screenWidth - padding).toFloat()
+            callback = { config.itemColor = it.color }
+        }
         startY += 12f
-        filterCheckbox =
-            SettingBuilder<ToggleSetting>().setTitle("gavinsmod.settings.filter.custom").setHeight(10f)
-                .setTopLeft(startX, startY)
-                .setWidth(screenWidth - padding)
-                .setCallback {
-                    config.useItemEspFilter = it.value
-                }
-                .setState(config.useItemEspFilter)
-                .buildToggleSetting()
+//        filterCheckbox =
+//            SettingBuilder<ToggleSetting>().setTitle("gavinsmod.settings.filter.custom").setHeight(10f)
+//                .setTopLeft(startX, startY)
+//                .setWidth(screenWidth - padding)
+//                .setCallback {
+//                    config.useItemEspFilter = it.state
+//                }
+//                .setState(config.useItemEspFilter)
+//                .buildToggleSetting()
+        filterCheckbox = toggleSetting {
+            title = "gavinsmod.settings.filter.custom"
+            height = 10f
+            topLeft = PointF(startX, startY)
+            width = (screenWidth - padding).toFloat()
+            callback = { config.useItemEspFilter = it.state }
+            state = config.useItemEspFilter
+        }
         startY += 12f
-        addFilterButton =
-            SettingBuilder<ClickSetting>().setTitle("gavinsmod.settings.filter.add").setTopLeft(startX, startY)
-                .setHeight(10f)
-                .setWidth(screenWidth - padding).setCallback {
-                    minecraftClient.setScreen(
-                        GuiItemFilter(
-                            this, ItemEntityFilter(
-                                "A Cool Name",
-                                "A cool item name",
-                            ), config
-                        )
+//        addFilterButton =
+//            SettingBuilder<ClickSetting>().setTitle("gavinsmod.settings.filter.add").setTopLeft(startX, startY)
+//                .setHeight(10f)
+//                .setWidth(screenWidth - padding).setCallback {
+//                    minecraftClient.setScreen(
+//                        GuiItemFilter(
+//                            this, ItemEntityFilter(
+//                                "A Cool Name",
+//                                "A cool item name",
+//                            ), config
+//                        )
+//                    )
+//                }
+//                .setSymbol('+')
+//                .buildClickSetting()
+        addFilterButton = clickSetting {
+            title = "gavinsmod.settings.filter.add"
+            topLeft = PointF(startX, startY)
+            height = 10f
+            width = (screenWidth - padding).toFloat()
+            callback = {
+                minecraftClient.setScreen(
+                    GuiItemFilter(
+                        this@GuiItemEspTracerConfig, ItemEntityFilter(
+                            "A Cool Name",
+                            "A cool item name",
+                        ), config
                     )
-                }
-                .setSymbol('+')
-                .buildClickSetting()
+                )
+            }
+            symbol = '+'
+        }
         startY += 12f
-        var filterChildren: ArrayList<Gui> = ArrayList()
+        val filterChildren: ArrayList<Gui> = ArrayList()
         for (filter in config.itemFilterList) {
-            val guiClick = SettingBuilder<ClickSetting>().setTitle(filter.filterName).setHeight(10f).setWidth(100f)
-                .setBackgroundColor(if (filter.enabled) GavUI.enabledColor() else GavUI.backgroundColor())
-                .setCallback { minecraftClient.setScreen(GuiItemFilter(this, filter, config)) }.buildClickSetting()
+            val guiClick = clickSetting {
+                title = filter.filterName
+                height = 10f
+                width = 100f
+                color = if (filter.enabled) GavUI.enabledColor() else GavUI.backgroundColor()
+                callback = { minecraftClient.setScreen(GuiItemFilter(this@GuiItemEspTracerConfig, filter, config)) }
+            }
             filterChildren.add(guiClick.gui)
         }
         filterDropdown =

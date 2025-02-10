@@ -23,45 +23,81 @@
  */
 package com.peasenet.settings
 
-import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiScroll
 
 /**
  * A setting that contains multiple sub settings within a dropdown element.
- * @param builder The SettingBuilder to use.
  * @author GT3CH1
  * @version 03-02-2023
  */
 class SubSetting(
-    settingOptions: SettingOptions = SettingOptions(),
-) : Setting(settingOptions) {
+) : Setting() {
     override lateinit var gui: GuiScroll
 
     fun build(): SubSetting {
         gui = GuiBuilder<GuiScroll>()
-            .setWidth(settingOptions.width)
-            .setHeight(settingOptions.height)
-            .setTitle(settingOptions.title)
-            .setMaxChildren(settingOptions.maxChildren)
-            .setDefaultMaxChildren(settingOptions.defaultMaxChildren)
-            .setDirection(settingOptions.direction)
+            .setWidth(width)
+            .setHeight(height)
+            .setTitle(title)
+            .setMaxChildren(maxChildren)
+            .setDefaultMaxChildren(defaultMaxChildren)
+            .setDirection(direction)
             .setChildren(
-                ArrayList(settingOptions.children.map { it.gui!! })
+                ArrayList(children.map { it.gui!! })
             )
             .buildScroll()
         return this
     }
 
-    //
-//    /**
-//     * Adds a new subsetting to this element.
-//     *
-//     * @param setting - The setting to add.
-//     */
-//    fun add(init: Setting.() -> Unit) {
-//        settingOptions.children.add(Setting().apply(init))
-//    }
+    fun toggleSetting(init: ToggleSetting.() -> Unit): ToggleSetting {
+        var setting = ToggleSetting()
+        setting.init()
+        setting = setting.build()
+        children.add(setting)
+        return setting
+    }
+
+    fun clickSetting(init: ClickSetting.() -> Unit): ClickSetting {
+        var setting = ClickSetting()
+        setting.init()
+        setting = setting.build()
+        children.add(setting)
+        return setting
+    }
+
+    fun subSetting(init: SubSetting.() -> Unit): SubSetting {
+        var setting = SubSetting()
+        setting.init()
+        setting = setting.build()
+        children.add(setting)
+        return setting
+    }
+
+    fun slideSetting(init: SlideSetting.() -> Unit): SlideSetting {
+        var setting = SlideSetting()
+        setting.init()
+        setting = setting.build()
+        children.add(setting)
+        return setting
+    }
+
+    fun colorSetting(init: ColorSetting.() -> Unit): ColorSetting {
+        var setting = ColorSetting()
+        setting.init()
+        setting = setting.build()
+        children.add(setting)
+        return setting
+    }
+
+    fun cycleSetting(init: CycleSetting.() -> Unit): CycleSetting {
+        var setting = CycleSetting()
+        setting.init()
+        setting = setting.build()
+        children.add(setting)
+        return setting
+    }
+
 }
 
 fun subSetting(init: SubSetting.() -> Unit): SubSetting {

@@ -27,6 +27,7 @@ package com.peasenet.gavui
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
+import com.peasenet.gavui.util.Direction
 import com.peasenet.gavui.util.GuiUtil
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
@@ -124,18 +125,19 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
     }
 
 
-    override fun mouseScrolled(x: Double, y: Double, scroll: Double): Boolean {
+    override fun mouseScrolled(mouseX: Double, mouseY: Double, amount: Double): Boolean {
         if (hasChildren() && isOpen) {
             for (gui in children) {
-                if (!gui.isHidden && gui.mouseWithinGui(x.toInt(), y.toInt()) && gui is GuiScroll) {
-                    if (gui.isOpen) gui.mouseScrolled(x, y, scroll)
-                    else doScroll(scroll)
+                if (!gui.isHidden && gui.mouseWithinGui(mouseX.toInt(), mouseY.toInt()) && gui is GuiScroll) {
+                    if (gui.isOpen) gui.mouseScrolled(mouseX, mouseY, amount)
+                    else
+                        doScroll(amount)
                     return true
                 }
             }
         }
-        if (mouseWithinGui(x, y)) doScroll(scroll)
-        return super.mouseScrolled(x, y, scroll)
+        if (mouseWithinGui(mouseX, mouseY)) doScroll(amount)
+        return super.mouseScrolled(mouseX, mouseY, amount)
     }
 
     /**
@@ -239,10 +241,10 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
         return ((maxChildren - 1) * 12 + 10).toFloat()
     }
 
-    override fun addElement(element: Gui) {
-        element.width = width
-        children.add(element)
-        if (direction == Direction.RIGHT) element.position = PointF(x2 + 14, y2 + (children.size) * 12)
+    override fun addElement(child: Gui) {
+        child.width = width
+        children.add(child)
+        if (direction == Direction.RIGHT) child.position = PointF(x2 + 14, y2 + (children.size) * 12)
 
         maxChildren = min(children.size.toDouble(), defaultMaxChildren.toDouble()).toInt()
         numPages = ceil(children.size.toDouble() / maxChildren.toDouble()).toInt()
@@ -252,7 +254,8 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (isHidden) return false
         if (mouseWithinGui(mouseX, mouseY)) {
-            if (clickedOnChild(mouseX, mouseY, button)) return true
+            if (clickedOnChild(mouseX, mouseY, button))
+                return true
             clickedGui = this
             if (button == 1 && isParent) {
                 frozen = !frozen
@@ -338,18 +341,8 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
-        if (!isDraggable) return false
         if (!isOpen && !isParent) return false
-
-        for (child in children) {
-            if (child.isHidden) continue
-            if (child.uUID == clickedGui?.uUID && clickedGui!!.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) {
-                return true
-            } else if (child.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) return true
-        }
-        if (frozen || !isParent) return false
-        // get if the mouse is within the title bar
-        if (mouseX in x..x2 && mouseY >= y && mouseY <= y + 12 || dragging) {
+        if ((isParent && !frozen) && (mouseX in x..x2 && mouseY >= y && mouseY <= y + 12 || dragging) && clickedGui?.uUID == uUID) {
             setMidPoint(PointF(mouseX, mouseY))
             isOpen = false
             children.forEach { it.hide() }
@@ -357,6 +350,17 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             dragging = true
             return true
         }
+        for (child in children) {
+            if (child.uUID == clickedGui?.uUID) {
+                return child.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)
+            }
+            if (child.isHidden || (child as? GuiDropdown)?.isOpen == false) continue
+            if (child.mouseDragged(mouseX, mouseY, button, deltaX, deltaY))
+                return true
+        }
+        if (frozen || !isParent) return false
+        // get if the mouse is within the title bar
+
         return false
     }
 }

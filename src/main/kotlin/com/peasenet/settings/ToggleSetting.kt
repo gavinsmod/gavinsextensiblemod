@@ -30,44 +30,48 @@ import com.peasenet.gavui.util.GavUISettings
 
 /**
  * A setting that contains one of two finite states - on or off.
- * @param builder - The builder used to create this toggle setting.
  * @author GT3CH1
  * @version 03-02-2023
  */
 class ToggleSetting(
-    settingOptions: SettingOptions = SettingOptions(),
-) : CallbackSetting<ToggleSetting>(settingOptions = settingOptions) {
-    override lateinit var gui: GuiToggle
+//     SettingOptions = SettingOptions(),
+) : CallbackSetting<ToggleSetting>() {
+    override var gui: GuiToggle = GuiToggle(GuiBuilder())
 
     /**
      * The current value of this toggle setting.
      */
-    var value = false
-        get() = gui.isOn
+    override var state = false
         set(value) {
             field = value
             gui.setBackground(if (value) GavUISettings.getColor("gui.color.enabled") else GavUISettings.getColor("gui.color.background"))
             gui.setState(value)
         }
+        get() {
+            return gui.isOn
+        }
 
     fun build(): ToggleSetting {
         gui = GuiBuilder<GuiToggle>()
-            .setWidth(settingOptions.width)
-            .setHeight(settingOptions.height)
-            .setTitle(settingOptions.title)
+            .setWidth(width)
+            .setHeight(height)
+            .setTitle(title)
             .setCallback {
                 callback?.invoke(this)
             }
-            .setHoverable(settingOptions.hoverable)
+            .setHoverable(hoverable)
             .setBackgroundColor(
-                if (settingOptions.state) GavUI.enabledColor() else GavUI.backgroundColor()
+                if (state) GavUI.enabledColor() else GavUI.backgroundColor()
             )
-            .setTransparency(settingOptions.transparency)
-            .setSymbol(settingOptions.symbol)
-            .setTopLeft(settingOptions.topLeft)
+            .setTransparency(transparency)
+            .setSymbol(symbol)
+            .setTopLeft(topLeft)
+            .setIsOn(state)
             .buildToggle()
         return this
     }
+
+
 }
 
 

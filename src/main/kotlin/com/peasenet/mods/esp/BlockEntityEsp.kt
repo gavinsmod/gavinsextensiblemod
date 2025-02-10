@@ -44,7 +44,7 @@ import net.minecraft.util.math.Box
  *
  */
 abstract class BlockEntityEsp<T : BlockEntity>(
-    name: String, translationKey: String, chatCommand: String, val filter: (BlockEntity) -> Boolean
+    translationKey: String, chatCommand: String, val filter: (BlockEntity) -> Boolean,
 ) : EspMod<T>(
     translationKey, chatCommand
 ) {
@@ -79,8 +79,11 @@ abstract class BlockEntityEsp<T : BlockEntity>(
                 pos.y + 1.0,
                 pos.z.toDouble()
             )
+            val center = bb.center
+            matrixStack.translate(center)
+            matrixStack.scale(config.espSize / 0.25f, config.espSize / 0.25f, config.espSize / 0.25f)
             RenderUtils.drawOutlinedBox(
-                bb,
+                bb.offset(-center.x, -center.y, -center.z),
                 bufferBuilder,
                 matrixStack.peek().positionMatrix,
                 getColor(),

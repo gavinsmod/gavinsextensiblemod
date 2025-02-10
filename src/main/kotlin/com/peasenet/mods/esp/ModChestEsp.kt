@@ -24,8 +24,6 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.gavui.color.Color
-import com.peasenet.settings.ColorSetting
-import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.block.entity.ChestBlockEntity
 import net.minecraft.block.entity.EnderChestBlockEntity
@@ -37,18 +35,15 @@ import net.minecraft.block.entity.ShulkerBoxBlockEntity
  * @version 01-15-2025
  * @since 03-02-2023
  */
-class ModChestEsp : BlockEntityEsp<ChestBlockEntity>("Chest ESP",
-    "gavinsmod.mod.esp.chest",
+class ModChestEsp : BlockEntityEsp<ChestBlockEntity>("gavinsmod.mod.esp.chest",
     "chestesp",
     { it is ChestBlockEntity || it is EnderChestBlockEntity || it is ShulkerBoxBlockEntity }), RenderListener {
     init {
-        val colorSetting =
-            SettingBuilder<ColorSetting>().setTitle("gavinsmod.settings.color.chest").setColor(config.chestColor)
-                .setCallback {
-                    config.chestColor = it.color
-                }
-                .buildColorSetting()
-        addSetting(colorSetting)
+        colorSetting {
+            title = "gavinsmod.settings.color.chest"
+            color = config.chestColor
+            callback = { config.chestColor = it.color }
+        }
     }
 
     override fun getColor(): Color = config.chestColor

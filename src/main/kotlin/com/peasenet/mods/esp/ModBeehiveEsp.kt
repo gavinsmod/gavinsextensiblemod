@@ -24,8 +24,6 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.gavui.color.Color
-import com.peasenet.settings.ColorSetting
-import com.peasenet.settings.SettingBuilder
 import net.minecraft.block.entity.BeehiveBlockEntity
 
 /**
@@ -36,15 +34,15 @@ import net.minecraft.block.entity.BeehiveBlockEntity
  *
  */
 class ModBeehiveEsp : BlockEntityEsp<BeehiveBlockEntity>(
-    "Beehive ESP",
     "gavinsmod.mod.esp.beehive",
     "beehiveesp",
     { it is BeehiveBlockEntity }) {
     init {
-        val colorSetting =
-            SettingBuilder<ColorSetting>().setTitle("gavinsmod.settings.color.beehive").setColor(config.beehiveColor)
-                .setCallback { config.beehiveColor = it.color }.buildColorSetting()
-        addSetting(colorSetting)
+        colorSetting {
+            title = "gavinsmod.settings.color.beehive"
+            color = config.beehiveColor
+            callback = { config.beehiveColor = it.color }
+        }
     }
 
     override fun getColor(): Color = config.beehiveColor

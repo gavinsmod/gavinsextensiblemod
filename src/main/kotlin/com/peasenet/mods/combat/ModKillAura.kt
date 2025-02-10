@@ -27,8 +27,6 @@ import com.peasenet.config.combat.KillAuraConfig
 import com.peasenet.gui.mod.combat.GuiKillAura
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
-import com.peasenet.settings.ClickSetting
-import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.PlayerUtils
 import com.peasenet.util.math.MathUtils
 import net.minecraft.entity.Entity
@@ -53,12 +51,12 @@ class ModKillAura : CombatMod(
     }
 
     init {
-        val click = SettingBuilder<ClickSetting>().setTitle("gavinsmod.mod.combat.killaura")
-            .setCallback {
-                client.setScreen(GuiKillAura())
-            }
-            .buildClickSetting()
-        addSetting(click)
+        clickSetting {
+                callback = {
+                    client.setScreen(GuiKillAura())
+                }
+                title = translationKey
+        }
     }
 
     override fun onTick() {

@@ -24,6 +24,7 @@
 package com.peasenet.gavui
 
 import com.peasenet.gavui.math.PointF
+import com.peasenet.gavui.util.Direction
 import com.peasenet.gavui.util.GavUISettings
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
@@ -37,32 +38,19 @@ import java.util.function.Consumer
  * @version 7/1/2022
  * A simple dropdown gui element
  */
-open class GuiDropdown : GuiDraggable {
-    /**
-     * Gets whether the dropdown is open.
-     *
-     * @return Whether the dropdown is open.
-     */
+open class GuiDropdown(builder: GuiBuilder<out GuiDropdown>) : GuiDraggable(builder) {
     /**
      * Whether the dropdown is open.
      */
     var isOpen: Boolean = false
+
     /**
-     * Gets the direction that this dropdown will be displayed in.
-     *
-     * @return The direction that this dropdown will be displayed in.
+     *  the direction that this dropdown will be displayed in.
      */
-    /**
-     * Sets the direction that this dropdown will be displayed in.
-     *
-     * @param direction - The direction.
-     */
-    /**
-     * The direction in which this element will "drop" to.
-     */
+
     var direction: Direction = Direction.DOWN
 
-    constructor(builder: GuiBuilder<out GuiDropdown>) : super(builder) {
+    init {
         this.isOpen = builder.isOpen
     }
 
@@ -124,15 +112,19 @@ open class GuiDropdown : GuiDraggable {
      * Toggles the dropdown.
      */
     fun toggleMenu() {
+
         isOpen = !isOpen
         if (GavUISettings.getBool("gui.sound")) {
             if (isOpen) MinecraftClient.getInstance().player!!.playSound(SoundEvents.BLOCK_CHEST_OPEN, 0.5f, 1f)
             else MinecraftClient.getInstance().player!!.playSound(SoundEvents.BLOCK_CHEST_CLOSE, 0.5f, 1f)
         }
         for (g in children) {
-            if (!isOpen) g.hide()
-            else g.show()
+            if (!isOpen)
+                g.hide()
+            else
+                g.show()
         }
+
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
@@ -169,12 +161,12 @@ open class GuiDropdown : GuiDraggable {
         }
     }
 
-    override fun addElement(element: Gui) {
-        children.add(element)
+    override fun addElement(child: Gui) {
+        children.add(child)
         if (direction == Direction.RIGHT) {
-            element.position = PointF(x2 + 12, y2 + (children.size) * 12)
+            child.position = PointF(x2 + 12, y2 + (children.size) * 12)
         }
-        element.width = width
+        child.width = width
     }
 
     /**
@@ -198,14 +190,5 @@ open class GuiDropdown : GuiDraggable {
                 }
             }
         }
-    }
-
-
-    /**
-     * A direction that represents which way the dropdown will be displayed.
-     */
-    enum class Direction {
-        DOWN,
-        RIGHT
     }
 }

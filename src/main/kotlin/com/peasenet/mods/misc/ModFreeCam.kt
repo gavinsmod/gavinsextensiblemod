@@ -25,8 +25,8 @@ package com.peasenet.mods.misc
 
 import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.config.misc.FreeCamConfig
+import com.peasenet.gavui.util.Direction
 import com.peasenet.main.Settings
-import com.peasenet.settings.*
 import com.peasenet.util.FakePlayer
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.AirStrafeEvent
@@ -59,34 +59,35 @@ class ModFreeCam : MiscMod(
     }
 
     init {
-        val freeCamSpeed =
-            SettingBuilder<SlideSetting>().setTitle("gavinsmod.generic.speed").setValue(config.freeCamSpeed)
-                .setCallback {
-                    config.freeCamSpeed = it.value
-                }.buildSlideSetting()
-        val espEnabled =
-            SettingBuilder<ToggleSetting>().setTitle("gavinsmod.generic.esp").setState(config.espEnabled)
-                .setCallback { config.espEnabled = it.value }
-                .setCallback { config.espEnabled = it.value }
-                .buildToggleSetting()
-        val tracerEnabled =
-            SettingBuilder<ToggleSetting>().setTitle("gavinsmod.generic.tracer").setState(config.tracerEnabled)
-                .setCallback { config.tracerEnabled = it.value }
-                .buildToggleSetting()
-        val color = SettingBuilder<ColorSetting>().setTitle("gavinsmod.generic.color").setColor(config.color)
-            .setCallback { config.color = it.color }.buildColorSetting()
-        val alpha = SettingBuilder<SlideSetting>().setTitle("gavinsmod.generic.alpha").setValue(1f)
-            .setCallback { config.alpha = it.value }.buildSlideSetting()
-        val subSetting =
-            SettingBuilder<SubSetting>().setWidth(100f).setHeight(10f).setTitle(translationKey).setMaxChildren(5)
-                .setDefaultMaxChildren(5).buildSubSetting()
-
-        subSetting.add(espEnabled)
-        subSetting.add(tracerEnabled)
-        subSetting.add(color)
-        subSetting.add(alpha)
-        subSetting.add(freeCamSpeed)
-        addSetting(subSetting)
+        subSettings {
+            title = translationKey
+            direction = Direction.RIGHT
+            slideSetting {
+                title = "gavinsmod.generic.speed"
+                value = config.freeCamSpeed
+                callback = { config.freeCamSpeed = it.value }
+            }
+            toggleSetting {
+                title = "gavinsmod.generic.esp"
+                state = config.espEnabled
+                callback = { config.espEnabled = it.state }
+            }
+            toggleSetting {
+                title = "gavinsmod.generic.tracer"
+                state = config.tracerEnabled
+                callback = { config.tracerEnabled = it.state }
+            }
+            colorSetting {
+                title = "gavinsmod.generic.color"
+                color = config.color
+                callback = { config.color = it.color }
+            }
+            slideSetting {
+                title = "gavinsmod.generic.alpha"
+                value = 1f
+                callback = { config.alpha = it.value }
+            }
+        }
     }
 
     override fun activate() {
@@ -134,7 +135,7 @@ class ModFreeCam : MiscMod(
 
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
-        if (config.espEnabled) renderEsp(matrixStack, partialTicks)
+        if (config.espEnabled) renderEsp(matrixStack)
         if (config.tracerEnabled)
             renderTracer(matrixStack, partialTicks)
     }
@@ -147,11 +148,11 @@ class ModFreeCam : MiscMod(
         RenderUtils.drawBuffer(bufferBuilder, matrixStack)
     }
 
-    private fun renderEsp(matrixStack: MatrixStack, partialTicks: Float) {
+    private fun renderEsp(matrixStack: MatrixStack) {
         val region = RenderUtils.getCameraRegionPos()
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glEnable(GL11.GL_BLEND)
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+        GL11.glDisable(GL11.GL_DEPTH_TEST)
 
         matrixStack.push()
         RenderUtils.applyRegionalRenderOffset(matrixStack, region)
@@ -161,18 +162,18 @@ class ModFreeCam : MiscMod(
 
         matrixStack.translate(
             fake!!.x - region.x, fake!!.y, fake!!.z - region.z
-        );
+        )
         matrixStack.scale(
             fake!!.width + 0.1F, fake!!.height + 0.1F, fake!!.width + 0.1F
-        );
-        var bb = Box(-0.5, 0.0, -0.5, 0.5, 1.0, 0.5)
+        )
+        val bb = Box(-0.5, 0.0, -0.5, 0.5, 1.0, 0.5)
         RenderUtils.drawOutlinedBox(bb, matrixStack)
         matrixStack.pop()
         matrixStack.pop()
 
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDisable(GL11.GL_BLEND);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
+        GL11.glEnable(GL11.GL_DEPTH_TEST)
+        GL11.glDisable(GL11.GL_BLEND)
     }
 
 }

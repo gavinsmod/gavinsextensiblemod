@@ -27,6 +27,7 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
+import com.peasenet.gavui.util.Direction
 import net.minecraft.text.Text
 
 /**
@@ -83,11 +84,11 @@ class GuiBuilder<T : Gui> {
         private set
     var transparency: Float = -1f
         private set
-    var direction: GuiDropdown.Direction = GuiDropdown.Direction.DOWN
+    var direction: Direction = Direction.DOWN
         private set
 
 
-    fun setDirection(direction: GuiDropdown.Direction): GuiBuilder<T> {
+    fun setDirection(direction: Direction): GuiBuilder<T> {
         this.direction = direction
         return this
     }
@@ -151,11 +152,6 @@ class GuiBuilder<T : Gui> {
         if (translationKey.isNullOrEmpty()) return this
         this.title = Text.translatable(translationKey)
         this.translationKey = translationKey
-        return this
-    }
-
-    fun setTranslationKey(translationKey: String?): GuiBuilder<T> {
-        setTitle(translationKey)
         return this
     }
 

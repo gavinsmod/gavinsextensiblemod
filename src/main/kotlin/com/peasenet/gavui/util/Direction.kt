@@ -1,4 +1,4 @@
-﻿/*
+/*
  * MIT License
  *
  * Copyright (c) 2022-2025, Gavin C. Pease
@@ -22,20 +22,15 @@
  * SOFTWARE.
  */
 
-package com.peasenet.gui.mod.esp
-
-import com.peasenet.config.esp.BlockEspConfig
-import com.peasenet.gui.mod.GuiBlockSelection
+package com.peasenet.gavui.util
 
 /**
- * A GUI used for block esp to select blocks.
- *
+ * A direction that represents which way the dropdown will be displayed.
  * @author GT3CH1
- * @version 09-01-2024
- * @since 09-01-2024
- *
- * @see BlockEspConfig
- * @see GuiBlockSelection
+ * @version 02-08-2025
+ * @since 02-08-2025
  */
-class GuiBlockEsp : GuiBlockSelection<BlockEspConfig>("gavinsmod.mod.esp.blockesp", "blockesp"
-) 
+enum class Direction {
+    DOWN,
+    RIGHT
+}

@@ -23,7 +23,6 @@
  */
 package com.peasenet.gavui
 
-import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
@@ -47,16 +46,6 @@ class GuiSlider(builder: GuiBuilder<out GuiSlider>) : Gui(builder) {
     var callback: ((Gui) -> Unit)? = null
 
     /**
-     * Gets the current value of the slider.
-     *
-     * @return The current value of the slider.
-     */
-    /**
-     * Sets the current value of the slider.
-     *
-     * @param value - The value to set the slider to.
-     */
-    /**
      * The current value of the slider.
      */
     var value: Float = 0f
@@ -64,8 +53,6 @@ class GuiSlider(builder: GuiBuilder<out GuiSlider>) : Gui(builder) {
     /**
      * Creates a new slider gui element.
      *
-     * @param builder The GuiBuilder to create the slider from.
-     * @see GuiBuilder
      */
     init {
         callback = {
@@ -96,9 +83,10 @@ class GuiSlider(builder: GuiBuilder<out GuiSlider>) : Gui(builder) {
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
-        if (clickedGui != null && clickedGui != this) return false
-        if (this == clickedGui && !isHidden) {
+//        if (clickedGui != null && clickedGui?.uUID != this.uUID) return false
+        if (this.uUID == clickedGui?.uUID && !isHidden) {
             setValue(mouseX)
+            clickedGui = this
             return true
         }
         if ((button == 0 && (mouseWithinGui(mouseX, mouseY)))) {
@@ -106,6 +94,7 @@ class GuiSlider(builder: GuiBuilder<out GuiSlider>) : Gui(builder) {
             clickedGui = this
             return true
         }
+        clickedGui = null
         return false
     }
 
@@ -113,8 +102,10 @@ class GuiSlider(builder: GuiBuilder<out GuiSlider>) : Gui(builder) {
         if (button == 0 && mouseWithinGui(mouseX, mouseY) && !isHidden) {
             setValue(mouseX)
             clickedGui = this
+            dragging = true
             return true
         }
+        clickedGui = null
         return false
     }
 

@@ -26,8 +26,6 @@ package com.peasenet.mods.combat
 import com.peasenet.config.combat.AutoAttackConfig
 import com.peasenet.gui.mod.combat.GuiAutoAttack
 import com.peasenet.main.Settings
-import com.peasenet.settings.ClickSetting
-import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.PlayerUtils
 import net.minecraft.util.hit.EntityHitResult
 
@@ -43,10 +41,12 @@ class ModAutoAttack : CombatMod(
     "autoattack",
 ) {
     init {
-        val click = SettingBuilder<ClickSetting>().setTitle(translationKey).setCallback {
+        clickSetting {
+            title = translationKey
+            callback = {
                 client.setScreen(GuiAutoAttack())
-            }.buildClickSetting()
-        addSetting(click)
+            }
+        }
     }
 
     override fun onTick() {

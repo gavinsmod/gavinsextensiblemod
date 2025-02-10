@@ -29,7 +29,7 @@ import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Mods
 import com.peasenet.main.Settings
 import com.peasenet.mixinterface.IMinecraftClient
-import com.peasenet.settings.Setting
+import com.peasenet.settings.*
 import com.peasenet.util.KeyBindUtils
 import com.peasenet.util.event.EventManager
 import net.minecraft.client.option.KeyBinding
@@ -60,7 +60,7 @@ abstract class Mod(
     override val translationKey: String,
     override val chatCommand: String,
     final override var modCategory: ModCategory,
-    private var keyBinding: KeyBinding
+    private var keyBinding: KeyBinding,
 ) : IMod {
 
     /**
@@ -122,7 +122,7 @@ abstract class Mod(
         translationKey: String,
         chatCommand: String,
         modCategory: ModCategory,
-        keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN
+        keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN,
     ) : this(
         translationKey,
         chatCommand,
@@ -199,6 +199,46 @@ abstract class Mod(
      */
     fun addSetting(setting: Setting) {
         modSettings.add(setting.gui!!)
+    }
+
+    fun subSettings(init: SubSetting.() -> Unit): SubSetting {
+        var setting = SubSetting()
+        setting.init()
+        setting = setting.build()
+        addSetting(setting)
+        return setting
+    }
+
+    fun clickSetting(init: ClickSetting.() -> Unit): ClickSetting {
+        var setting = ClickSetting()
+        setting.init()
+        setting = setting.build()
+        addSetting(setting)
+        return setting
+    }
+
+    fun slideSetting(init: SlideSetting.() -> Unit): SlideSetting {
+        var setting = SlideSetting()
+        setting.init()
+        setting = setting.build()
+        addSetting(setting)
+        return setting
+    }
+
+    fun colorSetting(init: ColorSetting.() -> Unit): ColorSetting {
+        var setting = ColorSetting()
+        setting.init()
+        setting = setting.build()
+        addSetting(setting)
+        return setting
+    }
+
+    fun toggleSetting(init: ToggleSetting.() -> Unit): ToggleSetting {
+        var setting = ToggleSetting()
+        setting.init()
+        setting = setting.build()
+        addSetting(setting)
+        return setting
     }
 
     /**

@@ -27,7 +27,7 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.util.Dimension
 import net.minecraft.util.math.Vec3i
-import java.util.UUID
+import java.util.*
 
 /**
  * A waypoint is a three-dimensional integer coordinate with a name, color, and can either have
@@ -42,7 +42,7 @@ import java.util.UUID
  * @param renderTracer Whether to render this waypoints tracer.
  * @param uuid The waypoints UUID. Defaults to a randomly generated UUID.
  *
- * @see com.peasenet.config.WaypointConfig
+ * @see com.peasenet.config.waypoint.WaypointConfig
  * @see com.peasenet.gui.mod.waypoint.GuiWaypoint
  * @see com.peasenet.mods.render.waypoints
  *
@@ -54,7 +54,7 @@ class Waypoint(
     val coordinates: Vec3i = Vec3i.ZERO,
     val name: String = "",
     val dimensions: MutableSet<String> = mutableSetOf(),
-    val color: Color = Colors.WHITE,
+    var color: Color = Colors.WHITE,
     val isEnabled: Boolean = true,
     val renderEsp: Boolean = true,
     val renderTracer: Boolean = true,

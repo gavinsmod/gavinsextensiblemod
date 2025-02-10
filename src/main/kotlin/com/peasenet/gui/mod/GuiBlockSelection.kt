@@ -37,8 +37,9 @@ import com.peasenet.main.GavinsModClient.Companion.minecraftClient
 import com.peasenet.main.Mods.Companion.getMod
 import com.peasenet.main.Settings
 import com.peasenet.settings.ClickSetting
-import com.peasenet.settings.SettingBuilder
 import com.peasenet.settings.ToggleSetting
+import com.peasenet.settings.clickSetting
+import com.peasenet.settings.toggleSetting
 import net.minecraft.block.Block
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.widget.TextFieldWidget
@@ -165,33 +166,61 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
                 return pressed
             }
         }
-        prevButton = SettingBuilder<ClickSetting>()
-            .setTopLeft(PointF(x + (width shr 1) - 89f, y - 16f))
-            .setWidth(13f)
-            .setHeight(13f)
-            .setCallback {
-                if (page > 0) {
-                    page--
+        prevButton = clickSetting {
+            options {
+                topLeft = PointF(x + (this@GuiBlockSelection.width shr 1) - 89f, y - 16f)
+                width = 13f
+                height = 13f
+                callback = {
+                    if (page > 0) {
+                        page--
+                        updateBlockList()
+                    }
+                }
+                hoverable = true
+            }
+        }
+//        nextButton = SettingBuilder<ClickSetting>()
+//            .setTopLeft(PointF(x + width / 2 + 76f, y - 16f))
+//            .setWidth(13f)
+//            .setHeight(13f)
+//            .setCallback { pageUp() }
+//            .setHoverable(true)
+//            .buildClickSetting()
+        nextButton = clickSetting {
+            options {
+                topLeft = PointF(x + this@GuiBlockSelection.width / 2f + 76f, y - 16f)
+                width = 13f
+                height = 13f
+                callback = {
+                    pageUp()
+                }
+                hoverable = true
+            }
+        }
+
+//        enabledOnly = SettingBuilder<ToggleSetting>()
+//            .setTopLeft(PointF(x + width / 2f - 170f, y - 15f))
+//            .setWidth(80f)
+//            .setHeight(10f)
+//            .setTitle("gavinsmod.generic.enabledOnly")
+//            .setHoverable(true)
+//            .setCallback { page = 0; updateBlockList() }
+//            .buildToggleSetting()
+
+        enabledOnly = toggleSetting {
+            options {
+                topLeft = PointF(x + this@GuiBlockSelection.width / 2f - 170f, y - 15f)
+                width = 80f
+                height = 10f
+                title = "gavinsmod.generic.enabledOnly"
+                callback = {
+                    page = 0
                     updateBlockList()
                 }
             }
-            .setHoverable(true)
-            .buildClickSetting()
-        nextButton = SettingBuilder<ClickSetting>()
-            .setTopLeft(PointF(x + width / 2 + 76f, y - 16f))
-            .setWidth(13f)
-            .setHeight(13f)
-            .setCallback { pageUp() }
-            .setHoverable(true)
-            .buildClickSetting()
-        enabledOnly = SettingBuilder<ToggleSetting>()
-            .setTopLeft(PointF(x + width / 2f - 170f, y - 15f))
-            .setWidth(80f)
-            .setHeight(10f)
-            .setTitle("gavinsmod.generic.enabledOnly")
-            .setHoverable(true)
-            .setCallback { page = 0; updateBlockList() }
-            .buildToggleSetting()
+        }
+
         val resetText = Text.translatable("gavinsmod.settings.reset")
         val width = textRenderer.getWidth(resetText)
         addSelectableChild(search)
@@ -201,16 +230,17 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         if (titleBox != null)
             resetPos = PointF(titleBox!!.x2 + 4f, titleBox!!.y)
         if (resetWidth.toDouble() == 0.0) resetWidth = (width + 4).toFloat()
-        resetButton = SettingBuilder<ClickSetting>()
-            .setTopLeft(resetPos)
-            .setWidth(resetWidth)
-            .setHeight(10f)
-            .setTitle("gavinsmod.settings.reset")
-            .setBackgroundColor(Colors.DARK_RED)
-            .setCallback { resetCallback() }
-            .setHoverable(true)
-            .buildClickSetting()
-        resetButton.gui.setDefaultPosition(resetButton.gui.box)
+        resetButton = clickSetting {
+            options {
+                topLeft = resetPos
+                this.width = resetWidth
+                height = 10f
+                title = "gavinsmod.settings.reset"
+                color = Colors.DARK_RED
+                callback = { resetCallback() }
+                hoverable = true
+            }
+        }
     }
 
     private fun resetCallback() {
@@ -370,7 +400,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
             .filter { block: Block -> block.translationKey.lowercase(Locale.getDefault()).contains(searchText) }
             .forEach { e: Block? -> tmpBlocks.add(e) }
         // get blocks in block list that are within the page.
-        val enabled = enabledOnly.value
+        val enabled = enabledOnly.state
         if (enabled) tmpBlocks = ArrayList(tmpBlocks.stream().filter { b: Block? ->
             Settings.getConfig<T>(settingKey).isInList(
                 b!!

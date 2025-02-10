@@ -25,8 +25,6 @@ package com.peasenet.mods.esp
 
 import com.peasenet.gavui.color.Color
 import com.peasenet.main.GavinsModClient
-import com.peasenet.settings.ColorSetting
-import com.peasenet.settings.SettingBuilder
 import net.minecraft.entity.player.PlayerEntity
 
 /**
@@ -42,10 +40,11 @@ class ModEntityPlayerEsp : EntityEsp<PlayerEntity>(
     { it is PlayerEntity && it != GavinsModClient.player },
 ) {
     init {
-        val colorSetting =
-            SettingBuilder<ColorSetting>().setTitle("gavinsmod.settings.color.player").setColor(config.playerColor)
-                .setCallback { config.playerColor = it.color }.buildColorSetting()
-        addSetting(colorSetting)
+        colorSetting {
+            title = "gavinsmod.settings.color.player"
+            color = config.playerColor
+            callback = { config.playerColor = it.color }
+        }
     }
 
     override fun getColor(entity: PlayerEntity): Color = getColor()

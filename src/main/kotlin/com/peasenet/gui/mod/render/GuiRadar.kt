@@ -100,43 +100,40 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
             .setTransparency(0.5f)
             .build()
         pos = pos.add(0f, gapY * 4)
-        val playerEntityColor = SettingBuilder<ColorSetting>()
-            .setTitle("gavinsmod.settings.color.player")
-            .setColor(config.playerColor)
-            .setTopLeft(pos)
-            .setCallback { config.playerColor = it.color }
-            .buildColorSetting()
+        val playerEntityColor = colorSetting {
+            title = "gavinsmod.settings.color.player"
+            color = config.playerColor
+            topLeft = pos
+            callback = { config.playerColor = it.color }
+        }
         pos = pos.add(playerEntityColor.gui.width + PADDING * 2, 0f)
-        val hostileEntityColor = SettingBuilder<ColorSetting>()
-            .setTitle("gavinsmod.settings.color.hostileMob")
-            .setColor(config.hostileMobColor)
-            .setTopLeft(pos)
-            .setCallback { config.hostileMobColor = it.color }
-            .buildColorSetting()
+        val hostileEntityColor = colorSetting {
+            title = "gavinsmod.settings.color.hostileMob"
+            color = config.hostileMobColor
+            topLeft = pos
+            callback = { config.hostileMobColor = it.color }
+        }
         pos = PointF(paddingX, pos.y + gapY)
-        val peacefulEntityColor = SettingBuilder<ColorSetting>()
-            .setTitle("gavinsmod.settings.color.peacefulMob")
-            .setColor(config.peacefulMobColor)
-            .setTopLeft(pos)
-            .setCallback { config.peacefulMobColor = it.color }
-            .buildColorSetting()
+        val peacefulEntityColor = colorSetting {
+            title = "gavinsmod.settings.color.peacefulMob"
+            color = config.peacefulMobColor
+            topLeft = pos
+            callback = { config.peacefulMobColor = it.color }
+        }
         pos = pos.add(peacefulEntityColor.gui.width + PADDING * 2, 0f)
-
-        val entityItemColor = SettingBuilder<ColorSetting>()
-            .setTitle("gavinsmod.settings.radar.item.color")
-            .setColor(config.itemColor)
-            .setTopLeft(pos)
-            .setCallback { config.itemColor = it.color }
-            .buildColorSetting()
-
+        val entityItemColor = colorSetting {
+            title = "gavinsmod.settings.radar.item.color"
+            color = config.itemColor
+            topLeft = pos
+            callback = { config.itemColor = it.color }
+        }
         pos = PointF(paddingX, pos.y + gapY)
-
-        val backgroundColor = SettingBuilder<ColorSetting>()
-            .setTitle("gavinsmod.settings.background.color")
-            .setColor(config.backgroundColor)
-            .setTopLeft(pos)
-            .setCallback { config.backgroundColor = it.color }
-            .buildColorSetting()
+        val backgroundColor = colorSetting {
+            title = "gavinsmod.settings.background.color"
+            color = config.backgroundColor
+            topLeft = pos
+            callback = { config.backgroundColor = it.color }
+        }
         pos = PointF(paddingX, pos.y + gapY)
         val scaleTitle = GuiBuilder<Gui>()
             .setHeight(12)
@@ -147,24 +144,23 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
             .setDrawBorder(false)
             .build()
         pos = pos.add(0f, gapY)
-        val scaleSetting = SettingBuilder<ClickSetting>()
-            .setTitle("gavinsmod.settings.radar.scale")
-            .setTopLeft(pos)
-            .setCallback {
+        val scaleSetting = clickSetting {
+            title = "gavinsmod.settings.radar.scale"
+            topLeft = pos
+            callback = {
                 config.scale += 1
                 updateScaleText(it, config.scale)
             }
-            .buildClickSetting()
+        }
         pos = pos.add(scaleSetting.gui.width + PADDING * 2, 0f)
-
-        val pointSizeSetting = SettingBuilder<ClickSetting>()
-            .setTitle("gavinsmod.settings.radar.pointsize")
-            .setTopLeft(pos)
-            .setCallback {
+        val pointSizeSetting = clickSetting {
+            title = "gavinsmod.settings.radar.pointsize"
+            topLeft = pos
+            callback = {
                 config.pointSize += 2
                 updateScaleText(it, config.pointSize)
             }
-            .buildClickSetting()
+        }
         pos = PointF(paddingX, pos.y + gapY)
         val toggleTitle = GuiBuilder<Gui>()
             .setHeight(12)
@@ -174,41 +170,31 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
             .setTransparency(0.0f)
             .setDrawBorder(false)
             .build()
-
         pos = pos.add(0f, gapY)
-
-        val peacefulEntityToggle = SettingBuilder<ToggleSetting>()
-            .setTitle("gavinsmod.settings.mob.peaceful")
-            .setState(config.isShowPeacefulMob)
-            .setTopLeft(pos)
-            .setCallback {
-                config.isShowPeacefulMob = it.value
-            }
-            .buildToggleSetting()
-
-        val hostileEntityToggle = SettingBuilder<ToggleSetting>()
-            .setTitle("gavinsmod.settings.mob.hostile")
-            .setState(config.isShowHostileMob)
-            .setTopLeft(pos)
-            .setCallback {
-                config.isShowHostileMob = it.value
-            }
-            .buildToggleSetting()
-
-        val itemToggle = SettingBuilder<ToggleSetting>()
-            .setTitle("gavinsmod.settings.radar.item")
-            .setState(config.isShowItem)
-            .setTopLeft(pos)
-            .setCallback { config.isShowItem = it.value }
-            .buildToggleSetting()
-        val playerEntityToggle = SettingBuilder<ToggleSetting>()
-            .setTitle("gavinsmod.settings.radar.player")
-            .setState(config.isShowPlayer)
-            .setTopLeft(pos)
-            .setCallback {
-                config.isShowPlayer = it.value
-            }
-            .buildToggleSetting()
+        val peacefulEntityToggle = toggleSetting {
+            title = "gavinsmod.settings.mob.peaceful"
+            state = config.isShowPeacefulMob
+            topLeft = pos
+            callback = { config.isShowPeacefulMob = it.state }
+        }
+        val hostileEntityToggle = toggleSetting {
+            title = "gavinsmod.settings.mob.hostile"
+            state = config.isShowHostileMob
+            topLeft = pos
+            callback = { config.isShowHostileMob = it.state }
+        }
+        val itemToggle = toggleSetting {
+            title = "gavinsmod.settings.radar.item"
+            state = config.isShowItem
+            topLeft = pos
+            callback = { config.isShowItem = it.state }
+        }
+        val playerEntityToggle = toggleSetting {
+            title = "gavinsmod.settings.radar.player"
+            state = config.isShowPlayer
+            topLeft = pos
+            callback = { config.isShowPlayer = it.state }
+        }
         val alphaTitle = GuiBuilder<Gui>()
             .setHeight(12)
             .setTopLeft(pos)
@@ -219,23 +205,21 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
             .build()
 
         pos = pos.add(0f, gapY)
-
-
-        val backgroundAlpha = SettingBuilder<SlideSetting>()
-            .setTitle("gavinsmod.settings.radar.background.alpha")
-            .setValue(config.backgroundAlpha)
-            .setTopLeft(pos)
-            .setCallback { config.backgroundAlpha = it.value }
-            .buildSlideSetting()
-
+        val backgroundAlpha = slideSetting {
+            title = "gavinsmod.settings.radar.background.alpha"
+            value = config.backgroundAlpha
+            topLeft = pos
+            callback = { config.backgroundAlpha = it.value }
+        }
         pos = pos.add(0f, gapY)
-
-        val pointAlpha = SettingBuilder<SlideSetting>()
-            .setTitle("gavinsmod.settings.radar.point.alpha")
-            .setValue(config.pointAlpha)
-            .setTopLeft(pos)
-            .setCallback { config.pointAlpha = it.value }
-            .buildSlideSetting()
+        val pointAlpha = slideSetting {
+            title = "gavinsmod.settings.radar.point.alpha"
+            value = config.pointAlpha
+            topLeft = pos
+            callback = {
+                config.pointAlpha = it.value
+            }
+        }
         // add all settings to the list
         guis.add(playerEntityColor.gui)
         guis.add(hostileEntityColor.gui)
@@ -248,8 +232,9 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         guis.add(hostileEntityToggle.gui)
         guis.add(itemToggle.gui)
         guis.add(playerEntityToggle.gui)
-        guis.add(backgroundAlpha.gui)
-        guis.add(pointAlpha.gui)
+
+        guis.add(backgroundAlpha.gui!!)
+        guis.add(pointAlpha.gui!!)
 
         var maxWidth = 0
         for (gui in guis) {
@@ -293,9 +278,9 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         pos = PointF(paddingX, pos.y + gapY)
         alphaTitle.position = pos
         pos = PointF(paddingX, pos.y + gapY)
-        backgroundAlpha.gui.position = pos
-        pos = pos.add(backgroundAlpha.gui.width + PADDING, 0f)
-        pointAlpha.gui.position = pos
+        backgroundAlpha.gui!!.position = pos
+        pos = pos.add(backgroundAlpha.gui!!.width + PADDING, 0f)
+        pointAlpha.gui!!.position = pos
 
         guis.add(0, box)
         guis.add(colorTitle)

@@ -58,7 +58,7 @@ class GuiCycle(builder: GuiBuilder<out GuiClick>) : GuiClick(builder) {
                 MinecraftClient.getInstance().player!!.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 1.0f, 1.0f)
             }
             if (callback != null) callback!!(this)
-
+            clickedGui = this
             return true
         }
         return false
