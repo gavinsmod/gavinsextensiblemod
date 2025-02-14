@@ -64,6 +64,7 @@ open class GuiClick(builder: GuiBuilder<out GuiClick>) : Gui(builder) {
         )
         if (inGui && !isHidden) {
             if (callback != null) callback!!(this)
+            clickedGui = this
         }
 
         return inGui

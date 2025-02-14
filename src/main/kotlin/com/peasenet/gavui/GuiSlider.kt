@@ -84,17 +84,16 @@ class GuiSlider(builder: GuiBuilder<out GuiSlider>) : Gui(builder) {
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
 //        if (clickedGui != null && clickedGui?.uUID != this.uUID) return false
-        if (this.uUID == clickedGui?.uUID && !isHidden) {
+
+        if (((button == 0 && (mouseWithinGui(
+                mouseX,
+                mouseY
+            )) && clickedGui == null) || clickedGui?.uUID == this.uUID)
+        ) {
             setValue(mouseX)
             clickedGui = this
             return true
         }
-        if ((button == 0 && (mouseWithinGui(mouseX, mouseY)))) {
-            setValue(mouseX)
-            clickedGui = this
-            return true
-        }
-        clickedGui = null
         return false
     }
 

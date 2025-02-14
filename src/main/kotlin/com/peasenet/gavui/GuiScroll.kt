@@ -112,6 +112,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             child.hide()
         } else {
             child.show()
+
         }
         if (shouldDrawScrollBar()) {
             child.shrinkForScrollbar(this)
@@ -254,9 +255,9 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         if (isHidden) return false
         if (mouseWithinGui(mouseX, mouseY)) {
+            clickedGui = this
             if (clickedOnChild(mouseX, mouseY, button))
                 return true
-            clickedGui = this
             if (button == 1 && isParent) {
                 frozen = !frozen
                 return true
@@ -345,18 +346,20 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
         if ((isParent && !frozen) && (mouseX in x..x2 && mouseY >= y && mouseY <= y + 12 || dragging) && clickedGui?.uUID == uUID) {
             setMidPoint(PointF(mouseX, mouseY))
             isOpen = false
-            children.forEach { it.hide() }
+            children.forEach { it.isHidden = true }
             resetDropdownsLocation()
             dragging = true
             return true
         }
         for (child in children) {
-            if (child.uUID == clickedGui?.uUID) {
-                return child.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)
-            }
-            if (child.isHidden || (child as? GuiDropdown)?.isOpen == false) continue
+
             if (child.mouseDragged(mouseX, mouseY, button, deltaX, deltaY))
                 return true
+//            if (child.uUID == clickedGui?.uUID) {
+//                return child.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)
+//            }
+            if (child.isHidden || (child as? GuiDropdown)?.isOpen == false) continue
+
         }
         if (frozen || !isParent) return false
         // get if the mouse is within the title bar

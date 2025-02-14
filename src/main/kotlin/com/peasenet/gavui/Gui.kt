@@ -140,16 +140,10 @@ open class Gui(builder: GuiBuilder<*>) {
      */
     var isHidden: Boolean = false
         set(hidden) {
-            if (hidden) {
-                if (this.hasChildren()) {
-                    children.forEach(Consumer { obj: Gui -> obj.hide() })
-                }
-            } else {
-                if (this.hasChildren()) {
-                    children.forEach(Consumer { obj: Gui -> obj.show() })
-                }
-            }
             field = hidden
+            if (this.hasChildren()) {
+                children.forEach(Consumer { obj: Gui -> obj.isHidden = hidden })
+            }
         }
 
     /**

@@ -31,7 +31,7 @@ import com.peasenet.main.Settings
  * and then calling [Settings.addConfig] in your mod's init method BEFORE calling GavinsMod.addMod.
  * It is also required that you initialize the "key" for your settings. You can then fetch and manipulate
  * your config using the Settings#getConfig<T>(key) method. For examples of extending this class,
- * see [MiscConfig].
+ * see [com.peasenet.config.misc.MiscConfig].
  *
  * Settings defined in the config should be public and have a setter method, as well as be serializable.
  * For example,
