@@ -44,7 +44,8 @@ class ToggleSetting(
     override var state = false
         set(value) {
             field = value
-            gui.setBackground(if (value) GavUISettings.getColor("gui.color.enabled") else GavUISettings.getColor("gui.color.background"))
+            gui.backgroundColor =
+                (if (value) GavUISettings.getColor("gui.color.enabled") else GavUISettings.getColor("gui.color.background"))
             gui.setState(value)
         }
         get() {

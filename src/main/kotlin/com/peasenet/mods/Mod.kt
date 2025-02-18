@@ -128,6 +128,7 @@ abstract class Mod(
         chatCommand,
         modCategory,
         KeyBindUtils.registerModKeybind(translationKey, modCategory, keyBinding)
+
     )
 
     /**
@@ -197,7 +198,7 @@ abstract class Mod(
      * @param setting - The setting to add.
      * @see Setting
      */
-    fun addSetting(setting: Setting) {
+    private fun addSetting(setting: Setting) {
         modSettings.add(setting.gui!!)
     }
 

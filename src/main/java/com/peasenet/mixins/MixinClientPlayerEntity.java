@@ -25,8 +25,6 @@
 package com.peasenet.mixins;
 
 import com.mojang.authlib.GameProfile;
-import com.peasenet.main.GavinsMod;
-import com.peasenet.main.GavinsModClient;
 import com.peasenet.mixinterface.IClientPlayerEntity;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -42,7 +40,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

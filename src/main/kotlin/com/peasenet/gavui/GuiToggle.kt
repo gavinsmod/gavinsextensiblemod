@@ -76,8 +76,7 @@ class GuiToggle(builder: GuiBuilder<out GuiToggle>) : GuiClick(builder) {
         if (isHidden) return
         symbol = if (isOn) '\u2611' else '\u2610'
         if (renderCallback != null) renderCallback!!(this)
-        if (isOn) setBackground(GavUI.enabledColor())
-        else setBackground(GavUI.backgroundColor())
+        backgroundColor = if (isOn) GavUI.enabledColor() else GavUI.backgroundColor()
         super.render(drawContext, tr, mouseX, mouseY, delta)
     }
 }

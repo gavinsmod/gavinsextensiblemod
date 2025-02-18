@@ -32,9 +32,9 @@ import com.peasenet.gavui.color.Color
  * @author GT3CH1
  * @version 09-01-2024
  * @since 09-01-2024
- * 
- * @see BlockEspConfig
- * @see BlockTracerConfig
+ *
+ * @see com.peasenet.config.esp.BlockEspConfig
+ * @see com.peasenet.config.tracer.BlockTracerConfig
  */
 interface IBlockEspTracerConfig {
     var blockColor: Color

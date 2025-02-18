@@ -152,7 +152,7 @@ open class GuiElement(title: Text?) : Screen(title) {
 //        RenderSystem.setShader(ShaderProgramKeys.POSITION);
 //        guis.forEach(Consumer { gui: Gui -> gui.render(drawContext, tr, mouseX, mouseY, delta) })
         if (titleBox != null) {
-            titleBox!!.setBackground(GavUISettings.getColor("gui.color.background"))
+            titleBox!!.backgroundColor = (GavUISettings.getColor("gui.color.background"))
             titleBox!!.render(drawContext, tr, mouseX, mouseY, delta)
         }
         val miscConfig = Settings.getConfig<MiscConfig>("misc").background

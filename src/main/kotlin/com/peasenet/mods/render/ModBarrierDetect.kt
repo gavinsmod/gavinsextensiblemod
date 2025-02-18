@@ -30,7 +30,7 @@ import net.minecraft.particle.ParticlesMode
  * @author GT3CH1
  * @version 01-15-2025
  */
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "KotlinConstantConditions")
 class ModBarrierDetect : RenderMod(
     "gavinsmod.mod.render.barrierdetect",
     "barrierdetect"
@@ -39,13 +39,12 @@ class ModBarrierDetect : RenderMod(
         super.onEnable()
         particlesMode = client.options.particles.value
         when (particlesMode) {
-            ParticlesMode.ALL, ParticlesMode.DECREASED -> {}
+            ParticlesMode.ALL, ParticlesMode.DECREASED, null -> {}
             ParticlesMode.MINIMAL -> {
-                val newMode = client.options.particles
-                (newMode as Any as ISimpleOption<ParticlesMode>).forceSetValue(ParticlesMode.ALL)
+                val newMode = client.options.particles as ISimpleOption<ParticlesMode>
+                newMode.forceSetValue(ParticlesMode.ALL)
             }
 
-            null -> TODO()
         }
     }
 
@@ -53,13 +52,11 @@ class ModBarrierDetect : RenderMod(
     override fun onDisable() {
         super.onDisable()
         when (particlesMode) {
-            ParticlesMode.ALL, ParticlesMode.DECREASED -> {}
+            ParticlesMode.ALL, ParticlesMode.DECREASED, null -> {}
             ParticlesMode.MINIMAL -> {
                 val newMode = client.options.particles!!
                 (newMode as ISimpleOption<ParticlesMode>).forceSetValue(ParticlesMode.MINIMAL)
             }
-
-            null -> TODO()
         }
     }
 

@@ -120,7 +120,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             drawScrollBar(matrixStack)
         }
         if ((!child.isParent && child !is GuiCycle)) {
-            child.setBackground(GavUI.backgroundColor())
+            child.backgroundColor = GavUI.backgroundColor()
         }
         child.render(drawContext, tr, mouseX, mouseY, delta)
     }

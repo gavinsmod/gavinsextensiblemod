@@ -29,7 +29,7 @@ import com.peasenet.config.commons.TracerEspConfig
  * The configuration for ESPs. This is stored in the core client as there are multiple GEMs that require an EspConfig.
  * The key for this configuration is "esp".
  *
- * @see TracerConfig
+ * @see com.peasenet.config.tracer.TracerConfig
  * @see EspConfig
  *
  * @author GT3CH1

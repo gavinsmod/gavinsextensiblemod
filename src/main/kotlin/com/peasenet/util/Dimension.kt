@@ -40,7 +40,7 @@ enum class Dimension(val dimension: String) {
          * Gets the dimension from a string.
          */
         fun fromValue(dim: String): Dimension {
-            for (d in Dimension.values()) {
+            for (d in entries) {
                 if (d.dimension == dim)
                     return d
             }

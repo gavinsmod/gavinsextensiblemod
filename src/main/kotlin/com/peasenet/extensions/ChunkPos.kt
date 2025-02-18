@@ -27,7 +27,7 @@ package com.peasenet.extensions
 import net.minecraft.util.math.ChunkPos
 
 /**
- * Extensions for the [ChunkPos] class.
+ * Extensions for the ChunkPos class.
  * @author GT3CH1
  * @version 01-25-2025
  * @since 01-25-2025

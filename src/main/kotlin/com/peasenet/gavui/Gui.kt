@@ -97,16 +97,10 @@ open class Gui(builder: GuiBuilder<*>) {
             return field
         }
         set(transparency) {
-            field = transparency
             if (transparency == -1f) {
                 return
             }
-            if (transparency < 0) {
-                field = 0f
-            }
-            if (transparency > 1f) {
-                field = 1f
-            }
+            field = transparency.coerceIn(0f, 1f)
         }
 
     /**
@@ -124,7 +118,6 @@ open class Gui(builder: GuiBuilder<*>) {
      * The background color of the gui.
      */
     var backgroundColor: Color = Colors.INDIGO
-        private set
 
     /**
      * Whether this gui is being dragged.
@@ -150,6 +143,10 @@ open class Gui(builder: GuiBuilder<*>) {
      * Whether this gui has been shrunk for a scrollbar.
      */
     private var shrunkForScroll = false
+        set(value) {
+            field = value
+            if (hasChildren()) for (c in children) c.shrunkForScroll = value
+        }
 
     /**
      * Whether we can hover over this gui.
@@ -166,7 +163,7 @@ open class Gui(builder: GuiBuilder<*>) {
      * Clears all children from this gui.
      */
     fun clearChildren() {
-        children = ArrayList()
+        children.clear()
     }
 
     /**
@@ -202,59 +199,21 @@ open class Gui(builder: GuiBuilder<*>) {
         isHidden = false
     }
 
-    /**
-     * Sets the background color to the given color.
-     *
-     * @param color - The color to set the background to.
-     */
-    fun setBackground(color: Color) {
-        backgroundColor = color
-    }
 
     val x: Float
-        /**
-         * Gets the x coordinate for the top left corner of the dropdown.
-         *
-         * @return The x coordinate for the top left corner of the dropdown.
-         */
         get() = box.x1
 
     val y: Float
-        /**
-         * Gets the y coordinate for the top left corner of the dropdown.
-         *
-         * @return The y coordinate for the top left corner of the dropdown.
-         */
         get() = box.y1
 
     val x2: Float
-        /**
-         * Gets the x coordinate for the bottom right corner of the dropdown.
-         *
-         * @return The x coordinate for the bottom right corner of the dropdown.
-         */
         get() = box.x2
 
     val y2: Float
-        /**
-         * Gets the y coordinate for the bottom right corner of the dropdown.
-         *
-         * @return The y coordinate for the bottom right corner of the dropdown.
-         */
         get() = box.y2
 
     var width: Float
-        /**
-         * Gets the width of the dropdown.
-         *
-         * @return The width of the dropdown.
-         */
         get() = box.width
-        /**
-         * Sets the width of the gui.
-         *
-         * @param width - The width of the gui.
-         */
         set(width) {
             box = BoxF(box.topLeft, width, box.height)
         }
@@ -266,16 +225,11 @@ open class Gui(builder: GuiBuilder<*>) {
      */
     fun shrinkForScrollbar(parent: Gui) {
         if (shrunkForScroll && this.width == parent.width) return
-        if (this.width == parent.width) width = width - 6
+        if (this.width == parent.width) width -= 6
         shrunkForScroll = true
     }
 
     val height: Float
-        /**
-         * Gets the height of the dropdown.
-         *
-         * @return The height of the dropdown.
-         */
         get() = box.height
 
     /**
@@ -527,8 +481,7 @@ open class Gui(builder: GuiBuilder<*>) {
         dragging = false
         this.translationKey = builder.translationKey
         position = builder.topLeft
-        setBackground(builder.backgroundColor)
-        isHoverable = builder.canHover
+        backgroundColor = builder.backgroundColor
         symbol = (builder.symbol)
         isHidden = builder.isHidden
         isHoverable = builder.canHover

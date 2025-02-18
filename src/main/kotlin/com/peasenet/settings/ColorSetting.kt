@@ -71,7 +71,7 @@ class ColorSetting(
 //                var index = it.currentIndex
 //                index = (index + 1) % Colors.COLORS.size
 //                it.currentIndex = index
-                it.setBackground(Colors.COLORS[it.currentIndex])
+                it.backgroundColor = (Colors.COLORS[it.currentIndex])
                 callback?.invoke(this)
             }
             .setHoverable(hoverable)
@@ -88,7 +88,7 @@ class ColorSetting(
             return gui.backgroundColor
         }
         set(value) {
-            gui.setBackground(value)
+            gui.backgroundColor = (value)
             field = value
         }
 }

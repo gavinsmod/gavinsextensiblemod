@@ -128,7 +128,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
         resetButton.width = resetWidth
         resetButton.position = resetPos!!
         resetButton.setDefaultPosition(resetButton.box)
-        resetButton.setBackground(Colors.DARK_RED)
+        resetButton.backgroundColor = (Colors.DARK_RED)
         resetButton.callback = {
             GavinsMod.gui.reset()
             GavinsMod.guiSettings.reset()
