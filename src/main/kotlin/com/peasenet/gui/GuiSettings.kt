@@ -133,7 +133,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
             GavinsMod.gui.reset()
             GavinsMod.guiSettings.reset()
         }
-        resetButton.isHoverable = true
+        resetButton.canHover = true
     }
 
     override fun close() {
@@ -145,7 +145,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
      * Reloads this gui by clearing all children, and recreating them.
      */
     fun reloadGui() {
-        guis.forEach(Consumer { obj: Gui -> obj.clearChildren() })
+        guis.forEach { it.clearChildren() }
         guis.clear()
         miscSettings()
         addSettings(tracerDropdown, ModCategory.TRACERS)

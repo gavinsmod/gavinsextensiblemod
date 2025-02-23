@@ -325,7 +325,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
                 )
             drawContext.drawItem(stack, blockX, blockY)
         }
-        box.isHoverable = false
+        box.canHover = false
         search.render(drawContext, mouseX, mouseY, delta)
         prevButton.gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
         nextButton.gui.render(drawContext, textRenderer, mouseX, mouseY, delta)

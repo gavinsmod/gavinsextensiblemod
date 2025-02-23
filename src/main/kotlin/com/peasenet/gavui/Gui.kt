@@ -38,12 +38,35 @@ import java.util.function.Consumer
 import kotlin.math.max
 
 /**
- * The base class for all gui elements.
+ * The base class for all gui elements.a
+ * @param builder The builder for this gui.
+ * @param children The children of this gui.
+ * @param title The title of this gui.
+ * @param translationKey The translation key of this gui.
+ * @param symbol The symbol of this gui.
+ * @param isParent Whether this gui is a parent.
+ * @param box The box of this gui.
+ * @param backgroundColor The background color of this gui.
+ * @param canHover Whether this gui can be hovered over.
+ * @param drawBorder Whether this gui should draw a border.
+ * @param height The height of this gui.
+ *
  * @author GT3CH1
  * @version 02-02-2025
  * @since 2/28/2023
  */
-open class Gui(builder: GuiBuilder<*>) {
+open class Gui(builder: GuiBuilder<*>,
+    var children : ArrayList<Gui> = ArrayList(),
+    var title: Text? = builder.title,
+    var translationKey: String? = builder.translationKey,
+    var symbol: Char = builder.symbol,
+    var isParent: Boolean = builder.isParent,
+    var box: BoxF = BoxF(builder.topLeft, builder.width, builder.height),
+    var backgroundColor: Color = builder.backgroundColor,
+    var canHover: Boolean = builder.canHover,
+    var drawBorder: Boolean = builder.drawBorder,
+    val height: Float = builder.height,
+    ) {
     /**
      * The original position of the gui.
      */
@@ -53,29 +76,6 @@ open class Gui(builder: GuiBuilder<*>) {
      * A randomly generated UUID for this gui.
      */
     val uUID: UUID = UUID.randomUUID()
-
-    /**
-     * Children of this gui.
-     */
-    var children: ArrayList<Gui> = ArrayList()
-        protected set
-
-    /**
-     * The title of the gui.
-     */
-    var title: Text?
-
-    /**
-     * The translation key for the gui.
-     */
-    var translationKey: String? = null
-        protected set
-
-    /**
-     * The symbol for the gui.
-     */
-    var symbol: Char = 0.toChar()
-
     /**
      * The offset for the symbol.
      */
@@ -102,22 +102,6 @@ open class Gui(builder: GuiBuilder<*>) {
             }
             field = transparency.coerceIn(0f, 1f)
         }
-
-    /**
-     * Whether this element is a parent.
-     */
-    var isParent: Boolean = false
-
-    /**
-     * The box of the gui.
-     */
-    var box: BoxF
-        private set
-
-    /**
-     * The background color of the gui.
-     */
-    var backgroundColor: Color = Colors.INDIGO
 
     /**
      * Whether this gui is being dragged.
@@ -147,17 +131,6 @@ open class Gui(builder: GuiBuilder<*>) {
             field = value
             if (hasChildren()) for (c in children) c.shrunkForScroll = value
         }
-
-    /**
-     * Whether we can hover over this gui.
-     */
-    var isHoverable: Boolean = true
-
-    /**
-     * Whether to draw the border.
-     */
-    var drawBorder: Boolean = true
-        private set
 
     /**
      * Clears all children from this gui.
@@ -229,9 +202,6 @@ open class Gui(builder: GuiBuilder<*>) {
         shrunkForScroll = true
     }
 
-    val height: Float
-        get() = box.height
-
     /**
      * Renders the clickable ui
      *
@@ -245,7 +215,7 @@ open class Gui(builder: GuiBuilder<*>) {
         if (isHidden) return
         val matrixStack = drawContext.matrices
         var bg = backgroundColor
-        if (mouseWithinGui(mouseX, mouseY) && isHoverable) bg = bg.brighten(0.25f)
+        if (mouseWithinGui(mouseX, mouseY) && canHover) bg = bg.brighten(0.25f)
         GuiUtil.drawBox(bg, box, matrixStack, transparency)
         var textColor = GavUI.textColor()
         if (title != null) {
@@ -484,7 +454,7 @@ open class Gui(builder: GuiBuilder<*>) {
         backgroundColor = builder.backgroundColor
         symbol = (builder.symbol)
         isHidden = builder.isHidden
-        isHoverable = builder.canHover
+        canHover = builder.canHover
         transparency = builder.transparency
         drawBorder = builder.drawBorder
         isParent = builder.isParent

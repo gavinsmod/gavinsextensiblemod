@@ -309,7 +309,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             color = Colors.RED
             callback = { deleteCallback() }
         }
-        box.isHoverable = false
+        box.canHover = false
 
         guis.add(saveSettings.gui)
         guis.add(cancelSettings.gui)

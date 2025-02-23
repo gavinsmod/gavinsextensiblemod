@@ -79,7 +79,6 @@ open class GuiElement(title: Text?) : Screen(title) {
             .build()
         val clientWidth = client!!.window.scaledWidth
         val clientHeight = client!!.window.scaledHeight
-        //TODO: Maybe make this a background?
         overlay = GuiBuilder<Gui>()
             .setWidth((clientWidth + 1).toFloat())
             .setHeight(clientHeight.toFloat())
@@ -87,7 +86,7 @@ open class GuiElement(title: Text?) : Screen(title) {
             .setTransparency(0.25f)
             .setHoverable(false)
             .build()
-        titleBox!!.isHoverable = false
+        titleBox!!.canHover = false
     }
 
     override fun mouseScrolled(
@@ -139,22 +138,10 @@ open class GuiElement(title: Text?) : Screen(title) {
         RenderSystem.setShader(ShaderProgramKeys.POSITION)
         RenderSystem.enableBlend()
         overlay.render(drawContext, textRenderer, mouseX, mouseY, delta)
-
-        for (g in guis) {
-            g.render(drawContext, textRenderer, mouseX, mouseY, delta)
-        }
-//        
-//        super.render(drawContext, mouseX, mouseY, delta)
-//        assert(client != null)
+        guis.forEach { it.render(drawContext, textRenderer, mouseX, mouseY, delta) }
         val tr = client!!.textRenderer
-////        RenderSystem.setShader { GameRenderer.getPositionProgram() }
-////        RenderSystem.enableBlend()
-//        RenderSystem.setShader(ShaderProgramKeys.POSITION);
-//        guis.forEach(Consumer { gui: Gui -> gui.render(drawContext, tr, mouseX, mouseY, delta) })
-        if (titleBox != null) {
-            titleBox!!.backgroundColor = (GavUISettings.getColor("gui.color.background"))
-            titleBox!!.render(drawContext, tr, mouseX, mouseY, delta)
-        }
+        titleBox?.backgroundColor = (GavUISettings.getColor("gui.color.background"))
+        titleBox?.render(drawContext, tr, mouseX, mouseY, delta)
         val miscConfig = Settings.getConfig<MiscConfig>("misc").background
         if (miscConfig) {
             overlay.render(drawContext, tr, mouseX, mouseY, delta)
@@ -166,11 +153,11 @@ open class GuiElement(title: Text?) : Screen(title) {
      * Resets all child guis to their default positions.
      */
     fun reset() {
-        guis.forEach(Consumer { obj: Gui -> obj.resetPosition() })
+        guis.forEach(Consumer { it.resetPosition() })
     }
 
     override fun isMouseOver(mouseX: Double, mouseY: Double): Boolean {
-        guis.forEach(Consumer { gui: Gui -> gui.mouseWithinGui(mouseX, mouseY) })
+        guis.forEach { it.mouseWithinGui(mouseX, mouseY) }
         return true
     }
 
