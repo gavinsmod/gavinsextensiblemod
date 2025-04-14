@@ -29,6 +29,7 @@ import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.client.network.ClientPlayerInteractionManager
 import net.minecraft.client.network.message.MessageHandler
 import net.minecraft.client.option.GameOptions
+import net.minecraft.client.render.BufferBuilderStorage
 import net.minecraft.client.render.WorldRenderer
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher
 import net.minecraft.client.render.entity.EntityRenderDispatcher
@@ -153,4 +154,6 @@ interface IMinecraftClient {
          */
         val player: ClientPlayerEntity? = null
     }
+
+    fun getBufferBuilderStorage(): BufferBuilderStorage
 }

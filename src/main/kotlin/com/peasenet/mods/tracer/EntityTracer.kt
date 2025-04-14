@@ -29,6 +29,7 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.main.Settings
 import com.peasenet.util.RenderUtils
+import com.peasenet.util.RenderUtils.getCameraPos
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
@@ -47,7 +48,7 @@ import net.minecraft.entity.Entity
  */
 @Suppress("UNCHECKED_CAST")
 abstract class EntityTracer<T : Entity>(
-    translationKey: String, chatCommand: String, val entityFilter: (Entity) -> Boolean
+    translationKey: String, chatCommand: String, val entityFilter: (Entity) -> Boolean,
 ) : TracerMod<T>(translationKey, chatCommand), RenderListener {
     override fun onTick() {
         super.onTick()
@@ -57,13 +58,19 @@ abstract class EntityTracer<T : Entity>(
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         if (entityList.isEmpty()) return
-        RenderUtils.setupRenderWithShader(matrixStack)
-        val entry = matrixStack.peek().positionMatrix
-        val bufferBuilder = RenderUtils.getBufferBuilder()
         for (e in entityList) {
-            RenderUtils.drawSingleLine(bufferBuilder, entry, partialTicks, e, getColor(e), config.alpha)
+            val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
+            val end = (RenderUtils.getLerpedBox(e, partialTicks).center).add(getCameraPos().negate())
+            matrixStack.push()
+            RenderUtils.drawSingleLine(
+                matrixStack,
+                tracerOrigin,
+                end,
+                getColor(e),
+                config.alpha
+            )
+            matrixStack.pop()
         }
-        RenderUtils.drawBuffer(bufferBuilder, matrixStack)
     }
 
     open fun getAlpha(): Float {

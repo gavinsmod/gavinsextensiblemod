@@ -70,7 +70,7 @@ object MathUtils {
     }
 
     fun lerp(delta: Float, pos: Vec3d, entity: Entity, region: RegionPos): Vec3d {
-        return lerp(delta, pos, Vec3d(entity.prevX, entity.prevY, entity.prevZ)).subtract(region.toVec3d())
+        return lerp(delta, pos, Vec3d(entity.lastX, entity.lastY, entity.lastZ)).subtract(region.toVec3d())
     }
 
     /**
@@ -81,9 +81,9 @@ object MathUtils {
      * @return The lerp position.
      */
     fun lerp(delta: Float, pos: Vec3d, oldPos: Vec3d): Vec3d {
-        val xLerped = MathHelper.lerp(delta.toDouble(), oldPos.x, pos.x) - pos.x
-        val yLerped = MathHelper.lerp(delta.toDouble(), oldPos.y, pos.y) - pos.y
-        val zLerped = MathHelper.lerp(delta.toDouble(), oldPos.z, pos.z) - pos.z
+        val xLerped = MathHelper.lerp(delta.toDouble(), oldPos.x, pos.x)
+        val yLerped = MathHelper.lerp(delta.toDouble(), oldPos.y, pos.y)
+        val zLerped = MathHelper.lerp(delta.toDouble(), oldPos.z, pos.z)
         return Vec3d(xLerped, yLerped, zLerped)
     }
 }

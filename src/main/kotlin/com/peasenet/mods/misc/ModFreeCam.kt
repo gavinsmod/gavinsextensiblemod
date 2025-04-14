@@ -23,10 +23,10 @@
  */
 package com.peasenet.mods.misc
 
-import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.config.misc.FreeCamConfig
 import com.peasenet.gavui.util.Direction
 import com.peasenet.main.Settings
+import com.peasenet.mods.tracer.TracerMod
 import com.peasenet.util.FakePlayer
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.AirStrafeEvent
@@ -36,9 +36,7 @@ import com.peasenet.util.listeners.PacketSendListener
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
-import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
-import org.lwjgl.opengl.GL11
 
 /**
  * A mod that allows the camera to be moved freely.
@@ -135,45 +133,33 @@ class ModFreeCam : MiscMod(
 
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
-        if (config.espEnabled) renderEsp(matrixStack)
+        if (config.espEnabled) renderEsp(matrixStack, partialTicks)
         if (config.tracerEnabled)
             renderTracer(matrixStack, partialTicks)
     }
 
     private fun renderTracer(matrixStack: MatrixStack, partialTicks: Float) {
-        RenderUtils.setupRenderWithShader(matrixStack)
-        val entry = matrixStack.peek().positionMatrix
-        val bufferBuilder = RenderUtils.getBufferBuilder()
-        RenderUtils.drawSingleLine(bufferBuilder, entry, partialTicks, fake!!, config.color, config.alpha)
-        RenderUtils.drawBuffer(bufferBuilder, matrixStack)
+        val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
+        val end = RenderUtils.getLerpedBox(fake!!, partialTicks).center.add(RenderUtils.getCameraPos().negate())
+        matrixStack.push()
+        RenderUtils.drawSingleLine(
+            matrixStack,
+            tracerOrigin,
+            end,
+            config.color,
+            TracerMod.config.alpha
+        )
+        matrixStack.pop()
     }
 
-    private fun renderEsp(matrixStack: MatrixStack) {
-        val region = RenderUtils.getCameraRegionPos()
-        GL11.glEnable(GL11.GL_BLEND)
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-        GL11.glDisable(GL11.GL_DEPTH_TEST)
-
-        matrixStack.push()
-        RenderUtils.applyRegionalRenderOffset(matrixStack, region)
-        val color = config.color
-        RenderSystem.setShaderColor(color.getRed(), color.getGreen(), color.getBlue(), config.alpha)
-        matrixStack.push()
-
-        matrixStack.translate(
-            fake!!.x - region.x, fake!!.y, fake!!.z - region.z
+    private fun renderEsp(matrixStack: MatrixStack, partialTicks: Float) {
+        val bb = RenderUtils.getLerpedBox(fake!!, partialTicks)
+        RenderUtils.renderEntityEsp(
+            matrixStack,
+            bb,
+            config.color,
+            config.alpha
         )
-        matrixStack.scale(
-            fake!!.width + 0.1F, fake!!.height + 0.1F, fake!!.width + 0.1F
-        )
-        val bb = Box(-0.5, 0.0, -0.5, 0.5, 1.0, 0.5)
-        RenderUtils.drawOutlinedBox(bb, matrixStack)
-        matrixStack.pop()
-        matrixStack.pop()
-
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
-        GL11.glEnable(GL11.GL_DEPTH_TEST)
-        GL11.glDisable(GL11.GL_BLEND)
     }
 
 }

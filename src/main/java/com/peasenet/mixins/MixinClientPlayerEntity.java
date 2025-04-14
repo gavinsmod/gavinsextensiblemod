@@ -89,17 +89,17 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
 
     @Override
     public double getPrevX() {
-        return super.prevX;
+        return super.lastX;
     }
 
     @Override
     public double getPrevY() {
-        return super.prevY;
+        return super.lastY;
     }
 
     @Override
     public double getPrevZ() {
-        return super.prevZ;
+        return super.lastZ;
     }
 
     @Override
@@ -148,7 +148,7 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
 
     @Override
     public float getFallDistance() {
-        return super.fallDistance;
+        return (float) super.fallDistance;
     }
 
     @Override

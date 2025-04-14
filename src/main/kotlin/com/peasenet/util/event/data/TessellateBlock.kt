@@ -24,7 +24,6 @@
 package com.peasenet.util.event.data
 
 import net.minecraft.block.BlockState
-import net.minecraft.client.render.model.BakedModel
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.BlockPos
 
@@ -46,6 +45,6 @@ data class TessellateBlock
     (
     var blockState: BlockState,
     var blockPos: BlockPos,
-    var model: BakedModel,
+//    var model: BakedModel,
     var matrixStack: MatrixStack,
 ) : Cancellable()

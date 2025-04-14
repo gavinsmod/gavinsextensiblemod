@@ -26,15 +26,9 @@ package com.peasenet.mods.esp
 
 import com.peasenet.gavui.color.Color
 import com.peasenet.util.RenderUtils
-import com.peasenet.util.RenderUtils.applyRegionalRenderOffset
-import com.peasenet.util.RenderUtils.getLerpedPos
 import com.peasenet.util.RenderUtils.renderEntityEsp
-import net.minecraft.client.gl.GlUsage
-import net.minecraft.client.gl.VertexBuffer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
-import net.minecraft.util.math.Box
-import org.lwjgl.opengl.GL11
 
 
 /**
@@ -49,17 +43,8 @@ import org.lwjgl.opengl.GL11
  *
  */
 abstract class EntityEsp<T : Entity>(
-    translationKey: String, chatCommand: String, val entityFilter: (Entity) -> Boolean
+    translationKey: String, chatCommand: String, val entityFilter: (Entity) -> Boolean,
 ) : EspMod<T>(translationKey, chatCommand) {
-
-    private lateinit var vertexBuffer: VertexBuffer
-    override fun onEnable() {
-        vertexBuffer = VertexBuffer(GlUsage.STATIC_WRITE)
-        val bb = Box(-1.0, 0.0, -1.0, 1.0, 1.0, 1.0)
-        RenderUtils.drawOutlinedBox(bb, vertexBuffer)
-        super.onEnable()
-    }
-
     @Suppress("UNCHECKED_CAST")
     override fun onTick() {
         super.onTick()
@@ -74,27 +59,16 @@ abstract class EntityEsp<T : Entity>(
     }
 
     protected fun render(matrixStack: MatrixStack, partialTicks: Float) {
-        val region = RenderUtils.getCameraRegionPos()
-        GL11.glEnable(GL11.GL_BLEND)
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-        GL11.glDisable(GL11.GL_DEPTH_TEST)
-        matrixStack.push()
-        applyRegionalRenderOffset(matrixStack, region)
         for (e in espList) {
-            val lerped = getLerpedPos(e, partialTicks).subtract(region.toVec3d())
-            matrixStack.translate(
-                e.x + lerped.x, e.y + lerped.y, e.z + lerped.z
-            )
-            matrixStack.scale(config.espSize / 0.25f, config.espSize / 0.25f, config.espSize / 0.25f)
-            val bb = e.boundingBox.offset(-e.x, -e.y, -e.z)
+            // TODO: Fix lerped
+            val bb = RenderUtils.getLerpedBox(e, partialTicks)
             renderEntityEsp(
-                matrixStack,
+                matrixStack     ,
                 bb,
                 getColor(e),
                 config.alpha
             )
         }
-        RenderUtils.cleanupRender(matrixStack)
     }
 
 

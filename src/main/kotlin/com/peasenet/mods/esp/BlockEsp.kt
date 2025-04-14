@@ -107,7 +107,7 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
                     getSettings().blockTracer
                 )
             }
-            RenderUtils.drawBuffer(bufferBuilder, matrixStack)
+//            RenderUtils.drawBuffer(bufferBuilder, matrixStack)
         }
     }
 

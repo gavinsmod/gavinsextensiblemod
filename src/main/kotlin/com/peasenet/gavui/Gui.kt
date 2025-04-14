@@ -55,8 +55,9 @@ import kotlin.math.max
  * @version 02-02-2025
  * @since 2/28/2023
  */
-open class Gui(builder: GuiBuilder<*>,
-    var children : ArrayList<Gui> = ArrayList(),
+open class Gui(
+    builder: GuiBuilder<*>,
+    var children: ArrayList<Gui> = ArrayList(),
     var title: Text? = builder.title,
     var translationKey: String? = builder.translationKey,
     var symbol: Char = builder.symbol,
@@ -66,7 +67,7 @@ open class Gui(builder: GuiBuilder<*>,
     var canHover: Boolean = builder.canHover,
     var drawBorder: Boolean = builder.drawBorder,
     val height: Float = builder.height,
-    ) {
+) {
     /**
      * The original position of the gui.
      */
@@ -76,6 +77,7 @@ open class Gui(builder: GuiBuilder<*>,
      * A randomly generated UUID for this gui.
      */
     val uUID: UUID = UUID.randomUUID()
+
     /**
      * The offset for the symbol.
      */
@@ -89,7 +91,7 @@ open class Gui(builder: GuiBuilder<*>,
     /**
      * How transparent the gui is.
      */
-    private var transparency: Float = 0f
+    private var transparency: Float = -1f
         get() {
             if (field == -1f) {
                 return GavUI.alpha
@@ -216,7 +218,9 @@ open class Gui(builder: GuiBuilder<*>,
         val matrixStack = drawContext.matrices
         var bg = backgroundColor
         if (mouseWithinGui(mouseX, mouseY) && canHover) bg = bg.brighten(0.25f)
-        GuiUtil.drawBox(bg, box, matrixStack, transparency)
+
+//        GuiUtil.drawBox(bg, box, matrixStack, transparency)
+        GuiUtil.fill(box, matrixStack, bg, transparency)
         var textColor = GavUI.textColor()
         if (title != null) {
             if (textColor.similarity(bg) < 0.3f) {
@@ -226,6 +230,7 @@ open class Gui(builder: GuiBuilder<*>,
             drawText(drawContext, tr, title!!, x + 2, y + 1.5f, textColor)
         }
         drawSymbol(drawContext, tr, textColor)
+
         if (this.drawBorder) GuiUtil.drawOutline(GavUI.borderColor(), box, matrixStack)
         renderChildren(drawContext, tr, mouseX, mouseY, delta)
     }

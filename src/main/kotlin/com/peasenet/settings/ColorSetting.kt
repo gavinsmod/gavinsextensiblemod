@@ -69,9 +69,8 @@ class ColorSetting(
             .setTitle(title)
             .setCallback {
 //                var index = it.currentIndex
-//                index = (index + 1) % Colors.COLORS.size
 //                it.currentIndex = index
-                it.backgroundColor = (Colors.COLORS[it.currentIndex])
+                it.backgroundColor = (Colors.COLORS[it.currentIndex % Colors.COLORS.size])
                 callback?.invoke(this)
             }
             .setHoverable(hoverable)

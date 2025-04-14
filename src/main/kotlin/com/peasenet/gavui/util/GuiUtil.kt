@@ -28,13 +28,10 @@ import com.peasenet.gavui.GavUI.borderColor
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
-import net.minecraft.client.gl.ShaderProgramKeys
-import net.minecraft.client.render.BufferBuilder
-import net.minecraft.client.render.BufferRenderer
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormats
+import com.peasenet.util.GemRenderLayers
+import com.peasenet.util.RenderUtils
+import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.util.math.MatrixStack
-import org.joml.Matrix4f
 
 /**
  * A utility class for drawing gui elements.
@@ -42,6 +39,8 @@ import org.joml.Matrix4f
  * @version 02-02-2025
  * @since 01/07/2023
  */
+
+//TODO: Fix this class!
 object GuiUtil {
     /**
      * @param c           - The color to draw the box with.
@@ -51,19 +50,7 @@ object GuiUtil {
      */
     @JvmOverloads
     fun drawBox(c: Color, box: BoxF, matrixStack: MatrixStack, alpha: Float = 1f) {
-        val newAlpha = alpha.coerceIn(0f, 1f)
-        val acColor = c.asFloatArray
-        RenderSystem.setShader(ShaderProgramKeys.POSITION)
-        RenderSystem.enableBlend()
-        RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], newAlpha)
-        val tesselator = RenderSystem.renderThreadTesselator()
-        val bufferBuilder = tesselator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION)
-        val matrix = matrixStack.peek().positionMatrix
-        drawBox(box, matrix, bufferBuilder)
-        val e = bufferBuilder.end()
-        BufferRenderer.drawWithGlobalProgram(e)
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
-        RenderSystem.disableBlend()
+        drawBox(box, matrixStack, c, alpha, GemRenderLayers.QUADS)
     }
 
     /**
@@ -87,20 +74,7 @@ object GuiUtil {
      */
     @JvmOverloads
     fun drawOutline(c: Color, box: BoxF, matrixStack: MatrixStack, alpha: Float = 1.0f) {
-        val newAlpha = alpha.coerceIn(0.0f, 1.0f)
-        val acColor = c.asFloatArray
-        RenderSystem.setShader(ShaderProgramKeys.POSITION)
-        RenderSystem.enableBlend()
-        RenderSystem.setShaderColor(acColor[0], acColor[1], acColor[2], newAlpha)
-
-        val matrix = matrixStack.peek().positionMatrix
-        val tess = RenderSystem.renderThreadTesselator()
-        val bb = tess.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION)
-        drawBox(box, matrix, bb)
-        val e = bb.end()
-        BufferRenderer.drawWithGlobalProgram(e)
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
-        RenderSystem.disableBlend()
+        drawBox(box, matrixStack, c, alpha)
     }
 
     /**
@@ -110,16 +84,34 @@ object GuiUtil {
      * @param matrix        - The matrix to draw with.
      * @param bufferBuilder - The buffer builder to draw with.
      */
-    private fun drawBox(box: BoxF, matrix: Matrix4f, bufferBuilder: BufferBuilder) {
+    private fun drawBox(box: BoxF, matrix: MatrixStack, color: Color, alpha: Float, targetLayer: RenderLayer? = null) {
+        // todo: move to gavui render utils?
+        val vcp = RenderUtils.getVertexConsumerProvider()
+        val layer = targetLayer ?: GemRenderLayers.LINES
+        val bufferBuilder = vcp.getBuffer(layer)
+
+        val matrix4f = matrix.peek()
+
         val xt1 = box.topLeft.x
         val yt1 = box.topLeft.y
         val xt2 = box.bottomRight.x
         val yt2 = box.bottomRight.y
-        bufferBuilder.vertex(matrix, xt1, yt1, 0f)
-        bufferBuilder.vertex(matrix, xt1, yt2, 0f)
-        bufferBuilder.vertex(matrix, xt2, yt2, 0f)
-        bufferBuilder.vertex(matrix, xt2, yt1, 0f)
-        bufferBuilder.vertex(matrix, xt1, yt1, 0f)
+        bufferBuilder.vertex(matrix4f, xt1, yt1, 0f)
+            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .normal(0f, 0f, 0f)
+        bufferBuilder.vertex(matrix4f, xt1, yt2, 0f)
+            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .normal(0f, 0f, 0f)
+        bufferBuilder.vertex(matrix4f, xt2, yt2, 0f)
+            .normal(0f, 0f, 0f)
+            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        bufferBuilder.vertex(matrix4f, xt2, yt1, 0f)
+            .normal(0f, 0f, 0f)
+            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        bufferBuilder.vertex(matrix4f, xt1, yt1, 0f)
+            .normal(0f, 0f, 0f)
+            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        vcp.draw(layer)
     }
 
     /**
@@ -132,17 +124,33 @@ object GuiUtil {
     fun renderSingleLine(color: Color, p1: PointF, p2: PointF, matrixStack: MatrixStack, alpha: Float) {
         val newAlpha = alpha.coerceIn(0.0f, 1.0f)
         val accColor = color.asFloatArray
-        RenderSystem.setShader(ShaderProgramKeys.POSITION)
-        RenderSystem.enableBlend()
+//        RenderSystem.setShader(ShaderProgramKeys.POSITION)
+//        RenderSystem.enableBlend()
         val matrix = matrixStack.peek().positionMatrix
-        val tessellator = RenderSystem.renderThreadTesselator()
+//        val tessellator = RenderSystem.renderThreadTesselator()
         RenderSystem.setShaderColor(accColor[0], accColor[1], accColor[2], newAlpha)
-        val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION)
-        bufferBuilder.vertex(matrix, p1.x, p1.y, 0f)
-        bufferBuilder.vertex(matrix, p2.x, p2.y, 0f)
-        val e = bufferBuilder.end()
-        BufferRenderer.drawWithGlobalProgram(e)
+//        val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION)
+//        bufferBuilder.vertex(matrix, p1.x, p1.y, 0f)
+//        bufferBuilder.vertex(matrix, p2.x, p2.y, 0f)
+//        val e = bufferBuilder.end()
+//        BufferRenderer.drawWithGlobalProgram(e)
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
-        RenderSystem.disableBlend()
+//        RenderSystem.disableBlend()
+    }
+
+    fun fill(box: BoxF, matrixStack: MatrixStack, color: Color, alpha: Float) {
+
+        val vcp = RenderUtils.getVertexConsumerProvider()
+        val layer = RenderLayer.getGui()
+        val bufferBuilder = vcp.getBuffer(layer)
+        bufferBuilder.vertex(matrixStack.peek(), box.topLeft.x, box.topLeft.y, 0f)
+            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        bufferBuilder.vertex(matrixStack.peek(), box.topLeft.x, box.bottomRight.y, 0f)
+            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        bufferBuilder.vertex(matrixStack.peek(), box.bottomRight.x, box.bottomRight.y, 0f)
+            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+        bufferBuilder.vertex(matrixStack.peek(), box.bottomRight.x, box.topLeft.y, 0f)
+            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+
     }
 }

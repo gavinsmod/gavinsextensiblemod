@@ -23,7 +23,7 @@
  */
 package com.peasenet.gui
 
-import com.mojang.blaze3d.systems.RenderSystem
+//import net.minecraft.client.gl.ShaderProgramKeys
 import com.peasenet.config.misc.MiscConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
@@ -34,7 +34,6 @@ import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
 import com.peasenet.util.RenderUtils
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gl.ShaderProgramKeys
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.Text
@@ -135,8 +134,8 @@ open class GuiElement(title: Text?) : Screen(title) {
 
 
     override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        RenderSystem.setShader(ShaderProgramKeys.POSITION)
-        RenderSystem.enableBlend()
+//        RenderSystem.setShader(ShaderProgramKeys.POSITION)
+//        RenderSystem.enableBlend()
         overlay.render(drawContext, textRenderer, mouseX, mouseY, delta)
         guis.forEach { it.render(drawContext, textRenderer, mouseX, mouseY, delta) }
         val tr = client!!.textRenderer

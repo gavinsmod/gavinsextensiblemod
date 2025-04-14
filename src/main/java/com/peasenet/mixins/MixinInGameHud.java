@@ -46,7 +46,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinInGameHud {
     @Inject(at = @At("HEAD"), method = "render")
     private void mixin(DrawContext context, RenderTickCounter tickDelta, CallbackInfo ci) {
-        var event = new InGameHudRenderEvent(context, tickDelta.getTickDelta(true));
+        var event = new InGameHudRenderEvent(context, tickDelta.getDynamicDeltaTicks());
         EventManager.getEventManager().call(event);
     }
 

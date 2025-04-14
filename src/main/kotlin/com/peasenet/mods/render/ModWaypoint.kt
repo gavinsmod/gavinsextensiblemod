@@ -23,7 +23,6 @@
  */
 package com.peasenet.mods.render
 
-import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.config.tracer.TracerConfig
 import com.peasenet.config.waypoint.WaypointConfig
 import com.peasenet.extensions.toVec3d
@@ -38,7 +37,6 @@ import com.peasenet.util.event.data.CameraBob
 import com.peasenet.util.listeners.CameraBobListener
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gl.ShaderProgramKeys
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.Box
 
@@ -109,22 +107,20 @@ class ModWaypoint : RenderMod(
             Settings.getConfig<WaypointConfig>("waypoints").getLocations().filter { w -> w.canRender(playerDimension) }
         if (waypointLocs.isEmpty()) return
         RenderUtils.setupRender(matrixStack)
-        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR)
         val entry = matrixStack.peek().positionMatrix
-        val bufferBuilder = RenderUtils.getBufferBuilder()
         for (w in waypointLocs) {
             val pos = RenderUtils.offsetPosWithCamera(w.coordinates.toVec3d())
             val bb = Box(
                 pos.x + 1, pos.y, pos.z + 1, pos.x, pos.y + 1.0, pos.z
             )
-            if (w.renderEsp) RenderUtils.drawOutlinedBox(bb, bufferBuilder, entry, w.color)
+            if (w.renderEsp) RenderUtils.drawOutlinedBox(bb, matrixStack, w.color)
             if (w.renderTracer) {
                 RenderUtils.drawSingleLine(
-                    bufferBuilder, entry, partialTicks, bb.center, w.color
+                    matrixStack, RenderUtils.getCenterOfScreen(partialTicks), bb.center, w.color
                 )
             }
         }
-        RenderUtils.drawBuffer(bufferBuilder)
+        RenderUtils.cleanupRender(matrixStack)
     }
 
     override fun onCameraViewBob(c: CameraBob) {

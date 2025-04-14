@@ -66,32 +66,31 @@ abstract class BlockEntityEsp<T : BlockEntity>(
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         if (espList.isEmpty()) return
-        RenderUtils.setupRenderWithShader(matrixStack)
-        val bufferBuilder = RenderUtils.getBufferBuilder()
+        matrixStack.push()
+        val scale = config.espSize / 0.25f
         for (e in espList) {
-            matrixStack.push()
-            val pos = e.pos.subtract(RenderUtils.getCameraRegionPos().toVec3i())
+            val pos = e.pos.toCenterPos()
             val bb = Box(
-                pos.x.toDouble() + 1,
-                pos.y.toDouble(),
-                pos.z.toDouble() + 1,
-                pos.x.toDouble(),
-                pos.y + 1.0,
-                pos.z.toDouble()
+                pos.x + 0.5 * scale,
+                pos.y + 0.5 * scale,
+                pos.z + 0.5 * scale,
+                pos.x - 0.5 * scale,
+                pos.y - 0.5 * scale,
+                pos.z - 0.5 * scale
             )
-            val center = bb.center
-            matrixStack.translate(center)
-            matrixStack.scale(config.espSize / 0.25f, config.espSize / 0.25f, config.espSize / 0.25f)
+
+//            bb.stretch(config.espSize / 0.25, config.espSize / 0.25, config.espSize / 0.25)
+//            bb.offset(config.espSize / 0.25, config.espSize / 0.25, config.espSize / 0.25)
+//            matrixStack.scale(config.espSize / 0.25f, config.espSize / 0.25f, config.espSize / 0.25f)
             RenderUtils.drawOutlinedBox(
-                bb.offset(-center.x, -center.y, -center.z),
-                bufferBuilder,
-                matrixStack.peek().positionMatrix,
+                bb,
+                matrixStack,
                 getColor(),
                 getAlpha(),
                 false
             )
-            matrixStack.pop()
         }
-        RenderUtils.drawBuffer(bufferBuilder, matrixStack)
+        matrixStack.pop()
+//        RenderUtils.drawBuffer(bufferBuilder, matrixStack)
     }
 }
