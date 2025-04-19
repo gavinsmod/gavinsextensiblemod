@@ -17,8 +17,7 @@
     "MixinInGameOverlayRenderer",
     "MixinMinecraftClient",
     "MixinMinecraftClientAttack",
-    "MixinSimpleOption",
-    "MixinTerrainRenderContext"
+    "MixinSimpleOption"
   ],
   "compatibilityLevel": "JAVA_21",
   "injectors": {
