@@ -103,8 +103,8 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
         em.subscribe(RenderListener::class.java, this)
         // search for chunks within render distance
         GemExecutor.execute {
-//            chunks.values.forEach { searchChunk(it) }
-            RenderUtils.getVisibleChunks(chunksToRender).forEach { searchChunk(it) }
+//            chunks.values.forEach { seVarchChunk(it) }
+            RenderUtils.getVisibleChunks(chunksToRender).forEach(this::searchChunk)
         }
         super.onEnable()
     }
