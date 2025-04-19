@@ -167,57 +167,34 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
             }
         }
         prevButton = clickSetting {
-            options {
-                topLeft = PointF(x + (this@GuiBlockSelection.width shr 1) - 89f, y - 16f)
-                width = 13f
-                height = 13f
-                callback = {
-                    if (page > 0) {
-                        page--
-                        updateBlockList()
-                    }
-                }
-                hoverable = true
-            }
-        }
-//        nextButton = SettingBuilder<ClickSetting>()
-//            .setTopLeft(PointF(x + width / 2 + 76f, y - 16f))
-//            .setWidth(13f)
-//            .setHeight(13f)
-//            .setCallback { pageUp() }
-//            .setHoverable(true)
-//            .buildClickSetting()
-        nextButton = clickSetting {
-            options {
-                topLeft = PointF(x + this@GuiBlockSelection.width / 2f + 76f, y - 16f)
-                width = 13f
-                height = 13f
-                callback = {
-                    pageUp()
-                }
-                hoverable = true
-            }
-        }
-
-//        enabledOnly = SettingBuilder<ToggleSetting>()
-//            .setTopLeft(PointF(x + width / 2f - 170f, y - 15f))
-//            .setWidth(80f)
-//            .setHeight(10f)
-//            .setTitle("gavinsmod.generic.enabledOnly")
-//            .setHoverable(true)
-//            .setCallback { page = 0; updateBlockList() }
-//            .buildToggleSetting()
-
-        enabledOnly = toggleSetting {
-            options {
-                topLeft = PointF(x + this@GuiBlockSelection.width / 2f - 170f, y - 15f)
-                width = 80f
-                height = 10f
-                title = "gavinsmod.generic.enabledOnly"
-                callback = {
-                    page = 0
+            topLeft = PointF(x + (this@GuiBlockSelection.width shr 1) - 89f, y - 16f)
+            width = 13f
+            height = 13f
+            callback = {
+                if (page > 0) {
+                    page--
                     updateBlockList()
                 }
+            }
+            hoverable = true
+        }
+        nextButton = clickSetting {
+            topLeft = PointF(x + this@GuiBlockSelection.width / 2f + 76f, y - 16f)
+            width = 13f
+            height = 13f
+            callback = {
+                pageUp()
+            }
+            hoverable = true
+        }
+        enabledOnly = toggleSetting {
+            topLeft = PointF(x + this@GuiBlockSelection.width / 2f - 170f, y - 15f)
+            width = 80f
+            height = 10f
+            title = "gavinsmod.generic.enabledOnly"
+            callback = {
+                page = 0
+                updateBlockList()
             }
         }
 
@@ -231,16 +208,21 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
             resetPos = PointF(titleBox!!.x2 + 4f, titleBox!!.y)
         if (resetWidth.toDouble() == 0.0) resetWidth = (width + 4).toFloat()
         resetButton = clickSetting {
-            options {
-                topLeft = resetPos
-                this.width = resetWidth
-                height = 10f
-                title = "gavinsmod.settings.reset"
-                color = Colors.DARK_RED
-                callback = { resetCallback() }
-                hoverable = true
-            }
+            topLeft = resetPos
+            this.width = resetWidth
+            height = 10f
+            title = "gavinsmod.settings.reset"
+            color = Colors.DARK_RED
+            callback = { resetCallback() }
+            hoverable = true
         }
+
+
+        guis.add(prevButton.gui)
+        guis.add(nextButton.gui)
+        guis.add(enabledOnly.gui)
+        guis.add(resetButton.gui)
+        
     }
 
     private fun resetCallback() {
@@ -327,10 +309,10 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         }
         box.canHover = false
         search.render(drawContext, mouseX, mouseY, delta)
-        prevButton.gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
-        nextButton.gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
-        enabledOnly.gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
-        resetButton.gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
+//        prevButton.gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
+//        nextButton.gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
+//        enabledOnly.gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
+//        resetButton.gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
         drawContext.drawText(
             client!!.textRenderer,
             Text.literal('\u25c0'.toString()),

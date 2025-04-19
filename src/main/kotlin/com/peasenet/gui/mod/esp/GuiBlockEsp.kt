@@ -22,10 +22,16 @@
  * SOFTWARE.
  */
 
-package com.peasenet.extensions
+package com.peasenet.gui.mod.esp
 
-import net.minecraft.util.math.Vec3d
+import com.peasenet.config.esp.BlockEspConfig
+import com.peasenet.gui.mod.GuiBlockSelection
 
-fun Vec3d.add(x: Int, y: Int, z: Int): Vec3d {
-    return this.add(x.toDouble(), y.toDouble(), z.toDouble())
+/**
+ *
+ * @author GT3CH1
+ * @version 04-15-2025
+ * @since 04-15-2025
+ */
+class GuiBlockEsp : GuiBlockSelection<BlockEspConfig>("gavinsmod.mod.esp.blockesp", "blockesp") {
 }

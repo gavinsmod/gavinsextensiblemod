@@ -28,6 +28,8 @@ import com.peasenet.config.commons.BlockListConfig
 import com.peasenet.config.esp.BlockEspConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.util.Direction
+import com.peasenet.gui.mod.esp.GuiBlockEsp
+import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.block.GavBlock
@@ -81,6 +83,12 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
                 title = "gavinsmod.generic.tracers"
                 callback = {
                     getSettings().blockTracer = it.state
+                }
+            }
+            clickSetting {
+                title = "gavinsmod.mod.esp.blockesp"
+                callback = {
+                    GavinsModClient.minecraftClient.setScreen(GuiBlockEsp())
                 }
             }
         }

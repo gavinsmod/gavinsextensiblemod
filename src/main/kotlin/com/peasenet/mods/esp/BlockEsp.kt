@@ -29,7 +29,6 @@ import com.peasenet.extensions.east
 import com.peasenet.extensions.north
 import com.peasenet.extensions.south
 import com.peasenet.extensions.west
-import com.peasenet.util.RenderUtils
 import com.peasenet.util.block.GavBlock
 import com.peasenet.util.chunk.GavChunk
 import com.peasenet.util.event.data.ChunkUpdate
@@ -94,12 +93,9 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         synchronized(chunks) {
             if (chunks.isEmpty()) return
-            RenderUtils.setupRenderWithShader(matrixStack)
-            val bufferBuilder = RenderUtils.getBufferBuilder()
             chunks.values.filter { chunkInRenderDistance(it) }.toMutableList().forEach {
                 it.render(
                     matrixStack,
-                    bufferBuilder,
                     getSettings().blockColor,
                     partialTicks,
                     getSettings().alpha,

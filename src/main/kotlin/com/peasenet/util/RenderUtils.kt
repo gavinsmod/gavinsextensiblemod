@@ -325,15 +325,12 @@ object RenderUtils {
         color: Color,
         alpha: Float = 1f,
     ) {
-
-//        GL11.glEnable(GL11.GL_BLEND)
-//        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
         GL11.glDisable(GL11.GL_DEPTH_TEST)
 
         val vcp = getVertexConsumerProvider()
         val layer = GemRenderLayers.LINES
         val bufferBuilder = vcp.getBuffer(layer)
-        val entry = matrixStack.peek()
+        val entry = matrixStack.peek().positionMatrix
         val x1 = start.x.toFloat()
         val y1 = start.y.toFloat()
         val z1 = start.z.toFloat()
@@ -348,11 +345,11 @@ object RenderUtils {
         ).normalize()
         bufferBuilder.vertex(entry, x1, y1, z1)
             .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(entry, normal)
-
+//            .normal(entry, normal)
+            .normal(0f, 0f, 0f)
         bufferBuilder.vertex(entry, x2, y2, z2)
             .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(entry, normal)
+            .normal(0f, 0f, 0f)
 
         vcp.draw(layer)
 
@@ -364,101 +361,14 @@ object RenderUtils {
      * Draws a line from the center of the clients screen to the given end point.
      * @param buffer The buffer builder to draw with.
      * @param matrix4f The matrix to draw with.
-     * @param partialTicks The delta time.
-     * @param end The end point of the line.
-     * @param color The color of the line.
-     * @param alpha The alpha of the line.
-     * @param offsetEnd Whether to offset the end point by the camera region position.
-     */
-    fun drawSingleLine(
-        buffer: BufferBuilder,
-        matrix4f: Matrix4f,
-        partialTicks: Float,
-        end: Vec3d,
-        color: Color = Colors.WHITE,
-        alpha: Float = 1f,
-        offsetEnd: Boolean = false,
-    ) {
-        if (offsetEnd) {
-            drawSingleLine(
-                buffer,
-                matrix4f,
-                getCenterOfScreen(partialTicks),
-                end.subtract(getCameraRegionPos().toVec3d()),
-                color,
-                alpha
-            )
-        } else {
-            drawSingleLine(buffer, matrix4f, getCenterOfScreen(partialTicks), end, color, alpha)
-        }
-    }
-
-    /**
-     * Draws a line from the center of the clients screen to the given end point. This will lerp the end point to
-     * the current position of the entity.
-     * @param buffer The buffer builder to draw with.
-     * @param matrix4f The matrix to draw with.
-     * @param partialTicks The delta time.
-     * @param color The color of the line.
-     * @param alpha The alpha of the line.
-     */
-    fun drawSingleLine(
-        buffer: BufferBuilder,
-        matrix4f: Matrix4f,
-        partialTicks: Float,
-        entity: Entity,
-        color: Color = Colors.WHITE,
-        alpha: Float = 1f,
-    ) {
-        val lerpedPos = getLerpedPos(entity,partialTicks)
-        val box = Box(
-            lerpedPos.x + entity.boundingBox.minX,
-            lerpedPos.y + entity.boundingBox.minY,
-            lerpedPos.z + entity.boundingBox.minZ,
-            lerpedPos.x + entity.boundingBox.maxX,
-            lerpedPos.y + entity.boundingBox.maxY,
-            lerpedPos.z + entity.boundingBox.maxZ
-        )
-        val center = box.center
-//        drawSingleLine(matrixStack = getCenterOfScreen(partialTicks), center, color, alpha)
-    }
-
-    /**
-     * Draws a line from the center of the clients screen to the given end point.
-     * @param buffer The buffer builder to draw with.
-     * @param matrix4f The matrix to draw with.
-     * @param partialTicks The delta time.
      * @param end The end point of the line.
      * @param color The color of the line.
      * @param alpha The alpha of the line.
      */
-    fun drawSingleLine(
-        buffer: BufferBuilder,
-        matrix4f: Matrix4f,
-        partialTicks: Float,
-        end: BlockPos,
-        color: Color = Colors.WHITE,
-        alpha: Float = 1f,
-    ) {
-        drawSingleLine(
-            buffer,
-            matrix4f,
-            getCenterOfScreen(partialTicks),
-            end.subtract(getCameraRegionPos().toVec3i()).toCenterPos(),
-            color,
-            alpha
-        )
-    }
-
-
-    /**
-     * Draws a line from the center of the clients screen to the given end point.
-     * @param buffer The buffer builder to draw with.
-     * @param matrix4f The matrix to draw with.
-     * @param end The end point of the line.
-     * @param color The color of the line.
-     * @param alpha The alpha of the line.
-     */
+    @Deprecated(
+        message = "USe drawSingleLine(matrix4f, start, end, color, alpha) instead",
+        ReplaceWith("RenderUtils.drawSingleLine(matrix4f, start, end, color, alpha)")
+    )
     fun drawSingleLine(
         buffer: BufferBuilder,
         matrix4f: Matrix4f,
