@@ -78,12 +78,14 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
                 callback = {
                     getSettings().structureEsp = it.state
                 }
+                state = getSettings().structureEsp
             }
             toggleSetting {
                 title = "gavinsmod.generic.tracers"
                 callback = {
                     getSettings().blockTracer = it.state
                 }
+                state = getSettings().blockTracer
             }
             clickSetting {
                 title = "gavinsmod.mod.esp.blockesp"
