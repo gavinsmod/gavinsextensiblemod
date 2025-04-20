@@ -324,6 +324,7 @@ object RenderUtils {
         end: Vec3d,
         color: Color,
         alpha: Float = 1f,
+        withOffset: Boolean = true,
     ) {
         GL11.glDisable(GL11.GL_DEPTH_TEST)
 
@@ -331,18 +332,16 @@ object RenderUtils {
         val layer = GemRenderLayers.LINES
         val bufferBuilder = vcp.getBuffer(layer)
         val entry = matrixStack.peek().positionMatrix
+        var bb2 = end
+        if (withOffset)
+            bb2 = end.add((getCameraPos().negate()))
         val x1 = start.x.toFloat()
         val y1 = start.y.toFloat()
         val z1 = start.z.toFloat()
-        val x2 = end.x.toFloat()
-        val y2 = end.y.toFloat()
-        val z2 = end.z.toFloat()
+        val x2 = bb2.x.toFloat()
+        val y2 = bb2.y.toFloat()
+        val z2 = bb2.z.toFloat()
 
-        val normal = Vector3f(
-            (x2 - x1),
-            (y2 - y1),
-            (z2 - z1)
-        ).normalize()
         bufferBuilder.vertex(entry, x1, y1, z1)
             .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
 //            .normal(entry, normal)

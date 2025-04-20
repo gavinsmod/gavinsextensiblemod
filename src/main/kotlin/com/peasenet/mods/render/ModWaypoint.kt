@@ -106,21 +106,22 @@ class ModWaypoint : RenderMod(
         val waypointLocs =
             Settings.getConfig<WaypointConfig>("waypoints").getLocations().filter { w -> w.canRender(playerDimension) }
         if (waypointLocs.isEmpty()) return
-        RenderUtils.setupRender(matrixStack)
-        val entry = matrixStack.peek().positionMatrix
+        matrixStack.push()
         for (w in waypointLocs) {
-            val pos = RenderUtils.offsetPosWithCamera(w.coordinates.toVec3d())
+            val pos = w.coordinates.toVec3d()
             val bb = Box(
                 pos.x + 1, pos.y, pos.z + 1, pos.x, pos.y + 1.0, pos.z
             )
             if (w.renderEsp) RenderUtils.drawOutlinedBox(bb, matrixStack, w.color)
             if (w.renderTracer) {
+                val origin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
                 RenderUtils.drawSingleLine(
-                    matrixStack, RenderUtils.getCenterOfScreen(partialTicks), bb.center, w.color
+                    matrixStack, origin, bb.center, w.color
                 )
             }
         }
-        RenderUtils.cleanupRender(matrixStack)
+        matrixStack.pop()
+//        RenderUtils.cleanupRender(matrixStack)
     }
 
     override fun onCameraViewBob(c: CameraBob) {

@@ -195,125 +195,141 @@ class GavBlock(
         alpha: Float,
     ) {
 //        val region = blockPos.
-        val stack = matrixStack.peek().positionMatrix
+        val startPos = blockPos.add((getCameraPos().negate()))
         when (edge) {
             Edge.Edge1 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
-                    blockPos,
-                    blockPos.add(0, 0, 1),
+                    startPos,
+                    startPos.add(0, 0, 1),
                     color,
                     alpha,
+                    false
                 )
             }
 
             Edge.Edge2 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
-                    blockPos.add(0, 0, 1),
-                    blockPos.add(1, 0, 1),
+                    startPos.add(0, 0, 1),
+                    startPos.add(1, 0, 1),
                     color,
-                    alpha
+                    alpha,
+
+                    false
                 )
             }
 
             Edge.Edge3 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
-                    Vec3d(blockPos.x.toDouble() + 1, blockPos.y.toDouble(), blockPos.z.toDouble() + 1),
-                    Vec3d(blockPos.x.toDouble() + 1, blockPos.y.toDouble(), blockPos.z.toDouble()),
+                    startPos.add(1, 0, 1),
+                    startPos.add(1, 0, 0),
                     color,
-                    alpha
+                    alpha,
+
+                    false
                 )
             }
 
             Edge.Edge4 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
-                    Vec3d(blockPos.x.toDouble() + 1, blockPos.y.toDouble(), blockPos.z.toDouble()),
-                    Vec3d(blockPos.x.toDouble(), blockPos.y.toDouble(), blockPos.z.toDouble()),
+                    startPos.add(1, 0, 0),
+                    startPos.add(0, 0, 0),
                     color,
-                    alpha
+                    alpha,
+
+                    false
                 )
             }
 
             Edge.Edge5 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
-                    Vec3d(blockPos.x.toDouble(), blockPos.y.toDouble(), blockPos.z.toDouble()),
-                    Vec3d(blockPos.x.toDouble(), blockPos.y.toDouble() + 1, blockPos.z.toDouble()),
+                    startPos,
+                    startPos.add(0, 1, 0),
                     color,
-                    alpha
+                    alpha,
+
+                    false
                 )
             }
 
             Edge.Edge6 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
-                    Vec3d(blockPos.x.toDouble(), blockPos.y.toDouble(), blockPos.z.toDouble() + 1),
-                    Vec3d(blockPos.x.toDouble(), blockPos.y.toDouble() + 1, blockPos.z.toDouble() + 1),
+                    startPos.add(0, 0, 1),
+                    startPos.add(0, 1, 1),
                     color,
-                    alpha
+                    alpha,
+                    false
                 )
             }
 
             Edge.Edge7 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
-                    Vec3d(blockPos.x.toDouble() + 1, blockPos.y.toDouble(), blockPos.z.toDouble() + 1),
-                    Vec3d(blockPos.x.toDouble() + 1, blockPos.y.toDouble() + 1, blockPos.z.toDouble() + 1),
+                    startPos.add(1, 0, 1),
+                    startPos.add(1, 1, 1),
                     color,
-                    alpha
+                    alpha,
+                    false
                 )
             }
 
             Edge.Edge8 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
-                    Vec3d(blockPos.x.toDouble() + 1, blockPos.y.toDouble(), blockPos.z.toDouble()),
-                    Vec3d(blockPos.x.toDouble() + 1, blockPos.y.toDouble() + 1, blockPos.z.toDouble()),
+                    startPos.add(1, 0, 0),
+                    startPos.add(1, 1, 0),
                     color,
-                    alpha
+                    alpha,
+                    false
                 )
             }
 
             Edge.Edge9 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
-                    Vec3d(blockPos.x.toDouble(), blockPos.y.toDouble() + 1, blockPos.z.toDouble()),
-                    Vec3d(blockPos.x.toDouble(), blockPos.y.toDouble() + 1, blockPos.z.toDouble() + 1),
+                    startPos.add(0, 1, 0),
+                    startPos.add(0, 1, 1),
                     color,
-                    alpha
+                    alpha,
+                    false
                 )
             }
 
             Edge.Edge10 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
-                    Vec3d(blockPos.x.toDouble(), blockPos.y.toDouble() + 1, blockPos.z.toDouble() + 1),
-                    Vec3d(blockPos.x.toDouble() + 1, blockPos.y.toDouble() + 1, blockPos.z.toDouble() + 1),
+                    startPos.add(0, 1, 1),
+                    startPos.add(1, 1, 1),
                     color,
-                    alpha
+                    alpha,
+                    false
                 )
             }
 
             Edge.Edge11 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
-                    Vec3d(blockPos.x.toDouble() + 1, blockPos.y.toDouble() + 1, blockPos.z.toDouble() + 1),
-                    Vec3d(blockPos.x.toDouble() + 1, blockPos.y.toDouble() + 1, blockPos.z.toDouble()),
+                    startPos.add(1, 1, 1),
+                    startPos.add(1, 1, 0),
                     color,
-                    alpha
+                    alpha,
+                    false
                 )
             }
 
             Edge.Edge12 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
-                    Vec3d(blockPos.x.toDouble() + 1, blockPos.y.toDouble() + 1, blockPos.z.toDouble()),
-                    Vec3d(blockPos.x.toDouble(), blockPos.y.toDouble() + 1, blockPos.z.toDouble()),
+                    startPos.add(1, 1, 0),
+                    startPos.add(0, 1, 0),
                     color,
-                    alpha
+                    alpha,
+                    false
                 )
             }
 
@@ -355,7 +371,7 @@ class GavBlock(
     ) {
 
         matrixStack.push()
-        val offsetPos = pos.toVec3d().add(getCameraPos().negate())
+        val offsetPos = pos.toVec3d()
         if (structureEsp)
             renderEdges(visibleEdges, offsetPos, matrixStack, color, alpha)
         else
@@ -363,7 +379,7 @@ class GavBlock(
         if (tracers) {
             val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
             RenderUtils.drawSingleLine(
-                matrixStack, tracerOrigin, offsetPos.add(0.5,0.5,0.5), color, alpha
+                matrixStack, tracerOrigin, offsetPos.add(0.5, 0.5, 0.5), color, alpha
             )
         }
         matrixStack.pop()
@@ -379,4 +395,3 @@ class GavBlock(
         return true
     }
 }
-

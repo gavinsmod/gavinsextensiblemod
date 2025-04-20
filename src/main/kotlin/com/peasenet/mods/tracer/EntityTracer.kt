@@ -29,7 +29,6 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.main.Settings
 import com.peasenet.util.RenderUtils
-import com.peasenet.util.RenderUtils.getCameraPos
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
@@ -60,14 +59,15 @@ abstract class EntityTracer<T : Entity>(
         if (entityList.isEmpty()) return
         for (e in entityList) {
             val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
-            val end = (RenderUtils.getLerpedBox(e, partialTicks).center).add(getCameraPos().negate())
+            val end = (RenderUtils.getLerpedBox(e, partialTicks).center)
             matrixStack.push()
             RenderUtils.drawSingleLine(
                 matrixStack,
                 tracerOrigin,
                 end,
                 getColor(e),
-                config.alpha
+                config.alpha,
+                true
             )
             matrixStack.pop()
         }

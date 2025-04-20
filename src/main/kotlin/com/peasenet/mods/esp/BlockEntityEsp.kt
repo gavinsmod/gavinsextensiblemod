@@ -78,10 +78,6 @@ abstract class BlockEntityEsp<T : BlockEntity>(
                 pos.y - 0.5 * scale,
                 pos.z - 0.5 * scale
             )
-
-//            bb.stretch(config.espSize / 0.25, config.espSize / 0.25, config.espSize / 0.25)
-//            bb.offset(config.espSize / 0.25, config.espSize / 0.25, config.espSize / 0.25)
-//            matrixStack.scale(config.espSize / 0.25f, config.espSize / 0.25f, config.espSize / 0.25f)
             RenderUtils.drawOutlinedBox(
                 bb,
                 matrixStack,
@@ -91,6 +87,5 @@ abstract class BlockEntityEsp<T : BlockEntity>(
             )
         }
         matrixStack.pop()
-//        RenderUtils.drawBuffer(bufferBuilder, matrixStack)
     }
 }

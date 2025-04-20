@@ -136,27 +136,27 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
     /**
      * The padding of each element.
      */
-    private var padding = 5
+    private var padding = 5.0f
 
     /**
      * The offset and padding in the x and y planes.
      */
-    private var offsetX = 0
+    private var offsetX = 0.0f
 
     /**
      * The offset in the y plane.
      */
-    private var offsetY = 0
+    private var offsetY = 0.0f
 
     /**
      * The padding in the x plane.
      */
-    private var paddingX = 0
+    private var paddingX = 0.0f
 
     /**
      * The padding in the y plane.
      */
-    private var paddingY = 0
+    private var paddingY = 0.0f
 
 
     init {
@@ -200,13 +200,14 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
      * Performs initial GUI setup, such as setting the states for each element.
      */
     private fun setup() {
-
+        width = 148
+        height = 160
         val buttonWidth = 42
         val wholeButtonWidth = buttonWidth * 3 + padding * 2
 
         parent = GavinsMod.guiSettings
-        offsetX = minecraftClient.window.scaledWidth / 2 - width / 2
-        offsetY = minecraftClient.window.scaledHeight / 2 - height / 2
+        offsetX = minecraftClient.window.scaledWidth / 2.0f - width / 2.0f
+        offsetY = minecraftClient.window.scaledHeight / 2.0f - height / 2.0f
         paddingX = offsetX + padding
         paddingY = offsetY + padding
 
@@ -217,7 +218,8 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             .setTitle(Text.literal(""))
             .build()
         textField =
-            TextFieldWidget(minecraftClient.textRenderer, offsetX + 40, offsetY + 10, 100, 10, Text.literal(w.name))
+            TextFieldWidget(minecraftClient.textRenderer, (offsetX + 40f).toInt(),
+                (offsetY + 10f).toInt(), 100, 10, Text.literal(w.name))
         textField.text = w.name
         focused = textField
 
@@ -272,9 +274,12 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             state = w.hasDimension(Dimension.END)
         }
         offsetY += 14
-        xCoordinate = TextFieldWidget(minecraftClient.textRenderer, paddingX + 11, offsetY, 30, 10, Text.literal(""))
-        yCoordinate = TextFieldWidget(minecraftClient.textRenderer, paddingX + 56, offsetY, 30, 10, Text.literal(""))
-        zCoordinate = TextFieldWidget(minecraftClient.textRenderer, paddingX + 104, offsetY, 30, 10, Text.literal(""))
+        xCoordinate = TextFieldWidget(minecraftClient.textRenderer, (paddingX + 11).toInt(),
+            offsetY.toInt(), 30, 10, Text.literal(""))
+        yCoordinate = TextFieldWidget(minecraftClient.textRenderer, (paddingX + 56).toInt(),
+            offsetY.toInt(), 30, 10, Text.literal(""))
+        zCoordinate = TextFieldWidget(minecraftClient.textRenderer, (paddingX + 104).toInt(),
+            offsetY.toInt(), 30, 10, Text.literal(""))
         var coordinates = w.coordinates
         if (w.name.isEmpty()) coordinates = flooredPlayerPos()
         xCoordinate.text = coordinates.x.toString()
@@ -355,14 +360,14 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
     }
 
     override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        offsetY = minecraftClient.window.scaledHeight / 2 - height / 2
+        offsetY = minecraftClient.window.scaledHeight / 2.0f - height / 2.0f
         box.render(drawContext, client!!.textRenderer, mouseX, mouseY, delta)
         super.render(drawContext, mouseX, mouseY, delta)
         guis.forEach(Consumer { obj: Gui -> obj.show() })
         drawContext.drawText(
             client!!.textRenderer,
             Text.literal("Name: "),
-            paddingX,
+            paddingX.toInt(),
             (textField.y + 1),
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
@@ -370,7 +375,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         drawContext.drawText(
             client!!.textRenderer,
             Text.literal("X:"),
-            (paddingX + 1),
+            (paddingX + 1).toInt(),
             (xCoordinate.y + 1),
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
@@ -378,7 +383,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         drawContext.drawText(
             client!!.textRenderer,
             Text.literal("Y:"),
-            (paddingX + 46),
+            (paddingX + 46).toInt(),
             (yCoordinate.y + 1),
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
@@ -386,7 +391,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         drawContext.drawText(
             client!!.textRenderer,
             Text.literal("Z:"),
-            (paddingX + 94),
+            (paddingX + 94).toInt(),
             (zCoordinate.y + 1),
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
@@ -394,7 +399,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         drawContext.drawText(
             client!!.textRenderer,
             Text.literal("Dimensions"),
-            (paddingX + 1),
+            (paddingX + 1).toInt(),
             (espToggle.gui.y + 15).toInt(),
             GavUISettings.getColor("gui.color.foreground").asInt,
             false

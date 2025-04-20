@@ -26,7 +26,6 @@ package com.peasenet.mods.tracer
 
 import com.peasenet.gavui.color.Color
 import com.peasenet.util.RenderUtils
-import com.peasenet.util.RenderUtils.getCameraPos
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.client.util.math.MatrixStack
@@ -81,13 +80,14 @@ abstract class BlockEntityTracer<T : BlockEntity>(
         val entry = matrixStack.peek().positionMatrix
         for (e in entityList) {
             val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
-            val end = e.pos.toCenterPos().add(getCameraPos().negate())
+            val end = e.pos.toCenterPos()
             RenderUtils.drawSingleLine(
                 matrixStack,
                 tracerOrigin,
                 end,
                 getColor(),
-                config.alpha
+                config.alpha,
+                true
             )
         }
 //        RenderUtils.cleanupRender(matrixStack)
