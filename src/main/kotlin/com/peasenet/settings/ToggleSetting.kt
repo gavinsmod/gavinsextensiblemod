@@ -23,38 +23,60 @@
  */
 package com.peasenet.settings
 
+import com.peasenet.gavui.GavUI
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiToggle
 import com.peasenet.gavui.util.GavUISettings
 
 /**
  * A setting that contains one of two finite states - on or off.
- * @param builder - The builder used to create this toggle setting.
  * @author GT3CH1
  * @version 03-02-2023
  */
-class ToggleSetting(builder: SettingBuilder) : Setting() {
-    /**
-     * The gui element that is used to display this toggle setting.
-     */
-    override var gui: GuiToggle = GuiBuilder()
-        .setWidth(builder.getWidth())
-        .setHeight(10F)
-        .setTitle(builder.getTitle())
-        .setIsOn(builder.getState())
-        .setCallback(builder.getCallback())
-        .setHoverable(builder.isHoverable())
-        .setTopLeft(builder.getTopLeft())
-        .buildToggle()
+class ToggleSetting(
+//     SettingOptions = SettingOptions(),
+) : CallbackSetting<ToggleSetting>() {
+    override var gui: GuiToggle = GuiToggle(GuiBuilder())
 
     /**
      * The current value of this toggle setting.
      */
-    var value = false
-        get() = gui.isOn
+    override var state = false
         set(value) {
             field = value
-            gui.setBackground(if (value) GavUISettings.getColor("gui.color.enabled") else GavUISettings.getColor("gui.color.background"))
+            gui.backgroundColor =
+                (if (value) GavUISettings.getColor("gui.color.enabled") else GavUISettings.getColor("gui.color.background"))
             gui.setState(value)
         }
+        get() {
+            return gui.isOn
+        }
+
+    fun build(): ToggleSetting {
+        gui = GuiBuilder<GuiToggle>()
+            .setWidth(width)
+            .setHeight(height)
+            .setTitle(title)
+            .setCallback {
+                callback?.invoke(this)
+            }
+            .setHoverable(hoverable)
+            .setBackgroundColor(
+                if (state) GavUI.enabledColor() else GavUI.backgroundColor()
+            )
+            .setTransparency(transparency)
+            .setSymbol(symbol)
+            .setTopLeft(topLeft)
+            .setIsOn(state)
+            .buildToggle()
+        return this
+    }
+
+
+}
+
+
+fun toggleSetting(init: ToggleSetting.() -> Unit): ToggleSetting {
+    val setting = ToggleSetting().apply { init() }
+    return setting.build()
 }

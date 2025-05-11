@@ -24,3 +24,8 @@
 
 package com.peasenet.extensions
 
+import net.minecraft.util.math.Vec3d
+
+fun Vec3d.add(x: Int, y: Int, z: Int): Vec3d {
+    return this.add(x.toDouble(), y.toDouble(), z.toDouble())
+}

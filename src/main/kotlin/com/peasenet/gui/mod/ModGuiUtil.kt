@@ -25,6 +25,7 @@ package com.peasenet.gui.mod
 
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
+import com.peasenet.gavui.GuiToggle
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
 import com.peasenet.main.GavinsMod.Companion.getModsInCategory
@@ -51,15 +52,15 @@ object ModGuiUtil {
             val mod = mods[i]
             val x = box.topLeft.x
             val y = box.bottomRight.y + i * 10
-            val gui = GuiBuilder()
+            val gui = GuiBuilder<GuiToggle>()
                 .setTopLeft(PointF(x, y + 2))
                 .setWidth(box.width)
                 .setHeight(box.height)
                 .setTitle(mod.translationKey)
-                .setCallback(mod::toggle)
+                .setCallback { mod.toggle() }
                 .setHidden(true)
                 .buildToggle()
-            gui.setRenderCallback { gui.setState(mod.isActive) }
+            gui.renderCallback = { gui.setState(mod.isActive) }
 
             guis.add(gui)
         }

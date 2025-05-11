@@ -10,14 +10,14 @@
     "MixinClientPlayerEntityNausea",
     "MixinClientPlayNetworkHandler",
     "MixinClientWorld",
+    "MixinDrawContext",
     "MixinGameRenderer",
     "MixinGameRendererBobView",
     "MixinInGameHud",
     "MixinInGameOverlayRenderer",
     "MixinMinecraftClient",
     "MixinMinecraftClientAttack",
-    "MixinSimpleOption",
-    "MixinTerrainRenderContext"
+    "MixinSimpleOption"
   ],
   "compatibilityLevel": "JAVA_21",
   "injectors": {
@@ -30,7 +30,7 @@
     "MixinBlock",
     "MixinClientPlayerEntityFastMine",
     "MixinLivingEntity",
-    "MixinPlayerEntityFastMine",
+    "MixinPlayerEntity",
     "MixinSodiumblockOcclusionCache",
     "MixinWorldChunk"
   ],

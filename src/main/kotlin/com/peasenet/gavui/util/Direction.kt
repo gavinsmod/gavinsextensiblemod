@@ -1,4 +1,4 @@
-﻿/*
+/*
  * MIT License
  *
  * Copyright (c) 2022-2025, Gavin C. Pease
@@ -22,9 +22,15 @@
  * SOFTWARE.
  */
 
-package com.peasenet.gui.mod.tracer
+package com.peasenet.gavui.util
 
-import com.peasenet.config.tracer.BlockTracerConfig
-import com.peasenet.gui.mod.GuiBlockSelection
-
-class GuiBlockTracer : GuiBlockSelection<BlockTracerConfig>("gavinsmod.mod.tracer.blocktracer", "blocktracer")
+/**
+ * A direction that represents which way the dropdown will be displayed.
+ * @author GT3CH1
+ * @version 02-08-2025
+ * @since 02-08-2025
+ */
+enum class Direction {
+    DOWN,
+    RIGHT
+}

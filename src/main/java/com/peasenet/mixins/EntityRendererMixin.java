@@ -35,7 +35,6 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
-import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -44,10 +43,17 @@ public abstract class EntityRendererMixin {
     /**
      * Wraps around the render method to call the EntityRenderNameEvent.
      */
-    @WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRenderer;render(Lnet/minecraft/client/render/entity/state/EntityRenderState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"), method = "render(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V")
-    private <E extends Entity, S extends EntityRenderState> void wrapRender(EntityRenderer<? super E, S> renderer, S state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, Operation<Void> original, E entity) {
+    @WrapOperation(at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;render(Lnet/minecraft/client/render/entity/state/EntityRenderState;DDDLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V"),
+            method = "render(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V")
+    private <E extends Entity, S extends EntityRenderState> void wrapRender(EntityRenderDispatcher instance, S state, double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, EntityRenderer<?, S> renderer, Operation<Void> original, E entity) {
         var event = new EntityRenderNameEvent(new EntityNameRender(entity, matrices, vertexConsumers, light));
+        matrices.push();
+        var vec3d = renderer.getPositionOffset(state).add(x, y, z);
+        matrices.translate(vec3d);
         EventManager.getEventManager().call(event);
-        original.call(renderer, state, matrices, vertexConsumers, light);
+        matrices.pop();
+
+        original.call(instance, state, x, y, z, matrices, vertexConsumers, light, renderer);
     }
 }

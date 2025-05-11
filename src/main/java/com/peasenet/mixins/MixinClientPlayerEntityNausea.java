@@ -35,14 +35,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPlayerEntity.class)
 public class MixinClientPlayerEntityNausea {
     @Shadow
-    public float prevNauseaIntensity;
+    public float lastNauseaIntensity;
     @Shadow
     public float nauseaIntensity;
 
     @Inject(method = "tickNausea", at = @At("HEAD"), cancellable = true)
     public void cancelNausea(CallbackInfo ci) {
         if (Mods.isActive("nonausea")) {
-            this.prevNauseaIntensity = 0.0f;
+            this.lastNauseaIntensity = 0.0f;
             this.nauseaIntensity = 0.0f;
             ci.cancel();
         }

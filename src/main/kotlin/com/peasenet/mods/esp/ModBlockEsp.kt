@@ -27,9 +27,10 @@ package com.peasenet.mods.esp
 import com.peasenet.config.commons.BlockListConfig
 import com.peasenet.config.esp.BlockEspConfig
 import com.peasenet.gavui.color.Color
+import com.peasenet.gavui.util.Direction
 import com.peasenet.gui.mod.esp.GuiBlockEsp
+import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
-import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.block.GavBlock
 import com.peasenet.util.chunk.GavChunk
@@ -39,7 +40,6 @@ import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
-import net.minecraft.client.MinecraftClient
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.chunk.Chunk
 
@@ -56,33 +56,44 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
 ) {
 
     init {
-        val subSetting = SettingBuilder().setTitle(translationKey).buildSubSetting()
-        val colorSetting =
-            SettingBuilder().setTitle("gavinsmod.generic.color").setColor(getSettings().blockColor).buildColorSetting()
-        colorSetting.setCallback {
-            getSettings().blockColor = colorSetting.color
+        subSettings {
+            title = translationKey
+            direction = Direction.RIGHT
+            colorSetting {
+                title = "gavinsmod.generic.color"
+                color = getSettings().blockColor
+                callback = {
+                    getSettings().blockColor = it.color
+                }
+            }
+            slideSetting {
+                title = "gavinsmod.settings.alpha"
+                value = getSettings().alpha
+                callback = {
+                    getSettings().alpha = it.value
+                }
+            }
+            toggleSetting {
+                title = "gavinsmod.mod.esp.blockesp.structure"
+                callback = {
+                    getSettings().structureEsp = it.state
+                }
+                state = getSettings().structureEsp
+            }
+            toggleSetting {
+                title = "gavinsmod.generic.tracers"
+                callback = {
+                    getSettings().blockTracer = it.state
+                }
+                state = getSettings().blockTracer
+            }
+            clickSetting {
+                title = "gavinsmod.mod.esp.blockesp"
+                callback = {
+                    GavinsModClient.minecraftClient.setScreen(GuiBlockEsp())
+                }
+            }
         }
-
-        val alphaSetting =
-            SettingBuilder().setTitle("gavinsmod.generic.alpha").setValue(getSettings().alpha).buildSlider()
-        alphaSetting.setCallback {
-            getSettings().alpha = alphaSetting.value
-        }
-        val toggleSetting =
-            SettingBuilder().setTitle("gavinsmod.mod.esp.blockesp.structure").setState(getSettings().structureEsp)
-                .buildToggleSetting()
-        val blockTracer = SettingBuilder().setTitle("gavinsmod.generic.tracers").setState(getSettings().blockTracer)
-            .buildToggleSetting()
-        toggleSetting.setCallback { getSettings().structureEsp = toggleSetting.value }
-        blockTracer.setCallback { getSettings().blockTracer = blockTracer.value }
-        subSetting.add(toggleSetting)
-        subSetting.add(blockTracer)
-        subSetting.add(alphaSetting)
-        subSetting.add(colorSetting)
-        val menu = SettingBuilder().setWidth(100f).setHeight(10f).setTitle("gavinsmod.generic.settings")
-            .setCallback { MinecraftClient.getInstance().setScreen(GuiBlockEsp()) }.buildClickSetting()
-        subSetting.add(menu)
-        addSetting(subSetting)
     }
 
 

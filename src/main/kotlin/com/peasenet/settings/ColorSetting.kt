@@ -23,55 +23,77 @@
  */
 package com.peasenet.settings
 
+import com.peasenet.gavui.GavUI
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiCycle
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
+import com.peasenet.gavui.math.PointF
 
 /**
  * A setting that allows the user to change a color value.
- * @param builder - The setting builder.
  * @author GT3CH1
  * @version 07-18-2023
  */
-class ColorSetting(builder: SettingBuilder) : Setting() {
-    /**
-     * The cycle element that allows the user to change the color value.
-     */
-    override val gui: GuiCycle
+class ColorSetting(
+    topLeft: PointF = PointF(0F, 0F),
+    width: Float = 0F,
+    height: Float = 10F,
+    title: String = "",
+    hoverable: Boolean = true,
+    transparency: Float = -1f,
+    symbol: Char = '\u0000',
+    cycleIndex: Int = 0,
+    cycleSize: Int = 0,
+    color: Color = GavUI.backgroundColor(),
+    override var callback: ((ColorSetting) -> Unit)? = null,
+) : CallbackSetting<ColorSetting>(
+    topLeft,
+    width,
+    height,
+    title,
+    hoverable = hoverable,
+    transparency = transparency,
+    symbol = symbol,
+    cycleIndex = cycleIndex,
+    cycleSize = cycleSize,
+    color = color,
+    callback = callback
+) {
+    override var gui: GuiCycle = GuiCycle(GuiBuilder())
 
-    var color: Color = builder.getColor() ?: Colors.INDIGO
-
-    init {
-        gui = GuiBuilder()
-            .setWidth(builder.getWidth())
-            .setHeight(builder.getHeight())
-            .setTitle(builder.getTitle())
+    fun build(): ColorSetting {
+        gui = GuiBuilder<GuiCycle>()
+            .setWidth(width)
+            .setHeight(height)
+            .setTitle(title)
+            .setCallback {
+//                var index = it.currentIndex
+//                it.currentIndex = index
+                it.backgroundColor = (Colors.COLORS[it.currentIndex % Colors.COLORS.size])
+                callback?.invoke(this)
+            }
+            .setHoverable(hoverable)
             .setCycleSize(Colors.COLORS.size)
-            .setCurrentCycleIndex(Colors.getColorIndex(builder.getColor()))
-            .setBackgroundColor(builder.getColor())
-            .setTopLeft(builder.getTopLeft())
-            .setTransparency(builder.getTransparency())
-            .setHoverable(builder.isHoverable())
+            .setBackgroundColor(color)
+            .setCurrentCycleIndex(Colors.COLORS.indexOf(color))
+            .setTopLeft(topLeft)
             .buildCycle()
-        gui.setOnClick {
-            var index = gui.currentIndex
-            if (index < 0)
-                index = Colors.COLORS.size - 1
-            gui.currentIndex = index
-            color = Colors.COLORS[index]
-            gui.setBackground(Colors.COLORS[index])
+        return this
+    }
+
+    override var color: Color = color
+        get() {
+            return gui.backgroundColor
         }
-    }
+        set(value) {
+            gui.backgroundColor = (value)
+            field = value
+        }
+}
 
-
-    /**
-     * Sets the color and color index to the given value.
-     *
-     * @param index - The color index.
-     */
-    fun setColorIndex(index: Int) {
-        gui.currentIndex = index
-        gui.setBackground(Colors.COLORS[index])
-    }
+fun colorSetting(init: ColorSetting.() -> Unit): ColorSetting {
+    val setting = ColorSetting()
+    setting.init()
+    return setting.build()
 }

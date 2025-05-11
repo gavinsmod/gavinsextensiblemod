@@ -40,7 +40,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinWorldChunk {
 
     @Inject(method = "setBlockState", at = @At("TAIL"))
-    private void onSetBlockState(BlockPos pos, BlockState state, boolean moved, CallbackInfoReturnable<BlockState> cir) {
+    private void onSetBlockState(BlockPos pos, BlockState state, int flags, CallbackInfoReturnable<BlockState> cir) {
         var data = new BlockUpdate(pos, state, cir.getReturnValue());
         var blockUpdateEvent = new BlockUpdateEvent(data);
         EventManager.getEventManager().call(blockUpdateEvent);

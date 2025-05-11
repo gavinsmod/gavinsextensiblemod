@@ -25,7 +25,6 @@ package com.peasenet.mods.tracer
 
 import com.peasenet.gavui.color.Color
 import com.peasenet.gui.mod.tracer.GuiMobTracer
-import com.peasenet.settings.SettingBuilder
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.LivingEntity
@@ -43,11 +42,15 @@ class ModMobTracer : EntityTracer<LivingEntity>(
     { it is MobEntity && config.inList(it.type) }
 ) {
     init {
-        val menu = SettingBuilder()
-            .setTitle("gavinsmod.settings.mobtracer")
-            .setCallback { MinecraftClient.getInstance().setScreen(GuiMobTracer()) }
-            .buildClickSetting()
-        addSetting(menu)
+//        val menu = SettingBuilder<ClickSetting>()
+//            .setTitle("gavinsmod.settings.mobtracer")
+//            .setCallback { MinecraftClient.getInstance().setScreen(GuiMobTracer()) }
+//            .buildClickSetting()
+//        addSetting(menu)
+        clickSetting {
+            title = "gavinsmod.settings.mobtracer"
+            callback = { MinecraftClient.getInstance().setScreen(GuiMobTracer()) }
+        }
     }
 
     override fun getColor(entity: LivingEntity): Color {

@@ -24,7 +24,6 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.gavui.color.Color
-import com.peasenet.settings.SettingBuilder
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.FurnaceBlockEntity
 
@@ -35,18 +34,16 @@ import net.minecraft.block.entity.FurnaceBlockEntity
  * @since 04-11-2023
  */
 class ModFurnaceEsp : BlockEntityEsp<BlockEntity>(
-    "Furnace ESP",
     "gavinsmod.mod.esp.furnace",
     "furnaceesp",
     { it is FurnaceBlockEntity }
 ) {
     init {
-        val colorSetting = SettingBuilder()
-            .setTitle("gavinsmod.settings.color.furnace")
-            .setColor(config.furnaceColor)
-            .buildColorSetting()
-        colorSetting.setCallback { config.furnaceColor = colorSetting.color }
-        addSetting(colorSetting)
+        colorSetting {
+            title = "gavinsmod.settings.color.furnace"
+            color = config.furnaceColor
+            callback = { config.furnaceColor = it.color }
+        }
     }
 
     override fun getColor(): Color = config.furnaceColor

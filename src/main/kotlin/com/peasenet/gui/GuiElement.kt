@@ -23,7 +23,7 @@
  */
 package com.peasenet.gui
 
-import com.mojang.blaze3d.systems.RenderSystem
+//import net.minecraft.client.gl.ShaderProgramKeys
 import com.peasenet.config.misc.MiscConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
@@ -34,7 +34,6 @@ import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
 import com.peasenet.util.RenderUtils
 import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gl.ShaderProgramKeys
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.Text
@@ -71,7 +70,7 @@ open class GuiElement(title: Text?) : Screen(title) {
         super.init()
         this.client = MinecraftClient.getInstance()
         this.textRenderer = GavinsModClient.minecraftClient.textRenderer
-        titleBox = GuiBuilder()
+        titleBox = GuiBuilder<Gui>()
             .setTopLeft(10, 1)
             .setWidth(textRenderer.getWidth(title).toFloat() + 4f)
             .setHeight(10f)
@@ -79,15 +78,14 @@ open class GuiElement(title: Text?) : Screen(title) {
             .build()
         val clientWidth = client!!.window.scaledWidth
         val clientHeight = client!!.window.scaledHeight
-        //TODO: Maybe make this a background?
-        overlay = GuiBuilder()
+        overlay = GuiBuilder<Gui>()
             .setWidth((clientWidth + 1).toFloat())
             .setHeight(clientHeight.toFloat())
             .setBackgroundColor(Colors.INDIGO)
             .setTransparency(0.25f)
             .setHoverable(false)
             .build()
-        titleBox!!.isHoverable = false
+        titleBox!!.canHover = false
     }
 
     override fun mouseScrolled(
@@ -114,13 +112,13 @@ open class GuiElement(title: Text?) : Screen(title) {
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
         for (gui in guis) {
-            if (Gui.getClickedGui() != null && gui.uuid == Gui.getClickedGui().uuid) {
+            if (Gui.clickedGui != null && gui.uUID == Gui.clickedGui!!.uUID) {
                 gui.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)
                 return true
             } else if (gui is GuiScroll) {
                 if (gui.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)) return true
-            } else if (!gui.isDragging && gui.mouseWithinGui(mouseX, mouseY) && Gui.getClickedGui() == null) {
-                gui.isDragging = true
+            } else if (!gui.dragging && gui.mouseWithinGui(mouseX, mouseY) && Gui.clickedGui == null) {
+                gui.dragging = true
                 selectedGui = gui
                 return true
             }
@@ -129,32 +127,20 @@ open class GuiElement(title: Text?) : Screen(title) {
     }
 
     override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        guis.forEach(Consumer { g: Gui -> g.isDragging = false })
+        guis.forEach(Consumer { g: Gui -> g.dragging = false })
         selectedGui = null
         return super.mouseReleased(mouseX, mouseY, button)
     }
 
 
     override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        RenderSystem.setShader(ShaderProgramKeys.POSITION)
-        RenderSystem.enableBlend()
+//        RenderSystem.setShader(ShaderProgramKeys.POSITION)
+//        RenderSystem.enableBlend()
         overlay.render(drawContext, textRenderer, mouseX, mouseY, delta)
-
-        for (g in guis) {
-            g.render(drawContext, textRenderer, mouseX, mouseY, delta)
-        }
-//        
-//        super.render(drawContext, mouseX, mouseY, delta)
-//        assert(client != null)
+        guis.forEach { it.render(drawContext, textRenderer, mouseX, mouseY, delta) }
         val tr = client!!.textRenderer
-////        RenderSystem.setShader { GameRenderer.getPositionProgram() }
-////        RenderSystem.enableBlend()
-//        RenderSystem.setShader(ShaderProgramKeys.POSITION);
-//        guis.forEach(Consumer { gui: Gui -> gui.render(drawContext, tr, mouseX, mouseY, delta) })
-        if (titleBox != null) {
-            titleBox!!.setBackground(GavUISettings.getColor("gui.color.background"))
-            titleBox!!.render(drawContext, tr, mouseX, mouseY, delta)
-        }
+        titleBox?.backgroundColor = (GavUISettings.getColor("gui.color.background"))
+        titleBox?.render(drawContext, tr, mouseX, mouseY, delta)
         val miscConfig = Settings.getConfig<MiscConfig>("misc").background
         if (miscConfig) {
             overlay.render(drawContext, tr, mouseX, mouseY, delta)
@@ -166,11 +152,11 @@ open class GuiElement(title: Text?) : Screen(title) {
      * Resets all child guis to their default positions.
      */
     fun reset() {
-        guis.forEach(Consumer { obj: Gui -> obj.resetPosition() })
+        guis.forEach(Consumer { it.resetPosition() })
     }
 
     override fun isMouseOver(mouseX: Double, mouseY: Double): Boolean {
-        guis.forEach(Consumer { gui: Gui -> gui.mouseWithinGui(mouseX, mouseY) })
+        guis.forEach { it.mouseWithinGui(mouseX, mouseY) }
         return true
     }
 

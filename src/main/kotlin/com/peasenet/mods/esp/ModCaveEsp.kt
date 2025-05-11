@@ -26,10 +26,10 @@ package com.peasenet.mods.esp
 
 import com.peasenet.config.esp.CaveEspConfig
 import com.peasenet.gavui.color.Color
+import com.peasenet.gavui.util.Direction
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.Settings
 import com.peasenet.settings.CycleSetting
-import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.ChatCommand
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.block.GavBlock
@@ -63,33 +63,26 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
     "gavinsmod.mod.esp.cave", ChatCommand.CaveEsp.chatCommand
 ) {
     init {
-        val subSetting = SettingBuilder().setTitle(translationKey).buildSubSetting()
-        val colorSetting =
-            SettingBuilder().setTitle("gavinsmod.generic.color").setColor(getSettings().blockColor).buildColorSetting()
-        colorSetting.setCallback {
-            getSettings().blockColor = colorSetting.color
+        subSettings {
+            title = translationKey
+            direction = Direction.RIGHT
+            slideSetting {
+                title = "gavinsmod.settings.alpha"
+                value = getSettings().alpha
+                callback = { getSettings().alpha = it.value }
+            }
+            colorSetting {
+                title = "gavinsmod.generic.color"
+                color = getSettings().blockColor
+                callback = { getSettings().blockColor = it.color }
+            }
+            cycleSetting {
+                title = searchTranslationKey + "." + getSettings().searchMode.name.lowercase()
+                cycleSize = SearchType.entries.size
+                cycleIndex = getSettings().searchMode.ordinal
+                callback = { updateSearchMode(it) }
+            }
         }
-        val alphaSetting =
-            SettingBuilder().setTitle("gavinsmod.generic.alpha").setValue(getSettings().alpha).buildSlider()
-        alphaSetting.setCallback {
-            getSettings().alpha = alphaSetting.value
-        }
-
-        val searchMode = getSettings().searchMode.name.lowercase()
-        val searchModeSetting = SettingBuilder()
-            .setTitle(searchTranslationKey)
-            .setOptions(SearchType.entries.map { it.name.lowercase() })
-            .setValue(searchMode)
-            .buildCycleSetting()
-        searchModeSetting.setCallback {
-            updateSearchMode(searchModeSetting)
-        }
-        searchModeSetting.gui.title = Text.translatable("$searchTranslationKey.$searchMode")
-
-        subSetting.add(alphaSetting)
-        subSetting.add(colorSetting)
-        subSetting.add(searchModeSetting)
-        addSetting(subSetting)
     }
 
     companion object {
@@ -110,8 +103,8 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
         em.subscribe(RenderListener::class.java, this)
         // search for chunks within render distance
         GemExecutor.execute {
-//            chunks.values.forEach { searchChunk(it) }
-            RenderUtils.getVisibleChunks(chunksToRender).forEach { searchChunk(it) }
+//            chunks.values.forEach { seVarchChunk(it) }
+            RenderUtils.getVisibleChunks(chunksToRender).forEach(this::searchChunk)
         }
         super.onEnable()
     }
@@ -187,17 +180,6 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
             val visibleChunks: List<Chunk> = RenderUtils.getVisibleChunks(chunksToRender)
             visibleChunks.forEach(this::searchChunk)
         }
-    }
-
-    /**
-     * Helper method to search a [GavChunk] for blocks.
-     * @param gavChunk The [GavChunk] to search.
-     *
-     * @see searchChunk
-     */
-    private fun searchChunk(gavChunk: GavChunk) {
-        val chunk = world.getChunk(gavChunk.chunkPos.x, gavChunk.chunkPos.z) ?: return
-        searchChunk(chunk)
     }
 
     /**

@@ -64,7 +64,7 @@ class ModHealthTag : RenderMod(
      * Renders a health tag above an entities head.
      */
     private fun renderHealthTag(
-        er: EntityNameRender
+        er: EntityNameRender,
     ) {
         val entity = er.entity as LivingEntity
         val matrixStack = er.matrixStack
@@ -74,7 +74,7 @@ class ModHealthTag : RenderMod(
         val dispatcher = MinecraftClient.getInstance().entityRenderDispatcher
         val attachmentVec = entity.attachments.getPointNullable(EntityAttachmentType.NAME_TAG, 0, entity.getYaw(0f))
         matrixStack.push()
-        matrixStack.translate(-attachmentVec!!.x, attachmentVec.y + 0.75, -attachmentVec.z)
+        matrixStack.translate(attachmentVec!!.x, attachmentVec.y + 0.75, attachmentVec.z)
         matrixStack.multiply(dispatcher.rotation)
         matrixStack.scale(0.025f, -0.025f, 0.025f)
         val currentHp = entity.health.toInt()
@@ -82,17 +82,18 @@ class ModHealthTag : RenderMod(
         val g = -textRenderer.getWidth(text) / 2.0f
         val i = if (er.entity.name.string == "deadmau5") -10 else 0
         val matrix4f = matrixStack.peek().positionMatrix
-        val f = MinecraftClient.getInstance().options.getTextBackgroundColor(0.25f)
+        val f = textRenderer.getWidth(text) / 2.0f
+        val j = (MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25f) * 255.0f).toInt() shl 24
         textRenderer.draw(
             text,
             g,
             i.toFloat(),
-            0x20FFFFFF,
+            0xFFFFFFFF.toInt(),
             false,
             matrix4f,
             vertexConsumers,
             TextRenderer.TextLayerType.NORMAL,
-            f,
+            j,
             light
         )
         textRenderer.draw(

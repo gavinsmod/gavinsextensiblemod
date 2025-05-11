@@ -27,7 +27,6 @@ import com.peasenet.config.tracer.TracerConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
-import com.peasenet.settings.SettingBuilder
 import net.minecraft.entity.player.PlayerEntity
 
 /**
@@ -42,12 +41,17 @@ class ModEntityPlayerTracer : EntityTracer<PlayerEntity>(
     { it is PlayerEntity && it != GavinsModClient.player }
 ) {
     init {
-        val colorSetting = SettingBuilder()
-            .setTitle("gavinsmod.settings.color.player")
-            .setColor(config.playerColor)
-            .buildColorSetting()
-        colorSetting.setCallback { config.playerColor = colorSetting.color }
-        addSetting(colorSetting)
+//        val colorSetting = SettingBuilder<ColorSetting>()
+//            .setTitle("gavinsmod.settings.color.player")
+//            .setColor(config.playerColor)
+//            .setCallback { config.playerColor = it.color }
+//            .buildColorSetting()
+//        addSetting(colorSetting)
+        colorSetting {
+            title = "gavinsmod.settings.color.player"
+            color = config.playerColor
+            callback = { config.playerColor = it.color }
+        }
     }
 
     companion object {

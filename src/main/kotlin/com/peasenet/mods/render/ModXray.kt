@@ -24,10 +24,10 @@
 package com.peasenet.mods.render
 
 import com.peasenet.config.render.XrayConfig
+import com.peasenet.gavui.util.Direction
 import com.peasenet.gui.mod.render.GuiXray
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.Settings
-import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.event.data.DrawState
@@ -48,33 +48,23 @@ class ModXray : RenderMod(
     "xray"
 ), ShouldDrawSideListener, TessellateBlockListener, BlockEntityRenderListener {
     init {
-        val xraySubSetting = SettingBuilder()
-            .setWidth(100f)
-            .setHeight(10f)
-            .setTitle("gavinsmod.mod.render.xray")
-            .buildSubSetting()
-//        val culling = ToggleSetting("gavinsmod.settings.xray.culling")
-        val culling = SettingBuilder()
-            .setWidth(100f)
-            .setHeight(10f)
-            .setTitle("gavinsmod.settings.xray.culling")
-            .setState(Settings.getConfig<XrayConfig>("xray").blockCulling)
-            .buildToggleSetting()
-        culling.setCallback {
-            Settings.getConfig<XrayConfig>("xray").blockCulling = culling.value
-            if (isActive) reload()
+        subSettings {
+            title = translationKey
+            direction = Direction.RIGHT
+            toggleSetting {
+                title = "gavinsmod.settings.xray.culling"
+                callback = {
+                    Settings.getConfig<XrayConfig>("xray").blockCulling = it.state
+                    if (isActive) reloadRenderer()
+                }
+            }
+            clickSetting {
+                title = "gavinsmod.settings.xray.blocks"
+                callback = {
+                    MinecraftClient.getInstance().setScreen(GuiXray())
+                }
+            }
         }
-//        val menu = ClickSetting("gavinsmod.settings.xray.blocks")
-//        menu.setCallback { client.setScreen(GuiXray()) }
-        val menu = SettingBuilder()
-            .setWidth(100f)
-            .setHeight(10f)
-            .setTitle("gavinsmod.settings.xray.blocks")
-            .setCallback { MinecraftClient.getInstance().setScreen(GuiXray()) }
-            .buildClickSetting()
-        xraySubSetting.add(menu)
-        xraySubSetting.add(culling)
-        addSetting(xraySubSetting)
     }
 
     override fun onEnable() {
@@ -131,7 +121,7 @@ class ModXray : RenderMod(
     }
 
     override fun onRenderBlockEntity(er: BlockEntityRender) {
-        if (!shouldDrawFace(client.getWorld().getBlockState(er.entity!!.pos))) er.cancel()
+        if (!shouldDrawFace(client.getWorld().getBlockState(er.entity.pos))) er.cancel()
     }
 
     companion object {

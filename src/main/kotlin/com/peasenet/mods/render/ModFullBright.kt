@@ -26,11 +26,11 @@
 package com.peasenet.mods.render
 
 import com.peasenet.config.render.FullbrightConfig
+import com.peasenet.gavui.util.Direction
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
 import com.peasenet.mixinterface.ISimpleOption
-import com.peasenet.settings.SettingBuilder
 
 /**
  * A mod that allows the client to see very clearly in the absence of a light source.
@@ -48,23 +48,22 @@ class ModFullBright : RenderMod(
 
     init {
         fullbrightConfig = Settings.getConfig("fullbright")
-        val gammaFade = SettingBuilder().setTitle("gavinsmod.settings.render.fullbright.gammafade")
-            .setState(fullbrightConfig.gammaFade)
-            .buildToggleSetting()
-        gammaFade.setCallback { fullbrightConfig.gammaFade = gammaFade.value }
-
-        val gamma =
-            SettingBuilder().setTitle("gavinsmod.settings.render.fullbright.gamma").setValue(fullbrightConfig.gamma)
-                .setWidth(100).setHeight(10).buildSlider()
-        gamma.setCallback { fullbrightConfig.gamma = gamma.value }
-
-        val subSetting = SettingBuilder().setWidth(100).setHeight(10).setTitle(translationKey).setDefaultMaxChildren(4)
-            .buildSubSetting()
-
-        subSetting.add(gammaFade)
-        subSetting.add(gamma)
-
-        addSetting(subSetting)
+        subSettings {
+            title = translationKey
+            direction = Direction.RIGHT
+            toggleSetting {
+                title = "gavinsmod.settings.render.fullbright.gammafade"
+                state = isActive
+                callback = { isActive = it.state }
+            }
+            slideSetting {
+                title = "gavinsmod.settings.render.fullbright.gamma"
+                value = fullbrightConfig.gamma
+                callback = {
+                    fullbrightConfig.gamma = it.value
+                }
+            }
+        }
     }
 
     override fun activate() {

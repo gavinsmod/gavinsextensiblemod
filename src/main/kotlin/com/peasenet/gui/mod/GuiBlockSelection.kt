@@ -26,8 +26,6 @@ package com.peasenet.gui.mod
 import com.peasenet.config.commons.BlockListConfig
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
-import com.peasenet.gavui.GuiClick
-import com.peasenet.gavui.GuiToggle
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
@@ -38,6 +36,10 @@ import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
 import com.peasenet.main.Mods.Companion.getMod
 import com.peasenet.main.Settings
+import com.peasenet.settings.ClickSetting
+import com.peasenet.settings.ToggleSetting
+import com.peasenet.settings.clickSetting
+import com.peasenet.settings.toggleSetting
 import net.minecraft.block.Block
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.widget.TextFieldWidget
@@ -58,7 +60,7 @@ import kotlin.math.ceil
  * @since 04-11-2023
  */
 open class GuiBlockSelection<T : BlockListConfig<*>>(
-    val translationKey: String, private val settingKey: String
+    val translationKey: String, private val settingKey: String,
 )
 /**
  * Creates a new GUI menu with the given title.
@@ -77,12 +79,12 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
     /**
      * The button that moves to a page behind the current one.
      */
-    private lateinit var prevButton: GuiClick
+    private lateinit var prevButton: ClickSetting
 
     /**
      * The button that moves to a page ahead of the current one.
      */
-    private lateinit var nextButton: GuiClick
+    private lateinit var nextButton: ClickSetting
 
     /**
      * The x coordinate of the main gui.
@@ -122,12 +124,12 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
     /**
      * The toggle element to show all blocks or just enabled blocks.
      */
-    private lateinit var enabledOnly: GuiToggle
+    private lateinit var enabledOnly: ToggleSetting
 
     /**
      * The reset button to load the default blocks.
      */
-    private lateinit var resetButton: GuiClick
+    private lateinit var resetButton: ClickSetting
 
     override fun init() {
         val screenWidth = minecraftClient.window.scaledWidth
@@ -136,7 +138,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         height = (screenHeight * 0.8f).toInt()
         x = screenWidth / 20
         y = screenHeight / 20 + 20
-        box = GuiBuilder()
+        box = GuiBuilder<Gui>()
             .setTopLeft(x, y)
             .setWidth(width.toFloat())
             .setHeight(height.toFloat())
@@ -164,28 +166,38 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
                 return pressed
             }
         }
-        prevButton = GuiBuilder()
-            .setTopLeft(PointF(x + (width shr 1) - 89f, y - 16f))
-            .setWidth(13f)
-            .setHeight(13f)
-            .setCallback(this::pageDown)
-            .setHoverable(true)
-            .buildClick()
-        nextButton = GuiBuilder()
-            .setTopLeft(PointF(x + width / 2 + 76f, y - 16f))
-            .setWidth(13f)
-            .setHeight(13f)
-            .setCallback(this::pageUp)
-            .setHoverable(true)
-            .buildClick()
-        enabledOnly = GuiBuilder()
-            .setTopLeft(PointF(x + width / 2f - 170f, y - 15f))
-            .setWidth(80f)
-            .setHeight(10f)
-            .setTitle(Text.literal("Enabled Only"))
-            .setHoverable(true)
-            .setCallback { page = 0; updateBlockList() }
-            .buildToggle()
+        prevButton = clickSetting {
+            topLeft = PointF(x + (this@GuiBlockSelection.width shr 1) - 89f, y - 16f)
+            width = 13f
+            height = 13f
+            callback = {
+                if (page > 0) {
+                    page--
+                    updateBlockList()
+                }
+            }
+            hoverable = true
+        }
+        nextButton = clickSetting {
+            topLeft = PointF(x + this@GuiBlockSelection.width / 2f + 76f, y - 16f)
+            width = 13f
+            height = 13f
+            callback = {
+                pageUp()
+            }
+            hoverable = true
+        }
+        enabledOnly = toggleSetting {
+            topLeft = PointF(x + this@GuiBlockSelection.width / 2f - 170f, y - 15f)
+            width = 80f
+            height = 10f
+            title = "gavinsmod.generic.enabledOnly"
+            callback = {
+                page = 0
+                updateBlockList()
+            }
+        }
+
         val resetText = Text.translatable("gavinsmod.settings.reset")
         val width = textRenderer.getWidth(resetText)
         addSelectableChild(search)
@@ -195,16 +207,22 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         if (titleBox != null)
             resetPos = PointF(titleBox!!.x2 + 4f, titleBox!!.y)
         if (resetWidth.toDouble() == 0.0) resetWidth = (width + 4).toFloat()
-        resetButton = GuiBuilder()
-            .setTopLeft(resetPos)
-            .setWidth(resetWidth)
-            .setHeight(10f)
-            .setTitle(resetText)
-            .setBackgroundColor(Colors.DARK_RED)
-            .setCallback(this::resetCallback)
-            .setHoverable(true)
-            .buildClick()
-        resetButton.setDefaultPosition(resetButton.box)
+        resetButton = clickSetting {
+            topLeft = resetPos
+            this.width = resetWidth
+            height = 10f
+            title = "gavinsmod.settings.reset"
+            color = Colors.DARK_RED
+            callback = { resetCallback() }
+            hoverable = true
+        }
+
+
+        guis.add(prevButton.gui)
+        guis.add(nextButton.gui)
+        guis.add(enabledOnly.gui)
+        guis.add(resetButton.gui)
+        
     }
 
     private fun resetCallback() {
@@ -289,12 +307,12 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
                 )
             drawContext.drawItem(stack, blockX, blockY)
         }
-        box.isHoverable = false
+        box.canHover = false
         search.render(drawContext, mouseX, mouseY, delta)
-        prevButton.render(drawContext, textRenderer, mouseX, mouseY, delta)
-        nextButton.render(drawContext, textRenderer, mouseX, mouseY, delta)
-        enabledOnly.render(drawContext, textRenderer, mouseX, mouseY, delta)
-        resetButton.render(drawContext, textRenderer, mouseX, mouseY, delta)
+//        prevButton.gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
+//        nextButton.gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
+//        enabledOnly.gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
+//        resetButton.gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
         drawContext.drawText(
             client!!.textRenderer,
             Text.literal('\u25c0'.toString()),
@@ -323,20 +341,20 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
             search.isFocused = true
             return true
         }
-        if (prevButton.mouseWithinGui(mouseX, mouseY)) {
-            prevButton.mouseClicked(mouseX, mouseY, button)
+        if (prevButton.gui.mouseWithinGui(mouseX, mouseY)) {
+            prevButton.gui.mouseClicked(mouseX, mouseY, button)
             return true
         }
-        if (nextButton.mouseWithinGui(mouseX, mouseY)) {
-            nextButton.mouseClicked(mouseX, mouseY, button)
+        if (nextButton.gui.mouseWithinGui(mouseX, mouseY)) {
+            nextButton.gui.mouseClicked(mouseX, mouseY, button)
             return true
         }
-        if (enabledOnly.mouseWithinGui(mouseX, mouseY)) {
-            enabledOnly.mouseClicked(mouseX, mouseY, button)
+        if (enabledOnly.gui.mouseWithinGui(mouseX, mouseY)) {
+            enabledOnly.gui.mouseClicked(mouseX, mouseY, button)
             return true
         }
-        if (resetButton.mouseWithinGui(mouseX, mouseY)) {
-            resetButton.mouseClicked(mouseX, mouseY, button)
+        if (resetButton.gui.mouseWithinGui(mouseX, mouseY)) {
+            resetButton.gui.mouseClicked(mouseX, mouseY, button)
             return true
         }
         if (!(mouseX > x && mouseX < x + width && mouseY > y && mouseY < y + height)) return false
@@ -364,7 +382,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
             .filter { block: Block -> block.translationKey.lowercase(Locale.getDefault()).contains(searchText) }
             .forEach { e: Block? -> tmpBlocks.add(e) }
         // get blocks in block list that are within the page.
-        val enabled = enabledOnly.isOn
+        val enabled = enabledOnly.state
         if (enabled) tmpBlocks = ArrayList(tmpBlocks.stream().filter { b: Block? ->
             Settings.getConfig<T>(settingKey).isInList(
                 b!!

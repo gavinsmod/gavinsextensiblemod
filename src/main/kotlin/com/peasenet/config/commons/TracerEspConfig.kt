@@ -35,7 +35,7 @@ import net.minecraft.item.SpawnEggItem
  * This is the shared configuration for tracers and esps, as they tend to have very similar settings.
  *
  * @see Config
- * @example [com.peasenet.config.EspConfig]
+ * @example [com.peasenet.config.esp.EspConfig]
  *
  * @author GT3CH1
  * @version 01-15-2025

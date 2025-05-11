@@ -26,7 +26,6 @@ package com.peasenet.mods.esp
 import com.peasenet.gavui.color.Color
 import com.peasenet.gui.mod.GuiItemEspTracerConfig
 import com.peasenet.main.GavinsModClient
-import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.RenderUtils.CHUNK_RADIUS
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.util.math.MatrixStack
@@ -49,12 +48,12 @@ class ModEntityItemEsp : EntityEsp<ItemEntity>(
     { it is ItemEntity && it.squaredDistanceTo(GavinsModClient.player!!.getPos()) < 64 * 16 * CHUNK_RADIUS }),
     RenderListener {
     init {
-
-        val menu = SettingBuilder().setTitle("gavinsmod.mod.esp.item").buildClickSetting()
-        menu.setCallback {
-            client.setScreen(GuiItemEspTracerConfig(config))
+        clickSetting {
+            title = "gavinsmod.mod.esp.item"
+            callback = {
+                client.setScreen(GuiItemEspTracerConfig(config))
+            }
         }
-        addSetting(menu)
     }
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {/* TODO: Work on setting filters for items */

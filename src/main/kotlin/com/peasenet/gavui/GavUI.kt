@@ -21,35 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package com.peasenet.gavui
 
-package com.peasenet.gavui;
-
-import com.peasenet.gavui.color.Color;
-import com.peasenet.gavui.util.GavUISettings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.peasenet.gavui.color.Color
+import com.peasenet.gavui.util.GavUISettings
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
- * @author GT3CH1
- * @version 7/13/2022
  * The main initializer class for GavUI
+ * @author GT3CH1
+ * @version 02-02-2025
+ * @since 7/13/2022
  */
-public class GavUI {
+object GavUI {
     /**
      * The logger of the library.
      */
-    public static final Logger LOGGER = LoggerFactory.getLogger("gavui");
+    @JvmField
+    val LOGGER: Logger = LoggerFactory.getLogger("gavui")
 
     /**
      * Initializes GavUI
      */
-    public static void initialize() {
-        GavUISettings.initialize();
-        LOGGER.info("GavUI has been initialized.");
+    fun initialize() {
+        GavUISettings.initialize()
+        LOGGER.info("GavUI has been initialized.")
     }
 
-    public static Color borderColor() {
-        return GavUISettings.getColor("gui.color.border");
+    @JvmStatic
+    fun borderColor(): Color {
+        return GavUISettings.getColor("gui.color.border")
     }
 
     /**
@@ -57,8 +59,8 @@ public class GavUI {
      *
      * @return The background color from settings.
      */
-    public static Color backgroundColor() {
-        return GavUISettings.getColor("gui.color.background");
+    fun backgroundColor(): Color {
+        return GavUISettings.getColor("gui.color.background")
     }
 
     /**
@@ -66,26 +68,25 @@ public class GavUI {
      *
      * @return The foreground color from settings.
      */
-    public static Color textColor() {
-        return GavUISettings.getColor("gui.color.foreground");
+    fun textColor(): Color {
+        return GavUISettings.getColor("gui.color.foreground")
     }
 
-    /**
-     * Gets the alpha from settings.
-     *
-     * @return The alpha from settings.
-     */
-    public static float getAlpha() {
-        return GavUISettings.getFloat("gui.alpha");
-    }
+    val alpha: Float
+        /**
+         * Gets the alpha from settings.
+         *
+         * @return The alpha from settings.
+         */
+        get() = GavUISettings.getFloat("gui.alpha")
 
     /**
      * Gets the frozen element color from settings.
      *
      * @return The frozen element color from settings.
      */
-    public static Color frozenColor() {
-        return GavUISettings.getColor("gui.color.frozen");
+    fun frozenColor(): Color {
+        return GavUISettings.getColor("gui.color.frozen")
     }
 
     /**
@@ -93,8 +94,8 @@ public class GavUI {
      *
      * @return The category color from settings.
      */
-    public static Color parentColor() {
-        return GavUISettings.getColor("gui.color.category");
+    fun parentColor(): Color {
+        return GavUISettings.getColor("gui.color.category")
     }
 
     /**
@@ -102,7 +103,7 @@ public class GavUI {
      *
      * @return The color if an element is enabled from settings.
      */
-    public static Color enabledColor() {
-        return GavUISettings.getColor("gui.color.enabled");
+    fun enabledColor(): Color {
+        return GavUISettings.getColor("gui.color.enabled")
     }
 }

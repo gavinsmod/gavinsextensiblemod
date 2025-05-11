@@ -24,12 +24,10 @@
 
 package com.peasenet.mods.tracer
 
-import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.gavui.color.Color
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.block.entity.BlockEntity
-import net.minecraft.client.gl.ShaderProgramKeys
 import net.minecraft.client.util.math.MatrixStack
 
 /**
@@ -48,7 +46,7 @@ import net.minecraft.client.util.math.MatrixStack
 abstract class BlockEntityTracer<T : BlockEntity>(
     translationKey: String,
     chatCommand: String,
-    val blockFilter: (BlockEntity) -> Boolean
+    val blockFilter: (BlockEntity) -> Boolean,
 ) : TracerMod<T>(translationKey, chatCommand), RenderListener {
     override fun onEnable() {
         super.onEnable()
@@ -78,21 +76,20 @@ abstract class BlockEntityTracer<T : BlockEntity>(
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         if (entityList.isEmpty()) return
-        RenderUtils.setupRender(matrixStack)
-//        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
-        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR)
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-//        RenderSystem.applyModelViewMatrix()
-//        RenderSystem.matrix
-        val entry = matrixStack.peek().positionMatrix
-        val bufferBuilder = RenderUtils.getBufferBuilder()
+        matrixStack.peek().positionMatrix
         for (e in entityList) {
+            val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
+            val end = e.pos.toCenterPos()
             RenderUtils.drawSingleLine(
-                bufferBuilder, entry, partialTicks, e.pos, getColor(), config.alpha
+                matrixStack,
+                tracerOrigin,
+                end,
+                getColor(),
+                config.alpha,
+                true,
+                false
             )
         }
-        RenderUtils.drawBuffer(bufferBuilder)
-        RenderUtils.cleanupRender(matrixStack)
     }
 
     abstract fun getColor(): Color

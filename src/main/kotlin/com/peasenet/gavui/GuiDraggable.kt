@@ -21,29 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.peasenet.util.event
+package com.peasenet.gavui
 
-import com.peasenet.util.event.data.TessellateBlock
-import com.peasenet.util.listeners.TessellateBlockListener
+import com.peasenet.gavui.math.PointF
 
 /**
- * Event called when block tessellation occurs. This event is cancellable.
- * @param tessellateBlock The [TessellateBlock] event.
- * @see CancellableEvent
- * @see TessellateBlockListener
- *
  * @author GT3CH1
- * @version 01-26-2025
- * @since 03-02-2023
+ * @version 6/28/2022
+ * A draggable ui element.
  */
-class TessellateBlockEvent(private val tessellateBlock: TessellateBlock) : CancellableEvent<TessellateBlockListener>() {
-    override fun fire(listeners: ArrayList<TessellateBlockListener>) {
-        for (listener in listeners) {
-            listener.onTessellateBlock(tessellateBlock)
-            if (tessellateBlock.isCancelled) cancel()
-        }
+open class GuiDraggable(builder: GuiBuilder<out GuiDraggable>) : GuiClick(builder) {
+    /**
+     * Whether this element is frozen.
+     */
+    protected var frozen = false
+
+    init {
+        frozen = (builder.isFrozen)
     }
 
-    override val event: Class<TessellateBlockListener>
-        get() = TessellateBlockListener::class.java
+    override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
+        if (frozen) return false
+        setMidPoint(PointF(mouseX, mouseY))
+        return true
+    }
+
+    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        if (button == 1) {
+            frozen = !frozen
+            return true
+        }
+        return super.mouseClicked(mouseX, mouseY, button)
+    }
 }

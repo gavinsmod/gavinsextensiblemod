@@ -33,22 +33,29 @@ import com.peasenet.gavui.GuiCycle
  * @version 01-25-2025
  * @since 01-25-2025
  */
-class CycleSetting(builder: SettingBuilder) : Setting() {
-    override val gui: GuiCycle
-    init {
-        gui = GuiBuilder()
-            .setWidth(builder.getWidth())
-            .setHeight(builder.getHeight())
-            .setTitle(builder.getTitle())
-            .setHoverable(builder.isHoverable())
-            .setBackgroundColor(builder.getColor())
-            .setTransparency(builder.getTransparency())
-            .setTranslationKey(builder.getTranslationKey())
-            .setSymbol(builder.getSymbol())
-            .setTopLeft(builder.getTopLeft())
-            .setCycleSize(builder.getOptions().size)
-            .setCurrentCycleIndex(builder.getOptions().indexOf(builder.getOptionsValue()))
-            .setCallback(builder.getCallback())
+class CycleSetting : CallbackSetting<CycleSetting>() {
+    override lateinit var gui: GuiCycle
+
+    fun build(): CycleSetting {
+        gui = GuiBuilder<GuiCycle>()
+            .setWidth(width)
+            .setHeight(height)
+            .setTitle(title)
+            .setHoverable(hoverable)
+            .setBackgroundColor(color)
+            .setTransparency(transparency)
+            .setSymbol(symbol)
+            .setTopLeft(topLeft)
+            .setCycleSize(cycleSize)
+            .setCurrentCycleIndex(cycleIndex)
+            .setCallback { callback?.invoke(this) }
             .buildCycle()
+        return this
     }
+}
+
+
+fun cycleSetting(init: CycleSetting.() -> Unit): CycleSetting {
+    val setting = CycleSetting().apply { init() }
+    return setting.build()
 }

@@ -44,7 +44,7 @@ import net.minecraft.util.math.Box
  *
  */
 abstract class BlockEntityEsp<T : BlockEntity>(
-    name: String, translationKey: String, chatCommand: String, val filter: (BlockEntity) -> Boolean
+    translationKey: String, chatCommand: String, val filter: (BlockEntity) -> Boolean,
 ) : EspMod<T>(
     translationKey, chatCommand
 ) {
@@ -66,29 +66,26 @@ abstract class BlockEntityEsp<T : BlockEntity>(
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         if (espList.isEmpty()) return
-        RenderUtils.setupRenderWithShader(matrixStack)
-        val bufferBuilder = RenderUtils.getBufferBuilder()
+        matrixStack.push()
+        val scale = config.espSize / 0.25f
         for (e in espList) {
-            matrixStack.push()
-            val pos = e.pos.subtract(RenderUtils.getCameraRegionPos().toVec3i())
+            val pos = e.pos.toCenterPos()
             val bb = Box(
-                pos.x.toDouble() + 1,
-                pos.y.toDouble(),
-                pos.z.toDouble() + 1,
-                pos.x.toDouble(),
-                pos.y + 1.0,
-                pos.z.toDouble()
+                pos.x + 0.5 * scale,
+                pos.y + 0.5 * scale,
+                pos.z + 0.5 * scale,
+                pos.x - 0.5 * scale,
+                pos.y - 0.5 * scale,
+                pos.z - 0.5 * scale
             )
             RenderUtils.drawOutlinedBox(
                 bb,
-                bufferBuilder,
-                matrixStack.peek().positionMatrix,
+                matrixStack,
                 getColor(),
                 getAlpha(),
                 false
             )
-            matrixStack.pop()
         }
-        RenderUtils.drawBuffer(bufferBuilder, matrixStack)
+        matrixStack.pop()
     }
 }

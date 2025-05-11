@@ -23,10 +23,10 @@
  */
 package com.peasenet.mods.misc
 
-import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.config.misc.FreeCamConfig
+import com.peasenet.gavui.util.Direction
 import com.peasenet.main.Settings
-import com.peasenet.settings.SettingBuilder
+import com.peasenet.mods.tracer.TracerMod
 import com.peasenet.util.FakePlayer
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.AirStrafeEvent
@@ -36,9 +36,7 @@ import com.peasenet.util.listeners.PacketSendListener
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
-import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
-import org.lwjgl.opengl.GL11
 
 /**
  * A mod that allows the camera to be moved freely.
@@ -47,7 +45,7 @@ import org.lwjgl.opengl.GL11
  * @version 01-15-2025
  */
 class ModFreeCam : MiscMod(
-     "gavinsmod.mod.misc.freecam", "freecam"
+    "gavinsmod.mod.misc.freecam", "freecam"
 ), PacketSendListener, RenderListener, AirStrafeListener {
     private var fake: FakePlayer? = null
 
@@ -59,28 +57,35 @@ class ModFreeCam : MiscMod(
     }
 
     init {
-        val freeCamSpeed =
-            SettingBuilder().setTitle("gavinsmod.generic.speed").setValue(config.freeCamSpeed).buildSlider()
-        freeCamSpeed.setCallback { config.freeCamSpeed = freeCamSpeed.value }
-        val espEnabled =
-            SettingBuilder().setTitle("gavinsmod.generic.esp").setState(config.espEnabled).buildToggleSetting()
-        espEnabled.setCallback { config.espEnabled = espEnabled.value }
-        val tracerEnabled =
-            SettingBuilder().setTitle("gavinsmod.generic.tracer").setState(config.tracerEnabled).buildToggleSetting()
-        tracerEnabled.setCallback { config.tracerEnabled = tracerEnabled.value }
-        val color = SettingBuilder().setTitle("gavinsmod.generic.color").setColor(config.color).buildColorSetting()
-        color.setCallback { config.color = color.color }
-        val alpha = SettingBuilder().setTitle("gavinsmod.generic.alpha").setValue(1f).buildSlider()
-        alpha.setCallback { config.alpha = alpha.value }
-        val subSetting = SettingBuilder().setWidth(100f).setHeight(10f).setTitle(translationKey).setMaxChildren(5)
-            .setDefaultMaxChildren(5).buildSubSetting()
-
-        subSetting.add(espEnabled)
-        subSetting.add(tracerEnabled)
-        subSetting.add(color)
-        subSetting.add(alpha)
-        subSetting.add(freeCamSpeed)
-        addSetting(subSetting)
+        subSettings {
+            title = translationKey
+            direction = Direction.RIGHT
+            slideSetting {
+                title = "gavinsmod.generic.speed"
+                value = config.freeCamSpeed
+                callback = { config.freeCamSpeed = it.value }
+            }
+            toggleSetting {
+                title = "gavinsmod.generic.esp"
+                state = config.espEnabled
+                callback = { config.espEnabled = it.state }
+            }
+            toggleSetting {
+                title = "gavinsmod.generic.tracer"
+                state = config.tracerEnabled
+                callback = { config.tracerEnabled = it.state }
+            }
+            colorSetting {
+                title = "gavinsmod.generic.color"
+                color = config.color
+                callback = { config.color = it.color }
+            }
+            slideSetting {
+                title = "gavinsmod.generic.alpha"
+                value = 1f
+                callback = { config.alpha = it.value }
+            }
+        }
     }
 
     override fun activate() {
@@ -134,39 +139,27 @@ class ModFreeCam : MiscMod(
     }
 
     private fun renderTracer(matrixStack: MatrixStack, partialTicks: Float) {
-        RenderUtils.setupRenderWithShader(matrixStack)
-        val entry = matrixStack.peek().positionMatrix
-        val bufferBuilder = RenderUtils.getBufferBuilder()
-        RenderUtils.drawSingleLine(bufferBuilder, entry, partialTicks, fake!!, config.color, config.alpha)
-        RenderUtils.drawBuffer(bufferBuilder, matrixStack)
+        val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
+        val end = RenderUtils.getLerpedBox(fake!!, partialTicks).center.add(RenderUtils.getCameraPos().negate())
+        matrixStack.push()
+        RenderUtils.drawSingleLine(
+            matrixStack,
+            tracerOrigin,
+            end,
+            config.color,
+            TracerMod.config.alpha
+        )
+        matrixStack.pop()
     }
 
     private fun renderEsp(matrixStack: MatrixStack, partialTicks: Float) {
-        val region = RenderUtils.getCameraRegionPos()
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-
-        matrixStack.push()
-        RenderUtils.applyRegionalRenderOffset(matrixStack, region)
-        val color = config.color
-        RenderSystem.setShaderColor(color.red, color.green, color.blue, config.alpha)
-        matrixStack.push()
-
-        matrixStack.translate(
-            fake!!.x - region.x, fake!!.y, fake!!.z - region.z
-        );
-        matrixStack.scale(
-            fake!!.getWidth() + 0.1F, fake!!.getHeight() + 0.1F, fake!!.getWidth() + 0.1F
-        );
-        var bb = Box(-0.5, 0.0, -0.5, 0.5, 1.0, 0.5)
-        RenderUtils.drawOutlinedBox(bb, matrixStack)
-        matrixStack.pop()
-        matrixStack.pop()
-
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glDisable(GL11.GL_BLEND);
+        val bb = RenderUtils.getLerpedBox(fake!!, partialTicks)
+        RenderUtils.renderEntityEsp(
+            matrixStack,
+            bb,
+            config.color,
+            config.alpha
+        )
     }
 
 }

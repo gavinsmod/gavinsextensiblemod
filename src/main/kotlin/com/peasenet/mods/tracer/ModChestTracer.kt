@@ -24,7 +24,6 @@
 package com.peasenet.mods.tracer
 
 import com.peasenet.gavui.color.Color
-import com.peasenet.settings.SettingBuilder
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.block.entity.ChestBlockEntity
@@ -43,11 +42,16 @@ class ModChestTracer : BlockEntityTracer<BlockEntity>(
     { it is ChestBlockEntity || it is EnderChestBlockEntity || it is ShulkerBoxBlockEntity }
 ), RenderListener {
     init {
-        val colorSetting =
-            SettingBuilder().setTitle("gavinsmod.settings.tracer.chest.color").setColor(config.chestColor)
-                .buildColorSetting()
-        colorSetting.setCallback { config.chestColor = colorSetting.color }
-        addSetting(colorSetting)
+//        val colorSetting =
+//            SettingBuilder<ColorSetting>().setTitle("gavinsmod.settings.tracer.chest.color").setColor(config.chestColor)
+//                .setCallback { config.chestColor = it.color }
+//                .buildColorSetting()
+//        addSetting(colorSetting)
+        colorSetting {
+            title = "gavinsmod.settings.tracer.chest.color"
+            color = config.chestColor
+            callback = { config.chestColor = it.color }
+        }
     }
 
     override fun getColor(): Color {

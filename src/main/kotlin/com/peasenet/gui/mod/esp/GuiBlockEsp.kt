@@ -1,4 +1,4 @@
-﻿/*
+/*
  * MIT License
  *
  * Copyright (c) 2022-2025, Gavin C. Pease
@@ -28,14 +28,10 @@ import com.peasenet.config.esp.BlockEspConfig
 import com.peasenet.gui.mod.GuiBlockSelection
 
 /**
- * A GUI used for block esp to select blocks.
  *
  * @author GT3CH1
- * @version 09-01-2024
- * @since 09-01-2024
- *
- * @see BlockEspConfig
- * @see GuiBlockSelection
+ * @version 04-15-2025
+ * @since 04-15-2025
  */
-class GuiBlockEsp : GuiBlockSelection<BlockEspConfig>("gavinsmod.mod.esp.blockesp", "blockesp"
-) 
+class GuiBlockEsp : GuiBlockSelection<BlockEspConfig>("gavinsmod.mod.esp.blockesp", "blockesp") {
+}

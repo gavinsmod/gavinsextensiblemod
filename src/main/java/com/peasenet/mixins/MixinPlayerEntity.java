@@ -22,43 +22,20 @@
  * SOFTWARE.
  */
 
-package com.peasenet.gavui.math;
+package com.peasenet.mixins;
 
-/**
- * @param x The x coordinate of the point.
- * @param y The y coordinate of the point.
- * @author GT3CH1
- * @version 6/14/2022
- * A point in 2D space.
- */
-public record PointD(double x, double y) {
+import com.peasenet.main.GavinsMod;
+import net.minecraft.entity.player.PlayerEntity;
+import org.objectweb.asm.Opcodes;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
-    /**
-     * Creates a new point in 2D space.
-     *
-     * @param x The x coordinate.
-     * @param y The y coordinate.
-     */
-    public PointD {
+@Mixin(PlayerEntity.class)
+public class MixinPlayerEntity {
+    @Redirect(method = "tick()V", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerEntity;noClip:Z", opcode = Opcodes.PUTFIELD))
+    public void doNoClip(PlayerEntity p, boolean noClip) {
+        p.noClip = GavinsMod.isEnabled("noclip");
     }
 
-    /**
-     * Adds two points together
-     *
-     * @param other - The other point to add.
-     * @return The sum of the two points.
-     */
-    public PointD add(PointD other) {
-        return new PointD(x + other.x, y + other.y);
-    }
-
-    /**
-     * Subtracts two points together
-     *
-     * @param other - The other point to subtract.
-     * @return A point with the difference of the two points.
-     */
-    public PointD subtract(PointD other) {
-        return new PointD(x - other.x, y - other.y);
-    }
 }

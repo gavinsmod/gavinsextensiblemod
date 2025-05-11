@@ -28,33 +28,31 @@ import com.peasenet.gavui.GuiClick
 
 /**
  * A setting that can be clicked. This is purely dependent on the given callback.
- * 
- * @param builder - The [SettingBuilder] used to create this setting.
+ *
  * @author GT3CH1
  * @version 07-18-2023
  */
-class ClickSetting(builder: SettingBuilder) : Setting() {
-    /**
-     * The gui used to display the setting.
-     */
-    override val gui: GuiClick
-
-    /**
-     * Creates a new click setting with the given name (?) and translation key.
-     *
-     */
-    init {
-        gui = GuiBuilder()
-            .setWidth(builder.getWidth())
-            .setHeight(builder.getHeight())
-            .setTitle(builder.getTitle())
-            .setCallback(builder.getCallback())
-            .setHoverable(builder.isHoverable())
-            .setBackgroundColor(builder.getColor())
-            .setTransparency(builder.getTransparency())
-            .setTranslationKey(builder.getTranslationKey())
-            .setSymbol(builder.getSymbol())
-            .setTopLeft(builder.getTopLeft())
+class ClickSetting() : CallbackSetting<ClickSetting>(hoverable = true) {
+    override lateinit var gui: GuiClick
+    fun build(): ClickSetting {
+        gui = GuiBuilder<GuiClick>()
+            .setWidth(width)
+            .setHeight(height)
+            .setTitle(title)
+            .setCallback {
+                callback?.invoke(this)
+            }
+            .setHoverable(hoverable)
+            .setBackgroundColor(color)
+            .setTransparency(transparency)
+            .setTopLeft(topLeft)
             .buildClick()
+        return this
     }
+}
+
+fun clickSetting(block: ClickSetting.() -> Unit): ClickSetting {
+    val setting = ClickSetting()
+    setting.block()
+    return setting.build()
 }

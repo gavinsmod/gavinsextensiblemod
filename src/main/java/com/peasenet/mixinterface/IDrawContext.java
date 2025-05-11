@@ -22,22 +22,28 @@
  * SOFTWARE.
  */
 
-package com.peasenet.mixins;
+package com.peasenet.mixinterface;
 
-import com.peasenet.main.GavinsMod;
-import net.minecraft.entity.player.PlayerEntity;
-import org.objectweb.asm.Opcodes;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+/**
+ * @author GT3CH1
+ * @version 02-05-2025
+ * @since 02-05-2025
+ */
 
-@Mixin(PlayerEntity.class)
-public class MixinPlayerEntityFastMine {
-    @Redirect(method = "tick()V", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerEntity;noClip:Z", opcode = Opcodes.PUTFIELD))    
-    public void doNoClip(PlayerEntity p, boolean noClip) {    
-        p.noClip = GavinsMod.isEnabled("noclip");    
-        //NOTE: This is fine. It is required for fabric to work.    
-        noClip = p.noClip;    
-    }    
-    
+import com.peasenet.gavui.color.Color;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.text.Text;
+
+/**
+ * @author GT3CH1
+ * @version 02-05-2025
+ * @since 02-05-2025
+ */
+public interface IDrawContext {
+    VertexConsumerProvider.Immediate gavins_mod$getVertexConsumerProvider();
+
+    void gavins_mod$drawText(TextRenderer textRenderer, Text text, float x, float y, Color color, boolean shadow);
+
+    void gavins_mod$drawText(TextRenderer textRenderer, String text, float x, float y, Color color, boolean shadow);
 }

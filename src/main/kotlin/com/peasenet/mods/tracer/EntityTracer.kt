@@ -47,7 +47,7 @@ import net.minecraft.entity.Entity
  */
 @Suppress("UNCHECKED_CAST")
 abstract class EntityTracer<T : Entity>(
-    translationKey: String, chatCommand: String, val entityFilter: (Entity) -> Boolean
+    translationKey: String, chatCommand: String, val entityFilter: (Entity) -> Boolean,
 ) : TracerMod<T>(translationKey, chatCommand), RenderListener {
     override fun onTick() {
         super.onTick()
@@ -57,13 +57,21 @@ abstract class EntityTracer<T : Entity>(
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         if (entityList.isEmpty()) return
-        RenderUtils.setupRenderWithShader(matrixStack)
-        val entry = matrixStack.peek().positionMatrix
-        val bufferBuilder = RenderUtils.getBufferBuilder()
         for (e in entityList) {
-            RenderUtils.drawSingleLine(bufferBuilder, entry, partialTicks, e, getColor(e), config.alpha)
+            val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
+            val end = (RenderUtils.getLerpedBox(e, partialTicks).center)
+            matrixStack.push()
+            RenderUtils.drawSingleLine(
+                matrixStack,
+                tracerOrigin,
+                end,
+                getColor(e),
+                config.alpha,
+                withOffset = true,
+                depthTest = false
+            )
+            matrixStack.pop()
         }
-        RenderUtils.drawBuffer(bufferBuilder, matrixStack)
     }
 
     open fun getAlpha(): Float {

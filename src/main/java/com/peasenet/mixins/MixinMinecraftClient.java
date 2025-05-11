@@ -33,6 +33,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.network.message.MessageHandler;
 import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.render.BufferBuilderStorage;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
@@ -66,6 +67,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
      */
     @Shadow
     public ClientPlayerInteractionManager interactionManager;
+
 
     /**
      * The options for the game.
@@ -230,6 +232,10 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Shadow
     public abstract void setScreen(Screen s);
 
+    @Shadow
+    @Final
+    private BufferBuilderStorage bufferBuilders;
+
     /**
      * Gets the renderer for the world.
      *
@@ -303,5 +309,10 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Override
     public ClientPlayerEntity getPlayer() {
         return player;
+    }
+
+    @Override
+    public BufferBuilderStorage getBufferBuilderStorage() {
+        return bufferBuilders;
     }
 }

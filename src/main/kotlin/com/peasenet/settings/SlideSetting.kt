@@ -31,30 +31,42 @@ import com.peasenet.gavui.GuiSlider
  * @version 03-02-2023
  * A setting that can be clicked. This is purely dependant on the given callback.
  */
-class SlideSetting(builder: SettingBuilder) : Setting() {
+class SlideSetting(
+    value: Float = 0.5f,
+    override var callback: ((SlideSetting) -> Unit)? = null,
+) : CallbackSetting<SlideSetting>(value = value, callback = callback) {
     /**
      * The gui used to display the setting.
      */
-    override var gui: GuiSlider = GuiBuilder()
-        .setWidth(builder.getWidth())
-        .setHeight(builder.getHeight())
-        .setSlideValue(builder.getValue())
-        .setTitle(builder.getTitle())
-        .setCallback(builder.getCallback())
-        .setTransparency(builder.getTransparency())
-        .setDefaultMaxChildren(builder.getMaxChildren())
-        .setMaxChildren(builder.getMaxChildren())
-        .setTopLeft(builder.getTopLeft())
-       .buildSlider()
+    override var gui: GuiSlider? = null
 
-    companion object;
+    fun build(): SlideSetting {
+        gui = GuiBuilder<GuiSlider>()
+            .setWidth(width)
+            .setHeight(height)
+            .setSlideValue(value)
+            .setTitle(title)
+            .setCallback { callback?.invoke(this) }
+            .setTransparency(transparency)
+            .setDefaultMaxChildren(defaultMaxChildren)
+            .setMaxChildren(maxChildren)
+            .setTopLeft(topLeft)
+            .buildSlider()
+        return this
+    }
 
-    /**
-     * The current float value of the setting.
-     */
-    var value: Float
-        get() = gui.value
-        set(alpha) {
-            gui.value = alpha
+    override var value: Float = value
+        get() {
+            return gui?.value ?: field
         }
+        set(value) {
+            field = value
+            gui?.value = value
+        }
+}
+
+fun slideSetting(init: SlideSetting.() -> Unit): SlideSetting {
+    val setting = SlideSetting()
+    setting.init()
+    return setting.build()
 }
