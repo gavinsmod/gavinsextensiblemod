@@ -94,6 +94,7 @@ class Color(red: Int, green: Int, blue: Int) : Serializable {
          */
         get() = (red shl 16) or (green shl 8) or blue
 
+
     /**
      * Gets the int value of this color, will be converted to its hex equivalent.
      *

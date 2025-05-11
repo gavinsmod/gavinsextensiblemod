@@ -52,7 +52,7 @@ public class MixinGameRenderer {
             target = "Lnet/minecraft/client/render/GameRenderer;renderHand:Z",
             opcode = Opcodes.GETFIELD,
             ordinal = 0),
-            method = "renderWorld")
+            method = "renderWorld(Lnet/minecraft/client/render/RenderTickCounter;)V")
     public void handleRender(RenderTickCounter tickCounter,
                              CallbackInfo ci, @Local(ordinal = 2) Matrix4f matrix4f2,
                              @Local(ordinal = 1) float tickDelta) {

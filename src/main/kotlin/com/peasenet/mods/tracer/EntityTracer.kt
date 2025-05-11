@@ -67,7 +67,8 @@ abstract class EntityTracer<T : Entity>(
                 end,
                 getColor(e),
                 config.alpha,
-                true
+                withOffset = true,
+                depthTest = false
             )
             matrixStack.pop()
         }

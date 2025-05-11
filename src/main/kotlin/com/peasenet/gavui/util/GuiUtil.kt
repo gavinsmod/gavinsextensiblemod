@@ -23,7 +23,6 @@
  */
 package com.peasenet.gavui.util
 
-import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.gavui.GavUI.borderColor
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.math.BoxF
@@ -85,11 +84,9 @@ object GuiUtil {
      * @param bufferBuilder - The buffer builder to draw with.
      */
     private fun drawBox(box: BoxF, matrix: MatrixStack, color: Color, alpha: Float, targetLayer: RenderLayer? = null) {
-        // todo: move to gavui render utils?
         val vcp = RenderUtils.getVertexConsumerProvider()
         val layer = targetLayer ?: GemRenderLayers.LINES
         val bufferBuilder = vcp.getBuffer(layer)
-
         val matrix4f = matrix.peek()
 
         val xt1 = box.topLeft.x
@@ -124,22 +121,21 @@ object GuiUtil {
     fun renderSingleLine(color: Color, p1: PointF, p2: PointF, matrixStack: MatrixStack, alpha: Float) {
         val newAlpha = alpha.coerceIn(0.0f, 1.0f)
         val accColor = color.asFloatArray
-//        RenderSystem.setShader(ShaderProgramKeys.POSITION)
-//        RenderSystem.enableBlend()
-        val matrix = matrixStack.peek().positionMatrix
-//        val tessellator = RenderSystem.renderThreadTesselator()
-        RenderSystem.setShaderColor(accColor[0], accColor[1], accColor[2], newAlpha)
-//        val bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION)
-//        bufferBuilder.vertex(matrix, p1.x, p1.y, 0f)
-//        bufferBuilder.vertex(matrix, p2.x, p2.y, 0f)
-//        val e = bufferBuilder.end()
-//        BufferRenderer.drawWithGlobalProgram(e)
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
-//        RenderSystem.disableBlend()
+        val vcp = RenderUtils.getVertexConsumerProvider()
+        val layer = GemRenderLayers.LINES
+        val bufferBuilder = vcp.getBuffer(layer)
+        val matrix4f = matrixStack.peek()
+
+        bufferBuilder.vertex(matrix4f, p1.x, p1.y, 0f)
+            .color(accColor[0], accColor[1], accColor[2], newAlpha)
+            .normal(0f, 0f, 0f)
+        bufferBuilder.vertex(matrix4f, p2.x, p2.y, 0f)
+            .color(accColor[0], accColor[1], accColor[2], newAlpha)
+            .normal(0f, 0f, 0f)
+
     }
 
     fun fill(box: BoxF, matrixStack: MatrixStack, color: Color, alpha: Float) {
-
         val vcp = RenderUtils.getVertexConsumerProvider()
         val layer = RenderLayer.getGui()
         val bufferBuilder = vcp.getBuffer(layer)

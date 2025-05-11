@@ -40,7 +40,6 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.chunk.Chunk
-import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL11
 
@@ -325,13 +324,15 @@ object RenderUtils {
         color: Color,
         alpha: Float = 1f,
         withOffset: Boolean = true,
+        depthTest: Boolean = false,
     ) {
-        GL11.glDisable(GL11.GL_DEPTH_TEST)
 
         val vcp = getVertexConsumerProvider()
-        val layer = GemRenderLayers.LINES
+
+        val layer = if (depthTest) GemRenderLayers.LINES else GemRenderLayers.ESP_LINES
         val bufferBuilder = vcp.getBuffer(layer)
-        val entry = matrixStack.peek().positionMatrix
+        val posMatrix = matrixStack.peek().positionMatrix
+        val entry = matrixStack.peek()
         var bb2 = end
         if (withOffset)
             bb2 = end.add((getCameraPos().negate()))
@@ -341,79 +342,17 @@ object RenderUtils {
         val x2 = bb2.x.toFloat()
         val y2 = bb2.y.toFloat()
         val z2 = bb2.z.toFloat()
+        val normal = Vector3f(x2, y2, z2).sub(Vector3f(x1, y1, z1)).normalize()
 
-        bufferBuilder.vertex(entry, x1, y1, z1)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-//            .normal(entry, normal)
-            .normal(0f, 0f, 0f)
-        bufferBuilder.vertex(entry, x2, y2, z2)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(0f, 0f, 0f)
+        bufferBuilder.vertex(posMatrix, x1, y1, z1)
+            .color(color.getAsInt(alpha))
+            .normal(entry, normal)
+        bufferBuilder.vertex(posMatrix, x2, y2, z2)
+            .color(color.getAsInt(alpha))
+            .normal(entry, normal)
 
         vcp.draw(layer)
 
-        GL11.glEnable(GL11.GL_DEPTH_TEST)
-//        GL11.glDisable(GL11.GL_BLEND)
-    }
-
-    /**
-     * Draws a line from the center of the clients screen to the given end point.
-     * @param buffer The buffer builder to draw with.
-     * @param matrix4f The matrix to draw with.
-     * @param end The end point of the line.
-     * @param color The color of the line.
-     * @param alpha The alpha of the line.
-     */
-    @Deprecated(
-        message = "USe drawSingleLine(matrix4f, start, end, color, alpha) instead",
-        ReplaceWith("RenderUtils.drawSingleLine(matrix4f, start, end, color, alpha)")
-    )
-    fun drawSingleLine(
-        buffer: BufferBuilder,
-        matrix4f: Matrix4f,
-        start: Vec3d,
-        end: Vec3d,
-        color: Color = Colors.WHITE,
-        alpha: Float = 1f,
-        withOffset: Boolean = false,
-    ) {
-        if (withOffset) {
-            drawSingleLine(
-                buffer,
-                matrix4f,
-                start.subtract(getCameraRegionPos().toVec3d()).toVector3f(),
-                end.subtract(getCameraRegionPos().toVec3d()).toVector3f(),
-                color,
-                alpha
-            )
-            return
-        }
-        drawSingleLine(buffer, matrix4f, start.toVector3f(), end.toVector3f(), color, alpha)
-    }
-
-    /**
-     * Draws a line from the center of the clients screen to the given end point.
-     * @param bufferBuilder The buffer builder to draw with.
-     * @param matrix4f The matrix to draw with.
-     * @param start The start point of the line.
-     * @param end The end point of the line.
-     * @param color The color of the line.
-     * @param alpha The alpha of the line.
-     */
-    private fun drawSingleLine(
-        bufferBuilder: BufferBuilder,
-        matrix4f: Matrix4f,
-        start: Vector3f,
-        end: Vector3f,
-        color: Color = Colors.WHITE,
-        alpha: Float = 1f,
-    ) {
-        bufferBuilder.vertex(
-            matrix4f, start.x, start.y, start.z
-        ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-        bufferBuilder.vertex(
-            matrix4f, end.x, end.y, end.z
-        ).color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
     }
 
     /**

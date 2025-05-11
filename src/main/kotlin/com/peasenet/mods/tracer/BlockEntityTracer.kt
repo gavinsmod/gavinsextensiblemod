@@ -76,8 +76,7 @@ abstract class BlockEntityTracer<T : BlockEntity>(
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         if (entityList.isEmpty()) return
-//        RenderUtils.setupRender(matrixStack)
-        val entry = matrixStack.peek().positionMatrix
+        matrixStack.peek().positionMatrix
         for (e in entityList) {
             val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
             val end = e.pos.toCenterPos()
@@ -87,10 +86,10 @@ abstract class BlockEntityTracer<T : BlockEntity>(
                 end,
                 getColor(),
                 config.alpha,
-                true
+                true,
+                false
             )
         }
-//        RenderUtils.cleanupRender(matrixStack)
     }
 
     abstract fun getColor(): Color

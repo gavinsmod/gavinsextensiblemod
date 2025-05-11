@@ -204,7 +204,7 @@ class GavBlock(
                     startPos.add(0, 0, 1),
                     color,
                     alpha,
-                    false
+                    false,
                 )
             }
 
@@ -379,7 +379,13 @@ class GavBlock(
         if (tracers) {
             val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
             RenderUtils.drawSingleLine(
-                matrixStack, tracerOrigin, offsetPos.add(0.5, 0.5, 0.5), color, alpha
+                matrixStack,
+                tracerOrigin,
+                offsetPos.add(0.5, 0.5, 0.5),
+                color,
+                alpha,
+                withOffset = true,
+                depthTest = false
             )
         }
         matrixStack.pop()

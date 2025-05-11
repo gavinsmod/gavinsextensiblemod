@@ -30,13 +30,15 @@ import com.peasenet.gavui.util.GuiUtil
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Mods
+import com.peasenet.mixinterface.IDrawContext
 import com.peasenet.mods.Mod
 import com.peasenet.mods.gui.GuiMod
+import com.peasenet.util.RenderUtils
 import com.peasenet.util.listeners.InGameHudRenderListener
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.text.Text
-import java.util.concurrent.atomic.AtomicInteger
+import net.minecraft.util.math.Vec3d
 
 /**
  * @author GT3CH1
@@ -70,42 +72,45 @@ class ModGuiTextOverlay : MiscMod(
      * @param drawContext- The drawContext to use
      */
     private fun drawTextOverlay(drawContext: DrawContext) {
+        val iDrawContext: IDrawContext = drawContext as IDrawContext
         val matrixStack = drawContext.matrices
         val textRenderer = GavinsModClient.minecraftClient.textRenderer
-        val startingPoint = PointF(0.5f, 0.5f)
-        val currX = (startingPoint.x + 2).toInt()
-        val currY = AtomicInteger((startingPoint.y + 2).toInt())
+        var startingPoint = PointF(0f, 0f)
         val modsCount = modList.count()
         var longestModName = 0
         for (mod in modList) {
             longestModName = textRenderer.getWidth(I18n.translate(mod.translationKey)).coerceAtLeast(longestModName)
         }
-        val box = BoxF(startingPoint, (longestModName + 4).toFloat(), modsCount * 10 + 0.5f)
+        val box = BoxF(startingPoint, (longestModName + 4).toFloat(), modsCount * 10 + 2f)
+        matrixStack.push()
         GuiUtil.drawBox(
             GavUISettings.getColor("gui.color.background"),
             box,
             matrixStack,
             GavUISettings.getFloat("gui.alpha")
         )
-        GuiUtil.drawOutline(GavUISettings.getColor("gui.color.border"), box, matrixStack)
-        val modCounter = AtomicInteger()
-        for (mod in modList) {
-            drawContext.drawText(
+        matrixStack.pop()
+//        GuiUtil.drawOutline(GavUISettings.getColor("gui.color.border"), box, matrixStack)
+        for ((index, mod) in modList.withIndex()) {
+             iDrawContext.`gavins_mod$drawText`(
                 textRenderer,
                 Text.translatable(mod.translationKey),
-                currX,
-                currY.get(),
-                GavUISettings.getColor("gui.color.foreground").asInt,
-                false
+                startingPoint.x + 2.5f,
+                startingPoint.y + 2.5f,
+                GavUISettings.getColor("gui.color.foreground"),
+                true
             )
-            if (modsCount > 1 && modCounter.get() < modsCount - 1) {
-                val p1 = PointF(0.5f, currY.get().toFloat() + 8.5f)
-                val p2 = PointF(longestModName + 4.5f, currY.get() + 8.5f)
-                GuiUtil.renderSingleLine(GavUISettings.getColor("gui.color.border"), p1, p2, matrixStack, 1f)
+            if (modsCount > 1 && index < modsCount - 1) {
+                val p1 = Vec3d(0.0, startingPoint.y + 11.5, 0.0)
+                val p2 = Vec3d(longestModName + 4.0, startingPoint.y + 11.5, 0.0)
+                matrixStack.push()
+                RenderUtils.drawSingleLine(matrixStack, p1, p2, GavUISettings.getColor("gui.color.border"), 1f, false)
+                matrixStack.push()
             }
-            currY.addAndGet(10)
-            modCounter.getAndIncrement()
+            startingPoint = startingPoint.add(0.0f, 10.0f)
         }
+
+
     }
 
     companion object {

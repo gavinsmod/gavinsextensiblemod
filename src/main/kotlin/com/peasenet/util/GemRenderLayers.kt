@@ -24,6 +24,7 @@
 package com.peasenet.util
 
 import com.mojang.blaze3d.pipeline.RenderPipeline
+import com.mojang.blaze3d.platform.DepthTestFunction
 import net.minecraft.client.gl.RenderPipelines
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.RenderLayer.MultiPhase
@@ -39,9 +40,9 @@ import java.util.*
 class GemRenderLayers {
     companion object {
         val LINES: MultiPhase = RenderLayer.of(
-            "gem:lines", 1536, RenderPipelines.DEBUG_LINE_STRIP,
+            "gem:lines", 1536, RenderPipelines.LINES,
             RenderLayer.MultiPhaseParameters.builder()
-                .lineWidth(LineWidth(OptionalDouble.of(2.0)))
+                .lineWidth(LineWidth(OptionalDouble.of(1.0)))
                 .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
                 .target(RenderPhase.ITEM_ENTITY_TARGET)
                 .build(false)
@@ -50,7 +51,7 @@ class GemRenderLayers {
         val ESP_LINES: MultiPhase = RenderLayer.of(
             "gem:esp_lines", 1536, GemRenderPipeline.ESP_LINE_STRIP,
             RenderLayer.MultiPhaseParameters.builder()
-                .lineWidth(LineWidth(OptionalDouble.of(2.0)))
+                .lineWidth(LineWidth(OptionalDouble.of(1.0)))
                 .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
                 .target(RenderPhase.ITEM_ENTITY_TARGET)
                 .build(false)
@@ -72,7 +73,7 @@ class GemRenderPipeline {
             RenderPipeline.builder(RenderPipelines.RENDERTYPE_LINES_SNIPPET)
                 .withLocation("gem/lines")
 //                .withVertexFormat(VertexFormats.POSITION_COLOR, VertexFormat.DrawMode.LINES)
-//                .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+                .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
 //                .withBlend(BlendFunction.TRANSLUCENT)
                 .build()
         )
