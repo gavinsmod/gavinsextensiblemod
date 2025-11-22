@@ -32,6 +32,7 @@ import com.peasenet.util.RenderUtils
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
+import org.joml.Matrix3x2fStack
 
 /**
  * A tracer mod that traces entities of a specific type.
@@ -55,12 +56,13 @@ abstract class EntityTracer<T : Entity>(
         client.getWorld().entities.filter { entityFilter(it) }.forEach { entityList.add(it as T) }
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {
+        // TODO: MC 1.21.10 update
         if (entityList.isEmpty()) return
         for (e in entityList) {
             val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
             val end = (RenderUtils.getLerpedBox(e, partialTicks).center)
-            matrixStack.push()
+            matrixStack.pushMatrix()
             RenderUtils.drawSingleLine(
                 matrixStack,
                 tracerOrigin,
@@ -70,7 +72,7 @@ abstract class EntityTracer<T : Entity>(
                 withOffset = true,
                 depthTest = false
             )
-            matrixStack.pop()
+            matrixStack.popMatrix()
         }
     }
 

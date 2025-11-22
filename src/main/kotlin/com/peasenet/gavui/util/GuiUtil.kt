@@ -31,6 +31,7 @@ import com.peasenet.util.GemRenderLayers
 import com.peasenet.util.RenderUtils
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.util.math.MatrixStack
+import org.joml.Matrix3x2fStack
 
 /**
  * A utility class for drawing gui elements.
@@ -48,7 +49,7 @@ object GuiUtil {
      * @param alpha       - The alpha value to draw with.
      */
     @JvmOverloads
-    fun drawBox(c: Color, box: BoxF, matrixStack: MatrixStack, alpha: Float = 1f) {
+    fun drawBox(c: Color, box: BoxF, matrixStack: Matrix3x2fStack, alpha: Float = 1f) {
         drawBox(box, matrixStack, c, alpha, GemRenderLayers.QUADS)
     }
 
@@ -58,7 +59,7 @@ object GuiUtil {
      * @param boxF        - The box to draw.
      * @param matrixStack - The matrix stack to draw with.
      */
-    fun drawOutline(boxF: BoxF, matrixStack: MatrixStack) {
+    fun drawOutline(boxF: BoxF, matrixStack: Matrix3x2fStack) {
         drawOutline(borderColor(), boxF, matrixStack)
     }
 
@@ -72,7 +73,7 @@ object GuiUtil {
      * @param alpha       - The alpha value to draw with.
      */
     @JvmOverloads
-    fun drawOutline(c: Color, box: BoxF, matrixStack: MatrixStack, alpha: Float = 1.0f) {
+    fun drawOutline(c: Color, box: BoxF, matrixStack: Matrix3x2fStack, alpha: Float = 1.0f) {
         drawBox(box, matrixStack, c, alpha)
     }
 
@@ -83,29 +84,27 @@ object GuiUtil {
      * @param matrix        - The matrix to draw with.
      * @param bufferBuilder - The buffer builder to draw with.
      */
-    private fun drawBox(box: BoxF, matrix: MatrixStack, color: Color, alpha: Float, targetLayer: RenderLayer? = null) {
+    private fun drawBox(box: BoxF, matrix: Matrix3x2fStack, color: Color, alpha: Float, targetLayer: RenderLayer? = null) {
         val vcp = RenderUtils.getVertexConsumerProvider()
         val layer = targetLayer ?: GemRenderLayers.LINES
         val bufferBuilder = vcp.getBuffer(layer)
-        val matrix4f = matrix.peek()
-
         val xt1 = box.topLeft.x
         val yt1 = box.topLeft.y
         val xt2 = box.bottomRight.x
         val yt2 = box.bottomRight.y
-        bufferBuilder.vertex(matrix4f, xt1, yt1, 0f)
+        bufferBuilder.vertex(matrix, xt1, yt1)
             .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
             .normal(0f, 0f, 0f)
-        bufferBuilder.vertex(matrix4f, xt1, yt2, 0f)
+        bufferBuilder.vertex(matrix, xt1, yt2)
             .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
             .normal(0f, 0f, 0f)
-        bufferBuilder.vertex(matrix4f, xt2, yt2, 0f)
+        bufferBuilder.vertex(matrix, xt2, yt2)
             .normal(0f, 0f, 0f)
             .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-        bufferBuilder.vertex(matrix4f, xt2, yt1, 0f)
+        bufferBuilder.vertex(matrix, xt2, yt1)
             .normal(0f, 0f, 0f)
             .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-        bufferBuilder.vertex(matrix4f, xt1, yt1, 0f)
+        bufferBuilder.vertex(matrix, xt1, yt1)
             .normal(0f, 0f, 0f)
             .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
         vcp.draw(layer)
@@ -135,17 +134,18 @@ object GuiUtil {
 
     }
 
-    fun fill(box: BoxF, matrixStack: MatrixStack, color: Color, alpha: Float) {
+    fun fill(box: BoxF, matrixStack: Matrix3x2fStack, color: Color, alpha: Float) {
         val vcp = RenderUtils.getVertexConsumerProvider()
-        val layer = RenderLayer.getGui()
+        val layer = RenderLayer.LINES
         val bufferBuilder = vcp.getBuffer(layer)
-        bufferBuilder.vertex(matrixStack.peek(), box.topLeft.x, box.topLeft.y, 0f)
+
+        bufferBuilder.vertex(matrixStack, box.topLeft.x, box.topLeft.y)
             .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-        bufferBuilder.vertex(matrixStack.peek(), box.topLeft.x, box.bottomRight.y, 0f)
+        bufferBuilder.vertex(matrixStack, box.topLeft.x, box.bottomRight.y)
             .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-        bufferBuilder.vertex(matrixStack.peek(), box.bottomRight.x, box.bottomRight.y, 0f)
+        bufferBuilder.vertex(matrixStack, box.bottomRight.x, box.bottomRight.y)
             .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-        bufferBuilder.vertex(matrixStack.peek(), box.bottomRight.x, box.topLeft.y, 0f)
+        bufferBuilder.vertex(matrixStack, box.bottomRight.x, box.topLeft.y)
             .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
 
     }

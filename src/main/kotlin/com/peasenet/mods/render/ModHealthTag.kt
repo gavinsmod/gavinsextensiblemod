@@ -75,7 +75,7 @@ class ModHealthTag : RenderMod(
         val attachmentVec = entity.attachments.getPointNullable(EntityAttachmentType.NAME_TAG, 0, entity.getYaw(0f))
         matrixStack.push()
         matrixStack.translate(attachmentVec!!.x, attachmentVec.y + 0.75, attachmentVec.z)
-        matrixStack.multiply(dispatcher.rotation)
+//        matrixStack.multiply(dispatcher.rotation)
         matrixStack.scale(0.025f, -0.025f, 0.025f)
         val currentHp = entity.health.toInt()
         val text = Text.literal("").append(currentHp.toString()).append(" HP").formatted(getColor(entity))

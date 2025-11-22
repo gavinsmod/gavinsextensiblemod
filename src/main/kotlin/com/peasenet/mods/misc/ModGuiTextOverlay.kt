@@ -82,14 +82,14 @@ class ModGuiTextOverlay : MiscMod(
             longestModName = textRenderer.getWidth(I18n.translate(mod.translationKey)).coerceAtLeast(longestModName)
         }
         val box = BoxF(startingPoint, (longestModName + 4).toFloat(), modsCount * 10 + 2f)
-        matrixStack.push()
+        matrixStack.pushMatrix()
         GuiUtil.drawBox(
             GavUISettings.getColor("gui.color.background"),
             box,
             matrixStack,
             GavUISettings.getFloat("gui.alpha")
         )
-        matrixStack.pop()
+        matrixStack.popMatrix()
 //        GuiUtil.drawOutline(GavUISettings.getColor("gui.color.border"), box, matrixStack)
         for ((index, mod) in modList.withIndex()) {
              iDrawContext.`gavins_mod$drawText`(
@@ -103,9 +103,9 @@ class ModGuiTextOverlay : MiscMod(
             if (modsCount > 1 && index < modsCount - 1) {
                 val p1 = Vec3d(0.0, startingPoint.y + 11.5, 0.0)
                 val p2 = Vec3d(longestModName + 4.0, startingPoint.y + 11.5, 0.0)
-                matrixStack.push()
+                matrixStack.pushMatrix()
                 RenderUtils.drawSingleLine(matrixStack, p1, p2, GavUISettings.getColor("gui.color.border"), 1f, false)
-                matrixStack.push()
+                matrixStack.pushMatrix()
             }
             startingPoint = startingPoint.add(0.0f, 10.0f)
         }

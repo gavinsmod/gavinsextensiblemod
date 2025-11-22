@@ -30,6 +30,7 @@ import com.peasenet.util.RenderUtils.CHUNK_RADIUS
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.ItemEntity
+import org.joml.Matrix3x2fStack
 
 /**
  * A mod that allows the player to see an esp (a box) around items.
@@ -56,7 +57,7 @@ class ModEntityItemEsp : EntityEsp<ItemEntity>(
         }
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {/* TODO: Work on setting filters for items */
+    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {/* TODO: Work on setting filters for items */
         if (config.useItemEspFilter) {
             espList = espList.filter {
                 config.itemFilterList.any { filter -> filter.customNameMatches(it) }

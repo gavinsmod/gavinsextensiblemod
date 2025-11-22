@@ -37,6 +37,7 @@ import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
 import net.minecraft.util.math.Vec3d
+import org.joml.Matrix3x2fStack
 
 /**
  * A mod that allows the camera to be moved freely.
@@ -132,16 +133,16 @@ class ModFreeCam : MiscMod(
     }
 
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {
         if (config.espEnabled) renderEsp(matrixStack, partialTicks)
         if (config.tracerEnabled)
             renderTracer(matrixStack, partialTicks)
     }
 
-    private fun renderTracer(matrixStack: MatrixStack, partialTicks: Float) {
+    private fun renderTracer(matrixStack: Matrix3x2fStack, partialTicks: Float) {
         val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
         val end = RenderUtils.getLerpedBox(fake!!, partialTicks).center.add(RenderUtils.getCameraPos().negate())
-        matrixStack.push()
+        matrixStack.pushMatrix()
         RenderUtils.drawSingleLine(
             matrixStack,
             tracerOrigin,
@@ -149,10 +150,10 @@ class ModFreeCam : MiscMod(
             config.color,
             TracerMod.config.alpha
         )
-        matrixStack.pop()
+        matrixStack.popMatrix()
     }
 
-    private fun renderEsp(matrixStack: MatrixStack, partialTicks: Float) {
+    private fun renderEsp(matrixStack: Matrix3x2fStack, partialTicks: Float) {
         val bb = RenderUtils.getLerpedBox(fake!!, partialTicks)
         RenderUtils.renderEntityEsp(
             matrixStack,

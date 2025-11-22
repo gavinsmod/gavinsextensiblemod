@@ -28,6 +28,7 @@ import com.peasenet.gui.mod.GuiItemEspTracerConfig
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.ItemEntity
+import org.joml.Matrix3x2fStack
 
 /**
  * A mod that allows the player to see tracers towards items.
@@ -53,7 +54,7 @@ class ModEntityItemTracer :
         }
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {/* TODO: Work on setting filters for items */
+    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {/* TODO: Work on setting filters for items */
         if (config.useItemEspFilter) {
             entityList = entityList.filter {
                 config.itemFilterList.any { filter -> filter.customNameMatches(it) }

@@ -33,6 +33,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.Heightmap
 import net.minecraft.world.chunk.Chunk
+import org.joml.Matrix3x2fStack
 import kotlin.math.abs
 import kotlin.math.sqrt
 
@@ -175,7 +176,7 @@ class GavChunk(val chunkPos: ChunkPos) {
      * @param blockTracer True if block tracers are enabled, false otherwise.
      */
     fun render(
-        matrixStack: MatrixStack, blockColor: Color,
+        matrixStack: Matrix3x2fStack, blockColor: Color,
         partialTicks: Float,
         alpha: Float,
         structureEsp: Boolean = false, blockTracer: Boolean = false,

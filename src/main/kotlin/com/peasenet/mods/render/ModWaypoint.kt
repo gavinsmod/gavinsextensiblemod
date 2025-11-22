@@ -39,6 +39,7 @@ import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.Box
+import org.joml.Matrix3x2fStack
 
 /**
  * Creates a new mod to control waypoints.
@@ -101,12 +102,12 @@ class ModWaypoint : RenderMod(
         }
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
-        val playerDimension = Dimension.fromValue(MinecraftClient.getInstance().player!!.world.dimension.effects.path!!)
+    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {
+        val playerDimension = Dimension.fromValue(MinecraftClient.getInstance().world?.dimension?.effects?.path!!)
         val waypointLocs =
             Settings.getConfig<WaypointConfig>("waypoints").getLocations().filter { w -> w.canRender(playerDimension) }
         if (waypointLocs.isEmpty()) return
-        matrixStack.push()
+        matrixStack.pushMatrix()
         for (w in waypointLocs) {
             val pos = w.coordinates.toVec3d()
             val bb = Box(
@@ -120,7 +121,7 @@ class ModWaypoint : RenderMod(
                 )
             }
         }
-        matrixStack.pop()
+        matrixStack.popMatrix()
 //        RenderUtils.cleanupRender(matrixStack)
     }
 

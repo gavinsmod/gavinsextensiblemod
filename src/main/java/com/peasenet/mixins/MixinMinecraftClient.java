@@ -35,8 +35,6 @@ import net.minecraft.client.network.message.MessageHandler;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.render.BufferBuilderStorage;
 import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.hit.HitResult;
@@ -121,16 +119,6 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Shadow
     public ClientPlayerEntity player;
 
-    /**
-     * The Entity Renderer Dispatcher.
-     */
-    @Final
-    @Shadow
-    private EntityRenderDispatcher entityRenderDispatcher;
-
-    @Final
-    @Shadow
-    private BlockEntityRenderDispatcher blockEntityRenderDispatcher;
 
     /**
      * The current cool down from using an item.
@@ -284,21 +272,6 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Override
     public HitResult crosshairTarget() {
         return crosshairTarget;
-    }
-
-    /**
-     * Gets the entity render dispatcher.
-     *
-     * @return the entity render dispatcher
-     */
-    @Override
-    public EntityRenderDispatcher getEntityRenderDispatcher() {
-        return entityRenderDispatcher;
-    }
-
-    @Override
-    public BlockEntityRenderDispatcher getBlockEntityRenderDispatcher() {
-        return blockEntityRenderDispatcher;
     }
 
     /**

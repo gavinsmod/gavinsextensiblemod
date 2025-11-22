@@ -32,6 +32,7 @@ import com.peasenet.gavui.util.GuiUtil
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.util.math.MatrixStack
+import org.joml.Matrix3x2fStack
 import java.util.function.Consumer
 import kotlin.math.ceil
 import kotlin.math.min
@@ -66,7 +67,13 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
         page = 0
     }
 
-    override fun render(drawContext: DrawContext, tr: TextRenderer, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(
+        drawContext: DrawContext,
+        tr: TextRenderer,
+        mouseX: Int,
+        mouseY: Int,
+        delta: Float
+    ) {
         if (isHidden)
             return
         var bg = if (isParent) GavUI.parentColor() else GavUI.backgroundColor()
@@ -198,7 +205,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
      *
      * @param matrixStack - The matrix stack.
      */
-    private fun drawScrollBox(matrixStack: MatrixStack) {
+    private fun drawScrollBox(matrixStack: Matrix3x2fStack) {
         var scrollBoxX = x2 - 5f
         var scrollBoxY = (y2) + 2f
         val scrollBoxHeight = getScrollBoxHeight()
@@ -216,7 +223,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
      *
      * @param matrixStack - The matrix stack.
      */
-    private fun drawScrollBar(matrixStack: MatrixStack) {
+    private fun drawScrollBar(matrixStack: Matrix3x2fStack) {
         val scrollBoxHeight = getScrollBoxHeight()
         var scrollBarY = (scrollBoxHeight * (page / numPages.toFloat())) + y2 + 3
         var scrollBarX = x2 - 4

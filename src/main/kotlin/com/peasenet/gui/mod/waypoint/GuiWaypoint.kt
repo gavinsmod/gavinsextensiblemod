@@ -38,6 +38,7 @@ import com.peasenet.main.Settings
 import com.peasenet.mods.render.waypoints.Waypoint
 import com.peasenet.settings.*
 import com.peasenet.util.Dimension
+import net.minecraft.client.gui.Click
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.widget.TextFieldWidget
 import net.minecraft.text.Text
@@ -218,8 +219,10 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             .setTitle(Text.literal(""))
             .build()
         textField =
-            TextFieldWidget(minecraftClient.textRenderer, (offsetX + 40f).toInt(),
-                (offsetY + 10f).toInt(), 100, 10, Text.literal(w.name))
+            TextFieldWidget(
+                minecraftClient.textRenderer, (offsetX + 40f).toInt(),
+                (offsetY + 10f).toInt(), 100, 10, Text.literal(w.name)
+            )
         textField.text = w.name
         focused = textField
 
@@ -274,12 +277,18 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             state = w.hasDimension(Dimension.END)
         }
         offsetY += 14
-        xCoordinate = TextFieldWidget(minecraftClient.textRenderer, (paddingX + 11).toInt(),
-            offsetY.toInt(), 30, 10, Text.literal(""))
-        yCoordinate = TextFieldWidget(minecraftClient.textRenderer, (paddingX + 56).toInt(),
-            offsetY.toInt(), 30, 10, Text.literal(""))
-        zCoordinate = TextFieldWidget(minecraftClient.textRenderer, (paddingX + 104).toInt(),
-            offsetY.toInt(), 30, 10, Text.literal(""))
+        xCoordinate = TextFieldWidget(
+            minecraftClient.textRenderer, (paddingX + 11).toInt(),
+            offsetY.toInt(), 30, 10, Text.literal("")
+        )
+        yCoordinate = TextFieldWidget(
+            minecraftClient.textRenderer, (paddingX + 56).toInt(),
+            offsetY.toInt(), 30, 10, Text.literal("")
+        )
+        zCoordinate = TextFieldWidget(
+            minecraftClient.textRenderer, (paddingX + 104).toInt(),
+            offsetY.toInt(), 30, 10, Text.literal("")
+        )
         var coordinates = w.coordinates
         if (w.name.isEmpty()) coordinates = flooredPlayerPos()
         xCoordinate.text = coordinates.x.toString()
@@ -410,14 +419,17 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         zCoordinate.render(drawContext, mouseX, mouseY, delta)
     }
 
-    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+    override fun mouseClicked(click: Click, doubled: Boolean): Boolean {
+        val mouseX = click.x
+        val mouseY = click.y
+        val button = click.button()
         for (child in guis) {
             if (child.mouseClicked(mouseX, mouseY, button)) {
                 textField.isFocused = false
                 return true
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button)
+        return super.mouseClicked(click, doubled)
     }
 
     private companion object {

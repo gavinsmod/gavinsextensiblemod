@@ -45,11 +45,11 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(DrawContext.class)
 public class MixinDrawContext implements IDrawContext {
 
-    @Shadow
+//    @Shadow
     @Final
     private VertexConsumerProvider.Immediate vertexConsumers;
 
-    @Shadow
+//    @Shadow
     @Final
     private MatrixStack matrices;
 

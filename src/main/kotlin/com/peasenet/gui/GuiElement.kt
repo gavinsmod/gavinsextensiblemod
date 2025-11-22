@@ -34,6 +34,7 @@ import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
 import com.peasenet.util.RenderUtils
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gui.Click
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.Text
@@ -99,18 +100,21 @@ open class GuiElement(title: Text?) : Screen(title) {
     }
 
 
-    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        for (g in guis) if (g.mouseClicked(mouseX, mouseY, button)) {
+    override fun mouseClicked(click: Click, doubled: Boolean): Boolean {
+        for (g in guis) if (g.mouseClicked(click.x, click.y, click.button())) {
             return true
         }
-        return super.mouseClicked(mouseX, mouseY, button)
+        return super.mouseClicked(click, doubled)
     }
 
     override fun shouldPause(): Boolean {
         return false
     }
 
-    override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
+    override fun mouseDragged(click: Click, deltaX: Double, deltaY: Double): Boolean {
+        val mouseX = click.x
+        val mouseY = click.y
+        val button = click.button()
         for (gui in guis) {
             if (Gui.clickedGui != null && gui.uUID == Gui.clickedGui!!.uUID) {
                 gui.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)
@@ -126,26 +130,31 @@ open class GuiElement(title: Text?) : Screen(title) {
         return false
     }
 
-    override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
+    override fun mouseReleased(click: Click): Boolean {
+
+        val mouseX = click.x
+        val mouseY = click.y
+        val button = click.button()
         guis.forEach(Consumer { g: Gui -> g.dragging = false })
         selectedGui = null
-        return super.mouseReleased(mouseX, mouseY, button)
+        return super.mouseReleased(click)
     }
 
 
     override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
 //        RenderSystem.setShader(ShaderProgramKeys.POSITION)
 //        RenderSystem.enableBlend()
-        overlay.render(drawContext, textRenderer, mouseX, mouseY, delta)
-        guis.forEach { it.render(drawContext, textRenderer, mouseX, mouseY, delta) }
-        val tr = client!!.textRenderer
-        titleBox?.backgroundColor = (GavUISettings.getColor("gui.color.background"))
-        titleBox?.render(drawContext, tr, mouseX, mouseY, delta)
-        val miscConfig = Settings.getConfig<MiscConfig>("misc").background
-        if (miscConfig) {
-            overlay.render(drawContext, tr, mouseX, mouseY, delta)
-        }
-        RenderUtils.resetRenderSystem()
+        // TODO: MC 1.21.10
+//        overlay.render(drawContext, textRenderer, mouseX, mouseY, delta)
+//        guis.forEach { it.render(drawContext, textRenderer, mouseX, mouseY, delta) }
+//        val tr = client!!.textRenderer
+//        titleBox?.backgroundColor = (GavUISettings.getColor("gui.color.background"))
+//        titleBox?.render(drawContext, tr, mouseX, mouseY, delta)
+//        val miscConfig = Settings.getConfig<MiscConfig>("misc").background
+//        if (miscConfig) {
+//            overlay.render(drawContext, tr, mouseX, mouseY, delta)
+//        }
+//        RenderUtils.resetRenderSystem()
     }
 
     /**

@@ -40,6 +40,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.chunk.Chunk
+import org.joml.Matrix3x2fStack
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL11
 
@@ -60,16 +61,6 @@ object RenderUtils {
      * The last player configured gamma.
      */
     private var LAST_GAMMA = 0.0
-
-    /**
-     * Resets the render system to the default state.
-     */
-    fun resetRenderSystem() {
-//        RenderSystem.applyModelViewMatrix()
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
-//        RenderSystem.disableBlend()
-        GL11.glDisable(GL11.GL_LINE_SMOOTH)
-    }
 
     /**
      * Sets the gamma of the game to the full bright value of 10000.0 while storing the last gamma value.
@@ -156,8 +147,8 @@ object RenderUtils {
      * @return The camera position.
      */
     fun getCameraPos(): Vec3d {
-        val camera = MinecraftClient.getInstance().blockEntityRenderDispatcher.camera
-        return camera.pos
+        val camera = MinecraftClient.getInstance().cameraEntity?.entityPos
+        return camera!!
     }
 
     /**
@@ -165,8 +156,8 @@ object RenderUtils {
      * @return The camera block position.
      */
     private fun getCameraBlockPos(): BlockPos {
-        val camera = GavinsModClient.minecraftClient.entityRenderDispatcher.camera
-        return camera.blockPos
+        val camera = MinecraftClient.getInstance().cameraEntity?.blockPos
+        return camera!!
     }
 
     /**
@@ -196,12 +187,10 @@ object RenderUtils {
      * @param alpha The alpha of the box.
      */
     fun drawOutlinedBox(
-        bb: Box, matrixStack: MatrixStack, color: Color = Colors.WHITE, alpha: Float = 1f,
+        bb: Box, matrixStack: Matrix3x2fStack, color: Color = Colors.WHITE, alpha: Float = 1f,
         withOffset: Boolean = true,
     ) {
 
-//        GL11.glEnable(GL11.GL_BLEND)
-//        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
         GL11.glDisable(GL11.GL_DEPTH_TEST)
         val vcp = getVertexConsumerProvider()
         val layer = GemRenderLayers.ESP_LINES
@@ -224,101 +213,102 @@ object RenderUtils {
         maxX = newBB.maxX.toFloat()
         maxY = newBB.maxY.toFloat()
         maxZ = newBB.maxZ.toFloat()
-        val matrix4f = matrixStack.peek()
-
-        // draw lines connecting the corners of the box
-        buffer.vertex(matrix4f, minX, minY, minZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 1f, 0f, 0f)
-        buffer.vertex(matrix4f, maxX, minY, minZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 1f, 0f, 0f)
-
-        buffer.vertex(matrix4f, minX, minY, minZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 0f, 0f, 1f)
-        buffer.vertex(matrix4f, minX, minY, maxZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 0f, 0f, 1f)
-
-        buffer.vertex(matrix4f, minX, minY, maxZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 0f, 0f, 1f)
-        buffer.vertex(matrix4f, maxX, minY, maxZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 0f, 0f, 1f)
-
-        buffer.vertex(matrix4f, maxX, minY, maxZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 1f, 0f, 0f)
-        buffer.vertex(matrix4f, maxX, minY, minZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 1f, 0f, 0f)
-
-        // top
-        buffer.vertex(matrix4f, minX, maxY, minZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 1f, 0f, 0f)
-        buffer.vertex(matrix4f, maxX, maxY, minZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 1f, 0f, 0f)
-
-        buffer.vertex(matrix4f, minX, maxY, minZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 0f, 0f, 1f)
-        buffer.vertex(matrix4f, minX, maxY, maxZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 0f, 0f, 1f)
-        buffer.vertex(matrix4f, minX, maxY, maxZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 0f, 0f, 1f)
-        buffer.vertex(matrix4f, maxX, maxY, maxZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 0f, 0f, 1f)
-        buffer.vertex(matrix4f, maxX, maxY, maxZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 1f, 0f, 0f)
-        buffer.vertex(matrix4f, maxX, maxY, minZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 1f, 0f, 0f)
-        // corners
-        buffer.vertex(matrix4f, minX, minY, minZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 0f, 1f, 0f)
-        buffer.vertex(matrix4f, minX, maxY, minZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 0f, 1f, 0f)
-
-        buffer.vertex(matrix4f, maxX, minY, minZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 0f, 1f, 0f)
-        buffer.vertex(matrix4f, maxX, maxY, minZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 0f, 1f, 0f)
-
-        buffer.vertex(matrix4f, minX, minY, maxZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 0f, 1f, 0f)
-        buffer.vertex(matrix4f, minX, maxY, maxZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 0f, 1f, 0f)
-
-        buffer.vertex(matrix4f, maxX, minY, maxZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 0f, 1f, 0f)
-        buffer.vertex(matrix4f, maxX, maxY, maxZ)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .normal(matrix4f, 0f, 1f, 0f)
-
-        vcp.draw(layer)
-
-        GL11.glEnable(GL11.GL_DEPTH_TEST)
-//        GL11.glDisable(GL11.GL_BLEND)
+        // TODO: MC 1.21.10 migration
+//        val matrix4f = matrixStack.peek()
+//
+//        // draw lines connecting the corners of the box
+//        buffer.vertex(matrix4f, minX, minY, minZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 1f, 0f, 0f)
+//        buffer.vertex(matrix4f, maxX, minY, minZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 1f, 0f, 0f)
+//
+//        buffer.vertex(matrix4f, minX, minY, minZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 0f, 0f, 1f)
+//        buffer.vertex(matrix4f, minX, minY, maxZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 0f, 0f, 1f)
+//
+//        buffer.vertex(matrix4f, minX, minY, maxZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 0f, 0f, 1f)
+//        buffer.vertex(matrix4f, maxX, minY, maxZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 0f, 0f, 1f)
+//
+//        buffer.vertex(matrix4f, maxX, minY, maxZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 1f, 0f, 0f)
+//        buffer.vertex(matrix4f, maxX, minY, minZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 1f, 0f, 0f)
+//
+//        // top
+//        buffer.vertex(matrix4f, minX, maxY, minZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 1f, 0f, 0f)
+//        buffer.vertex(matrix4f, maxX, maxY, minZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 1f, 0f, 0f)
+//
+//        buffer.vertex(matrix4f, minX, maxY, minZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 0f, 0f, 1f)
+//        buffer.vertex(matrix4f, minX, maxY, maxZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 0f, 0f, 1f)
+//        buffer.vertex(matrix4f, minX, maxY, maxZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 0f, 0f, 1f)
+//        buffer.vertex(matrix4f, maxX, maxY, maxZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 0f, 0f, 1f)
+//        buffer.vertex(matrix4f, maxX, maxY, maxZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 1f, 0f, 0f)
+//        buffer.vertex(matrix4f, maxX, maxY, minZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 1f, 0f, 0f)
+//        // corners
+//        buffer.vertex(matrix4f, minX, minY, minZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 0f, 1f, 0f)
+//        buffer.vertex(matrix4f, minX, maxY, minZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 0f, 1f, 0f)
+//
+//        buffer.vertex(matrix4f, maxX, minY, minZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 0f, 1f, 0f)
+//        buffer.vertex(matrix4f, maxX, maxY, minZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 0f, 1f, 0f)
+//
+//        buffer.vertex(matrix4f, minX, minY, maxZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 0f, 1f, 0f)
+//        buffer.vertex(matrix4f, minX, maxY, maxZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 0f, 1f, 0f)
+//
+//        buffer.vertex(matrix4f, maxX, minY, maxZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 0f, 1f, 0f)
+//        buffer.vertex(matrix4f, maxX, maxY, maxZ)
+//            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+//            .normal(matrix4f, 0f, 1f, 0f)
+//
+//        vcp.draw(layer)
+//
+//        GL11.glEnable(GL11.GL_DEPTH_TEST)
+////        GL11.glDisable(GL11.GL_BLEND)
     }
 
 
     fun drawSingleLine(
-        matrixStack: MatrixStack,
+        matrixStack: Matrix3x2fStack,
         start: Vec3d,
         end: Vec3d,
         color: Color,
@@ -331,8 +321,7 @@ object RenderUtils {
 
         val layer = if (depthTest) GemRenderLayers.LINES else GemRenderLayers.ESP_LINES
         val bufferBuilder = vcp.getBuffer(layer)
-        val posMatrix = matrixStack.peek().positionMatrix
-        val entry = matrixStack.peek()
+        val posMatrix = matrixStack
         var bb2 = end
         if (withOffset)
             bb2 = end.add((getCameraPos().negate()))
@@ -344,13 +333,12 @@ object RenderUtils {
         val z2 = bb2.z.toFloat()
         val normal = Vector3f(x2, y2, z2).sub(Vector3f(x1, y1, z1)).normalize()
 
-        bufferBuilder.vertex(posMatrix, x1, y1, z1)
-            .color(color.getAsInt(alpha))
-            .normal(entry, normal)
-        bufferBuilder.vertex(posMatrix, x2, y2, z2)
-            .color(color.getAsInt(alpha))
-            .normal(entry, normal)
-
+        bufferBuilder.vertex(posMatrix,x1,y1)
+            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .normal(normal.x(), normal.y(), normal.z())
+        bufferBuilder.vertex(posMatrix,x2,y2)
+            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .normal(normal.x(), normal.y(), normal.z())
         vcp.draw(layer)
 
     }
@@ -361,7 +349,7 @@ object RenderUtils {
      */
     fun cleanupRender(matrixStack: MatrixStack) {
         matrixStack.pop()
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
+//        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
         GL11.glEnable(GL11.GL_DEPTH_TEST)
         GL11.glDisable(GL11.GL_BLEND)
     }
@@ -391,7 +379,7 @@ object RenderUtils {
         val region = getCameraRegionPos()
 
         applyRegionalRenderOffset(matrixStack, region)
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
+//        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
     }
 
     /**
@@ -400,7 +388,7 @@ object RenderUtils {
     @Deprecated("Use setupRender(matrixStack: MatrixStack) instead", ReplaceWith("setupRender(matrixStack)"))
     fun setupRenderWithShader(matrixStack: MatrixStack) {
         setupRender(matrixStack)
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
+//        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
 //        RenderSystem.applyModelViewMatrix()
     }
 
@@ -448,7 +436,7 @@ object RenderUtils {
 
     fun getLerpedPos(e: Entity, partialTicks: Float): Vec3d {
         return MathUtils.lerp(
-            partialTicks, e.pos,
+            partialTicks, e.entityPos,
             Vec3d(
                 e.lastRenderX,
                 e.lastRenderY,
@@ -458,19 +446,19 @@ object RenderUtils {
     }
 
     fun getLerpedBox(e: Entity, delta: Float): Box {
-        val offset = getLerpedPos(e, delta).subtract(e.pos)
+        val offset = getLerpedPos(e, delta).subtract(e.entityPos)
         return e.boundingBox.offset(offset)
     }
 
     fun renderEntityEsp(
-        matrixStack: MatrixStack,
+        matrixStack: Matrix3x2fStack,
         box: Box,
         color: Color,
         alpha: Float,
     ) {
-        matrixStack.push()
+        matrixStack.pushMatrix()
         drawOutlinedBox(box, matrixStack, color, alpha)
-        matrixStack.pop()
+        matrixStack.popMatrix()
     }
 
 

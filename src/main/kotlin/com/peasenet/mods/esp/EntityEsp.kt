@@ -29,6 +29,7 @@ import com.peasenet.util.RenderUtils
 import com.peasenet.util.RenderUtils.renderEntityEsp
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
+import org.joml.Matrix3x2fStack
 
 
 /**
@@ -52,13 +53,13 @@ abstract class EntityEsp<T : Entity>(
         client.getWorld().entities.filter { entityFilter(it) }.forEach { espList.add(it as T) }
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {
         if (espList.isEmpty()) return
 
         render(matrixStack, partialTicks)
     }
 
-    protected fun render(matrixStack: MatrixStack, partialTicks: Float) {
+    protected fun render(matrixStack: Matrix3x2fStack, partialTicks: Float) {
         for (e in espList) {
             // TODO: Fix lerped
             val bb = RenderUtils.getLerpedBox(e, partialTicks)

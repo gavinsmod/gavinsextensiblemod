@@ -32,6 +32,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
+import org.joml.Matrix3x2fStack
 
 
 /**
@@ -58,7 +59,7 @@ class ModMobEsp : EntityEsp<Entity>("gavinsmod.mod.esp.mob",
         return if (entity.type.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {
         val newList: MutableList<Entity> = ArrayList()
         if (config.showPeacefulMobs) {
             newList.addAll(espList.filter { it.type.spawnGroup.isPeaceful })

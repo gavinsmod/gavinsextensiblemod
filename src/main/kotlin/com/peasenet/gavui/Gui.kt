@@ -32,6 +32,7 @@ import com.peasenet.mixinterface.IDrawContext
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.Text
 import java.util.*
 import java.util.function.Consumer
@@ -213,14 +214,19 @@ open class Gui(
      * @param mouseY      The y coordinate of the mouse.
      * @param delta       The change in time since the last render.
      */
-    open fun render(drawContext: DrawContext, tr: TextRenderer, mouseX: Int, mouseY: Int, delta: Float) {
+    open fun render(
+        drawContext: DrawContext,
+        tr: TextRenderer,
+        mouseX: Int,
+        mouseY: Int,
+        delta: Float,
+    ) {
         if (isHidden) return
-        val matrixStack = drawContext.matrices
         var bg = backgroundColor
         if (mouseWithinGui(mouseX, mouseY) && canHover) bg = bg.brighten(0.25f)
 
 //        GuiUtil.drawBox(bg, box, matrixStack, transparency)
-        GuiUtil.fill(box, matrixStack, bg, transparency)
+        GuiUtil.fill(box, drawContext.matrices, bg, transparency)
         var textColor = GavUI.textColor()
         if (title != null) {
             if (textColor.similarity(bg) < 0.3f) {
@@ -231,7 +237,7 @@ open class Gui(
         }
         drawSymbol(drawContext, tr, textColor)
 
-        if (this.drawBorder) GuiUtil.drawOutline(GavUI.borderColor(), box, matrixStack)
+        if (this.drawBorder) GuiUtil.drawOutline(GavUI.borderColor(), box, drawContext.matrices)
         renderChildren(drawContext, tr, mouseX, mouseY, delta)
     }
 
@@ -272,7 +278,13 @@ open class Gui(
      * @param mouseY      - The y coordinate of the mouse.
      * @param delta       - The change in time since the last render.
      */
-    private fun renderChildren(drawContext: DrawContext, tr: TextRenderer, mouseX: Int, mouseY: Int, delta: Float) {
+    private fun renderChildren(
+        drawContext: DrawContext,
+        tr: TextRenderer,
+        mouseX: Int,
+        mouseY: Int,
+        delta: Float,
+    ) {
         if (!hasChildren()) return
         for (c in children) c.render(drawContext, tr, mouseX, mouseY, delta)
     }
@@ -282,7 +294,6 @@ open class Gui(
      *
      * @param mouseX - The x coordinate of the mouse.
      * @param mouseY - The y coordinate of the mouse.
-     * @param button - The button that was clicked.
      * @return Whether the mouse was clicked.
      */
     open fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {

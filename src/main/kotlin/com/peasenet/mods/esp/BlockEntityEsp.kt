@@ -31,6 +31,7 @@ import net.minecraft.block.entity.BlockEntity
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.Box
+import org.joml.Matrix3x2fStack
 
 /**
  * A class that represents an ESP mod for block entities.
@@ -64,9 +65,9 @@ abstract class BlockEntityEsp<T : BlockEntity>(
         }
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {
         if (espList.isEmpty()) return
-        matrixStack.push()
+        matrixStack.pushMatrix()
         val scale = config.espSize / 0.25f
         for (e in espList) {
             val pos = e.pos.toCenterPos()
@@ -86,6 +87,6 @@ abstract class BlockEntityEsp<T : BlockEntity>(
                 false
             )
         }
-        matrixStack.pop()
+        matrixStack.popMatrix()
     }
 }

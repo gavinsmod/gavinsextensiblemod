@@ -41,6 +41,7 @@ import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.mob.MobEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.math.Vec3d
+import org.joml.Matrix3x2fStack
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -102,7 +103,7 @@ class ModRadar : RenderMod(
      *
      * @param stack The matrix stack.
      */
-    private fun drawEntitiesOnRadar(stack: MatrixStack) {
+    private fun drawEntitiesOnRadar(stack: Matrix3x2fStack) {
         val player = client.getPlayer()
 
         val yaw = player.yaw
@@ -111,7 +112,7 @@ class ModRadar : RenderMod(
             if (!canRenderEntity(entity)) continue
             // get entity x and z relative to player
             val color = getColorFromEntity(entity)
-            val point = getScaledPos(getPointRelativeToYaw(entity.pos, yaw))
+            val point = getScaledPos(getPointRelativeToYaw(entity.entityPos, yaw))
             val box = BoxF(point, config.pointSize.toFloat(), config.pointSize.toFloat())
             GuiUtil.drawBox(
                 color,

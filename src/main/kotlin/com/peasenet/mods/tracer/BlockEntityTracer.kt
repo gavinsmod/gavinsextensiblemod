@@ -29,6 +29,7 @@ import com.peasenet.util.RenderUtils
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.block.entity.BlockEntity
 import net.minecraft.client.util.math.MatrixStack
+import org.joml.Matrix3x2fStack
 
 /**
  * A helper class for creating mods that trace block entities.
@@ -74,9 +75,9 @@ abstract class BlockEntityTracer<T : BlockEntity>(
         }
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {
         if (entityList.isEmpty()) return
-        matrixStack.peek().positionMatrix
+        // TODO: MC 1.21.10 update
         for (e in entityList) {
             val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
             val end = e.pos.toCenterPos()

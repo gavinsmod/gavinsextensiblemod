@@ -29,6 +29,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.mob.MobEntity
+import org.joml.Matrix3x2fStack
 
 /**
  * A mod that allows the client to see lines, called tracers, towards mobs.
@@ -59,7 +60,7 @@ class ModMobTracer : EntityTracer<LivingEntity>(
         return config.hostileMobColor
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {
         val newList: MutableList<LivingEntity> = ArrayList()
         if (config.showPeacefulMobs) {
             newList.addAll(entityList.filter { it.type.spawnGroup.isPeaceful })

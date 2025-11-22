@@ -24,6 +24,9 @@
 
 package com.peasenet.mods
 
+import net.minecraft.client.option.KeyBinding
+import net.minecraft.util.Identifier
+
 /**
  * A list of categories for keybinds, which will be shown in the 
  * keybinds menu within Minecraft.
@@ -31,39 +34,53 @@ package com.peasenet.mods
  * @author GT3CH1
  * @version 07-18-2023
  */
-enum class KeyBindCategory(val category: String) {
-    /**
-     * The movement category.
-     */
-    MOVEMENT("gavinsmod.keybinds.movement"),
-    
-    /**
-     * The render category.
-     */
-    RENDER("gavinsmod.keybinds.render"),
-    
-    /**
-     * The combat category.
-     */
-    COMBAT("gavinsmod.keybinds.combat"),
-    
-    /**
-     * The misc category.
-     */
-    MISC("gavinsmod.keybinds.misc"),
-    
-    /**
-     * The ESP category.
-     */
-    ESP("gavinsmod.keybinds.esp"),
-    
-    /**
-     * The tracers category.
-     */
-    TRACERS("gavinsmod.keybinds.tracers"),
-    
-    /**
-     * The GUI category.
-     */
-    GUI("gavinsmod.keybinds.gui"),
+
+class KeyBindCategory {
+    companion object {
+        val MOVEMENT = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.movement"))
+        val RENDER = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.render"))
+        val COMBAT = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.combat"))
+        val MISC = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.misc"))
+        val ESP = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.esp"))
+        val TRACERS = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.tracers"))
+        val GUI = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.gui"))
+        val WAYPOINTS = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.waypoints"))
+        val NONE = KeyBinding.Category.create(Identifier.of("none"))
+    }
 }
+//enum class KeyBindCategory(val category: String) {
+//    /**
+//     * The movement category.
+//     */
+//    MOVEMENT = ,
+//
+//    /**
+//     * The render category.
+//     */
+//    RENDER("gavinsmod.keybinds.render"),
+//
+//    /**
+//     * The combat category.
+//     */
+//    COMBAT("gavinsmod.keybinds.combat"),
+//
+//    /**
+//     * The misc category.
+//     */
+//    MISC("gavinsmod.keybinds.misc"),
+//
+//    /**
+//     * The ESP category.
+//     */
+//    ESP("gavinsmod.keybinds.esp"),
+//
+//    /**
+//     * The tracers category.
+//     */
+//    TRACERS("gavinsmod.keybinds.tracers"),
+//
+//    /**
+//     * The GUI category.
+//     */
+//    GUI("gavinsmod.keybinds.gui"),
+//}

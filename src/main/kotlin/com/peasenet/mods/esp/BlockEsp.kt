@@ -40,6 +40,7 @@ import com.peasenet.util.listeners.WorldRenderListener
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.chunk.Chunk
+import org.joml.Matrix3x2fStack
 
 /**
  *
@@ -90,21 +91,22 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
      */
     open fun chunkInRenderDistance(chunk: GavChunk): Boolean = false
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
-        synchronized(chunks) {
-            if (chunks.isEmpty()) return
-            chunks.values.filter { chunkInRenderDistance(it) }.toMutableList().forEach {
-                it.render(
-                    matrixStack,
-                    getSettings().blockColor,
-                    partialTicks,
-                    getSettings().alpha,
-                    getSettings().structureEsp,
-                    getSettings().blockTracer
-                )
-            }
-//            RenderUtils.drawBuffer(bufferBuilder, matrixStack)
-        }
+    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {
+        // TODO: MC 1.21.10 update
+//        synchronized(chunks) {
+//            if (chunks.isEmpty()) return
+//            chunks.values.filter { chunkInRenderDistance(it) }.toMutableList().forEach {
+//                it.render(
+//                    matrixStack,
+//                    getSettings().blockColor,
+//                    partialTicks,
+//                    getSettings().alpha,
+//                    getSettings().structureEsp,
+//                    getSettings().blockTracer
+//                )
+//            }
+////            RenderUtils.drawBuffer(bufferBuilder, matrixStack)
+//        }
     }
 
     override fun onChunkUpdate(chunkUpdate: ChunkUpdate) {

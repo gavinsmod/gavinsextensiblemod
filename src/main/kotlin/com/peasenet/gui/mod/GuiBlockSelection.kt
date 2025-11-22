@@ -41,8 +41,11 @@ import com.peasenet.settings.ToggleSetting
 import com.peasenet.settings.clickSetting
 import com.peasenet.settings.toggleSetting
 import net.minecraft.block.Block
+import net.minecraft.client.gui.Click
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.widget.TextFieldWidget
+import net.minecraft.client.input.CharInput
+import net.minecraft.client.input.KeyInput
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.registry.Registries
 import net.minecraft.text.Text
@@ -152,15 +155,15 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         pageCount = ceil(blockList().size.toDouble() / blocksPerPage).toInt()
         parent = GavinsMod.guiSettings
         search = object : TextFieldWidget(textRenderer, x + width / 2 - 75, y - 15, 150, 12, Text.empty()) {
-            override fun charTyped(chr: Char, keyCode: Int): Boolean {
-                val pressed = super.charTyped(chr, keyCode)
+            override fun charTyped(input: CharInput): Boolean {
+                val pressed = super.charTyped(input)
                 page = 0
                 updateBlockList()
                 return pressed
             }
 
-            override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-                val pressed = super.keyPressed(keyCode, scanCode, modifiers)
+            override fun keyPressed(input: KeyInput): Boolean {
+                val pressed = super.keyPressed(input)
                 page = 0
                 updateBlockList()
                 return pressed
@@ -222,7 +225,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         guis.add(nextButton.gui)
         guis.add(enabledOnly.gui)
         guis.add(resetButton.gui)
-        
+
     }
 
     private fun resetCallback() {
@@ -253,14 +256,14 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         }
     }
 
-    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        search.keyPressed(keyCode, scanCode, modifiers)
-        return super.keyPressed(keyCode, scanCode, modifiers)
+    override fun keyPressed(input: KeyInput): Boolean {
+        search.keyPressed(input)
+        return super.keyPressed(input)
     }
 
-    override fun charTyped(chr: Char, keyCode: Int): Boolean {
-        search.charTyped(chr, keyCode)
-        return super.charTyped(chr, keyCode)
+    override fun charTyped(input: CharInput): Boolean {
+        search.charTyped(input)
+        return super.charTyped(input)
     }
 
     override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
@@ -334,10 +337,13 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
     private fun isHovering(mouseX: Int, blockX: Int, mouseY: Int, blockY: Int) =
         mouseX > blockX && mouseX < blockX + 16 && mouseY > blockY && mouseY < blockY + 16
 
-    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+    override fun mouseClicked(click: Click, doubled: Boolean): Boolean {
         // check if the mouse is over the search box
+        val mouseX = click.x
+        val mouseY = click.y
+        val button = click.button()
         if (search.isMouseOver(mouseX, mouseY)) {
-            search.mouseClicked(mouseX, mouseY, button)
+            search.mouseClicked(click,doubled)
             search.isFocused = true
             return true
         }
@@ -368,7 +374,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
             block
         )
         getMod(settingKey)!!.reload()
-        return super.mouseClicked(mouseX, mouseY, button)
+        return super.mouseClicked(click,doubled)
     }
 
     /**

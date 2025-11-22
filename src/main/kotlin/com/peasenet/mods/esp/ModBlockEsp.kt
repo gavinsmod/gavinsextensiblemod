@@ -54,7 +54,6 @@ import net.minecraft.world.chunk.Chunk
 class ModBlockEsp : BlockEsp<BlockEspConfig>(
     "gavinsmod.mod.esp.blockesp", "blockesp"
 ) {
-
     init {
         subSettings {
             title = translationKey

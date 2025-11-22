@@ -34,6 +34,7 @@ import com.peasenet.util.RenderUtils.getCameraPos
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
+import org.joml.Matrix3x2fStack
 
 /**
  * A GavBlock is a block used for rendering block ESP and tracers.
@@ -162,7 +163,7 @@ class GavBlock(
     private fun renderEdges(
         edges: Int,
         blockPos: Vec3d,
-        matrixStack: MatrixStack,
+        matrixStack: Matrix3x2fStack,
         color: Color,
         alpha: Float,
     ) {
@@ -190,7 +191,7 @@ class GavBlock(
     private fun renderEdge(
         edge: Edge,
         blockPos: Vec3d,
-        matrixStack: MatrixStack,
+        matrixStack: Matrix3x2fStack,
         color: Color,
         alpha: Float,
     ) {
@@ -362,7 +363,7 @@ class GavBlock(
      * @param structureEsp Whether to render the block as a structure.
      */
     fun render(
-        matrixStack: MatrixStack,
+        matrixStack: Matrix3x2fStack,
         color: Color,
         partialTicks: Float,
         alpha: Float,
@@ -370,7 +371,7 @@ class GavBlock(
         tracers: Boolean = false,
     ) {
 
-        matrixStack.push()
+        matrixStack.pushMatrix()
         val offsetPos = pos.toVec3d()
         if (structureEsp)
             renderEdges(visibleEdges, offsetPos, matrixStack, color, alpha)
@@ -388,7 +389,7 @@ class GavBlock(
                 depthTest = false
             )
         }
-        matrixStack.pop()
+        matrixStack.popMatrix()
     }
 
     override fun equals(other: Any?): Boolean {

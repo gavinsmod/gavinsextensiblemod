@@ -37,8 +37,11 @@ import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.ToggleSetting
+import net.minecraft.client.gui.Click
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.widget.TextFieldWidget
+import net.minecraft.client.input.CharInput
+import net.minecraft.client.input.KeyInput
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.item.ItemStack
 import net.minecraft.item.SpawnEggItem
@@ -172,13 +175,16 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
         if (currentPage > 0) currentPage--
     }
 
-    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+    override fun mouseClicked(click: Click, doubled: Boolean): Boolean {
+        val mouseX = click.x
+        val mouseY = click.y
+        val button = click.button()
         search.isFocused = false
         if (guis.any { it.mouseClicked(mouseX, mouseY, button) }) {
             return true
         }
         if (search.isMouseOver(mouseX, mouseY)) {
-            search.mouseClicked(mouseX, mouseY, button)
+            search.mouseClicked(click,doubled)
             search.isFocused = true
             return true
         }
@@ -217,15 +223,15 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
         val searchWidth = SEARCH_MAX_WIDTH.coerceAtMost(PAGE_WIDTH)
         search = object :
             TextFieldWidget(textRenderer, (x + (PAGE_WIDTH - searchWidth) / 2), y - 15, searchWidth, 12, Text.empty()) {
-            override fun charTyped(chr: Char, keyCode: Int): Boolean {
-                val pressed = super.charTyped(chr, keyCode)
+            override fun charTyped(input: CharInput): Boolean {
+                val pressed = super.charTyped(input)
                 currentPage = 0
                 updateItemList()
                 return pressed
             }
 
-            override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-                val pressed = super.keyPressed(keyCode, scanCode, modifiers)
+            override fun keyPressed(input: KeyInput): Boolean {
+                val pressed = super.keyPressed(input)
                 currentPage = 0
                 updateItemList()
                 return pressed
@@ -271,15 +277,17 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
     }
 
 
-    override fun charTyped(chr: Char, keyCode: Int): Boolean {
-        search.charTyped(chr, keyCode)
-        return super.charTyped(chr, keyCode)
+    override fun keyPressed(input: KeyInput): Boolean {
+        search.keyPressed(input)
+        return super.keyPressed(input)
     }
 
-    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        search.keyPressed(keyCode, scanCode, modifiers)
-        return super.keyPressed(keyCode, scanCode, modifiers)
+    override fun charTyped(input: CharInput): Boolean {
+        search.charTyped(input)
+        return super.charTyped(input)
     }
+
+
 
     /**
      * Whether the given item is enabled.

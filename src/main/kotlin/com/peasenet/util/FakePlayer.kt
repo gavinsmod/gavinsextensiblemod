@@ -47,8 +47,9 @@ class FakePlayer : OtherClientPlayerEntity(minecraftClient.getWorld(), player!!.
         inventory.clone(player.inventory)
         val fromTracker = player.dataTracker
         val toTracker = getDataTracker()
-        val playerModel = fromTracker.get(PLAYER_MODEL_PARTS)
-        toTracker.set(PLAYER_MODEL_PARTS, playerModel)
+        // TODO: MC 1.21.10 update
+//        val playerModel = fromTracker.get(PLAYER_MODEL_PARTS)
+//        toTracker.set(PLAYER_MODEL_PARTS, playerModel)
         headYaw = player.getHeadYaw()
         bodyYaw = player.getBodyYaw()
         inventory.clone(player.inventory)

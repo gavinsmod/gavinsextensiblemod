@@ -25,6 +25,7 @@
 package com.peasenet.util.listeners
 
 import net.minecraft.client.util.math.MatrixStack
+import org.joml.Matrix3x2fStack
 
 /**
  * An interface that allows for a class to receive [com.peasenet.util.event.RenderEvent].
@@ -39,5 +40,5 @@ interface RenderListener : Listener {
      * @param matrixStack The matrix stack.
      * @param partialTicks The partial ticks.
      */
-    fun onRender(matrixStack: MatrixStack, partialTicks: Float)
+    fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float)
 }
