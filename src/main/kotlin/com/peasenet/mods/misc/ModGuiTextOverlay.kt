@@ -30,7 +30,6 @@ import com.peasenet.gavui.util.GuiUtil
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Mods
-import com.peasenet.mixinterface.IDrawContext
 import com.peasenet.mods.Mod
 import com.peasenet.mods.gui.GuiMod
 import com.peasenet.util.RenderUtils
@@ -72,7 +71,6 @@ class ModGuiTextOverlay : MiscMod(
      * @param drawContext- The drawContext to use
      */
     private fun drawTextOverlay(drawContext: DrawContext) {
-        val iDrawContext: IDrawContext = drawContext as IDrawContext
         val matrixStack = drawContext.matrices
         val textRenderer = GavinsModClient.minecraftClient.textRenderer
         var startingPoint = PointF(0f, 0f)
@@ -90,14 +88,13 @@ class ModGuiTextOverlay : MiscMod(
             GavUISettings.getFloat("gui.alpha")
         )
         matrixStack.popMatrix()
-//        GuiUtil.drawOutline(GavUISettings.getColor("gui.color.border"), box, matrixStack)
         for ((index, mod) in modList.withIndex()) {
-             iDrawContext.`gavins_mod$drawText`(
+             drawContext.drawText(
                 textRenderer,
                 Text.translatable(mod.translationKey),
-                startingPoint.x + 2.5f,
-                startingPoint.y + 2.5f,
-                GavUISettings.getColor("gui.color.foreground"),
+                startingPoint.x.toInt() + 2,
+                startingPoint.y.toInt() + 2,
+                GavUISettings.getColor("gui.color.foreground").asInt,
                 true
             )
             if (modsCount > 1 && index < modsCount - 1) {

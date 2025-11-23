@@ -91,8 +91,7 @@ class ModRadar : RenderMod(
         GuiUtil.fill(
             radarBox,
             stack,
-            config.backgroundColor,
-            config.backgroundAlpha
+            config.backgroundColor
         )
         drawEntitiesOnRadar(stack)
         GuiUtil.drawOutline(radarBox, stack)

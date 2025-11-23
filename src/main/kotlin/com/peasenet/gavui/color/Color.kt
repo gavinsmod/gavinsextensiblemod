@@ -92,7 +92,7 @@ class Color(red: Int, green: Int, blue: Int) : Serializable {
          *
          * @return int value of color
          */
-        get() = (red shl 16) or (green shl 8) or blue
+        get() = getAsInt()
 
 
     /**
@@ -101,7 +101,7 @@ class Color(red: Int, green: Int, blue: Int) : Serializable {
      * @param alpha - the alpha value
      * @return int value of color
      */
-    fun getAsInt(alpha: Float): Int {
+    fun getAsInt(alpha: Float = 1f): Int {
         var alpha = alpha
         if (alpha > 1) alpha = alpha / 255f
         if (alpha < 0) alpha = 1f

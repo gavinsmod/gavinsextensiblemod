@@ -28,11 +28,9 @@ import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GuiUtil
-import com.peasenet.mixinterface.IDrawContext
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.Text
 import java.util.*
 import java.util.function.Consumer
@@ -225,8 +223,8 @@ open class Gui(
         var bg = backgroundColor
         if (mouseWithinGui(mouseX, mouseY) && canHover) bg = bg.brighten(0.25f)
 
-//        GuiUtil.drawBox(bg, box, matrixStack, transparency)
-        GuiUtil.fill(box, drawContext.matrices, bg, transparency)
+        GuiUtil.drawBox(bg, box, drawContext.matrices,  transparency)
+        GuiUtil.fill(box, drawContext, bg)
         var textColor = GavUI.textColor()
         if (title != null) {
             if (textColor.similarity(bg) < 0.3f) {
@@ -256,17 +254,17 @@ open class Gui(
     ) {
         if (symbol == '\u0000') return
         val symbolWidth = tr.getWidth(symbol.toString())
-        val iDrawContext = drawContext as IDrawContext
-        val oX = x2 - symbolWidth - offsetX
-        val oY = y + 1.5f + offsetY
-        iDrawContext.`gavins_mod$drawText`(
-            tr,
-            symbol.toString(),
-            oX,
-            oY,
-            color,
-            false,
-        )
+//        val iDrawContext = drawContext as IDrawContext
+//        val oX = x2 - symbolWidth - offsetX
+//        val oY = y + 1.5f + offsetY
+//        iDrawContext.`gavins_mod$drawText`(
+//            tr,
+//            symbol.toString(),
+//            oX,
+//            oY,
+//            color,
+//            false,
+//        )
     }
 
     /**
@@ -415,32 +413,7 @@ open class Gui(
         color: Color,
         shadow: Boolean = false,
     ) {
-        (drawContext as? IDrawContext)?.`gavins_mod$drawText`(
-            textRenderer,
-            text,
-            x,
-            y,
-            color,
-            shadow
-        )
-    }
-
-    protected fun drawText(
-        drawContext: DrawContext,
-        textRenderer: TextRenderer,
-        text: String?,
-        x: Float,
-        y: Float,
-        color: Color,
-    ) {
-        (drawContext as IDrawContext).`gavins_mod$drawText`(
-            textRenderer,
-            Text.of(text),
-            x,
-            y,
-            color,
-            false
-        )
+        drawContext.drawText(textRenderer, text, x.toInt(), y.toInt(), color.asInt, shadow)
     }
 
     override fun hashCode(): Int {

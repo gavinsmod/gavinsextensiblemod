@@ -29,6 +29,7 @@ import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
 import com.peasenet.util.GemRenderLayers
 import com.peasenet.util.RenderUtils
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.util.math.MatrixStack
 import org.joml.Matrix3x2fStack
@@ -77,6 +78,13 @@ object GuiUtil {
         drawBox(box, matrixStack, c, alpha)
     }
 
+    fun drawOutline(box: BoxF, drawContext: DrawContext, color: Color) {
+        drawContext.drawVerticalLine(box.x1.toInt(), box.y1.toInt(), box.y2.toInt(), color.asInt)
+        drawContext.drawVerticalLine(box.x2.toInt(), box.y1.toInt(), box.y2.toInt(), color.asInt)
+        drawContext.drawHorizontalLine(box.x1.toInt(), box.x2.toInt(), box.y1.toInt(), color.asInt)
+        drawContext.drawHorizontalLine(box.x1.toInt(), box.x2.toInt(), box.y2.toInt(), color.asInt)
+    }
+
     /**
      * Draws a box around the given box.
      *
@@ -84,7 +92,13 @@ object GuiUtil {
      * @param matrix        - The matrix to draw with.
      * @param bufferBuilder - The buffer builder to draw with.
      */
-    private fun drawBox(box: BoxF, matrix: Matrix3x2fStack, color: Color, alpha: Float, targetLayer: RenderLayer? = null) {
+    private fun drawBox(
+        box: BoxF,
+        matrix: Matrix3x2fStack,
+        color: Color,
+        alpha: Float,
+        targetLayer: RenderLayer? = null,
+    ) {
         val vcp = RenderUtils.getVertexConsumerProvider()
         val layer = targetLayer ?: GemRenderLayers.LINES
         val bufferBuilder = vcp.getBuffer(layer)
@@ -93,20 +107,20 @@ object GuiUtil {
         val xt2 = box.bottomRight.x
         val yt2 = box.bottomRight.y
         bufferBuilder.vertex(matrix, xt1, yt1)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .color(color.asInt)
             .normal(0f, 0f, 0f)
         bufferBuilder.vertex(matrix, xt1, yt2)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .color(color.asInt)
             .normal(0f, 0f, 0f)
         bufferBuilder.vertex(matrix, xt2, yt2)
             .normal(0f, 0f, 0f)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .color(color.asInt)
         bufferBuilder.vertex(matrix, xt2, yt1)
             .normal(0f, 0f, 0f)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .color(color.asInt)
         bufferBuilder.vertex(matrix, xt1, yt1)
             .normal(0f, 0f, 0f)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .color(color.asInt)
         vcp.draw(layer)
     }
 
@@ -134,19 +148,27 @@ object GuiUtil {
 
     }
 
-    fun fill(box: BoxF, matrixStack: Matrix3x2fStack, color: Color, alpha: Float) {
+    fun fill(box: BoxF, drawContext: DrawContext, color: Color) {
+        drawContext.fill(box.x1.toInt(), box.y1.toInt(), box.x2.toInt(), box.y2.toInt(), color.asInt)
+    }
+
+    fun fill(box: BoxF, matrixStack: Matrix3x2fStack, color: Color) {
         val vcp = RenderUtils.getVertexConsumerProvider()
-        val layer = RenderLayer.LINES
+        val layer = RenderLayer.LINE_STRIP
         val bufferBuilder = vcp.getBuffer(layer)
 
         bufferBuilder.vertex(matrixStack, box.topLeft.x, box.topLeft.y)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .normal(0f, 0f, 0f)
+            .color(color.asInt)
         bufferBuilder.vertex(matrixStack, box.topLeft.x, box.bottomRight.y)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .color(color.asInt)
+            .normal(0f, 0f, 0f)
         bufferBuilder.vertex(matrixStack, box.bottomRight.x, box.bottomRight.y)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .color(color.asInt)
+            .normal(0f, 0f, 0f)
         bufferBuilder.vertex(matrixStack, box.bottomRight.x, box.topLeft.y)
-            .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .color(color.asInt)
+            .normal(0f, 0f, 0f)
 
     }
 }

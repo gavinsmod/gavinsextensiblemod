@@ -81,7 +81,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
         if (mouseWithinGui(mouseX, mouseY) && !childHasMouse) {
             bg = bg.brighten(0.5f)
         }
-        GuiUtil.fill(box, drawContext.matrices, bg, GavUI.alpha)
+        GuiUtil.fill(box, drawContext, bg)
         var textColor = if (frozen) GavUI.frozenColor() else GavUI.textColor()
         //TODO: Color similarity
         if (title != null) {
