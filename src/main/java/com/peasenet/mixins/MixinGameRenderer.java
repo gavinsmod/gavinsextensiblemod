@@ -48,32 +48,14 @@ public class MixinGameRenderer {
             ci.cancel();
     }
 
-//    @Inject(at = @At(value = "FIELD",
-//            target = "",
-//            opcode = Opcodes.GETFIELD,
-//            ordinal = 0),
-//            method = "renderWorld(Lnet/minecraft/client/render/RenderTickCounter;)V")
+
 
 
     // inject at net.minecraft.client.render.GameRenderer.renderHand
-    @Inject(
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/client/render/GameRenderer;renderHand(FZLorg/joml/Matrix4f;)V",
-                    opcode = Opcodes.GETFIELD,
-                    ordinal = 0
-            ),
-            method = "renderWorld"
-    )
-    public void handleRender(RenderTickCounter tickCounter,
-                             CallbackInfo ci,
-                             @Local(ordinal = 0) float tickDelta,
-                             @Local(ordinal = 1) Matrix4f positionMatrix
-    ) {
-        var matrixStack = new MatrixStack();
-        matrixStack.multiplyPositionMatrix(positionMatrix);
-        // TODO: MC 1.21.10 update
-//        var renderEvent = RenderEvent.Companion.get(matrixStack, tickDelta);
-        // enable line
-//        EventManager.getEventManager().call(renderEvent);
+    @Inject(at = @At(value = "RETURN"),
+    method = "renderHand")
+    public void handleRender(float tickProgress, boolean sleeping, Matrix4f positionMatrix, CallbackInfo ci)
+ {
+
     }
 }

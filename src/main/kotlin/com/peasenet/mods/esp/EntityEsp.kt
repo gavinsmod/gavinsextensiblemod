@@ -53,18 +53,18 @@ abstract class EntityEsp<T : Entity>(
         client.getWorld().entities.filter { entityFilter(it) }.forEach { espList.add(it as T) }
     }
 
-    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         if (espList.isEmpty()) return
-
+        matrixStack.push()
         render(matrixStack, partialTicks)
+        matrixStack.pop()
     }
 
-    protected fun render(matrixStack: Matrix3x2fStack, partialTicks: Float) {
+    protected fun render(matrixStack: MatrixStack, partialTicks: Float) {
         for (e in espList) {
-            // TODO: Fix lerped
             val bb = RenderUtils.getLerpedBox(e, partialTicks)
             renderEntityEsp(
-                matrixStack     ,
+                matrixStack,
                 bb,
                 getColor(e),
                 config.alpha

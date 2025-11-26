@@ -34,7 +34,7 @@ import kotlin.math.min
  * @version 02-02-2025
  * @since 01/07/2022
  */
-class Color(red: Int, green: Int, blue: Int) : Serializable {
+class Color(red: Int, green: Int, blue: Int, alpha: Int = 255) : Serializable {
     /**
      * The red value of this color.
      */
@@ -50,6 +50,8 @@ class Color(red: Int, green: Int, blue: Int) : Serializable {
      * The blue value of this color.
      */
     val blue = max(0.0, min(255.0, blue.toDouble())).toInt()
+
+    val alpha = max(0.0, min(255.0, alpha.toDouble())).toInt()
 
     /**
      * Gets the red value of this color. Will be within 0 and 1.
@@ -78,13 +80,22 @@ class Color(red: Int, green: Int, blue: Int) : Serializable {
         return blue / 255f
     }
 
+    /**
+     * Gets the alpha value of this color. Will be within 0 and 1.
+     *
+     * @return alpha value
+     */
+    fun getAlpha(): Float {
+        return alpha / 255f
+    }
+
     val asFloatArray: FloatArray
         /**
          * Gets the float array value of this color. values range from 0 to 1.
          *
          * @return float array of color values
          */
-        get() = floatArrayOf(getRed(), getGreen(), getBlue(), 1f)
+        get() = floatArrayOf(getRed(), getGreen(), getBlue(), getAlpha())
 
     val asInt: Int
         /**
@@ -101,11 +112,21 @@ class Color(red: Int, green: Int, blue: Int) : Serializable {
      * @param alpha - the alpha value
      * @return int value of color
      */
-    fun getAsInt(alpha: Float = 1f): Int {
+    fun getAsInt(alpha: Float = getAlpha()): Int {
         var alpha = alpha
         if (alpha > 1) alpha = alpha / 255f
         if (alpha < 0) alpha = 1f
         return (alpha * 255).toInt() shl 24 or (red shl 16) or (green shl 8) or blue
+    }
+
+    fun withAlpha(newAlpha: Int): Color {
+        return Color(red, green, blue, newAlpha)
+    }
+
+    fun withAlpha(newAlpha: Float): Color {
+        // coerce newAlpha to be between 0 and 1
+        val alpha = newAlpha.coerceIn(0f, 1f)
+        return Color(red, green, blue, (alpha * 255).toInt())
     }
 
     /**

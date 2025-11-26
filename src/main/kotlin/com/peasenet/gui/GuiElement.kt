@@ -138,7 +138,6 @@ open class GuiElement(title: Text?) : Screen(title) {
         stack.pushMatrix()
 //        stack.translate(2f, 23f)
         drawContext.state.goUpLayer()
-//        drawContext.fill(0, 0, 3000, 3000, Colors.YELLOW.getAsInt(.1f))
         drawContext.enableScissor(0, 0, 3000, 3000)
         drawContext.state.goUpLayer()
 
@@ -146,7 +145,7 @@ open class GuiElement(title: Text?) : Screen(title) {
         for (gui in guis) {
             gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
         }
-//        guis.forEach { it.render(drawContext, textRenderer, mouseX, mouseY, delta) }
+//        guis.forEac { it.render(drawContext, textRenderer, mouseX, mouseY, delta) }
         drawContext.disableScissor()
         stack.popMatrix()
 

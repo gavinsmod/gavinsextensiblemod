@@ -60,7 +60,7 @@ class ModMobTracer : EntityTracer<LivingEntity>(
         return config.hostileMobColor
     }
 
-    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         val newList: MutableList<LivingEntity> = ArrayList()
         if (config.showPeacefulMobs) {
             newList.addAll(entityList.filter { it.type.spawnGroup.isPeaceful })

@@ -32,4 +32,4 @@ import net.minecraft.text.Text
  * @version 03-02-2023
  * Creates a new gui for ESP mods as a drop-down.
  */
-class GuiESP : GuiMod(PointF(10f, 120f), 100, 10, Text.translatable("gavinsmod.gui.esps"), ModCategory.ESP)
+class GuiESP : GuiMod(PointF(10f, 120f), 100, 11, Text.translatable("gavinsmod.gui.esps"), ModCategory.ESP)

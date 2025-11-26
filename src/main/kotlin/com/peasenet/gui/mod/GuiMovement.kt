@@ -33,4 +33,4 @@ import net.minecraft.text.Text
  * Creates a new gui for movement mods as a dropdown.
  */
 class GuiMovement :
-    GuiMod(PointF(10f, 20f), 85, 10, Text.translatable("gavinsmod.gui.movement"), ModCategory.MOVEMENT, 6)
+    GuiMod(PointF(10f, 20f), 86, 11, Text.translatable("gavinsmod.gui.movement"), ModCategory.MOVEMENT, 6)

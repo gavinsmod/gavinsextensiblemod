@@ -75,7 +75,7 @@ abstract class BlockEntityTracer<T : BlockEntity>(
         }
     }
 
-    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         if (entityList.isEmpty()) return
         // TODO: MC 1.21.10 update
         for (e in entityList) {

@@ -16,7 +16,8 @@
     "MixinInGameOverlayRenderer",
     "MixinMinecraftClient",
     "MixinMinecraftClientAttack",
-    "MixinSimpleOption"
+    "MixinSimpleOption",
+    "MixinWorldRenderer"
   ],
   "compatibilityLevel": "JAVA_21",
   "injectors": {

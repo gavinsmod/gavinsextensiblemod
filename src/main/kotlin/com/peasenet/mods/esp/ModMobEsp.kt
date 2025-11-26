@@ -59,7 +59,7 @@ class ModMobEsp : EntityEsp<Entity>("gavinsmod.mod.esp.mob",
         return if (entity.type.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
     }
 
-    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         val newList: MutableList<Entity> = ArrayList()
         if (config.showPeacefulMobs) {
             newList.addAll(espList.filter { it.type.spawnGroup.isPeaceful })

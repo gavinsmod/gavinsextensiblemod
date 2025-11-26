@@ -54,7 +54,7 @@ class ModEntityItemTracer :
         }
     }
 
-    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {/* TODO: Work on setting filters for items */
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {/* TODO: Work on setting filters for items */
         if (config.useItemEspFilter) {
             entityList = entityList.filter {
                 config.itemFilterList.any { filter -> filter.customNameMatches(it) }

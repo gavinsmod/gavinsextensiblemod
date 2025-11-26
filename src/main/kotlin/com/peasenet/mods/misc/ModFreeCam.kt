@@ -133,34 +133,34 @@ class ModFreeCam : MiscMod(
     }
 
 
-    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         if (config.espEnabled) renderEsp(matrixStack, partialTicks)
         if (config.tracerEnabled)
             renderTracer(matrixStack, partialTicks)
     }
 
-    private fun renderTracer(matrixStack: Matrix3x2fStack, partialTicks: Float) {
+    private fun renderTracer(matrixStack: MatrixStack, partialTicks: Float) {
         val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
         val end = RenderUtils.getLerpedBox(fake!!, partialTicks).center.add(RenderUtils.getCameraPos().negate())
-        matrixStack.pushMatrix()
-        RenderUtils.drawSingleLine(
-            matrixStack,
-            tracerOrigin,
-            end,
-            config.color,
-            TracerMod.config.alpha
-        )
-        matrixStack.popMatrix()
+//        matrixStack.di()
+//        RenderUtils.drawSingleLine(
+//            matrixStack,
+//            tracerOrigin,
+//            end,
+//            config.color,
+//            TracerMod.config.alpha
+//        )
+//        matrixStack.popMatrix()
     }
 
-    private fun renderEsp(matrixStack: Matrix3x2fStack, partialTicks: Float) {
+    private fun renderEsp(matrixStack: MatrixStack, partialTicks: Float) {
         val bb = RenderUtils.getLerpedBox(fake!!, partialTicks)
-        RenderUtils.renderEntityEsp(
-            matrixStack,
-            bb,
-            config.color,
-            config.alpha
-        )
+//        RenderUtils.renderEntityEsp(
+//            matrixStack,
+//            bb,
+//            config.color,
+//            config.alpha
+//        )
     }
 
 }

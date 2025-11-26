@@ -128,6 +128,13 @@ class GavinsMod : ModInitializer {
             val mod = Mods.getMod(chatCommand) ?: return false
             return mod.isActive
         }
+
+        fun setMainGui() {
+
+            val guisWithChildren = ArrayList<Gui>()
+            guiList.values.forEach { guisWithChildren.add(it) }
+            gui = GuiMainMenu(guisWithChildren)
+        }
     }
 
     override fun onInitialize() {
@@ -152,9 +159,7 @@ class GavinsMod : ModInitializer {
         // remove all the guis that have no children
         guiList.values.removeIf { g: Gui -> g.children.isEmpty() }
         // collect all the guis that have children into an array list
-        val guisWithChildren = ArrayList<Gui>()
-        guiList.values.forEach { guisWithChildren.add(it) }
-        gui = GuiMainMenu(guisWithChildren)
+        setMainGui()
         guiSettings = GuiSettings()
         modCommands = ModCommands()
 

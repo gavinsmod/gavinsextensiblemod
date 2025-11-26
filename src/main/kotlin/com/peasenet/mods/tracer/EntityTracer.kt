@@ -56,13 +56,13 @@ abstract class EntityTracer<T : Entity>(
         client.getWorld().entities.filter { entityFilter(it) }.forEach { entityList.add(it as T) }
     }
 
-    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         // TODO: MC 1.21.10 update
         if (entityList.isEmpty()) return
         for (e in entityList) {
-            val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
+            val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(1.0)
             val end = (RenderUtils.getLerpedBox(e, partialTicks).center)
-            matrixStack.pushMatrix()
+            matrixStack.push()
             RenderUtils.drawSingleLine(
                 matrixStack,
                 tracerOrigin,
@@ -72,7 +72,7 @@ abstract class EntityTracer<T : Entity>(
                 withOffset = true,
                 depthTest = false
             )
-            matrixStack.popMatrix()
+            matrixStack.pop()
         }
     }
 

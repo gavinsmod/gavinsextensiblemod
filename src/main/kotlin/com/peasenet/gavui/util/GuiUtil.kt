@@ -100,27 +100,27 @@ object GuiUtil {
         targetLayer: RenderLayer? = null,
     ) {
         val vcp = RenderUtils.getVertexConsumerProvider()
-        val layer = targetLayer ?: GemRenderLayers.LINES
+        val layer = targetLayer ?: GemRenderLayers.QUADS
         val bufferBuilder = vcp.getBuffer(layer)
-        val xt1 = box.topLeft.x
-        val yt1 = box.topLeft.y
-        val xt2 = box.bottomRight.x
-        val yt2 = box.bottomRight.y
-        bufferBuilder.vertex(matrix, xt1, yt1)
-            .color(color.asInt)
+        val xt1 = (box.topLeft.x).toInt()
+        val yt1 = (box.topLeft.y).toInt()
+        val xt2 = box.bottomRight.x.toInt()
+        val yt2 = box.bottomRight.y.toInt()
+        bufferBuilder.vertex(matrix, xt1.toFloat(), yt1.toFloat())
+            .color(color.red, color.green, color.blue, color.alpha)
             .normal(0f, 0f, 0f)
-        bufferBuilder.vertex(matrix, xt1, yt2)
-            .color(color.asInt)
+        bufferBuilder.vertex(matrix, xt1.toFloat(), yt2.toFloat())
+            .color(color.red, color.green, color.blue, color.alpha)
             .normal(0f, 0f, 0f)
-        bufferBuilder.vertex(matrix, xt2, yt2)
+        bufferBuilder.vertex(matrix, xt2.toFloat(), yt2.toFloat())
+            .color(color.red, color.green, color.blue, color.alpha)
             .normal(0f, 0f, 0f)
-            .color(color.asInt)
-        bufferBuilder.vertex(matrix, xt2, yt1)
+        bufferBuilder.vertex(matrix, xt2.toFloat(), yt1.toFloat())
+            .color(color.red, color.green, color.blue, color.alpha)
             .normal(0f, 0f, 0f)
-            .color(color.asInt)
-        bufferBuilder.vertex(matrix, xt1, yt1)
+        bufferBuilder.vertex(matrix, xt1.toFloat(), yt1.toFloat())
+            .color(color.red, color.green, color.blue, color.alpha)
             .normal(0f, 0f, 0f)
-            .color(color.asInt)
         vcp.draw(layer)
     }
 
@@ -158,16 +158,16 @@ object GuiUtil {
         val bufferBuilder = vcp.getBuffer(layer)
 
         bufferBuilder.vertex(matrixStack, box.topLeft.x, box.topLeft.y)
+            .color(color.red, color.green, color.blue, color.alpha)
             .normal(0f, 0f, 0f)
-            .color(color.asInt)
         bufferBuilder.vertex(matrixStack, box.topLeft.x, box.bottomRight.y)
-            .color(color.asInt)
+            .color(color.red, color.green, color.blue, color.alpha)
             .normal(0f, 0f, 0f)
         bufferBuilder.vertex(matrixStack, box.bottomRight.x, box.bottomRight.y)
-            .color(color.asInt)
+            .color(color.red, color.green, color.blue, color.alpha)
             .normal(0f, 0f, 0f)
         bufferBuilder.vertex(matrixStack, box.bottomRight.x, box.topLeft.y)
-            .color(color.asInt)
+            .color(color.red, color.green, color.blue, color.alpha)
             .normal(0f, 0f, 0f)
 
     }

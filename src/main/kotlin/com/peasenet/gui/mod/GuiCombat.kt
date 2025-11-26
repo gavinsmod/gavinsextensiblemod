@@ -36,7 +36,7 @@ class GuiCombat
     (
     position: PointF = PointF(100f, 20f),
     width: Int = 75,
-    height: Int = 10,
+    height: Int = 11,
     text: Text = Text.translatable("gavinsmod.gui.combat"),
     category: ModCategory = ModCategory.COMBAT,
     maxChildren: Int = 4

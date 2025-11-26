@@ -40,5 +40,5 @@ interface RenderListener : Listener {
      * @param matrixStack The matrix stack.
      * @param partialTicks The partial ticks.
      */
-    fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float)
+    fun onRender(matrixStack: MatrixStack, partialTicks: Float)
 }

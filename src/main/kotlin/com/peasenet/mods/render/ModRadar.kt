@@ -90,7 +90,7 @@ class ModRadar : RenderMod(
         )
         GuiUtil.fill(
             radarBox,
-            stack,
+            drawContext,
             config.backgroundColor
         )
         drawEntitiesOnRadar(stack)

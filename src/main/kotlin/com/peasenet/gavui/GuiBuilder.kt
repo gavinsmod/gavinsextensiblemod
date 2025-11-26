@@ -261,6 +261,6 @@ class GuiBuilder<T : Gui> {
 
     private fun validate() {
         if (width == 0f) width = 100f
-        if (height == 0f) height = 10f
+        if (height == 0f) height = 12f
     }
 }

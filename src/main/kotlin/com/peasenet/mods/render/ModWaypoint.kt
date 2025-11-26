@@ -54,8 +54,6 @@ class ModWaypoint : RenderMod(
     init {
         reloadSettings()
     }
-
-
     override fun onEnable() {
         super.onEnable()
         em.subscribe(RenderListener::class.java, this)
@@ -102,12 +100,12 @@ class ModWaypoint : RenderMod(
         }
     }
 
-    override fun onRender(matrixStack: Matrix3x2fStack, partialTicks: Float) {
+    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         val playerDimension = Dimension.fromValue(MinecraftClient.getInstance().world?.dimension?.effects?.path!!)
         val waypointLocs =
             Settings.getConfig<WaypointConfig>("waypoints").getLocations().filter { w -> w.canRender(playerDimension) }
         if (waypointLocs.isEmpty()) return
-        matrixStack.pushMatrix()
+        matrixStack.push()
         for (w in waypointLocs) {
             val pos = w.coordinates.toVec3d()
             val bb = Box(
@@ -121,7 +119,7 @@ class ModWaypoint : RenderMod(
                 )
             }
         }
-        matrixStack.popMatrix()
+        matrixStack.pop()
 //        RenderUtils.cleanupRender(matrixStack)
     }
 

@@ -72,7 +72,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
         tr: TextRenderer,
         mouseX: Int,
         mouseY: Int,
-        delta: Float
+        delta: Float,
     ) {
         if (isHidden)
             return
@@ -82,6 +82,8 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             bg = bg.brighten(0.5f)
         }
         GuiUtil.fill(box, drawContext, bg)
+        drawContext.state.goUpLayer()
+        GuiUtil.drawOutline(box, drawContext, GavUI.borderColor())
         var textColor = if (frozen) GavUI.frozenColor() else GavUI.textColor()
         //TODO: Color similarity
         if (title != null) {
@@ -89,10 +91,12 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
                 textColor = textColor.invert()
                 if (textColor.similarity(bg) < 0.2f) textColor = Colors.WHITE
             }
-            drawText(drawContext, tr, title!!, x + 2, y + 1.5f, textColor)
+            // center text in the box
+            val center = x + (width / 2) - (tr.getWidth(title)) /2
+            drawText(drawContext, tr, title!!, center, y + 2, textColor)
         }
         updateSymbol()
-        drawSymbol(drawContext, tr, textColor)
+        drawSymbol(drawContext, tr, textColor, -2f, -1f)
         if (drawBorder) GuiUtil.drawOutline(GavUI.borderColor(), box, drawContext.matrices)
         if (!isOpen) return
         resetChildPos()
@@ -101,7 +105,6 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
         if (page >= numPages) page = numPages - 1
 
         for (i in children.indices) renderChildren(drawContext, tr, mouseX, mouseY, delta, i)
-
 
     }
 
@@ -122,8 +125,8 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
         }
         if (shouldDrawScrollBar()) {
             child.shrinkForScrollbar(this)
-            drawScrollBox(matrixStack)
-            drawScrollBar(matrixStack)
+            drawScrollBox(drawContext)
+            drawScrollBar(drawContext)
         }
         if ((!child.isParent && child !is GuiCycle)) {
             child.backgroundColor = GavUI.backgroundColor()
@@ -205,17 +208,17 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
      *
      * @param matrixStack - The matrix stack.
      */
-    private fun drawScrollBox(matrixStack: Matrix3x2fStack) {
-        var scrollBoxX = x2 - 5f
+    private fun drawScrollBox(drawContext: DrawContext) {
+        var scrollBoxX = x2 - 4f
         var scrollBoxY = (y2) + 2f
         val scrollBoxHeight = getScrollBoxHeight()
         if (direction == Direction.RIGHT) {
             scrollBoxX = children[page * maxChildren].x2 + 1
             scrollBoxY = y
         }
-        val box = BoxF(PointF(scrollBoxX, scrollBoxY), 5f, scrollBoxHeight)
-        GuiUtil.drawBox(GavUI.backgroundColor(), box, matrixStack, GavUI.alpha)
-        GuiUtil.drawOutline(GavUI.borderColor(), box, matrixStack)
+        val box = BoxF(PointF(scrollBoxX, scrollBoxY), 4f, scrollBoxHeight)
+        GuiUtil.drawOutline(box, drawContext, GavUI.backgroundColor())
+//        GuiUtil.drawOutline(GavUI.borderColor(), box, matrixStack)
     }
 
     /**
@@ -223,10 +226,10 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
      *
      * @param matrixStack - The matrix stack.
      */
-    private fun drawScrollBar(matrixStack: Matrix3x2fStack) {
+    private fun drawScrollBar(drawContext: DrawContext) {
         val scrollBoxHeight = getScrollBoxHeight()
         var scrollBarY = (scrollBoxHeight * (page / numPages.toFloat())) + y2 + 3
-        var scrollBarX = x2 - 4
+        var scrollBarX = x2 - 3
         var scrollBarY2 = ((scrollBarY) + (scrollBoxHeight / (numPages)))
         if (direction == Direction.RIGHT) {
             // set scrollbarY to (1/page) * scrollBoxHeight
@@ -234,8 +237,8 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             scrollBarX = children[page * maxChildren].x2 + 2
             scrollBarY2 = ((scrollBarY) + (scrollBoxHeight / (numPages)))
         }
-        val box = BoxF(PointF(scrollBarX, scrollBarY), 3f, scrollBarY2 - scrollBarY - 2f)
-        GuiUtil.drawBox(Colors.WHITE, box, matrixStack)
+        val box = BoxF(PointF(scrollBarX, scrollBarY), 3f, scrollBarY2 - scrollBarY - 1f)
+        GuiUtil.fill(box, drawContext, Colors.WHITE)
     }
 
     /**
@@ -245,7 +248,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
      * @return The height of the scrollbox.
      */
     private fun getScrollBoxHeight(): Float {
-        return ((maxChildren - 1) * 12 + 10).toFloat()
+        return ((maxChildren - 1) * 12 + this.height - 1)
     }
 
     override fun addElement(child: Gui) {

@@ -199,7 +199,7 @@ open class Gui(
      */
     fun shrinkForScrollbar(parent: Gui) {
         if (shrunkForScroll && this.width == parent.width) return
-        if (this.width == parent.width) width -= 6
+        if (this.width == parent.width) width -= 5
         shrunkForScroll = true
     }
 
@@ -223,7 +223,7 @@ open class Gui(
         var bg = backgroundColor
         if (mouseWithinGui(mouseX, mouseY) && canHover) bg = bg.brighten(0.25f)
 
-        GuiUtil.drawBox(bg, box, drawContext.matrices,  transparency)
+        GuiUtil.drawBox(bg, box, drawContext.matrices)
         GuiUtil.fill(box, drawContext, bg)
         var textColor = GavUI.textColor()
         if (title != null) {
@@ -231,9 +231,9 @@ open class Gui(
                 textColor = textColor.invert()
                 if (textColor.similarity(bg) < 0.3f) textColor = Colors.WHITE
             }
-            drawText(drawContext, tr, title!!, x + 2, y + 1.5f, textColor)
+            drawText(drawContext, tr, title!!, x + 2, y + 2, textColor)
         }
-        drawSymbol(drawContext, tr, textColor)
+        drawSymbol(drawContext, tr, textColor, 0f)
 
         if (this.drawBorder) GuiUtil.drawOutline(GavUI.borderColor(), box, drawContext.matrices)
         renderChildren(drawContext, tr, mouseX, mouseY, delta)
@@ -254,6 +254,14 @@ open class Gui(
     ) {
         if (symbol == '\u0000') return
         val symbolWidth = tr.getWidth(symbol.toString())
+        drawContext.drawText(
+            tr,
+            symbol.toString(),
+            (x2 - symbolWidth + offsetX).toInt(),
+            (y + symbolOffsetY + offsetY + 1).toInt(),
+            color.asInt,
+            false,
+        )
 //        val iDrawContext = drawContext as IDrawContext
 //        val oX = x2 - symbolWidth - offsetX
 //        val oY = y + 1.5f + offsetY

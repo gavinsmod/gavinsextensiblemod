@@ -163,7 +163,7 @@ class GavBlock(
     private fun renderEdges(
         edges: Int,
         blockPos: Vec3d,
-        matrixStack: Matrix3x2fStack,
+        matrixStack: MatrixStack,
         color: Color,
         alpha: Float,
     ) {
@@ -191,7 +191,7 @@ class GavBlock(
     private fun renderEdge(
         edge: Edge,
         blockPos: Vec3d,
-        matrixStack: Matrix3x2fStack,
+        matrixStack: MatrixStack,
         color: Color,
         alpha: Float,
     ) {
@@ -363,7 +363,7 @@ class GavBlock(
      * @param structureEsp Whether to render the block as a structure.
      */
     fun render(
-        matrixStack: Matrix3x2fStack,
+        matrixStack: MatrixStack,
         color: Color,
         partialTicks: Float,
         alpha: Float,
@@ -371,7 +371,7 @@ class GavBlock(
         tracers: Boolean = false,
     ) {
 
-        matrixStack.pushMatrix()
+        matrixStack.push()
         val offsetPos = pos.toVec3d()
         if (structureEsp)
             renderEdges(visibleEdges, offsetPos, matrixStack, color, alpha)
@@ -389,7 +389,7 @@ class GavBlock(
                 depthTest = false
             )
         }
-        matrixStack.popMatrix()
+        matrixStack.pop()
     }
 
     override fun equals(other: Any?): Boolean {

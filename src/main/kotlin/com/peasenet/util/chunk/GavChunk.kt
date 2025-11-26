@@ -176,7 +176,7 @@ class GavChunk(val chunkPos: ChunkPos) {
      * @param blockTracer True if block tracers are enabled, false otherwise.
      */
     fun render(
-        matrixStack: Matrix3x2fStack, blockColor: Color,
+        matrixStack: MatrixStack, blockColor: Color,
         partialTicks: Float,
         alpha: Float,
         structureEsp: Boolean = false, blockTracer: Boolean = false,

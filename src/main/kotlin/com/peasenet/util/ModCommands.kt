@@ -97,6 +97,7 @@ class ModCommands : OnChatSendListener {
             }
             if (s == "reloadgui") {
                 GavinsMod.guiSettings = GuiSettings()
+                GavinsMod.setMainGui()
                 return true
             }
             if (lastCommand != s) {

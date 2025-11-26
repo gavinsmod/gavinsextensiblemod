@@ -83,8 +83,6 @@ class GuiSlider(builder: GuiBuilder<out GuiSlider>) : Gui(builder) {
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
-//        if (clickedGui != null && clickedGui?.uUID != this.uUID) return false
-
         if (((button == 0 && (mouseWithinGui(
                 mouseX,
                 mouseY
@@ -115,6 +113,8 @@ class GuiSlider(builder: GuiBuilder<out GuiSlider>) : Gui(builder) {
      */
     private fun drawTickMark(drawContext: DrawContext) {
         val box = BoxF(PointF(((x) + ((width - 1) * value)), y), 1f, height)
-        GuiUtil.drawBox(Colors.WHITE, box, drawContext.matrices, 0.75f)
+//        GuiUtil.drawBox(Colors.WHITE, box, drawContext.matrices, 0.75f)
+        GuiUtil.fill(box, drawContext, Colors.WHITE.withAlpha(0.75f))
+
     }
 }
