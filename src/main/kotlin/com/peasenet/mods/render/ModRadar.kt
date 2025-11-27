@@ -24,6 +24,7 @@
 package com.peasenet.mods.render
 
 import com.peasenet.config.render.RadarConfig
+import com.peasenet.gavui.GavUI
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.BoxF
@@ -51,12 +52,11 @@ import kotlin.math.sqrt
  * A mod that allows for a radar-like view of the world.
  *
  * @author GT3CH1
- * @version 01-15-2025
+ * @version 11-27-2025
  * @since 04-11-2023
  */
 class ModRadar : RenderMod(
-    "gavinsmod.mod.render.radar",
-    "radar"
+    "gavinsmod.mod.render.radar", "radar"
 ), InGameHudRenderListener {
     /**
      * Creates a radar overlay in the top-right corner of the screen.
@@ -82,19 +82,16 @@ class ModRadar : RenderMod(
         val canRender = !Mods.isActive("gui") && !Mods.isActive("settings") || forceRender
         if (!canRender) return
         val stack = drawContext.matrices
+        drawContext.state.goUpLayer()
         RadarConfig.x = client.window.scaledWidth - config.size - 10
         val radarBox = BoxF(
-            PointF(RadarConfig.x.toFloat(), RadarConfig.y.toFloat()),
-            config.size.toFloat(),
-            config.size.toFloat()
+            PointF(RadarConfig.x.toFloat(), RadarConfig.y.toFloat()), config.size.toFloat(), config.size.toFloat()
         )
         GuiUtil.fill(
-            radarBox,
-            drawContext,
-            config.backgroundColor
+            radarBox, drawContext, config.backgroundColor.withAlpha(config.backgroundAlpha)
         )
-        drawEntitiesOnRadar(stack)
-        GuiUtil.drawOutline(radarBox, stack)
+        drawEntitiesOnRadar(drawContext)
+        GuiUtil.drawOutline(radarBox.expand(1), drawContext, GavUI.borderColor((config.backgroundAlpha)))
     }
 
     /**
@@ -102,7 +99,7 @@ class ModRadar : RenderMod(
      *
      * @param stack The matrix stack.
      */
-    private fun drawEntitiesOnRadar(stack: Matrix3x2fStack) {
+    private fun drawEntitiesOnRadar(drawContext: DrawContext) {
         val player = client.getPlayer()
 
         val yaw = player.yaw
@@ -110,14 +107,11 @@ class ModRadar : RenderMod(
         for (entity in entities) {
             if (!canRenderEntity(entity)) continue
             // get entity x and z relative to player
-            val color = getColorFromEntity(entity)
+            val color = getColorFromEntity(entity).withAlpha(config.pointAlpha)
             val point = getScaledPos(getPointRelativeToYaw(entity.entityPos, yaw))
             val box = BoxF(point, config.pointSize.toFloat(), config.pointSize.toFloat())
-            GuiUtil.drawBox(
-                color,
-                box,
-                stack,
-                config.pointAlpha
+            GuiUtil.fill(
+                box, drawContext, color
             )
         }
     }
@@ -145,9 +139,7 @@ class ModRadar : RenderMod(
     private fun getScaledPos(location: PointF): PointF {
         val halfConfigSize = config.size / 2f
         // offset the point to the center of the radar.
-        return clampPoint(location)
-            .add(RadarConfig.x, RadarConfig.y)
-            .add(halfConfigSize, halfConfigSize)
+        return clampPoint(location).add(RadarConfig.x, RadarConfig.y).add(halfConfigSize, halfConfigSize)
             .subtract(PointF(pointOffset(), pointOffset()))
     }
 
@@ -158,18 +150,17 @@ class ModRadar : RenderMod(
      * @return The clamped point.
      */
     private fun clampPoint(point: PointF): PointF {
-        // scale point so that (0,0) is the center of the radar
         var newLoc = point
-        val distance = newLoc.distance()
         val halfConfig = config.size / 2f
         val halfConfigOffset = halfConfig - pointOffset()
-        val scale = (halfConfig) / distance
-        if (distance > halfConfig)
-            newLoc = newLoc.multiply(scale)
-        if (newLoc.x < -halfConfigOffset) newLoc = PointF(-halfConfigOffset, newLoc.y)
-        if (newLoc.x > halfConfigOffset) newLoc = PointF(halfConfigOffset, newLoc.y)
-        if (newLoc.y < -halfConfigOffset) newLoc = PointF(newLoc.x, -halfConfigOffset)
-        if (newLoc.y > halfConfigOffset) newLoc = PointF(newLoc.x, halfConfigOffset)
+        if (newLoc.x < -halfConfigOffset)
+            newLoc = PointF(-halfConfigOffset, newLoc.y)
+        if (newLoc.x > halfConfigOffset)
+            newLoc = PointF(halfConfigOffset, newLoc.y)
+        if (newLoc.y < -halfConfigOffset)
+            newLoc = PointF(newLoc.x, -halfConfigOffset)
+        if (newLoc.y > halfConfigOffset)
+            newLoc = PointF(newLoc.x, halfConfigOffset)
         return newLoc
     }
 
@@ -182,7 +173,7 @@ class ModRadar : RenderMod(
     private fun canRenderEntity(entity: Entity): Boolean {
         if (entity is PlayerEntity) return config.isShowPlayer
         if (entity is MobEntity) {
-            return if (!entity.getType().spawnGroup.isPeaceful) config.isShowHostileMob else config.isShowPeacefulMob
+            return if (!entity.type.spawnGroup.isPeaceful) config.isShowHostileMob else config.isShowPeacefulMob
         }
         return if (entity is ItemEntity) config.isShowItem else false
     }
