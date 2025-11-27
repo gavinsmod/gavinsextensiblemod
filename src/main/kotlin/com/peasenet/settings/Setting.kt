@@ -37,13 +37,13 @@ import com.peasenet.gavui.util.Direction
 abstract class Setting(
     var topLeft: PointF = PointF(0F, 0F),
     var width: Float = 0F,
-    var height: Float = 10F,
+    var height: Float = 11F,
     @JvmField
     var title: String = "",
     open var state: Boolean = false,
     var hoverable: Boolean = true,
     var transparency: Float = -1f,
-    var symbol: Char = '\u0000',
+    var symbol: String?  = null,
     var cycleIndex: Int = 0,
     var cycleSize: Int = 0,
     var maxChildren: Int = 4,
@@ -69,13 +69,13 @@ abstract class Setting(
 data class SettingOptions(
     var topLeft: PointF = PointF(0F, 0F),
     var width: Float = 0F,
-    var height: Float = 10F,
+    var height: Float = 11F,
     @JvmField
     var title: String = "",
     var state: Boolean = false,
     var hoverable: Boolean = false,
     var transparency: Float = -1f,
-    var symbol: Char = '\u0000',
+    var symbol: String? = null,
     var cycleIndex: Int = 0,
     var cycleSize: Int = 0,
     var maxChildren: Int = 4,

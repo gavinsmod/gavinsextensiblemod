@@ -25,8 +25,6 @@
 
 package com.peasenet.util
 
-import com.mojang.blaze3d.systems.RenderSystem
-import com.mojang.blaze3d.vertex.VertexFormat
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.main.GavinsModClient
@@ -161,24 +159,6 @@ object RenderUtils {
     }
 
     /**
-     * Gets the camera region position.
-     * @return The camera region position.
-     */
-    fun getCameraRegionPos(): RegionPos {
-        return RegionPos.fromBlockPos(getCameraBlockPos())
-    }
-
-    /**
-     * Applies the regional render offset to the given matrix stack.
-     * @param stack The matrix stack to apply the offset to.
-     * @param region The region to apply the offset from.
-     */
-    fun applyRegionalRenderOffset(stack: MatrixStack, region: RegionPos) {
-        val offset = region.toVec3d().subtract(getCameraPos())
-        stack.translate(offset.x, offset.y, offset.z)
-    }
-
-    /**
      * Draws an outlined box.
      * @param bb The box to draw.
      * @param buffer The buffer builder to draw with.
@@ -188,7 +168,6 @@ object RenderUtils {
      */
     fun drawOutlinedBox(
         bb: Box, matrixStack: MatrixStack, color: Color = Colors.WHITE, alpha: Float = 1f,
-        withOffset: Boolean = true,
     ) {
 
         GL11.glDisable(GL11.GL_DEPTH_TEST)
@@ -197,23 +176,13 @@ object RenderUtils {
         val buffer = vcp.getBuffer(layer)
         val bb2 = bb.offset((getCameraPos().negate()))
 
-        var minX = bb2.minX.toFloat()
-        var minY = bb2.minY.toFloat()
-        var minZ = bb2.minZ.toFloat()
-        var maxX = bb2.maxX.toFloat()
-        var maxY = bb2.maxY.toFloat()
-        var maxZ = bb2.maxZ.toFloat()
-//
-//        var max = Vec3d(maxX.toDouble(), maxY.toDouble(), maxZ.toDouble())
-//        var min = Vec3d(minX.toDouble(), minY.toDouble(), minZ.toDouble())
-//        val newBB = Box(min, max)
-//        minX = newBB.minX.toFloat()
-//        minY = newBB.minY.toFloat()
-//        minZ = newBB.minZ.toFloat()
-//        maxX = newBB.maxX.toFloat()
-//        maxY = newBB.maxY.toFloat()
-//        maxZ = newBB.maxZ.toFloat()
-        // TODO: MC 1.21.10 migration
+        val minX = bb2.minX.toFloat()
+        val minY = bb2.minY.toFloat()
+        val minZ = bb2.minZ.toFloat()
+        val maxX = bb2.maxX.toFloat()
+        val maxY = bb2.maxY.toFloat()
+        val maxZ = bb2.maxZ.toFloat()
+
         val matrix4f = matrixStack.peek()
 
         // draw lines connecting the corners of the box
@@ -303,7 +272,6 @@ object RenderUtils {
         vcp.draw(layer)
 
         GL11.glEnable(GL11.GL_DEPTH_TEST)
-//        GL11.glDisable(GL11.GL_BLEND)
     }
 
 
@@ -380,17 +348,6 @@ object RenderUtils {
     }
 
     /**
-     * Cleans up the render system by popping the matrix stack, resetting the shader color, and enabling depth testing.
-     * @param matrixStack The matrix stack to clean up.
-     */
-    fun cleanupRender(matrixStack: MatrixStack) {
-        matrixStack.pop()
-//        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
-        GL11.glEnable(GL11.GL_DEPTH_TEST)
-        GL11.glDisable(GL11.GL_BLEND)
-    }
-
-    /**
      * Gets the look vector of the player.
      * @param delta The delta time.
      * @return The look vector of the player.
@@ -401,84 +358,6 @@ object RenderUtils {
         val yaw = mc.player!!.getYaw(delta)
         return Rotation(pitch, yaw).asLookVec()
 
-    }
-
-    /**
-     * Sets up the render by enabling blending, disabling depth testing, pushing the matrix stack and
-     * applying the regional render offset.
-     */
-    fun setupRender(matrixStack: MatrixStack) {
-        GL11.glEnable(GL11.GL_BLEND)
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-        GL11.glDisable(GL11.GL_DEPTH_TEST)
-        matrixStack.push()
-        val region = getCameraRegionPos()
-
-        applyRegionalRenderOffset(matrixStack, region)
-//        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-    }
-
-    /**
-     * Sets up the render with the position color shader.
-     */
-    @Deprecated("Use setupRender(matrixStack: MatrixStack) instead", ReplaceWith("setupRender(matrixStack)"))
-    fun setupRenderWithShader(matrixStack: MatrixStack) {
-        setupRender(matrixStack)
-//        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-//        RenderSystem.applyModelViewMatrix()
-    }
-
-    /**
-     * Gets a buffer builder for rendering.
-     *
-     * @return A buffer builder for rendering.
-     */
-    fun getBufferBuilder(): BufferBuilder {
-        val tessellator = Tessellator.getInstance()
-        return tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR)
-
-    }
-
-    /**
-     * Gets the center of the screen based on the players look vector.
-     * @param partialTicks The delta time.
-     */
-    fun getCenterOfScreen(partialTicks: Float): Vec3d {
-        val regionVec = getCameraRegionPos().toVec3d()
-        return getLookVec(partialTicks).add(getCameraPos()).subtract(regionVec)
-    }
-
-    /**
-     * Draws the given buffer builder with the global program.
-     */
-//    @Deprecated("Broken in 1.21.5", level = DeprecationLevel.ERROR)
-
-    /**
-     * Draws the given buffer builder with the global program, then cleans up the render.
-     */
-//    @Deprecated("Broken in 1.21.5", level = DeprecationLevel.ERROR)
-//    fun drawBuffer(buffer: BufferBuilder, matrixStack: MatrixStack) {
-//        drawBuffer(buffer)
-//        cleanupRender(matrixStack)
-//    }
-
-    /**
-     * Offsets the given position by the camera region position.
-     */
-    fun offsetPosWithCamera(pos: Vec3d): Vec3d {
-        return pos.subtract(getCameraRegionPos().toVec3d())
-    }
-
-
-    fun getLerpedPos(e: Entity, partialTicks: Float): Vec3d {
-        return MathUtils.lerp(
-            partialTicks, e.entityPos,
-            Vec3d(
-                e.lastRenderX,
-                e.lastRenderY,
-                e.lastRenderZ
-            )
-        )
     }
 
     fun getLerpedBox(e: Entity, delta: Float): Box {
@@ -509,12 +388,5 @@ object RenderUtils {
     fun getVertexConsumerProvider(): VertexConsumerProvider.Immediate {
         return GavinsModClient.minecraftClient.getBufferBuilderStorage().entityVertexConsumers
     }
-
-//    fun drawLayer(layer: RenderLayer) {
-//        layer.startDrawing()
-//        val frameBuffer = layer.target
-//        val pipeline = layer.pipeline
-//        val layer = layer.
-//    }
 }
 

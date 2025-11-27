@@ -56,6 +56,7 @@ class ToggleSetting(
         gui = GuiBuilder<GuiToggle>()
             .setWidth(width)
             .setHeight(height)
+
             .setTitle(title)
             .setCallback {
                 callback?.invoke(this)

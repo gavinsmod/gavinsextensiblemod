@@ -50,7 +50,7 @@ import java.util.function.Consumer
  * @since 04-11-2023
  * @version 01-12-2025
  */
-class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
+class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings").append(" ⚙")) {
     /**
      * Creates a new GUI settings screen.
      */
@@ -110,7 +110,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
             .setTopLeft(PointF(0f, 1f))
             .setWidth(4)
             .setHeight(11)
-            .setTitle("gavinsmod.settings.reset")
+            .setTitle(Text.translatable("gavinsmod.settings.reset").append(" ↺"))
             .setDraggable(true)
             .buildClick()
         reloadGui()
@@ -119,16 +119,16 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
 
     override fun init() {
         super.init()
-        val titleW = textRenderer.getWidth(Text.translatable("gavinsmod.gui.settings")) + 16
-        val resetText = Text.translatable("gavinsmod.settings.reset")
+        val titleW = textRenderer.getWidth(title) + 16
+        val resetText = Text.translatable("gavinsmod.settings.reset").append(" ⭯")
         val width = textRenderer.getWidth(resetText)
-        if (resetPos == null) resetPos = PointF(titleW.toFloat(), 1f)
+        resetPos = PointF(titleW.toFloat(), 1f)
         resetButton.title = resetText
-        if (resetWidth.toDouble() == 0.0) resetWidth = (width + 4).toFloat()
-        resetButton.width = resetWidth
+        resetButton.width = (width + 4).toFloat()
         resetButton.position = resetPos!!
         resetButton.setDefaultPosition(resetButton.box)
         resetButton.backgroundColor = (Colors.DARK_RED)
+        resetButton.title = resetText
         resetButton.callback = {
             GavinsMod.gui.reset()
             GavinsMod.guiSettings.reset()
@@ -187,6 +187,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
         for (m in modList) {
             val modSettings = m.settings
             for (s in modSettings) {
+                s.height = parent.height
                 s.setShrunkForScrollbar(false)
                 parent.addElement(s)
             }

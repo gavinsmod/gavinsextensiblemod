@@ -59,13 +59,11 @@ open class GuiElement(title: Text?) : Screen(title) {
      */
     protected var parent: Screen? = null
 
-    private lateinit var overlay: Gui
 
     /**
      * The previously selected/clicked gui
      */
     private var selectedGui: Gui? = null
-    protected var layout: ThreePartsLayoutWidget = ThreePartsLayoutWidget(this, 30)
 
     public override fun init() {
         this.client = MinecraftClient.getInstance()
@@ -73,7 +71,7 @@ open class GuiElement(title: Text?) : Screen(title) {
         titleBox = GuiBuilder<Gui>()
             .setTopLeft(10, 1)
             .setWidth(textRenderer.getWidth(title).toFloat() + 4f)
-            .setHeight(10f)
+            .setHeight(11f)
             .setTitle(title)
             .build()
         super.init()
@@ -123,9 +121,6 @@ open class GuiElement(title: Text?) : Screen(title) {
 
     override fun mouseReleased(click: Click): Boolean {
 
-        val mouseX = click.x
-        val mouseY = click.y
-        val button = click.button()
         guis.forEach(Consumer { g: Gui -> g.dragging = false })
         selectedGui = null
         return super.mouseReleased(click)
@@ -136,25 +131,17 @@ open class GuiElement(title: Text?) : Screen(title) {
         super.render(drawContext, mouseX, mouseY, delta)
         val stack = drawContext.matrices
         stack.pushMatrix()
-//        stack.translate(2f, 23f)
         drawContext.state.goUpLayer()
-        drawContext.enableScissor(0, 0, 3000, 3000)
-        drawContext.state.goUpLayer()
-
         titleBox!!.render(drawContext, textRenderer, mouseX, mouseY, delta)
         for (gui in guis) {
             gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
         }
-//        guis.forEac { it.render(drawContext, textRenderer, mouseX, mouseY, delta) }
-        drawContext.disableScissor()
         stack.popMatrix()
-
     }
 
 
     override fun refreshWidgetPositions() {
-        this.layout.refreshPositions()
-        SimplePositioningWidget.setPos(this.layout, this.navigationFocus)
+        // Refresh positions of all child guis
     }
 
     /**

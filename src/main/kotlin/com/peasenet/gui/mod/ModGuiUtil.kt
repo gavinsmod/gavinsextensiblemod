@@ -53,7 +53,7 @@ object ModGuiUtil {
             val x = box.topLeft.x
             val y = box.bottomRight.y + i * 10
             val gui = GuiBuilder<GuiToggle>()
-                .setTopLeft(PointF(x, y + 2))
+                .setTopLeft(PointF(x, y + 4))
                 .setWidth(box.width)
                 .setHeight(box.height)
                 .setTitle(mod.translationKey)

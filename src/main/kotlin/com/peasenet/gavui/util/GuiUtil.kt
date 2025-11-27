@@ -26,7 +26,6 @@ package com.peasenet.gavui.util
 import com.peasenet.gavui.GavUI.borderColor
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.math.BoxF
-import com.peasenet.gavui.math.PointF
 import com.peasenet.util.GemRenderLayers
 import com.peasenet.util.RenderUtils
 import net.minecraft.client.gui.DrawContext
@@ -49,9 +48,10 @@ object GuiUtil {
      * @param matrixStack - The matrix stack to draw with.
      * @param alpha       - The alpha value to draw with.
      */
+    @Deprecated("Use fill with drawContext", ReplaceWith("fill(box, drawContext, color)"))
     @JvmOverloads
     fun drawBox(c: Color, box: BoxF, matrixStack: Matrix3x2fStack, alpha: Float = 1f) {
-        drawBox(box, matrixStack, c, alpha, GemRenderLayers.QUADS)
+        drawBox(box, matrixStack, c, GemRenderLayers.QUADS)
     }
 
     /**
@@ -60,6 +60,7 @@ object GuiUtil {
      * @param boxF        - The box to draw.
      * @param matrixStack - The matrix stack to draw with.
      */
+    @Deprecated("Use drawOutline with drawContext", ReplaceWith("drawOutline(boxF, drawContext,color)"))
     fun drawOutline(boxF: BoxF, matrixStack: Matrix3x2fStack) {
         drawOutline(borderColor(), boxF, matrixStack)
     }
@@ -74,15 +75,15 @@ object GuiUtil {
      * @param alpha       - The alpha value to draw with.
      */
     @JvmOverloads
-    fun drawOutline(c: Color, box: BoxF, matrixStack: Matrix3x2fStack, alpha: Float = 1.0f) {
-        drawBox(box, matrixStack, c, alpha)
+    fun drawOutline(c: Color, box: BoxF, matrixStack: Matrix3x2fStack) {
+        drawBox(box, matrixStack, c)
     }
 
     fun drawOutline(box: BoxF, drawContext: DrawContext, color: Color) {
-        drawContext.drawVerticalLine(box.x1.toInt(), box.y1.toInt(), box.y2.toInt(), color.asInt)
-        drawContext.drawVerticalLine(box.x2.toInt(), box.y1.toInt(), box.y2.toInt(), color.asInt)
-        drawContext.drawHorizontalLine(box.x1.toInt(), box.x2.toInt(), box.y1.toInt(), color.asInt)
-        drawContext.drawHorizontalLine(box.x1.toInt(), box.x2.toInt(), box.y2.toInt(), color.asInt)
+        drawContext.drawVerticalLine(box.x1.toInt(), box.y1.toInt()-1, box.y2.toInt(), color.asInt)
+        drawContext.drawVerticalLine(box.x2.toInt()-1, box.y1.toInt()-1, box.y2.toInt(), color.asInt)
+        drawContext.drawHorizontalLine(box.x1.toInt()+1, box.x2.toInt()-2, box.y1.toInt(), color.asInt)
+        drawContext.drawHorizontalLine(box.x1.toInt()+1, box.x2.toInt()-2, box.y2.toInt()-1, color.asInt)
     }
 
     /**
@@ -96,7 +97,6 @@ object GuiUtil {
         box: BoxF,
         matrix: Matrix3x2fStack,
         color: Color,
-        alpha: Float,
         targetLayer: RenderLayer? = null,
     ) {
         val vcp = RenderUtils.getVertexConsumerProvider()
@@ -107,68 +107,25 @@ object GuiUtil {
         val xt2 = box.bottomRight.x.toInt()
         val yt2 = box.bottomRight.y.toInt()
         bufferBuilder.vertex(matrix, xt1.toFloat(), yt1.toFloat())
-            .color(color.red, color.green, color.blue, color.alpha)
+            .color(color.asInt)
             .normal(0f, 0f, 0f)
         bufferBuilder.vertex(matrix, xt1.toFloat(), yt2.toFloat())
-            .color(color.red, color.green, color.blue, color.alpha)
+            .color(color.asInt)
             .normal(0f, 0f, 0f)
         bufferBuilder.vertex(matrix, xt2.toFloat(), yt2.toFloat())
-            .color(color.red, color.green, color.blue, color.alpha)
+            .color(color.asInt)
             .normal(0f, 0f, 0f)
         bufferBuilder.vertex(matrix, xt2.toFloat(), yt1.toFloat())
-            .color(color.red, color.green, color.blue, color.alpha)
+            .color(color.asInt)
             .normal(0f, 0f, 0f)
         bufferBuilder.vertex(matrix, xt1.toFloat(), yt1.toFloat())
-            .color(color.red, color.green, color.blue, color.alpha)
+            .color(color.asInt)
             .normal(0f, 0f, 0f)
         vcp.draw(layer)
-    }
-
-    /**
-     * Draws a single line to the given coordinates.
-     *
-     * @param color       - The color to draw the line with.
-     * @param matrixStack - The matrix stack to draw with.
-     * @param alpha       - The alpha value to draw with.
-     */
-    fun renderSingleLine(color: Color, p1: PointF, p2: PointF, matrixStack: MatrixStack, alpha: Float) {
-        val newAlpha = alpha.coerceIn(0.0f, 1.0f)
-        val accColor = color.asFloatArray
-        val vcp = RenderUtils.getVertexConsumerProvider()
-        val layer = GemRenderLayers.LINES
-        val bufferBuilder = vcp.getBuffer(layer)
-        val matrix4f = matrixStack.peek()
-
-        bufferBuilder.vertex(matrix4f, p1.x, p1.y, 0f)
-            .color(accColor[0], accColor[1], accColor[2], newAlpha)
-            .normal(0f, 0f, 0f)
-        bufferBuilder.vertex(matrix4f, p2.x, p2.y, 0f)
-            .color(accColor[0], accColor[1], accColor[2], newAlpha)
-            .normal(0f, 0f, 0f)
-
     }
 
     fun fill(box: BoxF, drawContext: DrawContext, color: Color) {
         drawContext.fill(box.x1.toInt(), box.y1.toInt(), box.x2.toInt(), box.y2.toInt(), color.asInt)
     }
 
-    fun fill(box: BoxF, matrixStack: Matrix3x2fStack, color: Color) {
-        val vcp = RenderUtils.getVertexConsumerProvider()
-        val layer = RenderLayer.LINE_STRIP
-        val bufferBuilder = vcp.getBuffer(layer)
-
-        bufferBuilder.vertex(matrixStack, box.topLeft.x, box.topLeft.y)
-            .color(color.red, color.green, color.blue, color.alpha)
-            .normal(0f, 0f, 0f)
-        bufferBuilder.vertex(matrixStack, box.topLeft.x, box.bottomRight.y)
-            .color(color.red, color.green, color.blue, color.alpha)
-            .normal(0f, 0f, 0f)
-        bufferBuilder.vertex(matrixStack, box.bottomRight.x, box.bottomRight.y)
-            .color(color.red, color.green, color.blue, color.alpha)
-            .normal(0f, 0f, 0f)
-        bufferBuilder.vertex(matrixStack, box.bottomRight.x, box.topLeft.y)
-            .color(color.red, color.green, color.blue, color.alpha)
-            .normal(0f, 0f, 0f)
-
-    }
 }

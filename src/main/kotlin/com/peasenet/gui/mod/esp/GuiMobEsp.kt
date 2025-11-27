@@ -48,7 +48,7 @@ class GuiMobEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")
     }
 
     override fun init() {
-        val height = 24f
+        val height = 12f
         var pos = PointF(10f, height)
         hostileColor = colorSetting {
             title = "gavinsmod.settings.color.hostileMob"
@@ -56,14 +56,14 @@ class GuiMobEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")
             topLeft = pos
             callback = { config.hostileMobColor = it.color }
         }
-        pos = pos.add(0f, 12f)
+        pos = pos.add(0f, 13f)
         peacefulColor = colorSetting {
             title = "gavinsmod.settings.color.peacefulMob"
             color = config.peacefulMobColor
             topLeft = pos
             callback = { config.peacefulMobColor = it.color }
         }
-        pos = pos.add(0f, 12f)
+        pos = pos.add(0f, 13f)
         enabledOnly = toggleSetting {
             topLeft = pos
             title = "gavinsmod.generic.enabledOnly"
@@ -71,14 +71,14 @@ class GuiMobEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")
                 updateItemList()
             }
         }
-        pos = pos.add(0f, 12f)
+        pos = pos.add(0f, 13f)
         hostileToggle = toggleSetting {
             title = "gavinsmod.settings.mob.hostile"
             topLeft = pos
             callback = { config.showHostileMobs = it.state }
             state = config.showHostileMobs
         }
-        pos = pos.add(0f, 12f)
+        pos = pos.add(0f, 13f)
 
         peacefulToggle = toggleSetting {
             title = "gavinsmod.settings.mob.peaceful"

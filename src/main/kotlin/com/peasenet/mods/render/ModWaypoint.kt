@@ -78,7 +78,7 @@ class ModWaypoint : RenderMod(
         clickSetting {
             title = "gavinsmod.settings.render.waypoints.add"
             callback = { MinecraftClient.getInstance().setScreen(GuiWaypoint()) }
-            symbol = '+'
+            symbol = "+"
         }
         val waypoints = Settings.getConfig<WaypointConfig>("waypoints").getLocations().stream()
             .sorted(Comparator.comparing { obj: Waypoint -> obj.name })

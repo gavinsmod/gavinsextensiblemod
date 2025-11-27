@@ -90,4 +90,7 @@ data class PointF
     fun distance(): Float {
         return sqrt((x * x + y * y))
     }
+    fun manhattanDistance(): Float {
+        return kotlin.math.abs(x) + kotlin.math.abs(y)
+    }
 }

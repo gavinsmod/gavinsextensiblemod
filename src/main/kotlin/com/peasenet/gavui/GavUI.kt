@@ -50,8 +50,8 @@ object GavUI {
     }
 
     @JvmStatic
-    fun borderColor(): Color {
-        return GavUISettings.getColor("gui.color.border")
+    fun borderColor(withAlpha: Float = 255f): Color {
+        return GavUISettings.getColor("gui.color.border").withAlpha(withAlpha)
     }
 
     /**
@@ -59,8 +59,8 @@ object GavUI {
      *
      * @return The background color from settings.
      */
-    fun backgroundColor(): Color {
-        return GavUISettings.getColor("gui.color.background")
+    fun backgroundColor(withAlpha: Float = 255f): Color {
+        return GavUISettings.getColor("gui.color.background").withAlpha(withAlpha)
     }
 
     /**
@@ -68,8 +68,8 @@ object GavUI {
      *
      * @return The foreground color from settings.
      */
-    fun textColor(): Color {
-        return GavUISettings.getColor("gui.color.foreground")
+    fun textColor(alpha: Float = 255f): Color {
+        return GavUISettings.getColor("gui.color.foreground").withAlpha(alpha)
     }
 
     val alpha: Float
@@ -85,8 +85,8 @@ object GavUI {
      *
      * @return The frozen element color from settings.
      */
-    fun frozenColor(): Color {
-        return GavUISettings.getColor("gui.color.frozen")
+    fun frozenColor(alpha: Float = 255f): Color {
+        return GavUISettings.getColor("gui.color.frozen").withAlpha(alpha)
     }
 
     /**
@@ -94,8 +94,8 @@ object GavUI {
      *
      * @return The category color from settings.
      */
-    fun parentColor(): Color {
-        return GavUISettings.getColor("gui.color.category")
+    fun parentColor(alpha: Float = 255f): Color {
+        return GavUISettings.getColor("gui.color.category").withAlpha(alpha)
     }
 
     /**
@@ -103,7 +103,7 @@ object GavUI {
      *
      * @return The color if an element is enabled from settings.
      */
-    fun enabledColor(): Color {
-        return GavUISettings.getColor("gui.color.enabled")
+    fun enabledColor(alpha: Float = 255f): Color {
+        return GavUISettings.getColor("gui.color.enabled").withAlpha(alpha)
     }
 }

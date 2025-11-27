@@ -52,6 +52,9 @@ class GuiCycle(builder: GuiBuilder<out GuiClick>) : GuiClick(builder) {
         if (mouseWithinGui(mouseX, mouseY)) {
             // move the cycle index by the increment, wrapping around if necessary
             currentIndex = (currentIndex + increment)
+            if (currentIndex < 0) {
+                currentIndex = cycleSize - 1
+            }
             // y is modulo not working
             currentIndex %= cycleSize
             if (GavUISettings.getBool("gui.sound")) {

@@ -155,7 +155,7 @@ class GuiItemEspTracerConfig(
                     )
                 )
             }
-            symbol = '+'
+            symbol = "+"
         }
         startY += 12f
         val filterChildren: ArrayList<Gui> = ArrayList()

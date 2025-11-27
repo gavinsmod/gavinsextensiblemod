@@ -24,6 +24,7 @@
 
 package com.peasenet.gui.mod
 
+import com.peasenet.gavui.GavUI
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiClick
@@ -35,6 +36,8 @@ import com.peasenet.gavui.util.GuiUtil
 import com.peasenet.gui.GuiElement
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
+import com.peasenet.main.Mods.Companion.getMod
+import com.peasenet.main.Settings
 import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.ToggleSetting
 import net.minecraft.client.gui.Click
@@ -144,18 +147,25 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
      */
     var showEnabledOnly = true
 
+    var blocksPerRow: Int = 0
+    var blocksPerPage: Int = 0
+    var blocksPerColumn: Int = 0
+
+    var m_width: Int = 0
+    var m_height: Int = 0
+
     protected companion object {
-        const val BLOCKS_PER_ROW: Int = 10
-        private const val BLOCKS_PER_COLUMN = 8
-        const val BLOCK_OFFSET: Int = 18
+        const val COLUMNS: Int = 14
+        private const val ROWS = 6
+        const val BLOCK_OFFSET: Int = 19
         const val SEARCH_MAX_WIDTH = 150
-        const val PAGE_WIDTH = BLOCKS_PER_ROW * BLOCK_OFFSET
-        const val PAGE_HEIGHT = BLOCKS_PER_COLUMN * BLOCK_OFFSET
-        const val ITEMS_PER_PAGE = BLOCKS_PER_ROW * BLOCKS_PER_COLUMN
+        const val PAGE_WIDTH = COLUMNS * BLOCK_OFFSET
+        const val PAGE_HEIGHT = ROWS * BLOCK_OFFSET
+        const val ITEMS_PER_PAGE = COLUMNS * ROWS
         var items = ArrayList<ItemStack>()
         var visibleItems = ArrayList<ItemStack>()
         val numPages: Int
-            get() = visibleItems.size / (BLOCKS_PER_ROW * BLOCKS_PER_COLUMN)
+            get() = visibleItems.size / (COLUMNS * ROWS)
         var currentPage = 0
         val pageOffset: Int
             get() = currentPage * ITEMS_PER_PAGE
@@ -175,6 +185,9 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
         if (currentPage > 0) currentPage--
     }
 
+    private fun isHovering(mouseX: Int, blockX: Int, mouseY: Int, blockY: Int) =
+        mouseX >= blockX && mouseX < blockX + 16 && mouseY >= blockY && mouseY < blockY + 16
+
     override fun mouseClicked(click: Click, doubled: Boolean): Boolean {
         val mouseX = click.x
         val mouseY = click.y
@@ -184,29 +197,39 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
             return true
         }
         if (search.isMouseOver(mouseX, mouseY)) {
-            search.mouseClicked(click,doubled)
+            search.mouseClicked(click, doubled)
             search.isFocused = true
             return true
         }
-        if (!(mouseX > x && mouseX < x + PAGE_WIDTH && mouseY > y && mouseY < y + PAGE_HEIGHT)) return false
         // get the cell that the mouse has been clicked on
-        val blockIndex =
-            ((mouseX - x) / BLOCK_OFFSET).toInt() + ((mouseY - y) / BLOCK_OFFSET).toInt() * BLOCKS_PER_ROW + pageOffset
-        if (blockIndex > visibleItems.size - 1) return false
-        val block = visibleItems[blockIndex]
-        if (button != 0) return false
-        handleItemToggle(block)
-        return true
+        for (i in 0 until ITEMS_PER_PAGE) {
+            val blockX = i % blocksPerRow * BLOCK_OFFSET + x + 2
+            val blockY = i / blocksPerRow * BLOCK_OFFSET + y + 3
+            val boxF = BoxF(blockX.toFloat(), blockY.toFloat(), 1f, 1f)
+            val isHovering = isHovering(mouseX.toInt(), blockX, mouseY.toInt(), blockY)
+            if (isHovering) {
+                // clicked on a block
+                val block = visibleItems.toTypedArray()[i]
+                if (button != 0) return false
+                handleItemToggle(block)
+                return true;
+            }
+        }
+        return false
     }
 
 
     override fun init() {
         val screenWidth = GavinsModClient.minecraftClient.window.scaledWidth
-        GavinsModClient.minecraftClient.window.scaledHeight
-        x = screenWidth - screenWidth / 2 - PAGE_WIDTH / 3
-        y = 38
-        box = GuiBuilder<Gui>().setTopLeft(PointF(x.toFloat(), y.toFloat())).setWidth(PAGE_WIDTH.toFloat())
-            .setHeight(PAGE_HEIGHT.toFloat()).setBackgroundColor(Colors.INDIGO).setHoverable(false).build()
+        val screenHeight = GavinsModClient.minecraftClient.window.scaledHeight
+        m_width = COLUMNS * BLOCK_OFFSET + 3
+        m_height = ROWS * BLOCK_OFFSET + 3
+        x = (screenWidth - m_width) / 2
+        y = (screenHeight - m_height) / 2 + 10
+        blocksPerRow = m_width / BLOCK_OFFSET
+        blocksPerPage = blocksPerRow * blocksPerColumn
+        box = GuiBuilder<Gui>().setTopLeft(x, y).setWidth(m_width.toFloat()).setHeight(m_height.toFloat())
+            .setBackgroundColor(Colors.INDIGO).setTransparency(0.5f).setHoverable(false).build()
         parent = GavinsMod.guiSettings
         items = ArrayList()
         Registries.ENTITY_TYPE.forEach {
@@ -269,8 +292,6 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
         if (showPeacefulColor) guis.add(peacefulColor!!.gui)
         if (showPeacefulToggle) guis.add(peacefulToggle!!.gui)
         if (showHostileColor) guis.add(hostileColor!!.gui)
-        guis.add(nextButton)
-        guis.add(prevButton)
         guis.addAll(additionalGuis)
         updateItemList()
         super.init()
@@ -286,7 +307,6 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
         search.charTyped(input)
         return super.charTyped(input)
     }
-
 
 
     /**
@@ -306,24 +326,29 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
         for (i in 0 until ITEMS_PER_PAGE) {
             if ((pageOffset + i) > visibleItems.size - 1) break
             val block = visibleItems[pageOffset + i]
-            val blockX = i % BLOCKS_PER_ROW * BLOCK_OFFSET + x + 1
-            val blockY = i / BLOCKS_PER_ROW * BLOCK_OFFSET + y + 1
+            val blockX = i % blocksPerRow * BLOCK_OFFSET + x + 3
+            val blockY = i / blocksPerRow * BLOCK_OFFSET + y + 3
             val boxF = BoxF(PointF(blockX.toFloat(), blockY.toFloat()), 16f, 16f)
+
+            var isHovering = isHovering(mouseX, blockX, mouseY, blockY)
+            var enabledColor = GavUISettings.getColor("gui.color.enabled")
+            var borderColor = GavUI.borderColor()
             if (isItemEnabled(block)) {
+                if (isHovering) enabledColor = enabledColor.brighten(0.25f)
                 drawContext.fill(
-                    blockX, blockY, blockX + 16, blockY + 16, GavUISettings.getColor("gui.color.enabled").getAsInt(0.5f)
+                    blockX, blockY, blockX + 16, blockY + 16, enabledColor.getAsInt(0.5f)
                 )
-                GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack, 0.5f)
+                GuiUtil.drawOutline(boxF.expand(1), drawContext, borderColor)
             }
-            if (mouseX > blockX && mouseX < blockX + 16 && mouseY > blockY && mouseY < blockY + 16) {
+            if (isHovering) {
                 drawContext.fill(
                     blockX,
                     blockY,
                     boxF.x2.toInt(),
                     boxF.y1.toInt(),
-                    GavUISettings.getColor("gui.color.foreground").brighten(0.5f).getAsInt(0.5f)
+                    GavUISettings.getColor("gui.color.foreground").brighten(0.5f).getAsInt()
                 )
-                GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack, 1f)
+                GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack)
                 drawContext.drawTooltip(textRenderer, Text.translatable(block.item.translationKey), mouseX, mouseY)
             }
             drawContext.drawItem(block, blockX, blockY)

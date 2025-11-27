@@ -64,6 +64,13 @@ class GemRenderLayers {
                 .target(RenderPhase.ITEM_ENTITY_TARGET)
                 .build(false)
         )
+        val TEXT: MultiPhase = RenderLayer.of(
+            "gem:text", 1536, RenderPipelines.GUI_TEXT,
+            RenderLayer.MultiPhaseParameters.builder()
+                .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
+                .target(RenderPhase.ITEM_ENTITY_TARGET)
+                .build(false)
+        )
     }
 }
 

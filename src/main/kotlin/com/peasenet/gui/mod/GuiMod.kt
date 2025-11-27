@@ -59,7 +59,7 @@ open class GuiMod(
         .setDraggable(false)
         .setChildren(
             getGuiToggleFromCategory(
-                category, BoxF(position, width.toFloat(), height.toFloat())
+                category, BoxF(position, width.toFloat(), 11f)
             )
         )
 ) {}

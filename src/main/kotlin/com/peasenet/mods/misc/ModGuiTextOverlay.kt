@@ -34,8 +34,11 @@ import com.peasenet.mods.Mod
 import com.peasenet.mods.gui.GuiMod
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.listeners.InGameHudRenderListener
+import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.render.LightmapTextureManager
 import net.minecraft.client.resource.language.I18n
+import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.Text
 import net.minecraft.util.math.Vec3d
 

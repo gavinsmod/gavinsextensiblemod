@@ -93,11 +93,13 @@ class ModCommands : OnChatSendListener {
             if (s == "resetgui") {
                 GavinsMod.gui.reset()
                 GavinsMod.guiSettings.reset()
+                sendMessage("GUI Positions have been reset.", true)
                 return true
             }
             if (s == "reloadgui") {
                 GavinsMod.guiSettings = GuiSettings()
                 GavinsMod.setMainGui()
+                sendMessage("GUIs have reloaded.", true)
                 return true
             }
             if (lastCommand != s) {

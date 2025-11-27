@@ -114,7 +114,6 @@ open class GuiDropdown(builder: GuiBuilder<out GuiDropdown>) : GuiDraggable(buil
      * Toggles the dropdown.
      */
     fun toggleMenu() {
-
         isOpen = !isOpen
         if (GavUISettings.getBool("gui.sound")) {
             if (isOpen) MinecraftClient.getInstance().player!!.playSound(SoundEvents.BLOCK_CHEST_OPEN, 0.5f, 1f)
@@ -175,18 +174,19 @@ open class GuiDropdown(builder: GuiBuilder<out GuiDropdown>) : GuiDraggable(buil
      * Sets the symbol for the dropdown based off of what direction it is displayed in.
      */
     protected fun updateSymbol() {
-        symbol = ' '
+        symbol = null
+        if(frozen)
+            symbol = "\uD83D\uDD12"
         symbolOffsetX = -10
         symbolOffsetY = 2
         if (!isOpen) {
             when (direction) {
                 Direction.RIGHT -> {
-                    symbol = '\u25B6'
+                    symbol = "▶"
                     symbolOffsetX = -8
                 }
-
                 Direction.DOWN -> {
-                    symbol = '\u25BC'
+                    symbol = "▼"
                     symbolOffsetY = 3
                     symbolOffsetX = -8
                 }

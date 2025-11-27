@@ -51,7 +51,7 @@ import kotlin.math.max
  * @param height The height of this gui.
  *
  * @author GT3CH1
- * @version 02-02-2025
+ * @version 11-27-2025
  * @since 2/28/2023
  */
 open class Gui(
@@ -59,13 +59,13 @@ open class Gui(
     var children: ArrayList<Gui> = ArrayList(),
     var title: Text? = builder.title,
     var translationKey: String? = builder.translationKey,
-    var symbol: Char = builder.symbol,
+    var symbol: String? = builder.symbol,
     var isParent: Boolean = builder.isParent,
     var box: BoxF = BoxF(builder.topLeft, builder.width, builder.height),
     var backgroundColor: Color = builder.backgroundColor,
     var canHover: Boolean = builder.canHover,
     var drawBorder: Boolean = builder.drawBorder,
-    val height: Float = builder.height,
+    var height: Float = builder.height,
 ) {
     /**
      * The original position of the gui.
@@ -198,8 +198,8 @@ open class Gui(
      * @param parent - The parent gui.
      */
     fun shrinkForScrollbar(parent: Gui) {
-        if (shrunkForScroll && this.width == parent.width) return
-        if (this.width == parent.width) width -= 5
+        if (shrunkForScroll) return
+        width -= 6
         shrunkForScroll = true
     }
 
@@ -222,18 +222,22 @@ open class Gui(
         if (isHidden) return
         var bg = backgroundColor
         if (mouseWithinGui(mouseX, mouseY) && canHover) bg = bg.brighten(0.25f)
-
-        GuiUtil.drawBox(bg, box, drawContext.matrices)
+        bg = bg.withAlpha(transparency)
+        drawContext.state.goUpLayer()
         GuiUtil.fill(box, drawContext, bg)
+        drawContext.state.goUpLayer()
+        GuiUtil.drawOutline(box, drawContext, GavUI.borderColor().withAlpha(GavUI.alpha))
         var textColor = GavUI.textColor()
         if (title != null) {
             if (textColor.similarity(bg) < 0.3f) {
                 textColor = textColor.invert()
                 if (textColor.similarity(bg) < 0.3f) textColor = Colors.WHITE
             }
-            drawText(drawContext, tr, title!!, x + 2, y + 2, textColor)
+            val titleH = tr.fontHeight
+            val offsetY = (box.height - titleH)
+            drawText(drawContext, tr, title!!, x.toInt() + 2, y.toInt() + offsetY.toInt(), textColor)
         }
-        drawSymbol(drawContext, tr, textColor, 0f)
+        drawSymbol(drawContext, tr, textColor, 0f, 2f)
 
         if (this.drawBorder) GuiUtil.drawOutline(GavUI.borderColor(), box, drawContext.matrices)
         renderChildren(drawContext, tr, mouseX, mouseY, delta)
@@ -252,27 +256,16 @@ open class Gui(
         offsetX: Float = 0f,
         offsetY: Float = 0f,
     ) {
-        if (symbol == '\u0000') return
+        if (symbol == null) return
         val symbolWidth = tr.getWidth(symbol.toString())
         drawContext.drawText(
             tr,
-            symbol.toString(),
+            symbol,
             (x2 - symbolWidth + offsetX).toInt(),
-            (y + symbolOffsetY + offsetY + 1).toInt(),
+            (y + symbolOffsetY + offsetY).toInt(),
             color.asInt,
             false,
         )
-//        val iDrawContext = drawContext as IDrawContext
-//        val oX = x2 - symbolWidth - offsetX
-//        val oY = y + 1.5f + offsetY
-//        iDrawContext.`gavins_mod$drawText`(
-//            tr,
-//            symbol.toString(),
-//            oX,
-//            oY,
-//            color,
-//            false,
-//        )
     }
 
     /**
@@ -416,12 +409,12 @@ open class Gui(
         drawContext: DrawContext,
         textRenderer: TextRenderer,
         text: Text,
-        x: Float,
-        y: Float,
+        x: Int,
+        y: Int,
         color: Color,
         shadow: Boolean = false,
     ) {
-        drawContext.drawText(textRenderer, text, x.toInt(), y.toInt(), color.asInt, shadow)
+        drawContext.drawText(textRenderer, text, x, y, color.asInt, shadow)
     }
 
     override fun hashCode(): Int {

@@ -38,7 +38,7 @@ import java.util.stream.StreamSupport
  * A mod that makes the player face and attack the nearest mob.
  *
  * @author GT3CH1
- * @version 01-15-2025
+ * @version 11-27-2025
  * @since 03-02-2023
  */
 class ModKillAura : CombatMod(
@@ -52,10 +52,10 @@ class ModKillAura : CombatMod(
 
     init {
         clickSetting {
-                callback = {
-                    client.setScreen(GuiKillAura())
-                }
-                title = translationKey
+            callback = {
+                client.setScreen(GuiKillAura())
+            }
+            title = translationKey
         }
     }
 
@@ -75,8 +75,11 @@ class ModKillAura : CombatMod(
             if (config.excludePlayers) {
                 stream = stream.filter { it !is PlayerEntity }
             }
-            stream.forEach { entity: LivingEntity? ->
-                entity?.let { MathUtils.getRotationToEntity(it) }?.let { PlayerUtils.setRotation(it) }
+            for (entity in stream) {
+                if (entity == null) continue
+                entity.let { MathUtils.getRotationToEntity(it) }.let {
+                    PlayerUtils.setRotation(it)
+                }
                 PlayerUtils.attackEntity(entity)
             }
         }

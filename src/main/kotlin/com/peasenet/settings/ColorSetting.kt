@@ -38,11 +38,11 @@ import com.peasenet.gavui.math.PointF
 class ColorSetting(
     topLeft: PointF = PointF(0F, 0F),
     width: Float = 0F,
-    height: Float = 10F,
+    height: Float = 11F,
     title: String = "",
     hoverable: Boolean = true,
     transparency: Float = -1f,
-    symbol: Char = '\u0000',
+    symbol: String? = null,
     cycleIndex: Int = 0,
     cycleSize: Int = 0,
     color: Color = GavUI.backgroundColor(),
@@ -68,8 +68,6 @@ class ColorSetting(
             .setHeight(height)
             .setTitle(title)
             .setCallback {
-//                var index = it.currentIndex
-//                it.currentIndex = index
                 it.backgroundColor = (Colors.COLORS[it.currentIndex % Colors.COLORS.size])
                 callback?.invoke(this)
             }
