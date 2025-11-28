@@ -218,6 +218,12 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
         return false
     }
 
+    override fun refreshWidgetPositions() {
+        guis.clear()
+        additionalGuis.clear()
+        clearChildren()
+        init()
+    }
 
     override fun init() {
         val screenWidth = GavinsModClient.minecraftClient.window.scaledWidth
@@ -225,7 +231,7 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
         m_width = COLUMNS * BLOCK_OFFSET + 3
         m_height = ROWS * BLOCK_OFFSET + 3
         x = (screenWidth - m_width) / 2
-        y = (screenHeight - m_height) / 2 + 10
+        y = (screenHeight - m_height) / 2 + 24
         blocksPerRow = m_width / BLOCK_OFFSET
         blocksPerPage = blocksPerRow * blocksPerColumn
         box = GuiBuilder<Gui>().setTopLeft(x, y).setWidth(m_width.toFloat()).setHeight(m_height.toFloat())
