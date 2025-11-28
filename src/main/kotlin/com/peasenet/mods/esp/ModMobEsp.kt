@@ -43,7 +43,8 @@ import org.joml.Matrix3x2fStack
  * @see EntityRenderListener
  * @see EspMod
  */
-class ModMobEsp : EntityEsp<Entity>("gavinsmod.mod.esp.mob",
+class ModMobEsp : EntityEsp<Entity>(
+    "gavinsmod.mod.esp.mob",
     "mobesp",
     { it !is PlayerEntity && it.isLiving && !it.isRemoved && config.inList(it.type) }), RenderListener {
 
@@ -56,7 +57,9 @@ class ModMobEsp : EntityEsp<Entity>("gavinsmod.mod.esp.mob",
     }
 
     override fun getColor(entity: Entity): Color {
-        return if (entity.type.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
+        val color = if (entity.type.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
+        return color.withAlpha(config.alpha)
+
     }
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
