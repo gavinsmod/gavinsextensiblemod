@@ -60,13 +60,13 @@ class RadarConfig : Config<RadarConfig>() {
      *
      * @return The color used to draw players on the radar.
      */
-    var playerColor = Colors.GOLD!!
+    var playerColor = Colors.GOLD
         set(playerColor) {
             field = playerColor
             saveConfig()
         }
 
-    var backgroundColor = Colors.DARK_GRAY!!
+    var backgroundColor = Colors.DARK_GRAY
         set(backgroundColor) {
             field = backgroundColor
             saveConfig()
@@ -78,7 +78,7 @@ class RadarConfig : Config<RadarConfig>() {
      *
      * @return The color used to draw hostile mobs on the radar.
      */
-    var hostileMobColor = Colors.RED!!
+    var hostileMobColor = Colors.RED
         set(hostileMobColor) {
             field = hostileMobColor
             saveConfig()
@@ -89,7 +89,7 @@ class RadarConfig : Config<RadarConfig>() {
      *
      * @return The color used to draw peaceful mobs on the radar.
      */
-    var peacefulMobColor = Colors.GREEN!!
+    var peacefulMobColor = Colors.GREEN
         set(peacefulMobColor) {
             field = peacefulMobColor
             saveConfig()
@@ -100,7 +100,7 @@ class RadarConfig : Config<RadarConfig>() {
      *
      * @return The color used to draw items on the radar.
      */
-    var itemColor = Colors.CYAN!!
+    var itemColor = Colors.CYAN
         set(itemColor) {
             field = itemColor
             saveConfig()
@@ -145,6 +145,12 @@ class RadarConfig : Config<RadarConfig>() {
     var isShowItem = true
         set(showItem) {
             field = showItem
+            saveConfig()
+        }
+
+    var showEggs = true
+        set(value) {
+            field = value
             saveConfig()
         }
 

@@ -122,6 +122,7 @@
   "gavinsmod.settings.radar.background.alpha": "Background Alpha",
   "gavinsmod.settings.radar.color": "Radar Colors",
   "gavinsmod.settings.radar.drawn": "Radar Config",
+  "gavinsmod.settings.radar.egg": "Use Entity Eggs",
   "gavinsmod.settings.radar.item": "Items",
   "gavinsmod.settings.radar.item.color": "Item Color",
   "gavinsmod.settings.radar.mob.peaceful": "Peaceful Mobs",
