@@ -48,7 +48,7 @@ class GuiMobEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")
     }
 
     override fun init() {
-        val height = 12f
+        val height = 14f
         var pos = PointF(10f, height)
         hostileColor = colorSetting {
             title = "gavinsmod.settings.color.hostileMob"
