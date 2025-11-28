@@ -79,13 +79,11 @@ abstract class BlockEntityEsp<T : BlockEntity>(
                 pos.y - 0.5 * scale,
                 pos.z - 0.5 * scale
             )
-//            RenderUtils.drawOutlinedBox(
-//                bb,
-//                matrixStack,
-//                getColor(),
-//                getAlpha(),
-//                false
-//            )
+            RenderUtils.drawOutlinedBox(
+                bb,
+                matrixStack,
+                getColor(),
+            )
         }
         matrixStack.pop()
     }
