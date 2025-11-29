@@ -49,7 +49,6 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
     private var maxChildren = 0
     private var page = 0
     private var numPages = 0
-    private var isDraggable = false
 
     init {
         for (child in builder.children) {
@@ -62,7 +61,6 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
         defaultMaxChildren = builder.defaultMaxChildren
         maxChildren = builder.maxChildren
         maxChildren = children.size.coerceAtMost(maxChildren)
-        isDraggable = builder.isDraggable
         numPages = ceil(children.size.toDouble() / maxChildren).toInt()
         page = 0
     }
@@ -355,7 +353,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
-        if (!isOpen && !isParent) return false
+        if (!isOpen && !isParent || !draggable) return false
         if ((isParent && !frozen) && (mouseX in x..x2 && mouseY >= y && mouseY <= y + 12 || dragging) && clickedGui?.uUID == uUID) {
             setMidPoint(PointF(mouseX, mouseY))
             isOpen = false
