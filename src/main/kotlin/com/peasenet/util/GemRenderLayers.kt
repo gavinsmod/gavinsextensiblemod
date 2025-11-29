@@ -42,7 +42,7 @@ class GemRenderLayers {
         val LINES: MultiPhase = RenderLayer.of(
             "gem:lines", 1536, RenderPipelines.LINES,
             RenderLayer.MultiPhaseParameters.builder()
-                .lineWidth(LineWidth(OptionalDouble.of(1.0)))
+                 .lineWidth(LineWidth(OptionalDouble.of(2.0)))
                 .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
                 .target(RenderPhase.ITEM_ENTITY_TARGET)
                 .build(false)
@@ -51,7 +51,7 @@ class GemRenderLayers {
         val ESP_LINES: MultiPhase = RenderLayer.of(
             "gem:esp_lines", 1536, GemRenderPipeline.ESP_LINE_STRIP,
             RenderLayer.MultiPhaseParameters.builder()
-                .lineWidth(LineWidth(OptionalDouble.of(1.0)))
+                .lineWidth(LineWidth(OptionalDouble.of(2.0)))
                 .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
                 .target(RenderPhase.ITEM_ENTITY_TARGET)
                 .build(false)
