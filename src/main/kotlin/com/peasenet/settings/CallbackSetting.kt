@@ -17,7 +17,7 @@ open class CallbackSetting<T : Setting>(
     height: Float = 11F,
     title: String = "",
     state: Boolean = false,
-    hoverable: Boolean = false,
+    hoverable: Boolean = true,
     transparency: Float = -1f,
     symbol: String? = null,
     cycleIndex: Int = 0,
