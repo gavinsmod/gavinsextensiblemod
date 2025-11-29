@@ -31,8 +31,6 @@ import com.peasenet.gavui.util.Direction
 import com.peasenet.gavui.util.GuiUtil
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.util.math.MatrixStack
-import org.joml.Matrix3x2fStack
 import java.util.function.Consumer
 import kotlin.math.ceil
 import kotlin.math.min
@@ -40,7 +38,7 @@ import kotlin.math.min
 /**
  *
  * @author GT3CH1
- * @version 02-01-2025
+ * @version 11-29-2025
  * @since 02-01-2025
  */
 open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) {
@@ -222,7 +220,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
     /**
      * Draws the box that contains the scrollbar.
      *
-     * @param matrixStack - The matrix stack.
+     * @param drawContext - The draw context.
      */
     private fun drawScrollBox(drawContext: DrawContext) {
         var scrollBoxX = x2 - 5f
@@ -240,7 +238,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
     /**
      * Draws the scrollbar.
      *
-     * @param matrixStack - The matrix stack.
+     * @param drawContext - The draw context.
      */
     private fun drawScrollBar(drawContext: DrawContext) {
         val scrollBoxHeight = getScrollBoxHeight()

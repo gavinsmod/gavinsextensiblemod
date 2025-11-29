@@ -227,7 +227,6 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings").appen
         private lateinit var guiDropdown: GuiScroll
         private lateinit var combatDropdown: GuiScroll
         private lateinit var resetButton: GuiClick
-        private var resetWidth = 0f
         private var resetPos: PointF? = null
 
         /**

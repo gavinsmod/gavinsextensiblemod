@@ -34,7 +34,6 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.render.*
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
-import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.chunk.Chunk
@@ -150,19 +149,9 @@ object RenderUtils {
     }
 
     /**
-     * Gets the camera block position.
-     * @return The camera block position.
-     */
-    private fun getCameraBlockPos(): BlockPos {
-        val camera = MinecraftClient.getInstance().gameRenderer.camera.blockPos
-        return camera!!
-    }
-
-    /**
      * Draws an outlined box.
      * @param bb The box to draw.
-     * @param buffer The buffer builder to draw with.
-     * @param matrix4f The matrix to draw with.
+     * @param matrixStack The matrix to draw with.
      * @param color The color of the box.
      * @param alpha The alpha of the box.
      */

@@ -93,4 +93,8 @@ data class PointF
     fun manhattanDistance(): Float {
         return kotlin.math.abs(x) + kotlin.math.abs(y)
     }
+
+    companion object {
+        val ZERO: PointF = PointF(0f, 0f)
+    }
 }
