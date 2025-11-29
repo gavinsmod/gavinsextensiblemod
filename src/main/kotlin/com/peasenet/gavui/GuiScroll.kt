@@ -188,7 +188,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             if (gui is GuiDraggable) (gui as GuiScroll).resetChildPos()
             when (direction) {
                 Direction.DOWN -> gui.position = PointF(x, y2 + 2 + (modIndex * 14))
-                Direction.RIGHT -> gui.position = PointF(x2 + 7, y + (modIndex * 12))
+                Direction.RIGHT -> gui.position = PointF(x2 + 7, y + (modIndex * 14))
             }
             modIndex++
         }
@@ -366,8 +366,9 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
-        if (!isOpen && !isParent || !draggable) return false
+        if (!isOpen && !isParent) return false
         if ((isParent && !frozen) && (mouseX in x..x2 && mouseY >= y && mouseY <= y + 12 || dragging) && clickedGui?.uUID == uUID) {
+            if (!draggable) return false
             setMidPoint(PointF(mouseX, mouseY))
             isOpen = false
             children.forEach { it.isHidden = true }
@@ -376,13 +377,12 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             return true
         }
         for (child in children) {
-
             if (child.mouseDragged(mouseX, mouseY, button, deltaX, deltaY))
                 return true
             if (child.isHidden || (child as? GuiDropdown)?.isOpen == false) continue
 
         }
-        if (frozen || !isParent) return false
+        if (frozen || !isParent ) return false
 
         return false
     }
