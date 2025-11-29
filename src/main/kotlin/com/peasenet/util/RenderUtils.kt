@@ -379,9 +379,7 @@ object RenderUtils {
         color: Color,
         alpha: Float,
     ) {
-        matrixStack.push()
         drawOutlinedBox(box, matrixStack, color, alpha)
-        matrixStack.pop()
     }
 
 
