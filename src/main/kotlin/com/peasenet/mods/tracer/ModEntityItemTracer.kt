@@ -28,6 +28,7 @@ import com.peasenet.gui.mod.GuiItemEspTracerConfig
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.ItemEntity
+import org.joml.Matrix3x2fStack
 
 /**
  * A mod that allows the player to see tracers towards items.

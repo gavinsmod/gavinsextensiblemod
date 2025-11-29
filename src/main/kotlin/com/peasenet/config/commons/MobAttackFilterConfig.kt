@@ -46,7 +46,7 @@ open class MobAttackFilterConfig<E : Config<E>> : Config<E>() {
      * Removes a mob from the shown mobs list.
      * @param mob The mob to remove (EntityType)
      */
-    fun removeMob(mob: EntityType<*>) {
+    fun removeMob(mob: EntityType<*>?) {
         shownMobs.remove(mob.toString())
         saveConfig()
     }
@@ -76,7 +76,7 @@ open class MobAttackFilterConfig<E : Config<E>> : Config<E>() {
      */
     fun removeMob(spawnEggItem: SpawnEggItem) {
         var registryManager = GavinsModClient.minecraftClient.getWorld().registryManager;
-        removeMob(spawnEggItem.getEntityType(registryManager, spawnEggItem.defaultStack))
+        removeMob(spawnEggItem.getEntityType(spawnEggItem.defaultStack))
     }
 
     /**
@@ -85,14 +85,14 @@ open class MobAttackFilterConfig<E : Config<E>> : Config<E>() {
      */
     fun addMob(spawnEggItem: SpawnEggItem) {
         val registryManager = GavinsModClient.minecraftClient.getWorld().registryManager;
-        addMob(spawnEggItem.getEntityType(registryManager, spawnEggItem.defaultStack))
+        addMob(spawnEggItem.getEntityType( spawnEggItem.defaultStack))
     }
 
     /**
      * Adds a mob to the shown mobs list.
      * @param mob The mob to add (EntityType)
      */
-    fun addMob(mob: EntityType<*>) {
+    fun addMob(mob: EntityType<*>?) {
         shownMobs.add(mob.toString())
         saveConfig()
     }
@@ -104,7 +104,7 @@ open class MobAttackFilterConfig<E : Config<E>> : Config<E>() {
      */
     fun mobIsShown(egg: SpawnEggItem): Boolean {
         val registryManager = GavinsModClient.minecraftClient.getWorld().registryManager;
-        return mobIsShown(egg.getEntityType(registryManager, egg.defaultStack))
+        return mobIsShown(egg.getEntityType(egg.defaultStack))
     }
 
 
@@ -113,8 +113,8 @@ open class MobAttackFilterConfig<E : Config<E>> : Config<E>() {
      * @param mob The mob to check (EntityType)
      * @return Whether the mob is shown.
      */
-    fun mobIsShown(mob: EntityType<*>): Boolean {
-        val inList = shownMobs.contains(mob.translationKey);
+    fun mobIsShown(mob: EntityType<*>?): Boolean {
+        val inList = shownMobs.contains(mob?.translationKey);
         return inList
     }
 }

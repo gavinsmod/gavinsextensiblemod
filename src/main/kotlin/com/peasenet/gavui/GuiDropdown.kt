@@ -29,6 +29,7 @@ import com.peasenet.gavui.util.GavUISettings
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.sound.SoundEvents
 import java.util.function.Consumer
 
@@ -55,6 +56,7 @@ open class GuiDropdown(builder: GuiBuilder<out GuiDropdown>) : GuiDraggable(buil
     }
 
     override fun render(drawContext: DrawContext, tr: TextRenderer, mouseX: Int, mouseY: Int, delta: Float) {
+        // TODO: MC 1.21.10
         updateSymbol()
         val textColor =
             if (frozen) GavUISettings.getColor("gui.color.frozen") else GavUISettings.getColor("gui.color.foreground")
@@ -112,7 +114,6 @@ open class GuiDropdown(builder: GuiBuilder<out GuiDropdown>) : GuiDraggable(buil
      * Toggles the dropdown.
      */
     fun toggleMenu() {
-
         isOpen = !isOpen
         if (GavUISettings.getBool("gui.sound")) {
             if (isOpen) MinecraftClient.getInstance().player!!.playSound(SoundEvents.BLOCK_CHEST_OPEN, 0.5f, 1f)
@@ -173,18 +174,19 @@ open class GuiDropdown(builder: GuiBuilder<out GuiDropdown>) : GuiDraggable(buil
      * Sets the symbol for the dropdown based off of what direction it is displayed in.
      */
     protected fun updateSymbol() {
-        symbol = ' '
-        symbolOffsetX = -10
+        symbol = null
+        if(frozen)
+            symbol = "\uD83D\uDD12"
+        symbolOffsetX = 0
         symbolOffsetY = 2
         if (!isOpen) {
             when (direction) {
                 Direction.RIGHT -> {
-                    symbol = '\u25B6'
+                    symbol = "▶"
                     symbolOffsetX = -8
                 }
-
                 Direction.DOWN -> {
-                    symbol = '\u25BC'
+                    symbol = "▼"
                     symbolOffsetY = 3
                     symbolOffsetX = -8
                 }

@@ -63,18 +63,17 @@ class GuiMobTracer : GuiMobSelection(Text.translatable("gavinsmod.settings.mobtr
             callback = { settings.peacefulMobColor = it.color }
         }
         pos = pos.add(0f, 12f)
+        pos = pos.add(0f, 13f)
         enabledOnly = toggleSetting {
-            options {
-                topLeft = pos
-                this.height = 10f
-                title = "gavinsmod.settings.enabledOnly"
-                callback = { _ -> updateItemList() }
+            topLeft = pos
+            title = "gavinsmod.generic.enabledOnly"
+            callback = {
+                updateItemList()
             }
         }
         pos = pos.add(0f, 12f)
         peacefulToggle = toggleSetting {
             topLeft = pos
-            this.height = 10f
             title = "gavinsmod.settings.mob.hostile"
             callback = { settings.showHostileMobs = it.state }
         }

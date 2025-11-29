@@ -33,4 +33,4 @@ import net.minecraft.text.Text
  * Creates a new gui for tracer mods as a dropdown.
  */
 class GuiTracers :
-    GuiMod(PointF(120f, 120f), 110, 10, Text.translatable("gavinsmod.gui.tracers"), ModCategory.TRACERS, 6)
+    GuiMod(PointF(120f, 120f), 110, 11, Text.translatable("gavinsmod.gui.tracers"), ModCategory.TRACERS, 6)

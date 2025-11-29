@@ -39,6 +39,7 @@ import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.Box
+import org.joml.Matrix3x2fStack
 
 /**
  * Creates a new mod to control waypoints.
@@ -53,8 +54,6 @@ class ModWaypoint : RenderMod(
     init {
         reloadSettings()
     }
-
-
     override fun onEnable() {
         super.onEnable()
         em.subscribe(RenderListener::class.java, this)
@@ -79,7 +78,7 @@ class ModWaypoint : RenderMod(
         clickSetting {
             title = "gavinsmod.settings.render.waypoints.add"
             callback = { MinecraftClient.getInstance().setScreen(GuiWaypoint()) }
-            symbol = '+'
+            symbol = "+"
         }
         val waypoints = Settings.getConfig<WaypointConfig>("waypoints").getLocations().stream()
             .sorted(Comparator.comparing { obj: Waypoint -> obj.name })
@@ -102,7 +101,7 @@ class ModWaypoint : RenderMod(
     }
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
-        val playerDimension = Dimension.fromValue(MinecraftClient.getInstance().player!!.world.dimension.effects.path!!)
+        val playerDimension = Dimension.fromValue(MinecraftClient.getInstance().world?.dimension?.effects?.path!!)
         val waypointLocs =
             Settings.getConfig<WaypointConfig>("waypoints").getLocations().filter { w -> w.canRender(playerDimension) }
         if (waypointLocs.isEmpty()) return

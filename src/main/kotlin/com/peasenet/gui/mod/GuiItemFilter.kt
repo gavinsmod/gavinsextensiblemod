@@ -38,6 +38,7 @@ import com.peasenet.settings.clickSetting
 import com.peasenet.settings.toggleSetting
 import com.peasenet.util.PlayerUtils
 import com.peasenet.util.data.ItemEntityFilter
+import net.minecraft.client.gui.Click
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.TextFieldWidget
@@ -283,7 +284,10 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
         filterString.render(drawContext, mouseX, mouseY, delta)
     }
 
-    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+    override fun mouseClicked(click: Click, doubled: Boolean): Boolean {
+        val mouseX = click.x
+        val mouseY = click.y
+        val button = click.button()
         for (child in guis) {
             if (child.mouseClicked(mouseX, mouseY, button)) {
                 filterName.isFocused = false
@@ -291,6 +295,6 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
                 return true
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button)
+        return super.mouseClicked(click,doubled)
     }
 }

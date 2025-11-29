@@ -31,8 +31,8 @@ import net.minecraft.client.network.message.MessageHandler
 import net.minecraft.client.option.GameOptions
 import net.minecraft.client.render.BufferBuilderStorage
 import net.minecraft.client.render.WorldRenderer
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher
-import net.minecraft.client.render.entity.EntityRenderDispatcher
+import net.minecraft.client.render.block.entity.BlockEntityRenderManager
+import net.minecraft.client.render.entity.EntityRenderManager
 import net.minecraft.client.util.Window
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.util.hit.HitResult
@@ -129,15 +129,6 @@ interface IMinecraftClient {
     fun crosshairTarget(): HitResult
     fun getPlayer(): ClientPlayerEntity
 
-
-    /**
-     * Gets the entity render dispatcher.
-     *
-     * @return The entity render dispatcher.
-     */
-    val entityRenderDispatcher: EntityRenderDispatcher
-
-    val blockEntityRenderDispatcher: BlockEntityRenderDispatcher
 
     /**
      * Gets the message handler.

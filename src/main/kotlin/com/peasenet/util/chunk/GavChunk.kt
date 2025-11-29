@@ -33,6 +33,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.Heightmap
 import net.minecraft.world.chunk.Chunk
+import org.joml.Matrix3x2fStack
 import kotlin.math.abs
 import kotlin.math.sqrt
 

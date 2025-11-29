@@ -84,7 +84,7 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     }
 
     public @NotNull Vec3d getPos() {
-        return super.getPos();
+        return super.getEntityPos();
     }
 
     @Override
@@ -205,7 +205,7 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
 
     @Override
     public @NotNull World getWorld() {
-        return super.getWorld();
+        return super.getEntityWorld();
     }
 
     @Override

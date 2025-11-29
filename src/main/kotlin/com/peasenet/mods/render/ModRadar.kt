@@ -24,6 +24,7 @@
 package com.peasenet.mods.render
 
 import com.peasenet.config.render.RadarConfig
+import com.peasenet.gavui.GavUI
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.BoxF
@@ -35,11 +36,12 @@ import com.peasenet.main.Settings
 import com.peasenet.util.listeners.InGameHudRenderListener
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
 import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.mob.MobEntity
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.item.ItemStack
+import net.minecraft.item.SpawnEggItem
 import net.minecraft.util.math.Vec3d
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -50,12 +52,11 @@ import kotlin.math.sqrt
  * A mod that allows for a radar-like view of the world.
  *
  * @author GT3CH1
- * @version 01-15-2025
+ * @version 11-27-2025
  * @since 04-11-2023
  */
 class ModRadar : RenderMod(
-    "gavinsmod.mod.render.radar",
-    "radar"
+    "gavinsmod.mod.render.radar", "radar"
 ), InGameHudRenderListener {
     /**
      * Creates a radar overlay in the top-right corner of the screen.
@@ -81,46 +82,95 @@ class ModRadar : RenderMod(
         val canRender = !Mods.isActive("gui") && !Mods.isActive("settings") || forceRender
         if (!canRender) return
         val stack = drawContext.matrices
+        drawContext.state.goUpLayer()
         RadarConfig.x = client.window.scaledWidth - config.size - 10
         val radarBox = BoxF(
-            PointF(RadarConfig.x.toFloat(), RadarConfig.y.toFloat()),
-            config.size.toFloat(),
-            config.size.toFloat()
+            PointF(RadarConfig.x.toFloat(), RadarConfig.y.toFloat()), config.size.toFloat(), config.size.toFloat()
         )
         GuiUtil.fill(
-            radarBox,
-            stack,
-            config.backgroundColor,
-            config.backgroundAlpha
+            radarBox, drawContext, config.backgroundColor.withAlpha(config.backgroundAlpha)
         )
-        drawEntitiesOnRadar(stack)
-        GuiUtil.drawOutline(radarBox, stack)
+        GuiUtil.drawOutline(radarBox.expand(1), drawContext, GavUI.borderColor((config.backgroundAlpha)))
+
+        drawEntitiesOnRadar(drawContext)
     }
 
     /**
      * Draws all applicable entities on the radar.
      *
-     * @param stack The matrix stack.
+     * @param drawContext The draw context.
      */
-    private fun drawEntitiesOnRadar(stack: MatrixStack) {
+    private fun drawEntitiesOnRadar(drawContext: DrawContext) {
         val player = client.getPlayer()
 
         val yaw = player.yaw
         val entities = world.entities
         for (entity in entities) {
             if (!canRenderEntity(entity)) continue
-            // get entity x and z relative to player
-            val color = getColorFromEntity(entity)
-            val point = getScaledPos(getPointRelativeToYaw(entity.pos, yaw))
-            val box = BoxF(point, config.pointSize.toFloat(), config.pointSize.toFloat())
-            GuiUtil.drawBox(
-                color,
-                box,
-                stack,
-                config.pointAlpha
-            )
+            val itemStack = getItemStack(entity)
+            val point = getScaledPos(getPointRelativeToYaw(entity.entityPos, yaw))
+            val color = getColorFromEntity(entity).withAlpha(config.pointAlpha)
+            if (config.showEggs && itemStack != null) {
+                renderItem(drawContext, point, itemStack)
+            }
+            if (!config.showEggs || itemStack == null) {
+                drawPoint(drawContext, point, color)
+            }
+
         }
     }
+
+    /**
+     * Gets the item stack for the given entity.
+     * @param entity The entity to get the item stack for.
+     * @return The item stack for the given entity, or null if none exists.
+     */
+    fun getItemStack(entity: Entity): ItemStack? {
+        var itemStack = SpawnEggItem.forEntity(entity.type)?.defaultStack
+        if (entity is ItemEntity) {
+            itemStack = entity.stack
+        }
+        return itemStack
+    }
+
+    /**
+     * Draws the point on the radar with the given color.
+     * @param drawContext The draw context.
+     * @param point The point to draw.
+     * @param color The color to draw the point with.
+     */
+    private fun drawPoint(drawContext: DrawContext, point: PointF, color: Color) {
+        drawContext.matrices.pushMatrix()
+        var box = BoxF(point, 1f, 1f)
+        val pointSizeScalar = if (config.pointSize == 1) 1 else if (config.pointSize == 3) 2 else 3
+        box = box.expand(pointSizeScalar)
+        drawContext.matrices.translate(point.x, point.y)
+        drawContext.matrices.scale(config.pointSize.toFloat(), config.pointSize.toFloat())
+        drawContext.fill(
+            0, 0, 1, 1, color.asInt
+        )
+        drawContext.matrices.popMatrix()
+    }
+
+    /**
+     * Renders the spawn egg of the given entity on the radar.
+     * @param drawContext The draw context.
+     * @param point The point to render the egg at.
+     * @param itemStack The item stack to draw.
+     */
+    private fun renderItem(drawContext: DrawContext, point: PointF, itemStack: ItemStack) {
+        drawContext.state.goUpLayer()
+        drawContext.matrices.pushMatrix()
+        val pointSizeScalar = if (config.pointSize == 1) 1f else if (config.pointSize == 3) 1.5f else 2f
+        val scaleFactor = 0.25f * pointSizeScalar
+        val itemOffset = ((16 * scaleFactor) / 2f) - pointOffset()
+        drawContext.matrices.translate(point.x, point.y)
+        drawContext.matrices.translate(-itemOffset, -itemOffset)
+        drawContext.matrices.scale(scaleFactor)
+        drawContext.drawItem(itemStack, 0, 0)
+        drawContext.matrices.popMatrix()
+    }
+
 
     /**
      * Gets the color for the entity on the radar.
@@ -145,9 +195,7 @@ class ModRadar : RenderMod(
     private fun getScaledPos(location: PointF): PointF {
         val halfConfigSize = config.size / 2f
         // offset the point to the center of the radar.
-        return clampPoint(location)
-            .add(RadarConfig.x, RadarConfig.y)
-            .add(halfConfigSize, halfConfigSize)
+        return clampPoint(location).add(RadarConfig.x, RadarConfig.y).add(halfConfigSize, halfConfigSize)
             .subtract(PointF(pointOffset(), pointOffset()))
     }
 
@@ -158,14 +206,9 @@ class ModRadar : RenderMod(
      * @return The clamped point.
      */
     private fun clampPoint(point: PointF): PointF {
-        // scale point so that (0,0) is the center of the radar
         var newLoc = point
-        val distance = newLoc.distance()
         val halfConfig = config.size / 2f
         val halfConfigOffset = halfConfig - pointOffset()
-        val scale = (halfConfig) / distance
-        if (distance > halfConfig)
-            newLoc = newLoc.multiply(scale)
         if (newLoc.x < -halfConfigOffset) newLoc = PointF(-halfConfigOffset, newLoc.y)
         if (newLoc.x > halfConfigOffset) newLoc = PointF(halfConfigOffset, newLoc.y)
         if (newLoc.y < -halfConfigOffset) newLoc = PointF(newLoc.x, -halfConfigOffset)
@@ -182,7 +225,7 @@ class ModRadar : RenderMod(
     private fun canRenderEntity(entity: Entity): Boolean {
         if (entity is PlayerEntity) return config.isShowPlayer
         if (entity is MobEntity) {
-            return if (!entity.getType().spawnGroup.isPeaceful) config.isShowHostileMob else config.isShowPeacefulMob
+            return if (!entity.type.spawnGroup.isPeaceful) config.isShowHostileMob else config.isShowPeacefulMob
         }
         return if (entity is ItemEntity) config.isShowItem else false
     }

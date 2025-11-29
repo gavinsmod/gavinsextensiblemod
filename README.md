@@ -30,8 +30,7 @@ A Fabric mod for Minecraft that is extensible, configurable, and contains many "
   ![](src/main/resources/assets/gavinsmod/screenshots/mobs.png)
 - Item ESP & Tracers
   ![](src/main/resources/assets/gavinsmod/screenshots/items.png)
-    - ESPs and Tracers have the ability to use custom filtering, which allows for regex pattern matching on the lore and
-      name of the item.
+    - ESPs and Tracers have the ability to use custom filtering, which allows for regex pattern matching on the lore and name of the item.
       ![](src/main/resources/assets/gavinsmod/screenshots/item_esp_filter_list.png)
       ![](src/main/resources/assets/gavinsmod/screenshots/item_filter.png)
 - Block ESP

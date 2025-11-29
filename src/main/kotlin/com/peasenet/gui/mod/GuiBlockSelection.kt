@@ -41,8 +41,11 @@ import com.peasenet.settings.ToggleSetting
 import com.peasenet.settings.clickSetting
 import com.peasenet.settings.toggleSetting
 import net.minecraft.block.Block
+import net.minecraft.client.gui.Click
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.widget.TextFieldWidget
+import net.minecraft.client.input.CharInput
+import net.minecraft.client.input.KeyInput
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.registry.Registries
 import net.minecraft.text.Text
@@ -131,43 +134,53 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
      */
     private lateinit var resetButton: ClickSetting
 
+    private var m_width: Int = 0
+    private var m_height: Int = 0
+
+    override fun refreshWidgetPositions() {
+        // Refresh positions of all child guis
+        clearChildren()
+        guis.clear()
+        init()
+    }
+
     override fun init() {
         val screenWidth = minecraftClient.window.scaledWidth
         val screenHeight = minecraftClient.window.scaledHeight
-        width = (screenWidth * 0.9f).toInt()
-        height = (screenHeight * 0.8f).toInt()
-        x = screenWidth / 20
-        y = screenHeight / 20 + 20
+        m_width = COLUMNS * BLOCK_OFFSET + 3
+        m_height = ROWS * BLOCK_OFFSET + 22
+        x = (screenWidth - m_width) / 2
+        y = (screenHeight - m_height) / 2 + 10
         box = GuiBuilder<Gui>()
             .setTopLeft(x, y)
-            .setWidth(width.toFloat())
-            .setHeight(height.toFloat())
+            .setWidth(m_width.toFloat())
+            .setHeight(m_height.toFloat())
             .setBackgroundColor(Colors.INDIGO)
             .setTransparency(0.5f)
             .setHoverable(false)
             .build()
-        val blocksPerColumn = height / 18
-        blocksPerRow = width / 18
+        val blocksPerColumn = m_height / BLOCK_OFFSET
+        blocksPerRow = m_width / BLOCK_OFFSET
         blocksPerPage = blocksPerRow * blocksPerColumn
         pageCount = ceil(blockList().size.toDouble() / blocksPerPage).toInt()
         parent = GavinsMod.guiSettings
-        search = object : TextFieldWidget(textRenderer, x + width / 2 - 75, y - 15, 150, 12, Text.empty()) {
-            override fun charTyped(chr: Char, keyCode: Int): Boolean {
-                val pressed = super.charTyped(chr, keyCode)
+        search = object : TextFieldWidget(textRenderer, x + m_width / 2 - 75, y - 16, 150, 13, Text.empty()) {
+            override fun charTyped(input: CharInput): Boolean {
+                val pressed = super.charTyped(input)
                 page = 0
                 updateBlockList()
                 return pressed
             }
 
-            override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-                val pressed = super.keyPressed(keyCode, scanCode, modifiers)
+            override fun keyPressed(input: KeyInput): Boolean {
+                val pressed = super.keyPressed(input)
                 page = 0
                 updateBlockList()
                 return pressed
             }
         }
         prevButton = clickSetting {
-            topLeft = PointF(x + (this@GuiBlockSelection.width shr 1) - 89f, y - 16f)
+            topLeft = PointF(x + (this@GuiBlockSelection.m_width shr 1) - 89f, y - 16f)
             width = 13f
             height = 13f
             callback = {
@@ -179,7 +192,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
             hoverable = true
         }
         nextButton = clickSetting {
-            topLeft = PointF(x + this@GuiBlockSelection.width / 2f + 76f, y - 16f)
+            topLeft = PointF(x + this@GuiBlockSelection.m_width / 2f + 76f, y - 16f)
             width = 13f
             height = 13f
             callback = {
@@ -188,14 +201,15 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
             hoverable = true
         }
         enabledOnly = toggleSetting {
-            topLeft = PointF(x + this@GuiBlockSelection.width / 2f - 170f, y - 15f)
+            topLeft = PointF(x + this@GuiBlockSelection.m_width / 2f - 170f, y - 15f)
             width = 80f
-            height = 10f
+            height = 11f
             title = "gavinsmod.generic.enabledOnly"
             callback = {
                 page = 0
                 updateBlockList()
             }
+            hoverable = true
         }
 
         val resetText = Text.translatable("gavinsmod.settings.reset")
@@ -206,11 +220,11 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
 
         if (titleBox != null)
             resetPos = PointF(titleBox!!.x2 + 4f, titleBox!!.y)
-        if (resetWidth.toDouble() == 0.0) resetWidth = (width + 4).toFloat()
+        if (resetWidth.toDouble() == 0.0) resetWidth = (m_width + 4).toFloat()
         resetButton = clickSetting {
             topLeft = resetPos
             this.width = resetWidth
-            height = 10f
+            height = 11f
             title = "gavinsmod.settings.reset"
             color = Colors.DARK_RED
             callback = { resetCallback() }
@@ -222,7 +236,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         guis.add(nextButton.gui)
         guis.add(enabledOnly.gui)
         guis.add(resetButton.gui)
-        
+
     }
 
     private fun resetCallback() {
@@ -253,50 +267,50 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         }
     }
 
-    override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
-        search.keyPressed(keyCode, scanCode, modifiers)
-        return super.keyPressed(keyCode, scanCode, modifiers)
+    override fun keyPressed(input: KeyInput): Boolean {
+        search.keyPressed(input)
+        return super.keyPressed(input)
     }
 
-    override fun charTyped(chr: Char, keyCode: Int): Boolean {
-        search.charTyped(chr, keyCode)
-        return super.charTyped(chr, keyCode)
+    override fun charTyped(input: CharInput): Boolean {
+        search.charTyped(input)
+        return super.charTyped(input)
     }
 
     override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
         val matrixStack = drawContext.matrices
-
         box.render(drawContext, textRenderer, mouseX, mouseY, delta)
         super.render(drawContext, mouseX, mouseY, delta)
         for (i in 0 until blocksPerPage) {
             if (i > visibleBlocks.size - 1) break
             val block = visibleBlocks.toTypedArray()[i]
             val stack = block.asItem().defaultStack
-            val blockX = i % blocksPerRow * 18 + x + 1
-            val blockY = i / blocksPerRow * 18 + y + 3
+            val blockX = i % blocksPerRow * BLOCK_OFFSET + x + 3
+            val blockY = i / blocksPerRow * BLOCK_OFFSET + y + 3
             val boxF = BoxF(blockX.toFloat(), blockY.toFloat(), 16f, 16f)
+
             val isHovering = isHovering(mouseX, blockX, mouseY, blockY)
             if (Settings.getConfig<T>(settingKey).isInList(block)) {
-                var c = GavUISettings.getColor("gui.color.enabled")
+                var c = GavUISettings.getColor("gui.color.enabled").withAlpha(0.2f)
                 if (isHovering)
-                    c = c.brighten(0.75f)
+                    c = c.brighten(0.5f)
                 drawContext.fill(
                     blockX,
                     blockY,
                     blockX + 16,
                     blockY + 16,
-                    c.getAsInt(0.5f)
+                    c.asInt
                 )
-                GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack, 1f)
+                GuiUtil.drawOutline(boxF.expand(1), drawContext, Colors.WHITE.withAlpha(1f))
             } else if (isHovering && !Settings.getConfig<T>(settingKey).isInList(block)) {
                 drawContext.fill(
                     blockX,
                     blockY,
                     boxF.x2.toInt(),
                     boxF.y1.toInt(),
-                    GavUISettings.getColor("gui.color.foreground").brighten(0.5f).getAsInt(0.5f)
+                    GavUISettings.getColor("gui.color.foreground").brighten(.25f).getAsInt()
                 )
-                GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack, 1f)
+                GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack)
             }
             if (isHovering)
                 drawContext.drawTooltip(
@@ -309,22 +323,18 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         }
         box.canHover = false
         search.render(drawContext, mouseX, mouseY, delta)
-//        prevButton.gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
-//        nextButton.gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
-//        enabledOnly.gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
-//        resetButton.gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
         drawContext.drawText(
             client!!.textRenderer,
-            Text.literal('\u25c0'.toString()),
-            x + width / 2 - 86,
+            Text.literal("←"),
+            x + m_width / 2 - 86,
             y - 13,
             Colors.WHITE.asInt,
             false
         )
         drawContext.drawText(
             client!!.textRenderer,
-            Text.literal('\u25b6'.toString()),
-            x + width / 2 + 80,
+            Text.literal('→'.toString()),
+            x + m_width / 2 + 79,
             y - 13,
             Colors.WHITE.asInt,
             false
@@ -332,12 +342,15 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
     }
 
     private fun isHovering(mouseX: Int, blockX: Int, mouseY: Int, blockY: Int) =
-        mouseX > blockX && mouseX < blockX + 16 && mouseY > blockY && mouseY < blockY + 16
+        mouseX >= blockX && mouseX < blockX + 16 && mouseY >= blockY && mouseY < blockY + 16
 
-    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+    override fun mouseClicked(click: Click, doubled: Boolean): Boolean {
         // check if the mouse is over the search box
+        val mouseX = click.x
+        val mouseY = click.y
+        val button = click.button()
         if (search.isMouseOver(mouseX, mouseY)) {
-            search.mouseClicked(mouseX, mouseY, button)
+            search.mouseClicked(click, doubled)
             search.isFocused = true
             return true
         }
@@ -357,18 +370,27 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
             resetButton.gui.mouseClicked(mouseX, mouseY, button)
             return true
         }
-        if (!(mouseX > x && mouseX < x + width && mouseY > y && mouseY < y + height)) return false
+        if (!(mouseX > x && mouseX < x + m_width && mouseY > y && mouseY < y + m_height)) return false
         search.isFocused = false
-        val blockIndex = ((mouseY - y) / 19).toInt() * blocksPerRow + ((mouseX - x) / 18).toInt()
-        if (blockIndex > visibleBlocks.size - 1) return false
-        val block = visibleBlocks.toTypedArray()[blockIndex]
-        if (button != 0) return false
-        if (Settings.getConfig<T>(settingKey).isInList(block)) Settings.getConfig<T>(settingKey)
-            .removeBlock(block) else Settings.getConfig<T>(settingKey).addBlock(
-            block
-        )
-        getMod(settingKey)!!.reload()
-        return super.mouseClicked(mouseX, mouseY, button)
+
+        for (i in 0 until blocksPerPage) {
+            val blockX = i % blocksPerRow * BLOCK_OFFSET + x + 2
+            val blockY = i / blocksPerRow * BLOCK_OFFSET + y + 3
+            val boxF = BoxF(blockX.toFloat(), blockY.toFloat(), 1f, 1f)
+            val isHovering = isHovering(mouseX.toInt(), blockX, mouseY.toInt(), blockY)
+            if (isHovering) {
+                // clicked on a block
+                val block = visibleBlocks.toTypedArray()[i]
+                if (button != 0) return false
+                if (Settings.getConfig<T>(settingKey).isInList(block)) Settings.getConfig<T>(settingKey)
+                    .removeBlock(block) else Settings.getConfig<T>(settingKey).addBlock(
+                    block
+                )
+                getMod(settingKey)!!.reload()
+                return super.mouseClicked(click, doubled)
+            }
+        }
+        return false
     }
 
     /**
@@ -400,6 +422,9 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
     }
 
     companion object {
+        private val COLUMNS = 20
+        private val ROWS = 8
+        private val BLOCK_OFFSET = 19
         private var resetWidth = 0f
         private var resetPos: PointF = PointF(0, 0)
 

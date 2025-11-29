@@ -50,7 +50,7 @@ import java.util.function.Consumer
  * @since 04-11-2023
  * @version 01-12-2025
  */
-class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
+class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings").append(" ")) {
     /**
      * Creates a new GUI settings screen.
      */
@@ -59,21 +59,21 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
         renderDropdown = GuiBuilder<GuiScroll>()
             .setTopLeft(PointF(10f, 20f))
             .setWidth(100)
-            .setHeight(10)
+            .setHeight(11)
             .setTitle("gavinsmod.settings.render")
             .setDraggable(true)
             .buildScroll()
         miscDropdown = GuiBuilder<GuiScroll>()
             .setTopLeft(PointF(115f, 20f))
             .setWidth(100)
-            .setHeight(10)
+            .setHeight(11)
             .setTitle("gavinsmod.settings.misc")
             .setDraggable(true)
             .buildScroll()
         guiDropdown = GuiBuilder<GuiScroll>()
             .setTopLeft(PointF(220f, 20f))
             .setWidth(100)
-            .setHeight(10)
+            .setHeight(11)
             .setTitle("gavinsmod.settings.gui")
             .setDraggable(true)
             .setHidden(false)
@@ -81,36 +81,36 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
         waypointDropdown = GuiBuilder<GuiScroll>()
             .setTopLeft(PointF(325f, 20f))
             .setWidth(100)
-            .setHeight(10)
+            .setHeight(11)
             .setTitle("gavinsmod.mod.render.waypoints")
             .setDraggable(true)
             .buildScroll()
         espDropdown = GuiBuilder<GuiScroll>()
             .setTopLeft(PointF(10f, 90f))
             .setWidth(110)
-            .setHeight(10)
+            .setHeight(11)
             .setTitle("gavinsmod.settings.esp")
             .setDraggable(true)
             .buildScroll()
         tracerDropdown = GuiBuilder<GuiScroll>()
             .setTopLeft(PointF(125f, 90f))
             .setWidth(115)
-            .setHeight(10)
+            .setHeight(11)
             .setTitle("gavinsmod.settings.tracer")
             .setDraggable(true)
             .buildScroll()
         combatDropdown = GuiBuilder<GuiScroll>()
             .setTopLeft(PointF(245f, 90f))
             .setWidth(100)
-            .setHeight(10)
+            .setHeight(11)
             .setTitle("gavinsmod.settings.combat")
             .setDraggable(true)
             .buildScroll()
         resetButton = GuiBuilder<GuiScroll>()
             .setTopLeft(PointF(0f, 1f))
             .setWidth(4)
-            .setHeight(10)
-            .setTitle("gavinsmod.settings.reset")
+            .setHeight(11)
+            .setTitle(Text.translatable("gavinsmod.settings.reset"))
             .setDraggable(true)
             .buildClick()
         reloadGui()
@@ -119,16 +119,16 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
 
     override fun init() {
         super.init()
-        val titleW = textRenderer.getWidth(Text.translatable("gavinsmod.gui.settings")) + 16
+        val titleW = textRenderer.getWidth(title) + 16
         val resetText = Text.translatable("gavinsmod.settings.reset")
         val width = textRenderer.getWidth(resetText)
-        if (resetPos == null) resetPos = PointF(titleW.toFloat(), 1f)
+        resetPos = PointF(titleW.toFloat() + 5f, 1f)
         resetButton.title = resetText
-        if (resetWidth.toDouble() == 0.0) resetWidth = (width + 4).toFloat()
-        resetButton.width = resetWidth
+        resetButton.width = (width + 4).toFloat()
         resetButton.position = resetPos!!
         resetButton.setDefaultPosition(resetButton.box)
         resetButton.backgroundColor = (Colors.DARK_RED)
+        resetButton.title = resetText
         resetButton.callback = {
             GavinsMod.gui.reset()
             GavinsMod.guiSettings.reset()
@@ -187,6 +187,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
         for (m in modList) {
             val modSettings = m.settings
             for (s in modSettings) {
+                s.height = parent.height
                 s.setShrunkForScrollbar(false)
                 parent.addElement(s)
             }
@@ -226,7 +227,6 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings")) {
         private lateinit var guiDropdown: GuiScroll
         private lateinit var combatDropdown: GuiScroll
         private lateinit var resetButton: GuiClick
-        private var resetWidth = 0f
         private var resetPos: PointF? = null
 
         /**

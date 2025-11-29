@@ -56,10 +56,10 @@ open class GuiMod(
 ) : GuiScroll(
     GuiBuilder<GuiScroll>().setTopLeft(position).setWidth(width).setHeight(height).setTitle(title)
         .setMaxChildren(maxChildren)
-        .setDraggable(true)
+        .setDraggable(false)
         .setChildren(
             getGuiToggleFromCategory(
-                category, BoxF(position, width.toFloat(), height.toFloat())
+                category, BoxF(position, width.toFloat(), 11f)
             )
         )
 ) {}

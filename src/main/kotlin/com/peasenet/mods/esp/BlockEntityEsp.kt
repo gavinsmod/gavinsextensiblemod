@@ -31,6 +31,7 @@ import net.minecraft.block.entity.BlockEntity
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.Box
+import org.joml.Matrix3x2fStack
 
 /**
  * A class that represents an ESP mod for block entities.
@@ -82,8 +83,6 @@ abstract class BlockEntityEsp<T : BlockEntity>(
                 bb,
                 matrixStack,
                 getColor(),
-                getAlpha(),
-                false
             )
         }
         matrixStack.pop()

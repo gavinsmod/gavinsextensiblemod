@@ -31,7 +31,6 @@ import com.peasenet.gavui.util.Direction
 import com.peasenet.gavui.util.GuiUtil
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.util.math.MatrixStack
 import java.util.function.Consumer
 import kotlin.math.ceil
 import kotlin.math.min
@@ -39,7 +38,7 @@ import kotlin.math.min
 /**
  *
  * @author GT3CH1
- * @version 02-01-2025
+ * @version 11-29-2025
  * @since 02-01-2025
  */
 open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) {
@@ -48,53 +47,57 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
     private var maxChildren = 0
     private var page = 0
     private var numPages = 0
-    private var isDraggable = false
 
     init {
         for (child in builder.children) {
             child.width = width
             children.add(child)
             if (direction == Direction.RIGHT)
-                child.position = PointF(x2 + 14, y2 + children.size * 12)
+                child.position = PointF(x2 + 14, y2 + children.size * 14)
         }
         direction = builder.direction
         defaultMaxChildren = builder.defaultMaxChildren
         maxChildren = builder.maxChildren
         maxChildren = children.size.coerceAtMost(maxChildren)
-        isDraggable = builder.isDraggable
         numPages = ceil(children.size.toDouble() / maxChildren).toInt()
         page = 0
     }
 
-    override fun render(drawContext: DrawContext, tr: TextRenderer, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(
+        drawContext: DrawContext,
+        tr: TextRenderer,
+        mouseX: Int,
+        mouseY: Int,
+        delta: Float,
+    ) {
         if (isHidden)
             return
-        var bg = if (isParent) GavUI.parentColor() else GavUI.backgroundColor()
+        var bg = (if (isParent) GavUI.parentColor() else GavUI.backgroundColor()).withAlpha(GavUI.alpha)
         val childHasMouse = children.any { it.mouseWithinGui(mouseX, mouseY) }
         if (mouseWithinGui(mouseX, mouseY) && !childHasMouse) {
             bg = bg.brighten(0.5f)
         }
-        GuiUtil.fill(box, drawContext.matrices, bg, GavUI.alpha)
+        GuiUtil.fill(box, drawContext, bg)
+        drawContext.state.goUpLayer()
+        GuiUtil.drawOutline(box, drawContext, GavUI.borderColor().withAlpha(GavUI.alpha))
+        drawContext.state.goUpLayer()
         var textColor = if (frozen) GavUI.frozenColor() else GavUI.textColor()
-        //TODO: Color similarity
         if (title != null) {
             if (textColor.similarity(bg) < 0.2f) {
                 textColor = textColor.invert()
                 if (textColor.similarity(bg) < 0.2f) textColor = Colors.WHITE
             }
-            drawText(drawContext, tr, title!!, x + 2, y + 1.5f, textColor)
+            val center = (x + (width / 2) - (tr.getWidth(title)) / 2).toInt()
+            drawText(drawContext, tr, title!!, center, (y + 2).toInt(), textColor)
         }
         updateSymbol()
-        drawSymbol(drawContext, tr, textColor)
+        drawSymbol(drawContext, tr, textColor, -2f, 0f)
         if (drawBorder) GuiUtil.drawOutline(GavUI.borderColor(), box, drawContext.matrices)
         if (!isOpen) return
         resetChildPos()
-
         if (page < 0) page = 0
         if (page >= numPages) page = numPages - 1
-
-        for (i in children.indices) renderChildren(drawContext, tr, mouseX, mouseY, delta, i)
-
+        renderChildren(drawContext, tr, mouseX, mouseY, delta)
 
     }
 
@@ -104,39 +107,60 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
         mouseX: Int,
         mouseY: Int,
         delta: Float,
-        i: Int,
     ) {
-        val child = children[i]
-        val matrixStack = drawContext.matrices
-        if (i < page * maxChildren || i >= (page + 1) * maxChildren) {
-            child.hide()
-        } else {
-            child.show()
+        val renderableChildren = ArrayList<Gui>()
+        for (i in children.indices) {
+            val child = children[i]
+            if (i < page * maxChildren || i >= (page + 1) * maxChildren) {
+                child.hide()
+                continue
+            } else {
+                child.show()
+            }
+            if (shouldDrawScrollBar()) {
+                child.shrinkForScrollbar(this)
+                drawScrollBox(drawContext)
+                drawScrollBar(drawContext)
+            }
+            if ((!child.isParent && child !is GuiCycle)) {
+                child.backgroundColor = GavUI.backgroundColor()
+            }
+            renderableChildren.add(child)
         }
-        if (shouldDrawScrollBar()) {
-            child.shrinkForScrollbar(this)
-            drawScrollBox(matrixStack)
-            drawScrollBar(matrixStack)
+        drawContext.state.goUpLayer()
+        for (child in renderableChildren) {
+            child.render(drawContext, tr, mouseX, mouseY, delta)
         }
-        if ((!child.isParent && child !is GuiCycle)) {
-            child.backgroundColor = GavUI.backgroundColor()
-        }
-        child.render(drawContext, tr, mouseX, mouseY, delta)
     }
 
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, amount: Double): Boolean {
         if (hasChildren() && isOpen) {
+            var visibleChildren = 0
             for (gui in children) {
+                if(!gui.isHidden) visibleChildren++
                 if (!gui.isHidden && gui.mouseWithinGui(mouseX.toInt(), mouseY.toInt()) && gui is GuiScroll) {
-                    if (gui.isOpen) gui.mouseScrolled(mouseX, mouseY, amount)
-                    else
+                    if (gui.isOpen) {
+                        val scrolled = gui.mouseScrolled(mouseX, mouseY, amount)
+                        if (scrolled) {
+                            return true
+                        }
+                    } else {
                         doScroll(amount)
-                    return true
+                        return true
+                    }
                 }
             }
+            // from x to y2 + (14*visibleChildren)
+            if (mouseX in x..x2 && mouseY >= y && mouseY <= y2 + (14 * visibleChildren)) {
+                doScroll(amount)
+                return true
+            }
         }
-        if (mouseWithinGui(mouseX, mouseY)) doScroll(amount)
+        if (mouseWithinGui(mouseX, mouseY)) {
+            doScroll(amount)
+            return true
+        }
         return super.mouseScrolled(mouseX, mouseY, amount)
     }
 
@@ -163,8 +187,8 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             val gui = children[i]
             if (gui is GuiDraggable) (gui as GuiScroll).resetChildPos()
             when (direction) {
-                Direction.DOWN -> gui.position = PointF(x, y2 + 2 + (modIndex * 12))
-                Direction.RIGHT -> gui.position = PointF(x2 + 7, y + (modIndex * 12))
+                Direction.DOWN -> gui.position = PointF(x, y2 + 2 + (modIndex * 14))
+                Direction.RIGHT -> gui.position = PointF(x2 + 7, y + (modIndex * 14))
             }
             modIndex++
         }
@@ -196,9 +220,9 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
     /**
      * Draws the box that contains the scrollbar.
      *
-     * @param matrixStack - The matrix stack.
+     * @param drawContext - The draw context.
      */
-    private fun drawScrollBox(matrixStack: MatrixStack) {
+    private fun drawScrollBox(drawContext: DrawContext) {
         var scrollBoxX = x2 - 5f
         var scrollBoxY = (y2) + 2f
         val scrollBoxHeight = getScrollBoxHeight()
@@ -207,16 +231,16 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             scrollBoxY = y
         }
         val box = BoxF(PointF(scrollBoxX, scrollBoxY), 5f, scrollBoxHeight)
-        GuiUtil.drawBox(GavUI.backgroundColor(), box, matrixStack, GavUI.alpha)
-        GuiUtil.drawOutline(GavUI.borderColor(), box, matrixStack)
+        GuiUtil.drawOutline(box, drawContext, GavUI.backgroundColor())
+//        GuiUtil.drawOutline(GavUI.borderColor(), box, matrixStack)
     }
 
     /**
      * Draws the scrollbar.
      *
-     * @param matrixStack - The matrix stack.
+     * @param drawContext - The draw context.
      */
-    private fun drawScrollBar(matrixStack: MatrixStack) {
+    private fun drawScrollBar(drawContext: DrawContext) {
         val scrollBoxHeight = getScrollBoxHeight()
         var scrollBarY = (scrollBoxHeight * (page / numPages.toFloat())) + y2 + 3
         var scrollBarX = x2 - 4
@@ -228,7 +252,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             scrollBarY2 = ((scrollBarY) + (scrollBoxHeight / (numPages)))
         }
         val box = BoxF(PointF(scrollBarX, scrollBarY), 3f, scrollBarY2 - scrollBarY - 2f)
-        GuiUtil.drawBox(Colors.WHITE, box, matrixStack)
+        GuiUtil.fill(box, drawContext, Colors.WHITE)
     }
 
     /**
@@ -238,17 +262,18 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
      * @return The height of the scrollbox.
      */
     private fun getScrollBoxHeight(): Float {
-        return ((maxChildren - 1) * 12 + 10).toFloat()
+        return ((maxChildren - 1) * 14 + this.height + 0)
     }
 
     override fun addElement(child: Gui) {
-        child.width = width
+        child.width = this.width
+        child.height = this.height
         children.add(child)
         if (direction == Direction.RIGHT) child.position = PointF(x2 + 14, y2 + (children.size) * 12)
-
         maxChildren = min(children.size.toDouble(), defaultMaxChildren.toDouble()).toInt()
         numPages = ceil(children.size.toDouble() / maxChildren.toDouble()).toInt()
-        if (shouldDrawScrollBar()) children.forEach(Consumer { c: Gui -> c.shrinkForScrollbar(this) })
+        if (shouldDrawScrollBar())
+            children.forEach(Consumer { c: Gui -> c.shrinkForScrollbar(this) })
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
@@ -343,6 +368,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
         if (!isOpen && !isParent) return false
         if ((isParent && !frozen) && (mouseX in x..x2 && mouseY >= y && mouseY <= y + 12 || dragging) && clickedGui?.uUID == uUID) {
+            if (!draggable) return false
             setMidPoint(PointF(mouseX, mouseY))
             isOpen = false
             children.forEach { it.isHidden = true }
@@ -351,17 +377,12 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             return true
         }
         for (child in children) {
-
             if (child.mouseDragged(mouseX, mouseY, button, deltaX, deltaY))
                 return true
-//            if (child.uUID == clickedGui?.uUID) {
-//                return child.mouseDragged(mouseX, mouseY, button, deltaX, deltaY)
-//            }
             if (child.isHidden || (child as? GuiDropdown)?.isOpen == false) continue
 
         }
-        if (frozen || !isParent) return false
-        // get if the mouse is within the title bar
+        if (frozen || !isParent ) return false
 
         return false
     }

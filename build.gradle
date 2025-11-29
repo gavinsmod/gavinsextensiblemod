@@ -9,7 +9,7 @@ buildscript {
 }
 
 plugins {
-    id 'fabric-loom' version '1.10-SNAPSHOT'
+    id 'fabric-loom' version '1.13-SNAPSHOT'
     id 'maven-publish'
 }
 apply plugin: 'kotlin'

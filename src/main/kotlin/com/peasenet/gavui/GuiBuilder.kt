@@ -38,7 +38,7 @@ import net.minecraft.text.Text
 class GuiBuilder<T : Gui> {
     var width: Float = 0f
         private set
-    var height: Float = 0f
+    var height: Float = 12f
         private set
     var topLeft: PointF = PointF(0, 0)
         private set
@@ -60,7 +60,7 @@ class GuiBuilder<T : Gui> {
         private set
     var title: Text? = null
         private set
-    var symbol: Char = '\u0000'
+    var symbol: String? = null
         private set
     var backgroundColor: Color = Colors.BLACK
         private set
@@ -160,7 +160,7 @@ class GuiBuilder<T : Gui> {
         return this
     }
 
-    fun setSymbol(symbol: Char): GuiBuilder<T> {
+    fun setSymbol(symbol: String?): GuiBuilder<T> {
         this.symbol = symbol
         return this
     }
@@ -261,6 +261,6 @@ class GuiBuilder<T : Gui> {
 
     private fun validate() {
         if (width == 0f) width = 100f
-        if (height == 0f) height = 10f
+        if (height == 0f) height = 12f
     }
 }

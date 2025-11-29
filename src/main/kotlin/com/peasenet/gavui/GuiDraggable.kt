@@ -35,13 +35,14 @@ open class GuiDraggable(builder: GuiBuilder<out GuiDraggable>) : GuiClick(builde
      * Whether this element is frozen.
      */
     protected var frozen = false
-
+    protected var draggable = false
     init {
         frozen = (builder.isFrozen)
+        draggable = (builder.isDraggable)
     }
 
     override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
-        if (frozen) return false
+        if (frozen || !draggable) return false
         setMidPoint(PointF(mouseX, mouseY))
         return true
     }

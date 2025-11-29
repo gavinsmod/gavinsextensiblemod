@@ -29,6 +29,8 @@ import com.peasenet.util.RenderUtils
 import com.peasenet.util.RenderUtils.renderEntityEsp
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
+import net.minecraft.util.math.Vec3d
+import org.joml.Matrix3x2fStack
 
 
 /**
@@ -54,17 +56,17 @@ abstract class EntityEsp<T : Entity>(
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         if (espList.isEmpty()) return
-
+        matrixStack.push()
         render(matrixStack, partialTicks)
+        matrixStack.pop()
     }
 
     protected fun render(matrixStack: MatrixStack, partialTicks: Float) {
         for (e in espList) {
-            // TODO: Fix lerped
             val bb = RenderUtils.getLerpedBox(e, partialTicks)
             renderEntityEsp(
-                matrixStack     ,
-                bb,
+                matrixStack,
+                bb.expand(config.espSize.toDouble()),
                 getColor(e),
                 config.alpha
             )

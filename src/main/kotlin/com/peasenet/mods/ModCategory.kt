@@ -24,6 +24,8 @@
 
 package com.peasenet.mods
 
+import net.minecraft.client.option.KeyBinding
+
 /**
  * A mod category that contains a translation key. This is used to separate the mods within the guis.
  *
@@ -32,17 +34,17 @@ package com.peasenet.mods
  * @author GT3CH1
  */
 enum class ModCategory
-(
+    (
     @JvmField val translationKey: String,
-    @JvmField val keybindCategory: String
+    @JvmField val keybindCategory: KeyBinding.Category,
 ) {
-    MOVEMENT("gavinsmod.gui.movement", KeyBindCategory.MOVEMENT.category),
-    RENDER("gavinsmod.gui.render", KeyBindCategory.RENDER.category),
-    COMBAT("gavinsmod.gui.combat", KeyBindCategory.COMBAT.category),
-    MISC("gavinsmod.gui.misc", KeyBindCategory.MISC.category),
-    ESP("gavinsmod.gui.esps", KeyBindCategory.ESP.category),
-    WAYPOINTS("gavinsmod.mod.render.waypoints", "gavinsmod.keybinds.waypoints"),
-    TRACERS("gavinsmod.gui.tracers", KeyBindCategory.TRACERS.category),
-    GUI("gavinsmod.gui.gui", KeyBindCategory.GUI.category),
-    NONE("none", "none")
+    MOVEMENT("gavinsmod.gui.movement", KeyBindCategory.MOVEMENT),
+    RENDER("gavinsmod.gui.render", KeyBindCategory.RENDER),
+    COMBAT("gavinsmod.gui.combat", KeyBindCategory.COMBAT),
+    MISC("gavinsmod.gui.misc", KeyBindCategory.MISC),
+    ESP("gavinsmod.gui.esps", KeyBindCategory.ESP),
+    WAYPOINTS("gavinsmod.mod.render.waypoints", KeyBindCategory.WAYPOINTS),
+    TRACERS("gavinsmod.gui.tracers", KeyBindCategory.TRACERS),
+    GUI("gavinsmod.gui.gui", KeyBindCategory.GUI),
+    NONE("none", KeyBindCategory.NONE)
 }

@@ -38,7 +38,7 @@ class BoxF {
     var height: Float = 0f
         private set
 
-    var topLeft: PointF = PointF(0,0)
+    var topLeft: PointF = PointF(0, 0)
         set(value) {
             field = value
             this.bottomRight = topLeft.add(PointF(width, height))
@@ -77,6 +77,15 @@ class BoxF {
     private fun setTopLeftPoint(topLeft: PointF) {
         this.topLeft = topLeft
         this.bottomRight = topLeft.add(PointF(width, height))
+    }
+
+    // expands the box by size in all directions
+    fun expand(size: Int): BoxF {
+        return BoxF(
+            PointF(topLeft.x - size, topLeft.y - size),
+            width + size * 2,
+            height + size * 2
+        )
     }
 
 

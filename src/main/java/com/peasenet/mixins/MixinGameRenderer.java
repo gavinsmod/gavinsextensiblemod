@@ -48,18 +48,14 @@ public class MixinGameRenderer {
             ci.cancel();
     }
 
-    @Inject(at = @At(value = "FIELD",
-            target = "Lnet/minecraft/client/render/GameRenderer;renderHand:Z",
-            opcode = Opcodes.GETFIELD,
-            ordinal = 0),
-            method = "renderWorld(Lnet/minecraft/client/render/RenderTickCounter;)V")
-    public void handleRender(RenderTickCounter tickCounter,
-                             CallbackInfo ci, @Local(ordinal = 2) Matrix4f matrix4f2,
-                             @Local(ordinal = 1) float tickDelta) {
-        var matrixStack = new MatrixStack();
-        matrixStack.multiplyPositionMatrix(matrix4f2);
-        var renderEvent = RenderEvent.Companion.get(matrixStack, tickDelta);
-        // enable line
-        EventManager.getEventManager().call(renderEvent);
+
+
+
+    // inject at net.minecraft.client.render.GameRenderer.renderHand
+    @Inject(at = @At(value = "RETURN"),
+    method = "renderHand")
+    public void handleRender(float tickProgress, boolean sleeping, Matrix4f positionMatrix, CallbackInfo ci)
+ {
+
     }
 }

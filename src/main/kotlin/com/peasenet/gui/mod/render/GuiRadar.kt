@@ -195,6 +195,12 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
             topLeft = pos
             callback = { config.isShowPlayer = it.state }
         }
+        val eggToggle = toggleSetting {
+            title = "gavinsmod.settings.radar.egg"
+            state = config.showEggs
+            topLeft = pos
+            callback = { config.showEggs = it.state }
+        }
         val alphaTitle = GuiBuilder<Gui>()
             .setHeight(12)
             .setTopLeft(pos)
@@ -232,7 +238,7 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         guis.add(hostileEntityToggle.gui)
         guis.add(itemToggle.gui)
         guis.add(playerEntityToggle.gui)
-
+        guis.add(eggToggle.gui)
         guis.add(backgroundAlpha.gui!!)
         guis.add(pointAlpha.gui!!)
 
@@ -275,6 +281,8 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         peacefulEntityToggle.gui.position = pos
         pos = pos.add(peacefulEntityToggle.gui.width + PADDING, 0f)
         itemToggle.gui.position = pos
+        pos = PointF(paddingX, pos.y + gapY)
+        eggToggle.gui.position = pos
         pos = PointF(paddingX, pos.y + gapY)
         alphaTitle.position = pos
         pos = PointF(paddingX, pos.y + gapY)

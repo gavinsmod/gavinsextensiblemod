@@ -30,7 +30,7 @@ import com.peasenet.util.event.EntityRenderNameEvent;
 import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.data.EntityNameRender;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRenderManager;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
@@ -38,22 +38,23 @@ import net.minecraft.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(EntityRenderDispatcher.class)
+@Mixin(EntityRenderManager.class)
 public abstract class EntityRendererMixin {
     /**
+     * TODO: MC 1.21.10 update
      * Wraps around the render method to call the EntityRenderNameEvent.
      */
-    @WrapOperation(at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;render(Lnet/minecraft/client/render/entity/state/EntityRenderState;DDDLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V"),
-            method = "render(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V")
-    private <E extends Entity, S extends EntityRenderState> void wrapRender(EntityRenderDispatcher instance, S state, double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, EntityRenderer<?, S> renderer, Operation<Void> original, E entity) {
-        var event = new EntityRenderNameEvent(new EntityNameRender(entity, matrices, vertexConsumers, light));
-        matrices.push();
-        var vec3d = renderer.getPositionOffset(state).add(x, y, z);
-        matrices.translate(vec3d);
-        EventManager.getEventManager().call(event);
-        matrices.pop();
-
-        original.call(instance, state, x, y, z, matrices, vertexConsumers, light, renderer);
-    }
+//    @WrapOperation(at = @At(value = "INVOKE",
+//            target = "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;render(Lnet/minecraft/client/render/entity/state/EntityRenderState;DDDLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V"),
+//            method = "render(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V")
+//    private <E extends Entity, S extends EntityRenderState> void wrapRender(EntityRenderDispatcher instance, S state, double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, EntityRenderer<?, S> renderer, Operation<Void> original, E entity) {
+//        var event = new EntityRenderNameEvent(new EntityNameRender(entity, matrices, vertexConsumers, light));
+//        matrices.push();
+//        var vec3d = renderer.getPositionOffset(state).add(x, y, z);
+//        matrices.translate(vec3d);
+//        EventManager.getEventManager().call(event);
+//        matrices.pop();
+//
+//        original.call(instance, state, x, y, z, matrices, vertexConsumers, light, renderer);
+//    }
 }

@@ -29,6 +29,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.mob.MobEntity
+import org.joml.Matrix3x2fStack
 
 /**
  * A mod that allows the client to see lines, called tracers, towards mobs.

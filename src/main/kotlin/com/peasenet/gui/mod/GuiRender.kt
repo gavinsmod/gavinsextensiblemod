@@ -32,4 +32,4 @@ import net.minecraft.text.Text
  * @version 03-02-2023
  * Creates a new gui for render mods as a dropdown.
  */
-class GuiRender : GuiMod(PointF(280f, 20f), 105, 10, Text.translatable("gavinsmod.gui.render"), ModCategory.RENDER, 6)
+class GuiRender : GuiMod(PointF(280f, 20f), 105, 11, Text.translatable("gavinsmod.gui.render"), ModCategory.RENDER, 6)

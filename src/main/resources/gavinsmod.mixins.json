@@ -10,14 +10,14 @@
     "MixinClientPlayerEntityNausea",
     "MixinClientPlayNetworkHandler",
     "MixinClientWorld",
-    "MixinDrawContext",
     "MixinGameRenderer",
     "MixinGameRendererBobView",
     "MixinInGameHud",
     "MixinInGameOverlayRenderer",
     "MixinMinecraftClient",
     "MixinMinecraftClientAttack",
-    "MixinSimpleOption"
+    "MixinSimpleOption",
+    "MixinWorldRenderer"
   ],
   "compatibilityLevel": "JAVA_21",
   "injectors": {

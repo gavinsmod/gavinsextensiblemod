@@ -37,6 +37,7 @@ import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
 import net.minecraft.util.math.Vec3d
+import org.joml.Matrix3x2fStack
 
 /**
  * A mod that allows the camera to be moved freely.
@@ -140,14 +141,14 @@ class ModFreeCam : MiscMod(
 
     private fun renderTracer(matrixStack: MatrixStack, partialTicks: Float) {
         val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
-        val end = RenderUtils.getLerpedBox(fake!!, partialTicks).center.add(RenderUtils.getCameraPos().negate())
+        val end = RenderUtils.getLerpedBox(fake!!, partialTicks).center
         matrixStack.push()
         RenderUtils.drawSingleLine(
             matrixStack,
             tracerOrigin,
             end,
             config.color,
-            TracerMod.config.alpha
+            config.alpha
         )
         matrixStack.pop()
     }
@@ -158,7 +159,7 @@ class ModFreeCam : MiscMod(
             matrixStack,
             bb,
             config.color,
-            config.alpha
+            config.alpha,
         )
     }
 
