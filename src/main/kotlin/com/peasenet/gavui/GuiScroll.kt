@@ -91,8 +91,8 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
                 textColor = textColor.invert()
                 if (textColor.similarity(bg) < 0.2f) textColor = Colors.WHITE
             }
-            val center = (x + (width / 2) - (tr.getWidth(title)) /2).toInt()
-            drawText(drawContext, tr, title!!, center, (y+2).toInt(), textColor)
+            val center = (x + (width / 2) - (tr.getWidth(title)) / 2).toInt()
+            drawText(drawContext, tr, title!!, center, (y + 2).toInt(), textColor)
         }
         updateSymbol()
         drawSymbol(drawContext, tr, textColor, -2f, 0f)
@@ -101,7 +101,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
         resetChildPos()
         if (page < 0) page = 0
         if (page >= numPages) page = numPages - 1
-        for (i in children.indices) renderChildren(drawContext, tr, mouseX, mouseY, delta, i)
+        renderChildren(drawContext, tr, mouseX, mouseY, delta)
 
     }
 
@@ -111,24 +111,30 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
         mouseX: Int,
         mouseY: Int,
         delta: Float,
-        i: Int,
     ) {
-        val child = children[i]
-        val matrixStack = drawContext.matrices
-        if (i < page * maxChildren || i >= (page + 1) * maxChildren) {
-            child.hide()
-        } else {
-            child.show()
+        val renderableChildren = ArrayList<Gui>()
+        for (i in children.indices) {
+            val child = children[i]
+            if (i < page * maxChildren || i >= (page + 1) * maxChildren) {
+                child.hide()
+                continue
+            } else {
+                child.show()
+            }
+            if (shouldDrawScrollBar()) {
+                child.shrinkForScrollbar(this)
+                drawScrollBox(drawContext)
+                drawScrollBar(drawContext)
+            }
+            if ((!child.isParent && child !is GuiCycle)) {
+                child.backgroundColor = GavUI.backgroundColor()
+            }
+            renderableChildren.add(child)
         }
-        if (shouldDrawScrollBar()) {
-            child.shrinkForScrollbar(this)
-            drawScrollBox(drawContext)
-            drawScrollBar(drawContext)
+        drawContext.state.goUpLayer()
+        for (child in renderableChildren) {
+            child.render(drawContext, tr, mouseX, mouseY, delta)
         }
-        if ((!child.isParent && child !is GuiCycle)) {
-            child.backgroundColor = GavUI.backgroundColor()
-        }
-        child.render(drawContext, tr, mouseX, mouseY, delta)
     }
 
 
