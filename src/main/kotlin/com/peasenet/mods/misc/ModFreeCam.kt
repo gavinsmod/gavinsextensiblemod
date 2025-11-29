@@ -141,26 +141,26 @@ class ModFreeCam : MiscMod(
 
     private fun renderTracer(matrixStack: MatrixStack, partialTicks: Float) {
         val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
-        val end = RenderUtils.getLerpedBox(fake!!, partialTicks).center.add(RenderUtils.getCameraPos().negate())
-//        matrixStack.di()
-//        RenderUtils.drawSingleLine(
-//            matrixStack,
-//            tracerOrigin,
-//            end,
-//            config.color,
-//            TracerMod.config.alpha
-//        )
-//        matrixStack.popMatrix()
+        val end = RenderUtils.getLerpedBox(fake!!, partialTicks).center
+        matrixStack.push()
+        RenderUtils.drawSingleLine(
+            matrixStack,
+            tracerOrigin,
+            end,
+            config.color,
+            config.alpha
+        )
+        matrixStack.pop()
     }
 
     private fun renderEsp(matrixStack: MatrixStack, partialTicks: Float) {
         val bb = RenderUtils.getLerpedBox(fake!!, partialTicks)
-//        RenderUtils.renderEntityEsp(
-//            matrixStack,
-//            bb,
-//            config.color,
-//            config.alpha
-//        )
+        RenderUtils.renderEntityEsp(
+            matrixStack,
+            bb,
+            config.color,
+            config.alpha,
+        )
     }
 
 }
