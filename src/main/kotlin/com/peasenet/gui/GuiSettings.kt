@@ -50,7 +50,7 @@ import java.util.function.Consumer
  * @since 04-11-2023
  * @version 01-12-2025
  */
-class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings").append(" ⚙")) {
+class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings").append(" ")) {
     /**
      * Creates a new GUI settings screen.
      */
@@ -110,7 +110,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings").appen
             .setTopLeft(PointF(0f, 1f))
             .setWidth(4)
             .setHeight(11)
-            .setTitle(Text.translatable("gavinsmod.settings.reset").append(" ↺"))
+            .setTitle(Text.translatable("gavinsmod.settings.reset"))
             .setDraggable(true)
             .buildClick()
         reloadGui()
@@ -120,9 +120,9 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings").appen
     override fun init() {
         super.init()
         val titleW = textRenderer.getWidth(title) + 16
-        val resetText = Text.translatable("gavinsmod.settings.reset").append(" ⭯")
+        val resetText = Text.translatable("gavinsmod.settings.reset")
         val width = textRenderer.getWidth(resetText)
-        resetPos = PointF(titleW.toFloat(), 1f)
+        resetPos = PointF(titleW.toFloat() + 5f, 1f)
         resetButton.title = resetText
         resetButton.width = (width + 4).toFloat()
         resetButton.position = resetPos!!
