@@ -91,14 +91,6 @@ class GuiItemEspTracerConfig(
 
         startX = offsetX.toFloat() + 2f
         startY = offsetY.toFloat() + 2f
-
-//            SettingBuilder<ColorSetting>().setTitle("gavinsmod.generic.color")
-//                .setColor(config.itemColor)
-//                .setTopLeft(startX, startY)
-//                .setWidth(screenWidth - padding)
-//                .setCallback { config.itemColor = it.color }
-//                .buildColorSetting()
-
         colorSetting = colorSetting {
             title = "gavinsmod.generic.color"
             color = config.itemColor
@@ -107,43 +99,18 @@ class GuiItemEspTracerConfig(
             callback = { config.itemColor = it.color }
         }
         startY += 12f
-//        filterCheckbox =
-//            SettingBuilder<ToggleSetting>().setTitle("gavinsmod.settings.filter.custom").setHeight(10f)
-//                .setTopLeft(startX, startY)
-//                .setWidth(screenWidth - padding)
-//                .setCallback {
-//                    config.useItemEspFilter = it.state
-//                }
-//                .setState(config.useItemEspFilter)
-//                .buildToggleSetting()
+
         filterCheckbox = toggleSetting {
             title = "gavinsmod.settings.filter.custom"
-            height = 10f
             topLeft = PointF(startX, startY)
             width = (screenWidth - padding).toFloat()
             callback = { config.useItemEspFilter = it.state }
             state = config.useItemEspFilter
         }
         startY += 12f
-//        addFilterButton =
-//            SettingBuilder<ClickSetting>().setTitle("gavinsmod.settings.filter.add").setTopLeft(startX, startY)
-//                .setHeight(10f)
-//                .setWidth(screenWidth - padding).setCallback {
-//                    minecraftClient.setScreen(
-//                        GuiItemFilter(
-//                            this, ItemEntityFilter(
-//                                "A Cool Name",
-//                                "A cool item name",
-//                            ), config
-//                        )
-//                    )
-//                }
-//                .setSymbol('+')
-//                .buildClickSetting()
         addFilterButton = clickSetting {
             title = "gavinsmod.settings.filter.add"
             topLeft = PointF(startX, startY)
-            height = 10f
             width = (screenWidth - padding).toFloat()
             callback = {
                 minecraftClient.setScreen(
@@ -162,7 +129,6 @@ class GuiItemEspTracerConfig(
         for (filter in config.itemFilterList) {
             val guiClick = clickSetting {
                 title = filter.filterName
-                height = 10f
                 width = 100f
                 color = if (filter.enabled) GavUI.enabledColor() else GavUI.backgroundColor()
                 callback = { minecraftClient.setScreen(GuiItemFilter(this@GuiItemEspTracerConfig, filter, config)) }
