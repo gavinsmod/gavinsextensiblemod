@@ -177,7 +177,7 @@ open class GuiDropdown(builder: GuiBuilder<out GuiDropdown>) : GuiDraggable(buil
         symbol = null
         if(frozen)
             symbol = "\uD83D\uDD12"
-        symbolOffsetX = -10
+        symbolOffsetX = 0
         symbolOffsetY = 2
         if (!isOpen) {
             when (direction) {
