@@ -138,16 +138,31 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
 
     override fun mouseScrolled(mouseX: Double, mouseY: Double, amount: Double): Boolean {
         if (hasChildren() && isOpen) {
+            var visibleChildren = 0
             for (gui in children) {
+                if(!gui.isHidden) visibleChildren++
                 if (!gui.isHidden && gui.mouseWithinGui(mouseX.toInt(), mouseY.toInt()) && gui is GuiScroll) {
-                    if (gui.isOpen) gui.mouseScrolled(mouseX, mouseY, amount)
-                    else
+                    if (gui.isOpen) {
+                        val scrolled = gui.mouseScrolled(mouseX, mouseY, amount)
+                        if (scrolled) {
+                            return true
+                        }
+                    } else {
                         doScroll(amount)
-                    return true
+                        return true
+                    }
                 }
             }
+            // from x to y2 + (14*visibleChildren)
+            if (mouseX in x..x2 && mouseY >= y && mouseY <= y2 + (14 * visibleChildren)) {
+                doScroll(amount)
+                return true
+            }
         }
-        if (mouseWithinGui(mouseX, mouseY)) doScroll(amount)
+        if (mouseWithinGui(mouseX, mouseY)) {
+            doScroll(amount)
+            return true
+        }
         return super.mouseScrolled(mouseX, mouseY, amount)
     }
 
@@ -249,7 +264,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
      * @return The height of the scrollbox.
      */
     private fun getScrollBoxHeight(): Float {
-        return ((maxChildren - 1) * 14 + this.height +0)
+        return ((maxChildren - 1) * 14 + this.height + 0)
     }
 
     override fun addElement(child: Gui) {
