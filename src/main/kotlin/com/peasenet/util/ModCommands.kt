@@ -33,7 +33,7 @@ import com.peasenet.util.PlayerUtils.sendMessage
 import com.peasenet.util.event.EventManager
 import com.peasenet.util.event.data.ChatMessage
 import com.peasenet.util.listeners.OnChatSendListener
-import net.minecraft.client.resource.language.I18n
+import net.minecraft.client.resources.language.I18n
 
 /**
  * A class that handles chat commands for all mods.
@@ -83,10 +83,10 @@ class ModCommands : OnChatSendListener {
                 for (t in mods) {
                     if (t.modCategory == ModCategory.GUI) continue
                     if (previousCategory != t.modCategory) {
-                        sendMessage("§l" + I18n.translate(t.modCategory.translationKey), false)
+                        sendMessage("§l" + I18n.get(t.modCategory.translationKey), false)
                         previousCategory = t.modCategory
                     }
-                    sendMessage("§a" + I18n.translate(t.translationKey) + " §9-§c " + t.chatCommand, false)
+                    sendMessage("§a" + I18n.get(t.translationKey) + " §9-§c " + t.chatCommand, false)
                 }
                 return true
             }

@@ -27,16 +27,16 @@ package com.peasenet.mixins;
 import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.RenderOverlaySubmergedEvent;
 import com.peasenet.util.event.data.RenderSubmergedOverlay;
-import net.minecraft.client.gui.hud.InGameOverlayRenderer;
+import net.minecraft.client.renderer.ScreenEffectRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(InGameOverlayRenderer.class)
+@Mixin(ScreenEffectRenderer.class)
 public class MixinInGameOverlayRenderer {
 
-    @Inject(at = @At("HEAD"), method = "renderFireOverlay", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "renderFire", cancellable = true)
     private static void onRenderFireOverlay(CallbackInfo ci) {
         var evt = new RenderOverlaySubmergedEvent(new RenderSubmergedOverlay(RenderSubmergedOverlay.SubmergedOverlayType.FIRE));
         EventManager.getEventManager().call(evt);

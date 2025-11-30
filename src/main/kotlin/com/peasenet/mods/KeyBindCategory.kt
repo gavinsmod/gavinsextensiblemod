@@ -24,8 +24,8 @@
 
 package com.peasenet.mods
 
-import net.minecraft.client.option.KeyBinding
-import net.minecraft.util.Identifier
+import net.minecraft.client.KeyMapping
+import net.minecraft.resources.ResourceLocation
 
 /**
  * A list of categories for keybinds, which will be shown in the 
@@ -37,15 +37,15 @@ import net.minecraft.util.Identifier
 
 class KeyBindCategory {
     companion object {
-        val MOVEMENT = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.movement"))
-        val RENDER = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.render"))
-        val COMBAT = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.combat"))
-        val MISC = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.misc"))
-        val ESP = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.esp"))
-        val TRACERS = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.tracers"))
-        val GUI = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.gui"))
-        val WAYPOINTS = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.waypoints"))
-        val NONE = KeyBinding.Category.create(Identifier.of("none"))
+        val MOVEMENT = KeyMapping.Category.register(ResourceLocation.parse("gavinsmod.keybinds.movement"))
+        val RENDER = KeyMapping.Category.register(ResourceLocation.parse("gavinsmod.keybinds.render"))
+        val COMBAT = KeyMapping.Category.register(ResourceLocation.parse("gavinsmod.keybinds.combat"))
+        val MISC = KeyMapping.Category.register(ResourceLocation.parse("gavinsmod.keybinds.misc"))
+        val ESP = KeyMapping.Category.register(ResourceLocation.parse("gavinsmod.keybinds.esp"))
+        val TRACERS = KeyMapping.Category.register(ResourceLocation.parse("gavinsmod.keybinds.tracers"))
+        val GUI = KeyMapping.Category.register(ResourceLocation.parse("gavinsmod.keybinds.gui"))
+        val WAYPOINTS = KeyMapping.Category.register(ResourceLocation.parse("gavinsmod.keybinds.waypoints"))
+        val NONE = KeyMapping.Category.register(ResourceLocation.parse("none"))
     }
 }
 //enum class KeyBindCategory(val category: String) {

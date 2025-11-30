@@ -25,9 +25,9 @@ package com.peasenet.util.math
 
 import com.peasenet.main.GavinsModClient
 import com.peasenet.util.RegionPos
-import net.minecraft.entity.Entity
-import net.minecraft.util.math.MathHelper
-import net.minecraft.util.math.Vec3d
+import net.minecraft.world.entity.Entity
+import net.minecraft.util.Mth
+import net.minecraft.world.phys.Vec3
 import kotlin.math.atan2
 import kotlin.math.sqrt
 
@@ -47,7 +47,7 @@ object MathUtils {
     fun getRotationToEntity(entity: Entity): Rotation {
         val player = GavinsModClient.player!!
         val playerPos =
-            Vec3d(player.getPrevX(), player.getPos().y + player.getEyeHeightWithPose(), player.getPos().z)
+            Vec3(player.getPrevX(), player.getPos().y + player.getEyeHeightWithPose(), player.getPos().z)
 
         val diffX = entity.x - playerPos.x
         val diffY = entity.boundingBox.center.y - playerPos.y
@@ -65,12 +65,12 @@ object MathUtils {
      * @param oldPos The old position.
      * @return The camera region position.
      */
-    fun lerp(delta: Float, pos: Vec3d, oldPos: Vec3d, region: RegionPos): Vec3d {
+    fun lerp(delta: Float, pos: Vec3, oldPos: Vec3, region: RegionPos): Vec3 {
         return lerp(delta, pos, oldPos).subtract(region.toVec3d())
     }
 
-    fun lerp(delta: Float, pos: Vec3d, entity: Entity, region: RegionPos): Vec3d {
-        return lerp(delta, pos, Vec3d(entity.lastX, entity.lastY, entity.lastZ)).subtract(region.toVec3d())
+    fun lerp(delta: Float, pos: Vec3, entity: Entity, region: RegionPos): Vec3 {
+        return lerp(delta, pos, Vec3(entity.xo, entity.yo, entity.zo)).subtract(region.toVec3d())
     }
 
     /**
@@ -80,10 +80,10 @@ object MathUtils {
      * @param oldPos The old position.
      * @return The lerp position.
      */
-    fun lerp(delta: Float, pos: Vec3d, oldPos: Vec3d): Vec3d {
-        val xLerped = MathHelper.lerp(delta.toDouble(), oldPos.x, pos.x)
-        val yLerped = MathHelper.lerp(delta.toDouble(), oldPos.y, pos.y)
-        val zLerped = MathHelper.lerp(delta.toDouble(), oldPos.z, pos.z)
-        return Vec3d(xLerped, yLerped, zLerped)
+    fun lerp(delta: Float, pos: Vec3, oldPos: Vec3): Vec3 {
+        val xLerped = Mth.lerp(delta.toDouble(), oldPos.x, pos.x)
+        val yLerped = Mth.lerp(delta.toDouble(), oldPos.y, pos.y)
+        val zLerped = Mth.lerp(delta.toDouble(), oldPos.z, pos.z)
+        return Vec3(xLerped, yLerped, zLerped)
     }
 }

@@ -28,10 +28,10 @@ import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.InGameHudRenderEvent;
 import com.peasenet.util.event.RenderOverlayEvent;
 import com.peasenet.util.event.data.RenderOverlay;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -42,17 +42,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * @version 12/25/2022
  * A mixin that allows modding of the in game hud (ie, overlays, extra text, etc.)
  */
-@Mixin(InGameHud.class)
+@Mixin(Gui.class)
 public class MixinInGameHud {
     @Inject(at = @At("HEAD"), method = "render")
-    private void mixin(DrawContext context, RenderTickCounter tickDelta, CallbackInfo ci) {
-        var event = new InGameHudRenderEvent(context, tickDelta.getDynamicDeltaTicks());
+    private void mixin(GuiGraphics context, DeltaTracker tickDelta, CallbackInfo ci) {
+        var event = new InGameHudRenderEvent(context, tickDelta.getGameTimeDeltaTicks());
         EventManager.getEventManager().call(event);
     }
 
 
-    @Inject(at = @At("HEAD"), method = "renderOverlay", cancellable = true)
-    private void antiPumpkin(DrawContext context, Identifier texture, float opacity, CallbackInfo ci) {
+    @Inject(at = @At("HEAD"), method = "renderTextureOverlay", cancellable = true)
+    private void antiPumpkin(GuiGraphics context, ResourceLocation texture, float opacity, CallbackInfo ci) {
         var overlay = new RenderOverlay(texture);
         RenderOverlayEvent event = new RenderOverlayEvent(overlay);
         EventManager.getEventManager().call(event);
@@ -60,9 +60,9 @@ public class MixinInGameHud {
             ci.cancel();
     }
 
-    @Inject(at = @At("HEAD"), method = "renderVignetteOverlay", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "renderVignette", cancellable = true)
     private void antiVignette(CallbackInfo ci) {
-        var overlay = new RenderOverlay(Identifier.of("textures/misc/vignette.png"));
+        var overlay = new RenderOverlay(ResourceLocation.parse("textures/misc/vignette.png"));
         RenderOverlayEvent event = new RenderOverlayEvent(overlay);
         EventManager.getEventManager().call(event);
         if (event.isCancelled())

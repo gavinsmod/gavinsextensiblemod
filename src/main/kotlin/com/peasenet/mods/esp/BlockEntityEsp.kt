@@ -27,10 +27,10 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.util.RenderUtils
-import net.minecraft.block.entity.BlockEntity
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.Box
+import net.minecraft.world.level.block.entity.BlockEntity
+import net.minecraft.client.Minecraft
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.world.phys.AABB
 import org.joml.Matrix3x2fStack
 
 /**
@@ -53,10 +53,10 @@ abstract class BlockEntityEsp<T : BlockEntity>(
     override fun onTick() {
         super.onTick()
         espList.clear()
-        val level = MinecraftClient.getInstance().world
+        val level = Minecraft.getInstance().level
         for (x in -RenderUtils.CHUNK_RADIUS..RenderUtils.CHUNK_RADIUS) {
             for (z in -RenderUtils.CHUNK_RADIUS..RenderUtils.CHUNK_RADIUS) {
-                val chunk = level!!.getChunk(x + client.getPlayer().chunkPos.x, z + client.getPlayer().chunkPos.z)
+                val chunk = level!!.getChunk(x + client.getPlayer().chunkPosition().x, z + client.getPlayer().chunkPosition().z)
                 for ((_, blockEntity) in chunk.blockEntities.filter { filter(it.value) }) {
                     if (espList.size > 100) return
                     espList.add(blockEntity as T)
@@ -65,13 +65,13 @@ abstract class BlockEntityEsp<T : BlockEntity>(
         }
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+    override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
         if (espList.isEmpty()) return
-        matrixStack.push()
+        matrixStack.pushPose()
         val scale = config.espSize / 0.25f
         for (e in espList) {
-            val pos = e.pos.toCenterPos()
-            val bb = Box(
+            val pos = e.blockPos.center
+            val bb = AABB(
                 pos.x + 0.5 * scale,
                 pos.y + 0.5 * scale,
                 pos.z + 0.5 * scale,
@@ -85,6 +85,6 @@ abstract class BlockEntityEsp<T : BlockEntity>(
                 getColor(),
             )
         }
-        matrixStack.pop()
+        matrixStack.popPose()
     }
 }

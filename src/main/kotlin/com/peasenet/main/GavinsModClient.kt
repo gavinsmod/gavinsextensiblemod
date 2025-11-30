@@ -27,7 +27,7 @@ import com.peasenet.mixinterface.IClientPlayerEntity
 import com.peasenet.mixinterface.IMinecraftClient
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.minecraft.client.MinecraftClient
+import net.minecraft.client.Minecraft
 
 /**
  * @author GT3CH1
@@ -54,7 +54,7 @@ class GavinsModClient : ClientModInitializer {
          * @return The minecraft client.
          */
         val minecraftClient: IMinecraftClient
-            get() = MinecraftClient.getInstance() as IMinecraftClient
+            get() = Minecraft.getInstance() as IMinecraftClient
 
         /**
          * Gets the minecraft client player.
@@ -62,6 +62,6 @@ class GavinsModClient : ClientModInitializer {
          * @return The minecraft client player.
          */
         val player: IClientPlayerEntity?
-            get() = MinecraftClient.getInstance().player as IClientPlayerEntity?
+            get() = Minecraft.getInstance().player as IClientPlayerEntity?
     }
 }

@@ -24,7 +24,7 @@
 package com.peasenet.mods.movement
 
 import com.peasenet.main.GavinsModClient
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
+import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
 
 /**
  * @author GT3CH1
@@ -39,12 +39,12 @@ class ModNoFall : MovementMod(
         val player = GavinsModClient.player!!
         if (!isActive)
             return;
-        if (player.isSneaking())
+        if (player.isShiftKeyDown())
             return;
         if (isFalling && !fallSpeedCanDamage)
             return;
-        player.getNetworkHandler().sendPacket(
-            PlayerMoveC2SPacket.OnGroundOnly(true, player.horizontalCollision())
+        player.getNetworkHandler().send(
+            ServerboundMovePlayerPacket.StatusOnly(true, player.isCollidingHorizontally())
         )
     }
 

@@ -25,7 +25,7 @@ package com.peasenet.mods.combat
 
 import com.peasenet.main.GavinsModClient
 import com.peasenet.util.listeners.PlayerAttackListener
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket.PositionAndOnGround
+import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket.Pos
 
 /**
  * @author GT3CH1
@@ -62,6 +62,6 @@ class ModAutoCrit : CombatMod(
     private fun sendPos(x: Double, y: Double, z: Double, onGround: Boolean) {
         val player = GavinsModClient.player
 
-        player!!.getNetworkHandler().sendPacket(PositionAndOnGround(x, y, z, onGround, false))
+        player!!.getNetworkHandler().send(Pos(x, y, z, onGround, false))
     }
 }

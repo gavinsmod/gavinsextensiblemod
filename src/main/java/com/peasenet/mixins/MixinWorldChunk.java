@@ -28,15 +28,15 @@ package com.peasenet.mixins;
 import com.peasenet.util.event.BlockUpdateEvent;
 import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.data.BlockUpdate;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.chunk.LevelChunk;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(WorldChunk.class)
+@Mixin(LevelChunk.class)
 public class MixinWorldChunk {
 
     @Inject(method = "setBlockState", at = @At("TAIL"))

@@ -24,8 +24,8 @@
 
 package com.peasenet.extensions
 
-import net.minecraft.util.math.Vec3d
-import net.minecraft.util.math.Vec3i
+import net.minecraft.world.phys.Vec3
+import net.minecraft.core.Vec3i
 
 /**
  *
@@ -33,6 +33,6 @@ import net.minecraft.util.math.Vec3i
  * @version 01-14-2025
  * @since 01-14-2025
  */
-fun Vec3i.toVec3d(): Vec3d {
-    return Vec3d(x.toDouble(), y.toDouble(), z.toDouble())
+fun Vec3i.toVec3d(): Vec3 {
+    return Vec3(x.toDouble(), y.toDouble(), z.toDouble())
 }

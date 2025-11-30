@@ -29,9 +29,9 @@ import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
 import com.peasenet.util.PlayerUtils
 import com.peasenet.util.math.MathUtils
-import net.minecraft.entity.Entity
-import net.minecraft.entity.LivingEntity
-import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.entity.player.Player
 import java.util.stream.StreamSupport
 
 /**
@@ -61,7 +61,7 @@ class ModKillAura : CombatMod(
 
     override fun onTick() {
         if (isActive) {
-            var stream = StreamSupport.stream(GavinsModClient.minecraftClient.getWorld().entities.spliterator(), false)
+            var stream = StreamSupport.stream(GavinsModClient.minecraftClient.getWorld().entitiesForRendering().spliterator(), false)
                 .filter { e: Entity? -> e is LivingEntity }
                 .filter { obj: Entity -> obj.isAlive }
                 .filter { e: Entity? -> PlayerUtils.distanceToEntity(e) <= 16 }
@@ -73,7 +73,7 @@ class ModKillAura : CombatMod(
                 stream = stream.filter { entity: LivingEntity? -> config.mobIsShown(entity!!.type!!) }
             }
             if (config.excludePlayers) {
-                stream = stream.filter { it !is PlayerEntity }
+                stream = stream.filter { it !is Player }
             }
             for (entity in stream) {
                 if (entity == null) continue

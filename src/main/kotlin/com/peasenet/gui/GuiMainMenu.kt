@@ -26,14 +26,14 @@ package com.peasenet.gui
 import com.peasenet.gavui.Gui
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsMod.Companion.setEnabled
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 /**
  * @author GT3CH1
  * @version 03-02-2023
  * The main menu for the mod.
  */
-class GuiMainMenu(guis: ArrayList<Gui>) : GuiElement(Text.literal("Gavin's Mod " + GavinsMod.VERSION)) {
+class GuiMainMenu(guis: ArrayList<Gui>) : GuiElement(Component.literal("Gavin's Mod " + GavinsMod.VERSION)) {
     /**
      * Creates a new main menu with a list of guis to display.
      */
@@ -41,8 +41,8 @@ class GuiMainMenu(guis: ArrayList<Gui>) : GuiElement(Text.literal("Gavin's Mod "
         this.guis = guis
     }
 
-    override fun close() {
+    override fun onClose() {
         setEnabled("gui", false)
-        super.close()
+        super.onClose()
     }
 }

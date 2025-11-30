@@ -25,8 +25,8 @@
 package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
-import net.minecraft.block.enums.CameraSubmersionType;
-import net.minecraft.client.render.Camera;
+import net.minecraft.world.level.material.FogType;
+import net.minecraft.client.Camera;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -34,9 +34,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Camera.class)
 public class CameraMixin {
-    @Inject(at = @At("HEAD"), method = "getSubmersionType", cancellable = true)
-    public void getSubmersionType(CallbackInfoReturnable<CameraSubmersionType> cir) {
-        if (GavinsMod.isEnabled("nooverlay")) cir.setReturnValue(CameraSubmersionType.NONE);
+    @Inject(at = @At("HEAD"), method = "getFluidInCamera", cancellable = true)
+    public void getSubmersionType(CallbackInfoReturnable<FogType> cir) {
+        if (GavinsMod.isEnabled("nooverlay")) cir.setReturnValue(FogType.NONE);
     }
 }
 

@@ -35,7 +35,7 @@ import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
 import com.peasenet.settings.*
 import com.peasenet.util.data.ItemEntityFilter
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 /**
  *
@@ -52,7 +52,7 @@ import net.minecraft.text.Text
  */
 class GuiItemEspTracerConfig(
     private val config: TracerEspConfig<*>,
-) : GuiElement(Text.translatable("gavinsmod.gui.itemFilterConfig")) {
+) : GuiElement(Component.translatable("gavinsmod.gui.itemFilterConfig")) {
 
     private var filterCheckbox: ToggleSetting
     private var filterDropdown: GuiScroll
@@ -83,8 +83,8 @@ class GuiItemEspTracerConfig(
 
     init {
         this.parent = GavinsMod.guiSettings
-        offsetX = minecraftClient.window.scaledWidth / 2 - screenWidth / 2
-        offsetY = minecraftClient.window.scaledHeight / 2 - screenHeight / 2
+        offsetX = minecraftClient.window.guiScaledWidth / 2 - screenWidth / 2
+        offsetY = minecraftClient.window.guiScaledHeight / 2 - screenHeight / 2
 
         box = GuiBuilder<Gui>().setWidth(screenWidth).setHeight(screenHeight).setHoverable(false).setDrawBorder(true)
             .setTopLeft(offsetX, offsetY).build()

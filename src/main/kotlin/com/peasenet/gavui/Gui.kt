@@ -28,10 +28,10 @@ import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GuiUtil
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.text.Text
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.network.chat.Component
 import java.util.*
 import java.util.function.Consumer
 import kotlin.math.max
@@ -57,7 +57,7 @@ import kotlin.math.max
 open class Gui(
     builder: GuiBuilder<*>,
     var children: ArrayList<Gui> = ArrayList(),
-    var title: Text? = builder.title,
+    var title: Component? = builder.title,
     var translationKey: String? = builder.translationKey,
     var symbol: String? = builder.symbol,
     var isParent: Boolean = builder.isParent,
@@ -213,8 +213,8 @@ open class Gui(
      * @param delta       The change in time since the last render.
      */
     open fun render(
-        drawContext: DrawContext,
-        tr: TextRenderer,
+        drawContext: GuiGraphics,
+        tr: Font,
         mouseX: Int,
         mouseY: Int,
         delta: Float,
@@ -223,9 +223,9 @@ open class Gui(
         var bg = backgroundColor
         if (mouseWithinGui(mouseX, mouseY) && canHover) bg = bg.brighten(0.25f)
         bg = bg.withAlpha(transparency)
-        drawContext.state.goUpLayer()
+        drawContext.guiRenderState.up()
         GuiUtil.fill(box, drawContext, bg)
-        drawContext.state.goUpLayer()
+        drawContext.guiRenderState.up()
         GuiUtil.drawOutline(box, drawContext, GavUI.borderColor().withAlpha(GavUI.alpha))
         var textColor = GavUI.textColor()
         if (title != null) {
@@ -233,13 +233,13 @@ open class Gui(
                 textColor = textColor.invert()
                 if (textColor.similarity(bg) < 0.3f) textColor = Colors.WHITE
             }
-            val titleH = tr.fontHeight
+            val titleH = tr.lineHeight
             val offsetY = (box.height - titleH)
             drawText(drawContext, tr, title!!, x.toInt() + 2, y.toInt() + offsetY.toInt(), textColor)
         }
         drawSymbol(drawContext, tr, textColor, 0f, 2f)
 
-        if (this.drawBorder) GuiUtil.drawOutline(GavUI.borderColor(), box, drawContext.matrices)
+        if (this.drawBorder) GuiUtil.drawOutline(GavUI.borderColor(), box, drawContext.pose())
         renderChildren(drawContext, tr, mouseX, mouseY, delta)
     }
 
@@ -250,15 +250,15 @@ open class Gui(
      * @param tr          - The text renderer to use.
      */
     protected fun drawSymbol(
-        drawContext: DrawContext,
-        tr: TextRenderer,
+        drawContext: GuiGraphics,
+        tr: Font,
         color: Color,
         offsetX: Float = 0f,
         offsetY: Float = 0f,
     ) {
         if (symbol == null) return
-        val symbolWidth = tr.getWidth(symbol.toString())
-        drawContext.drawText(
+        val symbolWidth = tr.width(symbol.toString())
+        drawContext.drawString(
             tr,
             symbol,
             (x2 - symbolWidth + offsetX).toInt(),
@@ -278,8 +278,8 @@ open class Gui(
      * @param delta       - The change in time since the last render.
      */
     private fun renderChildren(
-        drawContext: DrawContext,
-        tr: TextRenderer,
+        drawContext: GuiGraphics,
+        tr: Font,
         mouseX: Int,
         mouseY: Int,
         delta: Float,
@@ -406,15 +406,15 @@ open class Gui(
 
     //NOTE: I wrote this so that I don't have to deal with the API in drawContext and I can just use the textRenderer directly.
     protected fun drawText(
-        drawContext: DrawContext,
-        textRenderer: TextRenderer,
-        text: Text,
+        drawContext: GuiGraphics,
+        textRenderer: Font,
+        text: Component,
         x: Int,
         y: Int,
         color: Color,
         shadow: Boolean = false,
     ) {
-        drawContext.drawText(textRenderer, text, x, y, color.asInt, shadow)
+        drawContext.drawString(textRenderer, text, x, y, color.asInt, shadow)
     }
 
     override fun hashCode(): Int {
@@ -432,9 +432,9 @@ open class Gui(
     init {
         this.title = builder.title
         var w = builder.width
-        if (title != null && MinecraftClient.getInstance().textRenderer != null) w = max(
+        if (title != null && Minecraft.getInstance().font != null) w = max(
             w.toDouble(),
-            MinecraftClient.getInstance().textRenderer.getWidth(title).toDouble()
+            Minecraft.getInstance().font.width(title).toDouble()
         ).toFloat()
         box = BoxF(builder.topLeft, w, builder.height)
         defaultPosition = BoxF.copy(box)

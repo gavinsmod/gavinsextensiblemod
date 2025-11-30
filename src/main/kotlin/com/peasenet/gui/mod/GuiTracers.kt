@@ -25,7 +25,7 @@ package com.peasenet.gui.mod
 
 import com.peasenet.gavui.math.PointF
 import com.peasenet.mods.ModCategory
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 /**
  * @author GT3CH1
@@ -33,4 +33,4 @@ import net.minecraft.text.Text
  * Creates a new gui for tracer mods as a dropdown.
  */
 class GuiTracers :
-    GuiMod(PointF(120f, 120f), 110, 11, Text.translatable("gavinsmod.gui.tracers"), ModCategory.TRACERS, 6)
+    GuiMod(PointF(120f, 120f), 110, 11, Component.translatable("gavinsmod.gui.tracers"), ModCategory.TRACERS, 6)

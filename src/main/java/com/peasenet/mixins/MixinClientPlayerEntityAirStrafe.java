@@ -28,20 +28,20 @@ import com.mojang.authlib.GameProfile;
 import com.peasenet.mixinterface.IClientPlayerEntityAirStrafe;
 import com.peasenet.util.event.AirStrafeEvent;
 import com.peasenet.util.event.EventManager;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.multiplayer.ClientLevel;
 import org.spongepowered.asm.mixin.Mixin;
 
-@Mixin(ClientPlayerEntity.class)
-public abstract class MixinClientPlayerEntityAirStrafe extends AbstractClientPlayerEntity implements IClientPlayerEntityAirStrafe {
-    public MixinClientPlayerEntityAirStrafe(ClientWorld world, GameProfile profile) {
+@Mixin(LocalPlayer.class)
+public abstract class MixinClientPlayerEntityAirStrafe extends AbstractClientPlayer implements IClientPlayerEntityAirStrafe {
+    public MixinClientPlayerEntityAirStrafe(ClientLevel world, GameProfile profile) {
         super(world, profile);
     }
 
     @Override
-    public float getOffGroundSpeed() {
-        var evt = new AirStrafeEvent(super.getOffGroundSpeed());
+    public float getFlyingSpeed() {
+        var evt = new AirStrafeEvent(super.getFlyingSpeed());
         EventManager.getEventManager().call(evt);
         return evt.getSpeed();
     }

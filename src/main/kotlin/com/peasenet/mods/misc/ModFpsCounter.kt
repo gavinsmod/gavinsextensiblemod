@@ -33,8 +33,8 @@ import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
 import com.peasenet.util.listeners.InGameHudRenderListener
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.text.Text
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.network.chat.Component
 
 /**
  * @author GT3CH1
@@ -89,8 +89,8 @@ class ModFpsCounter : MiscMod(
         em.unsubscribe(InGameHudRenderListener::class.java, this)
     }
 
-    override fun onRenderInGameHud(drawContext: DrawContext, delta: Float, forceRender: Boolean) {
-        if (GavinsMod.isEnabled("gui") || GavinsMod.isEnabled("settings") || !isActive || !forceRender) return
+    override fun onRenderInGameHud(drawContext: GuiGraphics, delta: Float, forceRender: Boolean) {
+        if (GavinsMod.isEnabled("gui") || GavinsMod.isEnabled("settings") || !isActive ) return
         drawFpsOverlay(drawContext)
     }
 
@@ -99,13 +99,13 @@ class ModFpsCounter : MiscMod(
      *
      * @param drawContext The draw context ot use.
      */
-    private fun drawFpsOverlay(drawContext: DrawContext) {
-        val matrixStack = drawContext.matrices
+    private fun drawFpsOverlay(drawContext: GuiGraphics) {
+        val matrixStack = drawContext.pose()
         val fps = GavinsModClient.minecraftClient.getFps()
         val fpsString = "FPS: $fps"
-        val xCoordinate = GavinsModClient.minecraftClient.window.scaledWidth - (fpsString.length * 5 + 2)
+        val xCoordinate = GavinsModClient.minecraftClient.window.guiScaledWidth - (fpsString.length * 5 + 2)
         val box = BoxF(PointF((xCoordinate - 2).toFloat(), 0f), (fpsString.length * 5 + 4).toFloat(), 12f)
-        val maximumFps = GavinsModClient.minecraftClient.options.maxFps.value
+        val maximumFps = GavinsModClient.minecraftClient.options.framerateLimit().get()
         var color = GavUISettings.getColor("gui.color.foreground")
         val colorEnabled = fpsColorConfig.isColorsEnabled
         val fastColor = fpsColorConfig.fastFps
@@ -114,8 +114,10 @@ class ModFpsCounter : MiscMod(
         if (colorEnabled) {
             color =
                 if (fps >= maximumFps * 0.85) fastColor else if (fps > maximumFps * 0.45 && fps < maximumFps * 0.85) okColor else slowFps
+            color = color.withAlpha(1f)
         }
-        GuiUtil.drawBox(GavUISettings.getColor("gui.color.background"), box, matrixStack, 0.5f)
-        drawContext.drawText(client.textRenderer, Text.literal(fpsString), xCoordinate, 2, color.asInt, false)
+//        GuiUtil.drawBox(GavUISettings.getColor("gui.color.background"), box, matrixStack, 0.5f)
+        GuiUtil.fill(box, drawContext, GavUISettings.getColor("gui.color.background").withAlpha(0.5f))
+        drawContext.drawString(client.textRenderer, Component.literal(fpsString), xCoordinate, 2, color.asInt, false)
     }
 }

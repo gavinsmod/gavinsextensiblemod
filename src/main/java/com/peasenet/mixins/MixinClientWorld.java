@@ -25,17 +25,17 @@
 package com.peasenet.mixins;
 
 import com.peasenet.main.Mods;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.client.multiplayer.ClientLevel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ClientWorld.class)
+@Mixin(ClientLevel.class)
 public class MixinClientWorld {
-    @Inject(at = @At("HEAD"), method = "getBlockParticle", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "getMarkerParticleTarget", cancellable = true)
     public void getBlockParticle(CallbackInfoReturnable<Block> cir) {
         if (Mods.isActive("barrierdetect"))
             cir.setReturnValue(Blocks.BARRIER);

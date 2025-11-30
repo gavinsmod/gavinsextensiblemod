@@ -25,7 +25,7 @@
 package com.peasenet.util.event
 
 import com.peasenet.util.listeners.RenderListener
-import net.minecraft.client.util.math.MatrixStack
+import com.mojang.blaze3d.vertex.PoseStack
 import org.joml.Matrix3x2fStack
 
 /**
@@ -37,7 +37,7 @@ import org.joml.Matrix3x2fStack
  * @since 03-02-2023
  */
 class RenderEvent : Event<RenderListener> {
-    lateinit var matrixStack: MatrixStack
+    lateinit var matrixStack: PoseStack
     var partialTicks: Float = 0.0f
 
     companion object {
@@ -48,7 +48,7 @@ class RenderEvent : Event<RenderListener> {
          * @param matrixStack The matrix stack to use.
          * @param partialTicks The partial ticks to use.
          */
-        fun get(matrixStack: MatrixStack, partialTicks: Float): RenderEvent {
+        fun get(matrixStack: PoseStack, partialTicks: Float): RenderEvent {
             INSTANCE.matrixStack = matrixStack
             INSTANCE.partialTicks = partialTicks
             return INSTANCE

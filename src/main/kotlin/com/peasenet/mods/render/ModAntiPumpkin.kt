@@ -25,7 +25,7 @@ package com.peasenet.mods.render
 
 import com.peasenet.util.event.data.RenderOverlay
 import com.peasenet.util.listeners.RenderOverlayListener
-import net.minecraft.util.Identifier
+import net.minecraft.resources.ResourceLocation
 
 /**
  * @author GT3CH1
@@ -47,6 +47,6 @@ class ModAntiPumpkin : RenderMod(
     }
 
     override fun onRenderOverlay(overlay: RenderOverlay) {
-        if (overlay.texture == Identifier.of("textures/misc/pumpkinblur.png")) overlay.cancel()
+        if (overlay.texture == ResourceLocation.parse("textures/misc/pumpkinblur.png")) overlay.cancel()
     }
 }

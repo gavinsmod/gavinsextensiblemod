@@ -24,7 +24,7 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.gavui.color.Color
-import net.minecraft.block.entity.BeehiveBlockEntity
+import net.minecraft.world.level.block.entity.BeehiveBlockEntity
 
 /**
  * @author GT3CH1

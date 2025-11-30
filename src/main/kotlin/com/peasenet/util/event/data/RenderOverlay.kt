@@ -23,7 +23,7 @@
  */
 package com.peasenet.util.event.data
 
-import net.minecraft.util.Identifier
+import net.minecraft.resources.ResourceLocation
 
 /**
  * Called when an overlay is rendered. This event is cancellable.
@@ -34,4 +34,4 @@ import net.minecraft.util.Identifier
  * @version 01-26-2025
  * @since 03-02-2023
  */
-data class RenderOverlay(val texture: Identifier) : Cancellable()
+data class RenderOverlay(val texture: ResourceLocation) : Cancellable()

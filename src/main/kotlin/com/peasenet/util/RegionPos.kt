@@ -24,13 +24,13 @@
 
 package com.peasenet.util
 
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Vec3d
-import net.minecraft.util.math.Vec3i
+import net.minecraft.core.BlockPos
+import net.minecraft.world.phys.Vec3
+import net.minecraft.core.Vec3i
 
 data class RegionPos(val x: Int, val z: Int) {
-    fun toVec3d(): Vec3d {
-        return Vec3d(x.toDouble(), 0.0, z.toDouble())
+    fun toVec3d(): Vec3 {
+        return Vec3(x.toDouble(), 0.0, z.toDouble())
     }
 
     fun toVec3i(): Vec3i {

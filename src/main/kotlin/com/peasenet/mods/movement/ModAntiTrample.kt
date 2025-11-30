@@ -23,7 +23,7 @@
  */
 package com.peasenet.mods.movement
 
-import net.minecraft.block.Blocks
+import net.minecraft.world.level.block.Blocks
 
 /**
  * @author GT3CH1
@@ -37,18 +37,18 @@ class ModAntiTrample : MovementMod(
     override fun onTick() {
         // check if the player is on farmland by looking at the block below the player.
         val player = client.getPlayer()
-        val playerLoc = player.blockPos
-        val playerLocDown = player.blockPos.down()
+        val playerLoc = player.blockPosition()
+        val playerLocDown = player.blockPosition().below()
         val playerBlock = world.getBlockState(playerLoc).block
         val playerBlockDown = world.getBlockState(playerLocDown).block
         val isOnFarmland = playerBlock === FARMLAND || playerBlockDown === FARMLAND
         if (isOnFarmland) {
-            client.options.sneakKey.isPressed = true
+            client.options.keyShift.isDown = true
             wasOnFarmland = true
             return
         }
         if (wasOnFarmland) {
-            client.options.sneakKey.isPressed = false
+            client.options.keyShift.isDown = false
             wasOnFarmland = false
         }
     }

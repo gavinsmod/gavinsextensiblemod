@@ -26,8 +26,8 @@ package com.peasenet.config.commons
 
 import com.peasenet.config.Config
 import com.peasenet.main.GavinsModClient
-import net.minecraft.entity.EntityType
-import net.minecraft.item.SpawnEggItem
+import net.minecraft.world.entity.EntityType
+import net.minecraft.world.item.SpawnEggItem
 
 /**
  * A configuration that allows the player to filter what mobs are attacked, and whether players should be targeted as well.
@@ -75,8 +75,8 @@ open class MobAttackFilterConfig<E : Config<E>> : Config<E>() {
      * @param spawnEggItem The mob to remove (SpawnEggItem)
      */
     fun removeMob(spawnEggItem: SpawnEggItem) {
-        var registryManager = GavinsModClient.minecraftClient.getWorld().registryManager;
-        removeMob(spawnEggItem.getEntityType(spawnEggItem.defaultStack))
+        var registryManager = GavinsModClient.minecraftClient.getWorld().registryAccess();
+        removeMob(spawnEggItem.getType(spawnEggItem.defaultInstance))
     }
 
     /**
@@ -84,8 +84,8 @@ open class MobAttackFilterConfig<E : Config<E>> : Config<E>() {
      * @param spawnEggItem The mob to add (SpawnEggItem)
      */
     fun addMob(spawnEggItem: SpawnEggItem) {
-        val registryManager = GavinsModClient.minecraftClient.getWorld().registryManager;
-        addMob(spawnEggItem.getEntityType( spawnEggItem.defaultStack))
+        val registryManager = GavinsModClient.minecraftClient.getWorld().registryAccess();
+        addMob(spawnEggItem.getType( spawnEggItem.defaultInstance))
     }
 
     /**
@@ -103,8 +103,8 @@ open class MobAttackFilterConfig<E : Config<E>> : Config<E>() {
      * @return Whether the mob is shown.
      */
     fun mobIsShown(egg: SpawnEggItem): Boolean {
-        val registryManager = GavinsModClient.minecraftClient.getWorld().registryManager;
-        return mobIsShown(egg.getEntityType(egg.defaultStack))
+        val registryManager = GavinsModClient.minecraftClient.getWorld().registryAccess();
+        return mobIsShown(egg.getType(egg.defaultInstance))
     }
 
 
@@ -114,7 +114,7 @@ open class MobAttackFilterConfig<E : Config<E>> : Config<E>() {
      * @return Whether the mob is shown.
      */
     fun mobIsShown(mob: EntityType<*>?): Boolean {
-        val inList = shownMobs.contains(mob?.translationKey);
+        val inList = shownMobs.contains(mob?.descriptionId);
         return inList
     }
 }

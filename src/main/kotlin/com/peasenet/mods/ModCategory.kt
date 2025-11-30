@@ -24,7 +24,7 @@
 
 package com.peasenet.mods
 
-import net.minecraft.client.option.KeyBinding
+import net.minecraft.client.KeyMapping
 
 /**
  * A mod category that contains a translation key. This is used to separate the mods within the guis.
@@ -36,7 +36,7 @@ import net.minecraft.client.option.KeyBinding
 enum class ModCategory
     (
     @JvmField val translationKey: String,
-    @JvmField val keybindCategory: KeyBinding.Category,
+    @JvmField val keybindCategory: KeyMapping.Category,
 ) {
     MOVEMENT("gavinsmod.gui.movement", KeyBindCategory.MOVEMENT),
     RENDER("gavinsmod.gui.render", KeyBindCategory.RENDER),

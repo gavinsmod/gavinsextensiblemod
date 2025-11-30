@@ -28,11 +28,11 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.main.GavinsModClient
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.block.GavBlock
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.ChunkPos
-import net.minecraft.world.Heightmap
-import net.minecraft.world.chunk.Chunk
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.core.BlockPos
+import net.minecraft.world.level.ChunkPos
+import net.minecraft.world.level.levelgen.Heightmap
+import net.minecraft.world.level.chunk.ChunkAccess
 import org.joml.Matrix3x2fStack
 import kotlin.math.abs
 import kotlin.math.sqrt
@@ -81,8 +81,8 @@ class GavChunk(val chunkPos: ChunkPos) {
     fun updateBlockNeighbors(block: GavBlock) {
         setOf(
             block.pos,
-            block.pos.up(),
-            block.pos.down(),
+            block.pos.above(),
+            block.pos.below(),
             block.pos.north(),
             block.pos.south(),
             block.pos.east(),
@@ -157,7 +157,7 @@ class GavChunk(val chunkPos: ChunkPos) {
      */
     private fun getRenderDistance(): Double {
         // get the distance from the player to the chunk
-        val playerPos = GavinsModClient.minecraftClient.getPlayer().blockPos
+        val playerPos = GavinsModClient.minecraftClient.getPlayer().blockPosition()
         val chunkPos = this.chunkPos
         val x = abs(playerPos.x - chunkPos.x.times(16))
         val z = abs(playerPos.z - chunkPos.z.times(16))
@@ -176,7 +176,7 @@ class GavChunk(val chunkPos: ChunkPos) {
      * @param blockTracer True if block tracers are enabled, false otherwise.
      */
     fun render(
-        matrixStack: MatrixStack, blockColor: Color,
+        matrixStack: PoseStack, blockColor: Color,
         partialTicks: Float,
         alpha: Float,
         structureEsp: Boolean = false, blockTracer: Boolean = false,
@@ -199,16 +199,16 @@ class GavChunk(val chunkPos: ChunkPos) {
          * @return The GavChunk containing the blocks.
          */
         fun search(
-            chunk: Chunk,
+            chunk: ChunkAccess,
             filter: (BlockPos) -> Boolean,
         ): GavChunk {
             val searchChunk = GavChunk(chunk.pos)
-            val tempBlockPos = BlockPos.Mutable()
-            for (x in chunk.pos.startX..chunk.pos.endX) {
-                for (z in chunk.pos.startZ..chunk.pos.endZ) {
+            val tempBlockPos = BlockPos.MutableBlockPos()
+            for (x in chunk.pos.minBlockX..chunk.pos.maxBlockX) {
+                for (z in chunk.pos.minBlockZ..chunk.pos.maxBlockZ) {
                     val chunkHeight = GavinsModClient.minecraftClient.getWorld()
-                        .getTopPosition(Heightmap.Type.WORLD_SURFACE, BlockPos(x, 0, z)).y + 1
-                    for (y in GavinsModClient.minecraftClient.getWorld().bottomY until chunkHeight) {
+                        .getHeightmapPos(Heightmap.Types.WORLD_SURFACE, BlockPos(x, 0, z)).y + 1
+                    for (y in GavinsModClient.minecraftClient.getWorld().minSectionY until chunkHeight) {
                         tempBlockPos.set(x, y, z)
                         if (filter(tempBlockPos)) {
                             searchChunk.addBlock(tempBlockPos, filter)

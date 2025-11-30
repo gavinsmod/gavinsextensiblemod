@@ -27,7 +27,7 @@ import com.peasenet.config.combat.AutoAttackConfig
 import com.peasenet.gui.mod.combat.GuiAutoAttack
 import com.peasenet.main.Settings
 import com.peasenet.util.PlayerUtils
-import net.minecraft.util.hit.EntityHitResult
+import net.minecraft.world.phys.EntityHitResult
 
 /**
  * A mod that makes the player attack the entity that it is currently looking at.

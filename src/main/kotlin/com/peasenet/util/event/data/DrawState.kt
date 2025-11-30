@@ -23,7 +23,7 @@
  */
 package com.peasenet.util.event.data
 
-import net.minecraft.block.BlockState
+import net.minecraft.world.level.block.state.BlockState
 
 /**
  * Draw side data class for the draw side event. This event is cancelable.

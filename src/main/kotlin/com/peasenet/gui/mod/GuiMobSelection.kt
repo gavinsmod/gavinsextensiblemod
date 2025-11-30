@@ -40,16 +40,16 @@ import com.peasenet.main.Mods.Companion.getMod
 import com.peasenet.main.Settings
 import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.ToggleSetting
-import net.minecraft.client.gui.Click
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.gui.widget.TextFieldWidget
-import net.minecraft.client.input.CharInput
-import net.minecraft.client.input.KeyInput
-import net.minecraft.client.resource.language.I18n
-import net.minecraft.item.ItemStack
-import net.minecraft.item.SpawnEggItem
-import net.minecraft.registry.Registries
-import net.minecraft.text.Text
+import net.minecraft.client.input.MouseButtonEvent
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.components.EditBox
+import net.minecraft.client.input.CharacterEvent
+import net.minecraft.client.input.KeyEvent
+import net.minecraft.client.resources.language.I18n
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.SpawnEggItem
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.network.chat.Component
 
 /**
  *
@@ -59,7 +59,7 @@ import net.minecraft.text.Text
  * @version 01-12-2025
  * @since 04-11-2023
  */
-abstract class GuiMobSelection(label: Text) : GuiElement(label) {
+abstract class GuiMobSelection(label: Component) : GuiElement(label) {
 
     /**
      * The background gui element.
@@ -89,7 +89,7 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
     /**
      * The search field.
      */
-    private lateinit var search: TextFieldWidget
+    private lateinit var search: EditBox
 
     /**
      * The toggle element to show all blocks or just enabled blocks.
@@ -188,7 +188,7 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
     private fun isHovering(mouseX: Int, blockX: Int, mouseY: Int, blockY: Int) =
         mouseX >= blockX && mouseX < blockX + 16 && mouseY >= blockY && mouseY < blockY + 16
 
-    override fun mouseClicked(click: Click, doubled: Boolean): Boolean {
+    override fun mouseClicked(click: MouseButtonEvent, doubled: Boolean): Boolean {
         val mouseX = click.x
         val mouseY = click.y
         val button = click.button()
@@ -218,16 +218,16 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
         return false
     }
 
-    override fun refreshWidgetPositions() {
+    override fun repositionElements() {
         guis.clear()
         additionalGuis.clear()
-        clearChildren()
+        clearWidgets()
         init()
     }
 
     override fun init() {
-        val screenWidth = GavinsModClient.minecraftClient.window.scaledWidth
-        val screenHeight = GavinsModClient.minecraftClient.window.scaledHeight
+        val screenWidth = GavinsModClient.minecraftClient.window.guiScaledWidth
+        val screenHeight = GavinsModClient.minecraftClient.window.guiScaledHeight
         m_width = COLUMNS * BLOCK_OFFSET + 3
         m_height = ROWS * BLOCK_OFFSET + 3
         x = (screenWidth - m_width) / 2
@@ -238,28 +238,28 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
             .setBackgroundColor(Colors.INDIGO).setTransparency(0.5f).setHoverable(false).build()
         parent = GavinsMod.guiSettings
         items = ArrayList()
-        Registries.ENTITY_TYPE.forEach {
-            val spawnEgg = SpawnEggItem.forEntity(it)
-            if (spawnEgg != null) items.add(spawnEgg.defaultStack)
+        BuiltInRegistries.ENTITY_TYPE.forEach {
+            val spawnEgg = SpawnEggItem.byId(it)
+            if (spawnEgg != null) items.add(spawnEgg.defaultInstance)
         }
         visibleItems = items
         nextButton =
             GuiBuilder<Gui>().setTopLeft(PointF((x + PAGE_WIDTH - 30f), (y + PAGE_HEIGHT).toFloat())).setWidth(30f)
-                .setHeight(10f).setTitle(Text.literal("Next")).setCallback { pageUp() }.buildClick()
+                .setHeight(10f).setTitle(Component.literal("Next")).setCallback { pageUp() }.buildClick()
         prevButton =
             GuiBuilder<Gui>().setTopLeft(PointF(x.toFloat(), (y + PAGE_HEIGHT).toFloat())).setWidth(30f).setHeight(10f)
-                .setTitle(Text.literal("Prev")).setCallback { pageDown() }.buildClick()
+                .setTitle(Component.literal("Prev")).setCallback { pageDown() }.buildClick()
         val searchWidth = SEARCH_MAX_WIDTH.coerceAtMost(PAGE_WIDTH)
         search = object :
-            TextFieldWidget(textRenderer, (x + (PAGE_WIDTH - searchWidth) / 2), y - 15, searchWidth, 12, Text.empty()) {
-            override fun charTyped(input: CharInput): Boolean {
+            EditBox(font, (x + (PAGE_WIDTH - searchWidth) / 2), y - 15, searchWidth, 12, Component.empty()) {
+            override fun charTyped(input: CharacterEvent): Boolean {
                 val pressed = super.charTyped(input)
                 currentPage = 0
                 updateItemList()
                 return pressed
             }
 
-            override fun keyPressed(input: KeyInput): Boolean {
+            override fun keyPressed(input: KeyEvent): Boolean {
                 val pressed = super.keyPressed(input)
                 currentPage = 0
                 updateItemList()
@@ -267,15 +267,15 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
             }
         }
 
-        addSelectableChild(search)
-        var tw = textRenderer.getWidth("Enabled Only")
-        if (showHostileColor) tw = tw.coerceAtLeast(textRenderer.getWidth(hostileColor?.gui?.title ?: Text.of("")))
-        if (showPeacefulColor) tw = tw.coerceAtLeast(textRenderer.getWidth(peacefulColor?.gui?.title ?: Text.of("")))
-        if (showHostileToggle) tw = tw.coerceAtLeast(textRenderer.getWidth(hostileToggle?.gui?.title ?: Text.of("")))
-        if (showPeacefulToggle) tw = tw.coerceAtLeast(textRenderer.getWidth(peacefulToggle?.gui?.title ?: Text.of("")))
+        addWidget(search)
+        var tw = font.width("Enabled Only")
+        if (showHostileColor) tw = tw.coerceAtLeast(font.width(hostileColor?.gui?.title ?: Component.nullToEmpty("")))
+        if (showPeacefulColor) tw = tw.coerceAtLeast(font.width(peacefulColor?.gui?.title ?: Component.nullToEmpty("")))
+        if (showHostileToggle) tw = tw.coerceAtLeast(font.width(hostileToggle?.gui?.title ?: Component.nullToEmpty("")))
+        if (showPeacefulToggle) tw = tw.coerceAtLeast(font.width(peacefulToggle?.gui?.title ?: Component.nullToEmpty("")))
         if (additionalGuis.isNotEmpty()) {
             for (gui in additionalGuis) {
-                tw = tw.coerceAtLeast(textRenderer.getWidth(gui.title ?: Text.of("")))
+                tw = tw.coerceAtLeast(font.width(gui.title ?: Component.nullToEmpty("")))
             }
         }
         tw += 12
@@ -304,12 +304,12 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
     }
 
 
-    override fun keyPressed(input: KeyInput): Boolean {
+    override fun keyPressed(input: KeyEvent): Boolean {
         search.keyPressed(input)
         return super.keyPressed(input)
     }
 
-    override fun charTyped(input: CharInput): Boolean {
+    override fun charTyped(input: CharacterEvent): Boolean {
         search.charTyped(input)
         return super.charTyped(input)
     }
@@ -325,8 +325,8 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
      */
     abstract fun handleItemToggle(item: ItemStack)
 
-    override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        val matrixStack = drawContext.matrices
+    override fun render(drawContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+        val matrixStack = drawContext.pose()
         super.render(drawContext, mouseX, mouseY, delta)
         search.render(drawContext, mouseX, mouseY, delta)
         for (i in 0 until ITEMS_PER_PAGE) {
@@ -355,9 +355,9 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
                     GavUISettings.getColor("gui.color.foreground").brighten(0.5f).getAsInt()
                 )
                 GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack)
-                drawContext.drawTooltip(textRenderer, Text.translatable(block.item.translationKey), mouseX, mouseY)
+                drawContext.setTooltipForNextFrame(font, Component.translatable(block.item.descriptionId), mouseX, mouseY)
             }
-            drawContext.drawItem(block, blockX, blockY)
+            drawContext.renderItem(block, blockX, blockY)
         }
     }
 
@@ -366,8 +366,8 @@ abstract class GuiMobSelection(label: Text) : GuiElement(label) {
      */
     fun updateItemList() {
         var itms = items.filter {
-            I18n.translate(it.item.translationKey).lowercase().contains(
-                search.text.lowercase()
+            I18n.get(it.item.descriptionId).lowercase().contains(
+                search.value.lowercase()
             )
         }
         if (enabledOnly.state) {

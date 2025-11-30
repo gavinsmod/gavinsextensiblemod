@@ -41,7 +41,7 @@ import com.peasenet.mods.ModCategory
 import com.peasenet.settings.Setting
 import com.peasenet.settings.slideSetting
 import com.peasenet.settings.toggleSetting
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 import java.util.function.Consumer
 
 /**
@@ -50,7 +50,7 @@ import java.util.function.Consumer
  * @since 04-11-2023
  * @version 01-12-2025
  */
-class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings").append(" ")) {
+class GuiSettings : GuiElement(Component.translatable("gavinsmod.gui.settings").append(" ")) {
     /**
      * Creates a new GUI settings screen.
      */
@@ -110,7 +110,7 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings").appen
             .setTopLeft(PointF(0f, 1f))
             .setWidth(4)
             .setHeight(11)
-            .setTitle(Text.translatable("gavinsmod.settings.reset"))
+            .setTitle(Component.translatable("gavinsmod.settings.reset"))
             .setDraggable(true)
             .buildClick()
         reloadGui()
@@ -119,9 +119,9 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings").appen
 
     override fun init() {
         super.init()
-        val titleW = textRenderer.getWidth(title) + 16
-        val resetText = Text.translatable("gavinsmod.settings.reset")
-        val width = textRenderer.getWidth(resetText)
+        val titleW = font.width(title) + 16
+        val resetText = Component.translatable("gavinsmod.settings.reset")
+        val width = font.width(resetText)
         resetPos = PointF(titleW.toFloat() + 5f, 1f)
         resetButton.title = resetText
         resetButton.width = (width + 4).toFloat()
@@ -136,9 +136,9 @@ class GuiSettings : GuiElement(Text.translatable("gavinsmod.gui.settings").appen
         resetButton.canHover = true
     }
 
-    override fun close() {
+    override fun onClose() {
         setEnabled("settings", false)
-        super.close()
+        super.onClose()
     }
 
     /**

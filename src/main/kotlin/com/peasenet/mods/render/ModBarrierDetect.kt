@@ -24,7 +24,7 @@
 package com.peasenet.mods.render
 
 import com.peasenet.mixinterface.ISimpleOption
-import net.minecraft.particle.ParticlesMode
+import net.minecraft.server.level.ParticleStatus
 
 /**
  * @author GT3CH1
@@ -37,12 +37,12 @@ class ModBarrierDetect : RenderMod(
 ) {
     override fun onEnable() {
         super.onEnable()
-        particlesMode = client.options.particles.value
+        particlesMode = client.options.particles().get()
         when (particlesMode) {
-            ParticlesMode.ALL, ParticlesMode.DECREASED, null -> {}
-            ParticlesMode.MINIMAL -> {
-                val newMode = client.options.particles as ISimpleOption<ParticlesMode>
-                newMode.forceSetValue(ParticlesMode.ALL)
+            ParticleStatus.ALL, ParticleStatus.DECREASED, null -> {}
+            ParticleStatus.MINIMAL -> {
+                val newMode = client.options.particles() as ISimpleOption<ParticleStatus>
+                newMode.forceSetValue(ParticleStatus.ALL)
             }
 
         }
@@ -52,15 +52,15 @@ class ModBarrierDetect : RenderMod(
     override fun onDisable() {
         super.onDisable()
         when (particlesMode) {
-            ParticlesMode.ALL, ParticlesMode.DECREASED, null -> {}
-            ParticlesMode.MINIMAL -> {
-                val newMode = client.options.particles!!
-                (newMode as ISimpleOption<ParticlesMode>).forceSetValue(ParticlesMode.MINIMAL)
+            ParticleStatus.ALL, ParticleStatus.DECREASED, null -> {}
+            ParticleStatus.MINIMAL -> {
+                val newMode = client.options.particles()!!
+                (newMode as ISimpleOption<ParticleStatus>).forceSetValue(ParticleStatus.MINIMAL)
             }
         }
     }
 
     companion object {
-        private var particlesMode: ParticlesMode? = null
+        private var particlesMode: ParticleStatus? = null
     }
 }

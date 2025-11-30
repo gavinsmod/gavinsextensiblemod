@@ -26,7 +26,7 @@ package com.peasenet.mods.render.waypoints
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.util.Dimension
-import net.minecraft.util.math.Vec3i
+import net.minecraft.core.Vec3i
 import java.util.*
 
 /**

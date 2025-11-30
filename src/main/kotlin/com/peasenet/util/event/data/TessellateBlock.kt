@@ -23,9 +23,9 @@
  */
 package com.peasenet.util.event.data
 
-import net.minecraft.block.BlockState
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.BlockPos
+import net.minecraft.world.level.block.state.BlockState
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.core.BlockPos
 
 /**
  * Data class for the tessellate block event. This event is cancellable.
@@ -46,5 +46,5 @@ data class TessellateBlock
     var blockState: BlockState,
     var blockPos: BlockPos,
 //    var model: BakedModel,
-    var matrixStack: MatrixStack,
+    var matrixStack: PoseStack,
 ) : Cancellable()

@@ -28,7 +28,7 @@ import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.Direction
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 /**
  * @author GT3CH1
@@ -58,7 +58,7 @@ class GuiBuilder<T : Gui> {
         private set
     var drawBorder: Boolean = true
         private set
-    var title: Text? = null
+    var title: Component? = null
         private set
     var symbol: String? = null
         private set
@@ -150,12 +150,12 @@ class GuiBuilder<T : Gui> {
 
     fun setTitle(translationKey: String?): GuiBuilder<T> {
         if (translationKey.isNullOrEmpty()) return this
-        this.title = Text.translatable(translationKey)
+        this.title = Component.translatable(translationKey)
         this.translationKey = translationKey
         return this
     }
 
-    fun setTitle(title: Text?): GuiBuilder<T> {
+    fun setTitle(title: Component?): GuiBuilder<T> {
         this.title = title
         return this
     }

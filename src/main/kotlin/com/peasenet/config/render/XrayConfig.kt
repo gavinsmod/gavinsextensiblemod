@@ -28,7 +28,7 @@ import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonToken
 import com.google.gson.stream.JsonWriter
 import com.peasenet.config.commons.BlockListConfig
-import net.minecraft.block.ExperienceDroppingBlock
+import net.minecraft.world.level.block.DropExperienceBlock
 
 /**
  * The configuration for xray.
@@ -36,7 +36,7 @@ import net.minecraft.block.ExperienceDroppingBlock
  * @author GT3CH1
  * @version 03-02-2023
  */
-class XrayConfig : BlockListConfig<XrayConfig>({ it is ExperienceDroppingBlock }) {
+class XrayConfig : BlockListConfig<XrayConfig>({ it is DropExperienceBlock }) {
 
     /**
      * Whether to cull blocks.

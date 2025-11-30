@@ -34,9 +34,9 @@ import com.peasenet.util.event.data.OutputPacket
 import com.peasenet.util.listeners.AirStrafeListener
 import com.peasenet.util.listeners.PacketSendListener
 import com.peasenet.util.listeners.RenderListener
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
-import net.minecraft.util.math.Vec3d
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
+import net.minecraft.world.phys.Vec3
 import org.joml.Matrix3x2fStack
 
 /**
@@ -101,12 +101,12 @@ class ModFreeCam : MiscMod(
         super.onTick()
         if (!isActive) return
         val player = client.getPlayer()
-        player.isOnGround = false
+        player.setOnGround(false)
         player.abilities.flying = true
-        player.velocity = Vec3d.ZERO
+        player.deltaMovement = (Vec3.ZERO)
         val scalar = config.freeCamSpeed
-        if (player.input.playerInput.sneak && scalar != 0F) player.addVelocity(0.0, -0.75 * config.freeCamSpeed, 0.0)
-        else if (player.input.playerInput.jump && scalar != 0F) player.addVelocity(0.0, 0.75 * config.freeCamSpeed, 0.0)
+        if (player.input.keyPresses.shift && scalar != 0F) player.push(0.0, -0.75 * config.freeCamSpeed, 0.0)
+        else if (player.input.keyPresses.jump && scalar != 0F) player.push(0.0, 0.75 * config.freeCamSpeed, 0.0)
     }
 
     override fun onDisable() {
@@ -117,14 +117,14 @@ class ModFreeCam : MiscMod(
         em.unsubscribe(RenderListener::class.java, this)
         em.unsubscribe(AirStrafeListener::class.java, this)
         client.getPlayer().abilities.flying = false
-        client.getPlayer().velocity = Vec3d.ZERO
-        client.worldRenderer.reload()
+        client.getPlayer().deltaMovement = (Vec3.ZERO)
+        client.worldRenderer.allChanged()
 
     }
 
 
     override fun onPacketSend(packet: OutputPacket) {
-        if (packet.packet is PlayerMoveC2SPacket) packet.cancel()
+        if (packet.packet is ServerboundMovePlayerPacket) packet.cancel()
     }
 
     override fun onAirStrafe(event: AirStrafeEvent) {
@@ -133,16 +133,16 @@ class ModFreeCam : MiscMod(
     }
 
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+    override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
         if (config.espEnabled) renderEsp(matrixStack, partialTicks)
         if (config.tracerEnabled)
             renderTracer(matrixStack, partialTicks)
     }
 
-    private fun renderTracer(matrixStack: MatrixStack, partialTicks: Float) {
-        val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
+    private fun renderTracer(matrixStack: PoseStack, partialTicks: Float) {
+        val tracerOrigin = RenderUtils.getLookVec(partialTicks).scale(10.0)
         val end = RenderUtils.getLerpedBox(fake!!, partialTicks).center
-        matrixStack.push()
+        matrixStack.pushPose()
         RenderUtils.drawSingleLine(
             matrixStack,
             tracerOrigin,
@@ -150,10 +150,10 @@ class ModFreeCam : MiscMod(
             config.color,
             config.alpha
         )
-        matrixStack.pop()
+        matrixStack.popPose()
     }
 
-    private fun renderEsp(matrixStack: MatrixStack, partialTicks: Float) {
+    private fun renderEsp(matrixStack: PoseStack, partialTicks: Float) {
         val bb = RenderUtils.getLerpedBox(fake!!, partialTicks)
         RenderUtils.renderEntityEsp(
             matrixStack,

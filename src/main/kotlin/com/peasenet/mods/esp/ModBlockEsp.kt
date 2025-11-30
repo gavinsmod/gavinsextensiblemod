@@ -40,8 +40,8 @@ import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.chunk.Chunk
+import net.minecraft.core.BlockPos
+import net.minecraft.world.level.chunk.ChunkAccess
 
 /**
  * An ESP mod that draws boxes around user selected blocks in the world.
@@ -137,7 +137,7 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
         return chunk.inRenderDistance()
     }
 
-    override fun searchChunk(chunk: Chunk) {
+    override fun searchChunk(chunk: ChunkAccess) {
         GemExecutor.execute {
             synchronized(chunk) {
                 GavChunk.search(

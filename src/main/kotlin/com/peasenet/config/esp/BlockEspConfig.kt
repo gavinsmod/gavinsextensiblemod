@@ -26,7 +26,7 @@ package com.peasenet.config.esp
 
 import com.peasenet.config.commons.BlockListConfig
 import com.peasenet.config.commons.IBlockEspTracerConfig
-import net.minecraft.block.Blocks
+import net.minecraft.world.level.block.Blocks
 
 /**
  * A configuration for block esp.
@@ -37,7 +37,7 @@ import net.minecraft.block.Blocks
  * @author GT3CH1
  * @version 09-01-2024
  */
-class BlockEspConfig : BlockListConfig<BlockEspConfig>({ it.defaultState == Blocks.SUGAR_CANE.defaultState }),
+class BlockEspConfig : BlockListConfig<BlockEspConfig>({ it.defaultBlockState() == Blocks.SUGAR_CANE.defaultBlockState() }),
     IBlockEspTracerConfig {
     init {
         key = "blockesp"

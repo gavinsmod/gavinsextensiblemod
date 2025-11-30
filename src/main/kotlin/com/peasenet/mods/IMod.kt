@@ -24,7 +24,7 @@
 package com.peasenet.mods
 
 import com.peasenet.gavui.Gui
-import net.minecraft.client.world.ClientWorld
+import net.minecraft.client.multiplayer.ClientLevel
 
 /**
  * @author GT3CH1
@@ -131,6 +131,6 @@ interface IMod {
      *
      * @return The world that the player is in.
      */
-    val world: ClientWorld?
+    val world: ClientLevel?
 
 }

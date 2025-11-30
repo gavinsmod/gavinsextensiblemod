@@ -23,8 +23,8 @@
  */
 package com.peasenet.gavui
 
-import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.GuiGraphics
 
 /**
  * @author GT3CH1
@@ -72,7 +72,7 @@ class GuiToggle(builder: GuiBuilder<out GuiToggle>) : GuiClick(builder) {
         return true
     }
 
-    override fun render(drawContext: DrawContext, tr: TextRenderer, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(drawContext: GuiGraphics, tr: Font, mouseX: Int, mouseY: Int, delta: Float) {
         if (isHidden) return
         symbolOffsetY= 0
         symbol = if (isOn) "☑" else "☐"

@@ -31,9 +31,9 @@ import com.peasenet.extensions.toVec3d
 import com.peasenet.gavui.color.Color
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.RenderUtils.getCameraPos
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Vec3d
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.core.BlockPos
+import net.minecraft.world.phys.Vec3
 import org.joml.Matrix3x2fStack
 
 /**
@@ -86,8 +86,8 @@ class GavBlock(
      * Updates the edges of the block.
      */
     fun update() {
-        val up = hasNeighbor(pos.up())
-        val below = hasNeighbor(pos.down())
+        val up = hasNeighbor(pos.above())
+        val below = hasNeighbor(pos.below())
         val east = hasNeighbor(pos.east())
         val west = hasNeighbor(pos.west())
         val south = hasNeighbor(pos.south())
@@ -136,11 +136,11 @@ class GavBlock(
             visibleEdges = visibleEdges nand Edge.Edge2 nand Edge.Edge10
             visibleEdges = visibleEdges nand Edge.Edge6 nand Edge.Edge7
         }
-        if (hasNeighbor(pos.up())) {
+        if (hasNeighbor(pos.above())) {
             visibleEdges = visibleEdges nand Edge.Edge9 nand Edge.Edge10
             visibleEdges = visibleEdges nand Edge.Edge11 nand Edge.Edge12
         }
-        if (hasNeighbor(pos.down())) {
+        if (hasNeighbor(pos.below())) {
             visibleEdges = visibleEdges nand Edge.Edge1 nand Edge.Edge2
             visibleEdges = visibleEdges nand Edge.Edge3 nand Edge.Edge4
         }
@@ -162,8 +162,8 @@ class GavBlock(
      */
     private fun renderEdges(
         edges: Int,
-        blockPos: Vec3d,
-        matrixStack: MatrixStack,
+        blockPos: Vec3,
+        matrixStack: PoseStack,
         color: Color,
         alpha: Float,
     ) {
@@ -190,13 +190,13 @@ class GavBlock(
      */
     private fun renderEdge(
         edge: Edge,
-        blockPos: Vec3d,
-        matrixStack: MatrixStack,
+        blockPos: Vec3,
+        matrixStack: PoseStack,
         color: Color,
         alpha: Float,
     ) {
 //        val region = blockPos.
-        val startPos = blockPos.add((getCameraPos().negate()))
+        val startPos = blockPos.add((getCameraPos().reverse()))
         when (edge) {
             Edge.Edge1 -> {
                 RenderUtils.drawSingleLine(
@@ -363,7 +363,7 @@ class GavBlock(
      * @param structureEsp Whether to render the block as a structure.
      */
     fun render(
-        matrixStack: MatrixStack,
+        matrixStack: PoseStack,
         color: Color,
         partialTicks: Float,
         alpha: Float,
@@ -371,14 +371,14 @@ class GavBlock(
         tracers: Boolean = false,
     ) {
 
-        matrixStack.push()
+        matrixStack.pushPose()
         val offsetPos = pos.toVec3d()
         if (structureEsp)
             renderEdges(visibleEdges, offsetPos, matrixStack, color, alpha)
         else
             renderEdges(Edge.All.mask, offsetPos, matrixStack, color, alpha)
         if (tracers) {
-            val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
+            val tracerOrigin = RenderUtils.getLookVec(partialTicks).scale(10.0)
             RenderUtils.drawSingleLine(
                 matrixStack,
                 tracerOrigin,
@@ -389,7 +389,7 @@ class GavBlock(
                 depthTest = false
             )
         }
-        matrixStack.pop()
+        matrixStack.popPose()
     }
 
     override fun equals(other: Any?): Boolean {

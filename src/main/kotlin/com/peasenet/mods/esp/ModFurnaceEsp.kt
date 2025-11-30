@@ -24,8 +24,8 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.gavui.color.Color
-import net.minecraft.block.entity.BlockEntity
-import net.minecraft.block.entity.FurnaceBlockEntity
+import net.minecraft.world.level.block.entity.BlockEntity
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity
 
 /**
  * A mod that allows the client to see an esp (a box) around furnaces.

@@ -37,12 +37,11 @@ class ModSpeed : MovementMod(
     override fun onTick() {
         val player = client.getPlayer()
 
-        if (player.isSneaking) return
-        if (!player.isOnGround) return
-        var velocity = player.velocity
-        velocity = velocity.multiply(1.5)
+        if (player.isShiftKeyDown) return
+        if (!player.onGround()) return
+        var velocity = player.deltaMovement.scale(1.5)
         val currentSpeed = sqrt(velocity.x.pow(2.0) + velocity.z.pow(2.0))
-        player.velocity = velocity
-        if (currentSpeed > 0.5) player.velocity = velocity.multiply(0.5 / currentSpeed)
+        player.deltaMovement = velocity
+        if (currentSpeed > 0.5) player.deltaMovement = (velocity.scale(0.5 / currentSpeed))
     }
 }

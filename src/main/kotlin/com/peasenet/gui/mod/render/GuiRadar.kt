@@ -35,8 +35,8 @@ import com.peasenet.main.Settings
 import com.peasenet.mods.render.ModRadar
 import com.peasenet.settings.*
 import com.peasenet.util.ChatCommand
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.text.Text
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.network.chat.Component
 
 /**
  * A GUI that allows the user to modify settings for the radar mod. This interface will show a preview of what the
@@ -49,7 +49,7 @@ import net.minecraft.text.Text
  * @version 01-15-2025
  * @since 06/18/2023
  */
-class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
+class GuiRadar : GuiElement(Component.translatable("gavinsmod.mod.render.radar")) {
 
     private lateinit var box: Gui
 
@@ -65,8 +65,8 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         val config = Settings.getConfig<RadarConfig>(ChatCommand.Radar.chatCommand)
     }
 
-    override fun close() {
-        super.close()
+    override fun onClose() {
+        super.onClose()
         visible = false
     }
 
@@ -76,8 +76,8 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         this.parent = GavinsMod.guiSettings
         settings.clear()
         guis.clear()
-        offsetX = client!!.window.scaledWidth / 2 - (this.width / 2)
-        offsetY = client!!.window.scaledHeight / 2 - (this.height / 2)
+        offsetX = minecraft!!.window.guiScaledWidth / 2 - (this.width / 2)
+        offsetY = minecraft!!.window.guiScaledHeight / 2 - (this.height / 2)
         paddingX = PADDING + PADDING
         paddingY = offsetY + PADDING
 
@@ -246,8 +246,8 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
         for (gui in guis) {
             if (gui.title == null)
                 continue
-            if (client!!.textRenderer.getWidth(gui.title) > maxWidth) {
-                maxWidth = client!!.textRenderer.getWidth(gui.title)
+            if (minecraft!!.font.width(gui.title) > maxWidth) {
+                maxWidth = minecraft!!.font.width(gui.title)
             }
         }
 
@@ -306,10 +306,10 @@ class GuiRadar : GuiElement(Text.translatable("gavinsmod.mod.render.radar")) {
      */
     private fun updateScaleText(setting: ClickSetting, value: Int) {
         setting.gui.title =
-            (Text.translatable(setting.gui.translationKey).append(Text.literal(" (%s)".format(value))))
+            (Component.translatable(setting.gui.translationKey).append(Component.literal(" (%s)".format(value))))
     }
 
-    override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(drawContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
         super.render(drawContext, mouseX, mouseY, delta)
         val mod = Mods.getMod<ModRadar>(ChatCommand.Radar)
         mod.onRenderInGameHud(drawContext, delta, true)

@@ -25,11 +25,11 @@ package com.peasenet.util
 
 import com.mojang.blaze3d.pipeline.RenderPipeline
 import com.mojang.blaze3d.platform.DepthTestFunction
-import net.minecraft.client.gl.RenderPipelines
-import net.minecraft.client.render.RenderLayer
-import net.minecraft.client.render.RenderLayer.MultiPhase
-import net.minecraft.client.render.RenderPhase
-import net.minecraft.client.render.RenderPhase.LineWidth
+import net.minecraft.client.renderer.RenderPipelines
+import net.minecraft.client.renderer.RenderType
+import net.minecraft.client.renderer.RenderType.CompositeRenderType
+import net.minecraft.client.renderer.RenderStateShard
+import net.minecraft.client.renderer.RenderStateShard.LineStateShard
 import java.util.*
 
 /**
@@ -39,37 +39,37 @@ import java.util.*
  */
 class GemRenderLayers {
     companion object {
-        val LINES: MultiPhase = RenderLayer.of(
+        val LINES: CompositeRenderType = RenderType.create(
             "gem:lines", 1536, RenderPipelines.LINES,
-            RenderLayer.MultiPhaseParameters.builder()
-                 .lineWidth(LineWidth(OptionalDouble.of(2.0)))
-                .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
-                .target(RenderPhase.ITEM_ENTITY_TARGET)
-                .build(false)
+            RenderType.CompositeState.builder()
+                 .setLineState(LineStateShard(OptionalDouble.of(2.0)))
+                .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
+                .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)
+                .createCompositeState(false)
         )
 
-        val ESP_LINES: MultiPhase = RenderLayer.of(
+        val ESP_LINES: CompositeRenderType = RenderType.create(
             "gem:esp_lines", 1536, GemRenderPipeline.ESP_LINE_STRIP,
-            RenderLayer.MultiPhaseParameters.builder()
-                .lineWidth(LineWidth(OptionalDouble.of(2.0)))
-                .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
-                .target(RenderPhase.ITEM_ENTITY_TARGET)
-                .build(false)
+            RenderType.CompositeState.builder()
+                .setLineState(LineStateShard(OptionalDouble.of(2.0)))
+                .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
+                .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)
+                .createCompositeState(false)
         )
 
-        val QUADS: MultiPhase = RenderLayer.of(
+        val QUADS: CompositeRenderType = RenderType.create(
             "gem:quads", 1536, RenderPipelines.DEBUG_QUADS,
-            RenderLayer.MultiPhaseParameters.builder()
-                .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
-                .target(RenderPhase.ITEM_ENTITY_TARGET)
-                .build(false)
+            RenderType.CompositeState.builder()
+                .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
+                .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)
+                .createCompositeState(false)
         )
-        val TEXT: MultiPhase = RenderLayer.of(
+        val TEXT: CompositeRenderType = RenderType.create(
             "gem:text", 1536, RenderPipelines.GUI_TEXT,
-            RenderLayer.MultiPhaseParameters.builder()
-                .layering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
-                .target(RenderPhase.ITEM_ENTITY_TARGET)
-                .build(false)
+            RenderType.CompositeState.builder()
+                .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
+                .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)
+                .createCompositeState(false)
         )
     }
 }
@@ -77,7 +77,7 @@ class GemRenderLayers {
 class GemRenderPipeline {
     companion object {
         val ESP_LINE_STRIP: RenderPipeline = RenderPipelines.register(
-            RenderPipeline.builder(RenderPipelines.RENDERTYPE_LINES_SNIPPET)
+            RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
                 .withLocation("gem/lines")
 //                .withVertexFormat(VertexFormats.POSITION_COLOR, VertexFormat.DrawMode.LINES)
                 .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)

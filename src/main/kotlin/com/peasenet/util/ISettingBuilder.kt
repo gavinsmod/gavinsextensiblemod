@@ -29,7 +29,7 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.math.PointF
 import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.Setting
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 /**
  *
@@ -40,7 +40,7 @@ import net.minecraft.text.Text
 abstract class NewSettingBuilder<T : Setting> {
     protected var width = 0f
     protected var height = 0f
-    protected var title: Text? = null
+    protected var title: Component? = null
     protected var callback: ((T) -> Unit)? = null
     protected var hoverable = false
     protected var color = GavUI.backgroundColor()
@@ -53,7 +53,7 @@ abstract class NewSettingBuilder<T : Setting> {
 
     fun width(width: Float) = apply { this.width = width }
     fun height(height: Float) = apply { this.height = height }
-    fun title(title: Text) = apply { this.title = title }
+    fun title(title: Component) = apply { this.title = title }
     fun callback(callback: ((T) -> Unit)?) = apply { this.callback = callback }
     fun hoverable(hoverable: Boolean) = apply { this.hoverable = hoverable }
     fun color(color: Color) = apply { this.color = color }

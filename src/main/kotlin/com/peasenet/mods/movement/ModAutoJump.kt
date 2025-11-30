@@ -34,6 +34,6 @@ class ModAutoJump : MovementMod(
 ) {
     override fun onTick() {
         val player = client.getPlayer()
-        if (player.isOnGround) player.jump()
+        if (player.onGround()) player.jumpFromGround()
     }
 }

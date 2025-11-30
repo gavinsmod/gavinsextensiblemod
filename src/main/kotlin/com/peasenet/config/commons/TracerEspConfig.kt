@@ -28,8 +28,8 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.main.GavinsModClient
 import com.peasenet.util.data.ItemEntityFilter
-import net.minecraft.entity.EntityType
-import net.minecraft.item.SpawnEggItem
+import net.minecraft.world.entity.EntityType
+import net.minecraft.world.item.SpawnEggItem
 
 /**
  * This is the shared configuration for tracers and esps, as they tend to have very similar settings.
@@ -184,7 +184,7 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
      * @param mob The mob to remove (EntityType)
      */
     fun removeMob(mob: EntityType<*>?) {
-        shownMobs.removeIf { it == mob?.translationKey }
+        shownMobs.removeIf { it == mob?.descriptionId }
         saveConfig()
     }
 
@@ -193,8 +193,8 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
      * @param spawnEggItem The mob to remove (SpawnEggItem)
      */
     fun removeMob(spawnEggItem: SpawnEggItem) {
-        var registryManager = GavinsModClient.minecraftClient.getWorld().registryManager;
-        removeMob(spawnEggItem.getEntityType(spawnEggItem.defaultStack))
+        var registryManager = GavinsModClient.minecraftClient.getWorld().registryAccess();
+        removeMob(spawnEggItem.getType(spawnEggItem.defaultInstance))
     }
 
     /**
@@ -202,8 +202,8 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
      * @param spawnEggItem The mob to add (SpawnEggItem)
      */
     fun addMob(spawnEggItem: SpawnEggItem) {
-        val registryManager = GavinsModClient.minecraftClient.getWorld().registryManager;
-        addMob(spawnEggItem.getEntityType(spawnEggItem.defaultStack))
+        val registryManager = GavinsModClient.minecraftClient.getWorld().registryAccess();
+        addMob(spawnEggItem.getType(spawnEggItem.defaultInstance))
     }
 
     /**
@@ -221,8 +221,8 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
      * @return Whether the mob is shown.
      */
     fun inList(egg: SpawnEggItem): Boolean {
-        val registryManager = GavinsModClient.minecraftClient.getWorld().registryManager;
-        return inList(egg.getEntityType( egg.defaultStack))
+        val registryManager = GavinsModClient.minecraftClient.getWorld().registryAccess();
+        return inList(egg.getType( egg.defaultInstance))
     }
 
 
@@ -232,7 +232,7 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
      * @return Whether the mob is in the entity list.
      */
     fun inList(mob: EntityType<*>?): Boolean {
-        val inList = shownMobs.contains(mob?.translationKey);
+        val inList = shownMobs.contains(mob?.descriptionId);
         return inList
     }
 }

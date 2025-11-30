@@ -24,9 +24,9 @@
 
 package com.peasenet.util.event.data
 
-import net.minecraft.client.render.VertexConsumerProvider
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.Entity
+import net.minecraft.client.renderer.MultiBufferSource
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.world.entity.Entity
 
 /**
  * A data class that contains the data needed for [ModHealthTag][com.peasenet.mods.render.ModHealthTag].
@@ -47,7 +47,7 @@ import net.minecraft.entity.Entity
  */
 data class EntityNameRender(
     val entity: Entity,
-    val matrixStack: MatrixStack,
-    var vertexConsumerProvider: VertexConsumerProvider?,
+    val matrixStack: PoseStack,
+    var vertexConsumerProvider: MultiBufferSource?,
     var light: Int,
 )

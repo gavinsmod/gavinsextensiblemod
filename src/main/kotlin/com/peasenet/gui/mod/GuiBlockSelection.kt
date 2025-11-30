@@ -40,15 +40,15 @@ import com.peasenet.settings.ClickSetting
 import com.peasenet.settings.ToggleSetting
 import com.peasenet.settings.clickSetting
 import com.peasenet.settings.toggleSetting
-import net.minecraft.block.Block
-import net.minecraft.client.gui.Click
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.gui.widget.TextFieldWidget
-import net.minecraft.client.input.CharInput
-import net.minecraft.client.input.KeyInput
-import net.minecraft.client.resource.language.I18n
-import net.minecraft.registry.Registries
-import net.minecraft.text.Text
+import net.minecraft.world.level.block.Block
+import net.minecraft.client.input.MouseButtonEvent
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.components.EditBox
+import net.minecraft.client.input.CharacterEvent
+import net.minecraft.client.input.KeyEvent
+import net.minecraft.client.resources.language.I18n
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.network.chat.Component
 import java.util.*
 import kotlin.math.ceil
 
@@ -68,7 +68,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
 /**
  * Creates a new GUI menu with the given title.
  */
-    : GuiElement(Text.translatable(translationKey)) {
+    : GuiElement(Component.translatable(translationKey)) {
     /**
      * The list of currently visible blocks.
      */
@@ -122,7 +122,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
     /**
      * The search field.
      */
-    private lateinit var search: TextFieldWidget
+    private lateinit var search: EditBox
 
     /**
      * The toggle element to show all blocks or just enabled blocks.
@@ -137,16 +137,16 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
     private var m_width: Int = 0
     private var m_height: Int = 0
 
-    override fun refreshWidgetPositions() {
+    override fun repositionElements() {
         // Refresh positions of all child guis
-        clearChildren()
+        clearWidgets()
         guis.clear()
         init()
     }
 
     override fun init() {
-        val screenWidth = minecraftClient.window.scaledWidth
-        val screenHeight = minecraftClient.window.scaledHeight
+        val screenWidth = minecraftClient.window.guiScaledWidth
+        val screenHeight = minecraftClient.window.guiScaledHeight
         m_width = COLUMNS * BLOCK_OFFSET + 3
         m_height = ROWS * BLOCK_OFFSET + 22
         x = (screenWidth - m_width) / 2
@@ -164,15 +164,15 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         blocksPerPage = blocksPerRow * blocksPerColumn
         pageCount = ceil(blockList().size.toDouble() / blocksPerPage).toInt()
         parent = GavinsMod.guiSettings
-        search = object : TextFieldWidget(textRenderer, x + m_width / 2 - 75, y - 16, 150, 13, Text.empty()) {
-            override fun charTyped(input: CharInput): Boolean {
+        search = object : EditBox(font, x + m_width / 2 - 75, y - 16, 150, 13, Component.empty()) {
+            override fun charTyped(input: CharacterEvent): Boolean {
                 val pressed = super.charTyped(input)
                 page = 0
                 updateBlockList()
                 return pressed
             }
 
-            override fun keyPressed(input: KeyInput): Boolean {
+            override fun keyPressed(input: KeyEvent): Boolean {
                 val pressed = super.keyPressed(input)
                 page = 0
                 updateBlockList()
@@ -212,9 +212,9 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
             hoverable = true
         }
 
-        val resetText = Text.translatable("gavinsmod.settings.reset")
-        val width = textRenderer.getWidth(resetText)
-        addSelectableChild(search)
+        val resetText = Component.translatable("gavinsmod.settings.reset")
+        val width = font.width(resetText)
+        addWidget(search)
         updateBlockList()
         super.init()
 
@@ -243,7 +243,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         Settings.getConfig<T>(settingKey).loadDefaultBlocks()
         updateBlockList()
         page = 0
-        minecraftClient.worldRenderer.reload()
+        minecraftClient.worldRenderer.allChanged()
         getMod(settingKey)?.reload()
     }
 
@@ -267,24 +267,24 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         }
     }
 
-    override fun keyPressed(input: KeyInput): Boolean {
+    override fun keyPressed(input: KeyEvent): Boolean {
         search.keyPressed(input)
         return super.keyPressed(input)
     }
 
-    override fun charTyped(input: CharInput): Boolean {
+    override fun charTyped(input: CharacterEvent): Boolean {
         search.charTyped(input)
         return super.charTyped(input)
     }
 
-    override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        val matrixStack = drawContext.matrices
-        box.render(drawContext, textRenderer, mouseX, mouseY, delta)
+    override fun render(drawContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+        val matrixStack = drawContext.pose()
+        box.render(drawContext, font, mouseX, mouseY, delta)
         super.render(drawContext, mouseX, mouseY, delta)
         for (i in 0 until blocksPerPage) {
             if (i > visibleBlocks.size - 1) break
             val block = visibleBlocks.toTypedArray()[i]
-            val stack = block.asItem().defaultStack
+            val stack = block.asItem().defaultInstance
             val blockX = i % blocksPerRow * BLOCK_OFFSET + x + 3
             val blockY = i / blocksPerRow * BLOCK_OFFSET + y + 3
             val boxF = BoxF(blockX.toFloat(), blockY.toFloat(), 16f, 16f)
@@ -313,27 +313,27 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
                 GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack)
             }
             if (isHovering)
-                drawContext.drawTooltip(
-                    client!!.textRenderer,
-                    Text.translatable(stack.item.translationKey),
+                drawContext.setTooltipForNextFrame(
+                    minecraft!!.font,
+                    Component.translatable(stack.item.descriptionId),
                     mouseX,
                     mouseY
                 )
-            drawContext.drawItem(stack, blockX, blockY)
+            drawContext.renderItem(stack, blockX, blockY)
         }
         box.canHover = false
         search.render(drawContext, mouseX, mouseY, delta)
-        drawContext.drawText(
-            client!!.textRenderer,
-            Text.literal("←"),
+        drawContext.drawString(
+            minecraft!!.font,
+            Component.literal("←"),
             x + m_width / 2 - 86,
             y - 13,
             Colors.WHITE.asInt,
             false
         )
-        drawContext.drawText(
-            client!!.textRenderer,
-            Text.literal('→'.toString()),
+        drawContext.drawString(
+            minecraft!!.font,
+            Component.literal('→'.toString()),
             x + m_width / 2 + 79,
             y - 13,
             Colors.WHITE.asInt,
@@ -344,7 +344,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
     private fun isHovering(mouseX: Int, blockX: Int, mouseY: Int, blockY: Int) =
         mouseX >= blockX && mouseX < blockX + 16 && mouseY >= blockY && mouseY < blockY + 16
 
-    override fun mouseClicked(click: Click, doubled: Boolean): Boolean {
+    override fun mouseClicked(click: MouseButtonEvent, doubled: Boolean): Boolean {
         // check if the mouse is over the search box
         val mouseX = click.x
         val mouseY = click.y
@@ -397,11 +397,11 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
      * Updates the list of currently visible blocks to reflect that of the search field, and the current page.
      */
     private fun updateBlockList() {
-        val searchText = search.text.lowercase(Locale.getDefault())
+        val searchText = search.value.lowercase(Locale.getDefault())
         visibleBlocks.clear()
         var tmpBlocks = ArrayList<Block?>()
         blockList().stream()
-            .filter { block: Block -> block.translationKey.lowercase(Locale.getDefault()).contains(searchText) }
+            .filter { block: Block -> block.descriptionId.lowercase(Locale.getDefault()).contains(searchText) }
             .forEach { e: Block? -> tmpBlocks.add(e) }
         // get blocks in block list that are within the page.
         val enabled = enabledOnly.state
@@ -414,7 +414,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         for (i in page * blocksPerPage until page * blocksPerPage + blocksPerPage) {
             if (tmpBlocks.isEmpty() || i > tmpBlocks.size - 1) break
             val block = tmpBlocks[i]
-            if (block != null && block.translationKey.lowercase(Locale.getDefault()).contains(searchText)) {
+            if (block != null && block.descriptionId.lowercase(Locale.getDefault()).contains(searchText)) {
                 if (enabled && !Settings.getConfig<T>(settingKey).isInList(block)) continue
                 visibleBlocks.add(block)
             }
@@ -435,8 +435,8 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
          */
         private fun blockList(): LinkedHashSet<Block> {
             val list = ArrayList<Block>()
-            Registries.BLOCK.stream().sorted(Comparator.comparing { a: Block -> I18n.translate(a.translationKey) })
-                .filter { b: Block -> !b.asItem().translationKey.contains("air") }.forEach { e: Block -> list.add(e) }
+            BuiltInRegistries.BLOCK.stream().sorted(Comparator.comparing { a: Block -> I18n.get(a.descriptionId) })
+                .filter { b: Block -> !b.asItem().descriptionId.contains("air") }.forEach { e: Block -> list.add(e) }
             return LinkedHashSet(list)
         }
     }

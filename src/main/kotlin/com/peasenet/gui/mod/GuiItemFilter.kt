@@ -38,11 +38,11 @@ import com.peasenet.settings.clickSetting
 import com.peasenet.settings.toggleSetting
 import com.peasenet.util.PlayerUtils
 import com.peasenet.util.data.ItemEntityFilter
-import net.minecraft.client.gui.Click
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.gui.screen.Screen
-import net.minecraft.client.gui.widget.TextFieldWidget
-import net.minecraft.text.Text
+import net.minecraft.client.input.MouseButtonEvent
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.screens.Screen
+import net.minecraft.client.gui.components.EditBox
+import net.minecraft.network.chat.Component
 
 /**
  *
@@ -62,7 +62,7 @@ import net.minecraft.text.Text
  * @since 01-10-2025
  */
 class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, val config: TracerEspConfig<*>) :
-    GuiElement(Text.of(filter.filterName)) {
+    GuiElement(Component.nullToEmpty(filter.filterName)) {
     /**
      * The width of the gui.
      */
@@ -85,8 +85,8 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
 
     private var itemEspFilter: ItemEntityFilter = filter
     private lateinit var filterEnable: ToggleSetting
-    private lateinit var filterString: TextFieldWidget
-    private lateinit var filterName: TextFieldWidget
+    private lateinit var filterString: EditBox
+    private lateinit var filterName: EditBox
 
     /**
      * The button used to save the waypoint.
@@ -108,33 +108,33 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
 
     private fun setup() {
         parent = parentScreen
-        offsetX = minecraftClient.window.scaledWidth / 2 - width / 2
-        offsetY = minecraftClient.window.scaledHeight / 2 - height / 2
+        offsetX = minecraftClient.window.guiScaledWidth / 2 - width / 2
+        offsetY = minecraftClient.window.guiScaledHeight / 2 - height / 2
         paddingX = offsetX + padding
         paddingY = offsetY + padding
         val elementWidth = width - padding * 2
         box = GuiBuilder<Gui>().setTopLeft(PointF(offsetX.toFloat(), offsetY.toFloat())).setWidth(width.toFloat())
-            .setHeight(height.toFloat()).setTitle(Text.literal("")).setHoverable(false).build()
+            .setHeight(height.toFloat()).setTitle(Component.literal("")).setHoverable(false).build()
 
         offsetY += 12
         val filteredString = itemEspFilter.filterString
-        filterName = TextFieldWidget(
+        filterName = EditBox(
             minecraftClient.textRenderer,
             offsetX + padding,
             offsetY,
             elementWidth,
             12,
-            Text.literal(itemEspFilter.filterName)
+            Component.literal(itemEspFilter.filterName)
         )
         offsetY += 24
-        filterString = TextFieldWidget(
-            minecraftClient.textRenderer, offsetX + padding, offsetY, elementWidth, 12, Text.literal(filteredString)
+        filterString = EditBox(
+            minecraftClient.textRenderer, offsetX + padding, offsetY, elementWidth, 12, Component.literal(filteredString)
         )
-        filterName.text = itemEspFilter.filterName
-        filterString.text = itemEspFilter.filterString
+        filterName.value = itemEspFilter.filterName
+        filterString.value = itemEspFilter.filterString
 
-        addSelectableChild(filterName)
-        addSelectableChild(filterString)
+        addWidget(filterName)
+        addWidget(filterString)
         offsetY += 14
         filterEnable = toggleSetting {
             title = "gavinsmod.settings.enabled"
@@ -171,8 +171,8 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
             color = Colors.GREEN
             callback = {
                 val tmpFilter = ItemEntityFilter(
-                    filterName.text,
-                    filterString.text,
+                    filterName.value,
+                    filterString.value,
                     searchName.state,
                     searchLore.state,
                     filterEnable.state,
@@ -180,7 +180,7 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
                 )
                 if (!ItemEntityFilter.validate(tmpFilter)) {
                     PlayerUtils.sendMessage(
-                        Text.translatable("gavinsmod.settings.filter.invalid"),
+                        Component.translatable("gavinsmod.settings.filter.invalid"),
                         true
                     )
                     config.itemFilterList.removeIf { it.uuid == tmpFilter.uuid }
@@ -189,8 +189,8 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
                     parent = GuiItemEspTracerConfig(config)
                     minecraftClient.setScreen(parent)
                 } else {
-                    itemEspFilter.filterName = filterName.text
-                    itemEspFilter.filterString = filterString.text
+                    itemEspFilter.filterName = filterName.value
+                    itemEspFilter.filterString = filterString.value
                     itemEspFilter.enabled = filterEnable.state
                     itemEspFilter.searchCustomName = searchName.state
                     itemEspFilter.searchLore = searchLore.state
@@ -247,34 +247,34 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
         setup()
     }
 
-    override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        offsetY = minecraftClient.window.scaledHeight / 2 - height / 2
-        val textRenderer = client!!.textRenderer
+    override fun render(drawContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+        offsetY = minecraftClient.window.guiScaledHeight / 2 - height / 2
+        val textRenderer = minecraft!!.font
         box!!.render(drawContext, textRenderer, mouseX, mouseY, delta)
 
         super.render(drawContext, mouseX, mouseY, delta)
         offsetY += 2
-        drawContext.drawText(
+        drawContext.drawString(
             textRenderer,
-            Text.translatable("gavinsmod.settings.name"),
+            Component.translatable("gavinsmod.settings.name"),
             offsetX + padding,
             offsetY,
             GavUISettings.getColor("gui.color.foreground").asInt,
             false,
         )
         offsetY += 24
-        drawContext.drawText(
+        drawContext.drawString(
             textRenderer,
-            Text.translatable("gavinsmod.settings.filter"),
+            Component.translatable("gavinsmod.settings.filter"),
             offsetX + padding,
             offsetY,
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
         )
-        offsetY = minecraftClient.window.scaledHeight - 12
-        drawContext.drawText(
+        offsetY = minecraftClient.window.guiScaledHeight - 12
+        drawContext.drawString(
             textRenderer,
-            Text.of("Filter UUID: ${itemEspFilter.uuid}"),
+            Component.nullToEmpty("Filter UUID: ${itemEspFilter.uuid}"),
             10,
             offsetY,
             GavUISettings.getColor("gui.color.foreground").asInt,
@@ -284,7 +284,7 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
         filterString.render(drawContext, mouseX, mouseY, delta)
     }
 
-    override fun mouseClicked(click: Click, doubled: Boolean): Boolean {
+    override fun mouseClicked(click: MouseButtonEvent, doubled: Boolean): Boolean {
         val mouseX = click.x
         val mouseY = click.y
         val button = click.button()

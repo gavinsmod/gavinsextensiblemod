@@ -29,9 +29,9 @@ import com.peasenet.gui.mod.GuiMobSelection
 import com.peasenet.main.Settings
 import com.peasenet.settings.colorSetting
 import com.peasenet.settings.toggleSetting
-import net.minecraft.item.ItemStack
-import net.minecraft.item.SpawnEggItem
-import net.minecraft.text.Text
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.SpawnEggItem
+import net.minecraft.network.chat.Component
 
 /**
  * A gui that allows the player to filter what mobs are shown in MobESP.
@@ -42,7 +42,7 @@ import net.minecraft.text.Text
  * @version 01-15-2025
  * @since 04-11-2023
  */
-class GuiMobEsp : GuiMobSelection(Text.translatable("gavinsmod.settings.mobesp")) {
+class GuiMobEsp : GuiMobSelection(Component.translatable("gavinsmod.settings.mobesp")) {
     private companion object {
         val config: EspConfig = Settings.getConfig("esp")
     }

@@ -23,7 +23,7 @@
  */
 package com.peasenet.util.event.data
 
-import net.minecraft.network.packet.Packet
+import net.minecraft.network.protocol.Packet
 
 /**
  * Called when a [Packet] is sent. This event is cancellable.

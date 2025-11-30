@@ -27,16 +27,16 @@ package com.peasenet.mixins;
 
 import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.PacketSendEvent;
-import net.minecraft.client.network.ClientCommonNetworkHandler;
-import net.minecraft.network.packet.Packet;
+import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl;
+import net.minecraft.network.protocol.Packet;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ClientCommonNetworkHandler.class)
+@Mixin(ClientCommonPacketListenerImpl.class)
 public class MixinClientCommonNetworkHandler {
-    @Inject(at = @At("HEAD"), method = "sendPacket", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "send", cancellable = true)
     public void handlePacket(Packet<?> packet, CallbackInfo ci) {
         PacketSendEvent event = new PacketSendEvent(packet);
         EventManager.getEventManager().call(event);

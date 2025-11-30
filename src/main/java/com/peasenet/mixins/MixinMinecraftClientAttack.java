@@ -26,17 +26,17 @@ package com.peasenet.mixins;
 
 import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.PlayerAttackEvent;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(MinecraftClient.class)
+@Mixin(Minecraft.class)
 public class MixinMinecraftClientAttack {
     @Inject(at = @At(value = "FIELD",
-            target = "Lnet/minecraft/client/MinecraftClient;crosshairTarget:Lnet/minecraft/util/hit/HitResult;",
-            ordinal = 0), method = "doAttack()Z")
+            target = "Lnet/minecraft/client/Minecraft;hitResult:Lnet/minecraft/world/phys/HitResult;",
+            ordinal = 0), method = "startAttack()Z")
     private void doAttack(CallbackInfoReturnable<Boolean> cir) {
         PlayerAttackEvent event = new PlayerAttackEvent();
         EventManager.getEventManager().call(event);

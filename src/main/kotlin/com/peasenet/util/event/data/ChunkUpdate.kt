@@ -24,7 +24,7 @@
 
 package com.peasenet.util.event.data
 
-import net.minecraft.world.chunk.WorldChunk
+import net.minecraft.world.level.chunk.LevelChunk
 
 /**
  * Called when a chunk is updated.
@@ -35,5 +35,5 @@ import net.minecraft.world.chunk.WorldChunk
  * @since 03-02-2023
  */
 data class ChunkUpdate(
-    val chunk: WorldChunk
+    val chunk: LevelChunk
 )

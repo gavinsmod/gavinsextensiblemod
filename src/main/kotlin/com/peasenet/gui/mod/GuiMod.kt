@@ -29,7 +29,7 @@ import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gui.mod.ModGuiUtil.getGuiToggleFromCategory
 import com.peasenet.mods.ModCategory
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 /**
  * Creates a new GuiScroll element given a position, width, height, title, category, and maximum number of children.
@@ -50,7 +50,7 @@ open class GuiMod(
     position: PointF,
     width: Int,
     height: Int,
-    title: Text?,
+    title: Component?,
     category: ModCategory?,
     maxChildren: Int = 6,
 ) : GuiScroll(

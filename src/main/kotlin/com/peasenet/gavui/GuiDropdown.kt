@@ -26,11 +26,11 @@ package com.peasenet.gavui
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.Direction
 import com.peasenet.gavui.util.GavUISettings
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.sound.SoundEvents
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.GuiGraphics
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.sounds.SoundEvents
 import java.util.function.Consumer
 
 
@@ -55,7 +55,7 @@ open class GuiDropdown(builder: GuiBuilder<out GuiDropdown>) : GuiDraggable(buil
         this.isOpen = builder.isOpen
     }
 
-    override fun render(drawContext: DrawContext, tr: TextRenderer, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(drawContext: GuiGraphics, tr: Font, mouseX: Int, mouseY: Int, delta: Float) {
         // TODO: MC 1.21.10
         updateSymbol()
         val textColor =
@@ -116,8 +116,8 @@ open class GuiDropdown(builder: GuiBuilder<out GuiDropdown>) : GuiDraggable(buil
     fun toggleMenu() {
         isOpen = !isOpen
         if (GavUISettings.getBool("gui.sound")) {
-            if (isOpen) MinecraftClient.getInstance().player!!.playSound(SoundEvents.BLOCK_CHEST_OPEN, 0.5f, 1f)
-            else MinecraftClient.getInstance().player!!.playSound(SoundEvents.BLOCK_CHEST_CLOSE, 0.5f, 1f)
+            if (isOpen) Minecraft.getInstance().player!!.playSound(SoundEvents.CHEST_OPEN, 0.5f, 1f)
+            else Minecraft.getInstance().player!!.playSound(SoundEvents.CHEST_CLOSE, 0.5f, 1f)
         }
         for (g in children) {
             if (!isOpen)

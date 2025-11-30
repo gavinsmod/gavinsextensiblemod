@@ -24,8 +24,8 @@
 package com.peasenet.gavui
 
 import com.peasenet.gavui.util.GavUISettings
-import net.minecraft.client.MinecraftClient
-import net.minecraft.sound.SoundEvents
+import net.minecraft.client.Minecraft
+import net.minecraft.sounds.SoundEvents
 
 /**
  * @author GT3CH1
@@ -57,7 +57,7 @@ open class GuiClick(builder: GuiBuilder<out GuiClick>) : Gui(builder) {
         if (button != 0) return false
         // check if mouseX and mouseY are within the bounds of the gui.
         val inGui = mouseWithinGui(mouseX, mouseY) && !isHidden
-        if (inGui && GavUISettings.getBool("gui.sound")) MinecraftClient.getInstance().player!!.playSound(
+        if (inGui && GavUISettings.getBool("gui.sound")) Minecraft.getInstance().player!!.playSound(
             SoundEvents.UI_BUTTON_CLICK.value(),
             0.5f,
             1f

@@ -28,9 +28,9 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.peasenet.util.event.CameraHurtEvent;
 import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.RenderEvent;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.DeltaTracker;
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.Matrix4f;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -40,8 +40,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
 public class MixinGameRenderer {
-    @Inject(method = "tiltViewWhenHurt", at = @At("HEAD"), cancellable = true)
-    public void checkAntiHurt(MatrixStack stack, float f, CallbackInfo ci) {
+    @Inject(method = "bobHurt", at = @At("HEAD"), cancellable = true)
+    public void checkAntiHurt(PoseStack stack, float f, CallbackInfo ci) {
         CameraHurtEvent event = new CameraHurtEvent();
         EventManager.getEventManager().call(event);
         if (event.isCancelled())
@@ -53,7 +53,7 @@ public class MixinGameRenderer {
 
     // inject at net.minecraft.client.render.GameRenderer.renderHand
     @Inject(at = @At(value = "RETURN"),
-    method = "renderHand")
+    method = "renderItemInHand")
     public void handleRender(float tickProgress, boolean sleeping, Matrix4f positionMatrix, CallbackInfo ci)
  {
 

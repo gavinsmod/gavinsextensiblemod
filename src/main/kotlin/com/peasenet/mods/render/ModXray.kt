@@ -35,8 +35,8 @@ import com.peasenet.util.event.data.TessellateBlock
 import com.peasenet.util.listeners.BlockEntityRenderListener
 import com.peasenet.util.listeners.ShouldDrawSideListener
 import com.peasenet.util.listeners.TessellateBlockListener
-import net.minecraft.block.BlockState
-import net.minecraft.client.MinecraftClient
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.client.Minecraft
 
 /**
  * @author GT3CH1
@@ -61,7 +61,7 @@ class ModXray : RenderMod(
             clickSetting {
                 title = "gavinsmod.settings.xray.blocks"
                 callback = {
-                    MinecraftClient.getInstance().setScreen(GuiXray())
+                    Minecraft.getInstance().setScreen(GuiXray())
                 }
             }
         }
@@ -91,7 +91,7 @@ class ModXray : RenderMod(
      * Reloads the renderer if and only if the setting "xray.forcereload" is true.
      */
     private fun reloadRenderer() {
-        client.worldRenderer.reload()
+        client.worldRenderer.allChanged()
     }
 
     override fun onTick() {
@@ -121,7 +121,7 @@ class ModXray : RenderMod(
     }
 
     override fun onRenderBlockEntity(er: BlockEntityRender) {
-        if (!shouldDrawFace(client.getWorld().getBlockState(er.entity.pos))) er.cancel()
+        if (!shouldDrawFace(client.getWorld().getBlockState(er.entity.blockPos))) er.cancel()
     }
 
     companion object {

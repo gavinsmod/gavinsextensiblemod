@@ -37,9 +37,9 @@ import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.ChunkPos
-import net.minecraft.world.chunk.Chunk
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.world.level.ChunkPos
+import net.minecraft.world.level.chunk.ChunkAccess
 import org.joml.Matrix3x2fStack
 
 /**
@@ -78,7 +78,7 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
      * Performs a search on the given chunk to find blocks to add to a list of [GavChunk]s.
      * @param chunk The chunk to search.
      */
-    abstract fun searchChunk(chunk: Chunk)
+    abstract fun searchChunk(chunk: ChunkAccess)
 
     /**
      * Gets if the chunk is in render distance.
@@ -91,7 +91,7 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
      */
     open fun chunkInRenderDistance(chunk: GavChunk): Boolean = false
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+    override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
         // TODO: MC 1.21.10 update
         synchronized(chunks) {
             if (chunks.isEmpty()) return

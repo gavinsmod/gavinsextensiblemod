@@ -26,10 +26,10 @@ package com.peasenet.util.data
 
 import com.peasenet.main.GavinsModClient
 import com.peasenet.util.PlayerUtils
-import net.minecraft.component.DataComponentTypes
-import net.minecraft.entity.ItemEntity
-import net.minecraft.text.PlainTextContent
-import net.minecraft.text.Text
+import net.minecraft.core.component.DataComponents
+import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.network.chat.contents.PlainTextContents
+import net.minecraft.network.chat.Component
 import java.util.*
 import java.util.regex.PatternSyntaxException
 
@@ -85,9 +85,9 @@ class ItemEntityFilter(
      */
     fun customNameMatches(itemEntity: ItemEntity): Boolean {
         if (!this.enabled) return false
-        val stack = itemEntity.stack
-        val customName = stack.get(DataComponentTypes.CUSTOM_NAME)
-        val lore = stack.get(DataComponentTypes.LORE)
+        val stack = itemEntity.item
+        val customName = stack.get(DataComponents.CUSTOM_NAME)
+        val lore = stack.get(DataComponents.LORE)
         var matches = false
         var regex: Regex? = null
         try {

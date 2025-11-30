@@ -24,8 +24,8 @@
 package com.peasenet.gavui
 
 import com.peasenet.gavui.util.GavUISettings
-import net.minecraft.client.MinecraftClient
-import net.minecraft.sound.SoundEvents
+import net.minecraft.client.Minecraft
+import net.minecraft.sounds.SoundEvents
 
 /**
  * @author GT3CH1
@@ -58,7 +58,7 @@ class GuiCycle(builder: GuiBuilder<out GuiClick>) : GuiClick(builder) {
             // y is modulo not working
             currentIndex %= cycleSize
             if (GavUISettings.getBool("gui.sound")) {
-                MinecraftClient.getInstance().player!!.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 1.0f, 1.0f)
+                Minecraft.getInstance().player!!.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 1.0f, 1.0f)
             }
             if (callback != null) callback!!(this)
             clickedGui = this

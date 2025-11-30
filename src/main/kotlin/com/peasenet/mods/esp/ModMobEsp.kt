@@ -28,10 +28,10 @@ import com.peasenet.gavui.color.Colors
 import com.peasenet.gui.mod.esp.GuiMobEsp
 import com.peasenet.util.listeners.EntityRenderListener
 import com.peasenet.util.listeners.RenderListener
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.Entity
-import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.client.Minecraft
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.player.Player
 import org.joml.Matrix3x2fStack
 
 
@@ -46,29 +46,29 @@ import org.joml.Matrix3x2fStack
 class ModMobEsp : EntityEsp<Entity>(
     "gavinsmod.mod.esp.mob",
     "mobesp",
-    { it !is PlayerEntity && it.isLiving && !it.isRemoved && config.inList(it.type) }), RenderListener {
+    { it !is Player && it.showVehicleHealth() && !it.isRemoved && config.inList(it.type) }), RenderListener {
 
 
     init {
         clickSetting {
             title = "gavinsmod.settings.mobesp"
-            callback = { MinecraftClient.getInstance().setScreen(GuiMobEsp()) }
+            callback = { Minecraft.getInstance().setScreen(GuiMobEsp()) }
         }
     }
 
     override fun getColor(entity: Entity): Color {
-        val color = if (entity.type.spawnGroup.isPeaceful) config.peacefulMobColor else config.hostileMobColor
+        val color = if (entity.type.category.isFriendly) config.peacefulMobColor else config.hostileMobColor
         return color.withAlpha(config.alpha)
 
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+    override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
         val newList: MutableList<Entity> = ArrayList()
         if (config.showPeacefulMobs) {
-            newList.addAll(espList.filter { it.type.spawnGroup.isPeaceful })
+            newList.addAll(espList.filter { it.type.category.isFriendly })
         }
         if (config.showHostileMobs) {
-            newList.addAll(espList.filter { !it.type.spawnGroup.isPeaceful })
+            newList.addAll(espList.filter { !it.type.category.isFriendly })
         }
         espList = newList
         super.onRender(matrixStack, partialTicks)

@@ -27,10 +27,10 @@ package com.peasenet.mixins;
 import com.peasenet.util.event.BlockEntityRenderEvent;
 import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.data.BlockEntityRender;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderManager;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -43,7 +43,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * @version 01/03/2023
  */
 // TODO: MC 1.21.10 update
-@Mixin(BlockEntityRenderManager.class)
+@Mixin(BlockEntityRenderDispatcher.class)
 public class MixinBlockEntityRenderDispatcher {
 //
 //    @Inject(at = {@At("HEAD")}, method = {"render(Lnet/minecraft/block/entity/BlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;)V"}, cancellable = true)

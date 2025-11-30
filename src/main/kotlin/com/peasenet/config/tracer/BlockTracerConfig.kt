@@ -27,7 +27,7 @@ package com.peasenet.config.tracer
 import com.peasenet.annotations.Exclude
 import com.peasenet.config.commons.BlockListConfig
 import com.peasenet.config.commons.IBlockEspTracerConfig
-import net.minecraft.block.Blocks
+import net.minecraft.world.level.block.Blocks
 
 /**
  * A configuration class for the block tracer.
@@ -40,7 +40,7 @@ import net.minecraft.block.Blocks
  * @version 09-01-2024
  * @since 09-01-2024
  */
-class BlockTracerConfig : BlockListConfig<BlockTracerConfig>({ it.defaultState == Blocks.SUGAR_CANE.defaultState }),
+class BlockTracerConfig : BlockListConfig<BlockTracerConfig>({ it.defaultBlockState() == Blocks.SUGAR_CANE.defaultBlockState() }),
     IBlockEspTracerConfig {
     init {
         key = "blocktracer"

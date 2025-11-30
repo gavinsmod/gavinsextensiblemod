@@ -29,7 +29,7 @@ import com.peasenet.gavui.GuiCycle
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.PointF
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 /**
  *
@@ -41,7 +41,7 @@ abstract class NewGuiBuilder<T : Gui> {
     var callback: ((T) -> Unit)? = null
     var width: Float = 0f
     var height: Float = 0f
-    var title: Text = Text.of("")
+    var title: Component = Component.nullToEmpty("")
     var hoverable: Boolean = false
     var backgroundColor: Color = Colors.BLACK
     var isHidden: Boolean = false
@@ -57,7 +57,7 @@ abstract class NewGuiBuilder<T : Gui> {
     fun callback(callback: (T) -> Unit) = apply { this.callback = callback }
     fun width(width: Float) = apply { this.width = width }
     fun height(height: Float) = apply { this.height = height }
-    fun title(title: Text) = apply { this.title = title }
+    fun title(title: Component) = apply { this.title = title }
     fun hoverable(hoverable: Boolean) = apply { this.hoverable = hoverable }
     fun backgroundColor(backgroundColor: Color) = apply { this.backgroundColor = backgroundColor }
     fun isHidden(isHidden: Boolean) = apply { this.isHidden = isHidden }

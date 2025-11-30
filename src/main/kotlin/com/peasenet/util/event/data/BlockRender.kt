@@ -23,11 +23,11 @@
  */
 package com.peasenet.util.event.data
 
-import net.minecraft.block.BlockState
-import net.minecraft.client.render.BufferBuilder
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Vec3d
+import net.minecraft.world.level.block.state.BlockState
+import com.mojang.blaze3d.vertex.BufferBuilder
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.core.BlockPos
+import net.minecraft.world.phys.Vec3
 
 /**
  * Data class for the block BlockState render event. This can be cancelled.
@@ -47,9 +47,9 @@ import net.minecraft.util.math.Vec3d
 data class BlockRender
     (
     private var blockState: BlockState,
-    var stack: MatrixStack?,
+    var stack: PoseStack?,
     private var buffer: BufferBuilder?,
     var blockPos: BlockPos?,
-    private var playerPos: Vec3d?,
+    private var playerPos: Vec3?,
     var delta: Float,
 ) : Cancellable()

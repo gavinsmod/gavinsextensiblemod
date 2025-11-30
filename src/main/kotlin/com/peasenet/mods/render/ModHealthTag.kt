@@ -25,12 +25,12 @@ package com.peasenet.mods.render
 
 import com.peasenet.util.event.data.EntityNameRender
 import com.peasenet.util.listeners.EntityRenderNameListener
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.font.TextRenderer
-import net.minecraft.entity.EntityAttachmentType
-import net.minecraft.entity.LivingEntity
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.Font
+import net.minecraft.world.entity.EntityAttachment
+import net.minecraft.world.entity.LivingEntity
+import net.minecraft.network.chat.Component
+import net.minecraft.ChatFormatting
 
 /**
  *
@@ -70,21 +70,21 @@ class ModHealthTag : RenderMod(
         val matrixStack = er.matrixStack
         val vertexConsumers = er.vertexConsumerProvider
         val light = er.light
-        val textRenderer = MinecraftClient.getInstance().textRenderer
-        val dispatcher = MinecraftClient.getInstance().entityRenderDispatcher
-        val attachmentVec = entity.attachments.getPointNullable(EntityAttachmentType.NAME_TAG, 0, entity.getYaw(0f))
-        matrixStack.push()
+        val textRenderer = Minecraft.getInstance().font
+        val dispatcher = Minecraft.getInstance().entityRenderDispatcher
+        val attachmentVec = entity.attachments.getNullable(EntityAttachment.NAME_TAG, 0, entity.getViewYRot(0f))
+        matrixStack.pushPose()
         matrixStack.translate(attachmentVec!!.x, attachmentVec.y + 0.75, attachmentVec.z)
 //        matrixStack.multiply(dispatcher.rotation)
         matrixStack.scale(0.025f, -0.025f, 0.025f)
         val currentHp = entity.health.toInt()
-        val text = Text.literal("").append(currentHp.toString()).append(" HP").formatted(getColor(entity))
-        val g = -textRenderer.getWidth(text) / 2.0f
+        val text = Component.literal("").append(currentHp.toString()).append(" HP").withStyle(getColor(entity))
+        val g = -textRenderer.width(text) / 2.0f
         val i = if (er.entity.name.string == "deadmau5") -10 else 0
-        val matrix4f = matrixStack.peek().positionMatrix
-        val f = textRenderer.getWidth(text) / 2.0f
-        val j = (MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25f) * 255.0f).toInt() shl 24
-        textRenderer.draw(
+        val matrix4f = matrixStack.last().pose()
+        val f = textRenderer.width(text) / 2.0f
+        val j = (Minecraft.getInstance().options.getBackgroundOpacity(0.25f) * 255.0f).toInt() shl 24
+        textRenderer.drawInBatch(
             text,
             g,
             i.toFloat(),
@@ -92,11 +92,11 @@ class ModHealthTag : RenderMod(
             false,
             matrix4f,
             vertexConsumers,
-            TextRenderer.TextLayerType.NORMAL,
+            Font.DisplayMode.NORMAL,
             j,
             light
         )
-        textRenderer.draw(
+        textRenderer.drawInBatch(
             text,
             g,
             i.toFloat(),
@@ -104,25 +104,25 @@ class ModHealthTag : RenderMod(
             false,
             matrix4f,
             vertexConsumers,
-            TextRenderer.TextLayerType.SEE_THROUGH,
+            Font.DisplayMode.SEE_THROUGH,
             0,
             light
         )
-        matrixStack.pop()
+        matrixStack.popPose()
     }
 
     /**
      * Gets the color formatting for the health tag.
      */
-    private fun getColor(entity: LivingEntity): Formatting {
+    private fun getColor(entity: LivingEntity): ChatFormatting {
         return if (entity.health > entity.maxHealth * 0.8) {
-            Formatting.GREEN
+            ChatFormatting.GREEN
         } else if (entity.health > entity.maxHealth * 0.6) {
-            Formatting.YELLOW
+            ChatFormatting.YELLOW
         } else if (entity.health > entity.maxHealth * 0.4) {
-            Formatting.GOLD
+            ChatFormatting.GOLD
         } else {
-            Formatting.RED
+            ChatFormatting.RED
         }
     }
 

@@ -24,7 +24,7 @@
 package com.peasenet.mods.tracer
 
 import com.peasenet.gavui.color.Color
-import net.minecraft.block.entity.FurnaceBlockEntity
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity
 
 /**
  * A mod that allows the player to see tracers towards furnaces.

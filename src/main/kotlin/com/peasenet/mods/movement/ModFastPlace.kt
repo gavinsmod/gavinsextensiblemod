@@ -24,7 +24,7 @@
 package com.peasenet.mods.movement
 
 import com.peasenet.main.GavinsModClient
-import net.minecraft.item.BlockItem
+import net.minecraft.world.item.BlockItem
 
 /**
  * @author GT3CH1
@@ -37,7 +37,7 @@ class ModFastPlace : MovementMod(
 ) {
     override fun onTick() {
         if (GavinsModClient.player != null) {
-            val item = GavinsModClient.player!!.getMainHandStack().item is BlockItem
+            val item = GavinsModClient.player!!.getMainHandItem().item is BlockItem
             if (isActive && item) client.setItemUseCooldown(0)
         }
     }

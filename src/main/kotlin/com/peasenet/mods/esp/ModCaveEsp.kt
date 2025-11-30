@@ -41,13 +41,13 @@ import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
-import net.minecraft.block.BlockState
-import net.minecraft.block.LeavesBlock
-import net.minecraft.block.MultifaceGrowthBlock
-import net.minecraft.client.MinecraftClient
-import net.minecraft.text.Text
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.chunk.Chunk
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.block.LeavesBlock
+import net.minecraft.world.level.block.MultifaceSpreadeableBlock
+import net.minecraft.client.Minecraft
+import net.minecraft.network.chat.Component
+import net.minecraft.core.BlockPos
+import net.minecraft.world.level.chunk.ChunkAccess
 
 /**
  * An ESP mod that draws boxes around user selected blocks in the world.
@@ -91,7 +91,7 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
 
     private val chunksToRender: Int
         get() {
-            return (MinecraftClient.getInstance().options.viewDistance.value)
+            return (Minecraft.getInstance().options.renderDistance().get())
         }
 
     override fun onEnable() {
@@ -125,7 +125,7 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
     override fun getSettings(): CaveEspConfig = Settings.getConfig("caveesp")
 
 
-    override fun searchChunk(chunk: Chunk) {
+    override fun searchChunk(chunk: ChunkAccess) {
         GemExecutor.execute {
             synchronized(chunk) {
                 GavChunk.search(
@@ -175,9 +175,9 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
             else -> SearchType.Caves
         }
         val searchModeName = getSettings().searchMode.name.lowercase()
-        searchMode.gui.title = Text.translatable("$searchTranslationKey.$searchModeName")
+        searchMode.gui.title = Component.translatable("$searchTranslationKey.$searchModeName")
         GemExecutor.execute {
-            val visibleChunks: List<Chunk> = RenderUtils.getVisibleChunks(chunksToRender)
+            val visibleChunks: List<ChunkAccess> = RenderUtils.getVisibleChunks(chunksToRender)
             visibleChunks.forEach(this::searchChunk)
         }
     }
@@ -191,7 +191,7 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
      */
     private fun searchBlock(blockPos: BlockPos): Boolean {
         val newBlockState = world.getBlockState(blockPos)
-        if (!newBlockState.isAir && newBlockState.block !is MultifaceGrowthBlock && !newBlockState.isLiquid) return false
+        if (!newBlockState.isAir && newBlockState.block !is MultifaceSpreadeableBlock && !newBlockState.liquid()) return false
         val searchMode = getSettings().searchMode
         return when (searchMode) {
             SearchType.Caves -> {
@@ -207,7 +207,7 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
     }
 
     private fun isTunnel(blockPos: BlockPos): Boolean {
-        return world.getBlockState(blockPos.up()).isAir && !world.getBlockState(blockPos.up(2)).isAir
+        return world.getBlockState(blockPos.above()).isAir && !world.getBlockState(blockPos.above(2)).isAir
     }
 
 
@@ -218,8 +218,8 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
      * @return True if the player can walk through this block, false otherwise.
      */
     private fun canWalkThrough(blockPos: BlockPos, blockState: BlockState): Boolean {
-        val above = world.getBlockState(blockPos.up())
-        val below = world.getBlockState(blockPos.down())
+        val above = world.getBlockState(blockPos.above())
+        val below = world.getBlockState(blockPos.below())
         return blockState.isAir && (above.isAir || below.isAir)
     }
 
@@ -229,7 +229,7 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
      * @param blockState The [BlockState] to check.
      */
     private fun canWalkOn(blockPos: BlockPos, blockState: BlockState): Boolean {
-        val below = world.getBlockState(blockPos.down())
+        val below = world.getBlockState(blockPos.below())
         return blockState.isAir && !below.isAir && canWalkThrough(blockPos, blockState)
     }
 
@@ -239,15 +239,15 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
      * @return True if there is a block above it, false otherwise.
      */
     private fun hasRoof(blockPos: BlockPos): Boolean {
-        var tmpBlockPos = BlockPos.Mutable(blockPos.x, blockPos.y, blockPos.z)
+        var tmpBlockPos = BlockPos.MutableBlockPos(blockPos.x, blockPos.y, blockPos.z)
         try {
-            val maxY = world.getChunk(blockPos).topYInclusive
+            val maxY = world.getChunk(blockPos).maxY
             while (tmpBlockPos.y < maxY) {
                 val blockState1 = world.getBlockState(tmpBlockPos)
                 if (!blockState1.isAir && blockState1.block !is LeavesBlock) {
                     return true
                 }
-                tmpBlockPos = tmpBlockPos.up().mutableCopy()
+                tmpBlockPos = tmpBlockPos.above().mutable()
             }
         } catch (exception: IllegalArgumentException) {
             GavinsMod.LOGGER.error("Error for checking roof, blockPos: $blockPos")

@@ -32,10 +32,10 @@ import com.peasenet.mixinterface.IMinecraftClient
 import com.peasenet.settings.*
 import com.peasenet.util.KeyBindUtils
 import com.peasenet.util.event.EventManager
-import net.minecraft.client.option.KeyBinding
-import net.minecraft.client.resource.language.I18n
-import net.minecraft.client.world.ClientWorld
-import net.minecraft.text.Text
+import net.minecraft.client.KeyMapping
+import net.minecraft.client.resources.language.I18n
+import net.minecraft.client.multiplayer.ClientLevel
+import net.minecraft.network.chat.Component
 import org.lwjgl.glfw.GLFW
 
 /**
@@ -60,7 +60,7 @@ abstract class Mod(
     override val translationKey: String,
     override val chatCommand: String,
     final override var modCategory: ModCategory,
-    private var keyBinding: KeyBinding,
+    private var keyBinding: KeyMapping,
 ) : IMod {
 
     /**
@@ -137,8 +137,8 @@ abstract class Mod(
      * @param message The message to send.
      */
     private fun sendMessage(message: String?) {
-        if (Settings.getConfig<MiscConfig>("misc").isMessages && !reloading) GavinsModClient.player!!.sendMessage(
-            Text.literal(
+        if (Settings.getConfig<MiscConfig>("misc").isMessages && !reloading) GavinsModClient.player!!.displayClientMessage(
+            Component.literal(
                 message
             ), false
         )
@@ -146,7 +146,7 @@ abstract class Mod(
 
     override fun onEnable() {
         sendMessage(
-            GAVINS_MOD_STRING + I18n.translate(
+            GAVINS_MOD_STRING + I18n.get(
                 translationKey
             ) + " §a§lenabled§r!"
         )
@@ -156,7 +156,7 @@ abstract class Mod(
 
     override fun onDisable() {
         sendMessage(
-            GAVINS_MOD_STRING + I18n.translate(
+            GAVINS_MOD_STRING + I18n.get(
                 translationKey
             ) + " §c§ldisabled§r!"
         )
@@ -166,7 +166,7 @@ abstract class Mod(
 
     override fun onTick() {}
     override fun checkKeybinding() {
-        if (keyBinding.wasPressed()) {
+        if (keyBinding.consumeClick()) {
             if (isEnabled) {
                 deactivate()
             } else {
@@ -274,7 +274,7 @@ abstract class Mod(
     /**
      * Gets the world that the player is currently in.
      */
-    override val world: ClientWorld
+    override val world: ClientLevel
         get() = client.getWorld()
 
     /**

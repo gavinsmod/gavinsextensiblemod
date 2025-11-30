@@ -24,7 +24,7 @@
 
 package com.peasenet.extensions
 
-import net.minecraft.util.math.ChunkPos
+import net.minecraft.world.level.ChunkPos
 
 /**
  * Extensions for the ChunkPos class.

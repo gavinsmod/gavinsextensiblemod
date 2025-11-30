@@ -28,8 +28,8 @@ import com.peasenet.annotations.Exclude
 import com.peasenet.config.Config
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
-import net.minecraft.block.Block
-import net.minecraft.registry.Registries
+import net.minecraft.world.level.block.Block
+import net.minecraft.core.registries.BuiltInRegistries
 
 /**
  * A configuration class for mods that need a list of blocks.
@@ -68,7 +68,7 @@ open class BlockListConfig<E : Config<*>>(blockFilter: (it: Block) -> Boolean = 
         }
 
     init {
-        Registries.BLOCK.filter(blockFilter).toList().forEach {
+        BuiltInRegistries.BLOCK.filter(blockFilter).toList().forEach {
             defaultList = defaultList.plus(it)
             blocks.add(getId(it))
         }
@@ -136,8 +136,8 @@ open class BlockListConfig<E : Config<*>>(blockFilter: (it: Block) -> Boolean = 
          */
         fun getId(b: Block): String {
 
-            val path = b.translationKey
-            return if (path == "empty") b.translationKey.replace("block.minecraft.", "") else path.replace(
+            val path = b.descriptionId
+            return if (path == "empty") b.descriptionId.replace("block.minecraft.", "") else path.replace(
                 "blocks/",
                 ""
             )

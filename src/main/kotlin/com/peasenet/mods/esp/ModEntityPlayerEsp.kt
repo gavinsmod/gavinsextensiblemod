@@ -25,7 +25,7 @@ package com.peasenet.mods.esp
 
 import com.peasenet.gavui.color.Color
 import com.peasenet.main.GavinsModClient
-import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.world.entity.player.Player
 
 /**
  *
@@ -34,10 +34,10 @@ import net.minecraft.entity.player.PlayerEntity
  * @version 01-15-2025
  * @since 03-02-2023
  */
-class ModEntityPlayerEsp : EntityEsp<PlayerEntity>(
+class ModEntityPlayerEsp : EntityEsp<Player>(
     "gavinsmod.mod.esp.player",
     "playeresp",
-    { it is PlayerEntity && it != GavinsModClient.player },
+    { it is Player && it != GavinsModClient.player },
 ) {
     init {
         colorSetting {
@@ -47,7 +47,7 @@ class ModEntityPlayerEsp : EntityEsp<PlayerEntity>(
         }
     }
 
-    override fun getColor(entity: PlayerEntity): Color = getColor()
+    override fun getColor(entity: Player): Color = getColor()
 
     override fun getColor(): Color = config.playerColor
 }

@@ -30,9 +30,9 @@ import com.peasenet.gui.mod.GuiMobSelection
 import com.peasenet.main.Settings
 import com.peasenet.settings.ToggleSetting
 import com.peasenet.settings.toggleSetting
-import net.minecraft.item.ItemStack
-import net.minecraft.item.SpawnEggItem
-import net.minecraft.text.Text
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.SpawnEggItem
+import net.minecraft.network.chat.Component
 import kotlin.math.max
 
 /**
@@ -48,7 +48,7 @@ import kotlin.math.max
  * @since 01-12-2025
  */
 open class GuiAttackFilter(settingKey: String, translationKey: String) :
-    GuiMobSelection(Text.translatable(translationKey)) {
+    GuiMobSelection(Component.translatable(translationKey)) {
     init {
         config = Settings.getConfig(settingKey)
     }
@@ -67,8 +67,8 @@ open class GuiAttackFilter(settingKey: String, translationKey: String) :
         val height = 24f
         var pos = PointF(10f, height)
         val maxWidth = max(
-            client!!.textRenderer.getWidth(Text.translatable("gavinsmod.generic.excludePlayers")) + 14f,
-            client!!.textRenderer.getWidth(Text.translatable("gavinsmod.generic.enabledOnly")) + 14f
+            minecraft!!.font.width(Component.translatable("gavinsmod.generic.excludePlayers")) + 14f,
+            minecraft!!.font.width(Component.translatable("gavinsmod.generic.enabledOnly")) + 14f
         )
 //        excludePlayers = SettingBuilder<ToggleSetting>().setTitle("gavinsmod.generic.excludePlayers")
 //            .setState(config!!.excludePlayers)

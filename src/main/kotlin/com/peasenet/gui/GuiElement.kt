@@ -23,19 +23,15 @@
  */
 package com.peasenet.gui
 
-//import net.minecraft.client.gl.ShaderProgramKeys
-import net.minecraft.client.MinecraftClient
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiScroll
-import com.peasenet.gavui.color.Colors
-import com.peasenet.gavui.util.GavUISettings
 import com.peasenet.main.GavinsModClient
-import net.minecraft.client.gui.Click
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.gui.screen.Screen
-import net.minecraft.client.gui.widget.*
-import net.minecraft.text.Text
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.screens.Screen
+import net.minecraft.client.input.MouseButtonEvent
+import net.minecraft.network.chat.Component
 import java.util.function.Consumer
 
 /**
@@ -43,7 +39,7 @@ import java.util.function.Consumer
  * @version 03-02-2023
  * A parent class that holds all that is needed to render an in game gui.
  */
-open class GuiElement(title: Text?) : Screen(title) {
+open class GuiElement(title: Component?) : Screen(title) {
     /**
      * The box that contains the menu title in the top left corner of the screen.
      */
@@ -66,11 +62,11 @@ open class GuiElement(title: Text?) : Screen(title) {
     private var selectedGui: Gui? = null
 
     public override fun init() {
-        this.client = MinecraftClient.getInstance()
-        this.textRenderer = GavinsModClient.minecraftClient.textRenderer
+        this.minecraft = Minecraft.getInstance()
+        this.font = GavinsModClient.minecraftClient.textRenderer
         titleBox = GuiBuilder<Gui>()
             .setTopLeft(10, 1)
-            .setWidth(textRenderer.getWidth(title).toFloat() + 4f)
+            .setWidth(font.width(title).toFloat() + 4f)
             .setHeight(11f)
             .setTitle(title)
             .build()
@@ -89,18 +85,18 @@ open class GuiElement(title: Text?) : Screen(title) {
     }
 
 
-    override fun mouseClicked(click: Click, doubled: Boolean): Boolean {
+    override fun mouseClicked(click: MouseButtonEvent, doubled: Boolean): Boolean {
         for (g in guis) if (g.mouseClicked(click.x, click.y, click.button())) {
             return true
         }
         return super.mouseClicked(click, doubled)
     }
 
-    override fun shouldPause(): Boolean {
+    override fun isPauseScreen(): Boolean {
         return false
     }
 
-    override fun mouseDragged(click: Click, deltaX: Double, deltaY: Double): Boolean {
+    override fun mouseDragged(click: MouseButtonEvent, deltaX: Double, deltaY: Double): Boolean {
         val mouseX = click.x
         val mouseY = click.y
         val button = click.button()
@@ -119,7 +115,7 @@ open class GuiElement(title: Text?) : Screen(title) {
         return false
     }
 
-    override fun mouseReleased(click: Click): Boolean {
+    override fun mouseReleased(click: MouseButtonEvent): Boolean {
 
         guis.forEach(Consumer { g: Gui -> g.dragging = false })
         selectedGui = null
@@ -127,20 +123,20 @@ open class GuiElement(title: Text?) : Screen(title) {
     }
 
 
-    override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(drawContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
         super.render(drawContext, mouseX, mouseY, delta)
-        val stack = drawContext.matrices
+        val stack = drawContext.pose()
         stack.pushMatrix()
-        drawContext.state.goUpLayer()
-        titleBox!!.render(drawContext, textRenderer, mouseX, mouseY, delta)
+        drawContext.guiRenderState.up()
+        titleBox!!.render(drawContext, font, mouseX, mouseY, delta)
         for (gui in guis) {
-            gui.render(drawContext, textRenderer, mouseX, mouseY, delta)
+            gui.render(drawContext, font, mouseX, mouseY, delta)
         }
         stack.popMatrix()
     }
 
 
-    override fun refreshWidgetPositions() {
+    override fun repositionElements() {
         // Refresh positions of all child guis
     }
 
@@ -156,8 +152,8 @@ open class GuiElement(title: Text?) : Screen(title) {
         return true
     }
 
-    override fun close() {
-        client!!.setScreen(parent)
+    override fun onClose() {
+        minecraft!!.setScreen(parent)
     }
 
 
