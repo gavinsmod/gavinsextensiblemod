@@ -33,11 +33,11 @@ class Rotation(val pitch: Float, val yaw: Float) {
         val radiansPerDegree = Mth.DEG_TO_RAD
         val pi = Mth.PI
 
-        val newPitch = -Mth.wrapDegrees(pitch) * radiansPerDegree
+        val newPitch = (-Mth.wrapDegrees(pitch) * radiansPerDegree).toDouble()
         val cosPitch = -Mth.cos(newPitch)
         val sinPitch = Mth.sin(newPitch)
 
-        val newYaw = -Mth.wrapDegrees(yaw) * radiansPerDegree - pi
+        val newYaw = (-Mth.wrapDegrees(yaw) * radiansPerDegree - pi).toDouble()
         val cosYaw = Mth.cos(newYaw)
         val sinYaw = Mth.sin(newYaw)
         return Vec3(sinYaw * cosPitch.toDouble(), sinPitch.toDouble(), cosYaw * cosPitch.toDouble())

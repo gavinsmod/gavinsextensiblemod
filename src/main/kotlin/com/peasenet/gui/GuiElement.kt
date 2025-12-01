@@ -39,7 +39,7 @@ import java.util.function.Consumer
  * @version 03-02-2023
  * A parent class that holds all that is needed to render an in game gui.
  */
-open class GuiElement(title: Component?) : Screen(title) {
+open class GuiElement(title: Component) : Screen(title) {
     /**
      * The box that contains the menu title in the top left corner of the screen.
      */

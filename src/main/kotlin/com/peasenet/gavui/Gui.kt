@@ -32,6 +32,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.FormattedText
 import java.util.*
 import java.util.function.Consumer
 import kotlin.math.max
@@ -57,7 +58,7 @@ import kotlin.math.max
 open class Gui(
     builder: GuiBuilder<*>,
     var children: ArrayList<Gui> = ArrayList(),
-    var title: Component? = builder.title,
+    var title: Component = builder.title,
     var translationKey: String? = builder.translationKey,
     var symbol: String? = builder.symbol,
     var isParent: Boolean = builder.isParent,

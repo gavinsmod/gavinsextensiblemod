@@ -26,10 +26,10 @@ package com.peasenet.util
 import com.mojang.blaze3d.pipeline.RenderPipeline
 import com.mojang.blaze3d.platform.DepthTestFunction
 import net.minecraft.client.renderer.RenderPipelines
-import net.minecraft.client.renderer.RenderType
-import net.minecraft.client.renderer.RenderType.CompositeRenderType
-import net.minecraft.client.renderer.RenderStateShard
-import net.minecraft.client.renderer.RenderStateShard.LineStateShard
+import net.minecraft.client.renderer.rendertype.LayeringTransform
+import net.minecraft.client.renderer.rendertype.OutputTarget
+import net.minecraft.client.renderer.rendertype.RenderSetup
+import net.minecraft.client.renderer.rendertype.RenderType
 import java.util.*
 
 /**
@@ -39,13 +39,12 @@ import java.util.*
  */
 class GemRenderLayers {
     companion object {
-        val LINES: CompositeRenderType = RenderType.create(
-            "gem:lines", 1536, RenderPipelines.LINES,
-            RenderType.CompositeState.builder()
-                 .setLineState(LineStateShard(OptionalDouble.of(2.0)))
-                .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
-                .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)
-                .createCompositeState(false)
+        val LINES: RenderType = RenderType.create(
+            "gem:lines",
+            RenderSetup.builder(RenderPipelines.LINES)
+                .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
+                .setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
+                .createRenderSetup()
         )
 
         val ESP_LINES: CompositeRenderType = RenderType.create(

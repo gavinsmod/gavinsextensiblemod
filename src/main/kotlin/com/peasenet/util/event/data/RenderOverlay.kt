@@ -23,7 +23,6 @@
  */
 package com.peasenet.util.event.data
 
-import net.minecraft.resources.ResourceLocation
 
 /**
  * Called when an overlay is rendered. This event is cancellable.

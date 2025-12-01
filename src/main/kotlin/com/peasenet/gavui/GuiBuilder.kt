@@ -58,7 +58,7 @@ class GuiBuilder<T : Gui> {
         private set
     var drawBorder: Boolean = true
         private set
-    var title: Component? = null
+    var title: Component = Component.literal("")
         private set
     var symbol: String? = null
         private set
@@ -155,7 +155,7 @@ class GuiBuilder<T : Gui> {
         return this
     }
 
-    fun setTitle(title: Component?): GuiBuilder<T> {
+    fun setTitle(title: Component): GuiBuilder<T> {
         this.title = title
         return this
     }

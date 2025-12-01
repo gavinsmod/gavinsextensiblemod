@@ -29,8 +29,6 @@ import com.peasenet.gavui.math.BoxF
 import com.peasenet.util.GemRenderLayers
 import com.peasenet.util.RenderUtils
 import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.client.renderer.RenderType
-import com.mojang.blaze3d.vertex.PoseStack
 import org.joml.Matrix3x2fStack
 
 /**

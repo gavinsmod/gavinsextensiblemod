@@ -78,7 +78,7 @@ object PlayerUtils {
      */
     @JvmStatic
     fun getNewPlayerPosition(deltaTime: Float, camera: Camera): Vec3 {
-        val look = camera.lookVector
+        val look = camera.forwardVector()
         val player = GavinsModClient.player
         val px = player!!.getPrevX() + (playerPos.x- player.getPrevX()) * deltaTime + look.x()
         val py = (player.getPrevY() + (playerPos.y - player.getPrevY()) * deltaTime + look.y()
