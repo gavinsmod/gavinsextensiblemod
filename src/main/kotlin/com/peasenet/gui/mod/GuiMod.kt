@@ -50,7 +50,7 @@ open class GuiMod(
     position: PointF,
     width: Int,
     height: Int,
-    title: Component?,
+    title: Component,
     category: ModCategory?,
     maxChildren: Int = 6,
 ) : GuiScroll(

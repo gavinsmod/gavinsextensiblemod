@@ -32,6 +32,7 @@ import com.peasenet.gavui.GuiScroll
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gui.GuiElement
 import com.peasenet.main.GavinsMod
+import com.peasenet.main.GavinsModClient
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
 import com.peasenet.settings.*
 import com.peasenet.util.data.ItemEntityFilter
@@ -82,7 +83,7 @@ class GuiItemEspTracerConfig(
     }
 
     init {
-        this.parent = GavinsMod.guiSettings
+        this.parent = GavinsModClient.guiSettings
         offsetX = minecraftClient.window.guiScaledWidth / 2 - screenWidth / 2
         offsetY = minecraftClient.window.guiScaledHeight / 2 - screenHeight / 2
 

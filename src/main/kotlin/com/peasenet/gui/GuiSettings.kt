@@ -34,6 +34,7 @@ import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.PointF
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsMod.Companion.setEnabled
+import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Mods
 import com.peasenet.main.Settings
 import com.peasenet.mods.Mod
@@ -130,8 +131,8 @@ class GuiSettings : GuiElement(Component.translatable("gavinsmod.gui.settings").
         resetButton.backgroundColor = (Colors.DARK_RED)
         resetButton.title = resetText
         resetButton.callback = {
-            GavinsMod.gui.reset()
-            GavinsMod.guiSettings.reset()
+            GavinsModClient.gui.reset()
+            GavinsModClient.guiSettings.reset()
         }
         resetButton.canHover = true
     }

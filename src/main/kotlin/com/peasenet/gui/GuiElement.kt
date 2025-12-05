@@ -39,7 +39,7 @@ import java.util.function.Consumer
  * @version 03-02-2023
  * A parent class that holds all that is needed to render an in game gui.
  */
-open class GuiElement(title: Component) : Screen(title) {
+open class GuiElement(title: Component) : Screen(Minecraft.getInstance(), GavinsModClient.minecraftClient.textRenderer, title) {
     /**
      * The box that contains the menu title in the top left corner of the screen.
      */
@@ -62,8 +62,6 @@ open class GuiElement(title: Component) : Screen(title) {
     private var selectedGui: Gui? = null
 
     public override fun init() {
-        this.minecraft = Minecraft.getInstance()
-        this.font = GavinsModClient.minecraftClient.textRenderer
         titleBox = GuiBuilder<Gui>()
             .setTopLeft(10, 1)
             .setWidth(font.width(title).toFloat() + 4f)
@@ -153,7 +151,7 @@ open class GuiElement(title: Component) : Screen(title) {
     }
 
     override fun onClose() {
-        minecraft!!.setScreen(parent)
+        minecraft.setScreen(parent)
     }
 
 

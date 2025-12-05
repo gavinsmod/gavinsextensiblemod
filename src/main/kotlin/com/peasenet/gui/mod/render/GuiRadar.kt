@@ -30,6 +30,7 @@ import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gui.GuiElement
 import com.peasenet.main.GavinsMod
+import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Mods
 import com.peasenet.main.Settings
 import com.peasenet.mods.render.ModRadar
@@ -73,7 +74,7 @@ class GuiRadar : GuiElement(Component.translatable("gavinsmod.mod.render.radar")
     @Suppress("DuplicatedCode")
     override fun init() {
         visible = true
-        this.parent = GavinsMod.guiSettings
+        this.parent = GavinsModClient.guiSettings
         settings.clear()
         guis.clear()
         offsetX = minecraft!!.window.guiScaledWidth / 2 - (this.width / 2)
@@ -306,7 +307,7 @@ class GuiRadar : GuiElement(Component.translatable("gavinsmod.mod.render.radar")
      */
     private fun updateScaleText(setting: ClickSetting, value: Int) {
         setting.gui.title =
-            (Component.translatable(setting.gui.translationKey).append(Component.literal(" (%s)".format(value))))
+            (Component.translatable(setting.gui.translationKey ?: "").append(Component.literal(" (%s)".format(value))))
     }
 
     override fun render(drawContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {

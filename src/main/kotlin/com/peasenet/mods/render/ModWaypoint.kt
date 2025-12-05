@@ -101,7 +101,7 @@ class ModWaypoint : RenderMod(
     }
 
     override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
-        val playerDimension = Dimension.fromValue(Minecraft.getInstance().level?.dimensionType()?.effectsLocation?.path!!)
+        val playerDimension = Dimension.fromValue(Minecraft.getInstance().level?.dimensionType()?.skybox()?.name ?: "")
         val waypointLocs =
             Settings.getConfig<WaypointConfig>("waypoints").getLocations().filter { w -> w.canRender(playerDimension) }
         if (waypointLocs.isEmpty()) return

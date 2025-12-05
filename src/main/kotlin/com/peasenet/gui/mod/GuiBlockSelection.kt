@@ -33,6 +33,7 @@ import com.peasenet.gavui.util.GavUISettings
 import com.peasenet.gavui.util.GuiUtil
 import com.peasenet.gui.GuiElement
 import com.peasenet.main.GavinsMod
+import com.peasenet.main.GavinsModClient
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
 import com.peasenet.main.Mods.Companion.getMod
 import com.peasenet.main.Settings
@@ -163,7 +164,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         blocksPerRow = m_width / BLOCK_OFFSET
         blocksPerPage = blocksPerRow * blocksPerColumn
         pageCount = ceil(blockList().size.toDouble() / blocksPerPage).toInt()
-        parent = GavinsMod.guiSettings
+        parent = GavinsModClient.guiSettings
         search = object : EditBox(font, x + m_width / 2 - 75, y - 16, 150, 13, Component.empty()) {
             override fun charTyped(input: CharacterEvent): Boolean {
                 val pressed = super.charTyped(input)

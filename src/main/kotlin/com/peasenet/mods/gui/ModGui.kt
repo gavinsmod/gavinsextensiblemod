@@ -38,7 +38,7 @@ class ModGui : GuiMod(
     GLFW.GLFW_KEY_I
 ) {
     override fun activate() {
-        GavinsModClient.minecraftClient.setScreen(GavinsMod.gui)
+        GavinsModClient.minecraftClient.setScreen(GavinsModClient.gui)
         setEnabled(true)
     }
 

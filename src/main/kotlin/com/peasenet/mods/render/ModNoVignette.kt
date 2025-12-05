@@ -25,7 +25,7 @@ package com.peasenet.mods.render
 
 import com.peasenet.util.event.data.RenderOverlay
 import com.peasenet.util.listeners.RenderOverlayListener
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.resources.Identifier
 
 /**
  * A mod that removes the vignette overlay.
@@ -49,6 +49,6 @@ class ModNoVignette : RenderMod(
 
     override fun onRenderOverlay(overlay: RenderOverlay) {
         val texture = overlay.texture
-        if (texture == ResourceLocation.parse("textures/misc/vignette.png")) overlay.cancel()
+        if (texture == Identifier.parse("textures/misc/vignette.png")) overlay.cancel()
     }
 }

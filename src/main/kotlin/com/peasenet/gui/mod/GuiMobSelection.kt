@@ -236,7 +236,7 @@ abstract class GuiMobSelection(label: Component) : GuiElement(label) {
         blocksPerPage = blocksPerRow * blocksPerColumn
         box = GuiBuilder<Gui>().setTopLeft(x, y).setWidth(m_width.toFloat()).setHeight(m_height.toFloat())
             .setBackgroundColor(Colors.INDIGO).setTransparency(0.5f).setHoverable(false).build()
-        parent = GavinsMod.guiSettings
+        parent = GavinsModClient.guiSettings
         items = ArrayList()
         BuiltInRegistries.ENTITY_TYPE.forEach {
             val spawnEgg = SpawnEggItem.byId(it)

@@ -25,6 +25,7 @@ package com.peasenet.util
 
 import com.peasenet.gui.GuiSettings
 import com.peasenet.main.GavinsMod
+import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Mods
 import com.peasenet.main.Mods.Companion.mods
 import com.peasenet.mods.Mod
@@ -91,14 +92,14 @@ class ModCommands : OnChatSendListener {
                 return true
             }
             if (s == "resetgui") {
-                GavinsMod.gui.reset()
-                GavinsMod.guiSettings.reset()
+                GavinsModClient.gui.reset()
+                GavinsModClient.guiSettings.reset()
                 sendMessage("GUI Positions have been reset.", true)
                 return true
             }
             if (s == "reloadgui") {
-                GavinsMod.guiSettings = GuiSettings()
-                GavinsMod.setMainGui()
+                GavinsModClient.guiSettings = GuiSettings()
+                GavinsModClient.setMainGui()
                 sendMessage("GUIs have reloaded.", true)
                 return true
             }

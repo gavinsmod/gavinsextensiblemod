@@ -31,6 +31,7 @@ import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GavUISettings
 import com.peasenet.gui.GuiElement
 import com.peasenet.main.GavinsMod
+import com.peasenet.main.GavinsModClient
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
 import com.peasenet.main.GavinsModClient.Companion.player
 import com.peasenet.main.Mods.Companion.getMod
@@ -192,8 +193,8 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         )
         getConfig().addWaypoint(newWaypoint)
         getMod("waypoints")?.reloadSettings()
-        GavinsMod.guiSettings.reloadGui()
-        parent = GavinsMod.guiSettings
+        GavinsModClient.guiSettings.reloadGui()
+        parent = GavinsModClient.guiSettings
         onClose()
     }
 
@@ -206,7 +207,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         val buttonWidth = 42
         val wholeButtonWidth = buttonWidth * 3 + padding * 2
 
-        parent = GavinsMod.guiSettings
+        parent = GavinsModClient.guiSettings
         offsetX = minecraftClient.window.guiScaledWidth / 2.0f - width / 2.0f
         offsetY = minecraftClient.window.guiScaledHeight / 2.0f - height / 2.0f
         paddingX = offsetX + padding
@@ -343,7 +344,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
     private fun deleteCallback() {
         getConfig().removeWaypoint(w)
         getMod("waypoints")?.reloadSettings()
-        GavinsMod.guiSettings.reloadGui()
+        GavinsModClient.guiSettings.reloadGui()
         onClose()
     }
 

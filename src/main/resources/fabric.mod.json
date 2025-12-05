@@ -23,6 +23,7 @@
       "com.peasenet.main.GavinsModClient"
     ]
   },
+  "accessWidener": "gem.accesswidener",
   "mixins": [
     "gavinsmod.mixins.json"
   ],

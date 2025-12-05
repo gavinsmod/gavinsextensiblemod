@@ -48,6 +48,6 @@ import net.minecraft.world.entity.Entity
 data class EntityNameRender(
     val entity: Entity,
     val matrixStack: PoseStack,
-    var vertexConsumerProvider: MultiBufferSource?,
+    var vertexConsumerProvider: MultiBufferSource,
     var light: Int,
 )

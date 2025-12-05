@@ -136,7 +136,7 @@ abstract class Mod(
      *
      * @param message The message to send.
      */
-    private fun sendMessage(message: String?) {
+    private fun sendMessage(message: String) {
         if (Settings.getConfig<MiscConfig>("misc").isMessages && !reloading) GavinsModClient.player!!.displayClientMessage(
             Component.literal(
                 message

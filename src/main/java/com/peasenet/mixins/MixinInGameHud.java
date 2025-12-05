@@ -31,7 +31,7 @@ import com.peasenet.util.event.data.RenderOverlay;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -52,7 +52,7 @@ public class MixinInGameHud {
 
 
     @Inject(at = @At("HEAD"), method = "renderTextureOverlay", cancellable = true)
-    private void antiPumpkin(GuiGraphics context, ResourceLocation texture, float opacity, CallbackInfo ci) {
+    private void antiPumpkin(GuiGraphics context, Identifier texture, float opacity, CallbackInfo ci) {
         var overlay = new RenderOverlay(texture);
         RenderOverlayEvent event = new RenderOverlayEvent(overlay);
         EventManager.getEventManager().call(event);
@@ -62,7 +62,7 @@ public class MixinInGameHud {
 
     @Inject(at = @At("HEAD"), method = "renderVignette", cancellable = true)
     private void antiVignette(CallbackInfo ci) {
-        var overlay = new RenderOverlay(ResourceLocation.parse("textures/misc/vignette.png"));
+        var overlay = new RenderOverlay(Identifier.parse("textures/misc/vignette.png"));
         RenderOverlayEvent event = new RenderOverlayEvent(overlay);
         EventManager.getEventManager().call(event);
         if (event.isCancelled())
