@@ -27,6 +27,7 @@ import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiScroll
 import com.peasenet.main.GavinsModClient
+import com.peasenet.mixins.ScreenAccessor
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
@@ -39,7 +40,8 @@ import java.util.function.Consumer
  * @version 03-02-2023
  * A parent class that holds all that is needed to render an in game gui.
  */
-open class GuiElement(title: Component) : Screen(Minecraft.getInstance(), GavinsModClient.minecraftClient.textRenderer, title) {
+open class GuiElement(title: Component) :
+    Screen(Minecraft.getInstance(), GavinsModClient.minecraftClient.textRenderer, title) {
     /**
      * The box that contains the menu title in the top left corner of the screen.
      */
@@ -62,6 +64,7 @@ open class GuiElement(title: Component) : Screen(Minecraft.getInstance(), Gavins
     private var selectedGui: Gui? = null
 
     public override fun init() {
+        (this as ScreenAccessor).setFont(GavinsModClient.minecraftClient.textRenderer)
         titleBox = GuiBuilder<Gui>()
             .setTopLeft(10, 1)
             .setWidth(font.width(title).toFloat() + 4f)
