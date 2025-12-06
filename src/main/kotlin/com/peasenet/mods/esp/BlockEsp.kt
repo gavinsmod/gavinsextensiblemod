@@ -29,6 +29,8 @@ import com.peasenet.extensions.east
 import com.peasenet.extensions.north
 import com.peasenet.extensions.south
 import com.peasenet.extensions.west
+import com.peasenet.util.GemRenderLayers
+import com.peasenet.util.RenderUtils.getVertexConsumerProvider
 import com.peasenet.util.block.GavBlock
 import com.peasenet.util.chunk.GavChunk
 import com.peasenet.util.event.data.ChunkUpdate
@@ -37,10 +39,13 @@ import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
+import net.minecraft.block.Block
+import net.minecraft.block.Blocks
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.chunk.Chunk
 import org.joml.Matrix3x2fStack
+import org.lwjgl.opengl.GL11
 
 /**
  *
@@ -67,6 +72,28 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
 ), BlockUpdateListener, WorldRenderListener, ChunkUpdateListener, RenderListener {
 
 
+    override fun onEnable() {
+        super.onEnable()
+        synchronized(chunks) {
+            chunks.clear()
+        }
+        em.subscribe(BlockUpdateListener::class.java, this)
+        em.subscribe(WorldRenderListener::class.java, this)
+        em.subscribe(ChunkUpdateListener::class.java, this)
+        em.subscribe(RenderListener::class.java, this)
+    }
+
+    override fun onDisable() {
+        super.onDisable()
+        em.unsubscribe(BlockUpdateListener::class.java, this)
+        em.unsubscribe(WorldRenderListener::class.java, this)
+        em.unsubscribe(ChunkUpdateListener::class.java, this)
+        em.unsubscribe(RenderListener::class.java, this)
+        synchronized(chunks) {
+            chunks.clear()
+        }
+    }
+
     /**
      * Gets the settings of type [T].
      * @see IBlockEspTracerConfig
@@ -89,12 +116,18 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
      * @param chunk The chunk to check.
      * @return If the chunk is in render distance.
      */
-    open fun chunkInRenderDistance(chunk: GavChunk): Boolean = false
+    open fun chunkInRenderDistance(chunk: GavChunk): Boolean {
+        return chunk.inRenderDistance()
+    }
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         // TODO: MC 1.21.10 update
         synchronized(chunks) {
             if (chunks.isEmpty()) return
+            GL11.glDisable(GL11.GL_DEPTH_TEST)
+            val vcp = getVertexConsumerProvider()
+            val layer = GemRenderLayers.LINES
+            val buffer = vcp.getBuffer(layer)
             chunks.values.filter { chunkInRenderDistance(it) }.toMutableList().forEach {
                 it.render(
                     matrixStack,
@@ -102,14 +135,19 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
                     partialTicks,
                     getSettings().alpha,
                     getSettings().structureEsp,
-                    getSettings().blockTracer
+                    getSettings().blockTracer,
+                    buffer
                 )
             }
+
+            vcp.draw(layer)
+            GL11.glEnable(GL11.GL_DEPTH_TEST)
 //            RenderUtils.drawBuffer(bufferBuilder, matrixStack)
         }
     }
 
     override fun onChunkUpdate(chunkUpdate: ChunkUpdate) {
+
         searchChunk(chunkUpdate.chunk)
     }
 

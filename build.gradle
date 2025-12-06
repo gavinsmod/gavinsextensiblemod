@@ -20,6 +20,10 @@ repositories {
 }
 
 
+loom {
+    accessWidenerPath = file('src/main/resources/gem.accesswidener')
+}
+
 allprojects { apply plugin: "idea" }
 sourceSets {
     'src/main'

@@ -244,4 +244,5 @@ interface IClientPlayerEntity {
 
     fun horizontalCollision(): Boolean
     fun isGliding(): Boolean
+
 }

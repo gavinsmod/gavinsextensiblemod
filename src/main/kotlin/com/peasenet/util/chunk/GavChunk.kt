@@ -28,6 +28,7 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.main.GavinsModClient
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.block.GavBlock
+import net.minecraft.client.render.VertexConsumer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
@@ -180,11 +181,12 @@ class GavChunk(val chunkPos: ChunkPos) {
         partialTicks: Float,
         alpha: Float,
         structureEsp: Boolean = false, blockTracer: Boolean = false,
+        buffer: VertexConsumer,
     ) {
         synchronized(this) {
             visibleBlocks.values.forEach { block ->
                 block.render(
-                    matrixStack, blockColor, partialTicks, alpha, structureEsp, blockTracer
+                    matrixStack, blockColor, partialTicks, alpha, structureEsp, blockTracer, buffer
                 )
             }
         }

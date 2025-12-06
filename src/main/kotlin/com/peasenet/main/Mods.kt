@@ -128,6 +128,7 @@ class Mods {
         GavinsMod.addMod(ModFurnaceTracer())
         GavinsMod.addMod(ModMobTracer())
         GavinsMod.addMod(ModBlockEsp())
+        GavinsMod.addMod(ModOreEsp())
         GavinsMod.addMod(ModCaveEsp())
     }
 

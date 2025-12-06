@@ -148,6 +148,108 @@ object RenderUtils {
         return camera!!
     }
 
+    fun drawOutlinedBoxOptimized(
+        bb: Box, matrixStack: MatrixStack, color: Color = Colors.WHITE, alpha: Float = 1f, buffer: VertexConsumer,
+    ) {
+        val bb2 = bb.offset((getCameraPos().negate()))
+
+        val minX = bb2.minX.toFloat()
+        val minY = bb2.minY.toFloat()
+        val minZ = bb2.minZ.toFloat()
+        val maxX = bb2.maxX.toFloat()
+        val maxY = bb2.maxY.toFloat()
+        val maxZ = bb2.maxZ.toFloat()
+
+        val matrix4f = matrixStack.peek()
+        try {
+            // draw lines connecting the corners of the box
+            buffer.vertex(matrix4f, minX, minY, minZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 1f, 0f, 0f)
+            buffer.vertex(matrix4f, maxX, minY, minZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 1f, 0f, 0f)
+
+            buffer.vertex(matrix4f, minX, minY, minZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 0f, 0f, 1f)
+            buffer.vertex(matrix4f, minX, minY, maxZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 0f, 0f, 1f)
+
+            buffer.vertex(matrix4f, minX, minY, maxZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 0f, 0f, 1f)
+            buffer.vertex(matrix4f, maxX, minY, maxZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 0f, 0f, 1f)
+
+            buffer.vertex(matrix4f, maxX, minY, maxZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 1f, 0f, 0f)
+            buffer.vertex(matrix4f, maxX, minY, minZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 1f, 0f, 0f)
+
+            // top
+            buffer.vertex(matrix4f, minX, maxY, minZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 1f, 0f, 0f)
+            buffer.vertex(matrix4f, maxX, maxY, minZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 1f, 0f, 0f)
+
+            buffer.vertex(matrix4f, minX, maxY, minZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 0f, 0f, 1f)
+            buffer.vertex(matrix4f, minX, maxY, maxZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 0f, 0f, 1f)
+            buffer.vertex(matrix4f, minX, maxY, maxZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 0f, 0f, 1f)
+            buffer.vertex(matrix4f, maxX, maxY, maxZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 0f, 0f, 1f)
+            buffer.vertex(matrix4f, maxX, maxY, maxZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 1f, 0f, 0f)
+            buffer.vertex(matrix4f, maxX, maxY, minZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 1f, 0f, 0f)
+            // corners
+            buffer.vertex(matrix4f, minX, minY, minZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 0f, 1f, 0f)
+            buffer.vertex(matrix4f, minX, maxY, minZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 0f, 1f, 0f)
+
+            buffer.vertex(matrix4f, maxX, minY, minZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 0f, 1f, 0f)
+            buffer.vertex(matrix4f, maxX, maxY, minZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 0f, 1f, 0f)
+
+            buffer.vertex(matrix4f, minX, minY, maxZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 0f, 1f, 0f)
+            buffer.vertex(matrix4f, minX, maxY, maxZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 0f, 1f, 0f)
+
+            buffer.vertex(matrix4f, maxX, minY, maxZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 0f, 1f, 0f)
+            buffer.vertex(matrix4f, maxX, maxY, maxZ)
+                .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+                .normal(matrix4f, 0f, 1f, 0f)
+        } catch (_: IllegalStateException) {
+            // ignore
+        }
+    }
+
     /**
      * Draws an outlined box.
      * @param bb The box to draw.
