@@ -169,25 +169,32 @@ class GavChunk(val chunkPos: ChunkPos) {
      * Renders the blocks in the chunk.
      *
      * @param matrixStack The matrix stack.
-     * @param bufferBuilder The buffer builder.
-     * @param blockColor The color of the block.q
+     * @param buffer The buffer builder.
+     * @param blockColor The default color of the block. This will be overridden if the block has a custom color.
      * @param partialTicks The partial ticks.
      * @param alpha The alpha of the block.
      * @param structureEsp True if structure ESP is enabled, false otherwise.
      * @param blockTracer True if block tracers are enabled, false otherwise.
      */
     fun render(
-        matrixStack: MatrixStack, blockColor: Color,
+        matrixStack: MatrixStack,
+        blockColor: Color,
         partialTicks: Float,
         alpha: Float,
-        structureEsp: Boolean = false, blockTracer: Boolean = false,
+        structureEsp: Boolean = false,
+        blockTracer: Boolean = false,
         buffer: VertexConsumer,
     ) {
         synchronized(this) {
             visibleBlocks.values.forEach { block ->
-                block.render(
-                    matrixStack, blockColor, partialTicks, alpha, structureEsp, blockTracer, buffer
-                )
+                synchronized(block) {
+                    var colorToUse = blockColor
+                    if (block.color != null)
+                        colorToUse = block.color.withAlpha(alpha)
+                    block.render(
+                        matrixStack, colorToUse, partialTicks, alpha, structureEsp, blockTracer, buffer
+                    )
+                }
             }
         }
     }

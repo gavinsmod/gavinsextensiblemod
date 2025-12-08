@@ -26,6 +26,7 @@ package com.peasenet.config.esp
 
 import com.peasenet.config.commons.BlockListConfig
 import com.peasenet.config.commons.IBlockEspTracerConfig
+import com.peasenet.gavui.color.Color
 import net.minecraft.block.Blocks
 
 /**
@@ -43,13 +44,116 @@ class OreEspConfig : BlockListConfig<OreEspConfig>({ it.defaultState == Blocks.C
         key = "oreesp"
     }
 
-    override var structureEsp: Boolean = false
+    var coalColor = Color(47, 44, 54)
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var ironColor = Color(236, 173, 119)
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var goldColor = Color(247, 229, 30)
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var redstoneColor = Color(245, 7, 23)
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var diamondColor = Color(33, 244, 255)
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var lapisColor = Color(8, 26, 189)
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var copperColor = Color(239, 151, 0)
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var emeraldColor = Color(27, 209, 45)
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var quartzColor = Color(205, 205, 205)
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var debrisColor = Color(209, 27, 245)
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    var coalEnabled: Boolean = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var ironEnabled: Boolean = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var goldEnabled: Boolean = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var redstoneEnabled: Boolean = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var diamondEnabled: Boolean = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var lapisEnabled: Boolean = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var copperEnabled: Boolean = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var emeraldEnabled: Boolean = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var quartzEnabled: Boolean = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var debrisEnabled: Boolean = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    var seed: String = ""
         set(value) {
             field = value
             saveConfig()
         }
 
     override var blockTracer: Boolean = false
+    override var structureEsp: Boolean = false
         set(value) {
             field = value
             saveConfig()

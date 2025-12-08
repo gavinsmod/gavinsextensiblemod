@@ -39,6 +39,7 @@ import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
+import kotlinx.atomicfu.locks.synchronized
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.client.util.math.MatrixStack
@@ -147,8 +148,9 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
     }
 
     override fun onChunkUpdate(chunkUpdate: ChunkUpdate) {
-
-        searchChunk(chunkUpdate.chunk)
+        synchronized(chunks) {
+            searchChunk(chunkUpdate.chunk)
+        }
     }
 
     override fun onWorldRender(worldRender: WorldRender) {

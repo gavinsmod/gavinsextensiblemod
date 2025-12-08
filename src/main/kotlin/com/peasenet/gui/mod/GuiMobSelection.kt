@@ -36,8 +36,6 @@ import com.peasenet.gavui.util.GuiUtil
 import com.peasenet.gui.GuiElement
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
-import com.peasenet.main.Mods.Companion.getMod
-import com.peasenet.main.Settings
 import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.ToggleSetting
 import net.minecraft.client.gui.Click

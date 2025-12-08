@@ -3,7 +3,10 @@ package com.peasenet.mods.esp
 import com.peasenet.config.esp.OreEspConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
+import com.peasenet.gui.mod.render.GuiOreEsp
+import com.peasenet.main.Mods
 import com.peasenet.main.Settings
+import com.peasenet.util.ChatCommand
 import com.peasenet.util.Dimension
 import com.peasenet.util.GemRenderLayers
 import com.peasenet.util.RenderUtils
@@ -28,11 +31,13 @@ import java.util.stream.Collectors
 import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 import kotlin.math.sin
 
 
 /**
- *
+ * This module has been modified from NoraTweaks, based off of Meteor Rejects
+ * Source: https://github.com/noramibu/Nora-Tweaks, https://github.com/AntiCope/meteor-rejects/
  * @author GT3CH1
  * @version 12-06-2025
  * @since 12-06-2025
@@ -40,6 +45,15 @@ import kotlin.math.sin
 class ModOreEsp : BlockEsp<OreEspConfig>("oreesp", "oreesp") {
     private val seed = 6777465926444923951L
     private lateinit var oreConfig: Map<RegistryKey<Biome>, List<Ore>>
+
+    init {
+        clickSetting {
+            title = translationKey
+            callback = {
+                client.setScreen(GuiOreEsp())
+            }
+        }
+    }
 
     override fun onEnable() {
         oreConfig = Ore.registry(Dimension.fromValue(client.getWorld().dimension.effects.path))
@@ -58,7 +72,7 @@ class ModOreEsp : BlockEsp<OreEspConfig>("oreesp", "oreesp") {
             val chunkPos = chunk.pos
             val chunkKey = chunkPos.toLong()
             val gavChunk = GavChunk(chunkPos)
-            if (chunks.containsKey(chunkKey) || !chunkInRenderDistance(gavChunk))
+            if (chunks.containsKey(chunkKey))
                 return@execute
             val biomes = HashSet<RegistryKey<Biome>>()
             ChunkPos.stream(chunkPos, 1).forEach { cPos ->
@@ -74,9 +88,9 @@ class ModOreEsp : BlockEsp<OreEspConfig>("oreesp", "oreesp") {
             val chunkZ = chunkPos.z shl 4
             val random = ChunkRandom(ChunkRandom.RandomProvider.XOROSHIRO.create(0))
             val populationSeed = random.setPopulationSeed(seed, chunkX, chunkZ)
-            val h = mutableMapOf<Ore, MutableSet<BlockPos>>()
+            val h = mutableMapOf<Ore, MutableSet<GavBlock>>()
             for (ore in oreSet) {
-                val blockPos: HashSet<BlockPos> = HashSet()
+                val blockPos: HashSet<GavBlock> = HashSet()
                 random.setDecoratorSeed(populationSeed, ore.index, ore.step)
                 val repeat = ore.count.get(random)
                 for (i in 0 until repeat) {
@@ -88,32 +102,29 @@ class ModOreEsp : BlockEsp<OreEspConfig>("oreesp", "oreesp") {
                     val origin = BlockPos(x, y, z)
 
                     val biome = chunk.getBiomeForNoiseGen(x, y, z).key.get()
-                    if (!getOres(biome).contains(ore))
+                    if (!getOres(biome).contains(ore) || !ore.enabled)
                         continue
 
                     if (ore.isScattered) {
                         val hidden = generateHidden(world, random, origin, ore.size)
-                        hidden.forEach { blockPos.add(it) }
+                        hidden.forEach {
+                            blockPos.add(
+                                GavBlock(it, ore.color)
+                            )
+                        }
                     } else {
                         val normals = generateNormal(world, random, origin, ore.size, ore.discardOnAirChacne)
 
-                        normals.forEach { blockPos.add(BlockPos(it.x,it.y,it!!.z.toInt())) }
+                        normals.forEach { blockPos.add(GavBlock(it, ore.color)) }
                     }
                 }
                 if (!blockPos.isEmpty()) {
                     h[ore] = blockPos
                 }
             }
-            val gavBlocks = mutableListOf<GavBlock>()
-
             h.values.flatten().forEach {
-                gavBlocks.add(
-                    GavBlock(
-                      it
-                    ) { true }
-                )
+                gavChunk.addBlock(it)
             }
-            gavBlocks::forEach { gavChunk.addBlock(it) }
             addBlocksFromChunk(gavChunk)
         }
     }
@@ -130,17 +141,17 @@ class ModOreEsp : BlockEsp<OreEspConfig>("oreesp", "oreesp") {
 
     override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
         synchronized(chunks) {
-
             GL11.glDisable(GL11.GL_DEPTH_TEST)
             val vcp = getVertexConsumerProvider()
             val layer = GemRenderLayers.LINES
             val buffer = vcp.getBuffer(layer)
+
             chunks.values.filter { chunkInRenderDistance(it) }.toList().forEach {
                 it.render(
                     matrixStack,
                     Colors.RED_ORANGE,
                     partialTicks,
-                    1f,
+                    getSettings().alpha,
                     structureEsp = false,
                     blockTracer = false,
                     buffer
@@ -152,21 +163,14 @@ class ModOreEsp : BlockEsp<OreEspConfig>("oreesp", "oreesp") {
     }
 
     override fun onBlockUpdate(bue: BlockUpdate) {
-//        val enabledBlocks = config.blocks
-//        val chunk = client.getWorld().getChunk(bue.blockPos) ?: return
-//        val blockOldId = BlockListConfig.getId(bue.oldState.block)
-//        val blockNewId = BlockListConfig.getId(bue.newState.block)
-//        val added = enabledBlocks.contains(blockNewId) && !enabledBlocks.contains(blockOldId)
-//        val removed = !added && !enabledBlocks.contains(blockNewId) && enabledBlocks.contains(blockOldId)
-//        if (!added && !removed) {
-//            return
-//        }
-//        val gavBlock = GavBlock(bue.blockPos) { blockPos ->
-//
-//        }
-//        updateChunk(added, gavBlock, chunk.pos)
-
+        GemExecutor.execute {
+            synchronized(chunks) {
+                val chunk = client.getWorld().getChunk(bue.blockPos) ?: return@execute
+                updateChunk(false, GavBlock(bue.blockPos), chunk.pos)
+            }
+        }
     }
+
     private fun generateNormal(
         world: ClientWorld,
         random: ChunkRandom,
@@ -222,13 +226,11 @@ class ModOreEsp : BlockEsp<OreEspConfig>("oreesp", "oreesp") {
         val ds = DoubleArray(veinSize * 4)
 
         val poses = ArrayList<BlockPos>()
-
-        var n: Int
         var p: Double
         var q: Double
         var r: Double
         var s: Double
-        n = 0
+        var n: Int = 0
         while (n < veinSize) {
             val f = n.toFloat() / veinSize.toFloat()
             p = MathHelper.lerp(f.toDouble(), startX, endX)
@@ -292,7 +294,7 @@ class ModOreEsp : BlockEsp<OreEspConfig>("oreesp", "oreesp") {
                                         if (!bitSet.get(an)) {
                                             bitSet.set(an)
                                             mutable.set(ah, aj, al)
-                                            if (aj >= -64 && aj < 320 && ( world.getBlockState(
+                                            if (aj >= -64 && aj < 320 && (world.getBlockState(
                                                     mutable
                                                 ).isOpaque())
                                             ) {
@@ -319,8 +321,8 @@ class ModOreEsp : BlockEsp<OreEspConfig>("oreesp", "oreesp") {
             return true
         }
 
-        for (direction in Direction.values()) {
-            if (!world.getBlockState(orePos.add(direction.getVector())).isOpaque() && discardOnAir != 1f) {
+        for (direction in Direction.entries) {
+            if (!world.getBlockState(orePos.add(direction.vector)).isOpaque && discardOnAir != 1f) {
                 return false
             }
         }
@@ -340,12 +342,12 @@ class ModOreEsp : BlockEsp<OreEspConfig>("oreesp", "oreesp") {
 
         for (j in 0..<i) {
             size = min(j, 7)
-            val x = this.randomCoord(random, size) + blockPos.getX()
-            val y = this.randomCoord(random, size) + blockPos.getY()
-            val z = this.randomCoord(random, size) + blockPos.getZ()
-            if (world.getBlockState(BlockPos(x, y, z)).isOpaque()) {
+            val x = this.randomCoord(random, size) + blockPos.x
+            val y = this.randomCoord(random, size) + blockPos.y
+            val z = this.randomCoord(random, size) + blockPos.z
+            if (world.getBlockState(BlockPos(x, y, z)).isOpaque) {
                 if (shouldPlace(world, BlockPos(x, y, z), 1f, random)) {
-                    poses.add(BlockPos(x,y,z))
+                    poses.add(BlockPos(x, y, z))
                 }
             }
         }
@@ -354,10 +356,16 @@ class ModOreEsp : BlockEsp<OreEspConfig>("oreesp", "oreesp") {
     }
 
     private fun randomCoord(random: ChunkRandom, size: Int): Int {
-        return Math.round((random.nextFloat() - random.nextFloat()) * size.toFloat())
+        return ((random.nextFloat() - random.nextFloat()) * size.toFloat()).roundToInt()
     }
 
     override fun chunkInRenderDistance(chunk: GavChunk): Boolean {
-        return chunk.inRenderDistance(RenderUtils.getRenderDistance() / 3)
+        return chunk.inRenderDistance(RenderUtils.getRenderDistance() / 2)
+    }
+
+    companion object {
+        fun reload() {
+            Mods.getMod<ModOreEsp>(ChatCommand.OreEsp).reload()
+        }
     }
 }

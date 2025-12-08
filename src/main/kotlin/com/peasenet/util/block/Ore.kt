@@ -1,6 +1,9 @@
 package com.peasenet.util.block
 
-import com.peasenet.main.GavinsModClient
+import com.peasenet.config.esp.OreEspConfig
+import com.peasenet.gavui.color.Color
+import com.peasenet.gavui.color.Colors
+import com.peasenet.main.Settings
 import com.peasenet.util.Dimension
 import net.minecraft.client.MinecraftClient
 import net.minecraft.registry.BuiltinRegistries
@@ -41,19 +44,22 @@ class Ore {
     var discardOnAirChacne = 0.0f
     var size: Int = 0
     var isScattered: Boolean = false
+    var enabled: Boolean = false
+    var color: Color = Colors.WHITE
 
     private constructor(
         placedFeature: PlacedFeature,
         genStep: Int,
         index: Int,
         heightContext: HeightContext,
+        enabled: Boolean,
+        color: Color,
     ) {
         this.placedFeature = placedFeature
         this.step = genStep
         this.index = index
-
-        val bottom = GavinsModClient.minecraftClient.getWorld().bottomY
-        val height = GavinsModClient.minecraftClient.getWorld().dimension.logicalHeight
+        this.enabled = enabled
+        this.color = color
         this.heightContext = heightContext
         for (modifier in placedFeature.placementModifiers) {
             if (modifier is CountPlacementModifier)
@@ -77,11 +83,13 @@ class Ore {
         }
     }
 
-    fun test() {
-
-    }
 
     companion object {
+
+        private fun getSettings(): OreEspConfig {
+            return Settings.getConfig("oreesp")
+        }
+
         fun registry(dimension: Dimension): MutableMap<RegistryKey<Biome>, out List<Ore>> {
             val registry = BuiltinRegistries.createWrapperLookup()
             val features = registry.getOrThrow(RegistryKeys.PLACED_FEATURE)
@@ -112,22 +120,268 @@ class Ore {
             )
             val featureToOre: MutableMap<PlacedFeature, Ore> = HashMap()
 
-            registerOre(featureToOre, indexer, features, OrePlacedFeatures.ORE_COAL_LOWER, 6, heightContext)
-            registerOre(featureToOre, indexer, features, OrePlacedFeatures.ORE_COAL_UPPER, 6, heightContext)
-//            registerOre(featureToOre, indexer, features, OrePlacedFeatures.ORE_IRON_MIDDLE, 6, heightContext)
-//            registerOre(featureToOre, indexer, features, OrePlacedFeatures.ORE_IRON_SMALL, 6, heightContext)
-//            registerOre(featureToOre, indexer, features, OrePlacedFeatures.ORE_IRON_UPPER, 6, heightContext)
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_COAL_LOWER,
+                6,
+                heightContext,
+                getSettings().coalEnabled,
+                getSettings().coalColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_COAL_UPPER,
+                6,
+                heightContext,
+                getSettings().coalEnabled,
+                getSettings().coalColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_IRON_MIDDLE,
+                6,
+                heightContext,
+                getSettings().ironEnabled,
+                getSettings().ironColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_IRON_SMALL,
+                6,
+                heightContext,
+                getSettings().ironEnabled,
+                getSettings().ironColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_IRON_UPPER,
+                6,
+                heightContext,
+                getSettings().goldEnabled,
+                getSettings().ironColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_GOLD,
+                6,
+                heightContext,
+                getSettings().goldEnabled,
+                getSettings().goldColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_GOLD_LOWER,
+                6,
+                heightContext,
+                getSettings().goldEnabled,
+                getSettings().goldColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_GOLD_EXTRA,
+                6,
+                heightContext,
+                getSettings().goldEnabled,
+                getSettings().goldColor
+            )
 
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_GOLD_NETHER,
+                7,
+                heightContext,
+                getSettings().goldEnabled,
+                getSettings().goldColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_GOLD_DELTAS,
+                7,
+                heightContext,
+                getSettings().goldEnabled,
+                getSettings().goldColor
+            )
 
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_REDSTONE,
+                6,
+                heightContext,
+                getSettings().redstoneEnabled,
+                getSettings().redstoneColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_REDSTONE_LOWER,
+                6,
+                heightContext,
+                getSettings().redstoneEnabled,
+                getSettings().redstoneColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_DIAMOND,
+                6,
+                heightContext,
+                getSettings().diamondEnabled,
+                getSettings().diamondColor
+            )
 
-            var biomeOreMap  = mutableMapOf<RegistryKey<Biome>, MutableList<Ore>>()
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_DIAMOND_BURIED,
+                6,
+                heightContext,
+                getSettings().diamondEnabled,
+                getSettings().diamondColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_DIAMOND_LARGE,
+                6,
+                heightContext,
+                getSettings().diamondEnabled,
+                getSettings().diamondColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_DIAMOND_MEDIUM,
+                6,
+                heightContext,
+                getSettings().diamondEnabled,
+                getSettings().diamondColor
+            )
+
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_LAPIS,
+                6,
+                heightContext,
+                getSettings().lapisEnabled,
+                getSettings().lapisColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_LAPIS,
+                6,
+                heightContext,
+                getSettings().lapisEnabled,
+                getSettings().lapisColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_COPPER,
+                6,
+                heightContext,
+                getSettings().copperEnabled,
+                getSettings().copperColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_COPPER_LARGE,
+                6,
+                heightContext,
+                getSettings().copperEnabled,
+                getSettings().copperColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_EMERALD,
+                6,
+                heightContext,
+                getSettings().emeraldEnabled,
+                getSettings().emeraldColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_QUARTZ_NETHER,
+                7,
+                heightContext,
+                getSettings().quartzEnabled,
+                getSettings().quartzColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_QUARTZ_DELTAS,
+                7,
+                heightContext,
+                getSettings().quartzEnabled,
+                getSettings().quartzColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_DEBRIS_SMALL,
+                7,
+                heightContext,
+                getSettings().debrisEnabled,
+                getSettings().debrisColor
+            )
+            registerOre(
+                featureToOre,
+                indexer,
+                features,
+                OrePlacedFeatures.ORE_ANCIENT_DEBRIS_LARGE,
+                7,
+                heightContext,
+                getSettings().debrisEnabled,
+                getSettings().debrisColor
+            )
+
+            var biomeOreMap = mutableMapOf<RegistryKey<Biome>, MutableList<Ore>>()
             biomeList.forEach {
                 biomeOreMap[it.key.get()] = mutableListOf()
                 it.value().generationSettings.features.stream().flatMap { s -> s.stream() }
                     .map { b -> b.value() }
                     .filter(featureToOre::containsKey)
                     .forEach { f ->
-//                       biomeOreMap[it.key.get].put biomeOreMap[it.key.get()]?.plus(featureToOre[f])
                         biomeOreMap[it.key.get()]?.add(featureToOre[f]!!)
                     }
             }
@@ -141,10 +395,12 @@ class Ore {
             key: RegistryKey<PlacedFeature>,
             step: Int,
             heightContext: HeightContext,
+            enabled: Boolean,
+            color: Color,
         ) {
             val orePlacement = registry.getOrThrow(key).value()
             val index = indexer[step].indexMapping.applyAsInt(orePlacement)
-            val ore = Ore(orePlacement, step, index, heightContext)
+            val ore = Ore(orePlacement, step, index, heightContext, enabled, color)
             map[orePlacement] = ore
         }
 

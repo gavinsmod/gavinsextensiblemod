@@ -56,13 +56,23 @@ class GavBlock(
     val visibleFilter: (BlockPos) -> Boolean = {
         false
     },
+    val color : Color? = null
 ) {
 
-    constructor(blockPos: BlockPos, visibleFilter: (BlockPos) -> Boolean = { false }) : this(
+    constructor(blockPos: BlockPos, visibleFilter: (BlockPos) -> Boolean = { false }, color: Color? = null) : this(
         blockPos.x,
         blockPos.y,
         blockPos.z,
-        visibleFilter
+        visibleFilter,
+        color
+    )
+
+    constructor(blockPos: BlockPos, color: Color? = null) : this(
+        blockPos.x,
+        blockPos.y,
+        blockPos.z,
+        { true},
+        color
     )
 
 
