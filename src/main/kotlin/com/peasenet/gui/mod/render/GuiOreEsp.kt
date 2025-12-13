@@ -10,6 +10,9 @@ import com.peasenet.settings.colorSetting
 import com.peasenet.settings.slideSetting
 import com.peasenet.settings.toggleSetting
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.gui.widget.TextFieldWidget
+import net.minecraft.client.gui.widget.TextWidget
 import net.minecraft.text.Text
 
 /**
@@ -18,9 +21,11 @@ import net.minecraft.text.Text
  * @version 12-06-2025
  * @since 12-06-2025
  */
-class GuiOreEsp : GuiElement(Text.translatable("gavinsmod.mod.render.oreesp")) {
+class GuiOreEsp : GuiElement(Text.translatable("gavinsmod.mod.esp.ore")) {
     private var m_width = 200
     private val m_height = 11 * 12f
+    private lateinit var seedBox: TextFieldWidget
+    private lateinit var seedText: TextWidget
 
     private fun getSettings(): OreEspConfig {
         return Settings.getConfig("oreesp")
@@ -296,12 +301,32 @@ class GuiOreEsp : GuiElement(Text.translatable("gavinsmod.mod.render.oreesp")) {
             callback = {
                 reload()
             }
+            width = 32f
         }
-        apply.setGuiWidth(MinecraftClient.getInstance().textRenderer.getWidth(apply.title + 1f).toFloat())
         addSetting(apply)
+
+        seedText = TextWidget(
+            apply.topLeft.x.toInt() + 36, apply.topLeft.y.toInt() + 1 ,
+            25,
+            12,
+            Text.literal("Seed"),
+            textRenderer
+        )
+        seedBox =
+            TextFieldWidget(textRenderer, seedText.x + 30, apply.topLeft.y.toInt() , 150, 12, Text.empty())
+        seedBox.text = getSettings().seed
+        addSelectableChild(seedBox)
+        addDrawableChild(seedText)
+    }
+
+    override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+        super.render(drawContext, mouseX, mouseY, delta)
+        seedBox.render(drawContext, mouseX, mouseY, delta)
+        seedText.render(drawContext, mouseX, mouseY, delta)
     }
 
     private fun reload() {
+        Settings.getConfig<OreEspConfig>("oreesp").seed = seedBox.text
         ModOreEsp.reload()
     }
 }

@@ -9,6 +9,7 @@ import com.peasenet.main.Settings
 import com.peasenet.util.ChatCommand
 import com.peasenet.util.Dimension
 import com.peasenet.util.GemRenderLayers
+import com.peasenet.util.PlayerUtils
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.RenderUtils.getVertexConsumerProvider
 import com.peasenet.util.block.GavBlock
@@ -42,8 +43,7 @@ import kotlin.math.sin
  * @version 12-06-2025
  * @since 12-06-2025
  */
-class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.render.oreesp", "oreesp") {
-    private val seed = 6777465926444923951L
+class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.esp.ore", "oreesp") {
     private lateinit var oreConfig: Map<RegistryKey<Biome>, List<Ore>>
 
     init {
@@ -56,6 +56,10 @@ class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.render.oreesp", "oreesp"
     }
 
     override fun onEnable() {
+        if (getSettings().seed.toLongOrNull() == null) {
+            PlayerUtils.sendMessage("An invalid seed was provided!", true)
+            return
+        }
         oreConfig = Ore.registry(Dimension.fromValue(client.getWorld().dimension.effects.path))
         super.onEnable()
         GemExecutor.execute {
@@ -87,7 +91,7 @@ class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.render.oreesp", "oreesp"
             val chunkX = chunkPos.x shl 4
             val chunkZ = chunkPos.z shl 4
             val random = ChunkRandom(ChunkRandom.RandomProvider.XOROSHIRO.create(0))
-            val populationSeed = random.setPopulationSeed(seed, chunkX, chunkZ)
+            val populationSeed = random.setPopulationSeed(getSettings().seed.toLong(), chunkX, chunkZ)
             val h = mutableMapOf<Ore, MutableSet<GavBlock>>()
             for (ore in oreSet) {
                 val blockPos: HashSet<GavBlock> = HashSet()
