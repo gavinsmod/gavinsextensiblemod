@@ -42,7 +42,7 @@ import kotlin.math.sin
  * @version 12-06-2025
  * @since 12-06-2025
  */
-class ModOreEsp : BlockEsp<OreEspConfig>("oreesp", "oreesp") {
+class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.render.oreesp", "oreesp") {
     private val seed = 6777465926444923951L
     private lateinit var oreConfig: Map<RegistryKey<Biome>, List<Ore>>
 

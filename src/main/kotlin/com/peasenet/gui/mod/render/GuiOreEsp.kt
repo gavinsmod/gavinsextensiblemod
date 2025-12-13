@@ -18,7 +18,7 @@ import net.minecraft.text.Text
  * @version 12-06-2025
  * @since 12-06-2025
  */
-class GuiOreEsp : GuiElement(Text.literal("OreESP")) {
+class GuiOreEsp : GuiElement(Text.translatable("gavinsmod.mod.render.oreesp")) {
     private var m_width = 200
     private val m_height = 11 * 12f
 
@@ -291,13 +291,13 @@ class GuiOreEsp : GuiElement(Text.literal("OreESP")) {
 
         super.init()
         val apply = clickSetting {
-            title = "Apply"
+            title = "gavinsmod.settings.apply"
             topLeft = titleBox!!.position.add(titleBox!!.width + 2f, 0f)
             callback = {
                 reload()
             }
         }
-        apply.setWidth(MinecraftClient.getInstance().textRenderer.getWidth(apply.title).toFloat())
+        apply.setGuiWidth(MinecraftClient.getInstance().textRenderer.getWidth(apply.title + 1f).toFloat())
         addSetting(apply)
     }
 
