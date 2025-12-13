@@ -56,7 +56,7 @@ abstract class Setting(
     open val gui: Gui? = null
 
 
-    fun setWidth(newWidth: Float) {
+    fun setGuiWidth(newWidth: Float) {
         width = newWidth
         gui?.width = newWidth
     }
