@@ -149,8 +149,9 @@ class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.esp.ore", "oreesp") {
             val vcp = getVertexConsumerProvider()
             val layer = GemRenderLayers.LINES
             val buffer = vcp.getBuffer(layer)
+            val blocks = chunks.values
 
-            chunks.values.filter { chunkInRenderDistance(it) }.toList().forEach {
+            chunks.values.filter { chunkInRenderDistance(it) }.forEach {
                 it.render(
                     matrixStack,
                     Colors.RED_ORANGE,
