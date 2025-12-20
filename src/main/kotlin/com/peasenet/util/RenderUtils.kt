@@ -148,6 +148,109 @@ object RenderUtils {
         return camera!!
     }
 
+    fun drawOutlinedBoxOptimized(
+        bb: Box, matrixStack: MatrixStack, color: Color = Colors.WHITE, alpha: Float = 1f, buffer: VertexConsumer,
+    ) {
+        val bb2 = bb.offset((getCameraPos().negate()))
+
+        val minX = bb2.minX.toFloat()
+        val minY = bb2.minY.toFloat()
+        val minZ = bb2.minZ.toFloat()
+        val maxX = bb2.maxX.toFloat()
+        val maxY = bb2.maxY.toFloat()
+        val maxZ = bb2.maxZ.toFloat()
+
+        val matrix4f = matrixStack.peek()
+        val colorWithAlpha = color.withAlpha(alpha).asInt
+        try {
+            // draw lines connecting the corners of the box
+            buffer.vertex(matrix4f, minX, minY, minZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 1f, 0f, 0f)
+            buffer.vertex(matrix4f, maxX, minY, minZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 1f, 0f, 0f)
+
+            buffer.vertex(matrix4f, minX, minY, minZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 0f, 0f, 1f)
+            buffer.vertex(matrix4f, minX, minY, maxZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 0f, 0f, 1f)
+
+            buffer.vertex(matrix4f, minX, minY, maxZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 0f, 0f, 1f)
+            buffer.vertex(matrix4f, maxX, minY, maxZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 0f, 0f, 1f)
+
+            buffer.vertex(matrix4f, maxX, minY, maxZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 1f, 0f, 0f)
+            buffer.vertex(matrix4f, maxX, minY, minZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 1f, 0f, 0f)
+
+            // top
+            buffer.vertex(matrix4f, minX, maxY, minZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 1f, 0f, 0f)
+            buffer.vertex(matrix4f, maxX, maxY, minZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 1f, 0f, 0f)
+
+            buffer.vertex(matrix4f, minX, maxY, minZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 0f, 0f, 1f)
+            buffer.vertex(matrix4f, minX, maxY, maxZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 0f, 0f, 1f)
+            buffer.vertex(matrix4f, minX, maxY, maxZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 0f, 0f, 1f)
+            buffer.vertex(matrix4f, maxX, maxY, maxZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 0f, 0f, 1f)
+            buffer.vertex(matrix4f, maxX, maxY, maxZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 1f, 0f, 0f)
+            buffer.vertex(matrix4f, maxX, maxY, minZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 1f, 0f, 0f)
+            // corners
+            buffer.vertex(matrix4f, minX, minY, minZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 0f, 1f, 0f)
+            buffer.vertex(matrix4f, minX, maxY, minZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 0f, 1f, 0f)
+
+            buffer.vertex(matrix4f, maxX, minY, minZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 0f, 1f, 0f)
+            buffer.vertex(matrix4f, maxX, maxY, minZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 0f, 1f, 0f)
+
+            buffer.vertex(matrix4f, minX, minY, maxZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 0f, 1f, 0f)
+            buffer.vertex(matrix4f, minX, maxY, maxZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 0f, 1f, 0f)
+
+            buffer.vertex(matrix4f, maxX, minY, maxZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 0f, 1f, 0f)
+            buffer.vertex(matrix4f, maxX, maxY, maxZ)
+                .color(colorWithAlpha)
+                .normal(matrix4f, 0f, 1f, 0f)
+        } catch (_: IllegalStateException) {
+            // ignore
+        }
+    }
+
     /**
      * Draws an outlined box.
      * @param bb The box to draw.
@@ -275,7 +378,6 @@ object RenderUtils {
     ) {
 
         val vcp = getVertexConsumerProvider()
-
         val layer = if (depthTest) GemRenderLayers.LINES else GemRenderLayers.ESP_LINES
         val bufferBuilder = vcp.getBuffer(layer)
         val posMatrix = matrixStack.peek()
@@ -297,7 +399,6 @@ object RenderUtils {
             .color(color.getRed(), color.getGreen(), color.getBlue(), alpha)
             .normal(normal.x(), normal.y(), normal.z())
         vcp.draw(layer)
-
     }
 
     fun drawSingleLine(

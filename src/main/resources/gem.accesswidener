@@ -1,0 +1,4 @@
+accessWidener v2 named
+accessible field net/minecraft/world/gen/placementmodifier/CountPlacementModifier count Lnet/minecraft/util/math/intprovider/IntProvider;
+accessible field net/minecraft/world/gen/placementmodifier/HeightRangePlacementModifier height Lnet/minecraft/world/gen/heightprovider/HeightProvider;
+accessible field net/minecraft/world/gen/placementmodifier/RarityFilterPlacementModifier chance I

@@ -150,7 +150,7 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
         val added = bue.newState.isAir && !bue.oldState.isAir
         val removed = !added && !bue.newState.isAir && bue.oldState.isAir
         val chunk = world.getChunk(bue.blockPos) ?: return
-        val gavBlock = GavBlock(bue.blockPos) { pos -> searchBlock(pos) }
+        val gavBlock = GavBlock(bue.blockPos, { pos -> searchBlock(pos) })
         if (!added && !removed) {
             return
         }

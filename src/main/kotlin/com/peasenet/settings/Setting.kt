@@ -56,6 +56,11 @@ abstract class Setting(
     open val gui: Gui? = null
 
 
+    fun setGuiWidth(newWidth: Float) {
+        width = newWidth
+        gui?.width = newWidth
+    }
+
     fun options(init: SettingOptions.() -> Unit): SettingOptions {
         val settingOptions = SettingOptions()
         settingOptions.init()

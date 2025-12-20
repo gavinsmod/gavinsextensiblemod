@@ -31,8 +31,11 @@ import com.peasenet.extensions.toVec3d
 import com.peasenet.gavui.color.Color
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.RenderUtils.getCameraPos
+import kotlinx.io.Buffer
+import net.minecraft.client.render.VertexConsumer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 import org.joml.Matrix3x2fStack
 
@@ -53,13 +56,23 @@ class GavBlock(
     val visibleFilter: (BlockPos) -> Boolean = {
         false
     },
+    val color : Color? = null
 ) {
 
-    constructor(blockPos: BlockPos, visibleFilter: (BlockPos) -> Boolean = { false }) : this(
+    constructor(blockPos: BlockPos, visibleFilter: (BlockPos) -> Boolean = { false }, color: Color? = null) : this(
         blockPos.x,
         blockPos.y,
         blockPos.z,
-        visibleFilter
+        visibleFilter,
+        color
+    )
+
+    constructor(blockPos: BlockPos, color: Color? = null) : this(
+        blockPos.x,
+        blockPos.y,
+        blockPos.z,
+        { true},
+        color
     )
 
 
@@ -166,15 +179,17 @@ class GavBlock(
         matrixStack: MatrixStack,
         color: Color,
         alpha: Float,
+        buffer: VertexConsumer
     ) {
-        if (edges and Edge.All == 1) {
-            renderEdge(Edge.All, blockPos, matrixStack, color, alpha)
+        if ((edges and Edge.All) == Edge.All.mask) {
+            renderEdge(Edge.All, blockPos, matrixStack, color, alpha, buffer)
             return
         }
+
         Edge.entries.filter { it != Edge.All && it != Edge.None }.forEach { edge ->
             val maskedVal = edges and edge
             if (maskedVal != 0) {
-                renderEdge(edge, blockPos, matrixStack, color, alpha)
+                renderEdge(edge, blockPos, matrixStack, color, alpha, buffer)
             }
         }
     }
@@ -194,8 +209,8 @@ class GavBlock(
         matrixStack: MatrixStack,
         color: Color,
         alpha: Float,
+        buffer: VertexConsumer
     ) {
-//        val region = blockPos.
         val startPos = blockPos.add((getCameraPos().negate()))
         when (edge) {
             Edge.Edge1 -> {
@@ -208,7 +223,6 @@ class GavBlock(
                     false,
                 )
             }
-
             Edge.Edge2 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
@@ -220,7 +234,6 @@ class GavBlock(
                     false
                 )
             }
-
             Edge.Edge3 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
@@ -232,7 +245,6 @@ class GavBlock(
                     false
                 )
             }
-
             Edge.Edge4 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
@@ -244,7 +256,6 @@ class GavBlock(
                     false
                 )
             }
-
             Edge.Edge5 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
@@ -256,7 +267,6 @@ class GavBlock(
                     false
                 )
             }
-
             Edge.Edge6 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
@@ -267,7 +277,6 @@ class GavBlock(
                     false
                 )
             }
-
             Edge.Edge7 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
@@ -278,7 +287,6 @@ class GavBlock(
                     false
                 )
             }
-
             Edge.Edge8 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
@@ -289,7 +297,6 @@ class GavBlock(
                     false
                 )
             }
-
             Edge.Edge9 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
@@ -300,7 +307,6 @@ class GavBlock(
                     false
                 )
             }
-
             Edge.Edge10 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
@@ -311,7 +317,6 @@ class GavBlock(
                     false
                 )
             }
-
             Edge.Edge11 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
@@ -322,7 +327,6 @@ class GavBlock(
                     false
                 )
             }
-
             Edge.Edge12 -> {
                 RenderUtils.drawSingleLine(
                     matrixStack,
@@ -333,20 +337,11 @@ class GavBlock(
                     false
                 )
             }
-
             Edge.All -> {
-                renderEdge(Edge.Edge1, blockPos, matrixStack, color, alpha)
-                renderEdge(Edge.Edge2, blockPos, matrixStack, color, alpha)
-                renderEdge(Edge.Edge3, blockPos, matrixStack, color, alpha)
-                renderEdge(Edge.Edge4, blockPos, matrixStack, color, alpha)
-                renderEdge(Edge.Edge5, blockPos, matrixStack, color, alpha)
-                renderEdge(Edge.Edge6, blockPos, matrixStack, color, alpha)
-                renderEdge(Edge.Edge7, blockPos, matrixStack, color, alpha)
-                renderEdge(Edge.Edge8, blockPos, matrixStack, color, alpha)
-                renderEdge(Edge.Edge9, blockPos, matrixStack, color, alpha)
-                renderEdge(Edge.Edge10, blockPos, matrixStack, color, alpha)
-                renderEdge(Edge.Edge11, blockPos, matrixStack, color, alpha)
-                renderEdge(Edge.Edge12, blockPos, matrixStack, color, alpha)
+                val bb = Box(
+                    blockPos.x + 1, blockPos.y, blockPos.z + 1, blockPos.x, blockPos.y + 1.0, blockPos.z
+                )
+                RenderUtils.drawOutlinedBoxOptimized(bb, matrixStack, color, alpha, buffer)
             }
 
             Edge.None -> {}
@@ -369,14 +364,14 @@ class GavBlock(
         alpha: Float,
         structureEsp: Boolean = false,
         tracers: Boolean = false,
+        buffer: VertexConsumer
     ) {
 
-        matrixStack.push()
         val offsetPos = pos.toVec3d()
         if (structureEsp)
-            renderEdges(visibleEdges, offsetPos, matrixStack, color, alpha)
+            renderEdges(visibleEdges, offsetPos, matrixStack, color, alpha, buffer)
         else
-            renderEdges(Edge.All.mask, offsetPos, matrixStack, color, alpha)
+            renderEdges(Edge.All.mask, offsetPos, matrixStack, color, alpha, buffer)
         if (tracers) {
             val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
             RenderUtils.drawSingleLine(
@@ -389,7 +384,6 @@ class GavBlock(
                 depthTest = false
             )
         }
-        matrixStack.pop()
     }
 
     override fun equals(other: Any?): Boolean {

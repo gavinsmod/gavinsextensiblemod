@@ -40,6 +40,7 @@ import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
+import net.minecraft.client.MinecraftClient
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.chunk.Chunk
 
@@ -97,26 +98,12 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
 
 
     override fun onEnable() {
-        em.subscribe(RenderListener::class.java, this)
-        chunks.clear()
-        em.subscribe(BlockUpdateListener::class.java, this)
-        em.subscribe(WorldRenderListener::class.java, this)
-        em.subscribe(ChunkUpdateListener::class.java, this)
-        em.subscribe(RenderListener::class.java, this)
+
+        super.onEnable()
         // search for chunks within render distance
         GemExecutor.execute {
             RenderUtils.getVisibleChunks().forEach(this::searchChunk)
         }
-        super.onEnable()
-    }
-
-    override fun onDisable() {
-        em.unsubscribe(BlockUpdateListener::class.java, this)
-        em.unsubscribe(WorldRenderListener::class.java, this)
-        em.unsubscribe(ChunkUpdateListener::class.java, this)
-        em.unsubscribe(RenderListener::class.java, this)
-        chunks.clear()
-        super.onDisable()
     }
 
     override fun getColor(): Color {
@@ -130,7 +117,8 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
     override fun getSettings(): BlockEspConfig = Settings.getConfig("blockesp")
 
     private fun blockFilter(blockPos: BlockPos): Boolean {
-        return blocks.contains(BlockListConfig.getId(world.getBlockState(blockPos).block))
+        val block = MinecraftClient.getInstance().player?.entityWorld?.getBlockState(blockPos)?.block ?: return false
+        return blocks.contains(BlockListConfig.getId(block))
     }
 
     override fun chunkInRenderDistance(chunk: GavChunk): Boolean {
@@ -161,9 +149,10 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
         if (!added && !removed) {
             return
         }
-        val gavBlock = GavBlock(bue.blockPos) { blockPos ->
+        val gavBlock = GavBlock(bue.blockPos, { blockPos ->
             blockFilter(blockPos)
         }
+        )
         updateChunk(added, gavBlock, chunk.pos)
     }
 

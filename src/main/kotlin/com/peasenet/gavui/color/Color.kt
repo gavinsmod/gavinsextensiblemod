@@ -113,7 +113,7 @@ class Color(red: Int, green: Int, blue: Int, alpha: Int = 255) : Serializable {
      * @return int value of color
      */
     fun getAsInt(alpha: Float = getAlpha()): Int {
-        val alpha = alpha.coerceIn(0f,1f)
+        val alpha = alpha.coerceIn(0f, 1f)
         return (alpha * 255).toInt() shl 24 or (red shl 16) or (green shl 8) or blue
     }
 
@@ -213,6 +213,16 @@ class Color(red: Int, green: Int, blue: Int, alpha: Int = 255) : Serializable {
         @JvmStatic
         fun fromInt(i: Int): Color {
             return Color(i shr 16 and 0xFF, i shr 8 and 0xFF, i and 0xFF)
+        }
+
+        fun fromHex(i: Long): Color {
+            // return a color with argb values
+            return Color(
+                (i shr 16 and 0xFF).toInt(),
+                (i shr 8 and 0xFF).toInt(),
+                (i and 0xFF).toInt(),
+                (i shr 24 and 0xFF).toInt()
+            )
         }
     }
 }

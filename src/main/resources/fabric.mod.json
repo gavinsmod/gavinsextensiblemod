@@ -26,6 +26,7 @@
   "mixins": [
     "gavinsmod.mixins.json"
   ],
+  "accessWidener": "gem.accesswidener",
   "depends": {
     "fabricloader": ">=0.16.9",
     "fabric": "*",
