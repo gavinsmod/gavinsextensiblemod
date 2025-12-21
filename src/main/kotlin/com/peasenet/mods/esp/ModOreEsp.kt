@@ -67,7 +67,7 @@ class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.esp.ore", "oreesp") {
             PlayerUtils.sendMessage("An invalid seed was provided!", true)
             return
         }
-        oreConfig = Ore.registry(Dimension.fromValue(client.getWorld().dimension().registry().path))
+        oreConfig = Ore.registry(Dimension.fromValue(client.getWorld().dimensionType().skybox.toString()))
         super.onEnable()
         GemExecutor.execute {
             RenderUtils.getVisibleChunks().forEach(this::searchChunk)

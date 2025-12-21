@@ -29,6 +29,7 @@ import com.peasenet.main.GavinsModClient
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.block.GavBlock
 import com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.levelgen.Heightmap
@@ -180,11 +181,12 @@ class GavChunk(val chunkPos: ChunkPos) {
         partialTicks: Float,
         alpha: Float,
         structureEsp: Boolean = false, blockTracer: Boolean = false,
-    ) {
+        buffer: VertexConsumer,
+        ) {
         synchronized(this) {
             visibleBlocks.values.forEach { block ->
                 block.render(
-                    matrixStack, blockColor, partialTicks, alpha, structureEsp, blockTracer
+                    matrixStack, blockColor, partialTicks, alpha, structureEsp, blockTracer, buffer
                 )
             }
         }

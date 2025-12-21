@@ -28,6 +28,7 @@ import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiScroll
 import com.peasenet.main.GavinsModClient
 import com.peasenet.mixins.ScreenAccessor
+import com.peasenet.settings.Setting
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.screens.Screen
@@ -157,5 +158,9 @@ open class GuiElement(title: Component) :
         minecraft.setScreen(parent)
     }
 
+    fun addSetting(setting: Setting) {
+        if (setting.gui != null)
+            guis.add(setting.gui!!)
+    }
 
 }

@@ -32,6 +32,7 @@ import com.peasenet.mixinterface.ISimpleOption
 import com.peasenet.util.math.MathUtils
 import net.minecraft.client.Minecraft
 import com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.renderer.MultiBufferSource
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.AABB
@@ -147,7 +148,108 @@ object RenderUtils {
         val camera = Minecraft.getInstance().gameRenderer.mainCamera.position()
         return camera!!
     }
+    fun drawOutlinedBoxOptimized(
+        bb: AABB, matrixStack: PoseStack, color: Color = Colors.WHITE, alpha: Float = 1f, buffer: VertexConsumer,
+    ) {
+        val bb2 = bb.move((getCameraPos().reverse()))
 
+        val minX = bb2.minX.toFloat()
+        val minY = bb2.minY.toFloat()
+        val minZ = bb2.minZ.toFloat()
+        val maxX = bb2.maxX.toFloat()
+        val maxY = bb2.maxY.toFloat()
+        val maxZ = bb2.maxZ.toFloat()
+
+        val matrix4f = matrixStack.last()
+        val colorWithAlpha = color.withAlpha(alpha).asInt
+        try {
+            // draw lines connecting the corners of the box
+            buffer.addVertex(matrix4f, minX, minY, minZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 1f, 0f, 0f)
+            buffer.addVertex(matrix4f, maxX, minY, minZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 1f, 0f, 0f)
+
+            buffer.addVertex(matrix4f, minX, minY, minZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 0f, 0f, 1f)
+            buffer.addVertex(matrix4f, minX, minY, maxZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 0f, 0f, 1f)
+
+            buffer.addVertex(matrix4f, minX, minY, maxZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 0f, 0f, 1f)
+            buffer.addVertex(matrix4f, maxX, minY, maxZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 0f, 0f, 1f)
+
+            buffer.addVertex(matrix4f, maxX, minY, maxZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 1f, 0f, 0f)
+            buffer.addVertex(matrix4f, maxX, minY, minZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 1f, 0f, 0f)
+
+            // top
+            buffer.addVertex(matrix4f, minX, maxY, minZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 1f, 0f, 0f)
+            buffer.addVertex(matrix4f, maxX, maxY, minZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 1f, 0f, 0f)
+
+            buffer.addVertex(matrix4f, minX, maxY, minZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 0f, 0f, 1f)
+            buffer.addVertex(matrix4f, minX, maxY, maxZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 0f, 0f, 1f)
+            buffer.addVertex(matrix4f, minX, maxY, maxZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 0f, 0f, 1f)
+            buffer.addVertex(matrix4f, maxX, maxY, maxZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 0f, 0f, 1f)
+            buffer.addVertex(matrix4f, maxX, maxY, maxZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 1f, 0f, 0f)
+            buffer.addVertex(matrix4f, maxX, maxY, minZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 1f, 0f, 0f)
+            // corners
+            buffer.addVertex(matrix4f, minX, minY, minZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 0f, 1f, 0f)
+            buffer.addVertex(matrix4f, minX, maxY, minZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 0f, 1f, 0f)
+
+            buffer.addVertex(matrix4f, maxX, minY, minZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 0f, 1f, 0f)
+            buffer.addVertex(matrix4f, maxX, maxY, minZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 0f, 1f, 0f)
+
+            buffer.addVertex(matrix4f, minX, minY, maxZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 0f, 1f, 0f)
+            buffer.addVertex(matrix4f, minX, maxY, maxZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 0f, 1f, 0f)
+
+            buffer.addVertex(matrix4f, maxX, minY, maxZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 0f, 1f, 0f)
+            buffer.addVertex(matrix4f, maxX, maxY, maxZ)
+                .setColor(colorWithAlpha)
+                .setNormal(matrix4f, 0f, 1f, 0f)
+        } catch (_: IllegalStateException) {
+            // ignore
+        }
+    }
     /**
      * Draws an outlined box.
      * @param bb The box to draw.

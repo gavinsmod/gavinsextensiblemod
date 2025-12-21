@@ -161,9 +161,9 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
         if (!added && !removed) {
             return
         }
-        val gavBlock = GavBlock(bue.blockPos) { blockPos ->
+        val gavBlock = GavBlock(bue.blockPos,{ blockPos ->
             blockFilter(blockPos)
-        }
+        })
         updateChunk(added, gavBlock, chunk.pos)
     }
 
