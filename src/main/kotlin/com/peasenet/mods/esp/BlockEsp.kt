@@ -38,9 +38,12 @@ import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
 import com.mojang.blaze3d.vertex.PoseStack
+import com.peasenet.util.GemRenderLayers
+import com.peasenet.util.RenderUtils
 import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.chunk.ChunkAccess
 import org.joml.Matrix3x2fStack
+import org.lwjgl.opengl.GL11
 
 /**
  *
@@ -95,6 +98,10 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
         // TODO: MC 1.21.10 update
         synchronized(chunks) {
             if (chunks.isEmpty()) return
+            GL11.glDisable(GL11.GL_DEPTH_TEST)
+            val vcp = RenderUtils.getVertexConsumerProvider()
+            val layer = GemRenderLayers.LINES
+            val buffer = vcp.getBuffer(layer)
             chunks.values.filter { chunkInRenderDistance(it) }.toMutableList().forEach {
                 it.render(
                     matrixStack,
@@ -102,15 +109,21 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
                     partialTicks,
                     getSettings().alpha,
                     getSettings().structureEsp,
-                    getSettings().blockTracer
+                    getSettings().blockTracer,
+                    buffer
                 )
             }
+
+            vcp.endBatch(layer)
+            GL11.glEnable(GL11.GL_DEPTH_TEST)
 //            RenderUtils.drawBuffer(bufferBuilder, matrixStack)
         }
     }
 
     override fun onChunkUpdate(chunkUpdate: ChunkUpdate) {
-        searchChunk(chunkUpdate.chunk)
+        synchronized(chunks) {
+            searchChunk(chunkUpdate.chunk)
+        }
     }
 
     override fun onWorldRender(worldRender: WorldRender) {
