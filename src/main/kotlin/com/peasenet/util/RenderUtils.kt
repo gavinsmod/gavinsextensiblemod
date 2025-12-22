@@ -409,9 +409,11 @@ object RenderUtils {
         bufferBuilder.addVertex(posMatrix, x1, y1, z1)
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
             .setNormal(normal.x(), normal.y(), normal.z())
+            .setLineWidth(2.0f)
         bufferBuilder.addVertex(posMatrix, x2, y2, z2)
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
             .setNormal(normal.x(), normal.y(), normal.z())
+            .setLineWidth(2.0f)
         vcp.endBatch(layer)
 
     }
