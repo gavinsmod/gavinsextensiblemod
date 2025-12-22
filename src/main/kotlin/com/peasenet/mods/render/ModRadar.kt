@@ -103,7 +103,7 @@ class ModRadar : RenderMod(
     private fun drawEntitiesOnRadar(drawContext: GuiGraphics) {
         val player = client.getPlayer()
 
-        val yaw = player.xRot
+        val yaw = player.yHeadRot
         val entities = world.entitiesForRendering()
         for (entity in entities) {
             if (!canRenderEntity(entity)) continue

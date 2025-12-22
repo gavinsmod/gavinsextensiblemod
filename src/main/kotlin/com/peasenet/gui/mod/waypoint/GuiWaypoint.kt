@@ -42,8 +42,10 @@ import com.peasenet.util.Dimension
 import net.minecraft.client.input.MouseButtonEvent
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.client.gui.components.EditBox
+import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
 import net.minecraft.core.Vec3i
+import net.minecraft.world.phys.Vec3
 import java.util.function.Consumer
 import java.util.function.Predicate
 import kotlin.math.floor
@@ -168,9 +170,9 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
     /**
      * Gets the floored player position as a Vec3i.
      */
-    private fun flooredPlayerPos(): Vec3i {
+    private fun flooredPlayerPos(): BlockPos {
         val playerPos = player!!.getPos()
-        return Vec3i(floor(playerPos.x).toInt(), floor(playerPos.y).toInt() + 1, floor(playerPos.z).toInt())
+        return BlockPos(floor(playerPos.x).toInt(), (floor(playerPos.y) + 1).toInt(), floor(playerPos.z).toInt())
     }
 
     /**
@@ -182,7 +184,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         if (netherToggle.state) w.addDimension(Dimension.NETHER)
         if (endToggle.state) w.addDimension(Dimension.END)
         val newWaypoint = Waypoint(
-            Vec3i(xCoordinate.value.toInt(), yCoordinate.value.toInt(), zCoordinate.value.toInt()),
+            BlockPos(xCoordinate.value.toInt(), yCoordinate.value.toInt(), zCoordinate.value.toInt()),
             textField.value,
             w.dimensions,
             colorCycle.color,
