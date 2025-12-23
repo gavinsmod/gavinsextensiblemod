@@ -28,6 +28,7 @@ import com.peasenet.config.combat.KillAuraConfig
 import com.peasenet.config.esp.BlockEspConfig
 import com.peasenet.config.esp.CaveEspConfig
 import com.peasenet.config.esp.EspConfig
+import com.peasenet.config.esp.OreEspConfig
 //import com.peasenet.config.esp.OreEspConfig
 import com.peasenet.config.misc.FpsColorConfig
 import com.peasenet.config.misc.FreeCamConfig
@@ -83,7 +84,7 @@ class Mods {
         Settings.addConfig(AutoAttackConfig())
         Settings.addConfig(KillAuraConfig())
         Settings.addConfig(CaveEspConfig())
-//        Settings.addConfig(OreEspConfig())
+        Settings.addConfig(OreEspConfig())
 
         /*@MODS@*/
         GavinsMod.addMod(ModAutoAttack())
@@ -131,7 +132,7 @@ class Mods {
         GavinsMod.addMod(ModMobTracer())
         GavinsMod.addMod(ModBlockEsp())
         GavinsMod.addMod(ModCaveEsp())
-//        GavinsMod.addMod(ModOreEsp())
+        GavinsMod.addMod(ModOreEsp())
     }
 
     companion object {
