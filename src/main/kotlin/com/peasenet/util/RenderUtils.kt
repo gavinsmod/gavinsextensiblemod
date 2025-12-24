@@ -471,9 +471,11 @@ object RenderUtils {
         bufferBuilder.addVertexWith2DPose(posMatrix, x1, y1)
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
             .setNormal(normal.x(), normal.y(), normal.z())
+            .setLineWidth(1f)
         bufferBuilder.addVertexWith2DPose(posMatrix, x2, y2)
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
             .setNormal(normal.x(), normal.y(), normal.z())
+            .setLineWidth(1f)
         vcp.endBatch(layer)
 
     }
