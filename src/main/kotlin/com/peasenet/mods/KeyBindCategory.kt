@@ -48,39 +48,3 @@ class KeyBindCategory {
         val NONE = KeyMapping.Category.register(Identifier.parse("none"))
     }
 }
-//enum class KeyBindCategory(val category: String) {
-//    /**
-//     * The movement category.
-//     */
-//    MOVEMENT = ,
-//
-//    /**
-//     * The render category.
-//     */
-//    RENDER("gavinsmod.keybinds.render"),
-//
-//    /**
-//     * The combat category.
-//     */
-//    COMBAT("gavinsmod.keybinds.combat"),
-//
-//    /**
-//     * The misc category.
-//     */
-//    MISC("gavinsmod.keybinds.misc"),
-//
-//    /**
-//     * The ESP category.
-//     */
-//    ESP("gavinsmod.keybinds.esp"),
-//
-//    /**
-//     * The tracers category.
-//     */
-//    TRACERS("gavinsmod.keybinds.tracers"),
-//
-//    /**
-//     * The GUI category.
-//     */
-//    GUI("gavinsmod.keybinds.gui"),
-//}
