@@ -163,7 +163,6 @@ class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.esp.ore", "oreesp") {
             val vcp = getVertexConsumerProvider()
             val layer = GemRenderLayers.LINES
             val buffer = vcp.getBuffer(layer)
-            val blocks = chunks.values
 
             chunks.values.filter { chunkInRenderDistance(it) }.forEach {
                 it.render(
@@ -171,7 +170,7 @@ class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.esp.ore", "oreesp") {
                     Colors.RED_ORANGE,
                     partialTicks,
                     getSettings().alpha,
-                    structureEsp = false,
+                    structureEsp = true,
                     blockTracer = false,
                     buffer
                 )

@@ -379,12 +379,13 @@ class GavBlock(
         buffer: VertexConsumer
     ) {
 
+        val colorToRender = this.color ?: color
         matrixStack.pushPose()
         val offsetPos = pos.toVec3d()
         if (structureEsp)
-            renderEdges(visibleEdges, offsetPos, matrixStack, color, alpha,buffer)
+            renderEdges(visibleEdges, offsetPos, matrixStack, colorToRender, alpha,buffer)
         else
-            renderEdges(Edge.All.mask, offsetPos, matrixStack, color, alpha,buffer)
+            renderEdges(Edge.All.mask, offsetPos, matrixStack, colorToRender, alpha,buffer)
         if (tracers) {
             val tracerOrigin = RenderUtils.getLookVec(partialTicks).scale(10.0)
             RenderUtils.drawSingleLine(

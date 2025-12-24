@@ -3,4 +3,3 @@ accessible method net/minecraft/client/renderer/rendertype/RenderType create (Lj
 accessible field net/minecraft/world/level/levelgen/placement/CountPlacement count Lnet/minecraft/util/valueproviders/IntProvider;
 accessible field net/minecraft/world/level/levelgen/placement/HeightRangePlacement height Lnet/minecraft/world/level/levelgen/heightproviders/HeightProvider;
 accessible field net/minecraft/world/level/levelgen/placement/RarityFilter chance I
-accessible field net/minecraft/data/registries/VanillaRegistries BUILDER Lnet/minecraft/core/RegistrySetBuilder;
