@@ -43,10 +43,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Pseudo
 @Mixin(targets = {
-        "me.jellysquid.mods.sodium.client.render.chunk.compile.pipeline.BlockOcclusionCache",
-        "me.jellysquid.mods.sodium.client.render.occlusion.BlockOcclusionCachee"}, remap = false)
+        "net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockOcclusionCache"}, remap = false)
 public class MixinSodiumblockOcclusionCache {
-    // TODO(Ravel): no target class
     @Inject(at = @At("HEAD"), method = "shouldDrawSide", cancellable = true)
     private void xray(BlockState state, BlockGetter world, BlockPos pos, Direction side, CallbackInfoReturnable<Boolean> cir) {
         var drawSide = new DrawState(state);
