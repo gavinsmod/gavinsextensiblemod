@@ -24,18 +24,12 @@
 package com.peasenet.main
 
 import com.peasenet.gavui.GavUI
-import com.peasenet.gavui.Gui
-import com.peasenet.gavui.math.BoxF
-import com.peasenet.gui.GuiMainMenu
-import com.peasenet.gui.GuiSettings
 import com.peasenet.gui.mod.*
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
-import com.peasenet.util.ModCommands
 import net.fabricmc.api.ModInitializer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.util.function.Consumer
 
 /**
  * @author GT3CH1
@@ -48,7 +42,7 @@ class GavinsMod : ModInitializer {
         /**
          * The current version of the mod.
          */
-        const val VERSION = "v1.5.0"
+        const val VERSION = "1.5.1"
 
         /**
          * A hashmap containing the category of each mod category and the corresponding gui.
