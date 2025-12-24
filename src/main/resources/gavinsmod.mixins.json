@@ -33,7 +33,7 @@
     "MixinLivingEntity",
     "MixinPlayerEntity",
     "MixinSodiumblockOcclusionCache",
-    "MixinWorldChunk"
+    "MixinWorldChunk",
   ],
   "package": "com.peasenet.mixins",
   "required": true

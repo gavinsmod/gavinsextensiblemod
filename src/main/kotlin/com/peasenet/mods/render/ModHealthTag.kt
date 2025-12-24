@@ -23,6 +23,7 @@
  */
 package com.peasenet.mods.render
 
+import com.peasenet.main.GavinsModClient
 import com.peasenet.util.event.data.EntityNameRender
 import com.peasenet.util.listeners.EntityRenderNameListener
 import net.minecraft.client.Minecraft
@@ -66,49 +67,10 @@ class ModHealthTag : RenderMod(
     private fun renderHealthTag(
         er: EntityNameRender,
     ) {
-        val entity = er.entity as LivingEntity
-        val matrixStack = er.matrixStack
-        val vertexConsumers = er.vertexConsumerProvider
-        val light = er.light
-        val textRenderer = Minecraft.getInstance().font
-        val dispatcher = Minecraft.getInstance().entityRenderDispatcher
-        val attachmentVec = entity.attachments.getNullable(EntityAttachment.NAME_TAG, 0, entity.getViewYRot(0f))
-        matrixStack.pushPose()
-        matrixStack.translate(attachmentVec!!.x, attachmentVec.y + 0.75, attachmentVec.z)
-//        matrixStack.multiply(dispatcher.rotation)
-        matrixStack.scale(0.025f, -0.025f, 0.025f)
-        val currentHp = entity.health.toInt()
-        val text = Component.literal("").append(currentHp.toString()).append(" HP").withStyle(getColor(entity))
-        val g = -textRenderer.width(text) / 2.0f
-        val i = if (er.entity.name.string == "deadmau5") -10 else 0
-        val matrix4f = matrixStack.last().pose()
-        val f = textRenderer.width(text) / 2.0f
-        val j = (Minecraft.getInstance().options.getBackgroundOpacity(0.25f) * 255.0f).toInt() shl 24
-        textRenderer.drawInBatch(
-            text,
-            g,
-            i.toFloat(),
-            0xFFFFFFFF.toInt(),
-            false,
-            matrix4f,
-            vertexConsumers,
-            Font.DisplayMode.NORMAL,
-            j,
-            light
-        )
-        textRenderer.drawInBatch(
-            text,
-            g,
-            i.toFloat(),
-            0xFFFFFFFF.toInt(),
-            false,
-            matrix4f,
-            vertexConsumers,
-            Font.DisplayMode.SEE_THROUGH,
-            0,
-            light
-        )
-        matrixStack.popPose()
+        val currentHp = er.entity.health.toInt()
+        val text = Component.empty().append(currentHp.toString()).append(" HP").withStyle(getColor(er.entity))
+        er.nameTag = text
+        er.cancel()
     }
 
     /**

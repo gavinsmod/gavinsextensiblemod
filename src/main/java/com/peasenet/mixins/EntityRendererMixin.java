@@ -26,35 +26,47 @@ package com.peasenet.mixins;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.peasenet.main.Mods;
+import com.peasenet.util.ChatCommand;
 import com.peasenet.util.event.EntityRenderNameEvent;
 import com.peasenet.util.event.EventManager;
-import com.peasenet.util.event.data.EntityNameRender;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(EntityRenderDispatcher.class)
-public abstract class EntityRendererMixin {
-    /**
-     * TODO: MC 1.21.10 update
-     * Wraps around the render method to call the EntityRenderNameEvent.
-     */
-//    @WrapOperation(at = @At(value = "INVOKE",
-//            target = "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;render(Lnet/minecraft/client/render/entity/state/EntityRenderState;DDDLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V"),
-//            method = "render(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;ILnet/minecraft/client/render/entity/EntityRenderer;)V")
-//    private <E extends Entity, S extends EntityRenderState> void wrapRender(EntityRenderDispatcher instance, S state, double x, double y, double z, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, EntityRenderer<?, S> renderer, Operation<Void> original, E entity) {
-//        var event = new EntityRenderNameEvent(new EntityNameRender(entity, matrices, vertexConsumers, light));
-//        matrices.push();
-//        var vec3d = renderer.getPositionOffset(state).add(x, y, z);
-//        matrices.translate(vec3d);
-//        EventManager.getEventManager().call(event);
-//        matrices.pop();
-//
-//        original.call(instance, state, x, y, z, matrices, vertexConsumers, light, renderer);
-//    }
+@Mixin(EntityRenderer.class)
+public abstract class EntityRendererMixin<T extends Entity, S extends EntityRenderState> {
+    @Inject(at = @At("HEAD"), method = "shouldShowName", cancellable = true)
+    private <E extends Entity, S extends EntityRenderState>
+    void shouldShowName(E entity, double d, CallbackInfoReturnable<Boolean> cir) {
+        var hpTagsEnabled = Mods.isActive(ChatCommand.HealthTag) && entity instanceof LivingEntity;
+        if(hpTagsEnabled)
+            cir.setReturnValue(true);
+    }
+
+    @WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/EntityRenderer;shouldShowName(Lnet/minecraft/world/entity/Entity;D)Z"), method = "extractRenderState(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/client/renderer/entity/state/EntityRenderState;F)V")
+    private <E extends Entity, S extends EntityRenderState> boolean wrapRender(EntityRenderer<E, S> instance, E entity, double d, Operation<Boolean> original) {
+        if(Mods.isActive(ChatCommand.HealthTag) && entity instanceof LivingEntity)
+            return true;
+        return original.call(instance, entity, d);
+    }
+
+    @Inject(at = @At("TAIL"), method = "extractRenderState")
+    private void healthTags(T entity, S entityRenderState, float f, CallbackInfo ci) {
+
+        if (!(entity instanceof LivingEntity le) || entityRenderState.nameTag == null) {
+            return;
+        }
+        var event = new EntityRenderNameEvent(le);
+        EventManager.getEventManager().call(event);
+        if (event.isCancelled()) {
+            entityRenderState.nameTag = entityRenderState.nameTag.copy().append(" - ").append(event.getEventData());
+        }
+    }
 }

@@ -23,8 +23,12 @@
  */
 package com.peasenet.util.event
 
+import com.mojang.blaze3d.vertex.PoseStack
 import com.peasenet.util.event.data.EntityNameRender
 import com.peasenet.util.listeners.EntityRenderNameListener
+import net.minecraft.network.chat.Component
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.LivingEntity
 
 /**
  * An event that is fired when an entity's name is about to be rendered.
@@ -41,14 +45,26 @@ import com.peasenet.util.listeners.EntityRenderNameListener
  */
 class EntityRenderNameEvent(
     data: EntityNameRender
-) : Event<EntityRenderNameListener> {
-    private var entityRender: EntityNameRender = data
+) : CancellableEvent<EntityRenderNameListener>() {
 
+    constructor(entity: LivingEntity) : this(EntityNameRender(entity)) {
+    }
+    private var entityRender: EntityNameRender = data
+    var eventData: Component? = null
+        private set
     override fun fire(listeners: ArrayList<EntityRenderNameListener>) {
         for (listener in listeners) {
             listener.onEntityNameRender(entityRender)
+            if(entityRender.isCancelled) {
+                eventData = entityRender.nameTag
+                this.cancel()
+            }
         }
     }
+
+
+
+
 
     override val event: Class<EntityRenderNameListener>
         get() = EntityRenderNameListener::class.java

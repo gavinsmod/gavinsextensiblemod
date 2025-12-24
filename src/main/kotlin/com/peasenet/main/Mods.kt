@@ -187,6 +187,11 @@ class Mods {
             return mod.isActive
         }
 
+        @JvmStatic
+        fun isActive(chatCommand: ChatCommand): Boolean {
+            return isActive(chatCommand.chatCommand)
+        }
+
         /*
         * Adds a mod to the mod hashmap using the mod chat command as the key, and the mod as the value.
         *
