@@ -100,7 +100,7 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
             if (chunks.isEmpty()) return
             GL11.glDisable(GL11.GL_DEPTH_TEST)
             val vcp = RenderUtils.getVertexConsumerProvider()
-            val layer = GemRenderLayers.LINES
+            val layer = GemRenderLayers.ESP_LINES
             val buffer = vcp.getBuffer(layer)
             chunks.values.filter { chunkInRenderDistance(it) }.toMutableList().forEach {
                 it.render(
@@ -113,10 +113,8 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
                     buffer
                 )
             }
-
             vcp.endBatch(layer)
             GL11.glEnable(GL11.GL_DEPTH_TEST)
-//            RenderUtils.drawBuffer(bufferBuilder, matrixStack)
         }
     }
 

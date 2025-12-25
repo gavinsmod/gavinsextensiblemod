@@ -55,25 +55,16 @@ class GavBlock(
     val visibleFilter: (BlockPos) -> Boolean = {
         false
     },
-    val color : Color? = null
+    val color: Color? = null,
 ) {
 
     constructor(blockPos: BlockPos, visibleFilter: (BlockPos) -> Boolean = { false }, color: Color? = null) : this(
-        blockPos.x,
-        blockPos.y,
-        blockPos.z,
-        visibleFilter,
-        color
+        blockPos.x, blockPos.y, blockPos.z, visibleFilter, color
     )
 
     constructor(blockPos: BlockPos, color: Color? = null) : this(
-        blockPos.x,
-        blockPos.y,
-        blockPos.z,
-        { true},
-        color
+        blockPos.x, blockPos.y, blockPos.z, { true }, color
     )
-
 
 
     /**
@@ -179,16 +170,16 @@ class GavBlock(
         matrixStack: PoseStack,
         color: Color,
         alpha: Float,
-        buffer: VertexConsumer
+        buffer: VertexConsumer,
     ) {
         if (edges and Edge.All == Edge.All.mask) {
-            renderEdge(Edge.All, blockPos, matrixStack, color, alpha,buffer)
+            renderEdge(Edge.All, blockPos, matrixStack, color, alpha, buffer)
             return
         }
         Edge.entries.filter { it != Edge.All && it != Edge.None }.forEach { edge ->
             val maskedVal = edges and edge
             if (maskedVal != 0) {
-                renderEdge(edge, blockPos, matrixStack, color, alpha,buffer)
+                renderEdge(edge, blockPos, matrixStack, color, alpha, buffer)
             }
         }
     }
@@ -208,144 +199,129 @@ class GavBlock(
         matrixStack: PoseStack,
         color: Color,
         alpha: Float,
-        buffer: VertexConsumer
+        buffer: VertexConsumer,
     ) {
-//        val region = blockPos.
         val startPos = blockPos.add((getCameraPos().reverse()))
         when (edge) {
             Edge.Edge1 -> {
-                RenderUtils.drawSingleLine(
-                    matrixStack,
-                    startPos,
-                    startPos.add(0, 0, 1),
-                    color,
-                    alpha,
-                    false,
+                RenderUtils.drawSingleLineOptimized(
+                    matrixStack, startPos, startPos.add(0, 0, 1), color, alpha, buffer
                 )
             }
 
             Edge.Edge2 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos.add(0, 0, 1),
                     startPos.add(1, 0, 1),
                     color,
                     alpha,
-
-                    false
+                    buffer
                 )
             }
 
             Edge.Edge3 -> {
-                RenderUtils.drawSingleLine(
-                    matrixStack,
-                    startPos.add(1, 0, 1),
-                    startPos.add(1, 0, 0),
-                    color,
-                    alpha,
-
-                    false
+                RenderUtils.drawSingleLineOptimized(
+                    matrixStack, startPos.add(1, 0, 1), startPos.add(1, 0, 0), color, alpha,buffer
                 )
             }
 
             Edge.Edge4 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos.add(1, 0, 0),
                     startPos.add(0, 0, 0),
                     color,
                     alpha,
-
-                    false
+                    buffer,
                 )
             }
 
             Edge.Edge5 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos,
                     startPos.add(0, 1, 0),
                     color,
                     alpha,
-
-                    false
+                    buffer,
                 )
             }
 
             Edge.Edge6 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos.add(0, 0, 1),
                     startPos.add(0, 1, 1),
                     color,
                     alpha,
-                    false
+                    buffer,
                 )
             }
 
             Edge.Edge7 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos.add(1, 0, 1),
                     startPos.add(1, 1, 1),
                     color,
                     alpha,
-                    false
+                    buffer,
                 )
             }
 
             Edge.Edge8 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos.add(1, 0, 0),
                     startPos.add(1, 1, 0),
                     color,
                     alpha,
-                    false
+                    buffer,
                 )
             }
 
             Edge.Edge9 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos.add(0, 1, 0),
                     startPos.add(0, 1, 1),
                     color,
                     alpha,
-                    false
+                    buffer,
                 )
             }
 
             Edge.Edge10 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos.add(0, 1, 1),
                     startPos.add(1, 1, 1),
                     color,
                     alpha,
-                    false
+                    buffer,
                 )
             }
 
             Edge.Edge11 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos.add(1, 1, 1),
                     startPos.add(1, 1, 0),
                     color,
                     alpha,
-                    false
+                    buffer,
                 )
             }
 
             Edge.Edge12 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos.add(1, 1, 0),
                     startPos.add(0, 1, 0),
                     color,
                     alpha,
-                    false
+                    buffer,
                 )
             }
 
@@ -376,16 +352,14 @@ class GavBlock(
         alpha: Float,
         structureEsp: Boolean = false,
         tracers: Boolean = false,
-        buffer: VertexConsumer
+        buffer: VertexConsumer,
     ) {
 
         val colorToRender = this.color ?: color
         matrixStack.pushPose()
         val offsetPos = pos.toVec3d()
-        if (structureEsp)
-            renderEdges(visibleEdges, offsetPos, matrixStack, colorToRender, alpha,buffer)
-        else
-            renderEdges(Edge.All.mask, offsetPos, matrixStack, colorToRender, alpha,buffer)
+        if (structureEsp) renderEdges(visibleEdges, offsetPos, matrixStack, colorToRender, alpha, buffer)
+        else renderEdges(Edge.All.mask, offsetPos, matrixStack, colorToRender, alpha, buffer)
         if (tracers) {
             val tracerOrigin = RenderUtils.getLookVec(partialTicks).scale(10.0)
             RenderUtils.drawSingleLine(

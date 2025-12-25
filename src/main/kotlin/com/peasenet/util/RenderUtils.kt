@@ -148,6 +148,7 @@ object RenderUtils {
         val camera = Minecraft.getInstance().gameRenderer.mainCamera.position()
         return camera!!
     }
+
     fun drawOutlinedBoxOptimized(
         bb: AABB, matrixStack: PoseStack, color: Color = Colors.WHITE, alpha: Float = 1f, buffer: VertexConsumer,
     ) {
@@ -274,6 +275,7 @@ object RenderUtils {
             // ignore
         }
     }
+
     /**
      * Draws an outlined box.
      * @param bb The box to draw.
@@ -404,6 +406,34 @@ object RenderUtils {
     }
 
 
+    fun drawSingleLineOptimized(
+
+        matrixStack: PoseStack,
+        start: Vec3,
+        end: Vec3,
+        color: Color,
+        alpha: Float = 1f,
+        buffer: VertexConsumer,
+    ) {
+        val posMatrix = matrixStack.last()
+        val x1 = start.x.toFloat()
+        val y1 = start.y.toFloat()
+        val z1 = start.z.toFloat()
+        val x2 = end.x.toFloat()
+        val y2 = end.y.toFloat()
+        val z2 = end.z.toFloat()
+        val normal = Vector3f(x2, y2, z2).sub(Vector3f(x1, y1, z1)).normalize()
+        buffer.addVertex(posMatrix, x1, y1, z1)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(normal.x(), normal.y(), normal.z())
+            .setLineWidth(2.0f)
+        buffer.addVertex(posMatrix, x2, y2, z2)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(normal.x(), normal.y(), normal.z())
+            .setLineWidth(2.0f)
+
+    }
+
     fun drawSingleLine(
         matrixStack: PoseStack,
         start: Vec3,
@@ -412,12 +442,13 @@ object RenderUtils {
         alpha: Float = 1f,
         withOffset: Boolean = true,
         depthTest: Boolean = false,
+        buffer: VertexConsumer? = null,
     ) {
 
         val vcp = getVertexConsumerProvider()
 
         val layer = if (depthTest) GemRenderLayers.LINES else GemRenderLayers.ESP_LINES
-        val bufferBuilder = vcp.getBuffer(layer)
+        val bufferBuilder = buffer ?: vcp.getBuffer(layer)
         val posMatrix = matrixStack.last()
         var bb2 = end
         if (withOffset)
@@ -429,7 +460,6 @@ object RenderUtils {
         val y2 = bb2.y.toFloat()
         val z2 = bb2.z.toFloat()
         val normal = Vector3f(x2, y2, z2).sub(Vector3f(x1, y1, z1)).normalize()
-
         bufferBuilder.addVertex(posMatrix, x1, y1, z1)
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
             .setNormal(normal.x(), normal.y(), normal.z())
@@ -438,7 +468,8 @@ object RenderUtils {
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
             .setNormal(normal.x(), normal.y(), normal.z())
             .setLineWidth(2.0f)
-        vcp.endBatch(layer)
+        if (buffer == null)
+            vcp.endBatch(layer)
 
     }
 
