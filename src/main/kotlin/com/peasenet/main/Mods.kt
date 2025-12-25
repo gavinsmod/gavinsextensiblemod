@@ -34,6 +34,7 @@ import com.peasenet.config.misc.FpsColorConfig
 import com.peasenet.config.misc.FreeCamConfig
 import com.peasenet.config.misc.MiscConfig
 import com.peasenet.config.render.FullbrightConfig
+import com.peasenet.config.render.HealthTagConfig
 import com.peasenet.config.render.RadarConfig
 import com.peasenet.config.render.XrayConfig
 import com.peasenet.config.tracer.BlockTracerConfig
@@ -85,6 +86,7 @@ class Mods {
         Settings.addConfig(KillAuraConfig())
         Settings.addConfig(CaveEspConfig())
         Settings.addConfig(OreEspConfig())
+        Settings.addConfig(HealthTagConfig())
 
         /*@MODS@*/
         GavinsMod.addMod(ModAutoAttack())

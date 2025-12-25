@@ -26,12 +26,15 @@ package com.peasenet.mixins;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.peasenet.config.render.HealthTagConfig;
 import com.peasenet.main.Mods;
+import com.peasenet.main.Settings;
 import com.peasenet.util.ChatCommand;
 import com.peasenet.util.event.EntityRenderNameEvent;
 import com.peasenet.util.event.EventManager;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -46,27 +49,42 @@ public abstract class EntityRendererMixin<T extends Entity, S extends EntityRend
     private <E extends Entity, S extends EntityRenderState>
     void shouldShowName(E entity, double d, CallbackInfoReturnable<Boolean> cir) {
         var hpTagsEnabled = Mods.isActive(ChatCommand.HealthTag) && entity instanceof LivingEntity;
-        if(hpTagsEnabled)
+        if (hpTagsEnabled)
             cir.setReturnValue(true);
     }
 
     @WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/EntityRenderer;shouldShowName(Lnet/minecraft/world/entity/Entity;D)Z"), method = "extractRenderState(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/client/renderer/entity/state/EntityRenderState;F)V")
     private <E extends Entity, S extends EntityRenderState> boolean wrapRender(EntityRenderer<E, S> instance, E entity, double d, Operation<Boolean> original) {
-        if(Mods.isActive(ChatCommand.HealthTag) && entity instanceof LivingEntity)
-            return true;
+        if (Mods.isActive(ChatCommand.HealthTag) && entity instanceof LivingEntity le) {
+            if (entity.getType().getCategory().isFriendly() && getSettings().getFriendlyMobs())
+                return true;
+            return !entity.getType().getCategory().isFriendly() && getSettings().getHostileMobs();
+        }
         return original.call(instance, entity, d);
     }
 
     @Inject(at = @At("TAIL"), method = "extractRenderState")
     private void healthTags(T entity, S entityRenderState, float f, CallbackInfo ci) {
-
-        if (!(entity instanceof LivingEntity le) || entityRenderState.nameTag == null) {
+        if (!Mods.isActive(ChatCommand.HealthTag)) {
+            return;
+        }
+        if (!(entity instanceof LivingEntity le)) {
             return;
         }
         var event = new EntityRenderNameEvent(le);
         EventManager.getEventManager().call(event);
-        if (event.isCancelled()) {
-            entityRenderState.nameTag = entityRenderState.nameTag.copy().append(" - ").append(event.getEventData());
+        if (!event.isCancelled()) {
+            var data = event.getEventData();
+            if (data == null)
+                return;
+            var nameTag = entityRenderState.nameTag;
+            if (nameTag == null)
+                nameTag = Component.empty();
+            entityRenderState.nameTag = nameTag.copy().append(" - ").append(event.getEventData());
         }
+    }
+
+    private HealthTagConfig getSettings() {
+        return Settings.INSTANCE.getConfig(ChatCommand.HealthTag);
     }
 }

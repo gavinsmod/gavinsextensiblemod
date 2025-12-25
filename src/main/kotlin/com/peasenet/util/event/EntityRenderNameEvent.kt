@@ -55,8 +55,8 @@ class EntityRenderNameEvent(
     override fun fire(listeners: ArrayList<EntityRenderNameListener>) {
         for (listener in listeners) {
             listener.onEntityNameRender(entityRender)
+            eventData = entityRender.nameTag
             if(entityRender.isCancelled) {
-                eventData = entityRender.nameTag
                 this.cancel()
             }
         }

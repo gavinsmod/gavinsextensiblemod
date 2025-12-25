@@ -23,7 +23,12 @@
  */
 package com.peasenet.mods.render
 
+import com.peasenet.config.render.HealthTagConfig
+import com.peasenet.gavui.color.Color
+import com.peasenet.gui.mod.render.GuiHealthTag
 import com.peasenet.main.GavinsModClient
+import com.peasenet.main.Settings
+import com.peasenet.util.ChatCommand
 import com.peasenet.util.event.data.EntityNameRender
 import com.peasenet.util.listeners.EntityRenderNameListener
 import net.minecraft.client.Minecraft
@@ -32,6 +37,7 @@ import net.minecraft.world.entity.EntityAttachment
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.network.chat.Component
 import net.minecraft.ChatFormatting
+import net.minecraft.network.chat.Style
 
 /**
  *
@@ -51,6 +57,15 @@ class ModHealthTag : RenderMod(
     "gavinsmod.mod.render.hptags", "hptags"
 ), EntityRenderNameListener {
 
+    init {
+        clickSetting {
+            title = "gavinsmod.mod.render.hptags"
+            callback = {
+                client.setScreen(GuiHealthTag())
+            }
+        }
+    }
+
     override fun onEnable() {
         em.subscribe(EntityRenderNameListener::class.java, this)
         super.onEnable()
@@ -68,25 +83,43 @@ class ModHealthTag : RenderMod(
         er: EntityNameRender,
     ) {
         val currentHp = er.entity.health.toInt()
-        val text = Component.empty().append(currentHp.toString()).append(" HP").withStyle(getColor(er.entity))
+        val entity = er.entity;
+        // check if mob is hostile
+        if (entity.type.category.isFriendly && !config.friendlyMobs) {
+            er.cancel()
+        }
+        if (!entity.type.category.isFriendly && !config.hostileMobs) {
+            er.cancel()
+        }
+        if(er.isCancelled)
+            return
+        val style = Style.EMPTY.withColor(getColor(er.entity).asInt)
+        val text = Component.empty().append(currentHp.toString()).append(" HP").withStyle(style)
         er.nameTag = text
-        er.cancel()
     }
 
     /**
      * Gets the color formatting for the health tag.
      */
-    private fun getColor(entity: LivingEntity): ChatFormatting {
+    private fun getColor(entity: LivingEntity): Color {
         return if (entity.health > entity.maxHealth * 0.8) {
-            ChatFormatting.GREEN
+            config.highHealthColor
         } else if (entity.health > entity.maxHealth * 0.6) {
-            ChatFormatting.YELLOW
+            config.midHealthColor
         } else if (entity.health > entity.maxHealth * 0.4) {
-            ChatFormatting.GOLD
+            config.midLowHealthColor
         } else {
-            ChatFormatting.RED
+            config.lowHealthColor
         }
     }
+
+    companion object {
+        val config: HealthTagConfig
+            get() {
+                return Settings.getConfig(ChatCommand.HealthTag)
+            }
+    }
+
 
     override fun onEntityNameRender(er: EntityNameRender) {
         if (er.entity !is LivingEntity) return
