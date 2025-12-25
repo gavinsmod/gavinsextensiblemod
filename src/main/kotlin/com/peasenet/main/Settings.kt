@@ -31,6 +31,7 @@ import com.peasenet.annotations.GsonExclusionStrategy
 import com.peasenet.config.Config
 import com.peasenet.config.render.XrayConfig
 import com.peasenet.config.render.XrayConfigGsonAdapter
+import com.peasenet.util.ChatCommand
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.Path
@@ -167,6 +168,12 @@ object Settings {
     @Suppress("UNCHECKED_CAST")
     fun <T : Config<*>?> getConfig(key: String?): T {
         return settings[key] as T
+    }
+
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Config<*>?> getConfig(key: ChatCommand): T {
+        return getConfig(key.chatCommand)
     }
 
     /**
