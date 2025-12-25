@@ -120,6 +120,11 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
         }
     }
 
+    override fun onDisable() {
+        chunks.clear()
+        super.onDisable()
+    }
+
     override fun onChunkUpdate(chunkUpdate: ChunkUpdate) {
         synchronized(chunks) {
             searchChunk(chunkUpdate.chunk)
