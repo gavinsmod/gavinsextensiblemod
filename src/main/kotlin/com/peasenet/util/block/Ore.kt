@@ -16,6 +16,8 @@ import net.minecraft.util.valueproviders.IntProvider
 import net.minecraft.world.level.LevelHeightAccessor
 import net.minecraft.world.level.biome.Biome
 import net.minecraft.world.level.biome.FeatureSorter
+import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.dimension.LevelStem
 import net.minecraft.world.level.levelgen.WorldGenerationContext
 import net.minecraft.world.level.levelgen.feature.ScatteredOreFeature
@@ -34,7 +36,7 @@ import net.minecraft.world.level.levelgen.presets.WorldPresets
  * @since 12-06-2025
  */
 class Ore {
-     var placedFeature: PlacedFeature
+    private var placedFeature: PlacedFeature
     var step: Int = 0
     var index: Int = 0
     var count: IntProvider = ConstantInt.of(1)
@@ -46,6 +48,7 @@ class Ore {
     var isScattered: Boolean = false
     var enabled: Boolean = false
     var color: Color = Colors.WHITE
+    var blockState: BlockState
 
     private constructor(
         placedFeature: PlacedFeature,
@@ -54,6 +57,7 @@ class Ore {
         heightContext: WorldGenerationContext,
         enabled: Boolean,
         color: Color,
+        blockState: BlockState,
     ) {
         this.placedFeature = placedFeature
         this.step = genStep
@@ -61,6 +65,7 @@ class Ore {
         this.enabled = enabled
         this.color = color
         this.heightContext = heightContext
+        this.blockState = blockState
         for (modifier in placedFeature.placement) {
             when (modifier) {
                 is CountPlacement -> this.count = modifier.count
@@ -68,7 +73,6 @@ class Ore {
                 is RarityFilter -> this.rarity = modifier.chance.toFloat()
             }
         }
-
         val featureConfig = placedFeature.feature.value().config
         if (featureConfig is ScatteredOreFeature) {
             isScattered = true
@@ -124,7 +128,8 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().coalEnabled,
-                getSettings().coalColor
+                getSettings().coalColor,
+                Blocks.COAL_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -134,17 +139,8 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().coalEnabled,
-                getSettings().coalColor
-            )
-            registerOre(
-                featureToOre,
-                indexer,
-                features,
-                OrePlacements.ORE_COAL_UPPER,
-                6,
-                heightContext,
-                getSettings().coalEnabled,
-                getSettings().coalColor
+                getSettings().coalColor,
+                Blocks.COAL_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -154,7 +150,8 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().ironEnabled,
-                getSettings().ironColor
+                getSettings().ironColor,
+                Blocks.IRON_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -164,7 +161,8 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().ironEnabled,
-                getSettings().ironColor
+                getSettings().ironColor,
+                Blocks.IRON_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -174,7 +172,9 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().goldEnabled,
-                getSettings().ironColor
+                getSettings().ironColor,
+
+                Blocks.IRON_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -184,7 +184,8 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().goldEnabled,
-                getSettings().goldColor
+                getSettings().goldColor,
+                Blocks.GOLD_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -194,7 +195,8 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().goldEnabled,
-                getSettings().goldColor
+                getSettings().goldColor,
+                Blocks.DEEPSLATE_GOLD_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -204,7 +206,8 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().goldEnabled,
-                getSettings().goldColor
+                getSettings().goldColor,
+                Blocks.GOLD_ORE.defaultBlockState()
             )
 
             registerOre(
@@ -215,7 +218,8 @@ class Ore {
                 7,
                 heightContext,
                 getSettings().goldEnabled,
-                getSettings().goldColor
+                getSettings().goldColor,
+                Blocks.NETHER_GOLD_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -225,7 +229,8 @@ class Ore {
                 7,
                 heightContext,
                 getSettings().goldEnabled,
-                getSettings().goldColor
+                getSettings().goldColor,
+                Blocks.NETHER_GOLD_ORE.defaultBlockState()
             )
 
             registerOre(
@@ -236,7 +241,8 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().redstoneEnabled,
-                getSettings().redstoneColor
+                getSettings().redstoneColor,
+                Blocks.REDSTONE_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -246,7 +252,8 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().redstoneEnabled,
-                getSettings().redstoneColor
+                getSettings().redstoneColor,
+                Blocks.DEEPSLATE_REDSTONE_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -256,7 +263,8 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().diamondEnabled,
-                getSettings().diamondColor
+                getSettings().diamondColor,
+                Blocks.DIAMOND_ORE.defaultBlockState()
             )
 
             registerOre(
@@ -267,7 +275,8 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().diamondEnabled,
-                getSettings().diamondColor
+                getSettings().diamondColor,
+                Blocks.DIAMOND_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -277,7 +286,8 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().diamondEnabled,
-                getSettings().diamondColor
+                getSettings().diamondColor,
+                Blocks.DIAMOND_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -287,7 +297,8 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().diamondEnabled,
-                getSettings().diamondColor
+                getSettings().diamondColor,
+                Blocks.DIAMOND_ORE.defaultBlockState()
             )
 
             registerOre(
@@ -298,7 +309,8 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().lapisEnabled,
-                getSettings().lapisColor
+                getSettings().lapisColor,
+                Blocks.LAPIS_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -308,7 +320,8 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().lapisEnabled,
-                getSettings().lapisColor
+                getSettings().lapisColor,
+                Blocks.DEEPSLATE_LAPIS_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -318,7 +331,8 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().copperEnabled,
-                getSettings().copperColor
+                getSettings().copperColor,
+                Blocks.COPPER_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -328,7 +342,8 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().copperEnabled,
-                getSettings().copperColor
+                getSettings().copperColor,
+                Blocks.COPPER_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -338,7 +353,8 @@ class Ore {
                 6,
                 heightContext,
                 getSettings().emeraldEnabled,
-                getSettings().emeraldColor
+                getSettings().emeraldColor,
+                Blocks.EMERALD_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -348,7 +364,8 @@ class Ore {
                 7,
                 heightContext,
                 getSettings().quartzEnabled,
-                getSettings().quartzColor
+                getSettings().quartzColor,
+                Blocks.NETHER_QUARTZ_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -358,7 +375,8 @@ class Ore {
                 7,
                 heightContext,
                 getSettings().quartzEnabled,
-                getSettings().quartzColor
+                getSettings().quartzColor,
+                Blocks.NETHER_QUARTZ_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -368,7 +386,8 @@ class Ore {
                 7,
                 heightContext,
                 getSettings().debrisEnabled,
-                getSettings().debrisColor
+                getSettings().debrisColor,
+                Blocks.ANCIENT_DEBRIS.defaultBlockState()
             )
             registerOre(
                 featureToOre,
@@ -378,7 +397,8 @@ class Ore {
                 7,
                 heightContext,
                 getSettings().debrisEnabled,
-                getSettings().debrisColor
+                getSettings().debrisColor,
+                Blocks.ANCIENT_DEBRIS.defaultBlockState()
             )
 
             val biomeOreMap = mutableMapOf<ResourceKey<Biome>, MutableList<Ore>>()
@@ -403,10 +423,11 @@ class Ore {
             heightContext: WorldGenerationContext,
             enabled: Boolean,
             color: Color,
+            blockState: BlockState,
         ) {
             val orePlacement = registry.get(key).get().value()
             val index = indexer[step].indexMapping.applyAsInt(orePlacement)
-            val ore = Ore(orePlacement, step, index, heightContext, enabled, color)
+            val ore = Ore(orePlacement, step, index, heightContext, enabled, color, blockState)
             map[orePlacement] = ore
         }
 

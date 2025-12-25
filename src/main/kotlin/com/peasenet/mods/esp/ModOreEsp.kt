@@ -29,6 +29,7 @@ import net.minecraft.world.level.levelgen.WorldgenRandom
 import org.lwjgl.opengl.GL11
 import java.util.*
 import java.util.stream.Collectors
+import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -110,17 +111,24 @@ class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.esp.ore", "oreesp") {
                     if (ore.isScattered) {
                         generateHidden(world, random, origin, ore.size).forEach { blockPos ->
                             gavChunk.addBlock(
-                                GavBlock(blockPos, { true }, ore.color)
+                                GavBlock(blockPos, { oreHasNeighbor(it, ore) }, ore.color)
                             )
                         }
                     } else {
                         generateNormal(world, random, origin, ore.size, ore.discardOnAirChance)
-                            .forEach { gavChunk.addBlock(GavBlock(it, { true }, ore.color)) }
+                            .forEach { pos -> gavChunk.addBlock(GavBlock(pos, { oreHasNeighbor(it, ore) }, ore.color)) }
                     }
                 }
             }
             addBlocksFromChunk(gavChunk)
         }
+    }
+
+    private fun oreHasNeighbor(blockPos: BlockPos, ore: Ore): Boolean {
+        if(blockPos.x == -268 && blockPos.y == 67 && blockPos.z == -95) {
+            println("test")
+        }
+        return world.getBlockState(blockPos).block.defaultBlockState() == ore.blockState
     }
 
     private fun getOres(biomeKey: Either<ResourceKey<Biome>, Biome>): List<Ore> {
@@ -152,7 +160,7 @@ class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.esp.ore", "oreesp") {
                     Colors.RED_ORANGE,
                     partialTicks,
                     getSettings().alpha,
-                    structureEsp = false,
+                    getSettings().structureEsp,
                     blockTracer = false,
                     buffer
                 )

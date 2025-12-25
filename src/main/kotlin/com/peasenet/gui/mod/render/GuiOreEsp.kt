@@ -26,7 +26,7 @@ import net.minecraft.client.gui.components.WidgetTooltipHolder
  */
 class GuiOreEsp : GuiElement(Component.translatable("gavinsmod.mod.esp.ore")) {
     private var m_width = 200
-    private val m_height = 11 * 12f
+    private val m_height = 11 * 13f
     private lateinit var seedBox: EditBox
     private lateinit var seedText: StringWidget
 
@@ -284,6 +284,16 @@ class GuiOreEsp : GuiElement(Component.translatable("gavinsmod.mod.esp.ore")) {
 
             }
         }
+        guiPosition = guiPosition.add(0f, 12f)
+        val structureEsp = toggleSetting {
+            title = "gavinsmod.mod.esp.blockesp.structure"
+            state = getSettings().structureEsp
+            topLeft = guiPosition
+            callback = {
+                getSettings().structureEsp = it.state
+
+            }
+        }
 
         val slideWidth = Minecraft.getInstance().font.width(slider.title)
         // set slider in center of X axis
@@ -296,6 +306,9 @@ class GuiOreEsp : GuiElement(Component.translatable("gavinsmod.mod.esp.ore")) {
         slider.gui?.position = slider.topLeft
         addSetting(slider)
 
+        structureEsp.topLeft = slider.topLeft.add(0f, 12f)
+        structureEsp.gui.position = structureEsp.topLeft
+        addSetting(structureEsp)
         super.init()
         val apply = clickSetting {
             title = "gavinsmod.settings.apply"
@@ -315,7 +328,7 @@ class GuiOreEsp : GuiElement(Component.translatable("gavinsmod.mod.esp.ore")) {
             font
         )
         seedBox = EditBox(font, seedText.x + 30, apply.topLeft.y.toInt(), 150, 12, Component.empty())
-        seedBox.value= getSettings().seed
+        seedBox.value = getSettings().seed
         addWidget(seedBox)
         addRenderableWidget(seedText)
     }
