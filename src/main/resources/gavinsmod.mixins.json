@@ -16,6 +16,7 @@
     "MixinInGameOverlayRenderer",
     "MixinMinecraftClient",
     "MixinMinecraftClientAttack",
+    "MixinNameTageFeatureRenderer",
     "MixinSimpleOption",
     "MixinWorldRenderer",
     "ScreenAccessor"
@@ -33,7 +34,7 @@
     "MixinLivingEntity",
     "MixinPlayerEntity",
     "MixinSodiumblockOcclusionCache",
-    "MixinWorldChunk",
+    "MixinWorldChunk"
   ],
   "package": "com.peasenet.mixins",
   "required": true
