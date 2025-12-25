@@ -34,14 +34,14 @@ import net.minecraft.world.level.levelgen.presets.WorldPresets
  * @since 12-06-2025
  */
 class Ore {
-    private var placedFeature: PlacedFeature
+     var placedFeature: PlacedFeature
     var step: Int = 0
     var index: Int = 0
     var count: IntProvider = ConstantInt.of(1)
     var heightContext: WorldGenerationContext
     var heightProvider: HeightProvider? = null
     var rarity: Float = 1f
-    var discardOnAirChacne = 0.0f
+    var discardOnAirChance = 0.0f
     var size: Int = 0
     var isScattered: Boolean = false
     var enabled: Boolean = false
@@ -74,7 +74,7 @@ class Ore {
             isScattered = true
         }
         if (featureConfig is OreConfiguration) {
-            this.discardOnAirChacne = featureConfig.discardChanceOnAirExposure
+            this.discardOnAirChance = featureConfig.discardChanceOnAirExposure
             this.size = featureConfig.size
 
         } else {
