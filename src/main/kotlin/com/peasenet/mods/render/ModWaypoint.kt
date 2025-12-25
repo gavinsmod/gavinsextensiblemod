@@ -23,6 +23,7 @@
  */
 package com.peasenet.mods.render
 
+import com.mojang.blaze3d.vertex.PoseStack
 import com.peasenet.config.tracer.TracerConfig
 import com.peasenet.config.waypoint.WaypointConfig
 import com.peasenet.extensions.toVec3d
@@ -37,9 +38,7 @@ import com.peasenet.util.event.data.CameraBob
 import com.peasenet.util.listeners.CameraBobListener
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.Minecraft
-import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.world.phys.AABB
-import org.joml.Matrix3x2fStack
 
 /**
  * Creates a new mod to control waypoints.
