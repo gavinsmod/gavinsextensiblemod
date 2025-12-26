@@ -23,6 +23,7 @@
  */
 package com.peasenet.gavui
 
+import com.mojang.blaze3d.font.TrueTypeGlyphProvider
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.BoxF
@@ -32,7 +33,10 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
 import net.minecraft.client.gui.GuiGraphics
 import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.FontDescription
 import net.minecraft.network.chat.FormattedText
+import net.minecraft.network.chat.Style
+import net.minecraft.resources.Identifier
 import java.util.*
 import java.util.function.Consumer
 import kotlin.math.max
@@ -227,7 +231,7 @@ open class Gui(
         drawContext.guiRenderState.up()
         GuiUtil.fill(box, drawContext, bg)
         drawContext.guiRenderState.up()
-        GuiUtil.drawOutline(box, drawContext, GavUI.borderColor().withAlpha(GavUI.alpha))
+        GuiUtil.drawOutline(box, drawContext, GavUI.borderColor())
         var textColor = GavUI.textColor()
         if (title != null) {
             if (textColor.similarity(bg) < 0.3f) {
@@ -236,7 +240,14 @@ open class Gui(
             }
             val titleH = tr.lineHeight
             val offsetY = (box.height - titleH)
-            drawText(drawContext, tr, title!!, x.toInt() + 2, y.toInt() + offsetY.toInt(), textColor)
+            drawText(
+                drawContext,
+                tr,
+                title.copy().withStyle(Style.EMPTY.withFont(myFont)),
+                x.toInt() + 2,
+                y.toInt() + offsetY.toInt(),
+                textColor
+            )
         }
         drawSymbol(drawContext, tr, textColor, 0f, 2f)
 
@@ -428,6 +439,11 @@ open class Gui(
          */
         @JvmStatic
         var clickedGui: Gui? = null
+        val myFont = FontDescription.Resource(
+            Identifier.fromNamespaceAndPath("gavinsmod", "3270")
+        )
+        val myStyle = Style.EMPTY.withFont(myFont)
+//        val fontProvider = TrueTypeGlyphProvider()
     }
 
     init {

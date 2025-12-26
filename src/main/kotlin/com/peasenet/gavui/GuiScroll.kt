@@ -79,7 +79,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
         }
         GuiUtil.fill(box, drawContext, bg)
         drawContext.guiRenderState.up()
-        GuiUtil.drawOutline(box, drawContext, GavUI.borderColor().withAlpha(GavUI.alpha))
+        GuiUtil.drawOutline(box, drawContext, GavUI.borderColor())
         drawContext.guiRenderState.up()
         var textColor = if (frozen) GavUI.frozenColor() else GavUI.textColor()
         if (title != null) {
@@ -88,7 +88,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
                 if (textColor.similarity(bg) < 0.2f) textColor = Colors.WHITE
             }
             val center = (x + (width / 2) - (tr.width(title)) / 2).toInt()
-            drawText(drawContext, tr, title!!, center, (y + 2).toInt(), textColor)
+            drawText(drawContext, tr, title.copy().withStyle(myStyle), center, (y + 2).toInt(), textColor)
         }
         updateSymbol()
         drawSymbol(drawContext, tr, textColor, -2f, 0f)
@@ -119,8 +119,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             }
             if (shouldDrawScrollBar()) {
                 child.shrinkForScrollbar(this)
-                drawScrollBox(drawContext)
-                drawScrollBar(drawContext)
+
             }
             if ((!child.isParent && child !is GuiCycle)) {
                 child.backgroundColor = GavUI.backgroundColor()
@@ -131,6 +130,10 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
         for (child in renderableChildren) {
             child.render(drawContext, tr, mouseX, mouseY, delta)
         }
+        if (shouldDrawScrollBar()) {
+            drawScrollBox(drawContext)
+            drawScrollBar(drawContext)
+        }
     }
 
 
@@ -138,7 +141,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
         if (hasChildren() && isOpen) {
             var visibleChildren = 0
             for (gui in children) {
-                if(!gui.isHidden) visibleChildren++
+                if (!gui.isHidden) visibleChildren++
                 if (!gui.isHidden && gui.mouseWithinGui(mouseX.toInt(), mouseY.toInt()) && gui is GuiScroll) {
                     if (gui.isOpen) {
                         val scrolled = gui.mouseScrolled(mouseX, mouseY, amount)
@@ -231,8 +234,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             scrollBoxY = y
         }
         val box = BoxF(PointF(scrollBoxX, scrollBoxY), 5f, scrollBoxHeight)
-        GuiUtil.drawOutline(box, drawContext, GavUI.backgroundColor())
-//        GuiUtil.drawOutline(GavUI.borderColor(), box, matrixStack)
+        GuiUtil.drawOutline(box, drawContext, GavUI.borderColor())
     }
 
     /**
@@ -382,7 +384,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             if (child.isHidden || (child as? GuiDropdown)?.isOpen == false) continue
 
         }
-        if (frozen || !isParent ) return false
+        if (frozen || !isParent) return false
 
         return false
     }
