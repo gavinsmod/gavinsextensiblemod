@@ -45,6 +45,11 @@ A Fabric mod for Minecraft that is extensible, configurable, and contains many "
       ![](src/main/resources/assets/gavinsmod/screenshots/caveesp_tunnels.png)
 - Sign ESP and Tracers
   ![](src/main/resources/assets/gavinsmod/screenshots/signesp.png)
+- Ore ESP
+  ![](src/main/resources/assets/gavinsmod/screenshots/oreesp.png)
+  - Configurable to show specific ores, alpha, and custom colors per ore.
+  ![](src/main/resources/assets/gavinsmod/screenshots/oreesp_active.png)
+  - Based off of Meteor Reject's Ore ESP.
 - Furnace and Beehive ESP and Tracers
 - Radar
     - ![](src/main/resources/assets/gavinsmod/screenshots/radar.png)

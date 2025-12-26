@@ -34,14 +34,13 @@ import kotlin.math.sqrt
  * @version 02-02-2025
  * @since 12/30/2022
  */
-@JvmRecord
 data class PointF
 /**
  * Creates a new point in 2D space.
  *
  * @param x The x coordinate.
  * @param y The y coordinate.
- */(val x: Float, val y: Float) {
+ */(var x: Float, var y: Float) {
     constructor(x: Double, y: Double) : this(x.toFloat(), y.toFloat())
 
     constructor(x: Int, y: Int) : this(x.toFloat(), y.toFloat())
