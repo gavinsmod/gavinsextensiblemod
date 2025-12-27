@@ -269,13 +269,11 @@ class ModRadar : RenderMod(
          * @return The position and distance of the given coordinates from the player.
          */
         private fun calculateDistance(yaw: Float, x: Double, z: Double): PointF {
-            var x1 = x
-            var z1 = z
-            val atan = atan2(z1, x1)
+            val atan = atan2(z, x)
             val angle = Math.toDegrees(atan) - yaw
-            val distance = sqrt(x1 * x1 + z1 * z1)
-            x1 = cos(Math.toRadians(angle)) * distance * -1
-            z1 = sin(Math.toRadians(angle)) * distance * -1
+            val distance = sqrt(x * x + z * z)
+            val x1 = (cos(Math.toRadians(angle)) * distance) * -1.0f
+            val z1 = (sin(Math.toRadians(angle)) * distance) * -1.0f
             return PointF(x1, z1)
         }
     }
