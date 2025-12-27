@@ -1,4 +1,7 @@
-accessWidener v2 named
-accessible field net/minecraft/world/gen/placementmodifier/CountPlacementModifier count Lnet/minecraft/util/math/intprovider/IntProvider;
-accessible field net/minecraft/world/gen/placementmodifier/HeightRangePlacementModifier height Lnet/minecraft/world/gen/heightprovider/HeightProvider;
-accessible field net/minecraft/world/gen/placementmodifier/RarityFilterPlacementModifier chance I
+accessWidener v1 named
+accessible method net/minecraft/client/renderer/rendertype/RenderType create (Ljava/lang/String;Lnet/minecraft/client/renderer/rendertype/RenderSetup;)Lnet/minecraft/client/renderer/rendertype/RenderType;
+accessible field net/minecraft/world/level/levelgen/placement/CountPlacement count Lnet/minecraft/util/valueproviders/IntProvider;
+accessible field net/minecraft/world/level/levelgen/placement/HeightRangePlacement height Lnet/minecraft/world/level/levelgen/heightproviders/HeightProvider;
+accessible field net/minecraft/world/level/levelgen/placement/RarityFilter chance I
+accessible field net/minecraft/client/renderer/feature/NameTagFeatureRenderer$Storage nameTagSubmitsSeethrough Ljava/util/List;
+accessible field net/minecraft/client/renderer/feature/NameTagFeatureRenderer$Storage nameTagSubmitsNormal Ljava/util/List;

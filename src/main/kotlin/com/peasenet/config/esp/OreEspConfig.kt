@@ -27,7 +27,7 @@ package com.peasenet.config.esp
 import com.peasenet.config.commons.BlockListConfig
 import com.peasenet.config.commons.IBlockEspTracerConfig
 import com.peasenet.gavui.color.Color
-import net.minecraft.block.Blocks
+import net.minecraft.world.level.block.Blocks
 
 /**
  * A configuration for block esp.
@@ -38,7 +38,7 @@ import net.minecraft.block.Blocks
  * @author GT3CH1
  * @version 09-01-2024
  */
-class OreEspConfig : BlockListConfig<OreEspConfig>({ it.defaultState == Blocks.COAL_ORE.defaultState }),
+class OreEspConfig : BlockListConfig<OreEspConfig>({ it.defaultBlockState() == Blocks.COAL_ORE.defaultBlockState() }),
     IBlockEspTracerConfig {
     init {
         key = "oreesp"

@@ -24,9 +24,9 @@
 
 package com.peasenet.util.event.data
 
-import net.minecraft.client.render.BufferBuilder
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.client.world.ClientWorld
+import com.mojang.blaze3d.vertex.BufferBuilder
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.client.multiplayer.ClientLevel
 
 /**
  * A class that holds the data for the [com.peasenet.util.event.WorldRenderEvent] event.
@@ -41,5 +41,5 @@ import net.minecraft.client.world.ClientWorld
  * @since 01-18-2025
  */
 data class WorldRender(
-    var level: ClientWorld, var stack: MatrixStack, var buffer: BufferBuilder, var delta: Float,
+    var level: ClientLevel, var stack: PoseStack, var buffer: BufferBuilder, var delta: Float,
 )

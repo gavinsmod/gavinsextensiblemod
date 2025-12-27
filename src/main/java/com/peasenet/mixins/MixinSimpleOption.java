@@ -25,7 +25,7 @@
 package com.peasenet.mixins;
 
 import com.peasenet.mixinterface.ISimpleOption;
-import net.minecraft.client.option.SimpleOption;
+import net.minecraft.client.OptionInstance;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -33,7 +33,7 @@ import org.spongepowered.asm.mixin.Shadow;
  * Mixin for overriding the value of a SimpleOption, which is used in the Game Options menu.
  * @param <T> - The type of the option.
  */
-@Mixin(SimpleOption.class)
+@Mixin(OptionInstance.class)
 public class MixinSimpleOption<T> implements ISimpleOption<T> {
     @Shadow
     T value;

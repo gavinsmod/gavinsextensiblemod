@@ -26,19 +26,19 @@ package com.peasenet.mixins;
 
 import com.mojang.authlib.GameProfile;
 import com.peasenet.mixinterface.IClientPlayerEntity;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.player.PlayerAbilities;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.Abilities;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -48,15 +48,15 @@ import org.spongepowered.asm.mixin.Shadow;
  * @author GT3CH1
  * @version 12/31/2022
  */
-@Mixin(ClientPlayerEntity.class)
-public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity implements IClientPlayerEntity {
+@Mixin(LocalPlayer.class)
+public abstract class MixinClientPlayerEntity extends AbstractClientPlayer implements IClientPlayerEntity {
 
     /**
      * The network handler used to send and receive packets.
      */
     @Shadow
     @Final
-    public ClientPlayNetworkHandler networkHandler;
+    public ClientPacketListener connection;
 
     /**
      * Creates a new MixinClientPlayerEntity. You do not need to call this.
@@ -64,118 +64,50 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
      * @param world   - The world the player is in.
      * @param profile - The player's profile.
      */
-    public MixinClientPlayerEntity(ClientWorld world, GameProfile profile) {
+    public MixinClientPlayerEntity(ClientLevel world, GameProfile profile) {
         super(world, profile);
     }
 
-    @Shadow
-    public abstract void sendMessage(Text message, boolean overlay);
 
-    public boolean isOnGround() {
-        return super.isOnGround();
+    public boolean onGround() {
+        return super.onGround();
     }
 
-    public void setPitch(float pitch) {
-        super.setPitch(pitch);
-    }
 
-    public void setYaw(float yaw) {
-        super.setYaw(yaw);
-    }
-
-    public @NotNull Vec3d getPos() {
-        return super.getEntityPos();
+    @Override
+    public void setXRot(float xRot) {
+        super.setXRot(xRot);
     }
 
     @Override
+    public void setYRot(float yRot) {
+        super.setYRot(yRot);
+    }
+
+    @Override
+    public Vec3 getPos() {
+        return super.position();
+    }
+
+
+    @Override
     public double getPrevX() {
-        return super.lastX;
+        return super.xo;
     }
 
     @Override
     public double getPrevY() {
-        return super.lastY;
+        return super.yo;
     }
 
     @Override
     public double getPrevZ() {
-        return super.lastZ;
-    }
-
-    @Override
-    public double getEyeHeight() {
-        return super.getStandingEyeHeight();
-    }
-
-    @Override
-    public EntityPose getPose() {
-        return super.getPose();
-    }
-
-    @Override
-    public boolean isNoClip() {
-        return super.noClip;
-    }
-
-    @Override
-    public @NotNull Vec3d getVelocity() {
-        return super.getVelocity();
+        return super.zo;
     }
 
     @Override
     public float getEyeHeightWithPose() {
-        return super.getEyeHeight(this.getPose());
-    }
-
-    @Override
-    public float getAttackCoolDownProgress(float f) {
-        return super.getAttackCooldownProgress(f);
-    }
-
-    @Override
-    public boolean tryAttack(Entity target) {
-//TODO:        return super.tryAttack(getserverWorld(), target);
-        return false;
-    }
-
-    @Shadow
-    public abstract void swingHand(Hand hand);
-
-    @Override
-    public PlayerAbilities getAbilities() {
-        return super.getAbilities();
-    }
-
-    @Override
-    public float getFallDistance() {
-        return (float) super.fallDistance;
-    }
-
-    @Override
-    public ClientPlayNetworkHandler getNetworkHandler() {
-        return networkHandler;
-    }
-
-    @Shadow
-    public abstract boolean isSubmergedInWater();
-
-    @Shadow
-    public abstract boolean isSneaking();
-
-    @Override
-    public BlockPos getBlockPos() {
-        return super.getBlockPos();
-    }
-
-    @Override
-    public ItemStack getMainHandStack() {
-        return super.getMainHandStack();
-    }
-
-    @Override
-    public boolean isFallFlying() {
-        // TODO: super.isFallFlying();
-        return false;
+        return super.getEyeHeight(super.getPose());
     }
 
     @Override
@@ -184,37 +116,69 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     }
 
     @Override
-    public float getBodyYaw() {
-        return super.bodyYaw;
+    public boolean isNoClip() {
+        return super.noPhysics;
     }
 
     @Override
-    public float getHeadYaw() {
-        return super.headYaw;
+    public float getAttackCoolDownProgress(float partialTicks) {
+        return super.getAttackStrengthScale(partialTicks);
     }
 
     @Override
-    public double eyeHeight() {
-        return 0;
+    public boolean tryAttack(Entity target) {
+        return false;
+    }
+
+    @Shadow
+    public abstract void swing(InteractionHand hand);
+
+    @Override
+    public Abilities getAbilities() {
+        return super.getAbilities();
     }
 
     @Override
     public double squaredDistanceTo(Entity e) {
-        return super.squaredDistanceTo(e);
+        return super.distanceToSqr(e);
     }
 
     @Override
-    public @NotNull World getWorld() {
-        return super.getEntityWorld();
+    public boolean isFallFlying() {
+        return false;
     }
 
     @Override
-    public boolean horizontalCollision() {
+    public Vec3 getVelocity() {
+        return super.getDeltaMovement();
+    }
+
+    @Override
+    public double getFallDistance() {
+        return super.fallDistance;
+    }
+
+    @Shadow
+    public abstract boolean isShiftKeyDown();
+
+    @Override
+    public ClientPacketListener getNetworkHandler() {
+        return this.connection;
+    }
+
+    @Shadow
+    public abstract void displayClientMessage(Component message, boolean overlay);
+
+    @Override
+    public ItemStack getMainHandItem() {
+        return super.getMainHandItem();
+    }
+
+    @Shadow
+    public abstract boolean isUnderWater();
+
+    @Override
+    public boolean isCollidingHorizontally() {
         return super.horizontalCollision;
-    }
-
-    @Override
-    public boolean isGliding() {
-        return super.isGliding();
     }
 }

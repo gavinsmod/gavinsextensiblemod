@@ -25,11 +25,11 @@ package com.peasenet.gui.mod
 
 import com.peasenet.gavui.math.PointF
 import com.peasenet.mods.ModCategory
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 /**
  * @author GT3CH1
  * @version 03-02-2023
  * Creates a new gui for ESP mods as a drop-down.
  */
-class GuiESP : GuiMod(PointF(10f, 120f), 100, 11, Text.translatable("gavinsmod.gui.esps"), ModCategory.ESP)
+class GuiESP : GuiMod(PointF(10f, 120f), 100, 11, Component.translatable("gavinsmod.gui.esps"), ModCategory.ESP)

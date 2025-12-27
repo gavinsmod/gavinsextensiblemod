@@ -25,8 +25,8 @@ package com.peasenet.util
 
 import com.peasenet.mods.ModCategory
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
-import net.minecraft.client.option.KeyBinding
-import net.minecraft.client.util.InputUtil
+import net.minecraft.client.KeyMapping
+import com.mojang.blaze3d.platform.InputConstants
 import org.lwjgl.glfw.GLFW
 
 /**
@@ -48,10 +48,10 @@ object KeyBindUtils {
         translationKey: String,
         modCategory: ModCategory,
         keyBind: Int = GLFW.GLFW_KEY_UNKNOWN
-    ): KeyBinding {
-        return KeyBinding(
+    ): KeyMapping {
+        return KeyMapping(
             translationKey,
-            InputUtil.Type.KEYSYM,
+            InputConstants.Type.KEYSYM,
             keyBind,
             modCategory.keybindCategory
         )
@@ -67,7 +67,7 @@ object KeyBindUtils {
         translationKey: String,
         modCategory: ModCategory,
         keyBind: Int = GLFW.GLFW_KEY_UNKNOWN
-    ): KeyBinding {
+    ): KeyMapping {
         return KeyBindingHelper.registerKeyBinding(getKeyBinding(translationKey, modCategory,keyBind))
     }
 }

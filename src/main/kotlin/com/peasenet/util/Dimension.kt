@@ -41,7 +41,7 @@ enum class Dimension(val dimension: String) {
          */
         fun fromValue(dim: String): Dimension {
             for (d in entries) {
-                if (d.dimension == dim)
+                if (d.dimension == dim.lowercase())
                     return d
             }
             throw NotImplementedError("Dimension $dim is not implemented.")

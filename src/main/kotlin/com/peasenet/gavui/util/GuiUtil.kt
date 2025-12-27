@@ -28,9 +28,8 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.util.GemRenderLayers
 import com.peasenet.util.RenderUtils
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.render.RenderLayer
-import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.renderer.rendertype.RenderType
 import org.joml.Matrix3x2fStack
 
 /**
@@ -79,11 +78,11 @@ object GuiUtil {
         drawBox(box, matrixStack, c)
     }
 
-    fun drawOutline(box: BoxF, drawContext: DrawContext, color: Color) {
-        drawContext.drawVerticalLine(box.x1.toInt(), box.y1.toInt()-1, box.y2.toInt(), color.asInt)
-        drawContext.drawVerticalLine(box.x2.toInt()-1, box.y1.toInt()-1, box.y2.toInt(), color.asInt)
-        drawContext.drawHorizontalLine(box.x1.toInt()+1, box.x2.toInt()-2, box.y1.toInt(), color.asInt)
-        drawContext.drawHorizontalLine(box.x1.toInt()+1, box.x2.toInt()-2, box.y2.toInt()-1, color.asInt)
+    fun drawOutline(box: BoxF, drawContext: GuiGraphics, color: Color) {
+        drawContext.vLine(box.x1.toInt(), box.y1.toInt()-1, box.y2.toInt(), color.asInt)
+        drawContext.vLine(box.x2.toInt()-1, box.y1.toInt()-1, box.y2.toInt(), color.asInt)
+        drawContext.hLine(box.x1.toInt()+1, box.x2.toInt()-2, box.y1.toInt(), color.asInt)
+        drawContext.hLine(box.x1.toInt()+1, box.x2.toInt()-2, box.y2.toInt()-1, color.asInt)
     }
 
     /**
@@ -97,7 +96,7 @@ object GuiUtil {
         box: BoxF,
         matrix: Matrix3x2fStack,
         color: Color,
-        targetLayer: RenderLayer? = null,
+        targetLayer: RenderType? = null,
     ) {
         val vcp = RenderUtils.getVertexConsumerProvider()
         val layer = targetLayer ?: GemRenderLayers.QUADS
@@ -106,25 +105,25 @@ object GuiUtil {
         val yt1 = (box.topLeft.y).toInt()
         val xt2 = box.bottomRight.x.toInt()
         val yt2 = box.bottomRight.y.toInt()
-        bufferBuilder.vertex(matrix, xt1.toFloat(), yt1.toFloat())
-            .color(color.asInt)
-            .normal(0f, 0f, 0f)
-        bufferBuilder.vertex(matrix, xt1.toFloat(), yt2.toFloat())
-            .color(color.asInt)
-            .normal(0f, 0f, 0f)
-        bufferBuilder.vertex(matrix, xt2.toFloat(), yt2.toFloat())
-            .color(color.asInt)
-            .normal(0f, 0f, 0f)
-        bufferBuilder.vertex(matrix, xt2.toFloat(), yt1.toFloat())
-            .color(color.asInt)
-            .normal(0f, 0f, 0f)
-        bufferBuilder.vertex(matrix, xt1.toFloat(), yt1.toFloat())
-            .color(color.asInt)
-            .normal(0f, 0f, 0f)
-        vcp.draw(layer)
+        bufferBuilder.addVertexWith2DPose(matrix, xt1.toFloat(), yt1.toFloat())
+            .setColor(color.asInt)
+            .setNormal(0f, 0f, 0f)
+        bufferBuilder.addVertexWith2DPose(matrix, xt1.toFloat(), yt2.toFloat())
+            .setColor(color.asInt)
+            .setNormal(0f, 0f, 0f)
+        bufferBuilder.addVertexWith2DPose(matrix, xt2.toFloat(), yt2.toFloat())
+            .setColor(color.asInt)
+            .setNormal(0f, 0f, 0f)
+        bufferBuilder.addVertexWith2DPose(matrix, xt2.toFloat(), yt1.toFloat())
+            .setColor(color.asInt)
+            .setNormal(0f, 0f, 0f)
+        bufferBuilder.addVertexWith2DPose(matrix, xt1.toFloat(), yt1.toFloat())
+            .setColor(color.asInt)
+            .setNormal(0f, 0f, 0f)
+        vcp.endBatch(layer)
     }
 
-    fun fill(box: BoxF, drawContext: DrawContext, color: Color) {
+    fun fill(box: BoxF, drawContext: GuiGraphics, color: Color) {
         drawContext.fill(box.x1.toInt(), box.y1.toInt(), box.x2.toInt(), box.y2.toInt(), color.asInt)
     }
 

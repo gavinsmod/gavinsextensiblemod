@@ -26,8 +26,8 @@ package com.peasenet.mixins;
 
 import com.peasenet.util.event.CameraBobEvent;
 import com.peasenet.util.event.EventManager;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.renderer.GameRenderer;
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -37,7 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinGameRendererBobView {
     /// should go into event library
     @Inject(method = "bobView", at = @At("HEAD"), cancellable = true)
-    public void checkTracersAndEsps(MatrixStack stack, float f, CallbackInfo ci) {
+    public void checkTracersAndEsps(PoseStack stack, float f, CallbackInfo ci) {
         CameraBobEvent event = new CameraBobEvent();
         EventManager.getEventManager().call(event);
         if (event.isCancelled())

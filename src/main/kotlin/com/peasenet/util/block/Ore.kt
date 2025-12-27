@@ -5,27 +5,29 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.main.Settings
 import com.peasenet.util.Dimension
-import net.minecraft.client.MinecraftClient
-import net.minecraft.registry.BuiltinRegistries
-import net.minecraft.registry.RegistryKey
-import net.minecraft.registry.RegistryKeys
-import net.minecraft.registry.RegistryWrapper
-import net.minecraft.util.math.intprovider.ConstantIntProvider
-import net.minecraft.util.math.intprovider.IntProvider
-import net.minecraft.world.HeightLimitView
-import net.minecraft.world.biome.Biome
-import net.minecraft.world.dimension.DimensionOptions
-import net.minecraft.world.gen.HeightContext
-import net.minecraft.world.gen.WorldPresets
-import net.minecraft.world.gen.feature.OreFeatureConfig
-import net.minecraft.world.gen.feature.OrePlacedFeatures
-import net.minecraft.world.gen.feature.PlacedFeature
-import net.minecraft.world.gen.feature.ScatteredOreFeature
-import net.minecraft.world.gen.feature.util.PlacedFeatureIndexer
-import net.minecraft.world.gen.heightprovider.HeightProvider
-import net.minecraft.world.gen.placementmodifier.CountPlacementModifier
-import net.minecraft.world.gen.placementmodifier.HeightRangePlacementModifier
-import net.minecraft.world.gen.placementmodifier.RarityFilterPlacementModifier
+import net.minecraft.client.Minecraft
+import net.minecraft.core.HolderLookup
+import net.minecraft.core.registries.Registries
+import net.minecraft.data.registries.VanillaRegistries
+import net.minecraft.data.worldgen.placement.OrePlacements
+import net.minecraft.resources.ResourceKey
+import net.minecraft.util.valueproviders.ConstantInt
+import net.minecraft.util.valueproviders.IntProvider
+import net.minecraft.world.level.LevelHeightAccessor
+import net.minecraft.world.level.biome.Biome
+import net.minecraft.world.level.biome.FeatureSorter
+import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.dimension.LevelStem
+import net.minecraft.world.level.levelgen.WorldGenerationContext
+import net.minecraft.world.level.levelgen.feature.ScatteredOreFeature
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration
+import net.minecraft.world.level.levelgen.heightproviders.HeightProvider
+import net.minecraft.world.level.levelgen.placement.CountPlacement
+import net.minecraft.world.level.levelgen.placement.HeightRangePlacement
+import net.minecraft.world.level.levelgen.placement.PlacedFeature
+import net.minecraft.world.level.levelgen.placement.RarityFilter
+import net.minecraft.world.level.levelgen.presets.WorldPresets
 
 /**
  *
@@ -37,23 +39,25 @@ class Ore {
     private var placedFeature: PlacedFeature
     var step: Int = 0
     var index: Int = 0
-    var count: IntProvider = ConstantIntProvider.create(1)
-    var heightContext: HeightContext
+    var count: IntProvider = ConstantInt.of(1)
+    var heightContext: WorldGenerationContext
     var heightProvider: HeightProvider? = null
     var rarity: Float = 1f
-    var discardOnAirChacne = 0.0f
+    var discardOnAirChance = 0.0f
     var size: Int = 0
     var isScattered: Boolean = false
     var enabled: Boolean = false
     var color: Color = Colors.WHITE
+    var blockState: BlockState
 
     private constructor(
         placedFeature: PlacedFeature,
         genStep: Int,
         index: Int,
-        heightContext: HeightContext,
+        heightContext: WorldGenerationContext,
         enabled: Boolean,
         color: Color,
+        blockState: BlockState,
     ) {
         this.placedFeature = placedFeature
         this.step = genStep
@@ -61,25 +65,24 @@ class Ore {
         this.enabled = enabled
         this.color = color
         this.heightContext = heightContext
-        for (modifier in placedFeature.placementModifiers) {
-            if (modifier is CountPlacementModifier)
-                this.count = modifier.count
-            else if (modifier is HeightRangePlacementModifier)
-                this.heightProvider = (modifier as HeightRangePlacementModifier).height
-            else if (modifier is RarityFilterPlacementModifier)
-                this.rarity = (modifier as RarityFilterPlacementModifier).chance.toFloat()
+        this.blockState = blockState
+        for (modifier in placedFeature.placement) {
+            when (modifier) {
+                is CountPlacement -> this.count = modifier.count
+                is HeightRangePlacement -> this.heightProvider = modifier.height
+                is RarityFilter -> this.rarity = modifier.chance.toFloat()
+            }
         }
-
         val featureConfig = placedFeature.feature.value().config
-        if (featureConfig is OreFeatureConfig) {
-            val oreConfig = featureConfig as OreFeatureConfig
-            this.discardOnAirChacne = oreConfig.discardOnAirChance
-            this.size = oreConfig.size
-        } else {
-            throw IllegalArgumentException("PlacedFeature is not an OreFeatureConfig")
-        }
         if (featureConfig is ScatteredOreFeature) {
             isScattered = true
+        }
+        if (featureConfig is OreConfiguration) {
+            this.discardOnAirChance = featureConfig.discardChanceOnAirExposure
+            this.size = featureConfig.size
+
+        } else {
+            throw IllegalArgumentException("PlacedFeature is not an OreFeatureConfig")
         }
     }
 
@@ -90,33 +93,30 @@ class Ore {
             return Settings.getConfig("oreesp")
         }
 
-        fun registry(dimension: Dimension): MutableMap<RegistryKey<Biome>, out List<Ore>> {
-            val registry = BuiltinRegistries.createWrapperLookup()
-            val features = registry.getOrThrow(RegistryKeys.PLACED_FEATURE)
-            val reg = registry.getOrThrow(RegistryKeys.WORLD_PRESET).getOrThrow(WorldPresets.DEFAULT)
-                .value().createDimensionsRegistryHolder().dimensions;
-            if (reg == null) return mutableMapOf()
+        fun registry(dimension: Dimension): MutableMap<ResourceKey<Biome>, out List<Ore>> {
+            val registry = VanillaRegistries.createLookup()
+            val features = registry.lookupOrThrow(Registries.PLACED_FEATURE)
+            val reg = registry.lookupOrThrow(Registries.WORLD_PRESET)
+                .getOrThrow(WorldPresets.NORMAL).value().createWorldDimensions().dimensions;
             val dim = when (dimension) {
-                Dimension.OVERWORLD -> reg[DimensionOptions.OVERWORLD]
-                Dimension.NETHER -> reg[DimensionOptions.NETHER]
-                Dimension.END -> reg[DimensionOptions.END]
+                Dimension.OVERWORLD -> reg[LevelStem.OVERWORLD]
+                Dimension.NETHER -> reg[LevelStem.NETHER]
+                Dimension.END -> reg[LevelStem.END]
             }
             if (dim == null) return mutableMapOf()
-            var biomes = dim.chunkGenerator.biomeSource.biomes;
-            val heightContext: HeightContext?
-            if (MinecraftClient.getInstance().world != null) {
-                val bottom: Int = MinecraftClient.getInstance().world!!.getBottomY()
-                val logical: Int = MinecraftClient.getInstance().world!!.getDimension().logicalHeight()
-                heightContext =
-                    HeightContext(dim.chunkGenerator(), HeightLimitView.create(bottom, logical))
+            val biomes = dim.generator.biomeSource.possibleBiomes();
+            val heightContext: WorldGenerationContext?
+            if (Minecraft.getInstance().level != null) {
+                val bottom: Int = Minecraft.getInstance().level!!.minY
+                val logical: Int = Minecraft.getInstance().level!!.dimensionType().logicalHeight
+                heightContext = WorldGenerationContext(dim.generator(), LevelHeightAccessor.create(bottom, logical))
             } else {
-                // Fallback safe defaults matching typical world limits; avoids NPE before a world is loaded
-                heightContext = HeightContext(dim.chunkGenerator(), HeightLimitView.create(-64, 384))
+                heightContext = WorldGenerationContext(dim.generator(), LevelHeightAccessor.create(-64, 384))
             }
-            var biomeList = biomes.stream().toList()
+            val biomeList = biomes.stream().toList()
 
-            val indexer = PlacedFeatureIndexer.collectIndexedFeatures(
-                biomeList, { it.value().generationSettings.features }, true
+            val indexer = FeatureSorter.buildFeaturesPerStep(
+                biomeList, { it.value().generationSettings.features() }, true
             )
             val featureToOre: MutableMap<PlacedFeature, Ore> = HashMap()
 
@@ -124,265 +124,291 @@ class Ore {
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_COAL_LOWER,
+                OrePlacements.ORE_COAL_UPPER,
                 6,
                 heightContext,
                 getSettings().coalEnabled,
-                getSettings().coalColor
+                getSettings().coalColor,
+                Blocks.COAL_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_COAL_UPPER,
+                OrePlacements.ORE_COAL_LOWER,
                 6,
                 heightContext,
                 getSettings().coalEnabled,
-                getSettings().coalColor
+                getSettings().coalColor,
+                Blocks.COAL_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_IRON_MIDDLE,
+                OrePlacements.ORE_IRON_MIDDLE,
                 6,
                 heightContext,
                 getSettings().ironEnabled,
-                getSettings().ironColor
+                getSettings().ironColor,
+                Blocks.IRON_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_IRON_SMALL,
+                OrePlacements.ORE_IRON_SMALL,
                 6,
                 heightContext,
                 getSettings().ironEnabled,
-                getSettings().ironColor
+                getSettings().ironColor,
+                Blocks.IRON_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_IRON_UPPER,
+                OrePlacements.ORE_IRON_UPPER,
                 6,
                 heightContext,
                 getSettings().goldEnabled,
-                getSettings().ironColor
+                getSettings().ironColor,
+
+                Blocks.IRON_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_GOLD,
+                OrePlacements.ORE_GOLD,
                 6,
                 heightContext,
                 getSettings().goldEnabled,
-                getSettings().goldColor
+                getSettings().goldColor,
+                Blocks.GOLD_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_GOLD_LOWER,
+                OrePlacements.ORE_GOLD_LOWER,
                 6,
                 heightContext,
                 getSettings().goldEnabled,
-                getSettings().goldColor
+                getSettings().goldColor,
+                Blocks.DEEPSLATE_GOLD_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_GOLD_EXTRA,
+                OrePlacements.ORE_GOLD_EXTRA,
                 6,
                 heightContext,
                 getSettings().goldEnabled,
-                getSettings().goldColor
+                getSettings().goldColor,
+                Blocks.GOLD_ORE.defaultBlockState()
             )
 
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_GOLD_NETHER,
+                OrePlacements.ORE_GOLD_NETHER,
                 7,
                 heightContext,
                 getSettings().goldEnabled,
-                getSettings().goldColor
+                getSettings().goldColor,
+                Blocks.NETHER_GOLD_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_GOLD_DELTAS,
+                OrePlacements.ORE_GOLD_DELTAS,
                 7,
                 heightContext,
                 getSettings().goldEnabled,
-                getSettings().goldColor
+                getSettings().goldColor,
+                Blocks.NETHER_GOLD_ORE.defaultBlockState()
             )
 
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_REDSTONE,
+                OrePlacements.ORE_REDSTONE,
                 6,
                 heightContext,
                 getSettings().redstoneEnabled,
-                getSettings().redstoneColor
+                getSettings().redstoneColor,
+                Blocks.REDSTONE_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_REDSTONE_LOWER,
+                OrePlacements.ORE_REDSTONE_LOWER,
                 6,
                 heightContext,
                 getSettings().redstoneEnabled,
-                getSettings().redstoneColor
+                getSettings().redstoneColor,
+                Blocks.DEEPSLATE_REDSTONE_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_DIAMOND,
+                OrePlacements.ORE_DIAMOND,
                 6,
                 heightContext,
                 getSettings().diamondEnabled,
-                getSettings().diamondColor
+                getSettings().diamondColor,
+                Blocks.DIAMOND_ORE.defaultBlockState()
             )
 
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_DIAMOND_BURIED,
+                OrePlacements.ORE_DIAMOND_BURIED,
                 6,
                 heightContext,
                 getSettings().diamondEnabled,
-                getSettings().diamondColor
+                getSettings().diamondColor,
+                Blocks.DIAMOND_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_DIAMOND_LARGE,
+                OrePlacements.ORE_DIAMOND_LARGE,
                 6,
                 heightContext,
                 getSettings().diamondEnabled,
-                getSettings().diamondColor
+                getSettings().diamondColor,
+                Blocks.DIAMOND_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_DIAMOND_MEDIUM,
+                OrePlacements.ORE_DIAMOND_MEDIUM,
                 6,
                 heightContext,
                 getSettings().diamondEnabled,
-                getSettings().diamondColor
+                getSettings().diamondColor,
+                Blocks.DIAMOND_ORE.defaultBlockState()
             )
 
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_LAPIS,
+                OrePlacements.ORE_LAPIS,
                 6,
                 heightContext,
                 getSettings().lapisEnabled,
-                getSettings().lapisColor
+                getSettings().lapisColor,
+                Blocks.LAPIS_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_LAPIS,
+                OrePlacements.ORE_LAPIS,
                 6,
                 heightContext,
                 getSettings().lapisEnabled,
-                getSettings().lapisColor
+                getSettings().lapisColor,
+                Blocks.DEEPSLATE_LAPIS_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_COPPER,
+                OrePlacements.ORE_COPPER,
                 6,
                 heightContext,
                 getSettings().copperEnabled,
-                getSettings().copperColor
+                getSettings().copperColor,
+                Blocks.COPPER_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_COPPER_LARGE,
+                OrePlacements.ORE_COPPER_LARGE,
                 6,
                 heightContext,
                 getSettings().copperEnabled,
-                getSettings().copperColor
+                getSettings().copperColor,
+                Blocks.COPPER_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_EMERALD,
+                OrePlacements.ORE_EMERALD,
                 6,
                 heightContext,
                 getSettings().emeraldEnabled,
-                getSettings().emeraldColor
+                getSettings().emeraldColor,
+                Blocks.EMERALD_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_QUARTZ_NETHER,
+                OrePlacements.ORE_QUARTZ_NETHER,
                 7,
                 heightContext,
                 getSettings().quartzEnabled,
-                getSettings().quartzColor
+                getSettings().quartzColor,
+                Blocks.NETHER_QUARTZ_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_QUARTZ_DELTAS,
+                OrePlacements.ORE_QUARTZ_DELTAS,
                 7,
                 heightContext,
                 getSettings().quartzEnabled,
-                getSettings().quartzColor
+                getSettings().quartzColor,
+                Blocks.NETHER_QUARTZ_ORE.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_DEBRIS_SMALL,
+                OrePlacements.ORE_ANCIENT_DEBRIS_SMALL,
                 7,
                 heightContext,
                 getSettings().debrisEnabled,
-                getSettings().debrisColor
+                getSettings().debrisColor,
+                Blocks.ANCIENT_DEBRIS.defaultBlockState()
             )
             registerOre(
                 featureToOre,
                 indexer,
                 features,
-                OrePlacedFeatures.ORE_ANCIENT_DEBRIS_LARGE,
+                OrePlacements.ORE_ANCIENT_DEBRIS_LARGE,
                 7,
                 heightContext,
                 getSettings().debrisEnabled,
-                getSettings().debrisColor
+                getSettings().debrisColor,
+                Blocks.ANCIENT_DEBRIS.defaultBlockState()
             )
 
-            var biomeOreMap = mutableMapOf<RegistryKey<Biome>, MutableList<Ore>>()
+            val biomeOreMap = mutableMapOf<ResourceKey<Biome>, MutableList<Ore>>()
             biomeList.forEach {
-                biomeOreMap[it.key.get()] = mutableListOf()
-                it.value().generationSettings.features.stream().flatMap { s -> s.stream() }
+                biomeOreMap[it.unwrapKey().get()] = mutableListOf()
+                it.value().generationSettings.features().stream().flatMap { s -> s.stream() }
                     .map { b -> b.value() }
                     .filter(featureToOre::containsKey)
                     .forEach { f ->
-                        biomeOreMap[it.key.get()]?.add(featureToOre[f]!!)
+                        biomeOreMap[it.unwrapKey().get()]?.add(featureToOre[f]!!)
                     }
             }
             return biomeOreMap
@@ -390,17 +416,18 @@ class Ore {
 
         fun registerOre(
             map: MutableMap<PlacedFeature, Ore>,
-            indexer: List<PlacedFeatureIndexer.IndexedFeatures>,
-            registry: RegistryWrapper.Impl<PlacedFeature>,
-            key: RegistryKey<PlacedFeature>,
+            indexer: List<FeatureSorter.StepFeatureData>,
+            registry: HolderLookup.RegistryLookup<PlacedFeature>,
+            key: ResourceKey<PlacedFeature>,
             step: Int,
-            heightContext: HeightContext,
+            heightContext: WorldGenerationContext,
             enabled: Boolean,
             color: Color,
+            blockState: BlockState,
         ) {
-            val orePlacement = registry.getOrThrow(key).value()
+            val orePlacement = registry.get(key).get().value()
             val index = indexer[step].indexMapping.applyAsInt(orePlacement)
-            val ore = Ore(orePlacement, step, index, heightContext, enabled, color)
+            val ore = Ore(orePlacement, step, index, heightContext, enabled, color, blockState)
             map[orePlacement] = ore
         }
 

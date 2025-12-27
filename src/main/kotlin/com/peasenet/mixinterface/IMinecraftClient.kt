@@ -23,19 +23,19 @@
  */
 package com.peasenet.mixinterface
 
-import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.gui.screen.Screen
-import net.minecraft.client.network.ClientPlayerEntity
-import net.minecraft.client.network.ClientPlayerInteractionManager
-import net.minecraft.client.network.message.MessageHandler
-import net.minecraft.client.option.GameOptions
-import net.minecraft.client.render.BufferBuilderStorage
-import net.minecraft.client.render.WorldRenderer
-import net.minecraft.client.render.block.entity.BlockEntityRenderManager
-import net.minecraft.client.render.entity.EntityRenderManager
-import net.minecraft.client.util.Window
-import net.minecraft.client.world.ClientWorld
-import net.minecraft.util.hit.HitResult
+import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.screens.Screen
+import net.minecraft.client.player.LocalPlayer
+import net.minecraft.client.multiplayer.MultiPlayerGameMode
+import net.minecraft.client.multiplayer.chat.ChatListener
+import net.minecraft.client.Options
+import net.minecraft.client.renderer.RenderBuffers
+import net.minecraft.client.renderer.LevelRenderer
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher
+import com.mojang.blaze3d.platform.Window
+import net.minecraft.client.multiplayer.ClientLevel
+import net.minecraft.world.phys.HitResult
 import java.io.File
 
 /**
@@ -63,28 +63,28 @@ interface IMinecraftClient {
      *
      * @return The current options for the game.
      */
-    val options: GameOptions
+    val options: Options
 
     /**
      * Gets the player interaction manager.
      *
      * @return The player interaction manager.
      */
-    fun getPlayerInteractionManager(): ClientPlayerInteractionManager
+    fun getPlayerInteractionManager(): MultiPlayerGameMode
 
     /**
      * Gets the text renderer of the client.
      *
      * @return The text renderer.
      */
-    val textRenderer: TextRenderer
+    val textRenderer: Font
 
     /**
      * Gets the world that the player is currently in.
      *
      * @return The current world.
      */
-    fun getWorld(): ClientWorld
+    fun getWorld(): ClientLevel
 
     /**
      * Sets the current in game screen to the given parameter
@@ -98,7 +98,7 @@ interface IMinecraftClient {
      *
      * @return The world renderer.
      */
-    val worldRenderer: WorldRenderer
+    val worldRenderer: LevelRenderer
 
     /**
      * Enables or disables chunk culling (rendering only chunks that are in the viewport).
@@ -127,7 +127,7 @@ interface IMinecraftClient {
      * @return The target from the crosshair.
      */
     fun crosshairTarget(): HitResult
-    fun getPlayer(): ClientPlayerEntity
+    fun getPlayer(): LocalPlayer
 
 
     /**
@@ -135,7 +135,7 @@ interface IMinecraftClient {
      *
      * @return The message handler.
      */
-    val messageHandler: MessageHandler
+    val messageHandler: ChatListener
 
     companion object {
         /**
@@ -143,8 +143,8 @@ interface IMinecraftClient {
          *
          * @return The player
          */
-        val player: ClientPlayerEntity? = null
+        val player: LocalPlayer? = null
     }
 
-    fun getBufferBuilderStorage(): BufferBuilderStorage
+    fun getBufferBuilderStorage(): RenderBuffers
 }

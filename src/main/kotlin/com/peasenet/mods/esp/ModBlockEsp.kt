@@ -40,9 +40,8 @@ import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
-import net.minecraft.client.MinecraftClient
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.chunk.Chunk
+import net.minecraft.core.BlockPos
+import net.minecraft.world.level.chunk.ChunkAccess
 
 /**
  * An ESP mod that draws boxes around user selected blocks in the world.
@@ -98,12 +97,26 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
 
 
     override fun onEnable() {
-
-        super.onEnable()
+        em.subscribe(RenderListener::class.java, this)
+        chunks.clear()
+        em.subscribe(BlockUpdateListener::class.java, this)
+        em.subscribe(WorldRenderListener::class.java, this)
+        em.subscribe(ChunkUpdateListener::class.java, this)
+        em.subscribe(RenderListener::class.java, this)
         // search for chunks within render distance
         GemExecutor.execute {
             RenderUtils.getVisibleChunks().forEach(this::searchChunk)
         }
+        super.onEnable()
+    }
+
+    override fun onDisable() {
+        em.unsubscribe(BlockUpdateListener::class.java, this)
+        em.unsubscribe(WorldRenderListener::class.java, this)
+        em.unsubscribe(ChunkUpdateListener::class.java, this)
+        em.unsubscribe(RenderListener::class.java, this)
+        chunks.clear()
+        super.onDisable()
     }
 
     override fun getColor(): Color {
@@ -117,15 +130,14 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
     override fun getSettings(): BlockEspConfig = Settings.getConfig("blockesp")
 
     private fun blockFilter(blockPos: BlockPos): Boolean {
-        val block = MinecraftClient.getInstance().player?.entityWorld?.getBlockState(blockPos)?.block ?: return false
-        return blocks.contains(BlockListConfig.getId(block))
+        return blocks.contains(BlockListConfig.getId(world.getBlockState(blockPos).block))
     }
 
     override fun chunkInRenderDistance(chunk: GavChunk): Boolean {
         return chunk.inRenderDistance()
     }
 
-    override fun searchChunk(chunk: Chunk) {
+    override fun searchChunk(chunk: ChunkAccess) {
         GemExecutor.execute {
             synchronized(chunk) {
                 GavChunk.search(
@@ -149,10 +161,9 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
         if (!added && !removed) {
             return
         }
-        val gavBlock = GavBlock(bue.blockPos, { blockPos ->
+        val gavBlock = GavBlock(bue.blockPos,{ blockPos ->
             blockFilter(blockPos)
-        }
-        )
+        })
         updateChunk(added, gavBlock, chunk.pos)
     }
 

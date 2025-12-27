@@ -132,7 +132,7 @@ class ModFullBright : RenderMod(
          *
          * @return The current game gamma.
          */
-        get() = GavinsModClient.minecraftClient.options.gamma.value
+        get() = GavinsModClient.minecraftClient.options.gamma().get()
         /**
          * Sets the gamma to the given value.
          *
@@ -143,7 +143,7 @@ class ModFullBright : RenderMod(
             val maxGamma = fullbrightConfig.maxGamma()
             newValue.coerceAtLeast(0.0)
                 .coerceAtMost(maxGamma.toDouble())
-            val newGamma = GavinsModClient.minecraftClient.options.gamma
+            val newGamma = GavinsModClient.minecraftClient.options.gamma()
             (newGamma as ISimpleOption<Double>).forceSetValue(newValue)
         }
     private val isHighGamma: Boolean

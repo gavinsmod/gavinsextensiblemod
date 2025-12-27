@@ -23,10 +23,10 @@
  */
 package com.peasenet.util.event.data
 
-import net.minecraft.client.render.BufferBuilder
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.Entity
-import net.minecraft.util.math.Vec3d
+import com.mojang.blaze3d.vertex.BufferBuilder
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.phys.Vec3
 
 /**
  * Called when an entity is rendered.
@@ -36,9 +36,9 @@ import net.minecraft.util.math.Vec3d
  */
 data class EntityRender(
     var entity: Entity,
-    var stack: MatrixStack,
+    var stack: PoseStack,
     var buffer: BufferBuilder?,
-    var center: Vec3d?,
-    var playerPos: Vec3d?,
+    var center: Vec3?,
+    var playerPos: Vec3?,
     var delta: Float
 )

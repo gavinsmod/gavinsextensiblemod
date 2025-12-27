@@ -25,14 +25,14 @@ package com.peasenet.util
 
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
 import com.peasenet.main.GavinsModClient.Companion.player
-import net.minecraft.client.network.OtherClientPlayerEntity
+import net.minecraft.client.player.RemotePlayer
 
 /**
  * A fake player entity that can be used to render a player model in the getWorld().
  * @author GT3CH1
  * @version 03-02-2023
  */
-class FakePlayer : OtherClientPlayerEntity(minecraftClient.getWorld(), player!!.getGameProfile()) {
+class FakePlayer : RemotePlayer(minecraftClient.getWorld(), player!!.getGameProfile()) {
 
     /**
      * The minecraft player
@@ -43,16 +43,16 @@ class FakePlayer : OtherClientPlayerEntity(minecraftClient.getWorld(), player!!.
      * Creates a fake player entity in the getWorld().
      */
     init {
-        copyPositionAndRotation(player)
-        inventory.clone(player.inventory)
-        val fromTracker = player.dataTracker
-        val toTracker = getDataTracker()
+        copyPosition(player)
+        inventory.replaceWith(player.inventory)
+        val fromTracker = player.entityData
+        val toTracker = this.entityData
         // TODO: MC 1.21.10 update
 //        val playerModel = fromTracker.get(PLAYER_MODEL_PARTS)
 //        toTracker.set(PLAYER_MODEL_PARTS, playerModel)
-        headYaw = player.getHeadYaw()
-        bodyYaw = player.getBodyYaw()
-        inventory.clone(player.inventory)
+        yHeadRot = player.yHeadRot
+        yBodyRot = player.visualRotationYInDegrees
+        inventory.replaceWith(player.inventory)
         minecraftClient.getWorld().addEntity(this)
     }
 
@@ -61,7 +61,7 @@ class FakePlayer : OtherClientPlayerEntity(minecraftClient.getWorld(), player!!.
      */
     fun remove() {
         // move player back to original position
-        player.refreshPositionAndAngles(x, y, z, yaw, pitch)
+        player.snapTo(x, y, z, yRot, xRot)
         discard()
     }
 }

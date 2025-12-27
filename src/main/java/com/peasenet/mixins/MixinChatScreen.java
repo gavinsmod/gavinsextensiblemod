@@ -26,8 +26,8 @@ package com.peasenet.mixins;
 
 import com.peasenet.util.event.ChatSendEvent;
 import com.peasenet.util.event.EventManager;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ChatScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -36,12 +36,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ChatScreen.class)
 public class MixinChatScreen {
-    @Inject(at = @At("HEAD"), method = "sendMessage", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "handleChatInput", cancellable = true)
     public void onChatMessage(String chatText, boolean addToHistory, CallbackInfo ci) {
         var event = new ChatSendEvent(chatText);
         EventManager.getEventManager().call(event);
         if (event.isCancelled()) {
-            MinecraftClient.getInstance().inGameHud.getChatHud().addToMessageHistory(chatText);
+            Minecraft.getInstance().gui.getChat().addRecentChat(chatText);
 //            ci.(true);
             ci.cancel();
         }

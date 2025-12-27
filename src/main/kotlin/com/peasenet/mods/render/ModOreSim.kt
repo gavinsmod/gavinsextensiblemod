@@ -1,12 +1,12 @@
 package com.peasenet.mods.render
 
+import com.mojang.blaze3d.vertex.PoseStack
 import com.peasenet.util.event.data.BlockUpdate
 import com.peasenet.util.event.data.ChunkUpdate
 import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.RenderListener
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.ChunkPos
+import net.minecraft.world.level.ChunkPos
 
 /**
  *
@@ -35,9 +35,9 @@ class ModOreSim : RenderMod("gavinsmod.mod.render.oresim", "oresim"), ChunkUpdat
         TODO("Not yet implemented")
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
-        val chunkX = client.getPlayer().chunkPos.x
-        val chunkZ = client.getPlayer().chunkPos.z
+    override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
+        val chunkX = client.getPlayer().chunkPosition().x
+        val chunkZ = client.getPlayer().chunkPosition().z
         for (x in chunkX - 5..chunkX + 5) {
             renderChunkAt(x, chunkZ, matrixStack)
         }
@@ -46,8 +46,8 @@ class ModOreSim : RenderMod("gavinsmod.mod.render.oresim", "oresim"), ChunkUpdat
         }
     }
 
-    private fun renderChunkAt(chunkX: Int, chunkZ: Int, matrixStack: MatrixStack) {
-        val key = ChunkPos.toLong(chunkX, chunkZ)
+    private fun renderChunkAt(chunkX: Int, chunkZ: Int, matrixStack: PoseStack) {
+        val key = ChunkPos.asLong(chunkX, chunkZ)
 
     }
 

@@ -25,7 +25,7 @@ package com.peasenet.gui.mod
 
 import com.peasenet.gavui.math.PointF
 import com.peasenet.mods.ModCategory
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 /**
  * @author GT3CH1
@@ -33,4 +33,4 @@ import net.minecraft.text.Text
  * Creates a new gui for movement mods as a dropdown.
  */
 class GuiMovement :
-    GuiMod(PointF(10f, 20f), 86, 11, Text.translatable("gavinsmod.gui.movement"), ModCategory.MOVEMENT, 6)
+    GuiMod(PointF(10f, 20f), 86, 11, Component.translatable("gavinsmod.gui.movement"), ModCategory.MOVEMENT, 6)

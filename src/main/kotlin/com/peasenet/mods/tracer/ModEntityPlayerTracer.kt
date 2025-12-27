@@ -27,7 +27,7 @@ import com.peasenet.config.tracer.TracerConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
-import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.world.entity.player.Player
 
 /**
  * A mod that allows the player to see a tracer to other players.
@@ -35,10 +35,10 @@ import net.minecraft.entity.player.PlayerEntity
  * @version 01-15-2025
  * @since 04-11-2023
  */
-class ModEntityPlayerTracer : EntityTracer<PlayerEntity>(
+class ModEntityPlayerTracer : EntityTracer<Player>(
     "gavinsmod.mod.tracer.player",
     "playertracer",
-    { it is PlayerEntity && it != GavinsModClient.player }
+    { it is Player && it != GavinsModClient.player }
 ) {
     init {
 //        val colorSetting = SettingBuilder<ColorSetting>()
@@ -61,7 +61,7 @@ class ModEntityPlayerTracer : EntityTracer<PlayerEntity>(
             }
     }
 
-    override fun getColor(entity: PlayerEntity): Color {
+    override fun getColor(entity: Player): Color {
         return config.playerColor
     }
 }

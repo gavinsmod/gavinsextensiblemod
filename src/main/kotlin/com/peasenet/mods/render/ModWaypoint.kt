@@ -23,6 +23,7 @@
  */
 package com.peasenet.mods.render
 
+import com.mojang.blaze3d.vertex.PoseStack
 import com.peasenet.config.tracer.TracerConfig
 import com.peasenet.config.waypoint.WaypointConfig
 import com.peasenet.extensions.toVec3d
@@ -36,10 +37,8 @@ import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.CameraBob
 import com.peasenet.util.listeners.CameraBobListener
 import com.peasenet.util.listeners.RenderListener
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.Box
-import org.joml.Matrix3x2fStack
+import net.minecraft.client.Minecraft
+import net.minecraft.world.phys.AABB
 
 /**
  * Creates a new mod to control waypoints.
@@ -48,7 +47,7 @@ import org.joml.Matrix3x2fStack
  * @since 03-02-2023
  */
 class ModWaypoint : RenderMod(
-    "gavinsmod.mod.render.waypoints", "waypoints", ModCategory.WAYPOINTS
+    "gavinsmod.mod.render.waypoints", "waypoints", ModCategory.RENDER
 ), RenderListener, CameraBobListener {
 
     init {
@@ -77,7 +76,7 @@ class ModWaypoint : RenderMod(
         modSettings.clear()
         clickSetting {
             title = "gavinsmod.settings.render.waypoints.add"
-            callback = { MinecraftClient.getInstance().setScreen(GuiWaypoint()) }
+            callback = { Minecraft.getInstance().setScreen(GuiWaypoint()) }
             symbol = "+"
         }
         val waypoints = Settings.getConfig<WaypointConfig>("waypoints").getLocations().stream()
@@ -93,33 +92,33 @@ class ModWaypoint : RenderMod(
     private fun createWaypoint(waypoint: Waypoint) {
         clickSetting {
             title = waypoint.name
-            callback = { MinecraftClient.getInstance().setScreen(GuiWaypoint(waypoint)) }
+            callback = { Minecraft.getInstance().setScreen(GuiWaypoint(waypoint)) }
             hoverable = true
             color = waypoint.color
             transparency = 0.5f
         }
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
-        val playerDimension = Dimension.fromValue(MinecraftClient.getInstance().world?.dimension?.effects?.path!!)
+    override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
+        val playerDimension = Dimension.fromValue(Minecraft.getInstance().level?.dimensionType()?.skybox()?.name ?: "")
         val waypointLocs =
             Settings.getConfig<WaypointConfig>("waypoints").getLocations().filter { w -> w.canRender(playerDimension) }
         if (waypointLocs.isEmpty()) return
-        matrixStack.push()
+        matrixStack.pushPose()
         for (w in waypointLocs) {
             val pos = w.coordinates.toVec3d()
-            val bb = Box(
+            val bb = AABB(
                 pos.x + 1, pos.y, pos.z + 1, pos.x, pos.y + 1.0, pos.z
             )
             if (w.renderEsp) RenderUtils.drawOutlinedBox(bb, matrixStack, w.color)
             if (w.renderTracer) {
-                val origin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
+                val origin = RenderUtils.getLookVec(partialTicks).scale(10.0)
                 RenderUtils.drawSingleLine(
                     matrixStack, origin, bb.center, w.color
                 )
             }
         }
-        matrixStack.pop()
+        matrixStack.popPose()
 //        RenderUtils.cleanupRender(matrixStack)
     }
 

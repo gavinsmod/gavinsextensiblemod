@@ -25,25 +25,25 @@
 package com.peasenet.mixins;
 
 import com.peasenet.main.Mods;
-import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.player.LocalPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ClientPlayerEntity.class)
+@Mixin(LocalPlayer.class)
 public class MixinClientPlayerEntityNausea {
     @Shadow
-    public float lastNauseaIntensity;
+    public float oPortalEffectIntensity;
     @Shadow
-    public float nauseaIntensity;
+    public float portalEffectIntensity;
 
-    @Inject(method = "tickNausea", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "handlePortalTransitionEffect", at = @At("HEAD"), cancellable = true)
     public void cancelNausea(CallbackInfo ci) {
         if (Mods.isActive("nonausea")) {
-            this.lastNauseaIntensity = 0.0f;
-            this.nauseaIntensity = 0.0f;
+            this.oPortalEffectIntensity = 0.0f;
+            this.portalEffectIntensity = 0.0f;
             ci.cancel();
         }
     }

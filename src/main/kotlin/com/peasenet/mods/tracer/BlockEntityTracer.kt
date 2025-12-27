@@ -27,8 +27,8 @@ package com.peasenet.mods.tracer
 import com.peasenet.gavui.color.Color
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.listeners.RenderListener
-import net.minecraft.block.entity.BlockEntity
-import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.world.level.block.entity.BlockEntity
+import com.mojang.blaze3d.vertex.PoseStack
 import org.joml.Matrix3x2fStack
 
 /**
@@ -65,7 +65,7 @@ abstract class BlockEntityTracer<T : BlockEntity>(
         val level = client.getWorld()
         for (x in -RenderUtils.CHUNK_RADIUS..RenderUtils.CHUNK_RADIUS) {
             for (z in -RenderUtils.CHUNK_RADIUS..RenderUtils.CHUNK_RADIUS) {
-                val chunk = level.getChunk(x + client.getPlayer().chunkPos.x, z + client.getPlayer().chunkPos.z)
+                val chunk = level.getChunk(x + client.getPlayer().chunkPosition().x, z + client.getPlayer().chunkPosition().z)
                 for ((_, blockEntity) in chunk.blockEntities) {
                     if (blockFilter(blockEntity)) {
                         entityList.add(blockEntity as T)
@@ -75,20 +75,18 @@ abstract class BlockEntityTracer<T : BlockEntity>(
         }
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+    override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
         if (entityList.isEmpty()) return
         // TODO: MC 1.21.10 update
         for (e in entityList) {
-            val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
-            val end = e.pos.toCenterPos()
+            val tracerOrigin = RenderUtils.getLookVec(partialTicks).scale(10.0)
+            val end = e.blockPos.center
             RenderUtils.drawSingleLine(
                 matrixStack,
                 tracerOrigin,
                 end,
                 getColor(),
                 config.alpha,
-                true,
-                false
             )
         }
     }

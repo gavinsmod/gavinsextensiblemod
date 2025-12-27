@@ -34,15 +34,15 @@ import com.peasenet.gui.mod.render.GuiRadar
 import com.peasenet.main.Mods
 import com.peasenet.main.Settings
 import com.peasenet.util.listeners.InGameHudRenderListener
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.entity.Entity
-import net.minecraft.entity.ItemEntity
-import net.minecraft.entity.mob.MobEntity
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.item.ItemStack
-import net.minecraft.item.SpawnEggItem
-import net.minecraft.util.math.Vec3d
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.world.entity.Mob
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.SpawnEggItem
+import net.minecraft.world.phys.Vec3
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -64,7 +64,7 @@ class ModRadar : RenderMod(
     init {
         clickSetting {
             title = translationKey
-            callback = { MinecraftClient.getInstance().setScreen(GuiRadar()) }
+            callback = { Minecraft.getInstance().setScreen(GuiRadar()) }
         }
     }
 
@@ -78,12 +78,12 @@ class ModRadar : RenderMod(
         em.unsubscribe(InGameHudRenderListener::class.java, this)
     }
 
-    override fun onRenderInGameHud(drawContext: DrawContext, delta: Float, forceRender: Boolean) {
+    override fun onRenderInGameHud(drawContext: GuiGraphics, delta: Float, forceRender: Boolean) {
         val canRender = !Mods.isActive("gui") && !Mods.isActive("settings") || forceRender
         if (!canRender) return
-        val stack = drawContext.matrices
-        drawContext.state.goUpLayer()
-        RadarConfig.x = client.window.scaledWidth - config.size - 10
+        val stack = drawContext.pose()
+        drawContext.guiRenderState.up()
+        RadarConfig.x = client.window.guiScaledWidth - config.size - 10
         val radarBox = BoxF(
             PointF(RadarConfig.x.toFloat(), RadarConfig.y.toFloat()), config.size.toFloat(), config.size.toFloat()
         )
@@ -100,15 +100,15 @@ class ModRadar : RenderMod(
      *
      * @param drawContext The draw context.
      */
-    private fun drawEntitiesOnRadar(drawContext: DrawContext) {
+    private fun drawEntitiesOnRadar(drawContext: GuiGraphics) {
         val player = client.getPlayer()
 
-        val yaw = player.yaw
-        val entities = world.entities
+        val yaw = player.yHeadRot
+        val entities = world.entitiesForRendering()
         for (entity in entities) {
             if (!canRenderEntity(entity)) continue
             val itemStack = getItemStack(entity)
-            val point = getScaledPos(getPointRelativeToYaw(entity.entityPos, yaw))
+            val point = getScaledPos(getPointRelativeToYaw(entity.position(), yaw))
             val color = getColorFromEntity(entity).withAlpha(config.pointAlpha)
             if (config.showEggs && itemStack != null) {
                 renderItem(drawContext, point, itemStack)
@@ -126,9 +126,9 @@ class ModRadar : RenderMod(
      * @return The item stack for the given entity, or null if none exists.
      */
     fun getItemStack(entity: Entity): ItemStack? {
-        var itemStack = SpawnEggItem.forEntity(entity.type)?.defaultStack
+        var itemStack = SpawnEggItem.byId(entity.type)?.defaultInstance
         if (entity is ItemEntity) {
-            itemStack = entity.stack
+            itemStack = entity.item
         }
         return itemStack
     }
@@ -139,17 +139,17 @@ class ModRadar : RenderMod(
      * @param point The point to draw.
      * @param color The color to draw the point with.
      */
-    private fun drawPoint(drawContext: DrawContext, point: PointF, color: Color) {
-        drawContext.matrices.pushMatrix()
+    private fun drawPoint(drawContext: GuiGraphics, point: PointF, color: Color) {
+        drawContext.pose().pushMatrix()
         var box = BoxF(point, 1f, 1f)
         val pointSizeScalar = if (config.pointSize == 1) 1 else if (config.pointSize == 3) 2 else 3
         box = box.expand(pointSizeScalar)
-        drawContext.matrices.translate(point.x, point.y)
-        drawContext.matrices.scale(config.pointSize.toFloat(), config.pointSize.toFloat())
+        drawContext.pose().translate(point.x, point.y)
+        drawContext.pose().scale(config.pointSize.toFloat(), config.pointSize.toFloat())
         drawContext.fill(
             0, 0, 1, 1, color.asInt
         )
-        drawContext.matrices.popMatrix()
+        drawContext.pose().popMatrix()
     }
 
     /**
@@ -158,17 +158,17 @@ class ModRadar : RenderMod(
      * @param point The point to render the egg at.
      * @param itemStack The item stack to draw.
      */
-    private fun renderItem(drawContext: DrawContext, point: PointF, itemStack: ItemStack) {
-        drawContext.state.goUpLayer()
-        drawContext.matrices.pushMatrix()
+    private fun renderItem(drawContext: GuiGraphics, point: PointF, itemStack: ItemStack) {
+        drawContext.guiRenderState.up()
+        drawContext.pose().pushMatrix()
         val pointSizeScalar = if (config.pointSize == 1) 1f else if (config.pointSize == 3) 1.5f else 2f
         val scaleFactor = 0.25f * pointSizeScalar
         val itemOffset = ((16 * scaleFactor) / 2f) - pointOffset()
-        drawContext.matrices.translate(point.x, point.y)
-        drawContext.matrices.translate(-itemOffset, -itemOffset)
-        drawContext.matrices.scale(scaleFactor)
-        drawContext.drawItem(itemStack, 0, 0)
-        drawContext.matrices.popMatrix()
+        drawContext.pose().translate(point.x, point.y)
+        drawContext.pose().translate(-itemOffset, -itemOffset)
+        drawContext.pose().scale(scaleFactor)
+        drawContext.renderItem(itemStack, 0, 0)
+        drawContext.pose().popMatrix()
     }
 
 
@@ -180,10 +180,10 @@ class ModRadar : RenderMod(
      * @return The color for the entity on the radar. Defaults to white.
      */
     private fun getColorFromEntity(entity: Entity): Color {
-        if (entity is PlayerEntity) return config.playerColor
+        if (entity is Player) return config.playerColor
         if (entity is ItemEntity) return config.itemColor
-        if (entity.type.spawnGroup.isPeaceful) return config.peacefulMobColor
-        return if (!entity.type.spawnGroup.isPeaceful) config.hostileMobColor else Colors.WHITE
+        if (entity.type.category.isFriendly) return config.peacefulMobColor
+        return if (!entity.type.category.isFriendly) config.hostileMobColor else Colors.WHITE
     }
 
     /**
@@ -223,9 +223,9 @@ class ModRadar : RenderMod(
      * @return Whether the given entity can be rendered on the radar.
      */
     private fun canRenderEntity(entity: Entity): Boolean {
-        if (entity is PlayerEntity) return config.isShowPlayer
-        if (entity is MobEntity) {
-            return if (!entity.type.spawnGroup.isPeaceful) config.isShowHostileMob else config.isShowPeacefulMob
+        if (entity is Player) return config.isShowPlayer
+        if (entity is Mob) {
+            return if (!entity.type.category.isFriendly) config.isShowHostileMob else config.isShowPeacefulMob
         }
         return if (entity is ItemEntity) config.isShowItem else false
     }
@@ -237,10 +237,10 @@ class ModRadar : RenderMod(
      * @param yaw The yaw of the player.
      * @return A new PointF with the x and z values.
      */
-    private fun getPointRelativeToYaw(loc: Vec3d?, yaw: Float): PointF {
+    private fun getPointRelativeToYaw(loc: Vec3?, yaw: Float): PointF {
         val player = client.getPlayer()
-        val x = loc!!.getX() - player.x
-        val z = loc.getZ() - player.z
+        val x = loc!!.x - player.x
+        val z = loc.z - player.z
         return calculateDistance(yaw, x, z)
     }
 
@@ -269,13 +269,11 @@ class ModRadar : RenderMod(
          * @return The position and distance of the given coordinates from the player.
          */
         private fun calculateDistance(yaw: Float, x: Double, z: Double): PointF {
-            var x1 = x
-            var z1 = z
-            val atan = atan2(z1, x1)
+            val atan = atan2(z, x)
             val angle = Math.toDegrees(atan) - yaw
-            val distance = sqrt(x1 * x1 + z1 * z1)
-            x1 = cos(Math.toRadians(angle)) * distance * -1
-            z1 = sin(Math.toRadians(angle)) * distance * -1
+            val distance = sqrt(x * x + z * z)
+            val x1 = (cos(Math.toRadians(angle)) * distance) * -1.0f
+            val z1 = (sin(Math.toRadians(angle)) * distance) * -1.0f
             return PointF(x1, z1)
         }
     }

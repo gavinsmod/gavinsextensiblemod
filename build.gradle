@@ -9,7 +9,7 @@ buildscript {
 }
 
 plugins {
-    id 'fabric-loom' version '1.13-SNAPSHOT'
+    id 'fabric-loom' version '1.14-SNAPSHOT'
     id 'maven-publish'
 }
 apply plugin: 'kotlin'
@@ -20,31 +20,26 @@ repositories {
 }
 
 
-loom {
-    accessWidenerPath = file('src/main/resources/gem.accesswidener')
-}
-
 allprojects { apply plugin: "idea" }
 sourceSets {
     'src/main'
 }
 
-sourceCompatibility = JavaVersion.VERSION_21
-targetCompatibility = JavaVersion.VERSION_21
-
-archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
+loom {
+    accessWidenerPath = file('src/main/resources/gem.accesswidener')
+}
 
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation "net.fabricmc:fabric-language-kotlin:1.13.6+kotlin.${project.kotlin_version}"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${project.kotlin_version}"
+    modImplementation "net.fabricmc:fabric-language-kotlin:1.13.6+kotlin.$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     // add gson as a dependency
     implementation "com.google.code.gson:gson:2.11.0"
 }
@@ -69,49 +64,17 @@ java {
     withSourcesJar()
 }
 
-jar {
-    from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
-    }
+remapSourcesJar {
+    archiveFileName.set("${project.name}-${mod_version}+${minecraft_version}-sources.jar")
 }
 
-/*
- * MIT License
- *
- * Copyright (c) 2022-2024, Gavin C. Pease
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
+remapJar {
+    archiveFileName.set("${project.name}-${mod_version}+${minecraft_version}.jar")
+}
 
-// configure the maven publication
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
+jar {
+    archiveFileName.set("${project.name}-${mod_version}+${minecraft_version}.jar")
+    from("LICENSE") {
+        rename { "${it}_${project.property("archives_base_name")}" }
     }
 }

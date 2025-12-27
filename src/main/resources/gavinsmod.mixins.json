@@ -2,7 +2,6 @@
   "client": [
     "CameraMixin",
     "EntityRendererMixin",
-    "MixinBlockEntityRenderDispatcher",
     "MixinChatScreen",
     "MixinClientCommonNetworkHandler",
     "MixinClientPlayerEntity",
@@ -16,8 +15,10 @@
     "MixinInGameOverlayRenderer",
     "MixinMinecraftClient",
     "MixinMinecraftClientAttack",
+    "MixinNameTageFeatureRenderer",
     "MixinSimpleOption",
-    "MixinWorldRenderer"
+    "MixinWorldRenderer",
+    "ScreenAccessor"
   ],
   "compatibilityLevel": "JAVA_21",
   "injectors": {

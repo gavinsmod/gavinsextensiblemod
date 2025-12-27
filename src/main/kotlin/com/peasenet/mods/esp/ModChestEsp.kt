@@ -25,9 +25,9 @@ package com.peasenet.mods.esp
 
 import com.peasenet.gavui.color.Color
 import com.peasenet.util.listeners.RenderListener
-import net.minecraft.block.entity.ChestBlockEntity
-import net.minecraft.block.entity.EnderChestBlockEntity
-import net.minecraft.block.entity.ShulkerBoxBlockEntity
+import net.minecraft.world.level.block.entity.ChestBlockEntity
+import net.minecraft.world.level.block.entity.EnderChestBlockEntity
+import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity
 
 /**
  * A mod that allows the client to see an esp (a box) around chests.

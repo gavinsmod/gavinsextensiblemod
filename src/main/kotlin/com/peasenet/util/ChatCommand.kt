@@ -76,5 +76,5 @@ enum class ChatCommand(val chatCommand: String) {
     MobTracer("mobtracer"),
     SignTracer("signtracer"),
     CaveEsp("caveesp"),
-    OreEsp("oreesp");
+    OreEsp("oreesp"),
 }

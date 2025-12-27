@@ -24,22 +24,22 @@
 
 package com.peasenet.util
 
-import net.minecraft.util.math.MathHelper
-import net.minecraft.util.math.Vec3d
+import net.minecraft.util.Mth
+import net.minecraft.world.phys.Vec3
 
 class Rotation(val pitch: Float, val yaw: Float) {
 
-    fun asLookVec(): Vec3d {
-        val radiansPerDegree = MathHelper.RADIANS_PER_DEGREE
-        val pi = MathHelper.PI
+    fun asLookVec(): Vec3 {
+        val radiansPerDegree = Mth.DEG_TO_RAD
+        val pi = Mth.PI
 
-        val newPitch = -MathHelper.wrapDegrees(pitch) * radiansPerDegree
-        val cosPitch = -MathHelper.cos(newPitch)
-        val sinPitch = MathHelper.sin(newPitch)
+        val newPitch = (-Mth.wrapDegrees(pitch) * radiansPerDegree).toDouble()
+        val cosPitch = -Mth.cos(newPitch)
+        val sinPitch = Mth.sin(newPitch)
 
-        val newYaw = -MathHelper.wrapDegrees(yaw) * radiansPerDegree - pi
-        val cosYaw = MathHelper.cos(newYaw)
-        val sinYaw = MathHelper.sin(newYaw)
-        return Vec3d(sinYaw * cosPitch.toDouble(), sinPitch.toDouble(), cosYaw * cosPitch.toDouble())
+        val newYaw = (-Mth.wrapDegrees(yaw) * radiansPerDegree - pi).toDouble()
+        val cosYaw = Mth.cos(newYaw)
+        val sinYaw = Mth.sin(newYaw)
+        return Vec3(sinYaw * cosPitch.toDouble(), sinPitch.toDouble(), cosYaw * cosPitch.toDouble())
     }
 }

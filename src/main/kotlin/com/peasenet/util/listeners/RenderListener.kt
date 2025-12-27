@@ -24,7 +24,7 @@
 
 package com.peasenet.util.listeners
 
-import net.minecraft.client.util.math.MatrixStack
+import com.mojang.blaze3d.vertex.PoseStack
 import org.joml.Matrix3x2fStack
 
 /**
@@ -40,5 +40,5 @@ interface RenderListener : Listener {
      * @param matrixStack The matrix stack.
      * @param partialTicks The partial ticks.
      */
-    fun onRender(matrixStack: MatrixStack, partialTicks: Float)
+    fun onRender(matrixStack: PoseStack, partialTicks: Float)
 }

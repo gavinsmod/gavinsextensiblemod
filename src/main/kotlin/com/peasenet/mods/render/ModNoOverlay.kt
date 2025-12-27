@@ -25,7 +25,7 @@ package com.peasenet.mods.render
 
 import com.peasenet.util.event.data.RenderOverlay
 import com.peasenet.util.listeners.RenderOverlayListener
-import net.minecraft.util.Identifier
+import net.minecraft.resources.Identifier
 
 /**
  * @author GT3CH1
@@ -47,6 +47,6 @@ class ModNoOverlay : RenderMod(
     }
 
     override fun onRenderOverlay(overlay: RenderOverlay) {
-        if (overlay.texture == Identifier.of("textures/misc/powder_snow_outline.png")) overlay.cancel()
+        if (overlay.texture == Identifier.parse("textures/misc/powder_snow_outline.png")) overlay.cancel()
     }
 }

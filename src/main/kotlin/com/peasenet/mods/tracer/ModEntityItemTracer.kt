@@ -26,8 +26,8 @@ package com.peasenet.mods.tracer
 import com.peasenet.gavui.color.Color
 import com.peasenet.gui.mod.GuiItemEspTracerConfig
 import com.peasenet.util.listeners.RenderListener
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.ItemEntity
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.world.entity.item.ItemEntity
 import org.joml.Matrix3x2fStack
 
 /**
@@ -54,7 +54,7 @@ class ModEntityItemTracer :
         }
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {/* TODO: Work on setting filters for items */
+    override fun onRender(matrixStack: PoseStack, partialTicks: Float) {/* TODO: Work on setting filters for items */
         if (config.useItemEspFilter) {
             entityList = entityList.filter {
                 config.itemFilterList.any { filter -> filter.customNameMatches(it) }

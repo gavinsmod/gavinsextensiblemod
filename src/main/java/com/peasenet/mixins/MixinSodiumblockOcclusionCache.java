@@ -27,10 +27,10 @@ package com.peasenet.mixins;
 import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.ShouldDrawSideEvent;
 import com.peasenet.util.event.data.DrawState;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockGetter;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
@@ -43,11 +43,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Pseudo
 @Mixin(targets = {
-        "me.jellysquid.mods.sodium.client.render.chunk.compile.pipeline.BlockOcclusionCache",
-        "me.jellysquid.mods.sodium.client.render.occlusion.BlockOcclusionCachee"}, remap = false)
+        "net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockOcclusionCache"}, remap = false)
 public class MixinSodiumblockOcclusionCache {
     @Inject(at = @At("HEAD"), method = "shouldDrawSide", cancellable = true)
-    private void xray(BlockState state, BlockView world, BlockPos pos, Direction side, CallbackInfoReturnable<Boolean> cir) {
+    private void xray(BlockState state, BlockGetter world, BlockPos pos, Direction side, CallbackInfoReturnable<Boolean> cir) {
         var drawSide = new DrawState(state);
         var evt = new ShouldDrawSideEvent(drawSide);
         EventManager.getEventManager().call(evt);

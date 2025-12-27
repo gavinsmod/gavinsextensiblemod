@@ -34,13 +34,13 @@ import com.peasenet.mods.Mod
 import com.peasenet.mods.gui.GuiMod
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.listeners.InGameHudRenderListener
-import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.render.LightmapTextureManager
-import net.minecraft.client.resource.language.I18n
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.text.Text
-import net.minecraft.util.math.Vec3d
+import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.renderer.LightTexture
+import net.minecraft.client.resources.language.I18n
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.network.chat.Component
+import net.minecraft.world.phys.Vec3
 
 /**
  * @author GT3CH1
@@ -62,7 +62,7 @@ class ModGuiTextOverlay : MiscMod(
         em.unsubscribe(InGameHudRenderListener::class.java, this)
     }
 
-    override fun onRenderInGameHud(drawContext: DrawContext, delta: Float, forceRender: Boolean) {
+    override fun onRenderInGameHud(drawContext: GuiGraphics, delta: Float, forceRender: Boolean) {
         modList = Mods.mods.filter { mod: Mod -> mod !is GuiMod && mod !is ModGuiTextOverlay && mod.isActive }
         if (GavinsMod.isEnabled("gui") || GavinsMod.isEnabled("settings") || modList.isEmpty() || forceRender) return
         drawTextOverlay(drawContext)
@@ -73,14 +73,14 @@ class ModGuiTextOverlay : MiscMod(
      *
      * @param drawContext- The drawContext to use
      */
-    private fun drawTextOverlay(drawContext: DrawContext) {
-        val matrixStack = drawContext.matrices
+    private fun drawTextOverlay(drawContext: GuiGraphics) {
+        val matrixStack = drawContext.pose()
         val textRenderer = GavinsModClient.minecraftClient.textRenderer
         var startingPoint = PointF(0f, 0f)
         val modsCount = modList.count()
         var longestModName = 0
         for (mod in modList) {
-            longestModName = textRenderer.getWidth(I18n.translate(mod.translationKey)).coerceAtLeast(longestModName)
+            longestModName = textRenderer.width(I18n.get(mod.translationKey)).coerceAtLeast(longestModName)
         }
         val box = BoxF(startingPoint, (longestModName + 4).toFloat(), modsCount * 10 + 2f)
         matrixStack.pushMatrix()
@@ -92,17 +92,17 @@ class ModGuiTextOverlay : MiscMod(
         )
         matrixStack.popMatrix()
         for ((index, mod) in modList.withIndex()) {
-             drawContext.drawText(
+             drawContext.drawString(
                 textRenderer,
-                Text.translatable(mod.translationKey),
+                Component.translatable(mod.translationKey),
                 startingPoint.x.toInt() + 2,
                 startingPoint.y.toInt() + 2,
                 GavUISettings.getColor("gui.color.foreground").asInt,
                 true
             )
             if (modsCount > 1 && index < modsCount - 1) {
-                val p1 = Vec3d(0.0, startingPoint.y + 11.5, 0.0)
-                val p2 = Vec3d(longestModName + 4.0, startingPoint.y + 11.5, 0.0)
+                val p1 = Vec3(0.0, startingPoint.y + 11.5, 0.0)
+                val p2 = Vec3(longestModName + 4.0, startingPoint.y + 11.5, 0.0)
                 matrixStack.pushMatrix()
                 RenderUtils.drawSingleLine(matrixStack, p1, p2, GavUISettings.getColor("gui.color.border"), 1f, false)
                 matrixStack.pushMatrix()

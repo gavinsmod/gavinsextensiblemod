@@ -25,17 +25,17 @@
 package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(PlayerEntity.class)
+@Mixin(Player.class)
 public class MixinPlayerEntity {
-    @Redirect(method = "tick()V", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerEntity;noClip:Z", opcode = Opcodes.PUTFIELD))
-    public void doNoClip(PlayerEntity p, boolean noClip) {
-        p.noClip = GavinsMod.isEnabled("noclip");
+    @Redirect(method = "tick()V", at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/player/Player;noPhysics:Z", opcode = Opcodes.PUTFIELD))
+    public void doNoClip(Player p, boolean noClip) {
+        p.noPhysics = GavinsMod.isEnabled("noclip");
     }
 
 }

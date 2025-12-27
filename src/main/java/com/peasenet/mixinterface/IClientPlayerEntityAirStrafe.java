@@ -25,5 +25,4 @@
 package com.peasenet.mixinterface;
 
 public interface IClientPlayerEntityAirStrafe {
-    float getOffGroundSpeed();
 }

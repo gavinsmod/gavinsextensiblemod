@@ -27,9 +27,9 @@ package com.peasenet.mods.esp
 import com.peasenet.gavui.color.Color
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.RenderUtils.renderEntityEsp
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.Entity
-import net.minecraft.util.math.Vec3d
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.phys.Vec3
 import org.joml.Matrix3x2fStack
 
 
@@ -51,22 +51,22 @@ abstract class EntityEsp<T : Entity>(
     override fun onTick() {
         super.onTick()
         espList.clear()
-        client.getWorld().entities.filter { entityFilter(it) }.forEach { espList.add(it as T) }
+        client.getWorld().entitiesForRendering().filter { entityFilter(it) }.forEach { espList.add(it as T) }
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+    override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
         if (espList.isEmpty()) return
-        matrixStack.push()
+        matrixStack.pushPose()
         render(matrixStack, partialTicks)
-        matrixStack.pop()
+        matrixStack.popPose()
     }
 
-    protected fun render(matrixStack: MatrixStack, partialTicks: Float) {
+    protected fun render(matrixStack: PoseStack, partialTicks: Float) {
         for (e in espList) {
             val bb = RenderUtils.getLerpedBox(e, partialTicks)
             renderEntityEsp(
                 matrixStack,
-                bb.expand(config.espSize.toDouble()),
+                bb.inflate(config.espSize.toDouble()),
                 getColor(e),
                 config.alpha
             )

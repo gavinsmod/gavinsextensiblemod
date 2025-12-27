@@ -25,11 +25,11 @@ package com.peasenet.gui.mod
 
 import com.peasenet.gavui.math.PointF
 import com.peasenet.mods.ModCategory
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 /**
  * @author GT3CH1
  * @version 03-02-2023
  * Creates a new gui for miscellaneous mods as a dropdown.
  */
-class GuiMisc : GuiMod(PointF(180f, 20f), 95, 11, Text.translatable("gavinsmod.gui.misc"), ModCategory.MISC, 4)
+class GuiMisc : GuiMod(PointF(180f, 20f), 95, 11, Component.translatable("gavinsmod.gui.misc"), ModCategory.MISC, 4)

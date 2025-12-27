@@ -31,6 +31,7 @@ import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GavUISettings
 import com.peasenet.gui.GuiElement
 import com.peasenet.main.GavinsMod
+import com.peasenet.main.GavinsModClient
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
 import com.peasenet.main.GavinsModClient.Companion.player
 import com.peasenet.main.Mods.Companion.getMod
@@ -38,11 +39,13 @@ import com.peasenet.main.Settings
 import com.peasenet.mods.render.waypoints.Waypoint
 import com.peasenet.settings.*
 import com.peasenet.util.Dimension
-import net.minecraft.client.gui.Click
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.gui.widget.TextFieldWidget
-import net.minecraft.text.Text
-import net.minecraft.util.math.Vec3i
+import net.minecraft.client.input.MouseButtonEvent
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.components.EditBox
+import net.minecraft.core.BlockPos
+import net.minecraft.network.chat.Component
+import net.minecraft.core.Vec3i
+import net.minecraft.world.phys.Vec3
 import java.util.function.Consumer
 import java.util.function.Predicate
 import kotlin.math.floor
@@ -57,27 +60,27 @@ import kotlin.math.floor
  * @since 04-11-2023
  */
 class GuiWaypoint(private var w: Waypoint = Waypoint()) :
-    GuiElement(Text.translatable("gavinsmod.mod.render.waypoints")) {
+    GuiElement(Component.translatable("gavinsmod.mod.render.waypoints")) {
 
     /**
      * The text field used to name the waypoint.
      */
-    private lateinit var textField: TextFieldWidget
+    private lateinit var textField: EditBox
 
     /**
      * The x coordinate text field.
      */
-    private lateinit var xCoordinate: TextFieldWidget
+    private lateinit var xCoordinate: EditBox
 
     /**
      * The y coordinate text field.
      */
-    private lateinit var yCoordinate: TextFieldWidget
+    private lateinit var yCoordinate: EditBox
 
     /**
      * The z coordinate text field.
      */
-    private lateinit var zCoordinate: TextFieldWidget
+    private lateinit var zCoordinate: EditBox
 
     /**
      * The button used to save the waypoint.
@@ -167,9 +170,9 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
     /**
      * Gets the floored player position as a Vec3i.
      */
-    private fun flooredPlayerPos(): Vec3i {
+    private fun flooredPlayerPos(): BlockPos {
         val playerPos = player!!.getPos()
-        return Vec3i(floor(playerPos.x).toInt(), floor(playerPos.y).toInt() + 1, floor(playerPos.z).toInt())
+        return BlockPos(floor(playerPos.x).toInt(), (floor(playerPos.y) + 1).toInt(), floor(playerPos.z).toInt())
     }
 
     /**
@@ -181,8 +184,8 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         if (netherToggle.state) w.addDimension(Dimension.NETHER)
         if (endToggle.state) w.addDimension(Dimension.END)
         val newWaypoint = Waypoint(
-            Vec3i(xCoordinate.text.toInt(), yCoordinate.text.toInt(), zCoordinate.text.toInt()),
-            textField.text,
+            BlockPos(xCoordinate.value.toInt(), yCoordinate.value.toInt(), zCoordinate.value.toInt()),
+            textField.value,
             w.dimensions,
             colorCycle.color,
             waypointToggle.state,
@@ -192,9 +195,9 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         )
         getConfig().addWaypoint(newWaypoint)
         getMod("waypoints")?.reloadSettings()
-        GavinsMod.guiSettings.reloadGui()
-        parent = GavinsMod.guiSettings
-        close()
+        GavinsModClient.guiSettings.reloadGui()
+        parent = GavinsModClient.guiSettings
+        onClose()
     }
 
     /**
@@ -206,9 +209,9 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         val buttonWidth = 42
         val wholeButtonWidth = buttonWidth * 3 + padding * 2
 
-        parent = GavinsMod.guiSettings
-        offsetX = minecraftClient.window.scaledWidth / 2.0f - width / 2.0f
-        offsetY = minecraftClient.window.scaledHeight / 2.0f - height / 2.0f
+        parent = GavinsModClient.guiSettings
+        offsetX = minecraftClient.window.guiScaledWidth / 2.0f - width / 2.0f
+        offsetY = minecraftClient.window.guiScaledHeight / 2.0f - height / 2.0f
         paddingX = offsetX + padding
         paddingY = offsetY + padding
 
@@ -216,14 +219,14 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             .setTopLeft(offsetX, offsetY)
             .setWidth(width)
             .setHeight(height)
-            .setTitle(Text.literal(""))
+            .setTitle(Component.literal(""))
             .build()
         textField =
-            TextFieldWidget(
+            EditBox(
                 minecraftClient.textRenderer, (offsetX + 40f).toInt(),
-                (offsetY + 10f).toInt(), 100, 10, Text.literal(w.name)
+                (offsetY + 10f).toInt(), 100, 10, Component.literal(w.name)
             )
-        textField.text = w.name
+        textField.value = w.name
         focused = textField
 
 
@@ -277,30 +280,30 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             state = w.hasDimension(Dimension.END)
         }
         offsetY += 14
-        xCoordinate = TextFieldWidget(
+        xCoordinate = EditBox(
             minecraftClient.textRenderer, (paddingX + 11).toInt(),
-            offsetY.toInt(), 30, 10, Text.literal("")
+            offsetY.toInt(), 30, 10, Component.literal("")
         )
-        yCoordinate = TextFieldWidget(
+        yCoordinate = EditBox(
             minecraftClient.textRenderer, (paddingX + 56).toInt(),
-            offsetY.toInt(), 30, 10, Text.literal("")
+            offsetY.toInt(), 30, 10, Component.literal("")
         )
-        zCoordinate = TextFieldWidget(
+        zCoordinate = EditBox(
             minecraftClient.textRenderer, (paddingX + 104).toInt(),
-            offsetY.toInt(), 30, 10, Text.literal("")
+            offsetY.toInt(), 30, 10, Component.literal("")
         )
         var coordinates = w.coordinates
         if (w.name.isEmpty()) coordinates = flooredPlayerPos()
-        xCoordinate.text = coordinates.x.toString()
-        yCoordinate.text = coordinates.y.toString()
-        zCoordinate.text = coordinates.z.toString()
-        xCoordinate.setTextPredicate(checkIfSignedInt())
-        yCoordinate.setTextPredicate(checkIfSignedInt())
-        zCoordinate.setTextPredicate(checkIfSignedInt())
-        addSelectableChild(textField)
-        addSelectableChild(xCoordinate)
-        addSelectableChild(yCoordinate)
-        addSelectableChild(zCoordinate)
+        xCoordinate.value = coordinates.x.toString()
+        yCoordinate.value = coordinates.y.toString()
+        zCoordinate.value = coordinates.z.toString()
+        xCoordinate.setFilter(checkIfSignedInt())
+        yCoordinate.setFilter(checkIfSignedInt())
+        zCoordinate.setFilter(checkIfSignedInt())
+        addWidget(textField)
+        addWidget(xCoordinate)
+        addWidget(yCoordinate)
+        addWidget(zCoordinate)
         offsetY += 14
         saveSettings = clickSetting {
             title = "gavinsmod.settings.save"
@@ -314,7 +317,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             topLeft = PointF((paddingX + padding + buttonWidth).toFloat(), offsetY.toFloat())
             width = buttonWidth.toFloat()
             color = Colors.YELLOW
-            callback = { client!!.setScreen(parent) }
+            callback = { minecraft!!.setScreen(parent) }
         }
         deleteSettings = clickSetting {
             title = "gavinsmod.settings.delete"
@@ -343,8 +346,8 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
     private fun deleteCallback() {
         getConfig().removeWaypoint(w)
         getMod("waypoints")?.reloadSettings()
-        GavinsMod.guiSettings.reloadGui()
-        close()
+        GavinsModClient.guiSettings.reloadGui()
+        onClose()
     }
 
     /**
@@ -368,46 +371,46 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         }
     }
 
-    override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
-        offsetY = minecraftClient.window.scaledHeight / 2.0f - height / 2.0f
-        box.render(drawContext, client!!.textRenderer, mouseX, mouseY, delta)
+    override fun render(drawContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+        offsetY = minecraftClient.window.guiScaledHeight / 2.0f - height / 2.0f
+        box.render(drawContext, minecraft!!.font, mouseX, mouseY, delta)
         super.render(drawContext, mouseX, mouseY, delta)
         guis.forEach(Consumer { obj: Gui -> obj.show() })
-        drawContext.drawText(
-            client!!.textRenderer,
-            Text.literal("Name: "),
+        drawContext.drawString(
+            minecraft!!.font,
+            Component.literal("Name: "),
             paddingX.toInt(),
             (textField.y + 1),
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
         )
-        drawContext.drawText(
-            client!!.textRenderer,
-            Text.literal("X:"),
+        drawContext.drawString(
+            minecraft!!.font,
+            Component.literal("X:"),
             (paddingX + 1).toInt(),
             (xCoordinate.y + 1),
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
         )
-        drawContext.drawText(
-            client!!.textRenderer,
-            Text.literal("Y:"),
+        drawContext.drawString(
+            minecraft!!.font,
+            Component.literal("Y:"),
             (paddingX + 46).toInt(),
             (yCoordinate.y + 1),
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
         )
-        drawContext.drawText(
-            client!!.textRenderer,
-            Text.literal("Z:"),
+        drawContext.drawString(
+            minecraft!!.font,
+            Component.literal("Z:"),
             (paddingX + 94).toInt(),
             (zCoordinate.y + 1),
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
         )
-        drawContext.drawText(
-            client!!.textRenderer,
-            Text.literal("Dimensions"),
+        drawContext.drawString(
+            minecraft!!.font,
+            Component.literal("Dimensions"),
             (paddingX + 1).toInt(),
             (espToggle.gui.y + 15).toInt(),
             GavUISettings.getColor("gui.color.foreground").asInt,
@@ -419,7 +422,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         zCoordinate.render(drawContext, mouseX, mouseY, delta)
     }
 
-    override fun mouseClicked(click: Click, doubled: Boolean): Boolean {
+    override fun mouseClicked(click: MouseButtonEvent, doubled: Boolean): Boolean {
         val mouseX = click.x
         val mouseY = click.y
         val button = click.button()

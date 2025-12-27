@@ -31,13 +31,13 @@ import com.peasenet.mods.Mod
 import com.peasenet.util.event.EventManager
 import com.peasenet.util.event.PlayerAttackEvent
 import com.peasenet.util.math.Rotation
-import net.minecraft.client.render.Camera
-import net.minecraft.entity.Entity
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket.OnGroundOnly
-import net.minecraft.text.Text
-import net.minecraft.util.Hand
-import net.minecraft.util.math.Vec3d
+import net.minecraft.client.Camera
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.player.Player
+import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket.StatusOnly
+import net.minecraft.network.chat.Component
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.phys.Vec3
 
 /**
  * A helper class with utilities relating to the player.
@@ -54,11 +54,11 @@ object PlayerUtils {
      */
     fun setRotation(rotation: Rotation) {
         val player = GavinsModClient.player
-        player!!.setPitch(rotation.pitch)
-        player.setYaw(rotation.yaw)
+        player!!.setXRot(rotation.pitch)
+        player.setYRot(rotation.yaw)
     }
 
-    val playerPos: Vec3d
+    val playerPos: Vec3
         /**
          * Gets the current position of the player.
          *
@@ -77,14 +77,14 @@ object PlayerUtils {
      * @return The new player position.
      */
     @JvmStatic
-    fun getNewPlayerPosition(deltaTime: Float, camera: Camera): Vec3d {
-        val look = camera.horizontalPlane
+    fun getNewPlayerPosition(deltaTime: Float, camera: Camera): Vec3 {
+        val look = camera.forwardVector()
         val player = GavinsModClient.player
-        val px = player!!.getPrevX() + (playerPos.getX() - player.getPrevX()) * deltaTime + look.x()
-        val py = (player.getPrevY() + (playerPos.getY() - player.getPrevY()) * deltaTime + look.y()
+        val px = player!!.getPrevX() + (playerPos.x- player.getPrevX()) * deltaTime + look.x()
+        val py = (player.getPrevY() + (playerPos.y - player.getPrevY()) * deltaTime + look.y()
                 + player.getEyeHeightWithPose())
-        val pz = player.getPrevZ() + (playerPos.getZ() - player.getPrevZ()) * deltaTime + look.z()
-        return Vec3d(px, py, pz)
+        val pz = player.getPrevZ() + (playerPos.z - player.getPrevZ()) * deltaTime + look.z()
+        return Vec3(px, py, pz)
     }
 
     /**
@@ -94,7 +94,7 @@ object PlayerUtils {
      */
     private fun onGround(): Boolean {
         val player = GavinsModClient.player!!
-        return player.isOnGround()
+        return player.onGround()
     }
 
     /**
@@ -104,13 +104,13 @@ object PlayerUtils {
      */
     fun attackEntity(entity: Entity?) {
         val player = GavinsModClient.player
-        if (onGround() && !player!!.isNoClip() && player.getAttackCoolDownProgress(0.5f) > 0.90f) {
+        if (onGround() && !player!!.isNoClip() && player.getAttackCoolDownProgress(0.5f) > 0.90f && entity != null) {
             val event = PlayerAttackEvent()
             EventManager.eventManager.call(event)
-            GavinsModClient.minecraftClient.getPlayerInteractionManager().attackEntity(player as PlayerEntity, entity)
+            GavinsModClient.minecraftClient.getPlayerInteractionManager().attack(player as Player, entity)
 
             player.tryAttack(entity)
-            player.swingHand(Hand.MAIN_HAND)
+            player.swing(InteractionHand.MAIN_HAND)
             lastAttackTime = 0
         }
         lastAttackTime++
@@ -123,12 +123,12 @@ object PlayerUtils {
         val player = GavinsModClient.player
         if (player?.getAbilities() == null) return
         val abilities = player.getAbilities()
-        abilities.allowFlying =
-            GavinsMod.isEnabled("fly") || abilities.creativeMode || GavinsMod.isEnabled("noclip")
+        abilities.mayfly =
+            GavinsMod.isEnabled("fly") || abilities.instabuild || GavinsMod.isEnabled("noclip")
 
         if (GavinsMod.isEnabled("fly") && GavinsMod.isEnabled("noclip")) abilities.flying = true
 
-        if (!abilities.creativeMode && !GavinsMod.isEnabled("fly") && !GavinsMod.isEnabled("noclip")) abilities.flying =
+        if (!abilities.instabuild && !GavinsMod.isEnabled("fly") && !GavinsMod.isEnabled("noclip")) abilities.flying =
             false
     }
 
@@ -172,9 +172,9 @@ object PlayerUtils {
         val player = GavinsModClient.player
         if (player != null) {
             if (player.getFallDistance() <= (if (isFalling) 1 else 2)) return
-            if (player.isSneaking() && !fallSpeedCanDamage() && player.isFallFlying()) return
+            if (player.isShiftKeyDown() && !fallSpeedCanDamage() && player.isFallFlying()) return
             if (GavinsMod.isEnabled("noclip")) {
-                player.getNetworkHandler().sendPacket(OnGroundOnly(true, false))
+                player.getNetworkHandler().send(StatusOnly(true, false))
             }
         }
     }
@@ -184,14 +184,14 @@ object PlayerUtils {
         var newMessage = message
         val sendMessage = Settings.getConfig<MiscConfig>("misc").isMessages
         if (withPrefix) newMessage = Mod.GAVINS_MOD_STRING + newMessage
-        if (sendMessage) GavinsModClient.player!!.sendMessage(Text.literal(newMessage), false)
+        if (sendMessage) GavinsModClient.player!!.displayClientMessage(Component.literal(newMessage), false)
     }
 
     @JvmStatic
-    fun sendMessage(message: Text, withPrefix: Boolean) {
+    fun sendMessage(message: Component, withPrefix: Boolean) {
         val sendMessage = Settings.getConfig<MiscConfig>("misc").isMessages
         var newMessage = message.string
         if (withPrefix) newMessage = Mod.GAVINS_MOD_STRING + newMessage
-        if (sendMessage) GavinsModClient.player!!.sendMessage(Text.literal(newMessage), false)
+        if (sendMessage) GavinsModClient.player!!.displayClientMessage(Component.literal(newMessage), false)
     }
 }

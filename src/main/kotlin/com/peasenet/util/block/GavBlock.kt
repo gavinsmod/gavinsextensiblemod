@@ -31,12 +31,11 @@ import com.peasenet.extensions.toVec3d
 import com.peasenet.gavui.color.Color
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.RenderUtils.getCameraPos
-import kotlinx.io.Buffer
-import net.minecraft.client.render.VertexConsumer
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Box
-import net.minecraft.util.math.Vec3d
+import com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.blaze3d.vertex.VertexConsumer
+import net.minecraft.core.BlockPos
+import net.minecraft.world.phys.AABB
+import net.minecraft.world.phys.Vec3
 import org.joml.Matrix3x2fStack
 
 /**
@@ -56,23 +55,15 @@ class GavBlock(
     val visibleFilter: (BlockPos) -> Boolean = {
         false
     },
-    val color : Color? = null
+    val color: Color? = null,
 ) {
 
     constructor(blockPos: BlockPos, visibleFilter: (BlockPos) -> Boolean = { false }, color: Color? = null) : this(
-        blockPos.x,
-        blockPos.y,
-        blockPos.z,
-        visibleFilter,
-        color
+        blockPos.x, blockPos.y, blockPos.z, visibleFilter, color
     )
 
     constructor(blockPos: BlockPos, color: Color? = null) : this(
-        blockPos.x,
-        blockPos.y,
-        blockPos.z,
-        { true},
-        color
+        blockPos.x, blockPos.y, blockPos.z, { true }, color
     )
 
 
@@ -99,8 +90,8 @@ class GavBlock(
      * Updates the edges of the block.
      */
     fun update() {
-        val up = hasNeighbor(pos.up())
-        val below = hasNeighbor(pos.down())
+        val up = hasNeighbor(pos.above())
+        val below = hasNeighbor(pos.below())
         val east = hasNeighbor(pos.east())
         val west = hasNeighbor(pos.west())
         val south = hasNeighbor(pos.south())
@@ -149,11 +140,11 @@ class GavBlock(
             visibleEdges = visibleEdges nand Edge.Edge2 nand Edge.Edge10
             visibleEdges = visibleEdges nand Edge.Edge6 nand Edge.Edge7
         }
-        if (hasNeighbor(pos.up())) {
+        if (hasNeighbor(pos.above())) {
             visibleEdges = visibleEdges nand Edge.Edge9 nand Edge.Edge10
             visibleEdges = visibleEdges nand Edge.Edge11 nand Edge.Edge12
         }
-        if (hasNeighbor(pos.down())) {
+        if (hasNeighbor(pos.below())) {
             visibleEdges = visibleEdges nand Edge.Edge1 nand Edge.Edge2
             visibleEdges = visibleEdges nand Edge.Edge3 nand Edge.Edge4
         }
@@ -175,17 +166,16 @@ class GavBlock(
      */
     private fun renderEdges(
         edges: Int,
-        blockPos: Vec3d,
-        matrixStack: MatrixStack,
+        blockPos: Vec3,
+        matrixStack: PoseStack,
         color: Color,
         alpha: Float,
-        buffer: VertexConsumer
+        buffer: VertexConsumer,
     ) {
-        if ((edges and Edge.All) == Edge.All.mask) {
+        if (edges and Edge.All == Edge.All.mask) {
             renderEdge(Edge.All, blockPos, matrixStack, color, alpha, buffer)
             return
         }
-
         Edge.entries.filter { it != Edge.All && it != Edge.None }.forEach { edge ->
             val maskedVal = edges and edge
             if (maskedVal != 0) {
@@ -205,140 +195,138 @@ class GavBlock(
      */
     private fun renderEdge(
         edge: Edge,
-        blockPos: Vec3d,
-        matrixStack: MatrixStack,
+        blockPos: Vec3,
+        matrixStack: PoseStack,
         color: Color,
         alpha: Float,
-        buffer: VertexConsumer
+        buffer: VertexConsumer,
     ) {
-        val startPos = blockPos.add((getCameraPos().negate()))
+        val startPos = blockPos.add((getCameraPos().reverse()))
         when (edge) {
             Edge.Edge1 -> {
-                RenderUtils.drawSingleLine(
-                    matrixStack,
-                    startPos,
-                    startPos.add(0, 0, 1),
-                    color,
-                    alpha,
-                    false,
+                RenderUtils.drawSingleLineOptimized(
+                    matrixStack, startPos, startPos.add(0, 0, 1), color, alpha, buffer
                 )
             }
+
             Edge.Edge2 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos.add(0, 0, 1),
                     startPos.add(1, 0, 1),
                     color,
                     alpha,
-
-                    false
+                    buffer
                 )
             }
+
             Edge.Edge3 -> {
-                RenderUtils.drawSingleLine(
-                    matrixStack,
-                    startPos.add(1, 0, 1),
-                    startPos.add(1, 0, 0),
-                    color,
-                    alpha,
-
-                    false
+                RenderUtils.drawSingleLineOptimized(
+                    matrixStack, startPos.add(1, 0, 1), startPos.add(1, 0, 0), color, alpha,buffer
                 )
             }
+
             Edge.Edge4 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos.add(1, 0, 0),
                     startPos.add(0, 0, 0),
                     color,
                     alpha,
-
-                    false
+                    buffer,
                 )
             }
+
             Edge.Edge5 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos,
                     startPos.add(0, 1, 0),
                     color,
                     alpha,
-
-                    false
+                    buffer,
                 )
             }
+
             Edge.Edge6 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos.add(0, 0, 1),
                     startPos.add(0, 1, 1),
                     color,
                     alpha,
-                    false
+                    buffer,
                 )
             }
+
             Edge.Edge7 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos.add(1, 0, 1),
                     startPos.add(1, 1, 1),
                     color,
                     alpha,
-                    false
+                    buffer,
                 )
             }
+
             Edge.Edge8 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos.add(1, 0, 0),
                     startPos.add(1, 1, 0),
                     color,
                     alpha,
-                    false
+                    buffer,
                 )
             }
+
             Edge.Edge9 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos.add(0, 1, 0),
                     startPos.add(0, 1, 1),
                     color,
                     alpha,
-                    false
+                    buffer,
                 )
             }
+
             Edge.Edge10 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos.add(0, 1, 1),
                     startPos.add(1, 1, 1),
                     color,
                     alpha,
-                    false
+                    buffer,
                 )
             }
+
             Edge.Edge11 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos.add(1, 1, 1),
                     startPos.add(1, 1, 0),
                     color,
                     alpha,
-                    false
+                    buffer,
                 )
             }
+
             Edge.Edge12 -> {
-                RenderUtils.drawSingleLine(
+                RenderUtils.drawSingleLineOptimized(
                     matrixStack,
                     startPos.add(1, 1, 0),
                     startPos.add(0, 1, 0),
                     color,
                     alpha,
-                    false
+                    buffer,
                 )
             }
+
             Edge.All -> {
-                val bb = Box(
+                val bb = AABB(
                     blockPos.x + 1, blockPos.y, blockPos.z + 1, blockPos.x, blockPos.y + 1.0, blockPos.z
                 )
                 RenderUtils.drawOutlinedBoxOptimized(bb, matrixStack, color, alpha, buffer)
@@ -358,22 +346,22 @@ class GavBlock(
      * @param structureEsp Whether to render the block as a structure.
      */
     fun render(
-        matrixStack: MatrixStack,
+        matrixStack: PoseStack,
         color: Color,
         partialTicks: Float,
         alpha: Float,
         structureEsp: Boolean = false,
         tracers: Boolean = false,
-        buffer: VertexConsumer
+        buffer: VertexConsumer,
     ) {
 
+        val colorToRender = this.color ?: color
+        matrixStack.pushPose()
         val offsetPos = pos.toVec3d()
-        if (structureEsp)
-            renderEdges(visibleEdges, offsetPos, matrixStack, color, alpha, buffer)
-        else
-            renderEdges(Edge.All.mask, offsetPos, matrixStack, color, alpha, buffer)
+        if (structureEsp) renderEdges(visibleEdges, offsetPos, matrixStack, colorToRender, alpha, buffer)
+        else renderEdges(Edge.All.mask, offsetPos, matrixStack, colorToRender, alpha, buffer)
         if (tracers) {
-            val tracerOrigin = RenderUtils.getLookVec(partialTicks).multiply(10.0)
+            val tracerOrigin = RenderUtils.getLookVec(partialTicks).scale(10.0)
             RenderUtils.drawSingleLine(
                 matrixStack,
                 tracerOrigin,
@@ -384,6 +372,7 @@ class GavBlock(
                 depthTest = false
             )
         }
+        matrixStack.popPose()
     }
 
     override fun equals(other: Any?): Boolean {

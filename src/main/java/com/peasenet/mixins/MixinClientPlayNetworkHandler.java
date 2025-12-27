@@ -29,18 +29,18 @@ import com.peasenet.main.GavinsModClient;
 import com.peasenet.util.event.ChunkUpdateEvent;
 import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.data.ChunkUpdate;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.packet.s2c.play.ChunkDataS2CPacket;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.network.protocol.game.ClientboundLevelChunkWithLightPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ClientPlayNetworkHandler.class)
+@Mixin(ClientPacketListener.class)
 public class MixinClientPlayNetworkHandler {
-    @Inject(method = "onChunkData", at = @At("TAIL"))
-    private void onChunkData(ChunkDataS2CPacket packet, CallbackInfo ci) {
-        var chunk = GavinsModClient.Companion.getMinecraftClient().getWorld().getChunk(packet.getChunkX(), packet.getChunkZ());
+    @Inject(method = "handleLevelChunkWithLight", at = @At("TAIL"))
+    private void onChunkData(ClientboundLevelChunkWithLightPacket packet, CallbackInfo ci) {
+        var chunk = GavinsModClient.Companion.getMinecraftClient().getWorld().getChunk(packet.getX(), packet.getZ());
         EventManager.getEventManager().call(new ChunkUpdateEvent(new ChunkUpdate(chunk)));
     }
 }

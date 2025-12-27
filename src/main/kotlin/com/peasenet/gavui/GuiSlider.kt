@@ -27,8 +27,8 @@ import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GuiUtil
-import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.GuiGraphics
 import kotlin.math.max
 import kotlin.math.min
 
@@ -77,7 +77,7 @@ class GuiSlider(builder: GuiBuilder<out GuiSlider>) : Gui(builder) {
         if (callback != null) callback!!(this)
     }
 
-    override fun render(drawContext: DrawContext, tr: TextRenderer, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(drawContext: GuiGraphics, tr: Font, mouseX: Int, mouseY: Int, delta: Float) {
         super.render(drawContext, tr, mouseX, mouseY, delta)
         if (!isHidden) drawTickMark(drawContext)
     }
@@ -111,11 +111,11 @@ class GuiSlider(builder: GuiBuilder<out GuiSlider>) : Gui(builder) {
      *
      * @param drawContext - The draw matrix to draw on.
      */
-    private fun drawTickMark(drawContext: DrawContext) {
+    private fun drawTickMark(drawContext: GuiGraphics) {
         // wrap x value between (x+1) and (x+width-1)
         val xVal = x + 1 + ((width - 2) * value)
         val xCoord = xVal.coerceIn(x+1, x + width - 2).toInt()
-        drawContext.drawVerticalLine(xCoord, (y).toInt(), (y+height-1).toInt(), Colors.WHITE.withAlpha(0.75f).asInt )
+        drawContext.vLine(xCoord, (y).toInt(), (y+height-1).toInt(), Colors.WHITE.withAlpha(0.75f).asInt )
 //        GuiUtil.fill(box, drawContext, Colors.WHITE.withAlpha(0.75f))
 
     }

@@ -26,7 +26,8 @@ package com.peasenet.mods.render.waypoints
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.util.Dimension
-import net.minecraft.util.math.Vec3i
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Vec3i
 import java.util.*
 
 /**
@@ -51,7 +52,7 @@ import java.util.*
  * @since 03-23-2023
  */
 class Waypoint(
-    val coordinates: Vec3i = Vec3i.ZERO,
+    val coordinates: BlockPos = BlockPos.ZERO,
     val name: String = "",
     val dimensions: MutableSet<String> = mutableSetOf(),
     var color: Color = Colors.WHITE,

@@ -24,8 +24,8 @@
 
 package com.peasenet.mods
 
-import net.minecraft.client.option.KeyBinding
-import net.minecraft.util.Identifier
+import net.minecraft.client.KeyMapping
+import net.minecraft.resources.Identifier
 
 /**
  * A list of categories for keybinds, which will be shown in the 
@@ -37,50 +37,14 @@ import net.minecraft.util.Identifier
 
 class KeyBindCategory {
     companion object {
-        val MOVEMENT = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.movement"))
-        val RENDER = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.render"))
-        val COMBAT = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.combat"))
-        val MISC = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.misc"))
-        val ESP = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.esp"))
-        val TRACERS = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.tracers"))
-        val GUI = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.gui"))
-        val WAYPOINTS = KeyBinding.Category.create(Identifier.of("gavinsmod.keybinds.waypoints"))
-        val NONE = KeyBinding.Category.create(Identifier.of("none"))
+        val MOVEMENT = KeyMapping.Category.register(Identifier.parse("gavinsmod.keybinds.movement"))
+        val RENDER = KeyMapping.Category.register(Identifier.parse("gavinsmod.keybinds.render"))
+        val COMBAT = KeyMapping.Category.register(Identifier.parse("gavinsmod.keybinds.combat"))
+        val MISC = KeyMapping.Category.register(Identifier.parse("gavinsmod.keybinds.misc"))
+        val ESP = KeyMapping.Category.register(Identifier.parse("gavinsmod.keybinds.esp"))
+        val TRACERS = KeyMapping.Category.register(Identifier.parse("gavinsmod.keybinds.tracers"))
+        val GUI = KeyMapping.Category.register(Identifier.parse("gavinsmod.keybinds.gui"))
+        val WAYPOINTS = KeyMapping.Category.register(Identifier.parse("gavinsmod.keybinds.waypoints"))
+        val NONE = KeyMapping.Category.register(Identifier.parse("none"))
     }
 }
-//enum class KeyBindCategory(val category: String) {
-//    /**
-//     * The movement category.
-//     */
-//    MOVEMENT = ,
-//
-//    /**
-//     * The render category.
-//     */
-//    RENDER("gavinsmod.keybinds.render"),
-//
-//    /**
-//     * The combat category.
-//     */
-//    COMBAT("gavinsmod.keybinds.combat"),
-//
-//    /**
-//     * The misc category.
-//     */
-//    MISC("gavinsmod.keybinds.misc"),
-//
-//    /**
-//     * The ESP category.
-//     */
-//    ESP("gavinsmod.keybinds.esp"),
-//
-//    /**
-//     * The tracers category.
-//     */
-//    TRACERS("gavinsmod.keybinds.tracers"),
-//
-//    /**
-//     * The GUI category.
-//     */
-//    GUI("gavinsmod.keybinds.gui"),
-//}

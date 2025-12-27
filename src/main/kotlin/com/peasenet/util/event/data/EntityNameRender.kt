@@ -24,17 +24,16 @@
 
 package com.peasenet.util.event.data
 
-import net.minecraft.client.render.VertexConsumerProvider
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.Entity
+import net.minecraft.client.renderer.MultiBufferSource
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.network.chat.Component
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.LivingEntity
 
 /**
  * A data class that contains the data needed for [ModHealthTag][com.peasenet.mods.render.ModHealthTag].
  *
  * @param entity The entity to render the health tag for.
- * @param matrixStack The matrix stack to render the health tag with.
- * @param vertexConsumerProvider The vertex consumer provider to render the health tag with.
- * @param light The light level to render the health tag with.
  * @see com.peasenet.mods.render.ModHealthTag
  * @see com.peasenet.util.event.EntityRenderNameEvent
  * @see com.peasenet.util.listeners.EntityRenderNameListener
@@ -46,8 +45,7 @@ import net.minecraft.entity.Entity
  * @since 09-16-2024
  */
 data class EntityNameRender(
-    val entity: Entity,
-    val matrixStack: MatrixStack,
-    var vertexConsumerProvider: VertexConsumerProvider?,
-    var light: Int,
-)
+    val entity: LivingEntity,
+) : Cancellable() {
+    var nameTag: Component? = null
+}

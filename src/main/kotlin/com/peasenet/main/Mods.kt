@@ -29,10 +29,12 @@ import com.peasenet.config.esp.BlockEspConfig
 import com.peasenet.config.esp.CaveEspConfig
 import com.peasenet.config.esp.EspConfig
 import com.peasenet.config.esp.OreEspConfig
+//import com.peasenet.config.esp.OreEspConfig
 import com.peasenet.config.misc.FpsColorConfig
 import com.peasenet.config.misc.FreeCamConfig
 import com.peasenet.config.misc.MiscConfig
 import com.peasenet.config.render.FullbrightConfig
+import com.peasenet.config.render.HealthTagConfig
 import com.peasenet.config.render.RadarConfig
 import com.peasenet.config.render.XrayConfig
 import com.peasenet.config.tracer.BlockTracerConfig
@@ -80,10 +82,11 @@ class Mods {
         Settings.addConfig(TracerConfig());
         Settings.addConfig(MiscConfig());
         Settings.addConfig(XrayConfig())
-        Settings.addConfig(OreEspConfig())
         Settings.addConfig(AutoAttackConfig())
         Settings.addConfig(KillAuraConfig())
         Settings.addConfig(CaveEspConfig())
+        Settings.addConfig(OreEspConfig())
+        Settings.addConfig(HealthTagConfig())
 
         /*@MODS@*/
         GavinsMod.addMod(ModAutoAttack())
@@ -130,8 +133,8 @@ class Mods {
         GavinsMod.addMod(ModFurnaceTracer())
         GavinsMod.addMod(ModMobTracer())
         GavinsMod.addMod(ModBlockEsp())
-        GavinsMod.addMod(ModOreEsp())
         GavinsMod.addMod(ModCaveEsp())
+        GavinsMod.addMod(ModOreEsp())
     }
 
     companion object {
@@ -184,6 +187,11 @@ class Mods {
         fun isActive(chatCommand: String): Boolean {
             val mod: Mod = getMod(chatCommand) ?: return false
             return mod.isActive
+        }
+
+        @JvmStatic
+        fun isActive(chatCommand: ChatCommand): Boolean {
+            return isActive(chatCommand.chatCommand)
         }
 
         /*

@@ -28,8 +28,8 @@ import com.peasenet.gui.mod.GuiItemEspTracerConfig
 import com.peasenet.main.GavinsModClient
 import com.peasenet.util.RenderUtils.CHUNK_RADIUS
 import com.peasenet.util.listeners.RenderListener
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.ItemEntity
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.world.entity.item.ItemEntity
 import org.joml.Matrix3x2fStack
 
 /**
@@ -46,7 +46,7 @@ import org.joml.Matrix3x2fStack
 class ModEntityItemEsp : EntityEsp<ItemEntity>(
     "gavinsmod.mod.esp.item",
     "itemesp",
-    { it is ItemEntity && it.squaredDistanceTo(GavinsModClient.player!!.getPos()) < 64 * 16 * CHUNK_RADIUS }),
+    { it is ItemEntity && it.distanceToSqr(GavinsModClient.player!!.getPos()) < 64 * 16 * CHUNK_RADIUS }),
     RenderListener {
     init {
         clickSetting {
@@ -57,7 +57,7 @@ class ModEntityItemEsp : EntityEsp<ItemEntity>(
         }
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {/* TODO: Work on setting filters for items */
+    override fun onRender(matrixStack: PoseStack, partialTicks: Float) {/* TODO: Work on setting filters for items */
         if (config.useItemEspFilter) {
             espList = espList.filter {
                 config.itemFilterList.any { filter -> filter.customNameMatches(it) }

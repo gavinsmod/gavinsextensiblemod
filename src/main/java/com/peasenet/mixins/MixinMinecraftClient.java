@@ -26,18 +26,18 @@ package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
 import com.peasenet.mixinterface.IMinecraftClient;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.client.network.message.MessageHandler;
-import net.minecraft.client.option.GameOptions;
-import net.minecraft.client.render.BufferBuilderStorage;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.util.Window;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.hit.HitResult;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.client.multiplayer.chat.ChatListener;
+import net.minecraft.client.Options;
+import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.LevelRenderer;
+import com.mojang.blaze3d.platform.Window;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.phys.HitResult;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -51,20 +51,20 @@ import java.io.File;
  * @author GT3CH1
  * @version 5/18/2022
  */
-@Mixin(MinecraftClient.class)
+@Mixin(Minecraft.class)
 public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     /**
      * The current FPS, as reported by the game.
      */
     @Shadow
-    private static int currentFps;
+    private static int fps;
 
     /**
      * The interaction manager for the player.
      */
     @Shadow
-    public ClientPlayerInteractionManager interactionManager;
+    public MultiPlayerGameMode gameMode;
 
 
     /**
@@ -72,59 +72,59 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
      */
     @Shadow
     @Final
-    public GameOptions options;
+    public Options options;
 
     /**
      * The textRenderer used to draw text.
      */
     @Shadow
     @Final
-    public TextRenderer textRenderer;
+    public Font font;
 
     /**
      * The renderer used for the world.
      */
     @Shadow
     @Final
-    public WorldRenderer worldRenderer;
+    public LevelRenderer levelRenderer;
 
     /**
      * Whether chunk culling is enabled.
      */
     @Shadow
-    public boolean chunkCullingEnabled;
+    public boolean smartCull;
 
     /**
      * The world the player is in.
      */
     @Shadow
-    public ClientWorld world;
+    public ClientLevel level;
 
     /**
      * The directory where minecraft is running from.
      */
     @Shadow
     @Final
-    public File runDirectory;
+    public File gameDirectory;
 
     /**
      * What is currently being looked at.
      */
     @Shadow
-    public HitResult crosshairTarget;
+    public HitResult hitResult;
 
     /**
      * The player.
      */
     @Shadow
-    public ClientPlayerEntity player;
+    public LocalPlayer player;
 
 
     /**
      * The current cool down from using an item.
      */
     @Shadow
-    private int itemUseCooldown;
+    private int rightClickDelay;
 
     /**
      * The game window.
@@ -138,18 +138,12 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
      *
      * @param ci - ignored
      */
-    @Inject(at = @At(value = "HEAD"), method = "isAmbientOcclusionEnabled()Z", cancellable = true)
+    @Inject(at = @At(value = "HEAD"), method = "useAmbientOcclusion()Z", cancellable = true)
     private static void isXrayOrFullBright(CallbackInfoReturnable<Boolean> ci) {
         boolean disabled = GavinsMod.isEnabled("xray") || GavinsMod.isEnabled("fullbright");
         ci.setReturnValue(!disabled);
         ci.cancel();
     }
-
-    /**
-     * The network message handler.
-     */
-    @Shadow
-    public abstract MessageHandler getMessageHandler();
 
     /**
      * Sets the current item use cooldown.
@@ -158,7 +152,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
      */
     @Override
     public void setItemUseCooldown(int cooldown) {
-        itemUseCooldown = cooldown;
+        rightClickDelay = cooldown;
     }
 
     /**
@@ -168,7 +162,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
      */
     @Override
     public int getFps() {
-        return currentFps;
+        return fps;
     }
 
 
@@ -178,7 +172,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
      * @return GameOptions
      */
     @Override
-    public GameOptions getOptions() {
+    public Options getOptions() {
         return options;
     }
 
@@ -188,8 +182,8 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
      * @return the player interaction manager
      */
     @Override
-    public ClientPlayerInteractionManager getPlayerInteractionManager() {
-        return interactionManager;
+    public MultiPlayerGameMode getPlayerInteractionManager() {
+        return gameMode;
     }
 
     /**
@@ -198,8 +192,8 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
      * @return - the text renderer
      */
     @Override
-    public TextRenderer getTextRenderer() {
-        return textRenderer;
+    public Font getTextRenderer() {
+        return font;
     }
 
     /**
@@ -208,8 +202,8 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
      * @return - the world
      */
     @Override
-    public ClientWorld getWorld() {
-        return world;
+    public ClientLevel getWorld() {
+        return level;
     }
 
     /**
@@ -222,7 +216,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 
     @Shadow
     @Final
-    private BufferBuilderStorage bufferBuilders;
+    private RenderBuffers renderBuffers;
 
     /**
      * Gets the renderer for the world.
@@ -230,8 +224,8 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
      * @return the world renderer
      */
     @Override
-    public WorldRenderer getWorldRenderer() {
-        return worldRenderer;
+    public LevelRenderer getWorldRenderer() {
+        return levelRenderer;
     }
 
     /**
@@ -241,7 +235,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
      */
     @Override
     public void setChunkCulling(boolean b) {
-        chunkCullingEnabled = b;
+        smartCull = b;
     }
 
     /**
@@ -261,7 +255,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
      */
     @Override
     public File getRunDirectory() {
-        return runDirectory;
+        return gameDirectory;
     }
 
     /**
@@ -271,7 +265,7 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
      */
     @Override
     public HitResult crosshairTarget() {
-        return crosshairTarget;
+        return hitResult;
     }
 
     /**
@@ -280,12 +274,12 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
      * @return the player
      */
     @Override
-    public ClientPlayerEntity getPlayer() {
+    public LocalPlayer getPlayer() {
         return player;
     }
 
     @Override
-    public BufferBuilderStorage getBufferBuilderStorage() {
-        return bufferBuilders;
+    public RenderBuffers getBufferBuilderStorage() {
+        return renderBuffers;
     }
 }

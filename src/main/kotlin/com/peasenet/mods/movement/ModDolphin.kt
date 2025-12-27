@@ -23,7 +23,7 @@
  */
 package com.peasenet.mods.movement
 
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
+import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
 
 class ModDolphin : MovementMod(
     "gavinsmod.mod.movement.dolphin",
@@ -31,13 +31,13 @@ class ModDolphin : MovementMod(
 ) {
     override fun onTick() {
         // check if the player is swimming
-        if (client.getPlayer().isTouchingWater) {
+        if (client.getPlayer().isInWater) {
             val player = client.getPlayer()
 
             // if they are, move them up
-            player.addVelocity(0.0, 0.1, 0.0)
-            player.networkHandler.sendPacket(
-                PlayerMoveC2SPacket.PositionAndOnGround(
+            player.push(0.0, 0.1, 0.0)
+            player.connection.send(
+                ServerboundMovePlayerPacket.Pos(
                     player.x,
                     player.y + 0.1,
                     player.z,

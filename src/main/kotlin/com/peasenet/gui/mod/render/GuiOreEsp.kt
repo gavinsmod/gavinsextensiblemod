@@ -9,11 +9,14 @@ import com.peasenet.settings.clickSetting
 import com.peasenet.settings.colorSetting
 import com.peasenet.settings.slideSetting
 import com.peasenet.settings.toggleSetting
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.gui.widget.TextFieldWidget
-import net.minecraft.client.gui.widget.TextWidget
-import net.minecraft.text.Text
+import net.minecraft.client.gui.components.FocusableTextWidget
+import net.minecraft.network.chat.Component
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.components.EditBox
+import net.minecraft.client.gui.components.StringWidget
+import net.minecraft.client.gui.components.WidgetTooltipHolder
+
 
 /**
  *
@@ -21,11 +24,11 @@ import net.minecraft.text.Text
  * @version 12-06-2025
  * @since 12-06-2025
  */
-class GuiOreEsp : GuiElement(Text.translatable("gavinsmod.mod.esp.ore")) {
+class GuiOreEsp : GuiElement(Component.translatable("gavinsmod.mod.esp.ore")) {
     private var m_width = 200
-    private val m_height = 11 * 12f
-    private lateinit var seedBox: TextFieldWidget
-    private lateinit var seedText: TextWidget
+    private val m_height = 11 * 13f
+    private lateinit var seedBox: EditBox
+    private lateinit var seedText: StringWidget
 
     private fun getSettings(): OreEspConfig {
         return Settings.getConfig("oreesp")
@@ -33,9 +36,8 @@ class GuiOreEsp : GuiElement(Text.translatable("gavinsmod.mod.esp.ore")) {
 
     override fun init() {
 
-        val screenWidth = MinecraftClient.getInstance().window.scaledWidth
-        val screenHeight = MinecraftClient.getInstance().window.scaledHeight
-
+        val screenWidth = Minecraft.getInstance().window.guiScaledWidth
+        val screenHeight = Minecraft.getInstance().window.guiScaledHeight
 
         val offsetX = (screenWidth - m_width) / 2f
         val offsetY = (screenHeight - m_height) / 2f
@@ -245,7 +247,7 @@ class GuiOreEsp : GuiElement(Text.translatable("gavinsmod.mod.esp.ore")) {
         // find longest title width
         var longestWidth = 0f
         for (setting in guis) {
-            val width = MinecraftClient.getInstance().textRenderer.getWidth(setting.title)
+            val width = Minecraft.getInstance().font.width(setting.title)
             if (width > longestWidth) {
                 longestWidth = width.toFloat()
             }
@@ -282,8 +284,18 @@ class GuiOreEsp : GuiElement(Text.translatable("gavinsmod.mod.esp.ore")) {
 
             }
         }
+        guiPosition = guiPosition.add(0f, 12f)
+        val structureEsp = toggleSetting {
+            title = "gavinsmod.mod.esp.blockesp.structure"
+            state = getSettings().structureEsp
+            topLeft = guiPosition
+            callback = {
+                getSettings().structureEsp = it.state
 
-        val slideWidth = MinecraftClient.getInstance().textRenderer.getWidth(slider.title)
+            }
+        }
+
+        val slideWidth = Minecraft.getInstance().font.width(slider.title)
         // set slider in center of X axis
         val centerX = (screenWidth - slideWidth) / 2f
 
@@ -294,6 +306,9 @@ class GuiOreEsp : GuiElement(Text.translatable("gavinsmod.mod.esp.ore")) {
         slider.gui?.position = slider.topLeft
         addSetting(slider)
 
+        structureEsp.topLeft = slider.topLeft.add(0f, 12f)
+        structureEsp.gui.position = structureEsp.topLeft
+        addSetting(structureEsp)
         super.init()
         val apply = clickSetting {
             title = "gavinsmod.settings.apply"
@@ -305,28 +320,27 @@ class GuiOreEsp : GuiElement(Text.translatable("gavinsmod.mod.esp.ore")) {
         }
         addSetting(apply)
 
-        seedText = TextWidget(
-            apply.topLeft.x.toInt() + 36, apply.topLeft.y.toInt() + 1 ,
+        seedText = StringWidget(
+            apply.topLeft.x.toInt() + 36, apply.topLeft.y.toInt() + 1,
             25,
             12,
-            Text.literal("Seed"),
-            textRenderer
+            Component.literal("Seed"),
+            font
         )
-        seedBox =
-            TextFieldWidget(textRenderer, seedText.x + 30, apply.topLeft.y.toInt() , 150, 12, Text.empty())
-        seedBox.text = getSettings().seed
-        addSelectableChild(seedBox)
-        addDrawableChild(seedText)
+        seedBox = EditBox(font, seedText.x + 30, apply.topLeft.y.toInt(), 150, 12, Component.empty())
+        seedBox.value = getSettings().seed
+        addWidget(seedBox)
+        addRenderableWidget(seedText)
     }
 
-    override fun render(drawContext: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(drawContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
         super.render(drawContext, mouseX, mouseY, delta)
         seedBox.render(drawContext, mouseX, mouseY, delta)
         seedText.render(drawContext, mouseX, mouseY, delta)
     }
 
     private fun reload() {
-        Settings.getConfig<OreEspConfig>("oreesp").seed = seedBox.text
+        Settings.getConfig<OreEspConfig>("oreesp").seed = seedBox.value
         ModOreEsp.reload()
     }
 }

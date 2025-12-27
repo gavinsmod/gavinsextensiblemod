@@ -23,7 +23,8 @@
  */
 package com.peasenet.util.event.data
 
-import net.minecraft.util.Identifier
+import net.minecraft.resources.Identifier
+
 
 /**
  * Called when an overlay is rendered. This event is cancellable.

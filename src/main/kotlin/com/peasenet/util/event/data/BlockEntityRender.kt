@@ -23,10 +23,10 @@
  */
 package com.peasenet.util.event.data
 
-import net.minecraft.block.entity.BlockEntity
-import net.minecraft.client.render.BufferBuilder
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.math.Vec3d
+import net.minecraft.world.level.block.entity.BlockEntity
+import com.mojang.blaze3d.vertex.BufferBuilder
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.world.phys.Vec3
 
 /**
  * Data class for the block entity render event. This can be cancelled.
@@ -47,9 +47,9 @@ data class BlockEntityRender
  * @param delta     - Change in ticks.
  */(
     var entity: BlockEntity,
-    var stack: MatrixStack?,
+    var stack: PoseStack?,
     private var buffer: BufferBuilder?,
-    private var center: Vec3d?,
-    private var playerPos: Vec3d?,
+    private var center: Vec3?,
+    private var playerPos: Vec3?,
     var delta: Float,
 ) : Cancellable()

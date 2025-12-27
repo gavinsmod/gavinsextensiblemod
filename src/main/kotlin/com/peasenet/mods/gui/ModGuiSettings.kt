@@ -91,7 +91,7 @@ class ModGuiSettings : GuiMod(
     }
 
     override fun activate() {
-        GavinsModClient.minecraftClient.setScreen(GavinsMod.guiSettings)
+        GavinsModClient.minecraftClient.setScreen(GavinsModClient.guiSettings)
         setEnabled(true)
     }
 

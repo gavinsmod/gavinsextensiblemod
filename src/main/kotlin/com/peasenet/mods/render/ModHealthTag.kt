@@ -23,14 +23,21 @@
  */
 package com.peasenet.mods.render
 
+import com.peasenet.config.render.HealthTagConfig
+import com.peasenet.gavui.color.Color
+import com.peasenet.gui.mod.render.GuiHealthTag
+import com.peasenet.main.GavinsModClient
+import com.peasenet.main.Settings
+import com.peasenet.util.ChatCommand
 import com.peasenet.util.event.data.EntityNameRender
 import com.peasenet.util.listeners.EntityRenderNameListener
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.font.TextRenderer
-import net.minecraft.entity.EntityAttachmentType
-import net.minecraft.entity.LivingEntity
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.Font
+import net.minecraft.world.entity.EntityAttachment
+import net.minecraft.world.entity.LivingEntity
+import net.minecraft.network.chat.Component
+import net.minecraft.ChatFormatting
+import net.minecraft.network.chat.Style
 
 /**
  *
@@ -50,6 +57,15 @@ class ModHealthTag : RenderMod(
     "gavinsmod.mod.render.hptags", "hptags"
 ), EntityRenderNameListener {
 
+    init {
+        clickSetting {
+            title = "gavinsmod.mod.render.hptags"
+            callback = {
+                client.setScreen(GuiHealthTag())
+            }
+        }
+    }
+
     override fun onEnable() {
         em.subscribe(EntityRenderNameListener::class.java, this)
         super.onEnable()
@@ -66,65 +82,44 @@ class ModHealthTag : RenderMod(
     private fun renderHealthTag(
         er: EntityNameRender,
     ) {
-        val entity = er.entity as LivingEntity
-        val matrixStack = er.matrixStack
-        val vertexConsumers = er.vertexConsumerProvider
-        val light = er.light
-        val textRenderer = MinecraftClient.getInstance().textRenderer
-        val dispatcher = MinecraftClient.getInstance().entityRenderDispatcher
-        val attachmentVec = entity.attachments.getPointNullable(EntityAttachmentType.NAME_TAG, 0, entity.getYaw(0f))
-        matrixStack.push()
-        matrixStack.translate(attachmentVec!!.x, attachmentVec.y + 0.75, attachmentVec.z)
-//        matrixStack.multiply(dispatcher.rotation)
-        matrixStack.scale(0.025f, -0.025f, 0.025f)
-        val currentHp = entity.health.toInt()
-        val text = Text.literal("").append(currentHp.toString()).append(" HP").formatted(getColor(entity))
-        val g = -textRenderer.getWidth(text) / 2.0f
-        val i = if (er.entity.name.string == "deadmau5") -10 else 0
-        val matrix4f = matrixStack.peek().positionMatrix
-        val f = textRenderer.getWidth(text) / 2.0f
-        val j = (MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25f) * 255.0f).toInt() shl 24
-        textRenderer.draw(
-            text,
-            g,
-            i.toFloat(),
-            0xFFFFFFFF.toInt(),
-            false,
-            matrix4f,
-            vertexConsumers,
-            TextRenderer.TextLayerType.NORMAL,
-            j,
-            light
-        )
-        textRenderer.draw(
-            text,
-            g,
-            i.toFloat(),
-            0xFFFFFFFF.toInt(),
-            false,
-            matrix4f,
-            vertexConsumers,
-            TextRenderer.TextLayerType.SEE_THROUGH,
-            0,
-            light
-        )
-        matrixStack.pop()
+        val currentHp = er.entity.health.toInt()
+        val entity = er.entity;
+        // check if mob is hostile
+        if (entity.type.category.isFriendly && !config.friendlyMobs) {
+            er.cancel()
+        }
+        if (!entity.type.category.isFriendly && !config.hostileMobs) {
+            er.cancel()
+        }
+        if(er.isCancelled)
+            return
+        val style = Style.EMPTY.withColor(getColor(er.entity).asInt)
+        val text = Component.empty().append(currentHp.toString()).append(" HP").withStyle(style)
+        er.nameTag = text
     }
 
     /**
      * Gets the color formatting for the health tag.
      */
-    private fun getColor(entity: LivingEntity): Formatting {
+    private fun getColor(entity: LivingEntity): Color {
         return if (entity.health > entity.maxHealth * 0.8) {
-            Formatting.GREEN
+            config.highHealthColor
         } else if (entity.health > entity.maxHealth * 0.6) {
-            Formatting.YELLOW
+            config.midHealthColor
         } else if (entity.health > entity.maxHealth * 0.4) {
-            Formatting.GOLD
+            config.midLowHealthColor
         } else {
-            Formatting.RED
+            config.lowHealthColor
         }
     }
+
+    companion object {
+        val config: HealthTagConfig
+            get() {
+                return Settings.getConfig(ChatCommand.HealthTag)
+            }
+    }
+
 
     override fun onEntityNameRender(er: EntityNameRender) {
         if (er.entity !is LivingEntity) return

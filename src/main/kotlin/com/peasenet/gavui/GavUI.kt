@@ -50,8 +50,11 @@ object GavUI {
     }
 
     @JvmStatic
-    fun borderColor(withAlpha: Float = 255f): Color {
-        return GavUISettings.getColor("gui.color.border").withAlpha(withAlpha)
+    fun borderColor(withAlpha: Float? = null): Color {
+        if (withAlpha == null)
+            return GavUISettings.getColor("gui.color.border").withAlpha(alpha)
+        val clamped = withAlpha.coerceIn(0f, 255f)
+        return GavUISettings.getColor("gui.color.border").withAlpha(clamped)
     }
 
     /**

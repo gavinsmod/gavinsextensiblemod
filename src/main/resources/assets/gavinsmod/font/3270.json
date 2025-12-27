@@ -1,0 +1,11 @@
+{
+  "providers": [
+    {
+      "type": "ttf",
+      "file": "gavinsmod:3270nerdfont.ttf",
+      "shift": [0, 0],
+      "size": 9.0,
+      "oversample": 20.0
+    }
+  ]
+}

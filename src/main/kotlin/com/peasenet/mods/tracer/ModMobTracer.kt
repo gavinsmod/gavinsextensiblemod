@@ -25,10 +25,10 @@ package com.peasenet.mods.tracer
 
 import com.peasenet.gavui.color.Color
 import com.peasenet.gui.mod.tracer.GuiMobTracer
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.LivingEntity
-import net.minecraft.entity.mob.MobEntity
+import net.minecraft.client.Minecraft
+import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.entity.Mob
 import org.joml.Matrix3x2fStack
 
 /**
@@ -40,7 +40,7 @@ import org.joml.Matrix3x2fStack
 class ModMobTracer : EntityTracer<LivingEntity>(
     "gavinsmod.mod.tracer.mob",
     "mobtracer",
-    { it is MobEntity && config.inList(it.type) }
+    { it is Mob && config.inList(it.type) }
 ) {
     init {
 //        val menu = SettingBuilder<ClickSetting>()
@@ -50,23 +50,23 @@ class ModMobTracer : EntityTracer<LivingEntity>(
 //        addSetting(menu)
         clickSetting {
             title = "gavinsmod.settings.mobtracer"
-            callback = { MinecraftClient.getInstance().setScreen(GuiMobTracer()) }
+            callback = { Minecraft.getInstance().setScreen(GuiMobTracer()) }
         }
     }
 
     override fun getColor(entity: LivingEntity): Color {
-        if (entity.type.spawnGroup.isPeaceful)
+        if (entity.type.category.isFriendly)
             return config.peacefulMobColor
         return config.hostileMobColor
     }
 
-    override fun onRender(matrixStack: MatrixStack, partialTicks: Float) {
+    override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
         val newList: MutableList<LivingEntity> = ArrayList()
         if (config.showPeacefulMobs) {
-            newList.addAll(entityList.filter { it.type.spawnGroup.isPeaceful })
+            newList.addAll(entityList.filter { it.type.category.isFriendly })
         }
         if (config.showHostileMobs) {
-            newList.addAll(entityList.filter { !it.type.spawnGroup.isPeaceful })
+            newList.addAll(entityList.filter { !it.type.category.isFriendly })
         }
         entityList = newList
         super.onRender(matrixStack, partialTicks)

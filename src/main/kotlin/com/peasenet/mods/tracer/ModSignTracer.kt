@@ -25,8 +25,8 @@ package com.peasenet.mods.tracer
 
 import com.peasenet.gavui.color.Color
 import com.peasenet.util.ChatCommand
-import net.minecraft.block.entity.BeehiveBlockEntity
-import net.minecraft.block.entity.SignBlockEntity
+import net.minecraft.world.level.block.entity.BeehiveBlockEntity
+import net.minecraft.world.level.block.entity.SignBlockEntity
 
 /**
  * A mod that allows the player to see tracers towards beehives.

@@ -25,7 +25,7 @@ package com.peasenet.gui.mod
 
 import com.peasenet.gavui.math.PointF
 import com.peasenet.mods.ModCategory
-import net.minecraft.text.Text
+import net.minecraft.network.chat.Component
 
 /**
  * @author GT3CH1
@@ -37,7 +37,7 @@ class GuiCombat
     position: PointF = PointF(100f, 20f),
     width: Int = 75,
     height: Int = 11,
-    text: Text = Text.translatable("gavinsmod.gui.combat"),
+    text: Component = Component.translatable("gavinsmod.gui.combat"),
     category: ModCategory = ModCategory.COMBAT,
     maxChildren: Int = 4
 ) : GuiMod(

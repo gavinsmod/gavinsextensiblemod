@@ -24,16 +24,13 @@
 package com.peasenet.mixinterface
 
 import com.mojang.authlib.GameProfile
-import net.minecraft.client.network.ClientPlayNetworkHandler
-import net.minecraft.entity.Entity
-import net.minecraft.entity.EntityPose
-import net.minecraft.entity.player.PlayerAbilities
-import net.minecraft.item.ItemStack
-import net.minecraft.text.Text
-import net.minecraft.util.Hand
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Vec3d
-import net.minecraft.world.World
+import net.minecraft.client.multiplayer.ClientPacketListener
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.player.Abilities
+import net.minecraft.world.item.ItemStack
+import net.minecraft.network.chat.Component
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.phys.Vec3
 
 /**
  * The interface for the player entity.
@@ -42,33 +39,34 @@ import net.minecraft.world.World
  * @version 03-02-2023
  */
 interface IClientPlayerEntity {
+
     /**
      * Whether the player is on the ground.
      *
      * @return Whether the player is on the ground.
      */
-    fun isOnGround(): Boolean
+    fun onGround(): Boolean
 
     /**
      * Sets the player's pitch.
      *
      * @param pitch - The pitch to set.
      */
-    fun setPitch(pitch: Float)
+    fun setXRot(pitch: Float)
 
     /**
      * Sets the player's yaw.
      *
      * @param yaw - The yaw to set.
      */
-    fun setYaw(yaw: Float)
+    fun setYRot(yaw: Float)
 
     /**
      * Gets the current position of the player.
      *
      * @return The current position of the player.
      */
-    fun getPos(): Vec3d
+    fun getPos(): Vec3
 
     /**
      * Gets the previous x position of the player.
@@ -91,35 +89,8 @@ interface IClientPlayerEntity {
      */
     fun getPrevZ(): Double
 
-    /**
-     * Gets the eye height of the player.
-     *
-     * @return The eye height of the player.
-     */
-    fun eyeHeight(): Double
 
     fun getEyeHeightWithPose(): Float
-    
-    /**
-     * Gets the player's current pose.
-     *
-     * @return The player's current pose.
-     */
-    fun getPose(): EntityPose
-
-    /**
-     * Gets the head yaw of the player.
-     *
-     * @return The head yaw of the player.
-     */
-    fun getHeadYaw(): Float
-
-    /**
-     * Gets the body yaw of the player.
-     *
-     * @return The body yaw of the player.
-     */
-    fun getBodyYaw(): Float
 
     /**
      * Gets the game profile of the player.
@@ -156,14 +127,14 @@ interface IClientPlayerEntity {
      *
      * @param h - The hand to swing.
      */
-    fun swingHand(h: Hand?)
+    fun swing(h: InteractionHand?)
 
     /**
      * Gets the player's abilities.
      *
      * @return The player's abilities.
      */
-    fun getAbilities(): PlayerAbilities
+    fun getAbilities(): Abilities
 
     /**
      * Gets the square distance to the given entity.
@@ -186,30 +157,29 @@ interface IClientPlayerEntity {
      *
      * @return The velocity of the player.
      */
-    fun getVelocity(): Vec3d
+    fun getVelocity(): Vec3
 
     /**
      * Gets the fall distance of the player.
      *
      * @return The fall distance of the player.
      */
-    fun getFallDistance(): Float
+    fun getFallDistance(): Double
 
     /**
      * Whether the player is sneaking.
      *
      * @return Whether the player is sneaking.
      */
-    fun isSneaking(): Boolean
+    fun isShiftKeyDown(): Boolean
 
     /**
      * Gets the network handler for the player.
      *
      * @return The network handler for the player.
      */
-//    fun getNetworkHandler(): ClientPlayNetworkHandler
 
-    fun getNetworkHandler(): ClientPlayNetworkHandler
+    fun getNetworkHandler(): ClientPacketListener
 
     /**
      * Sends a chat message.
@@ -217,32 +187,21 @@ interface IClientPlayerEntity {
      * @param message   - The message to send.
      * @param actionBar - Whether the message should be sent as an action bar message.
      */
-    fun sendMessage(message: Text?, actionBar: Boolean)
-
-    /**
-     * Get the block position of the player.
-     *
-     * @return The block position of the player.
-     */
-    fun getBlockPos(): BlockPos
+    fun displayClientMessage(message: Component?, actionBar: Boolean)
 
     /**
      * Gets the item in the main hand.
      *
      * @return The item in the main hand.
      */
-    fun getMainHandStack(): ItemStack
+    fun getMainHandItem(): ItemStack
 
     /**
      * Whether the player is currently submerged in water.
      *
      * @return Whether the player is currently submerged in water.
      */
-    fun isSubmergedInWater(): Boolean
-    fun getEyeHeight(): Double
-    fun getWorld(): World
+    fun isUnderWater(): Boolean
 
-    fun horizontalCollision(): Boolean
-    fun isGliding(): Boolean
-
+    fun isCollidingHorizontally(): Boolean
 }

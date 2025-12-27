@@ -24,18 +24,12 @@
 package com.peasenet.main
 
 import com.peasenet.gavui.GavUI
-import com.peasenet.gavui.Gui
-import com.peasenet.gavui.math.BoxF
-import com.peasenet.gui.GuiMainMenu
-import com.peasenet.gui.GuiSettings
 import com.peasenet.gui.mod.*
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
-import com.peasenet.util.ModCommands
 import net.fabricmc.api.ModInitializer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.util.function.Consumer
 
 /**
  * @author GT3CH1
@@ -48,17 +42,14 @@ class GavinsMod : ModInitializer {
         /**
          * The current version of the mod.
          */
-        const val VERSION = "v1.5.1"
+        const val VERSION = "1.5.2"
 
         /**
          * A hashmap containing the category of each mod category and the corresponding gui.
          */
         val guiList = HashMap<ModCategory, GuiMod>()
 
-        /**
-         * The list of mods to load upon initialization.
-         */
-        private val modsToLoad = ArrayList<Mod>()
+
 
         /**
          * The logger of the mod.
@@ -72,24 +63,8 @@ class GavinsMod : ModInitializer {
          */
         @JvmStatic
         fun addMod(mod: Mod) {
-            modsToLoad.add(mod)
+            GavinsModClient.modsToLoad.add(mod)
         }
-
-        /**
-         * The gui used to display the main mod menu.
-         */
-        lateinit var gui: GuiMainMenu
-
-        /**
-         * The gui used to display the settings menu.
-         */
-        lateinit var guiSettings: GuiSettings
-
-
-        /**
-         * Hook for chat commands.
-         */
-        private var modCommands: ModCommands? = null
 
         /**
          * Sets whether the given mod is enabled.
@@ -129,27 +104,7 @@ class GavinsMod : ModInitializer {
             return mod.isActive
         }
 
-        fun setMainGui() {
-            guiList[ModCategory.MOVEMENT] = GuiMovement()
-            guiList[ModCategory.COMBAT] = GuiCombat()
-            guiList[ModCategory.ESP] = GuiESP()
-            guiList[ModCategory.MISC] = GuiMisc()
-            val guiRender = GuiRender()
-            // fix for issue #55
-            val guis = ModGuiUtil.getGuiToggleFromCategory(
-                ModCategory.WAYPOINTS, BoxF(guiRender.position, guiRender.width, guiRender.height)
-            )
-            guis.forEach { guiRender.addElement(it) }
-            guiList[ModCategory.RENDER] = guiRender
-            guiList[ModCategory.TRACERS] = GuiTracers()
-            guiList.values.forEach(Consumer { g: Gui -> g.isParent = true })
-            // remove all the guis that have no children
-            guiList.values.removeIf { g: Gui -> g.children.isEmpty() }
-            // collect all the guis that have children into an array list
-            val guisWithChildren = ArrayList<Gui>()
-            guiList.values.forEach { guisWithChildren.add(it) }
-            gui = GuiMainMenu(guisWithChildren)
-        }
+
     }
 
     override fun onInitialize() {
@@ -157,11 +112,6 @@ class GavinsMod : ModInitializer {
         Settings.init()
         LOGGER.info("Settings loaded")
         Mods()
-        modsToLoad.forEach(Consumer { m: Mod -> Mods.addMod(m) })
-
-        setMainGui()
-        guiSettings = GuiSettings()
-        modCommands = ModCommands()
 
         LOGGER.info("GavinsMod initialized")
     }

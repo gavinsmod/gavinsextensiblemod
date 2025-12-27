@@ -26,9 +26,9 @@ package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
 import com.peasenet.util.ChatCommand;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.LeavesBlock;
-import net.minecraft.world.Heightmap;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.levelgen.Heightmap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -41,9 +41,9 @@ import java.util.function.Predicate;
  * @version 01-18-2025
  * @since 01-18-2025
  */
-@Mixin(value = Heightmap.Type.class)
+@Mixin(value = Heightmap.Types.class)
 public class HeightmapMixin {
-    @Inject(at = @At("HEAD"), method = "getBlockPredicate", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "isOpaque", cancellable = true)
     void setup(CallbackInfoReturnable<Predicate<BlockState>> cir) {
         if (GavinsMod.isEnabled(ChatCommand.CaveEsp.getChatCommand())) {
             var predicate = (Predicate<BlockState>) (blockState) -> (!blockState.isAir() && !(blockState.getBlock() instanceof LeavesBlock));            cir.setReturnValue(predicate);

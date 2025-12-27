@@ -24,7 +24,7 @@
 package com.peasenet.util.event
 
 import com.peasenet.util.listeners.InGameHudRenderListener
-import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.gui.GuiGraphics
 
 /**
  * An event that is fired when the in-game HUD is rendered.
@@ -35,7 +35,7 @@ import net.minecraft.client.gui.DrawContext
  * @version 01-26-2025
  * @since 03-02-2023
  */
-class InGameHudRenderEvent(private var drawContext: DrawContext, var delta: Float) : Event<InGameHudRenderListener> {
+class InGameHudRenderEvent(private var drawContext: GuiGraphics, var delta: Float) : Event<InGameHudRenderListener> {
     override fun fire(listeners: ArrayList<InGameHudRenderListener>) {
         for (listener in listeners) {
             listener.onRenderInGameHud(drawContext, delta)

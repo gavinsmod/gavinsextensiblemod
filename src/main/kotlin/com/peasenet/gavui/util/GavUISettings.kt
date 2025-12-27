@@ -30,7 +30,7 @@ import com.google.gson.reflect.TypeToken
 import com.peasenet.gavui.GavUI
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
-import net.minecraft.client.MinecraftClient
+import net.minecraft.client.Minecraft
 import java.io.File
 import java.io.FileReader
 import java.io.IOException
@@ -112,7 +112,7 @@ object GavUISettings {
          */
         get() {
             val runDir =
-                MinecraftClient.getInstance().runDirectory.absolutePath
+                Minecraft.getInstance().gameDirectory.absolutePath
             val modsDir = "$runDir/mods"
             // ensure the gavinsmod folder exists
             val gavinsmodDir = "$modsDir/gavui"

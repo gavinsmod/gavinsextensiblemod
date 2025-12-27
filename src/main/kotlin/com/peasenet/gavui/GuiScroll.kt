@@ -29,8 +29,8 @@ import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.Direction
 import com.peasenet.gavui.util.GuiUtil
-import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.gui.Font
+import net.minecraft.client.gui.GuiGraphics
 import java.util.function.Consumer
 import kotlin.math.ceil
 import kotlin.math.min
@@ -64,8 +64,8 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
     }
 
     override fun render(
-        drawContext: DrawContext,
-        tr: TextRenderer,
+        drawContext: GuiGraphics,
+        tr: Font,
         mouseX: Int,
         mouseY: Int,
         delta: Float,
@@ -78,21 +78,21 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             bg = bg.brighten(0.5f)
         }
         GuiUtil.fill(box, drawContext, bg)
-        drawContext.state.goUpLayer()
-        GuiUtil.drawOutline(box, drawContext, GavUI.borderColor().withAlpha(GavUI.alpha))
-        drawContext.state.goUpLayer()
+        drawContext.guiRenderState.up()
+        GuiUtil.drawOutline(box, drawContext, GavUI.borderColor())
+        drawContext.guiRenderState.up()
         var textColor = if (frozen) GavUI.frozenColor() else GavUI.textColor()
         if (title != null) {
             if (textColor.similarity(bg) < 0.2f) {
                 textColor = textColor.invert()
                 if (textColor.similarity(bg) < 0.2f) textColor = Colors.WHITE
             }
-            val center = (x + (width / 2) - (tr.getWidth(title)) / 2).toInt()
-            drawText(drawContext, tr, title!!, center, (y + 2).toInt(), textColor)
+            val center = (x + (width / 2) - (tr.width(title)) / 2).toInt()
+            drawText(drawContext, tr, title.copy().withStyle(myStyle), center, (y + 2).toInt(), textColor)
         }
         updateSymbol()
         drawSymbol(drawContext, tr, textColor, -2f, 0f)
-        if (drawBorder) GuiUtil.drawOutline(GavUI.borderColor(), box, drawContext.matrices)
+        if (drawBorder) GuiUtil.drawOutline(GavUI.borderColor(), box, drawContext.pose())
         if (!isOpen) return
         resetChildPos()
         if (page < 0) page = 0
@@ -102,8 +102,8 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
     }
 
     private fun renderChildren(
-        drawContext: DrawContext,
-        tr: TextRenderer,
+        drawContext: GuiGraphics,
+        tr: Font,
         mouseX: Int,
         mouseY: Int,
         delta: Float,
@@ -119,17 +119,20 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             }
             if (shouldDrawScrollBar()) {
                 child.shrinkForScrollbar(this)
-                drawScrollBox(drawContext)
-                drawScrollBar(drawContext)
+
             }
             if ((!child.isParent && child !is GuiCycle)) {
                 child.backgroundColor = GavUI.backgroundColor()
             }
             renderableChildren.add(child)
         }
-        drawContext.state.goUpLayer()
+        drawContext.guiRenderState.up()
         for (child in renderableChildren) {
             child.render(drawContext, tr, mouseX, mouseY, delta)
+        }
+        if (shouldDrawScrollBar()) {
+            drawScrollBox(drawContext)
+            drawScrollBar(drawContext)
         }
     }
 
@@ -138,7 +141,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
         if (hasChildren() && isOpen) {
             var visibleChildren = 0
             for (gui in children) {
-                if(!gui.isHidden) visibleChildren++
+                if (!gui.isHidden) visibleChildren++
                 if (!gui.isHidden && gui.mouseWithinGui(mouseX.toInt(), mouseY.toInt()) && gui is GuiScroll) {
                     if (gui.isOpen) {
                         val scrolled = gui.mouseScrolled(mouseX, mouseY, amount)
@@ -222,7 +225,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
      *
      * @param drawContext - The draw context.
      */
-    private fun drawScrollBox(drawContext: DrawContext) {
+    private fun drawScrollBox(drawContext: GuiGraphics) {
         var scrollBoxX = x2 - 5f
         var scrollBoxY = (y2) + 2f
         val scrollBoxHeight = getScrollBoxHeight()
@@ -231,8 +234,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             scrollBoxY = y
         }
         val box = BoxF(PointF(scrollBoxX, scrollBoxY), 5f, scrollBoxHeight)
-        GuiUtil.drawOutline(box, drawContext, GavUI.backgroundColor())
-//        GuiUtil.drawOutline(GavUI.borderColor(), box, matrixStack)
+        GuiUtil.drawOutline(box, drawContext, GavUI.borderColor())
     }
 
     /**
@@ -240,7 +242,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
      *
      * @param drawContext - The draw context.
      */
-    private fun drawScrollBar(drawContext: DrawContext) {
+    private fun drawScrollBar(drawContext: GuiGraphics) {
         val scrollBoxHeight = getScrollBoxHeight()
         var scrollBarY = (scrollBoxHeight * (page / numPages.toFloat())) + y2 + 3
         var scrollBarX = x2 - 4
@@ -382,7 +384,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
             if (child.isHidden || (child as? GuiDropdown)?.isOpen == false) continue
 
         }
-        if (frozen || !isParent ) return false
+        if (frozen || !isParent) return false
 
         return false
     }
