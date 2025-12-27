@@ -47,7 +47,7 @@ import net.minecraft.world.phys.AABB
  * @since 03-02-2023
  */
 class ModWaypoint : RenderMod(
-    "gavinsmod.mod.render.waypoints", "waypoints", ModCategory.WAYPOINTS
+    "gavinsmod.mod.render.waypoints", "waypoints", ModCategory.RENDER
 ), RenderListener, CameraBobListener {
 
     init {
