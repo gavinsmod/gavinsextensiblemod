@@ -95,8 +95,20 @@ class GuiSlider(builder: GuiBuilder<out GuiSlider>) : Gui(builder) {
         return false
     }
 
+    override fun mouseScrolled(mouseX: Double, mouseY: Double, amount: Double): Boolean {
+        if(mouseWithinGui(mouseX, mouseY))
+        {
+            val increment = 0.05f * if (amount > 0) 1 else -1
+            value += increment
+            value = max(0.0f, min(1.0f, value))
+            if (callback != null) callback!!(this)
+            return true
+        }
+        return false
+    }
+
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        if (button == 0 && mouseWithinGui(mouseX, mouseY) && !isHidden) {
+        if (button == 0 && mouseWithinGui(mouseX, mouseY)) {
             setValue(mouseX)
             clickedGui = this
             dragging = true
