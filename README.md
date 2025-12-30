@@ -1,4 +1,5 @@
 # Gavin's Extensible Mod
+![](src/main/resources/assets/gavinsmod/gemclient-logo.png)
 A Fabric mod for Minecraft that is extensible, configurable, and contains many "hacks"!
 
 ---

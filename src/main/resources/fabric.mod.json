@@ -13,7 +13,7 @@
     "sources": "https://github.com/gavinsmod/gavinsextensiblemod"
   },
   "license": "MIT",
-  "icon": "assets/gavinsmod/icon.png",
+  "icon": "assets/gavinsmod/gemclient-logo.png",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -23,7 +23,6 @@
       "com.peasenet.main.GavinsModClient"
     ]
   },
-  "accessWidener": "gem.accesswidener",
   "mixins": [
     "gavinsmod.mixins.json"
   ],

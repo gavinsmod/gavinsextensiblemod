@@ -60,28 +60,29 @@ class ModKillAura : CombatMod(
     }
 
     override fun onTick() {
-        if (isActive) {
-            var stream = StreamSupport.stream(GavinsModClient.minecraftClient.getWorld().entitiesForRendering().spliterator(), false)
-                .filter { e: Entity? -> e is LivingEntity }
-                .filter { obj: Entity -> obj.isAlive }
-                .filter { e: Entity? -> PlayerUtils.distanceToEntity(e) <= 16 }
-                .sorted { e1: Entity?, e2: Entity? ->
-                    (PlayerUtils.distanceToEntity(e1).toInt() - PlayerUtils.distanceToEntity(e2)).toInt()
-                }
-                .map { e: Entity? -> e as LivingEntity? }
-            if (config.shownMobs.isNotEmpty()) {
-                stream = stream.filter { entity: LivingEntity? -> config.mobIsShown(entity!!.type!!) }
+        var stream = StreamSupport.stream(
+            GavinsModClient.minecraftClient.getWorld().entitiesForRendering().spliterator(),
+            false
+        )
+            .filter { e: Entity? -> e is LivingEntity }
+            .filter { obj: Entity -> obj.isAlive }
+            .filter { e: Entity -> PlayerUtils.distanceToEntity(e) <= 32 }
+            .filter { e: Entity -> e.id != GavinsModClient.minecraftClient.getPlayer().id }
+            .sorted { e1: Entity, e2: Entity? ->
+                (PlayerUtils.distanceToEntity(e1).toInt() - PlayerUtils.distanceToEntity(e2)).toInt()
             }
-            if (config.excludePlayers) {
-                stream = stream.filter { it !is Player }
+            .map { e: Entity -> e as LivingEntity }
+        if (config.shownMobs.isNotEmpty()) {
+            stream = stream.filter { entity: LivingEntity? -> config.mobIsShown(entity!!.type!!) }
+        }
+        if (config.excludePlayers) {
+            stream = stream.filter { it !is Player }
+        }
+        for (entity in stream) {
+            entity.let { MathUtils.getRotationToEntity(it!!) }.let {
+                PlayerUtils.setRotation(it)
             }
-            for (entity in stream) {
-                if (entity == null) continue
-                entity.let { MathUtils.getRotationToEntity(it) }.let {
-                    PlayerUtils.setRotation(it)
-                }
-                PlayerUtils.attackEntity(entity)
-            }
+            PlayerUtils.attackEntity(entity)
         }
     }
 }

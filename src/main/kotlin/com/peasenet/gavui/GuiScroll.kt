@@ -152,6 +152,11 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
                         doScroll(amount)
                         return true
                     }
+                } else if (!gui.isHidden && gui.mouseWithinGui(mouseX, mouseY) && gui is GuiSlider) {
+                    val scrolled = gui.mouseScrolled(mouseX, mouseY, amount)
+                    if (scrolled) {
+                        return true
+                    }
                 }
             }
             // from x to y2 + (14*visibleChildren)

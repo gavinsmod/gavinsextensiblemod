@@ -104,11 +104,10 @@ object PlayerUtils {
      */
     fun attackEntity(entity: Entity?) {
         val player = GavinsModClient.player
-        if (onGround() && !player!!.isNoClip() && player.getAttackCoolDownProgress(0.5f) > 0.90f && entity != null) {
+        if ( !player!!.isNoClip() && player.getAttackCoolDownProgress(0.5f) > 0.90f && entity != null) {
             val event = PlayerAttackEvent()
             EventManager.eventManager.call(event)
             GavinsModClient.minecraftClient.getPlayerInteractionManager().attack(player as Player, entity)
-
             player.tryAttack(entity)
             player.swing(InteractionHand.MAIN_HAND)
             lastAttackTime = 0
