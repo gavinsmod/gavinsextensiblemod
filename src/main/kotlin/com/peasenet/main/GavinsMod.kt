@@ -27,6 +27,7 @@ import com.peasenet.gavui.GavUI
 import com.peasenet.gui.mod.*
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
+import com.peasenet.util.ChatCommand
 import net.fabricmc.api.ModInitializer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -104,6 +105,10 @@ class GavinsMod : ModInitializer {
             return mod.isActive
         }
 
+        @JvmStatic
+        fun isEnabled(chatCommand: ChatCommand): Boolean {
+            return isEnabled(chatCommand.chatCommand)
+        }
 
     }
 

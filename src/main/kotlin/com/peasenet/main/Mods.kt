@@ -47,6 +47,7 @@ import com.peasenet.mods.combat.ModKillAura
 import com.peasenet.mods.esp.*
 import com.peasenet.mods.gui.ModGui
 import com.peasenet.mods.gui.ModGuiSettings
+import com.peasenet.mods.render.ModDeathCoordinates
 import com.peasenet.mods.misc.ModFpsCounter
 import com.peasenet.mods.misc.ModFreeCam
 import com.peasenet.mods.misc.ModGuiTextOverlay
@@ -135,6 +136,8 @@ class Mods {
         GavinsMod.addMod(ModBlockEsp())
         GavinsMod.addMod(ModCaveEsp())
         GavinsMod.addMod(ModOreEsp())
+        GavinsMod.addMod(ModDeathCoordinates())
+        GavinsMod.addMod(ModDeathTracer())
     }
 
     companion object {

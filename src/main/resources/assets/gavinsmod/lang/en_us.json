@@ -193,5 +193,7 @@
   "key.category.minecraft.gavinsmod.keybinds.movement": "Gavin's Mod - Movement",
   "key.category.minecraft.gavinsmod.keybinds.render": "Gavin's Mod - Render",
   "key.category.minecraft.gavinsmod.keybinds.tracers": "Gavin's Mod - Tracers",
-  "key.category.minecraft.gavinsmod.keybinds.waypoints": "Gavin's Mod - Waypoints"
+  "key.category.minecraft.gavinsmod.keybinds.waypoints": "Gavin's Mod - Waypoints",
+  "gavinsmod.mod.render.deathcoordinates": "Death Coordinates",
+  "gavinsmod.mod.tracer.deathtracer": "Death Tracer"
 }

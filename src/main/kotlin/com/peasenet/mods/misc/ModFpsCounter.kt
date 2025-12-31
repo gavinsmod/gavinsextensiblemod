@@ -90,7 +90,7 @@ class ModFpsCounter : MiscMod(
     }
 
     override fun onRenderInGameHud(drawContext: GuiGraphics, delta: Float, forceRender: Boolean) {
-        if (GavinsMod.isEnabled("gui") || GavinsMod.isEnabled("settings") || !isActive ) return
+        if (GavinsMod.isEnabled("gui") || GavinsMod.isEnabled("settings") || !isActive) return
         drawFpsOverlay(drawContext)
     }
 
@@ -100,11 +100,11 @@ class ModFpsCounter : MiscMod(
      * @param drawContext The draw context ot use.
      */
     private fun drawFpsOverlay(drawContext: GuiGraphics) {
-        val matrixStack = drawContext.pose()
         val fps = GavinsModClient.minecraftClient.getFps()
         val fpsString = "FPS: $fps"
-        val xCoordinate = GavinsModClient.minecraftClient.window.guiScaledWidth - (fpsString.length * 5 + 2)
-        val box = BoxF(PointF((xCoordinate - 2).toFloat(), 0f), (fpsString.length * 5 + 4).toFloat(), 12f)
+        val textWidth = GavinsModClient.minecraftClient.textRenderer.width(fpsString)
+        val xCoordinate = GavinsModClient.minecraftClient.window.guiScaledWidth - textWidth -1
+        val box = BoxF(PointF(xCoordinate.toFloat()-2, 0f) , textWidth.toFloat() + 3, 11f)
         val maximumFps = GavinsModClient.minecraftClient.options.framerateLimit().get()
         var color = GavUISettings.getColor("gui.color.foreground")
         val colorEnabled = fpsColorConfig.isColorsEnabled
@@ -116,7 +116,6 @@ class ModFpsCounter : MiscMod(
                 if (fps >= maximumFps * 0.85) fastColor else if (fps > maximumFps * 0.45 && fps < maximumFps * 0.85) okColor else slowFps
             color = color.withAlpha(1f)
         }
-//        GuiUtil.drawBox(GavUISettings.getColor("gui.color.background"), box, matrixStack, 0.5f)
         GuiUtil.fill(box, drawContext, GavUISettings.getColor("gui.color.background").withAlpha(0.5f))
         drawContext.drawString(client.textRenderer, Component.literal(fpsString), xCoordinate, 2, color.asInt, false)
     }
