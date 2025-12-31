@@ -30,6 +30,7 @@ import com.peasenet.main.Mods
 import com.peasenet.main.Settings
 import com.peasenet.mixinterface.IMinecraftClient
 import com.peasenet.settings.*
+import com.peasenet.util.ChatCommand
 import com.peasenet.util.KeyBindUtils
 import com.peasenet.util.event.EventManager
 import net.minecraft.client.KeyMapping
@@ -130,6 +131,28 @@ abstract class Mod(
         KeyBindUtils.registerModKeybind(translationKey, modCategory, keyBinding)
 
     )
+
+    /**
+     * Creates a mod with the given parameters.
+     *
+     * @param translationKey - The translation key, used for rendering the mod's name in the GUI and in chat.
+     * @param chatCommand - The [ChatCommand], used for toggling the mod. This does not need to be prefixed by anything.
+     * @param modCategory - The [ModCategory] of the mod.
+     * @param keyBinding - The keybinding used for this mod. This is optional, with the default value of [GLFW.GLFW_KEY_UNKNOWN], which will not bind a key to this mod,
+     * but will allow the player to bind a key from the Minecraft controls menu.
+     */
+    constructor(
+        translationKey: String,
+        chatCommand: ChatCommand,
+        modCategory: ModCategory,
+        keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN,
+    ) : this(
+        translationKey,
+        chatCommand.chatCommand,
+        modCategory,
+        KeyBindUtils.registerModKeybind(translationKey, modCategory, keyBinding)
+    )
+
 
     /**
      * Sends a message to the player.

@@ -26,6 +26,7 @@ package com.peasenet.mods.combat
 
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
+import com.peasenet.util.ChatCommand
 import org.lwjgl.glfw.GLFW
 
 /**
@@ -43,15 +44,24 @@ import org.lwjgl.glfw.GLFW
  * @see Mod
  * 
  * @author GT3CH1
- * @version 01-15-2025
+ * @version 12-31-2025
+ * @since 01-15-2025
  */
 abstract class CombatMod(
     translationKey: String,
     chatCommand: String,
-    keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN
+    keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN,
 ) : Mod(
     translationKey,
     chatCommand,
     ModCategory.COMBAT,
     keyBinding
-)
+) {
+
+    /**
+     * Secondary constructor that takes a [ChatCommand] instead of a [String] for the chat command.
+     * @param translationKey The translation key for the mod's name.
+     * @param chatCommand The [ChatCommand] for the mod.
+     */
+    constructor (translationKey: String, chatCommand: ChatCommand) : this(translationKey, chatCommand.chatCommand)
+}
