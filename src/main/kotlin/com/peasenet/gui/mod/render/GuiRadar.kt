@@ -29,7 +29,6 @@ import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gui.GuiElement
-import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Mods
 import com.peasenet.main.Settings
@@ -63,7 +62,7 @@ class GuiRadar : GuiElement(Component.translatable("gavinsmod.mod.render.radar")
         const val PADDING: Float = 5.0f
         var settings: ArrayList<Setting> = ArrayList()
         var visible: Boolean = false
-        val config = Settings.getConfig<RadarConfig>(ChatCommand.Radar.chatCommand)
+        val config = Settings.getConfig<RadarConfig>(ChatCommand.Radar.command)
     }
 
     override fun onClose() {

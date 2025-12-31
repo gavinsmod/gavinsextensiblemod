@@ -16,7 +16,7 @@ import kotlin.jvm.optionals.getOrNull
  * @since 12-29-2025
  */
 class ModDeathTracer :
-    TracerMod<ModDeathTracer>("gavinsmod.mod.tracer.deathtracer", ChatCommand.DeathTracer.chatCommand) {
+    TracerMod<ModDeathTracer>("gavinsmod.mod.tracer.deathtracer", ChatCommand.DeathTracer.command) {
     override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
 
         val lastDeathCoordinates = Minecraft.getInstance().player?.lastDeathLocation?.getOrNull()?.pos ?: return

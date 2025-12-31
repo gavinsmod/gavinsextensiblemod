@@ -177,7 +177,7 @@ class Mods {
 
         @JvmStatic
         fun <T : Mod?> getMod(chatCommand: ChatCommand): T {
-            var mod = getMod(chatCommand.chatCommand)
+            var mod = getMod(chatCommand.command)
             return mod as T
         }
 
@@ -194,7 +194,7 @@ class Mods {
 
         @JvmStatic
         fun isActive(chatCommand: ChatCommand): Boolean {
-            return isActive(chatCommand.chatCommand)
+            return isActive(chatCommand.command)
         }
 
         /*

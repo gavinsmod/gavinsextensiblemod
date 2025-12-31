@@ -60,7 +60,7 @@ import net.minecraft.world.level.chunk.ChunkAccess
  * @see CaveEspConfig
  */
 class ModCaveEsp : BlockEsp<CaveEspConfig>(
-    "gavinsmod.mod.esp.cave", ChatCommand.CaveEsp.chatCommand
+    "gavinsmod.mod.esp.cave", ChatCommand.CaveEsp.command
 ) {
     init {
         subSettings {

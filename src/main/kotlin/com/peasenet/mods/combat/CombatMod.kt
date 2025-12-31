@@ -63,5 +63,5 @@ abstract class CombatMod(
      * @param translationKey The translation key for the mod's name.
      * @param chatCommand The [ChatCommand] for the mod.
      */
-    constructor (translationKey: String, chatCommand: ChatCommand) : this(translationKey, chatCommand.chatCommand)
+    constructor (translationKey: String, chatCommand: ChatCommand) : this(translationKey, chatCommand.command)
 }

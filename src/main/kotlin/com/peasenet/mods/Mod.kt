@@ -148,7 +148,7 @@ abstract class Mod(
         keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN,
     ) : this(
         translationKey,
-        chatCommand.chatCommand,
+        chatCommand.command,
         modCategory,
         KeyBindUtils.registerModKeybind(translationKey, modCategory, keyBinding)
     )

@@ -26,7 +26,9 @@ package com.peasenet.mods.movement
 
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
+import com.peasenet.util.ChatCommand
 import org.lwjgl.glfw.GLFW
+
 /**
  * The base class for all movement mods. Extending this class will automatically add the mod to the movement category,
  * as well as a chat command, GUI element, and an optional keybind.
@@ -47,10 +49,21 @@ import org.lwjgl.glfw.GLFW
 abstract class MovementMod(
     translationKey: String,
     chatCommand: String,
-    keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN
+    keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN,
 ) : Mod(
     translationKey,
     chatCommand,
     ModCategory.MOVEMENT,
     keyBinding
-)
+) {
+    /**
+     * Secondary constructor that takes a [ChatCommand] enum value.
+     *
+     * @param translationKey The translation key for the mod's name.
+     * @param chatCommand The chat command for the mod.
+     */
+    constructor(translationKey: String, chatCommand: ChatCommand) : this(
+        translationKey,
+        chatCommand.command
+    )
+}

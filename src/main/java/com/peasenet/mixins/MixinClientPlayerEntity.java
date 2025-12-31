@@ -145,7 +145,7 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayer imple
 
     @Override
     public boolean isFallFlying() {
-        return false;
+        return super.isFallFlying();
     }
 
     @Override
@@ -180,5 +180,15 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayer imple
     @Override
     public boolean isCollidingHorizontally() {
         return super.horizontalCollision;
+    }
+
+    @Override
+    public boolean isCreative() {
+        return super.getAbilities().instabuild;
+    }
+
+    @Override
+    public Vec3 getDeltaMovement() {
+        return super.getDeltaMovement();
     }
 }

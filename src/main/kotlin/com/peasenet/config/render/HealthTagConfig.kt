@@ -13,7 +13,7 @@ import com.peasenet.util.ChatCommand
  */
 class HealthTagConfig : Config<HealthTagConfig>() {
     init {
-        key = ChatCommand.HealthTag.chatCommand
+        key = ChatCommand.HealthTag.command
     }
 
     var backgroundColor: Color = Colors.DARK_RED

@@ -204,4 +204,7 @@ interface IClientPlayerEntity {
     fun isUnderWater(): Boolean
 
     fun isCollidingHorizontally(): Boolean
+
+    fun isCreative(): Boolean
+    fun getDeltaMovement(): Vec3
 }

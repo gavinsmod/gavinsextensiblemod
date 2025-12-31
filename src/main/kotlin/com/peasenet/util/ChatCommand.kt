@@ -30,7 +30,7 @@ package com.peasenet.util
  * @version 01-15-2025
  * @since 01-12-2025
  */
-enum class ChatCommand(val chatCommand: String) {
+enum class ChatCommand(val command: String) {
     AutoAttack("autoattack"),
     AutoCrit("autocrit"),
     KillAura("killaura"),

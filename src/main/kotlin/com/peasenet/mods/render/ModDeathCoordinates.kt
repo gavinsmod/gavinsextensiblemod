@@ -16,7 +16,7 @@ import kotlin.jvm.optionals.getOrNull
  * @since 12-29-2025
  */
 class ModDeathCoordinates :
-    RenderMod("gavinsmod.mod.render.deathcoordinates", ChatCommand.DeathCoordinates.chatCommand),
+    RenderMod("gavinsmod.mod.render.deathcoordinates", ChatCommand.DeathCoordinates.command),
     InGameHudRenderListener {
     override fun onEnable() {
         em.subscribe(InGameHudRenderListener::class.java, this)

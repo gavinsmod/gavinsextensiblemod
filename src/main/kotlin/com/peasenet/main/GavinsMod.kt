@@ -107,7 +107,7 @@ class GavinsMod : ModInitializer {
 
         @JvmStatic
         fun isEnabled(chatCommand: ChatCommand): Boolean {
-            return isEnabled(chatCommand.chatCommand)
+            return isEnabled(chatCommand.command)
         }
 
     }
