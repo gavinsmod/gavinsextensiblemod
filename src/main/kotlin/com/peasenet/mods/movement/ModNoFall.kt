@@ -24,6 +24,7 @@
 package com.peasenet.mods.movement
 
 import com.peasenet.main.GavinsModClient
+import com.peasenet.util.ChatCommand
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
 
 /**
@@ -33,19 +34,16 @@ import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
  */
 class ModNoFall : MovementMod(
     "gavinsmod.mod.movement.nofall",
-    "nofall"
+    ChatCommand.NoFall
 ) {
     override fun onTick() {
         val player = GavinsModClient.player!!
-        if (!isActive)
-            return;
-        if (player.isShiftKeyDown())
-            return;
-        if (isFalling && !fallSpeedCanDamage)
-            return;
-        player.getNetworkHandler().send(
-            ServerboundMovePlayerPacket.StatusOnly(true, player.isCollidingHorizontally())
-        )
+        if (player.isCreative())
+            return
+        if (player.isShiftKeyDown() && player.isFallFlying() && !fallSpeedCanDamage)
+            return
+        val packet = ServerboundMovePlayerPacket.StatusOnly(true, player.isCollidingHorizontally())
+        player.getNetworkHandler().send(packet)
     }
 
     /**
@@ -68,7 +66,7 @@ class ModNoFall : MovementMod(
     private val fallSpeedCanDamage: Boolean
         get() {
             val player = GavinsModClient.player
-            return player!!.getVelocity().y < -0.5
+            return player!!.getDeltaMovement().y < -0.5
         }
 
 }
