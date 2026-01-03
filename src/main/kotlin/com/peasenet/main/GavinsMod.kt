@@ -51,7 +51,6 @@ class GavinsMod : ModInitializer {
         val guiList = HashMap<ModCategory, GuiMod>()
 
 
-
         /**
          * The logger of the mod.
          */
@@ -100,12 +99,14 @@ class GavinsMod : ModInitializer {
          * @return Whether the mod is enabled.
          */
         @JvmStatic
+        @Deprecated("Use Mods.isActive instead", ReplaceWith("Mods.isActive(chatCommand)"))
         fun isEnabled(chatCommand: String): Boolean {
             val mod = Mods.getMod(chatCommand) ?: return false
             return mod.isActive
         }
 
         @JvmStatic
+        @Deprecated("Use Mods.isActive instead", ReplaceWith("Mods.isActive(chatCommand)"))
         fun isEnabled(chatCommand: ChatCommand): Boolean {
             return isEnabled(chatCommand.command)
         }

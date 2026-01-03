@@ -79,9 +79,9 @@ class Mods {
         Settings.addConfig(RadarConfig())
         Settings.addConfig(WaypointConfig())
         Settings.addConfig(FreeCamConfig())
-        Settings.addConfig(EspConfig());
-        Settings.addConfig(TracerConfig());
-        Settings.addConfig(MiscConfig());
+        Settings.addConfig(EspConfig())
+        Settings.addConfig(TracerConfig())
+        Settings.addConfig(MiscConfig())
         Settings.addConfig(XrayConfig())
         Settings.addConfig(AutoAttackConfig())
         Settings.addConfig(KillAuraConfig())
@@ -169,6 +169,7 @@ class Mods {
          * @return The mod with the given chat command.
          */
         @JvmStatic
+        @Deprecated("Use getMod(ChatCommand) instead")
         fun getMod(chatCommand: String): Mod? {
             if (modMap[chatCommand] == null)
                 return null;
@@ -177,8 +178,10 @@ class Mods {
 
         @JvmStatic
         fun <T : Mod?> getMod(chatCommand: ChatCommand): T {
-            var mod = getMod(chatCommand.command)
-            return mod as T
+            val command = chatCommand.command
+            if (modMap[command] == null)
+                throw IllegalArgumentException("Mod with chat command $command not found! Did you forget to add the mod?")
+            return modMap[command]!! as T
         }
 
         /**
@@ -187,6 +190,7 @@ class Mods {
          * @param chatCommand - The chat command of the mod.
          */
         @JvmStatic
+        @Deprecated("Use isActive(ChatCommand) instead")
         fun isActive(chatCommand: String): Boolean {
             val mod: Mod = getMod(chatCommand) ?: return false
             return mod.isActive
@@ -194,7 +198,7 @@ class Mods {
 
         @JvmStatic
         fun isActive(chatCommand: ChatCommand): Boolean {
-            return isActive(chatCommand.command)
+            return getMod<Mod>(chatCommand).isActive
         }
 
         /*
