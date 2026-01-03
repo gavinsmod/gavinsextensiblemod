@@ -22,8 +22,10 @@
  * SOFTWARE.
  */
 
-package com.peasenet.mixins;
+package com.peasenet.mixins.sodium;
 
+import com.peasenet.main.Mods;
+import com.peasenet.util.ChatCommand;
 import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.ShouldDrawSideEvent;
 import com.peasenet.util.event.data.DrawState;
@@ -39,7 +41,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * @author GT3CH1
- * @version 7/5/2022
+ * @version 1/3/2026
+ * @since 7/5/2022
  */
 @Pseudo
 @Mixin(targets = {
@@ -47,10 +50,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinSodiumblockOcclusionCache {
     @Inject(at = @At("HEAD"), method = "shouldDrawSide", cancellable = true)
     private void xray(BlockState state, BlockGetter world, BlockPos pos, Direction side, CallbackInfoReturnable<Boolean> cir) {
-        var drawSide = new DrawState(state);
-        var evt = new ShouldDrawSideEvent(drawSide);
-        EventManager.getEventManager().call(evt);
-        if (drawSide.shouldDraw() != null) {
+        if(Mods.isActive(ChatCommand.Xray)) {
+            var drawSide = new DrawState(state);
+            var evt = new ShouldDrawSideEvent(drawSide);
+            EventManager.getEventManager().call(evt);
             cir.setReturnValue(drawSide.shouldDraw());
         }
     }

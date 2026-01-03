@@ -41,13 +41,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(Block.class)
 public class MixinBlock {
-    @Inject(at = @At("RETURN"), method = "shouldRenderFace", cancellable = true)
-    private static void xray(BlockState state, BlockState otherState, Direction side, CallbackInfoReturnable<Boolean> cir) {
-        var drawSide = new DrawState(state);
+    @Inject(at = @At("HEAD"), method = "shouldRenderFace", cancellable = true)
+    private static void xray(BlockState blockState, BlockState blockState2, Direction direction, CallbackInfoReturnable<Boolean> cir) {
+        var drawSide = new DrawState(blockState);
         var evt = new ShouldDrawSideEvent(drawSide);
         EventManager.getEventManager().call(evt);
-        if (drawSide.shouldDraw() != null) {
-            cir.setReturnValue(drawSide.shouldDraw());
-        }
+        cir.setReturnValue(drawSide.shouldDraw());
     }
 }
