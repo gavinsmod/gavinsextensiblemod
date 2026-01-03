@@ -44,7 +44,14 @@ class XrayConfig : BlockListConfig<XrayConfig>({ it is DropExperienceBlock }) {
     var blockCulling = false
         set(value) {
             field = value
-            if(!readMode)
+            if (!readMode)
+                saveConfig()
+        }
+
+    var showLiquids = true
+        set(value) {
+            field = value
+            if (!readMode)
                 saveConfig()
         }
 
@@ -69,6 +76,8 @@ class XrayConfigGsonAdapter : TypeAdapter<XrayConfig>() {
         out?.endArray()
         out?.name("blockCulling")
         out?.value(value?.blockCulling)
+        out?.name("showLiquids")
+        out?.value(value?.showLiquids)
         out?.endObject()
     }
 
@@ -93,6 +102,10 @@ class XrayConfigGsonAdapter : TypeAdapter<XrayConfig>() {
 
                 "blockCulling" -> {
                     config.blockCulling = reader.nextBoolean()
+                }
+
+                "showLiquids" -> {
+                    config.showLiquids = reader.nextBoolean()
                 }
             }
         }

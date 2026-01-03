@@ -184,6 +184,7 @@
   "gavinsmod.settings.tracer.mob.peaceful": "Peaceful Mobs",
   "gavinsmod.settings.tracer.viewbobcancel": "View Bob Disabled",
   "gavinsmod.settings.xray.blocks": "X-Ray Blocks",
+  "gavinsmod.settings.xray.liquids": "Show Liquids",
   "gavinsmod.settings.xray.chests": "X-Ray Chests",
   "gavinsmod.settings.xray.culling": "X-Ray Culling",
   "key.category.minecraft.gavinsmod.keybinds.combat": "Gavin's Mod - Combat",

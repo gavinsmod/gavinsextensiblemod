@@ -59,6 +59,13 @@ class ModXray : RenderMod(
                     if (isActive) reloadRenderer()
                 }
             }
+            toggleSetting {
+                title = "gavinsmod.settings.xray.liquids"
+                callback = {
+                    Settings.getConfig<XrayConfig>("xray").showLiquids = it.state
+                    if (isActive) reloadRenderer()
+                }
+            }
             clickSetting {
                 title = "gavinsmod.settings.xray.blocks"
                 callback = {
