@@ -33,6 +33,7 @@ import com.peasenet.config.esp.OreEspConfig
 import com.peasenet.config.misc.FpsColorConfig
 import com.peasenet.config.misc.FreeCamConfig
 import com.peasenet.config.misc.MiscConfig
+import com.peasenet.config.movement.NoFallConfig
 import com.peasenet.config.render.FullbrightConfig
 import com.peasenet.config.render.HealthTagConfig
 import com.peasenet.config.render.RadarConfig
@@ -88,6 +89,7 @@ class Mods {
         Settings.addConfig(CaveEspConfig())
         Settings.addConfig(OreEspConfig())
         Settings.addConfig(HealthTagConfig())
+        Settings.addConfig(NoFallConfig())
 
         /*@MODS@*/
         GavinsMod.addMod(ModAutoAttack())

@@ -30,7 +30,9 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.ElytraAnimationState;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.item.ItemStack;
@@ -190,5 +192,10 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayer imple
     @Override
     public Vec3 getDeltaMovement() {
         return super.getDeltaMovement();
+    }
+
+    @Override
+    public ItemStack getItemBySlot(EquipmentSlot slot) {
+        return super.getItemBySlot(slot);
     }
 }

@@ -23,9 +23,14 @@
  */
 package com.peasenet.mods.movement
 
+import com.peasenet.config.movement.NoFallConfig
+import com.peasenet.config.render.XrayConfig
 import com.peasenet.main.GavinsModClient
+import com.peasenet.main.Settings
 import com.peasenet.util.ChatCommand
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
+import net.minecraft.world.entity.EquipmentSlot
+import net.minecraft.world.item.Items
 
 /**
  * @author GT3CH1
@@ -36,11 +41,25 @@ class ModNoFall : MovementMod(
     "gavinsmod.mod.movement.nofall",
     ChatCommand.NoFall
 ) {
+
+    init {
+        toggleSetting {
+            title = "gavinsmod.settings.nofall.pauseOnElytra"
+            callback = {
+                Settings.getConfig<NoFallConfig>(ChatCommand.NoFall).pauseOnElytra = it.state
+            }
+        }
+    }
+
     override fun onTick() {
         val player = GavinsModClient.player!!
+        val hasElytra = player.getItemBySlot(EquipmentSlot.CHEST).item == Items.ELYTRA
+        val pausedOnElytra = Settings.getConfig<NoFallConfig>(ChatCommand.NoFall).pauseOnElytra
         if (player.isCreative())
             return
-        if (player.isShiftKeyDown() && player.isFallFlying() && !fallSpeedCanDamage)
+        if (player.isShiftKeyDown() && !player.isFallFlying() && !fallSpeedCanDamage)
+            return
+        if (hasElytra && pausedOnElytra)
             return
         val packet = ServerboundMovePlayerPacket.StatusOnly(true, player.isCollidingHorizontally())
         player.getNetworkHandler().send(packet)

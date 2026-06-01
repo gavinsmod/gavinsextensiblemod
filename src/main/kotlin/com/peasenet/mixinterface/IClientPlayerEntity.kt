@@ -30,6 +30,7 @@ import net.minecraft.world.entity.player.Abilities
 import net.minecraft.world.item.ItemStack
 import net.minecraft.network.chat.Component
 import net.minecraft.world.InteractionHand
+import net.minecraft.world.entity.EquipmentSlot
 import net.minecraft.world.phys.Vec3
 
 /**
@@ -207,4 +208,6 @@ interface IClientPlayerEntity {
 
     fun isCreative(): Boolean
     fun getDeltaMovement(): Vec3
+
+    fun getItemBySlot(slot: EquipmentSlot): ItemStack
 }
