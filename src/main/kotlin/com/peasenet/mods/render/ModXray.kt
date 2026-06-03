@@ -28,6 +28,7 @@ import com.peasenet.gavui.util.Direction
 import com.peasenet.gui.mod.render.GuiXray
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.Settings
+import com.peasenet.util.ChatCommand
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.BlockEntityRender
 import com.peasenet.util.event.data.DrawState
@@ -55,6 +56,13 @@ class ModXray : RenderMod(
                 title = "gavinsmod.settings.xray.culling"
                 callback = {
                     Settings.getConfig<XrayConfig>("xray").blockCulling = it.state
+                    if (isActive) reloadRenderer()
+                }
+            }
+            toggleSetting {
+                title = "gavinsmod.settings.xray.liquids"
+                callback = {
+                    Settings.getConfig<XrayConfig>("xray").showLiquids = it.state
                     if (isActive) reloadRenderer()
                 }
             }
@@ -103,7 +111,8 @@ class ModXray : RenderMod(
 
     override fun deactivate() {
         // check if full bright is disabled, if it is, reset gamma back to LAST_GAMMA
-        if (!GavinsMod.isEnabled("fullbright")) RenderUtils.setLowGamma()
+        if (!GavinsMod.isEnabled(ChatCommand.FullBright))
+            RenderUtils.setLowGamma()
         client.setChunkCulling(true)
         reloadRenderer()
         deactivating = true

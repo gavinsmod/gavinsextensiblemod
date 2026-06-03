@@ -64,6 +64,7 @@ object RenderUtils {
      * Sets the gamma of the game to the full bright value of 10000.0 while storing the last gamma value.
      */
     fun setHighGamma() {
+        LAST_GAMMA = gamma
         gamma = 16.0
     }
 

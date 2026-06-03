@@ -34,7 +34,7 @@ import net.minecraft.world.level.block.state.BlockState
  * @since 03-02-2023
  */
 data class DrawState(val state: BlockState) : Cancellable() {
-    private var shouldDraw: Boolean? = null
+    private var shouldDraw: Boolean = true
 
     /**
      * Sets whether this state should be drawn.
@@ -47,7 +47,7 @@ data class DrawState(val state: BlockState) : Cancellable() {
     /**
      * Gets whether this state should be drawn. If null, [setShouldDraw] was not called.
      */
-    fun shouldDraw(): Boolean? {
+    fun shouldDraw(): Boolean {
         return shouldDraw
     }
 }

@@ -24,6 +24,8 @@
 package com.peasenet.config.tracer
 
 import com.peasenet.config.commons.TracerEspConfig
+import com.peasenet.gavui.color.Color
+import com.peasenet.gavui.color.Colors
 
 /**
  * The configuration for tracers. This is stored in the core library as there are multiple GEMs that use this.
@@ -37,6 +39,12 @@ class TracerConfig : TracerEspConfig<TracerConfig>() {
     }
 
     var viewBobCancel: Boolean = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    var deathTracerColor: Color = Colors.RED_ORANGE
         set(value) {
             field = value
             saveConfig()

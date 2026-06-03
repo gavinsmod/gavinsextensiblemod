@@ -24,12 +24,9 @@
 
 package com.peasenet.mods.esp
 
-import com.mojang.blaze3d.vertex.PoseStack
 import com.peasenet.gavui.color.Color
 import com.peasenet.util.ChatCommand
-import com.peasenet.util.RenderUtils
 import net.minecraft.world.level.block.entity.SignBlockEntity
-import net.minecraft.world.phys.AABB
 
 /**
  *
@@ -39,7 +36,7 @@ import net.minecraft.world.phys.AABB
  */
 class ModSignEsp : BlockEntityEsp<SignBlockEntity>(
     "gavinsmod.mod.esp.sign",
-    ChatCommand.SignEsp.chatCommand,
+    ChatCommand.SignEsp.command,
     { it is SignBlockEntity }) {
     init {
         colorSetting {

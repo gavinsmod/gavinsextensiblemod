@@ -23,8 +23,14 @@
  */
 package com.peasenet.mods.movement
 
+import com.peasenet.config.movement.NoFallConfig
+import com.peasenet.config.render.XrayConfig
 import com.peasenet.main.GavinsModClient
+import com.peasenet.main.Settings
+import com.peasenet.util.ChatCommand
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
+import net.minecraft.world.entity.EquipmentSlot
+import net.minecraft.world.item.Items
 
 /**
  * @author GT3CH1
@@ -33,19 +39,30 @@ import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
  */
 class ModNoFall : MovementMod(
     "gavinsmod.mod.movement.nofall",
-    "nofall"
+    ChatCommand.NoFall
 ) {
+
+    init {
+        toggleSetting {
+            title = "gavinsmod.settings.nofall.pauseOnElytra"
+            callback = {
+                Settings.getConfig<NoFallConfig>(ChatCommand.NoFall).pauseOnElytra = it.state
+            }
+        }
+    }
+
     override fun onTick() {
         val player = GavinsModClient.player!!
-        if (!isActive)
-            return;
-        if (player.isShiftKeyDown())
-            return;
-        if (isFalling && !fallSpeedCanDamage)
-            return;
-        player.getNetworkHandler().send(
-            ServerboundMovePlayerPacket.StatusOnly(true, player.isCollidingHorizontally())
-        )
+        val hasElytra = player.getItemBySlot(EquipmentSlot.CHEST).item == Items.ELYTRA
+        val pausedOnElytra = Settings.getConfig<NoFallConfig>(ChatCommand.NoFall).pauseOnElytra
+        if (player.isCreative())
+            return
+        if (player.isShiftKeyDown() && !player.isFallFlying() && !fallSpeedCanDamage)
+            return
+        if (hasElytra && pausedOnElytra)
+            return
+        val packet = ServerboundMovePlayerPacket.StatusOnly(true, player.isCollidingHorizontally())
+        player.getNetworkHandler().send(packet)
     }
 
     /**
@@ -68,7 +85,7 @@ class ModNoFall : MovementMod(
     private val fallSpeedCanDamage: Boolean
         get() {
             val player = GavinsModClient.player
-            return player!!.getVelocity().y < -0.5
+            return player!!.getDeltaMovement().y < -0.5
         }
 
 }

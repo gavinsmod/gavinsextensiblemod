@@ -27,10 +27,11 @@ package com.peasenet.mods.render
 
 import com.peasenet.config.render.FullbrightConfig
 import com.peasenet.gavui.util.Direction
-import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
+import com.peasenet.main.Mods
 import com.peasenet.main.Settings
 import com.peasenet.mixinterface.ISimpleOption
+import com.peasenet.util.ChatCommand
 
 /**
  * A mod that allows the client to see very clearly in the absence of a light source.
@@ -43,24 +44,23 @@ class ModFullBright : RenderMod(
     "gavinsmod.mod.render.fullbright", "fullbright"
 ) {
     companion object {
-        lateinit var fullbrightConfig: FullbrightConfig
+        val fullBrightConfig: FullbrightConfig = Settings.getConfig(ChatCommand.FullBright)
     }
 
     init {
-        fullbrightConfig = Settings.getConfig("fullbright")
         subSettings {
             title = translationKey
             direction = Direction.RIGHT
             toggleSetting {
                 title = "gavinsmod.settings.render.fullbright.gammafade"
-                state = isActive
-                callback = { isActive = it.state }
+                state = fullBrightConfig.gammaFade
+                callback = { fullBrightConfig.gammaFade = it.state }
             }
             slideSetting {
                 title = "gavinsmod.settings.render.fullbright.gamma"
-                value = fullbrightConfig.gamma
+                value = fullBrightConfig.gamma
                 callback = {
-                    fullbrightConfig.gamma = it.value
+                    fullBrightConfig.gamma = it.value
                 }
             }
         }
@@ -68,7 +68,7 @@ class ModFullBright : RenderMod(
 
     override fun activate() {
         super.activate()
-        if (!GavinsMod.isEnabled("xray")) setLastGamma()
+        if (!Mods.isActive(ChatCommand.Xray)) setLastGamma()
         deactivating = false
     }
 
@@ -76,7 +76,7 @@ class ModFullBright : RenderMod(
         if (isActive && !isHighGamma) {
             setHighGamma()
             return
-        } else if (!GavinsMod.isEnabled("xray") && !isLastGamma && deactivating) {
+        } else if (!Mods.isActive(ChatCommand.Xray) && !isLastGamma && deactivating) {
             setLowGamma()
             deactivating = !isLastGamma
         }
@@ -84,7 +84,7 @@ class ModFullBright : RenderMod(
 
     override fun onDisable() {
         super.onDisable()
-        if (!fullbrightConfig.gammaFade) {
+        if (!fullBrightConfig.gammaFade) {
             gamma = getLastGamma()
             return
         }
@@ -103,10 +103,10 @@ class ModFullBright : RenderMod(
      * Sets the gamma of the game to the full bright value of 10000.0 while storing the last gamma value.
      */
     private fun setHighGamma() {
-        if (fullbrightConfig.gammaFade) {
+        if (fullBrightConfig.gammaFade) {
             fadeGammaUp()
         } else {
-            gamma = fullbrightConfig.maxGamma().toDouble()
+            gamma = fullBrightConfig.maxGamma().toDouble()
         }
     }
 
@@ -119,7 +119,7 @@ class ModFullBright : RenderMod(
      * Resets the gamma to the players last configured value.
      */
     private fun setLowGamma() {
-        if (fullbrightConfig.gammaFade) {
+        if (fullBrightConfig.gammaFade) {
             fadeGammaDown()
         } else {
             gamma = lastGamma
@@ -140,14 +140,17 @@ class ModFullBright : RenderMod(
          */
         set(gamma) {
             val newValue = gamma
-            val maxGamma = fullbrightConfig.maxGamma()
+            val maxGamma = fullBrightConfig.maxGamma()
             newValue.coerceAtLeast(0.0)
                 .coerceAtMost(maxGamma.toDouble())
             val newGamma = GavinsModClient.minecraftClient.options.gamma()
             (newGamma as ISimpleOption<Double>).forceSetValue(newValue)
         }
     private val isHighGamma: Boolean
-        get() = gamma == 16.0
+        get() {
+            if (gamma < fullBrightConfig.maxGamma()) return false
+            return true
+        }
     private val isLastGamma: Boolean
         get() = gamma <= lastGamma
 

@@ -79,6 +79,7 @@ class GuiSettings : GuiElement(Component.translatable("gavinsmod.gui.settings").
             .setDraggable(true)
             .setHidden(false)
             .buildScroll()
+
         waypointDropdown = GuiBuilder<GuiScroll>()
             .setTopLeft(PointF(325f, 20f))
             .setWidth(100)
@@ -105,6 +106,13 @@ class GuiSettings : GuiElement(Component.translatable("gavinsmod.gui.settings").
             .setWidth(100)
             .setHeight(11)
             .setTitle("gavinsmod.settings.combat")
+            .setDraggable(true)
+            .buildScroll()
+        movementDropdown = GuiBuilder<GuiScroll>()
+            .setTopLeft(PointF(350f, 90f))
+            .setWidth(100)
+            .setHeight(11)
+            .setTitle("gavinsmod.settings.movement")
             .setDraggable(true)
             .buildScroll()
         resetButton = GuiBuilder<GuiScroll>()
@@ -156,6 +164,7 @@ class GuiSettings : GuiElement(Component.translatable("gavinsmod.gui.settings").
         addSettings(guiDropdown, ModCategory.GUI)
         addSettings(combatDropdown, ModCategory.COMBAT)
         addSettings(waypointDropdown, ModCategory.WAYPOINTS)
+        addSettings(movementDropdown, ModCategory.MOVEMENT)
         if (tracerDropdown.hasChildren())
             guis.add(tracerDropdown)
         if (espDropdown.hasChildren())
@@ -166,6 +175,8 @@ class GuiSettings : GuiElement(Component.translatable("gavinsmod.gui.settings").
             guis.add(miscDropdown)
         if (guiDropdown.hasChildren())
             guis.add(guiDropdown)
+        if (movementDropdown.hasChildren())
+            guis.add(movementDropdown)
         if (waypointDropdown.hasChildren())
             guis.add(waypointDropdown)
         if (combatDropdown.hasChildren())
@@ -219,6 +230,8 @@ class GuiSettings : GuiElement(Component.translatable("gavinsmod.gui.settings").
          */
         private lateinit var miscDropdown: GuiScroll
 
+
+        private lateinit var movementDropdown: GuiScroll
 
         private lateinit var waypointDropdown: GuiScroll
 

@@ -81,7 +81,7 @@ class ModRadar : RenderMod(
     override fun onRenderInGameHud(drawContext: GuiGraphics, delta: Float, forceRender: Boolean) {
         val canRender = !Mods.isActive("gui") && !Mods.isActive("settings") || forceRender
         if (!canRender) return
-        val stack = drawContext.pose()
+        drawContext.pose().pushMatrix()
         drawContext.guiRenderState.up()
         RadarConfig.x = client.window.guiScaledWidth - config.size - 10
         val radarBox = BoxF(
@@ -91,8 +91,8 @@ class ModRadar : RenderMod(
             radarBox, drawContext, config.backgroundColor.withAlpha(config.backgroundAlpha)
         )
         GuiUtil.drawOutline(radarBox.expand(1), drawContext, GavUI.borderColor((config.backgroundAlpha)))
-
         drawEntitiesOnRadar(drawContext)
+        drawContext.pose().popMatrix()
     }
 
     /**
@@ -103,7 +103,7 @@ class ModRadar : RenderMod(
     private fun drawEntitiesOnRadar(drawContext: GuiGraphics) {
         val player = client.getPlayer()
 
-        val yaw = player.yHeadRot
+        val yaw = player.yRot
         val entities = world.entitiesForRendering()
         for (entity in entities) {
             if (!canRenderEntity(entity)) continue

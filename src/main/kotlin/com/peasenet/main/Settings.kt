@@ -173,7 +173,7 @@ object Settings {
 
     @Suppress("UNCHECKED_CAST")
     fun <T : Config<*>?> getConfig(key: ChatCommand): T {
-        return getConfig(key.chatCommand)
+        return getConfig(key.command)
     }
 
     /**

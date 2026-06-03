@@ -31,7 +31,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
-import net.minecraft.client.multiplayer.chat.ChatListener;
 import net.minecraft.client.Options;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.LevelRenderer;

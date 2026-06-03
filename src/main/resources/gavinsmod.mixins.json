@@ -2,10 +2,14 @@
   "client": [
     "CameraMixin",
     "EntityRendererMixin",
+    "HeightmapMixin",
+    "MixinBiome",
+    "MixinBlock",
     "MixinChatScreen",
     "MixinClientCommonNetworkHandler",
     "MixinClientPlayerEntity",
     "MixinClientPlayerEntityAirStrafe",
+    "MixinClientPlayerEntityFastMine",
     "MixinClientPlayerEntityNausea",
     "MixinClientPlayNetworkHandler",
     "MixinClientWorld",
@@ -13,28 +17,25 @@
     "MixinGameRendererBobView",
     "MixinInGameHud",
     "MixinInGameOverlayRenderer",
+    "MixinLiquidBlockRenderer",
+    "MixinLivingEntity",
     "MixinMinecraftClient",
     "MixinMinecraftClientAttack",
     "MixinNameTageFeatureRenderer",
+    "MixinPlayerEntity",
     "MixinSimpleOption",
+    "sodium.MixinSodiumblockOcclusionCache",
+    "MixinWorldChunk",
     "MixinWorldRenderer",
-    "ScreenAccessor"
+    "ScreenAccessor",
+    "fabricindigo.MixinBlockRenderInfo"
   ],
   "compatibilityLevel": "JAVA_21",
   "injectors": {
     "defaultRequire": 1
   },
   "minVersion": "0.8",
-  "mixins": [
-    "HeightmapMixin",
-    "MixinBiome",
-    "MixinBlock",
-    "MixinClientPlayerEntityFastMine",
-    "MixinLivingEntity",
-    "MixinPlayerEntity",
-    "MixinSodiumblockOcclusionCache",
-    "MixinWorldChunk"
-  ],
+  "mixins": [],
   "package": "com.peasenet.mixins",
   "required": true
 }

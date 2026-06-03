@@ -27,6 +27,7 @@ import com.peasenet.config.combat.KillAuraConfig
 import com.peasenet.gui.mod.combat.GuiKillAura
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
+import com.peasenet.util.ChatCommand
 import com.peasenet.util.PlayerUtils
 import com.peasenet.util.math.MathUtils
 import net.minecraft.world.entity.Entity
@@ -36,18 +37,18 @@ import java.util.stream.StreamSupport
 
 /**
  * A mod that makes the player face and attack the nearest mob.
- *
+ * @see CombatMod
  * @author GT3CH1
  * @version 11-27-2025
  * @since 03-02-2023
  */
 class ModKillAura : CombatMod(
     "gavinsmod.mod.combat.killaura",
-    "killaura",
+    ChatCommand.KillAura,
 ) {
 
     private companion object {
-        val config = Settings.getConfig<KillAuraConfig>("killaura")
+        val config = Settings.getConfig<KillAuraConfig>(ChatCommand.KillAura)
     }
 
     init {

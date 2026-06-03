@@ -45,7 +45,7 @@ import java.util.function.Predicate;
 public class HeightmapMixin {
     @Inject(at = @At("HEAD"), method = "isOpaque", cancellable = true)
     void setup(CallbackInfoReturnable<Predicate<BlockState>> cir) {
-        if (GavinsMod.isEnabled(ChatCommand.CaveEsp.getChatCommand())) {
+        if (GavinsMod.isEnabled(ChatCommand.CaveEsp.getCommand())) {
             var predicate = (Predicate<BlockState>) (blockState) -> (!blockState.isAir() && !(blockState.getBlock() instanceof LeavesBlock));            cir.setReturnValue(predicate);
         }
     }

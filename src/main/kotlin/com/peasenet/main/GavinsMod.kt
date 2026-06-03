@@ -27,6 +27,7 @@ import com.peasenet.gavui.GavUI
 import com.peasenet.gui.mod.*
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
+import com.peasenet.util.ChatCommand
 import net.fabricmc.api.ModInitializer
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -48,7 +49,6 @@ class GavinsMod : ModInitializer {
          * A hashmap containing the category of each mod category and the corresponding gui.
          */
         val guiList = HashMap<ModCategory, GuiMod>()
-
 
 
         /**
@@ -99,11 +99,17 @@ class GavinsMod : ModInitializer {
          * @return Whether the mod is enabled.
          */
         @JvmStatic
+        @Deprecated("Use Mods.isActive instead", ReplaceWith("Mods.isActive(chatCommand)"))
         fun isEnabled(chatCommand: String): Boolean {
             val mod = Mods.getMod(chatCommand) ?: return false
             return mod.isActive
         }
 
+        @JvmStatic
+        @Deprecated("Use Mods.isActive instead", ReplaceWith("Mods.isActive(chatCommand)"))
+        fun isEnabled(chatCommand: ChatCommand): Boolean {
+            return isEnabled(chatCommand.command)
+        }
 
     }
 
