@@ -112,7 +112,7 @@ class GuiSettings : GuiElement(Component.translatable("gavinsmod.gui.settings").
             .setTopLeft(PointF(350f, 90f))
             .setWidth(100)
             .setHeight(11)
-            .setTitle("gavinsmod.mod.movement")
+            .setTitle("gavinsmod.settings.movement")
             .setDraggable(true)
             .buildScroll()
         resetButton = GuiBuilder<GuiScroll>()

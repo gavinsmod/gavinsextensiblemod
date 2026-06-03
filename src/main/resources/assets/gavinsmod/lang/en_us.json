@@ -94,6 +94,7 @@
   "gavinsmod.mod.tracer.blocktracer": "Block Tracers",
   "gavinsmod.mod.tracer.chest": "Chest Tracers",
   "gavinsmod.mod.tracer.deathtracer": "Death Tracer",
+  "gavinsmod.mod.tracer.deathtracer.color": "Death Tracer Color",
   "gavinsmod.mod.tracer.furnace": "Furnace Tracers",
   "gavinsmod.mod.tracer.item": "Item Tracers",
   "gavinsmod.mod.tracer.mob": "Mob Tracers",

@@ -17,6 +17,17 @@ import kotlin.jvm.optionals.getOrNull
  */
 class ModDeathTracer :
     TracerMod<ModDeathTracer>("gavinsmod.mod.tracer.deathtracer", ChatCommand.DeathTracer.command) {
+
+    init {
+        colorSetting {
+            title = "gavinsmod.mod.tracer.deathtracer.color"
+            color = Colors.RED_ORANGE
+            callback = {
+                config.deathTracerColor = it.color
+            }
+        }
+    }
+
     override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
 
         val lastDeathCoordinates = Minecraft.getInstance().player?.lastDeathLocation?.getOrNull()?.pos ?: return
@@ -26,7 +37,7 @@ class ModDeathTracer :
             matrixStack,
             tracerOrigin,
             end,
-            Colors.RED_ORANGE,
+            config.deathTracerColor,
             config.alpha,
         )
     }
