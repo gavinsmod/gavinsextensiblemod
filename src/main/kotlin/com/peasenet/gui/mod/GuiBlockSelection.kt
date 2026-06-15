@@ -43,7 +43,7 @@ import com.peasenet.settings.clickSetting
 import com.peasenet.settings.toggleSetting
 import net.minecraft.world.level.block.Block
 import net.minecraft.client.input.MouseButtonEvent
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.input.CharacterEvent
 import net.minecraft.client.input.KeyEvent
@@ -278,10 +278,10 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         return super.charTyped(input)
     }
 
-    override fun render(drawContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun extractRenderState(drawContext: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) {
         val matrixStack = drawContext.pose()
         box.render(drawContext, font, mouseX, mouseY, delta)
-        super.render(drawContext, mouseX, mouseY, delta)
+        super.extractRenderState(drawContext, mouseX, mouseY, delta)
         for (i in 0 until blocksPerPage) {
             if (i > visibleBlocks.size - 1) break
             val block = visibleBlocks.toTypedArray()[i]
@@ -320,11 +320,11 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
                     mouseX,
                     mouseY
                 )
-            drawContext.renderItem(stack, blockX, blockY)
+            drawContext.item(stack, blockX, blockY)
         }
         box.canHover = false
-        search.render(drawContext, mouseX, mouseY, delta)
-        drawContext.drawString(
+        search.extractRenderState(drawContext, mouseX, mouseY, delta)
+        drawContext.text(
             minecraft!!.font,
             Component.literal("←"),
             x + m_width / 2 - 86,
@@ -332,7 +332,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
             Colors.WHITE.asInt,
             false
         )
-        drawContext.drawString(
+        drawContext.text(
             minecraft!!.font,
             Component.literal('→'.toString()),
             x + m_width / 2 + 79,

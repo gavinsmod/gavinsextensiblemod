@@ -160,10 +160,10 @@ abstract class Mod(
      * @param message The message to send.
      */
     private fun sendMessage(message: String) {
-        if (Settings.getConfig<MiscConfig>("misc").isMessages && !reloading) GavinsModClient.player!!.displayClientMessage(
+        if (Settings.getConfig<MiscConfig>("misc").isMessages && !reloading) GavinsModClient.player!!.sendOverlayMessage(
             Component.literal(
                 message
-            ), false
+            )
         )
     }
 

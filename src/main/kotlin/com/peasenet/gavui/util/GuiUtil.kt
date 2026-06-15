@@ -28,7 +28,7 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.util.GemRenderLayers
 import com.peasenet.util.RenderUtils
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.rendertype.RenderType
 import org.joml.Matrix3x2fStack
 
@@ -78,11 +78,11 @@ object GuiUtil {
         drawBox(box, matrixStack, c)
     }
 
-    fun drawOutline(box: BoxF, drawContext: GuiGraphics, color: Color) {
-        drawContext.vLine(box.x1.toInt(), box.y1.toInt()-1, box.y2.toInt(), color.asInt)
-        drawContext.vLine(box.x2.toInt()-1, box.y1.toInt()-1, box.y2.toInt(), color.asInt)
-        drawContext.hLine(box.x1.toInt()+1, box.x2.toInt()-2, box.y1.toInt(), color.asInt)
-        drawContext.hLine(box.x1.toInt()+1, box.x2.toInt()-2, box.y2.toInt()-1, color.asInt)
+    fun drawOutline(box: BoxF, drawContext: GuiGraphicsExtractor, color: Color) {
+        drawContext.verticalLine(box.x1.toInt(), box.y1.toInt()-1, box.y2.toInt(), color.asInt)
+        drawContext.verticalLine(box.x2.toInt()-1, box.y1.toInt()-1, box.y2.toInt(), color.asInt)
+        drawContext.horizontalLine(box.x1.toInt()+1, box.x2.toInt()-2, box.y1.toInt(), color.asInt)
+        drawContext.horizontalLine(box.x1.toInt()+1, box.x2.toInt()-2, box.y2.toInt()-1, color.asInt)
     }
 
     /**
@@ -123,7 +123,7 @@ object GuiUtil {
         vcp.endBatch(layer)
     }
 
-    fun fill(box: BoxF, drawContext: GuiGraphics, color: Color) {
+    fun fill(box: BoxF, drawContext: GuiGraphicsExtractor, color: Color) {
         drawContext.fill(box.x1.toInt(), box.y1.toInt(), box.x2.toInt(), box.y2.toInt(), color.asInt)
     }
 

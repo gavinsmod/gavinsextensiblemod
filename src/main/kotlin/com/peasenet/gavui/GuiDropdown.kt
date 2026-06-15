@@ -28,8 +28,7 @@ import com.peasenet.gavui.util.Direction
 import com.peasenet.gavui.util.GavUISettings
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
-import net.minecraft.client.gui.GuiGraphics
-import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.sounds.SoundEvents
 import java.util.function.Consumer
 
@@ -55,7 +54,7 @@ open class GuiDropdown(builder: GuiBuilder<out GuiDropdown>) : GuiDraggable(buil
         this.isOpen = builder.isOpen
     }
 
-    override fun render(drawContext: GuiGraphics, tr: Font, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun render(drawContext: GuiGraphicsExtractor, tr: Font, mouseX: Int, mouseY: Int, delta: Float) {
         // TODO: MC 1.21.10
         updateSymbol()
         val textColor =

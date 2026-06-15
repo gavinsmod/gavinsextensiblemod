@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '2.2.20'
+    ext.kotlin_version = '2.4.0'
     repositories {
         mavenCentral()
     }
@@ -9,7 +9,8 @@ buildscript {
 }
 
 plugins {
-    id 'fabric-loom' version '1.14-SNAPSHOT'
+    id "net.fabricmc.fabric-loom" version "${loom_version}"
+//    id "fabric-loom" version "1.13-SNAPSHOT"
     id 'maven-publish'
 }
 apply plugin: 'kotlin'
@@ -35,10 +36,9 @@ loom {
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation "net.fabricmc:fabric-language-kotlin:1.13.6+kotlin.$kotlin_version"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    implementation "net.fabricmc:fabric-language-kotlin:1.13.12+kotlin.$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     // add gson as a dependency
     implementation "com.google.code.gson:gson:2.11.0"
@@ -53,8 +53,7 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    // Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-    it.options.release = 21
+    it.options.release = 25
 }
 
 java {
@@ -64,17 +63,17 @@ java {
     withSourcesJar()
 }
 
-remapSourcesJar {
-    archiveFileName.set("${project.name}-${mod_version}+${minecraft_version}-sources.jar")
-}
-
-remapJar {
-    archiveFileName.set("${project.name}-${mod_version}+${minecraft_version}.jar")
-}
-
-jar {
-    archiveFileName.set("${project.name}-${mod_version}+${minecraft_version}.jar")
-    from("LICENSE") {
-        rename { "${it}_${project.property("archives_base_name")}" }
-    }
-}
+//remapSourcesJar {
+//    archiveFileName.set("${project.name}-${mod_version}+${minecraft_version}-sources.jar")
+//}
+//
+//remapJar {
+//    archiveFileName.set("${project.name}-${mod_version}+${minecraft_version}.jar")
+//}
+//
+//jar {
+//    archiveFileName.set("${project.name}-${mod_version}+${minecraft_version}.jar")
+//    from("LICENSE") {
+//        rename { "${it}_${project.property("archives_base_name")}" }
+//    }
+//}

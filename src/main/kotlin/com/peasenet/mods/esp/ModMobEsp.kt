@@ -47,8 +47,6 @@ class ModMobEsp : EntityEsp<Entity>(
     "gavinsmod.mod.esp.mob",
     "mobesp",
     { it !is Player && it.showVehicleHealth() && !it.isRemoved && config.inList(it.type) }), RenderListener {
-
-
     init {
         clickSetting {
             title = "gavinsmod.settings.mobesp"

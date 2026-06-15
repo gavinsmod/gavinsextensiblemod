@@ -12,7 +12,7 @@ import com.peasenet.settings.toggleSetting
 import net.minecraft.client.gui.components.FocusableTextWidget
 import net.minecraft.network.chat.Component
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.gui.components.StringWidget
 import net.minecraft.client.gui.components.WidgetTooltipHolder
@@ -333,10 +333,10 @@ class GuiOreEsp : GuiElement(Component.translatable("gavinsmod.mod.esp.ore")) {
         addRenderableWidget(seedText)
     }
 
-    override fun render(drawContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
-        super.render(drawContext, mouseX, mouseY, delta)
-        seedBox.render(drawContext, mouseX, mouseY, delta)
-        seedText.render(drawContext, mouseX, mouseY, delta)
+    override fun extractRenderState(drawContext: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) {
+        super.extractRenderState(drawContext, mouseX, mouseY, delta)
+        seedBox.extractRenderState(drawContext, mouseX, mouseY, delta)
+        seedText.extractRenderState(drawContext, mouseX, mouseY, delta)
     }
 
     private fun reload() {

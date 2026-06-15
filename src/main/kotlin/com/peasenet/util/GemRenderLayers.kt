@@ -23,8 +23,13 @@
  */
 package com.peasenet.util
 
+import com.mojang.blaze3d.pipeline.BlendFunction
+import com.mojang.blaze3d.pipeline.ColorTargetState
+import com.mojang.blaze3d.pipeline.DepthStencilState
 import com.mojang.blaze3d.pipeline.RenderPipeline
-import com.mojang.blaze3d.platform.DepthTestFunction
+import com.mojang.blaze3d.vertex.DefaultVertexFormat
+import com.mojang.blaze3d.vertex.VertexFormat
+//import com.mojang.blaze3d.platform.D
 import net.minecraft.client.renderer.RenderPipelines
 import net.minecraft.client.renderer.rendertype.LayeringTransform
 import net.minecraft.client.renderer.rendertype.OutputTarget
@@ -46,50 +51,17 @@ class GemRenderLayers {
                 .setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
                 .createRenderSetup()
         )
-
-        //        val ESP_LINES: CompositeRenderType = RenderType.create(
-//            "gem:esp_lines", 1536, GemRenderPipeline.ESP_LINE_STRIP,
-//            RenderType.CompositeState.builder()
-//                .setLineState(LineStateShard(OptionalDouble.of(2.0)))
-//                .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
-//                .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)
-//                .createCompositeState(false)
-//        )
         val ESP_LINES: RenderType = RenderType.create(
             "gem:esp_lines",
             RenderSetup.builder(GemRenderPipeline.ESP_LINE_STRIP)
                 .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
-                .setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
+                .setOutputTarget(OutputTarget.MAIN_TARGET)
                 .createRenderSetup()
         )
-
-
-//        val QUADS: CompositeRenderType = RenderType.create(
-//            "gem:quads", 1536, RenderPipelines.DEBUG_QUADS,
-//            RenderType.CompositeState.builder()
-//                .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
-//                .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)
-//                .createCompositeState(false)
-//        )
 
         val QUADS: RenderType = RenderType.create(
             "gem:quads",
             RenderSetup.builder(RenderPipelines.DEBUG_QUADS)
-                .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
-                .setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
-                .createRenderSetup()
-        )
-
-        //        val TEXT: CompositeRenderType = RenderType.create(
-//            "gem:text", 1536, RenderPipelines.GUI_TEXT,
-//            RenderType.CompositeState.builder()
-//                .setLayeringState(RenderStateShard.VIEW_OFFSET_Z_LAYERING)
-//                .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)
-//                .createCompositeState(false)
-//        )
-        val TEXT: RenderType = RenderType.create(
-            "gem:text",
-            RenderSetup.builder(RenderPipelines.GUI_TEXT)
                 .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
                 .setOutputTarget(OutputTarget.ITEM_ENTITY_TARGET)
                 .createRenderSetup()
@@ -99,12 +71,26 @@ class GemRenderLayers {
 
 class GemRenderPipeline {
     companion object {
+
+
+        val FOGLESS_LINES: RenderPipeline.Snippet =
+            RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
+//                .withVertexShader("gem/lines")
+//                .withFragmentShader("gem/lines")
+                .withVertexShader("core/debug_point").withFragmentShader("core/position_color")
+                .withColorTargetState(ColorTargetState(BlendFunction.TRANSLUCENT))
+                .withCull(false)
+                .withVertexFormat(DefaultVertexFormat.POSITION_COLOR_NORMAL_LINE_WIDTH, VertexFormat.Mode.LINES)
+                .buildSnippet()
+
         val ESP_LINE_STRIP: RenderPipeline = RenderPipelines.register(
-            RenderPipeline.builder(RenderPipelines.LINES_SNIPPET)
-                .withLocation("gem/lines")
-//                .withVertexFormat(VertexFormats.POSITION_COLOR, VertexFormat.DrawMode.LINES)
-                .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
-//                .withBlend(BlendFunction.TRANSLUCENT)
+            RenderPipeline.builder(RenderPipelines.LINES_SNIPPET, RenderPipelines.GLOBALS_SNIPPET)
+                .withVertexShader("core/debug_point").withFragmentShader("core/position_color")
+                .withColorTargetState(ColorTargetState(BlendFunction.TRANSLUCENT))
+                .withCull(false)
+
+                .withVertexFormat(DefaultVertexFormat.POSITION_COLOR_NORMAL_LINE_WIDTH, VertexFormat.Mode.LINES)
+                .withLocation("gem/esp_line_strip")
                 .build()
         )
     }

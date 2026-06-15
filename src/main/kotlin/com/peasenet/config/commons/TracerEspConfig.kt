@@ -193,8 +193,7 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
      * @param spawnEggItem The mob to remove (SpawnEggItem)
      */
     fun removeMob(spawnEggItem: SpawnEggItem) {
-        var registryManager = GavinsModClient.minecraftClient.getWorld().registryAccess();
-        removeMob(spawnEggItem.getType(spawnEggItem.defaultInstance))
+        removeMob(SpawnEggItem.getType(spawnEggItem.defaultInstance))
     }
 
     /**
@@ -202,8 +201,7 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
      * @param spawnEggItem The mob to add (SpawnEggItem)
      */
     fun addMob(spawnEggItem: SpawnEggItem) {
-        val registryManager = GavinsModClient.minecraftClient.getWorld().registryAccess();
-        addMob(spawnEggItem.getType(spawnEggItem.defaultInstance))
+        addMob(SpawnEggItem.getType(spawnEggItem.defaultInstance))
     }
 
     /**
@@ -221,8 +219,7 @@ open class TracerEspConfig<E> : Config<TracerEspConfig<E>>() {
      * @return Whether the mob is shown.
      */
     fun inList(egg: SpawnEggItem): Boolean {
-        val registryManager = GavinsModClient.minecraftClient.getWorld().registryAccess();
-        return inList(egg.getType( egg.defaultInstance))
+        return inList(SpawnEggItem.getType(egg.defaultInstance))
     }
 
 

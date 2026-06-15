@@ -34,11 +34,8 @@ import com.peasenet.mods.Mod
 import com.peasenet.mods.gui.GuiMod
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.listeners.InGameHudRenderListener
-import net.minecraft.client.gui.Font
-import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.client.renderer.LightTexture
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.resources.language.I18n
-import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.network.chat.Component
 import net.minecraft.world.phys.Vec3
 
@@ -62,7 +59,7 @@ class ModGuiTextOverlay : MiscMod(
         em.unsubscribe(InGameHudRenderListener::class.java, this)
     }
 
-    override fun onRenderInGameHud(drawContext: GuiGraphics, delta: Float, forceRender: Boolean) {
+    override fun onRenderInGameHud(drawContext: GuiGraphicsExtractor, delta: Float, forceRender: Boolean) {
         modList = Mods.mods.filter { mod: Mod -> mod !is GuiMod && mod !is ModGuiTextOverlay && mod.isActive }
         if (GavinsMod.isEnabled("gui") || GavinsMod.isEnabled("settings") || modList.isEmpty() || forceRender) return
         drawTextOverlay(drawContext)
@@ -73,7 +70,7 @@ class ModGuiTextOverlay : MiscMod(
      *
      * @param drawContext- The drawContext to use
      */
-    private fun drawTextOverlay(drawContext: GuiGraphics) {
+    private fun drawTextOverlay(drawContext: GuiGraphicsExtractor) {
         val matrixStack = drawContext.pose()
         val textRenderer = GavinsModClient.minecraftClient.textRenderer
         var startingPoint = PointF(0f, 0f)
@@ -92,7 +89,7 @@ class ModGuiTextOverlay : MiscMod(
         )
         matrixStack.popMatrix()
         for ((index, mod) in modList.withIndex()) {
-             drawContext.drawString(
+             drawContext.text(
                 textRenderer,
                 Component.translatable(mod.translationKey),
                 startingPoint.x.toInt() + 2,

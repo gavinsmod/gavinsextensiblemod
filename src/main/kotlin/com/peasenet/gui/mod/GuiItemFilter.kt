@@ -39,7 +39,7 @@ import com.peasenet.settings.toggleSetting
 import com.peasenet.util.PlayerUtils
 import com.peasenet.util.data.ItemEntityFilter
 import net.minecraft.client.input.MouseButtonEvent
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.network.chat.Component
@@ -247,14 +247,14 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
         setup()
     }
 
-    override fun render(drawContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun extractRenderState(drawContext: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) {
         offsetY = minecraftClient.window.guiScaledHeight / 2 - height / 2
         val textRenderer = minecraft!!.font
         box!!.render(drawContext, textRenderer, mouseX, mouseY, delta)
 
-        super.render(drawContext, mouseX, mouseY, delta)
+        super.extractRenderState(drawContext, mouseX, mouseY, delta)
         offsetY += 2
-        drawContext.drawString(
+        drawContext.text(
             textRenderer,
             Component.translatable("gavinsmod.settings.name"),
             offsetX + padding,
@@ -263,7 +263,7 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
             false,
         )
         offsetY += 24
-        drawContext.drawString(
+        drawContext.text(
             textRenderer,
             Component.translatable("gavinsmod.settings.filter"),
             offsetX + padding,
@@ -272,7 +272,7 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
             false
         )
         offsetY = minecraftClient.window.guiScaledHeight - 12
-        drawContext.drawString(
+        drawContext.text(
             textRenderer,
             Component.nullToEmpty("Filter UUID: ${itemEspFilter.uuid}"),
             10,
@@ -280,8 +280,8 @@ class GuiItemFilter(private val parentScreen: Screen, filter: ItemEntityFilter, 
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
         )
-        filterName.render(drawContext, mouseX, mouseY, delta)
-        filterString.render(drawContext, mouseX, mouseY, delta)
+        filterName.extractRenderState(drawContext, mouseX, mouseY, delta)
+        filterString.extractRenderState(drawContext, mouseX, mouseY, delta)
     }
 
     override fun mouseClicked(click: MouseButtonEvent, doubled: Boolean): Boolean {

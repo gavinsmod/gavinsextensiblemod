@@ -23,7 +23,7 @@
  */
 package com.peasenet.util.listeners
 
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 
 /**
  * A listener for the world render event.
@@ -38,5 +38,5 @@ interface InGameHudRenderListener : Listener {
      * @param drawContext - The draw context to use.
      * @param delta - The time delta.
      */
-    fun onRenderInGameHud(drawContext: GuiGraphics, delta: Float, forceRender: Boolean = false)
+    fun onRenderInGameHud(drawContext: GuiGraphicsExtractor, delta: Float, forceRender: Boolean = false)
 }

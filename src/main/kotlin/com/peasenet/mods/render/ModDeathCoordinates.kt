@@ -6,7 +6,7 @@ import com.peasenet.main.GavinsModClient
 import com.peasenet.util.ChatCommand
 import com.peasenet.util.listeners.InGameHudRenderListener
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import kotlin.jvm.optionals.getOrNull
 
 /**
@@ -28,7 +28,7 @@ class ModDeathCoordinates :
         super.onDisable()
     }
 
-    override fun onRenderInGameHud(drawContext: GuiGraphics, delta: Float, forceRender: Boolean) {
+    override fun onRenderInGameHud(drawContext: GuiGraphicsExtractor, delta: Float, forceRender: Boolean) {
         if (GavinsMod.isEnabled("gui") || GavinsMod.isEnabled("settings") || !isActive) return
         val yCoordinate = if (GavinsMod.isEnabled(ChatCommand.FpsCounter)) 12 else 2
         val lastDeathCoordinates = Minecraft.getInstance().player?.lastDeathLocation?.getOrNull()?.pos ?: return
@@ -41,7 +41,7 @@ class ModDeathCoordinates :
                 text
             )) - 2
 
-        drawContext.drawString(
+        drawContext.text(
             GavinsModClient.Companion.minecraftClient.textRenderer,
             text,
             xCoordinate,

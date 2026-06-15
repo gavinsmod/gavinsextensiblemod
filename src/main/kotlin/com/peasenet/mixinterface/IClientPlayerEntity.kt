@@ -188,7 +188,9 @@ interface IClientPlayerEntity {
      * @param message   - The message to send.
      * @param actionBar - Whether the message should be sent as an action bar message.
      */
-    fun displayClientMessage(message: Component?, actionBar: Boolean)
+//    fun displayClientMessage(@Nullable Component message, boolean actionBar)
+    fun sendOverlayMessage(message: Component?)
+
 
     /**
      * Gets the item in the main hand.
