@@ -39,7 +39,7 @@ import com.peasenet.main.GavinsModClient
 import com.peasenet.settings.ColorSetting
 import com.peasenet.settings.ToggleSetting
 import net.minecraft.client.input.MouseButtonEvent
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.client.input.CharacterEvent
 import net.minecraft.client.input.KeyEvent
@@ -48,6 +48,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.SpawnEggItem
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
+import kotlin.jvm.optionals.getOrNull
 
 /**
  *
@@ -238,7 +239,8 @@ abstract class GuiMobSelection(label: Component) : GuiElement(label) {
         items = ArrayList()
         BuiltInRegistries.ENTITY_TYPE.forEach {
             val spawnEgg = SpawnEggItem.byId(it)
-            if (spawnEgg != null) items.add(spawnEgg.defaultInstance)
+            val item = spawnEgg.getOrNull()?.value()?.defaultInstance
+            if (spawnEgg != null && item != null) items.add(item)
         }
         visibleItems = items
         nextButton =
@@ -270,7 +272,8 @@ abstract class GuiMobSelection(label: Component) : GuiElement(label) {
         if (showHostileColor) tw = tw.coerceAtLeast(font.width(hostileColor?.gui?.title ?: Component.nullToEmpty("")))
         if (showPeacefulColor) tw = tw.coerceAtLeast(font.width(peacefulColor?.gui?.title ?: Component.nullToEmpty("")))
         if (showHostileToggle) tw = tw.coerceAtLeast(font.width(hostileToggle?.gui?.title ?: Component.nullToEmpty("")))
-        if (showPeacefulToggle) tw = tw.coerceAtLeast(font.width(peacefulToggle?.gui?.title ?: Component.nullToEmpty("")))
+        if (showPeacefulToggle) tw =
+            tw.coerceAtLeast(font.width(peacefulToggle?.gui?.title ?: Component.nullToEmpty("")))
         if (additionalGuis.isNotEmpty()) {
             for (gui in additionalGuis) {
                 tw = tw.coerceAtLeast(font.width(gui.title ?: Component.nullToEmpty("")))
@@ -323,10 +326,10 @@ abstract class GuiMobSelection(label: Component) : GuiElement(label) {
      */
     abstract fun handleItemToggle(item: ItemStack)
 
-    override fun render(drawContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun extractRenderState(drawContext: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) {
         val matrixStack = drawContext.pose()
-        super.render(drawContext, mouseX, mouseY, delta)
-        search.render(drawContext, mouseX, mouseY, delta)
+        super.extractRenderState(drawContext, mouseX, mouseY, delta)
+        search.extractRenderState(drawContext, mouseX, mouseY, delta)
         for (i in 0 until ITEMS_PER_PAGE) {
             if ((pageOffset + i) > visibleItems.size - 1) break
             val block = visibleItems[pageOffset + i]
@@ -353,9 +356,14 @@ abstract class GuiMobSelection(label: Component) : GuiElement(label) {
                     GavUISettings.getColor("gui.color.foreground").brighten(0.5f).getAsInt()
                 )
                 GuiUtil.drawOutline(Colors.WHITE, boxF, matrixStack)
-                drawContext.setTooltipForNextFrame(font, Component.translatable(block.item.descriptionId), mouseX, mouseY)
+                drawContext.setTooltipForNextFrame(
+                    font,
+                    Component.translatable(block.item.descriptionId),
+                    mouseX,
+                    mouseY
+                )
             }
-            drawContext.renderItem(block, blockX, blockY)
+            drawContext.item(block, blockX, blockY)
         }
     }
 

@@ -47,7 +47,7 @@ class ModOreSim : RenderMod("gavinsmod.mod.render.oresim", "oresim"), ChunkUpdat
     }
 
     private fun renderChunkAt(chunkX: Int, chunkZ: Int, matrixStack: PoseStack) {
-        val key = ChunkPos.asLong(chunkX, chunkZ)
+        val key = ChunkPos.hash(chunkX, chunkZ)
 
     }
 

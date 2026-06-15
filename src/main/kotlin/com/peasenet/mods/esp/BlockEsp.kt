@@ -100,7 +100,7 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
             if (chunks.isEmpty()) return
             GL11.glDisable(GL11.GL_DEPTH_TEST)
             val vcp = RenderUtils.getVertexConsumerProvider()
-            val layer = GemRenderLayers.ESP_LINES
+            val layer = GemRenderLayers.LINES
             val buffer = vcp.getBuffer(layer)
             chunks.values.filter { chunkInRenderDistance(it) }.toMutableList().forEach {
                 it.render(
@@ -164,7 +164,7 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
         gavBlock: GavBlock,
         chunkPos: ChunkPos,
     ) {
-        val key = chunkPos.toLong()
+        val key = chunkPos.hashCode()
         var espChunk = chunks[key]
         if (espChunk == null) {
             val gavChunk = GavChunk(chunkPos)
@@ -184,15 +184,15 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
      * @param chunkPos The center chunk position.
      */
     private fun updateNeighborChunks(chunkPos: ChunkPos) {
-        val main = chunks[chunkPos.toLong()]
-        val north = chunks[chunkPos.north().toLong()]
-        val south = chunks[chunkPos.south().toLong()]
-        val east = chunks[chunkPos.east().toLong()]
-        val west = chunks[chunkPos.west().toLong()]
-        val northEast = chunks[chunkPos.east().north().toLong()]
-        val northWest = chunks[chunkPos.west().north().toLong()]
-        val southEast = chunks[chunkPos.east().south().toLong()]
-        val southWest = chunks[chunkPos.west().south().toLong()]
+        val main = chunks[chunkPos.hashCode()]
+        val north = chunks[chunkPos.north().hashCode()]
+        val south = chunks[chunkPos.south().hashCode()]
+        val east = chunks[chunkPos.east().hashCode()]
+        val west = chunks[chunkPos.west().hashCode()]
+        val northEast = chunks[chunkPos.east().north().hashCode()]
+        val northWest = chunks[chunkPos.west().north().hashCode()]
+        val southEast = chunks[chunkPos.east().south().hashCode()]
+        val southWest = chunks[chunkPos.west().south().hashCode()]
         main?.updateBlocks()
         north?.updateBlocks()
         south?.updateBlocks()
@@ -204,5 +204,5 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
         southWest?.updateBlocks()
     }
 
-    val chunks = HashMap<Long, GavChunk>()
+    val chunks = HashMap<Int, GavChunk>()
 }

@@ -446,9 +446,9 @@ object RenderUtils {
         buffer: VertexConsumer? = null,
     ) {
 
+        GL11.glDisable(GL11.GL_DEPTH_TEST)
         val vcp = getVertexConsumerProvider()
-
-        val layer = if (depthTest) GemRenderLayers.LINES else GemRenderLayers.ESP_LINES
+        val layer = GemRenderLayers.LINES
         val bufferBuilder = buffer ?: vcp.getBuffer(layer)
         val posMatrix = matrixStack.last()
         var bb2 = end
@@ -472,6 +472,8 @@ object RenderUtils {
         if (buffer == null)
             vcp.endBatch(layer)
 
+        GL11.glEnable(GL11.GL_DEPTH_TEST)
+
     }
 
     fun drawSingleLine(
@@ -486,7 +488,7 @@ object RenderUtils {
 
         val vcp = getVertexConsumerProvider()
 
-        val layer = if (depthTest) GemRenderLayers.LINES else GemRenderLayers.ESP_LINES
+        val layer = GemRenderLayers.LINES
         val bufferBuilder = vcp.getBuffer(layer)
         val posMatrix = matrixStack
         var bb2 = end

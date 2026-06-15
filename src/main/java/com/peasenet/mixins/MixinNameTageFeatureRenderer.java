@@ -29,7 +29,7 @@ import java.util.Comparator;
  */
 @Mixin(NameTagFeatureRenderer.class)
 public class MixinNameTageFeatureRenderer {
-    @Inject(at = @At(value = "HEAD"), method = "render", cancellable = true)
+    @Inject(at = @At(value = "HEAD"), method = "renderTranslucent", cancellable = true)
     void test(SubmitNodeCollection submitNodeCollection, MultiBufferSource.BufferSource bufferSource, Font font, CallbackInfo ci) {
         if (Mods.isActive(ChatCommand.HealthTag)) {
             var backgorundColor = getSettings().getBackgroundColor().getAsInt(getSettings().getAlpha());

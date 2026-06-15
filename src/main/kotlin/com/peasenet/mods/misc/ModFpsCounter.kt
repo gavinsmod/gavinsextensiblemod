@@ -33,7 +33,7 @@ import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
 import com.peasenet.util.listeners.InGameHudRenderListener
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.network.chat.Component
 
 /**
@@ -89,7 +89,7 @@ class ModFpsCounter : MiscMod(
         em.unsubscribe(InGameHudRenderListener::class.java, this)
     }
 
-    override fun onRenderInGameHud(drawContext: GuiGraphics, delta: Float, forceRender: Boolean) {
+    override fun onRenderInGameHud(drawContext: GuiGraphicsExtractor, delta: Float, forceRender: Boolean) {
         if (GavinsMod.isEnabled("gui") || GavinsMod.isEnabled("settings") || !isActive) return
         drawFpsOverlay(drawContext)
     }
@@ -99,7 +99,7 @@ class ModFpsCounter : MiscMod(
      *
      * @param drawContext The draw context ot use.
      */
-    private fun drawFpsOverlay(drawContext: GuiGraphics) {
+    private fun drawFpsOverlay(drawContext: GuiGraphicsExtractor) {
         val fps = GavinsModClient.minecraftClient.getFps()
         val fpsString = "FPS: $fps"
         val textWidth = GavinsModClient.minecraftClient.textRenderer.width(fpsString)
@@ -117,6 +117,6 @@ class ModFpsCounter : MiscMod(
             color = color.withAlpha(1f)
         }
         GuiUtil.fill(box, drawContext, GavUISettings.getColor("gui.color.background").withAlpha(0.5f))
-        drawContext.drawString(client.textRenderer, Component.literal(fpsString), xCoordinate, 2, color.asInt, false)
+        drawContext.text(client.textRenderer, Component.literal(fpsString), xCoordinate, 2, color.asInt, false)
     }
 }

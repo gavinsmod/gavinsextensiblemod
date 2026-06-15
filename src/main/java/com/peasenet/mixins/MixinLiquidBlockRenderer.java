@@ -1,13 +1,12 @@
 package com.peasenet.mixins;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.peasenet.config.render.XrayConfig;
 import com.peasenet.main.Mods;
 import com.peasenet.main.Settings;
 import com.peasenet.util.ChatCommand;
-import net.minecraft.client.renderer.block.LiquidBlockRenderer;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.FluidRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * @since 01-03-2026
  */
 
-@Mixin(LiquidBlockRenderer.class)
+@Mixin(FluidRenderer.class)
 public class MixinLiquidBlockRenderer {
     @Inject(at = @At("HEAD"), method = "isFaceOccludedByState", cancellable = true)
     private static void isFaceOccluded(CallbackInfoReturnable<Boolean> cir) {
@@ -38,7 +37,7 @@ public class MixinLiquidBlockRenderer {
     }
 
     @Inject(at = @At("HEAD"), method = "tesselate", cancellable = true)
-    void test(BlockAndTintGetter blockAndTintGetter, BlockPos blockPos, VertexConsumer vertexConsumer, BlockState blockState, FluidState fluidState, CallbackInfo ci) {
+    void test(BlockAndTintGetter level, BlockPos pos, FluidRenderer.Output output, BlockState blockState, FluidState fluidState, CallbackInfo ci) {
         if (Mods.isActive(ChatCommand.Xray)) {
             XrayConfig xrayConfig = Settings.INSTANCE.getConfig(ChatCommand.Xray);
             if (!xrayConfig.getShowLiquids()) {

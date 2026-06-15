@@ -28,11 +28,10 @@
   ],
   "accessWidener": "gem.accesswidener",
   "depends": {
-    "fabricloader": ">=0.16.9",
-    "fabric": "*",
-    "minecraft": ">=1.21.11",
-    "java": ">=21",
-    "fabric-key-binding-api-v1": "*",
-    "fabric-language-kotlin": ">=1.13.6"
+    "fabricloader": ">=0.19.3",
+    "fabric-api": "*",
+    "minecraft": ">=26.1",
+    "java": ">=25",
+    "fabric-language-kotlin": ">=1.13.12"
   }
 }

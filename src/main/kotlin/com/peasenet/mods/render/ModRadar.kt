@@ -35,7 +35,7 @@ import com.peasenet.main.Mods
 import com.peasenet.main.Settings
 import com.peasenet.util.listeners.InGameHudRenderListener
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.Mob
@@ -43,6 +43,7 @@ import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.SpawnEggItem
 import net.minecraft.world.phys.Vec3
+import kotlin.jvm.optionals.getOrNull
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -78,7 +79,7 @@ class ModRadar : RenderMod(
         em.unsubscribe(InGameHudRenderListener::class.java, this)
     }
 
-    override fun onRenderInGameHud(drawContext: GuiGraphics, delta: Float, forceRender: Boolean) {
+    override fun onRenderInGameHud(drawContext: GuiGraphicsExtractor, delta: Float, forceRender: Boolean) {
         val canRender = !Mods.isActive("gui") && !Mods.isActive("settings") || forceRender
         if (!canRender) return
         drawContext.pose().pushMatrix()
@@ -100,7 +101,7 @@ class ModRadar : RenderMod(
      *
      * @param drawContext The draw context.
      */
-    private fun drawEntitiesOnRadar(drawContext: GuiGraphics) {
+    private fun drawEntitiesOnRadar(drawContext: GuiGraphicsExtractor) {
         val player = client.getPlayer()
 
         val yaw = player.yRot
@@ -126,7 +127,7 @@ class ModRadar : RenderMod(
      * @return The item stack for the given entity, or null if none exists.
      */
     fun getItemStack(entity: Entity): ItemStack? {
-        var itemStack = SpawnEggItem.byId(entity.type)?.defaultInstance
+        var itemStack = SpawnEggItem.byId(entity.type)?.getOrNull()?.value()?.defaultInstance ?: return null
         if (entity is ItemEntity) {
             itemStack = entity.item
         }
@@ -139,7 +140,7 @@ class ModRadar : RenderMod(
      * @param point The point to draw.
      * @param color The color to draw the point with.
      */
-    private fun drawPoint(drawContext: GuiGraphics, point: PointF, color: Color) {
+    private fun drawPoint(drawContext: GuiGraphicsExtractor, point: PointF, color: Color) {
         drawContext.pose().pushMatrix()
         var box = BoxF(point, 1f, 1f)
         val pointSizeScalar = if (config.pointSize == 1) 1 else if (config.pointSize == 3) 2 else 3
@@ -158,7 +159,7 @@ class ModRadar : RenderMod(
      * @param point The point to render the egg at.
      * @param itemStack The item stack to draw.
      */
-    private fun renderItem(drawContext: GuiGraphics, point: PointF, itemStack: ItemStack) {
+    private fun renderItem(drawContext: GuiGraphicsExtractor, point: PointF, itemStack: ItemStack) {
         drawContext.guiRenderState.up()
         drawContext.pose().pushMatrix()
         val pointSizeScalar = if (config.pointSize == 1) 1f else if (config.pointSize == 3) 1.5f else 2f
@@ -167,7 +168,7 @@ class ModRadar : RenderMod(
         drawContext.pose().translate(point.x, point.y)
         drawContext.pose().translate(-itemOffset, -itemOffset)
         drawContext.pose().scale(scaleFactor)
-        drawContext.renderItem(itemStack, 0, 0)
+        drawContext.item(itemStack, 0, 0)
         drawContext.pose().popMatrix()
     }
 

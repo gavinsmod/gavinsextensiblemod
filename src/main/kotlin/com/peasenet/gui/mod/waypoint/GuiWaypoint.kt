@@ -40,7 +40,7 @@ import com.peasenet.mods.render.waypoints.Waypoint
 import com.peasenet.settings.*
 import com.peasenet.util.Dimension
 import net.minecraft.client.input.MouseButtonEvent
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.components.EditBox
 import net.minecraft.core.BlockPos
 import net.minecraft.network.chat.Component
@@ -234,49 +234,49 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         colorCycle = colorSetting {
             title = "gavinsmod.settings.render.waypoints.color"
             color = w.color
-            topLeft = PointF(paddingX.toFloat(), offsetY.toFloat())
-            width = wholeButtonWidth.toFloat()
+            topLeft = PointF(paddingX, offsetY)
+            width = wholeButtonWidth
         }
         offsetY += 14
 
         waypointToggle = toggleSetting {
             title = "gavinsmod.settings.enabled"
-            topLeft = PointF(paddingX.toFloat(), offsetY.toFloat())
-            width = wholeButtonWidth.toFloat()
+            topLeft = PointF(paddingX, offsetY)
+            width = wholeButtonWidth
             state = w.isEnabled
         }
         offsetY += 14
         espToggle = toggleSetting {
             title = "gavinsmod.settings.esp"
-            topLeft = PointF(paddingX.toFloat(), offsetY.toFloat())
-            width = (wholeButtonWidth / 2 - padding / 2).toFloat()
+            topLeft = PointF(paddingX, offsetY)
+            width = (wholeButtonWidth / 2 - padding / 2)
             state = w.renderEsp
         }
         tracerToggle = toggleSetting {
             title = "gavinsmod.settings.tracer"
-            topLeft = PointF((offsetX + padding + padding / 2 + wholeButtonWidth / 2).toFloat(), (offsetY).toFloat())
-            width = (wholeButtonWidth / 2 - padding / 2).toFloat()
+            topLeft = PointF((offsetX + padding + padding / 2 + wholeButtonWidth / 2), (offsetY))
+            width = (wholeButtonWidth / 2 - padding / 2)
             state = w.renderTracer
         }
         offsetY += 28
         overworldToggle = toggleSetting {
             title = "gavinsmod.settings.overworld"
-            topLeft = PointF(paddingX.toFloat(), (offsetY).toFloat())
-            width = wholeButtonWidth.toFloat()
+            topLeft = PointF(paddingX, (offsetY))
+            width = wholeButtonWidth
             state = w.hasDimension(Dimension.OVERWORLD)
         }
         offsetY += 14
         netherToggle = toggleSetting {
             title = "gavinsmod.settings.nether"
-            topLeft = PointF(paddingX.toFloat(), (offsetY).toFloat())
-            width = wholeButtonWidth.toFloat()
+            topLeft = PointF(paddingX, (offsetY))
+            width = wholeButtonWidth
             state = w.hasDimension(Dimension.NETHER)
         }
         offsetY += 14
         endToggle = toggleSetting {
             title = "gavinsmod.settings.end"
-            topLeft = PointF(paddingX.toFloat(), (offsetY).toFloat())
-            width = wholeButtonWidth.toFloat()
+            topLeft = PointF(paddingX, (offsetY))
+            width = wholeButtonWidth
             state = w.hasDimension(Dimension.END)
         }
         offsetY += 14
@@ -297,9 +297,10 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         xCoordinate.value = coordinates.x.toString()
         yCoordinate.value = coordinates.y.toString()
         zCoordinate.value = coordinates.z.toString()
-        xCoordinate.setFilter(checkIfSignedInt())
-        yCoordinate.setFilter(checkIfSignedInt())
-        zCoordinate.setFilter(checkIfSignedInt())
+        // TODO: 26.1.2
+//        xCoordinate.(checkIfSignedInt())
+//        yCoordinate.setFilter(checkIfSignedInt())
+//        zCoordinate.setFilter(checkIfSignedInt())
         addWidget(textField)
         addWidget(xCoordinate)
         addWidget(yCoordinate)
@@ -307,21 +308,21 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         offsetY += 14
         saveSettings = clickSetting {
             title = "gavinsmod.settings.save"
-            topLeft = PointF(paddingX.toFloat(), offsetY.toFloat())
+            topLeft = PointF(paddingX, offsetY)
             width = buttonWidth.toFloat()
             color = Colors.GREEN
             callback = { saveCallback() }
         }
         cancelSettings = clickSetting {
             title = "gavinsmod.settings.cancel"
-            topLeft = PointF((paddingX + padding + buttonWidth).toFloat(), offsetY.toFloat())
+            topLeft = PointF((paddingX + padding + buttonWidth), offsetY)
             width = buttonWidth.toFloat()
             color = Colors.YELLOW
             callback = { minecraft!!.setScreen(parent) }
         }
         deleteSettings = clickSetting {
             title = "gavinsmod.settings.delete"
-            topLeft = PointF((paddingX + padding * 2 + buttonWidth * 2).toFloat(), offsetY.toFloat())
+            topLeft = PointF((paddingX + padding * 2 + buttonWidth * 2), offsetY)
             width = buttonWidth.toFloat()
             color = Colors.RED
             callback = { deleteCallback() }
@@ -371,12 +372,12 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
         }
     }
 
-    override fun render(drawContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
+    override fun extractRenderState(drawContext: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) {
         offsetY = minecraftClient.window.guiScaledHeight / 2.0f - height / 2.0f
         box.render(drawContext, minecraft!!.font, mouseX, mouseY, delta)
-        super.render(drawContext, mouseX, mouseY, delta)
+        super.extractRenderState(drawContext, mouseX, mouseY, delta)
         guis.forEach(Consumer { obj: Gui -> obj.show() })
-        drawContext.drawString(
+        drawContext.text(
             minecraft!!.font,
             Component.literal("Name: "),
             paddingX.toInt(),
@@ -384,7 +385,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
         )
-        drawContext.drawString(
+        drawContext.text(
             minecraft!!.font,
             Component.literal("X:"),
             (paddingX + 1).toInt(),
@@ -392,7 +393,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
         )
-        drawContext.drawString(
+        drawContext.text(
             minecraft!!.font,
             Component.literal("Y:"),
             (paddingX + 46).toInt(),
@@ -400,7 +401,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
         )
-        drawContext.drawString(
+        drawContext.text(
             minecraft!!.font,
             Component.literal("Z:"),
             (paddingX + 94).toInt(),
@@ -408,7 +409,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
         )
-        drawContext.drawString(
+        drawContext.text(
             minecraft!!.font,
             Component.literal("Dimensions"),
             (paddingX + 1).toInt(),
@@ -416,10 +417,10 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             GavUISettings.getColor("gui.color.foreground").asInt,
             false
         )
-        textField.render(drawContext, mouseX, mouseY, delta)
-        xCoordinate.render(drawContext, mouseX, mouseY, delta)
-        yCoordinate.render(drawContext, mouseX, mouseY, delta)
-        zCoordinate.render(drawContext, mouseX, mouseY, delta)
+        textField.extractRenderState(drawContext, mouseX, mouseY, delta)
+        xCoordinate.extractRenderState(drawContext, mouseX, mouseY, delta)
+        yCoordinate.extractRenderState(drawContext, mouseX, mouseY, delta)
+        zCoordinate.extractRenderState(drawContext, mouseX, mouseY, delta)
     }
 
     override fun mouseClicked(click: MouseButtonEvent, doubled: Boolean): Boolean {

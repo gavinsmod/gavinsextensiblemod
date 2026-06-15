@@ -23,7 +23,6 @@
  */
 package com.peasenet.gavui
 
-import com.mojang.blaze3d.font.TrueTypeGlyphProvider
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.BoxF
@@ -31,10 +30,9 @@ import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GuiUtil
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Font
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.FontDescription
-import net.minecraft.network.chat.FormattedText
 import net.minecraft.network.chat.Style
 import net.minecraft.resources.Identifier
 import java.util.*
@@ -218,7 +216,7 @@ open class Gui(
      * @param delta       The change in time since the last render.
      */
     open fun render(
-        drawContext: GuiGraphics,
+        drawContext: GuiGraphicsExtractor,
         tr: Font,
         mouseX: Int,
         mouseY: Int,
@@ -262,7 +260,7 @@ open class Gui(
      * @param tr          - The text renderer to use.
      */
     protected fun drawSymbol(
-        drawContext: GuiGraphics,
+        drawContext: GuiGraphicsExtractor,
         tr: Font,
         color: Color,
         offsetX: Float = 0f,
@@ -270,7 +268,7 @@ open class Gui(
     ) {
         if (symbol == null) return
         val symbolWidth = tr.width(symbol.toString())
-        drawContext.drawString(
+        drawContext.text(
             tr,
             symbol,
             (x2 - symbolWidth + offsetX).toInt(),
@@ -290,7 +288,7 @@ open class Gui(
      * @param delta       - The change in time since the last render.
      */
     private fun renderChildren(
-        drawContext: GuiGraphics,
+        drawContext: GuiGraphicsExtractor,
         tr: Font,
         mouseX: Int,
         mouseY: Int,
@@ -418,7 +416,7 @@ open class Gui(
 
     //NOTE: I wrote this so that I don't have to deal with the API in drawContext and I can just use the textRenderer directly.
     protected fun drawText(
-        drawContext: GuiGraphics,
+        drawContext: GuiGraphicsExtractor,
         textRenderer: Font,
         text: Component,
         x: Int,
@@ -426,7 +424,7 @@ open class Gui(
         color: Color,
         shadow: Boolean = false,
     ) {
-        drawContext.drawString(textRenderer, text, x, y, color.asInt, shadow)
+        drawContext.text(textRenderer, text, x, y, color.asInt, shadow)
     }
 
     override fun hashCode(): Int {

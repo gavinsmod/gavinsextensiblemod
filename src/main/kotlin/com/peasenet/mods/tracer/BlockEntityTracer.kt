@@ -77,7 +77,6 @@ abstract class BlockEntityTracer<T : BlockEntity>(
 
     override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
         if (entityList.isEmpty()) return
-        // TODO: MC 1.21.10 update
         for (e in entityList) {
             val tracerOrigin = RenderUtils.getLookVec(partialTicks).scale(10.0)
             val end = e.blockPos.center

@@ -30,7 +30,7 @@ import com.peasenet.main.GavinsModClient
 import com.peasenet.mixins.ScreenAccessor
 import com.peasenet.settings.Setting
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.input.MouseButtonEvent
 import net.minecraft.network.chat.Component
@@ -125,8 +125,8 @@ open class GuiElement(title: Component) :
     }
 
 
-    override fun render(drawContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
-        super.render(drawContext, mouseX, mouseY, delta)
+    override fun extractRenderState(drawContext: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) {
+        super.extractRenderState(drawContext, mouseX, mouseY, delta)
         val stack = drawContext.pose()
         stack.pushMatrix()
         drawContext.guiRenderState.up()

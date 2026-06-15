@@ -5,6 +5,7 @@
     "HeightmapMixin",
     "MixinBiome",
     "MixinBlock",
+    "MixinBlockEntityRenderDispatcher",
     "MixinChatScreen",
     "MixinClientCommonNetworkHandler",
     "MixinClientPlayerEntity",
@@ -21,21 +22,25 @@
     "MixinLivingEntity",
     "MixinMinecraftClient",
     "MixinMinecraftClientAttack",
+    "MixinModelBlockRenderer",
     "MixinNameTageFeatureRenderer",
     "MixinPlayerEntity",
     "MixinSimpleOption",
-    "sodium.MixinSodiumblockOcclusionCache",
     "MixinWorldChunk",
     "MixinWorldRenderer",
     "ScreenAccessor",
-    "fabricindigo.MixinBlockRenderInfo"
+    "fabricindigo.MixinBlockRenderInfo",
+    "fabricindigo.MixinModelBlockRenderer",
+    "sodium.MixinSodiumblockOcclusionCache"
   ],
   "compatibilityLevel": "JAVA_21",
   "injectors": {
     "defaultRequire": 1
   },
   "minVersion": "0.8",
-  "mixins": [],
+  "mixins": [
+    "MixinBlockStateBase"
+  ],
   "package": "com.peasenet.mixins",
   "required": true
 }

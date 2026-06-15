@@ -183,7 +183,7 @@ object PlayerUtils {
         var newMessage = message
         val sendMessage = Settings.getConfig<MiscConfig>("misc").isMessages
         if (withPrefix) newMessage = Mod.GAVINS_MOD_STRING + newMessage
-        if (sendMessage) GavinsModClient.player!!.displayClientMessage(Component.literal(newMessage), false)
+        if (sendMessage) GavinsModClient.player!!.sendOverlayMessage(Component.literal(newMessage))
     }
 
     @JvmStatic
@@ -191,6 +191,6 @@ object PlayerUtils {
         val sendMessage = Settings.getConfig<MiscConfig>("misc").isMessages
         var newMessage = message.string
         if (withPrefix) newMessage = Mod.GAVINS_MOD_STRING + newMessage
-        if (sendMessage) GavinsModClient.player!!.displayClientMessage(Component.literal(newMessage), false)
+        if (sendMessage) GavinsModClient.player!!.sendOverlayMessage(Component.literal(newMessage))
     }
 }

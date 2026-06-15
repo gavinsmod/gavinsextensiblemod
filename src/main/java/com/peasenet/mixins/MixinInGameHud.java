@@ -28,7 +28,7 @@ import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.InGameHudRenderEvent;
 import com.peasenet.util.event.RenderOverlayEvent;
 import com.peasenet.util.event.data.RenderOverlay;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.resources.Identifier;
@@ -44,15 +44,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(Gui.class)
 public class MixinInGameHud {
-    @Inject(at = @At("HEAD"), method = "render")
-    private void mixin(GuiGraphics context, DeltaTracker tickDelta, CallbackInfo ci) {
+    @Inject(at = @At("HEAD"), method = "extractRenderState")
+    private void mixin(GuiGraphicsExtractor context, DeltaTracker tickDelta, CallbackInfo ci) {
         var event = new InGameHudRenderEvent(context, tickDelta.getGameTimeDeltaTicks());
         EventManager.getEventManager().call(event);
     }
 
 
-    @Inject(at = @At("HEAD"), method = "renderTextureOverlay", cancellable = true)
-    private void antiPumpkin(GuiGraphics context, Identifier texture, float opacity, CallbackInfo ci) {
+    @Inject(at = @At("HEAD"), method = "extractTextureOverlay", cancellable = true)
+    private void antiPumpkin(GuiGraphicsExtractor context, Identifier texture, float opacity, CallbackInfo ci) {
         var overlay = new RenderOverlay(texture);
         RenderOverlayEvent event = new RenderOverlayEvent(overlay);
         EventManager.getEventManager().call(event);
@@ -60,7 +60,7 @@ public class MixinInGameHud {
             ci.cancel();
     }
 
-    @Inject(at = @At("HEAD"), method = "renderVignette", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "extractVignette", cancellable = true)
     private void antiVignette(CallbackInfo ci) {
         var overlay = new RenderOverlay(Identifier.parse("textures/misc/vignette.png"));
         RenderOverlayEvent event = new RenderOverlayEvent(overlay);

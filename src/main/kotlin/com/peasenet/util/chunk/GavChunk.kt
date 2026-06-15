@@ -56,8 +56,8 @@ class GavChunk(val chunkPos: ChunkPos) {
 
     private val visibleBlocks = HashMap<Long, GavBlock>()
 
-    val key: Long
-        get() = chunkPos.toLong()
+    val key: Int
+        get() = chunkPos.hashCode()
 
     /**
      * Adds a block to the chunk.

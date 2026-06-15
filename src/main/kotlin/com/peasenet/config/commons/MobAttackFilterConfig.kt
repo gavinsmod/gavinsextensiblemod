@@ -75,8 +75,7 @@ open class MobAttackFilterConfig<E : Config<E>> : Config<E>() {
      * @param spawnEggItem The mob to remove (SpawnEggItem)
      */
     fun removeMob(spawnEggItem: SpawnEggItem) {
-        var registryManager = GavinsModClient.minecraftClient.getWorld().registryAccess();
-        removeMob(spawnEggItem.getType(spawnEggItem.defaultInstance))
+        removeMob(SpawnEggItem.getType(spawnEggItem.defaultInstance))
     }
 
     /**
@@ -84,8 +83,7 @@ open class MobAttackFilterConfig<E : Config<E>> : Config<E>() {
      * @param spawnEggItem The mob to add (SpawnEggItem)
      */
     fun addMob(spawnEggItem: SpawnEggItem) {
-        val registryManager = GavinsModClient.minecraftClient.getWorld().registryAccess();
-        addMob(spawnEggItem.getType( spawnEggItem.defaultInstance))
+        addMob(SpawnEggItem.getType(spawnEggItem.defaultInstance))
     }
 
     /**
@@ -103,8 +101,7 @@ open class MobAttackFilterConfig<E : Config<E>> : Config<E>() {
      * @return Whether the mob is shown.
      */
     fun mobIsShown(egg: SpawnEggItem): Boolean {
-        val registryManager = GavinsModClient.minecraftClient.getWorld().registryAccess();
-        return mobIsShown(egg.getType(egg.defaultInstance))
+        return mobIsShown(SpawnEggItem.getType(egg.defaultInstance))
     }
 
 

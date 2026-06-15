@@ -75,7 +75,7 @@ class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.esp.ore", "oreesp") {
     override fun searchChunk(chunk: ChunkAccess) {
         GemExecutor.execute {
             val chunkPos = chunk.pos
-            val chunkKey = chunkPos.toLong()
+            val chunkKey = chunkPos.hashCode()
             val gavChunk = GavChunk(chunkPos)
             if (chunks.containsKey(chunkKey))
                 return@execute

@@ -35,7 +35,7 @@ import com.peasenet.main.Settings
 import com.peasenet.mods.render.ModRadar
 import com.peasenet.settings.*
 import com.peasenet.util.ChatCommand
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.network.chat.Component
 
 /**
@@ -309,8 +309,8 @@ class GuiRadar : GuiElement(Component.translatable("gavinsmod.mod.render.radar")
             (Component.translatable(setting.gui.translationKey ?: "").append(Component.literal(" (%s)".format(value))))
     }
 
-    override fun render(drawContext: GuiGraphics, mouseX: Int, mouseY: Int, delta: Float) {
-        super.render(drawContext, mouseX, mouseY, delta)
+    override fun extractRenderState(drawContext: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, delta: Float) {
+        super.extractRenderState(drawContext, mouseX, mouseY, delta)
         val mod = Mods.getMod<ModRadar>(ChatCommand.Radar)
         mod.onRenderInGameHud(drawContext, delta, true)
     }

@@ -132,17 +132,17 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Shadow
     private Window window;
 
-    /**
-     * Mixin for whether ambient occlusion is enabled.
-     *
-     * @param ci - ignored
-     */
-    @Inject(at = @At(value = "HEAD"), method = "useAmbientOcclusion()Z", cancellable = true)
-    private static void isXrayOrFullBright(CallbackInfoReturnable<Boolean> ci) {
-        boolean disabled = GavinsMod.isEnabled("xray") || GavinsMod.isEnabled("fullbright");
-        ci.setReturnValue(!disabled);
-        ci.cancel();
-    }
+//    /**
+//     * Mixin for whether ambient occlusion is enabled.
+//     *
+//     * @param ci - ignored
+//     */
+//    @Inject(at = @At(value = "HEAD"), method = "", cancellable = true)
+//    private static void isXrayOrFullBright(CallbackInfoReturnable<Boolean> ci) {
+//        boolean disabled = GavinsMod.isEnabled("xray") || GavinsMod.isEnabled("fullbright");
+//        ci.setReturnValue(!disabled);
+//        ci.cancel();
+//    }
 
     /**
      * Sets the current item use cooldown.

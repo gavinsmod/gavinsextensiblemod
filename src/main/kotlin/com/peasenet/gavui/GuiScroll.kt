@@ -30,7 +30,7 @@ import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.Direction
 import com.peasenet.gavui.util.GuiUtil
 import net.minecraft.client.gui.Font
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import java.util.function.Consumer
 import kotlin.math.ceil
 import kotlin.math.min
@@ -64,7 +64,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
     }
 
     override fun render(
-        drawContext: GuiGraphics,
+        drawContext: GuiGraphicsExtractor,
         tr: Font,
         mouseX: Int,
         mouseY: Int,
@@ -102,7 +102,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
     }
 
     private fun renderChildren(
-        drawContext: GuiGraphics,
+        drawContext: GuiGraphicsExtractor,
         tr: Font,
         mouseX: Int,
         mouseY: Int,
@@ -230,7 +230,7 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
      *
      * @param drawContext - The draw context.
      */
-    private fun drawScrollBox(drawContext: GuiGraphics) {
+    private fun drawScrollBox(drawContext: GuiGraphicsExtractor) {
         var scrollBoxX = x2 - 5f
         var scrollBoxY = (y2) + 2f
         val scrollBoxHeight = getScrollBoxHeight()
@@ -247,7 +247,9 @@ open class GuiScroll(builder: GuiBuilder<out GuiScroll>) : GuiDropdown(builder) 
      *
      * @param drawContext - The draw context.
      */
-    private fun drawScrollBar(drawContext: GuiGraphics) {
+    private fun drawScrollBar(
+        drawContext: GuiGraphicsExtractor,
+    ) {
         val scrollBoxHeight = getScrollBoxHeight()
         var scrollBarY = (scrollBoxHeight * (page / numPages.toFloat())) + y2 + 3
         var scrollBarX = x2 - 4
