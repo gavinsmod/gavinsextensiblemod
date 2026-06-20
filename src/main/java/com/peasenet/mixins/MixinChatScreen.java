@@ -24,10 +24,12 @@
 
 package com.peasenet.mixins;
 
+import com.peasenet.main.GavinsModClient;
 import com.peasenet.util.event.ChatSendEvent;
 import com.peasenet.util.event.EventManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -41,8 +43,8 @@ public class MixinChatScreen {
         var event = new ChatSendEvent(chatText);
         EventManager.getEventManager().call(event);
         if (event.isCancelled()) {
-            Minecraft.getInstance().gui.getChat().addRecentChat(chatText);
-//            ci.(true);
+            assert Minecraft.getInstance().player != null;
+            Minecraft.getInstance().gui.hud.getChat().addRecentChat(chatText);
             ci.cancel();
         }
     }

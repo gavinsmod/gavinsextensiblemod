@@ -25,6 +25,11 @@
 package com.peasenet.mixins;
 
 import com.peasenet.main.GavinsMod;
+import com.peasenet.main.Mods;
+import com.peasenet.util.ChatCommand;
+import net.minecraft.core.Holder;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -42,6 +47,13 @@ public class MixinLivingEntity {
         if (GavinsMod.isEnabled("climb")) {
             boolean enabled = ((LivingEntity) (Object) this).horizontalCollision;
             cir.setReturnValue(enabled);
+        }
+    }
+
+    @Inject(at = @At("HEAD"), method= "getEffectBlendFactor(Lnet/minecraft/core/Holder;F)F", cancellable = true)
+    void test(Holder<MobEffect> effect, float partialTicks, CallbackInfoReturnable<Float> cir) {
+        if (effect.equals(MobEffects.NAUSEA) && Mods.isActive(ChatCommand.NoNausea))     {
+            cir.setReturnValue(0f);
         }
     }
 }

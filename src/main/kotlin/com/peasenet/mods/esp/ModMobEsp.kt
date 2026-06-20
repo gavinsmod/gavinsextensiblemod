@@ -50,7 +50,7 @@ class ModMobEsp : EntityEsp<Entity>(
     init {
         clickSetting {
             title = "gavinsmod.settings.mobesp"
-            callback = { Minecraft.getInstance().setScreen(GuiMobEsp()) }
+            callback = { Minecraft.getInstance().setScreenAndShow(GuiMobEsp()) }
         }
     }
 

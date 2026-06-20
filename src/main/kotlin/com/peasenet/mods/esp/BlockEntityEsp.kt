@@ -31,6 +31,7 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.client.Minecraft
 import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.world.phys.AABB
+import net.minecraft.world.phys.Vec3
 import org.joml.Matrix3x2fStack
 
 /**
@@ -70,7 +71,7 @@ abstract class BlockEntityEsp<T : BlockEntity>(
         matrixStack.pushPose()
         val scale = config.espSize / 0.25f
         for (e in espList) {
-            val pos = e.blockPos.center
+            val pos = Vec3.atCenterOf(e.blockPos)
             val bb = AABB(
                 pos.x + 0.5 * scale,
                 pos.y + 0.5 * scale,

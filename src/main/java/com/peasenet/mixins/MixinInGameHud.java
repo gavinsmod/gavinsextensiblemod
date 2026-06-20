@@ -24,6 +24,8 @@
 
 package com.peasenet.mixins;
 
+import com.peasenet.main.Mods;
+import com.peasenet.util.ChatCommand;
 import com.peasenet.util.event.EventManager;
 import com.peasenet.util.event.InGameHudRenderEvent;
 import com.peasenet.util.event.RenderOverlayEvent;
@@ -31,6 +33,7 @@ import com.peasenet.util.event.data.RenderOverlay;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.Hud;
 import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -42,17 +45,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * @version 12/25/2022
  * A mixin that allows modding of the in game hud (ie, overlays, extra text, etc.)
  */
-@Mixin(Gui.class)
+@Mixin(Hud.class)
 public class MixinInGameHud {
     @Inject(at = @At("HEAD"), method = "extractRenderState")
-    private void mixin(GuiGraphicsExtractor context, DeltaTracker tickDelta, CallbackInfo ci) {
-        var event = new InGameHudRenderEvent(context, tickDelta.getGameTimeDeltaTicks());
+    private void mixin(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        var event = new InGameHudRenderEvent(graphics, deltaTracker.getGameTimeDeltaTicks());
         EventManager.getEventManager().call(event);
     }
 
 
     @Inject(at = @At("HEAD"), method = "extractTextureOverlay", cancellable = true)
-    private void antiPumpkin(GuiGraphicsExtractor context, Identifier texture, float opacity, CallbackInfo ci) {
+    private void antiPumpkin(GuiGraphicsExtractor graphics, Identifier texture, float alpha, CallbackInfo ci) {
+
         var overlay = new RenderOverlay(texture);
         RenderOverlayEvent event = new RenderOverlayEvent(overlay);
         EventManager.getEventManager().call(event);

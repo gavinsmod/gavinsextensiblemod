@@ -44,6 +44,7 @@ import org.joml.Matrix3x2fStack
  *
  * @author GT3CH1
  * @version 01-15-2025
+ * TODO: 26.2
  */
 class ModFreeCam : MiscMod(
     "gavinsmod.mod.misc.freecam", "freecam"
@@ -118,7 +119,7 @@ class ModFreeCam : MiscMod(
         em.unsubscribe(AirStrafeListener::class.java, this)
         client.getPlayer().abilities.flying = false
         client.getPlayer().deltaMovement = (Vec3.ZERO)
-        client.worldRenderer.allChanged()
+        client.reloadRenderer()
 
     }
 

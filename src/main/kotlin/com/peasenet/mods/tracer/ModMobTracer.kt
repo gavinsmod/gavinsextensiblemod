@@ -50,7 +50,7 @@ class ModMobTracer : EntityTracer<LivingEntity>(
 //        addSetting(menu)
         clickSetting {
             title = "gavinsmod.settings.mobtracer"
-            callback = { Minecraft.getInstance().setScreen(GuiMobTracer()) }
+            callback = { Minecraft.getInstance().setScreenAndShow(GuiMobTracer()) }
         }
     }
 

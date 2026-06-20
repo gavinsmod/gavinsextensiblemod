@@ -44,6 +44,7 @@ import java.util.*
  */
 class GemRenderLayers {
     companion object {
+
         val LINES: RenderType = RenderType.create(
             "gem:lines",
             RenderSetup.builder(RenderPipelines.LINES)
@@ -80,7 +81,7 @@ class GemRenderPipeline {
                 .withVertexShader("core/debug_point").withFragmentShader("core/position_color")
                 .withColorTargetState(ColorTargetState(BlendFunction.TRANSLUCENT))
                 .withCull(false)
-                .withVertexFormat(DefaultVertexFormat.POSITION_COLOR_NORMAL_LINE_WIDTH, VertexFormat.Mode.LINES)
+//                .withVertexFormat(DefaultVertexFormat.POSITION_COLOR_NORMAL_LINE_WIDTH, VertexFormat.Mode.LINES)
                 .buildSnippet()
 
         val ESP_LINE_STRIP: RenderPipeline = RenderPipelines.register(
@@ -89,7 +90,7 @@ class GemRenderPipeline {
                 .withColorTargetState(ColorTargetState(BlendFunction.TRANSLUCENT))
                 .withCull(false)
 
-                .withVertexFormat(DefaultVertexFormat.POSITION_COLOR_NORMAL_LINE_WIDTH, VertexFormat.Mode.LINES)
+//                .withVertexFormat(DefaultVertexFormat.POSITION_COLOR_NORMAL_LINE_WIDTH, VertexFormat.Mode.LINES)
                 .withLocation("gem/esp_line_strip")
                 .build()
         )

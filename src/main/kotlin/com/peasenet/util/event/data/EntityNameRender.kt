@@ -24,10 +24,7 @@
 
 package com.peasenet.util.event.data
 
-import net.minecraft.client.renderer.MultiBufferSource
-import com.mojang.blaze3d.vertex.PoseStack
 import net.minecraft.network.chat.Component
-import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.LivingEntity
 
 /**

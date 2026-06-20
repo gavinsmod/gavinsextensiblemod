@@ -25,6 +25,7 @@
 package com.peasenet.mixins;
 
 import com.peasenet.main.Mods;
+import com.peasenet.util.ChatCommand;
 import net.minecraft.client.player.LocalPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -39,13 +40,13 @@ public class MixinClientPlayerEntityNausea {
     @Shadow
     public float portalEffectIntensity;
 
-    @Inject(method = "handlePortalTransitionEffect", at = @At("HEAD"), cancellable = true)
-    public void cancelNausea(CallbackInfo ci) {
-        if (Mods.isActive("nonausea")) {
-            this.oPortalEffectIntensity = 0.0f;
-            this.portalEffectIntensity = 0.0f;
-            ci.cancel();
-        }
-    }
+//    @Inject(method = "handlePortalTransitionEffect", at = @At("HEAD"), cancellable = true)
+//    public void cancelNausea(CallbackInfo ci) {
+//        if (Mods.isActive(ChatCommand.NoNausea)) {
+//            this.oPortalEffectIntensity = 0.0f;
+//            this.portalEffectIntensity = 0.0f;
+//            ci.cancel();
+//        }
+//    }
 
 }

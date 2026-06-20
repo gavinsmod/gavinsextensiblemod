@@ -9,7 +9,6 @@ import com.peasenet.gui.mod.render.GuiOreEsp
 import com.peasenet.main.Mods
 import com.peasenet.main.Settings
 import com.peasenet.util.*
-import com.peasenet.util.RenderUtils.getVertexConsumerProvider
 import com.peasenet.util.block.GavBlock
 import com.peasenet.util.block.Ore
 import com.peasenet.util.chunk.GavChunk
@@ -29,7 +28,6 @@ import net.minecraft.world.level.levelgen.WorldgenRandom
 import org.lwjgl.opengl.GL11
 import java.util.*
 import java.util.stream.Collectors
-import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -125,7 +123,7 @@ class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.esp.ore", "oreesp") {
     }
 
     private fun oreHasNeighbor(blockPos: BlockPos, ore: Ore): Boolean {
-        if(blockPos.x == -268 && blockPos.y == 67 && blockPos.z == -95) {
+        if (blockPos.x == -268 && blockPos.y == 67 && blockPos.z == -95) {
             println("test")
         }
         return world.getBlockState(blockPos).block.defaultBlockState() == ore.blockState
@@ -151,9 +149,8 @@ class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.esp.ore", "oreesp") {
     override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
         synchronized(chunks) {
             GL11.glDisable(GL11.GL_DEPTH_TEST)
-            val vcp = getVertexConsumerProvider()
-            val layer = GemRenderLayers.LINES
-            val buffer = vcp.getBuffer(layer)
+            val bufferSource = GemRenderSource()
+            val buffer = bufferSource.getBuffer(GemRenderLayers.LINES)
             chunks.values.filter { chunkInRenderDistance(it) }.forEach {
                 it.render(
                     matrixStack,
@@ -165,7 +162,7 @@ class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.esp.ore", "oreesp") {
                     buffer
                 )
             }
-            vcp.endBatch()
+            bufferSource.uploadAndDraw()
             GL11.glEnable(GL11.GL_DEPTH_TEST)
         }
     }

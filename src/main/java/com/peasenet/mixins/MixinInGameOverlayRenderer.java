@@ -36,7 +36,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ScreenEffectRenderer.class)
 public class MixinInGameOverlayRenderer {
 
-    @Inject(at = @At("HEAD"), method = "renderFire", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "submitFire", cancellable = true)
     private static void onRenderFireOverlay(CallbackInfo ci) {
         var evt = new RenderOverlaySubmergedEvent(new RenderSubmergedOverlay(RenderSubmergedOverlay.SubmergedOverlayType.FIRE));
         EventManager.getEventManager().call(evt);

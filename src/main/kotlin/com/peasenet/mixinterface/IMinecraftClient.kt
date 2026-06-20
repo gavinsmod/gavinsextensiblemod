@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher
 import com.mojang.blaze3d.platform.Window
 import net.minecraft.client.multiplayer.ClientLevel
+import net.minecraft.client.renderer.extract.LevelExtractor
 import net.minecraft.world.phys.HitResult
 import java.io.File
 
@@ -99,6 +100,10 @@ interface IMinecraftClient {
      * @return The world renderer.
      */
     val worldRenderer: LevelRenderer
+
+    val levelExtractor: LevelExtractor
+
+    fun reloadRenderer()
 
     /**
      * Enables or disables chunk culling (rendering only chunks that are in the viewport).

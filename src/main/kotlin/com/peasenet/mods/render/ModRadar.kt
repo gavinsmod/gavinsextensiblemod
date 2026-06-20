@@ -65,7 +65,7 @@ class ModRadar : RenderMod(
     init {
         clickSetting {
             title = translationKey
-            callback = { Minecraft.getInstance().setScreen(GuiRadar()) }
+            callback = { Minecraft.getInstance().setScreenAndShow(GuiRadar()) }
         }
     }
 

@@ -29,6 +29,7 @@ import com.peasenet.util.RenderUtils
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.world.level.block.entity.BlockEntity
 import com.mojang.blaze3d.vertex.PoseStack
+import net.minecraft.world.phys.Vec3
 import org.joml.Matrix3x2fStack
 
 /**
@@ -79,7 +80,7 @@ abstract class BlockEntityTracer<T : BlockEntity>(
         if (entityList.isEmpty()) return
         for (e in entityList) {
             val tracerOrigin = RenderUtils.getLookVec(partialTicks).scale(10.0)
-            val end = e.blockPos.center
+            val end = Vec3.atCenterOf(e.blockPos)
             RenderUtils.drawSingleLine(
                 matrixStack,
                 tracerOrigin,

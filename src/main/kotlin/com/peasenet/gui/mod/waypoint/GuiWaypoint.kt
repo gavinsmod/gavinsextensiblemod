@@ -318,7 +318,7 @@ class GuiWaypoint(private var w: Waypoint = Waypoint()) :
             topLeft = PointF((paddingX + padding + buttonWidth), offsetY)
             width = buttonWidth.toFloat()
             color = Colors.YELLOW
-            callback = { minecraft!!.setScreen(parent) }
+            callback = { minecraft!!.gui.setScreen(parent) }
         }
         deleteSettings = clickSetting {
             title = "gavinsmod.settings.delete"

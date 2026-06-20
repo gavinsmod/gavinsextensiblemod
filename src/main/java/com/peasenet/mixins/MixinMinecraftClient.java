@@ -28,6 +28,7 @@ import com.peasenet.main.GavinsMod;
 import com.peasenet.mixinterface.IMinecraftClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
@@ -36,7 +37,9 @@ import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.LevelRenderer;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.extract.LevelExtractor;
 import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -144,6 +147,10 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
 //        ci.cancel();
 //    }
 
+    @Shadow @Final public Gui gui;
+
+    @Shadow @Final public LevelExtractor levelExtractor;
+
     /**
      * Sets the current item use cooldown.
      *
@@ -206,18 +213,6 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     }
 
     /**
-     * Sets the screen.
-     *
-     * @param s - the screen to set
-     */
-    @Shadow
-    public abstract void setScreen(Screen s);
-
-    @Shadow
-    @Final
-    private RenderBuffers renderBuffers;
-
-    /**
      * Gets the renderer for the world.
      *
      * @return the world renderer
@@ -278,7 +273,17 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     }
 
     @Override
-    public RenderBuffers getBufferBuilderStorage() {
-        return renderBuffers;
+    public void setScreen(@Nullable Screen screen) {
+        this.gui.setScreen(screen);
+    }
+
+    @Override
+    public LevelExtractor getLevelExtractor() {
+        return this.levelExtractor;
+    }
+
+    @Override
+    public void reloadRenderer() {
+        getLevelExtractor().allChanged();
     }
 }

@@ -56,20 +56,20 @@ class ModXray : RenderMod(
                 title = "gavinsmod.settings.xray.culling"
                 callback = {
                     Settings.getConfig<XrayConfig>("xray").blockCulling = it.state
-                    if (isActive) reloadRenderer()
+                    if (isActive) client.reloadRenderer()
                 }
             }
             toggleSetting {
                 title = "gavinsmod.settings.xray.liquids"
                 callback = {
                     Settings.getConfig<XrayConfig>("xray").showLiquids = it.state
-                    if (isActive) reloadRenderer()
+                    if (isActive) client.reloadRenderer()
                 }
             }
             clickSetting {
                 title = "gavinsmod.settings.xray.blocks"
                 callback = {
-                    Minecraft.getInstance().setScreen(GuiXray())
+                    Minecraft.getInstance().setScreenAndShow(GuiXray())
                 }
             }
         }
@@ -92,14 +92,7 @@ class ModXray : RenderMod(
     override fun activate() {
         client.setChunkCulling(Settings.getConfig<XrayConfig>("xray").blockCulling)
         super.activate()
-        reloadRenderer()
-    }
-
-    /**
-     * Reloads the renderer if and only if the setting "xray.forcereload" is true.
-     */
-    private fun reloadRenderer() {
-        client.worldRenderer.allChanged()
+        client.reloadRenderer()
     }
 
     override fun onTick() {
@@ -114,7 +107,7 @@ class ModXray : RenderMod(
         if (!GavinsMod.isEnabled(ChatCommand.FullBright))
             RenderUtils.setLowGamma()
         client.setChunkCulling(true)
-        reloadRenderer()
+        client.reloadRenderer()
         deactivating = true
         RenderUtils.gamma = 4.0
         super.deactivate()

@@ -27,8 +27,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LevelRenderer.class)
 public class MixinWorldRenderer {
-    @Inject(at = @At("RETURN"), method = "renderLevel")
-    void render(GraphicsResourceAllocator resourceAllocator, DeltaTracker deltaTracker, boolean renderOutline, CameraRenderState cameraState, Matrix4fc modelViewMatrix, GpuBufferSlice terrainFog, Vector4f fogColor, boolean shouldRenderSky, ChunkSectionsToRender chunkSectionsToRender, CallbackInfo ci) {
+    @Inject(at = @At("RETURN"), method = "render")
+    void render(GraphicsResourceAllocator resourceAllocator, DeltaTracker deltaTracker, boolean renderOutline, CameraRenderState cameraState, Matrix4fc modelViewMatrix, GpuBufferSlice terrainFog, Vector4f fogColor, boolean shouldRenderSky, CallbackInfo ci) {
         var matrixStack = new PoseStack();
         matrixStack.mulPose(modelViewMatrix);
         var tickDelta = deltaTracker.getGameTimeDeltaPartialTick(false);

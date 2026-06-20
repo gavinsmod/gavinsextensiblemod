@@ -27,6 +27,7 @@ import com.peasenet.gavui.GavUI.borderColor
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.util.GemRenderLayers
+import com.peasenet.util.GemRenderSource
 import com.peasenet.util.RenderUtils
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.renderer.rendertype.RenderType
@@ -98,9 +99,12 @@ object GuiUtil {
         color: Color,
         targetLayer: RenderType? = null,
     ) {
-        val vcp = RenderUtils.getVertexConsumerProvider()
+//        val vcp = RenderUtils.getBuffer()
+//        val layer = targetLayer ?: GemRenderLayers.QUADS
+//        val bufferBuilder = vcp
+        val bufferSource = GemRenderSource()
         val layer = targetLayer ?: GemRenderLayers.QUADS
-        val bufferBuilder = vcp.getBuffer(layer)
+        val bufferBuilder = bufferSource.getBuffer(layer)
         val xt1 = (box.topLeft.x).toInt()
         val yt1 = (box.topLeft.y).toInt()
         val xt2 = box.bottomRight.x.toInt()
@@ -120,7 +124,7 @@ object GuiUtil {
         bufferBuilder.addVertexWith2DPose(matrix, xt1.toFloat(), yt1.toFloat())
             .setColor(color.asInt)
             .setNormal(0f, 0f, 0f)
-        vcp.endBatch(layer)
+        bufferSource.uploadAndDraw()
     }
 
     fun fill(box: BoxF, drawContext: GuiGraphicsExtractor, color: Color) {

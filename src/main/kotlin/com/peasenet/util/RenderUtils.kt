@@ -33,7 +33,8 @@ import com.peasenet.util.math.MathUtils
 import net.minecraft.client.Minecraft
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexConsumer
-import net.minecraft.client.renderer.MultiBufferSource
+import net.minecraft.client.renderer.StagedVertexBuffer
+import net.minecraft.client.renderer.rendertype.RenderType
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
@@ -289,9 +290,8 @@ object RenderUtils {
     ) {
 
         GL11.glDisable(GL11.GL_DEPTH_TEST)
-        val vcp = getVertexConsumerProvider()
-        val layer = GemRenderLayers.LINES
-        val buffer = vcp.getBuffer(layer)
+        val bufferSource = GemRenderSource()
+        val buffer = bufferSource.getBuffer(GemRenderLayers.LINES)
         val bb2 = bb.move((getCameraPos().reverse()))
 
         val minX = bb2.minX.toFloat()
@@ -401,8 +401,7 @@ object RenderUtils {
             .setNormal(matrix4f, 0f, 1f, 0f)
             .setLineWidth(2.0f)
 
-        vcp.endBatch(layer)
-
+        bufferSource.uploadAndDraw()
         GL11.glEnable(GL11.GL_DEPTH_TEST)
     }
 
@@ -447,9 +446,8 @@ object RenderUtils {
     ) {
 
         GL11.glDisable(GL11.GL_DEPTH_TEST)
-        val vcp = getVertexConsumerProvider()
-        val layer = GemRenderLayers.LINES
-        val bufferBuilder = buffer ?: vcp.getBuffer(layer)
+        val bufferSource = GemRenderSource()
+        val bufferBuilder = bufferSource.getBuffer(GemRenderLayers.LINES)
         val posMatrix = matrixStack.last()
         var bb2 = end
         if (withOffset)
@@ -470,7 +468,7 @@ object RenderUtils {
             .setNormal(normal.x(), normal.y(), normal.z())
             .setLineWidth(2.0f)
         if (buffer == null)
-            vcp.endBatch(layer)
+            bufferSource.uploadAndDraw()
 
         GL11.glEnable(GL11.GL_DEPTH_TEST)
 
@@ -486,10 +484,8 @@ object RenderUtils {
         depthTest: Boolean = false,
     ) {
 
-        val vcp = getVertexConsumerProvider()
-
-        val layer = GemRenderLayers.LINES
-        val bufferBuilder = vcp.getBuffer(layer)
+        val bufferSource = GemRenderSource()
+        val bufferBuilder = bufferSource.getBuffer(GemRenderLayers.LINES)
         val posMatrix = matrixStack
         var bb2 = end
         if (withOffset)
@@ -510,8 +506,8 @@ object RenderUtils {
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
             .setNormal(normal.x(), normal.y(), normal.z())
             .setLineWidth(1f)
-        vcp.endBatch(layer)
 
+        bufferSource.uploadAndDraw()
     }
 
     /**
@@ -550,8 +546,5 @@ object RenderUtils {
     }
 
 
-    fun getVertexConsumerProvider(): MultiBufferSource.BufferSource {
-        return GavinsModClient.minecraftClient.getBufferBuilderStorage().bufferSource()
-    }
 }
 

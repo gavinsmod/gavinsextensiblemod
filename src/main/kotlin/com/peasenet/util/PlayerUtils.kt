@@ -32,6 +32,7 @@ import com.peasenet.util.event.EventManager
 import com.peasenet.util.event.PlayerAttackEvent
 import com.peasenet.util.math.Rotation
 import net.minecraft.client.Camera
+import net.minecraft.client.Minecraft
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket.StatusOnly
@@ -183,7 +184,10 @@ object PlayerUtils {
         var newMessage = message
         val sendMessage = Settings.getConfig<MiscConfig>("misc").isMessages
         if (withPrefix) newMessage = Mod.GAVINS_MOD_STRING + newMessage
-        if (sendMessage) GavinsModClient.player!!.sendOverlayMessage(Component.literal(newMessage))
+//        if (sendMessage) GavinsModClient.player!!.(Component.literal(newMessage))
+        if (sendMessage) {
+            Minecraft.getInstance().showDebugChat(Component.literal(newMessage))
+        }
     }
 
     @JvmStatic

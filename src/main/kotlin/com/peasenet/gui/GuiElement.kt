@@ -155,7 +155,7 @@ open class GuiElement(title: Component) :
     }
 
     override fun onClose() {
-        minecraft.setScreen(parent)
+        minecraft.gui.setScreen(parent)
     }
 
     fun addSetting(setting: Setting) {

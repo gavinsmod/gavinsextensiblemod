@@ -76,7 +76,7 @@ class ModWaypoint : RenderMod(
         modSettings.clear()
         clickSetting {
             title = "gavinsmod.settings.render.waypoints.add"
-            callback = { Minecraft.getInstance().setScreen(GuiWaypoint()) }
+            callback = { Minecraft.getInstance().setScreenAndShow(GuiWaypoint()) }
             symbol = "+"
         }
         val waypoints = Settings.getConfig<WaypointConfig>("waypoints").getLocations().stream()
@@ -92,7 +92,7 @@ class ModWaypoint : RenderMod(
     private fun createWaypoint(waypoint: Waypoint) {
         clickSetting {
             title = waypoint.name
-            callback = { Minecraft.getInstance().setScreen(GuiWaypoint(waypoint)) }
+            callback = { Minecraft.getInstance().setScreenAndShow(GuiWaypoint(waypoint)) }
             hoverable = true
             color = waypoint.color
             transparency = 0.5f

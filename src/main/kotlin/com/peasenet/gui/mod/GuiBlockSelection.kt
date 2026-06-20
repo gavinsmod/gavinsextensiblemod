@@ -244,7 +244,7 @@ open class GuiBlockSelection<T : BlockListConfig<*>>(
         Settings.getConfig<T>(settingKey).loadDefaultBlocks()
         updateBlockList()
         page = 0
-        minecraftClient.worldRenderer.allChanged()
+        minecraftClient.reloadRenderer()
         getMod(settingKey)?.reload()
     }
 

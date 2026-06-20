@@ -54,7 +54,7 @@ import net.minecraft.network.chat.Style
  *
  */
 class ModHealthTag : RenderMod(
-    "gavinsmod.mod.render.hptags", "hptags"
+    "gavinsmod.mod.render.hptags", ChatCommand.HealthTag.command
 ), EntityRenderNameListener {
 
     init {
