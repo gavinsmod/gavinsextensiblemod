@@ -87,6 +87,7 @@ abstract class BlockEntityTracer<T : BlockEntity>(
                 end,
                 getColor(),
                 config.alpha,
+                partialTicks
             )
         }
     }

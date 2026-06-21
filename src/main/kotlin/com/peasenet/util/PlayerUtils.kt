@@ -32,10 +32,8 @@ import com.peasenet.util.event.EventManager
 import com.peasenet.util.event.PlayerAttackEvent
 import com.peasenet.util.math.Rotation
 import net.minecraft.client.Camera
-import net.minecraft.client.Minecraft
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.player.Player
-import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket.StatusOnly
 import net.minecraft.network.chat.Component
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.phys.Vec3
@@ -43,7 +41,8 @@ import net.minecraft.world.phys.Vec3
 /**
  * A helper class with utilities relating to the player.
  * @author GT3CH1
- * @version 04-11-2023
+ * @since ???
+ * @version 06-21-2026
  */
 object PlayerUtils {
     private var lastAttackTime = 0
@@ -81,21 +80,11 @@ object PlayerUtils {
     fun getNewPlayerPosition(deltaTime: Float, camera: Camera): Vec3 {
         val look = camera.forwardVector()
         val player = GavinsModClient.player
-        val px = player!!.getPrevX() + (playerPos.x- player.getPrevX()) * deltaTime + look.x()
+        val px = player!!.getPrevX() + (playerPos.x - player.getPrevX()) * deltaTime + look.x()
         val py = (player.getPrevY() + (playerPos.y - player.getPrevY()) * deltaTime + look.y()
                 + player.getEyeHeightWithPose())
         val pz = player.getPrevZ() + (playerPos.z - player.getPrevZ()) * deltaTime + look.z()
         return Vec3(px, py, pz)
-    }
-
-    /**
-     * Checks if the player is on the ground.
-     *
-     * @return True if the player is on the ground, false otherwise.
-     */
-    private fun onGround(): Boolean {
-        val player = GavinsModClient.player!!
-        return player.onGround()
     }
 
     /**
@@ -105,7 +94,7 @@ object PlayerUtils {
      */
     fun attackEntity(entity: Entity?) {
         val player = GavinsModClient.player
-        if ( !player!!.isNoClip() && player.getAttackCoolDownProgress(0.5f) > 0.90f && entity != null) {
+        if (!player!!.isNoClip() && player.getAttackCoolDownProgress(0.5f) > 0.90f && entity != null) {
             val event = PlayerAttackEvent()
             EventManager.eventManager.call(event)
             GavinsModClient.minecraftClient.getPlayerInteractionManager().attack(player as Player, entity)
@@ -143,51 +132,10 @@ object PlayerUtils {
         return player!!.squaredDistanceTo(entity)
     }
 
-    private val isFalling: Boolean
-        /**
-         * Gets whether the player is falling.
-         *
-         * @return True if the player is falling, false otherwise.
-         */
-        get() {
-            val player = GavinsModClient.player
-            return player!!.isFallFlying()
-        }
-
-    /**
-     * Gets whether the player can be damaged by the current fall speed.
-     *
-     * @return True if the player can be damaged, false otherwise.
-     */
-    private fun fallSpeedCanDamage(): Boolean {
-        val player = GavinsModClient.player
-        return player!!.getVelocity().y < -0.5
-    }
-
-    /**
-     * Handles No Fall. This will prevent the player from falling when enabled.
-     */
-    fun handleNoFall() {
-        //TODO: This is apparently a bit weird in preventing the player from crouching + moving while flying.
-        val player = GavinsModClient.player
-        if (player != null) {
-            if (player.getFallDistance() <= (if (isFalling) 1 else 2)) return
-            if (player.isShiftKeyDown() && !fallSpeedCanDamage() && player.isFallFlying()) return
-            if (GavinsMod.isEnabled("noclip")) {
-                player.getNetworkHandler().send(StatusOnly(true, false))
-            }
-        }
-    }
-
     @JvmStatic
     fun sendMessage(message: String, withPrefix: Boolean) {
-        var newMessage = message
-        val sendMessage = Settings.getConfig<MiscConfig>("misc").isMessages
-        if (withPrefix) newMessage = Mod.GAVINS_MOD_STRING + newMessage
-//        if (sendMessage) GavinsModClient.player!!.(Component.literal(newMessage))
-        if (sendMessage) {
-            Minecraft.getInstance().showDebugChat(Component.literal(newMessage))
-        }
+        val component = Component.literal(message)
+        sendMessage(component, withPrefix)
     }
 
     @JvmStatic
@@ -195,6 +143,6 @@ object PlayerUtils {
         val sendMessage = Settings.getConfig<MiscConfig>("misc").isMessages
         var newMessage = message.string
         if (withPrefix) newMessage = Mod.GAVINS_MOD_STRING + newMessage
-        if (sendMessage) GavinsModClient.player!!.sendOverlayMessage(Component.literal(newMessage))
+        if (sendMessage) GavinsModClient.player!!.sendSystemMessage(Component.literal(newMessage))
     }
 }

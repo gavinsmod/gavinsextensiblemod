@@ -68,7 +68,8 @@ abstract class EntityEsp<T : Entity>(
                 matrixStack,
                 bb.inflate(config.espSize.toDouble()),
                 getColor(e),
-                config.alpha
+                config.alpha,
+                partialTicks
             )
         }
     }

@@ -35,7 +35,9 @@ import com.peasenet.util.listeners.AirStrafeListener
 import com.peasenet.util.listeners.PacketSendListener
 import com.peasenet.util.listeners.RenderListener
 import com.mojang.blaze3d.vertex.PoseStack
+import com.peasenet.util.PlayerUtils
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
+import net.minecraft.util.Mth
 import net.minecraft.world.phys.Vec3
 import org.joml.Matrix3x2fStack
 
@@ -50,6 +52,14 @@ class ModFreeCam : MiscMod(
     "gavinsmod.mod.misc.freecam", "freecam"
 ), PacketSendListener, RenderListener, AirStrafeListener {
     private var fake: FakePlayer? = null
+    var camPos: Vec3 = Vec3.ZERO
+        private set
+    var prevCamPos: Vec3 = Vec3.ZERO
+        private set
+    var camYaw = 0f
+        private set
+    var camPitch = 0f
+        private set
 
     companion object {
         private val config: FreeCamConfig
@@ -92,28 +102,36 @@ class ModFreeCam : MiscMod(
 
     override fun activate() {
         super.activate()
-        fake = FakePlayer()
+//        fake = FakePlayer()
         em.subscribe(PacketSendListener::class.java, this)
         em.subscribe(RenderListener::class.java, this)
         em.subscribe(AirStrafeListener::class.java, this)
+        camYaw = client.getPlayer().yRot
+        camPitch = client.getPlayer().xRot
+        camPos = client.getPlayer().eyePosition
     }
 
     override fun onTick() {
         super.onTick()
-        if (!isActive) return
         val player = client.getPlayer()
-        player.setOnGround(false)
-        player.abilities.flying = true
-        player.deltaMovement = (Vec3.ZERO)
-        val scalar = config.freeCamSpeed
-        if (player.input.keyPresses.shift && scalar != 0F) player.push(0.0, -0.75 * config.freeCamSpeed, 0.0)
-        else if (player.input.keyPresses.jump && scalar != 0F) player.push(0.0, 0.75 * config.freeCamSpeed, 0.0)
+
+        val moveVector = player.input.moveVector
+        val yawRad = (client.gameRenderer.mainCamera.yRot() * Mth.DEG_TO_RAD).toDouble()
+        val sinYaw = Mth.sin(yawRad)
+        val cosYaw = Mth.cos(yawRad)
+        val offsetX = ((moveVector.x * cosYaw - moveVector.y * sinYaw) * config.freeCamSpeed).toDouble()
+        val offsetZ = ((moveVector.x * sinYaw + moveVector.y * cosYaw) * config.freeCamSpeed).toDouble()
+        val offsetY =
+            if (player.input.keyPresses.shift) -config.freeCamSpeed else if (player.input.keyPresses.jump) config.freeCamSpeed else 0.0
+
+        val offsetVec = Vec3(offsetX, 0.0, offsetZ)
+            .add(0.0, offsetY.toDouble(), 0.0)
+        prevCamPos = camPos
+        camPos = camPos.add(offsetVec)
     }
 
     override fun onDisable() {
         super.onDisable()
-
-        fake!!.remove()
         em.unsubscribe(PacketSendListener::class.java, this)
         em.unsubscribe(RenderListener::class.java, this)
         em.unsubscribe(AirStrafeListener::class.java, this)
@@ -134,6 +152,10 @@ class ModFreeCam : MiscMod(
     }
 
 
+    fun getCameraPos(partialTicks: Double): Vec3 {
+        return Mth.lerp(partialTicks, prevCamPos, camPos)
+    }
+
     override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
         if (config.espEnabled) renderEsp(matrixStack, partialTicks)
         if (config.tracerEnabled)
@@ -142,26 +164,35 @@ class ModFreeCam : MiscMod(
 
     private fun renderTracer(matrixStack: PoseStack, partialTicks: Float) {
         val tracerOrigin = RenderUtils.getLookVec(partialTicks).scale(10.0)
-        val end = RenderUtils.getLerpedBox(fake!!, partialTicks).center
+        val end = RenderUtils.getLerpedBox(client.getPlayer(), partialTicks).center
         matrixStack.pushPose()
         RenderUtils.drawSingleLine(
             matrixStack,
             tracerOrigin,
             end,
             config.color,
-            config.alpha
+            config.alpha,
+            partialTicks
         )
         matrixStack.popPose()
     }
 
     private fun renderEsp(matrixStack: PoseStack, partialTicks: Float) {
-        val bb = RenderUtils.getLerpedBox(fake!!, partialTicks)
+        val bb = RenderUtils.getLerpedBox(client.getPlayer(), partialTicks)
         RenderUtils.renderEntityEsp(
             matrixStack,
             bb,
             config.color,
             config.alpha,
+            partialTicks
         )
     }
 
+    fun turn(yaw: Double, pitch: Double) {
+        val yDelta = yaw.toFloat() * 0.15f;
+        val xDelta = pitch.toFloat() * 0.15f;
+        camYaw += yDelta
+        camPitch += xDelta
+        camPitch = Mth.clamp(camPitch, -90.0f, 90.0f)
+    }
 }

@@ -191,6 +191,7 @@ interface IClientPlayerEntity {
 //    fun displayClientMessage(@Nullable Component message, boolean actionBar)
     fun sendOverlayMessage(message: Component?)
 
+    fun sendSystemMessage(message: Component?)
 
     /**
      * Gets the item in the main hand.

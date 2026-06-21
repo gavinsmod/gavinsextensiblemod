@@ -26,6 +26,7 @@ package com.peasenet.util
 import com.peasenet.main.GavinsModClient.Companion.minecraftClient
 import com.peasenet.main.GavinsModClient.Companion.player
 import net.minecraft.client.player.RemotePlayer
+import java.util.UUID
 
 /**
  * A fake player entity that can be used to render a player model in the getWorld().
@@ -43,6 +44,7 @@ class FakePlayer : RemotePlayer(minecraftClient.getWorld(), player!!.getGameProf
      * Creates a fake player entity in the getWorld().
      */
     init {
+        setUUID(UUID.randomUUID())
         copyPosition(player)
         inventory.replaceWith(player.inventory)
         val fromTracker = player.entityData
@@ -53,6 +55,7 @@ class FakePlayer : RemotePlayer(minecraftClient.getWorld(), player!!.getGameProf
         yHeadRot = player.yHeadRot
         yBodyRot = player.visualRotationYInDegrees
         inventory.replaceWith(player.inventory)
+        this.id = player.id
         minecraftClient.getWorld().addEntity(this)
     }
 

@@ -33,6 +33,8 @@ import com.peasenet.util.math.MathUtils
 import net.minecraft.client.Minecraft
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexConsumer
+import com.peasenet.main.Mods
+import com.peasenet.mods.misc.ModFreeCam
 import net.minecraft.client.renderer.StagedVertexBuffer
 import net.minecraft.client.renderer.rendertype.RenderType
 import net.minecraft.world.entity.Entity
@@ -146,7 +148,11 @@ object RenderUtils {
      * Gets the camera position.
      * @return The camera position.
      */
-    fun getCameraPos(): Vec3 {
+    fun getCameraPos(delta: Float = 0f): Vec3 {
+        if(Mods.isActive(ChatCommand.FreeCam)) {
+            val freeCam: ModFreeCam = Mods.getMod(ChatCommand.FreeCam)
+            return freeCam.getCameraPos(delta.toDouble())
+        }
         val camera = Minecraft.getInstance().gameRenderer.mainCamera.position()
         return camera!!
     }
@@ -286,14 +292,13 @@ object RenderUtils {
      * @param alpha The alpha of the box.
      */
     fun drawOutlinedBox(
-        bb: AABB, matrixStack: PoseStack, color: Color = Colors.WHITE, alpha: Float = 1f,
+        bb: AABB, matrixStack: PoseStack, color: Color = Colors.WHITE, alpha: Float = 1f, partialTicks: Float = 0f
     ) {
 
         GL11.glDisable(GL11.GL_DEPTH_TEST)
         val bufferSource = GemRenderSource()
         val buffer = bufferSource.getBuffer(GemRenderLayers.LINES)
-        val bb2 = bb.move((getCameraPos().reverse()))
-
+        var bb2 = bb.move((getCameraPos(partialTicks).reverse()))
         val minX = bb2.minX.toFloat()
         val minY = bb2.minY.toFloat()
         val minZ = bb2.minZ.toFloat()
@@ -440,6 +445,7 @@ object RenderUtils {
         end: Vec3,
         color: Color,
         alpha: Float = 1f,
+        partialTicks: Float = 0f,
         withOffset: Boolean = true,
         depthTest: Boolean = false,
         buffer: VertexConsumer? = null,
@@ -451,7 +457,7 @@ object RenderUtils {
         val posMatrix = matrixStack.last()
         var bb2 = end
         if (withOffset)
-            bb2 = end.add((getCameraPos().reverse()))
+            bb2 = end.add((getCameraPos(partialTicks).reverse()))
         val x1 = start.x.toFloat()
         val y1 = start.y.toFloat()
         val z1 = start.z.toFloat()
@@ -517,6 +523,12 @@ object RenderUtils {
      */
     fun getLookVec(delta: Float): Vec3 {
         val mc = Minecraft.getInstance()
+        if(Mods.isActive(ChatCommand.FreeCam)) {
+            val freeCam: ModFreeCam = Mods.getMod(ChatCommand.FreeCam)
+            val pitch = freeCam.camPitch
+            val yaw = freeCam.camYaw
+            return Rotation(pitch, yaw).asLookVec()
+        }
         val pitch = mc.player!!.getViewXRot(delta)
         val yaw = mc.player!!.getViewYRot(delta)
         return Rotation(pitch, yaw).asLookVec()
@@ -541,8 +553,9 @@ object RenderUtils {
         box: AABB,
         color: Color,
         alpha: Float,
+        partialTicks: Float
     ) {
-        drawOutlinedBox(box, matrixStack, color, alpha)
+        drawOutlinedBox(box, matrixStack, color, alpha, partialTicks)
     }
 
 

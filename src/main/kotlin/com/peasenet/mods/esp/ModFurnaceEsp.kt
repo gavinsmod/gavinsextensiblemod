@@ -24,6 +24,7 @@
 package com.peasenet.mods.esp
 
 import com.peasenet.gavui.color.Color
+import com.peasenet.util.ChatCommand
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity
 
@@ -35,7 +36,7 @@ import net.minecraft.world.level.block.entity.FurnaceBlockEntity
  */
 class ModFurnaceEsp : BlockEntityEsp<BlockEntity>(
     "gavinsmod.mod.esp.furnace",
-    "furnaceesp",
+    ChatCommand.FurnaceEsp.command,
     { it is FurnaceBlockEntity }
 ) {
     init {

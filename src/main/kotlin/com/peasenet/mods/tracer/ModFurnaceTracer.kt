@@ -24,6 +24,7 @@
 package com.peasenet.mods.tracer
 
 import com.peasenet.gavui.color.Color
+import com.peasenet.util.ChatCommand
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity
 
 /**
@@ -33,15 +34,9 @@ import net.minecraft.world.level.block.entity.FurnaceBlockEntity
  * @since 04-11-2023
  */
 class ModFurnaceTracer : BlockEntityTracer<FurnaceBlockEntity>("gavinsmod.mod.tracer.furnace",
-    "furnacetracer",
+    ChatCommand.FurnaceTracer.command,
     blockFilter = { it is FurnaceBlockEntity }) {
     init {
-//        val colorSetting =
-//            SettingBuilder<ColorSetting>().setTitle("gavinsmod.settings.tracer.furnace.color")
-//                .setColor(config.furnaceColor)
-//                .setCallback { config.furnaceColor = it.color }
-//                .buildColorSetting()
-//        addSetting(colorSetting)
         colorSetting {
             title = "gavinsmod.settings.tracer.furnace.color"
             color = config.furnaceColor

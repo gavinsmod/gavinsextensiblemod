@@ -33,6 +33,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.Options;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.LevelRenderer;
 import com.mojang.blaze3d.platform.Window;
@@ -150,6 +151,8 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Shadow @Final public Gui gui;
 
     @Shadow @Final public LevelExtractor levelExtractor;
+
+    @Shadow @Final public GameRenderer gameRenderer;
 
     /**
      * Sets the current item use cooldown.
@@ -285,5 +288,10 @@ public abstract class MixinMinecraftClient implements IMinecraftClient {
     @Override
     public void reloadRenderer() {
         getLevelExtractor().allChanged();
+    }
+
+    @Override
+    public GameRenderer getGameRenderer() {
+        return this.gameRenderer;
     }
 }

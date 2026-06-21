@@ -35,6 +35,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher
 import com.mojang.blaze3d.platform.Window
 import net.minecraft.client.multiplayer.ClientLevel
+import net.minecraft.client.renderer.GameRenderer
 import net.minecraft.client.renderer.extract.LevelExtractor
 import net.minecraft.world.phys.HitResult
 import java.io.File
@@ -101,6 +102,7 @@ interface IMinecraftClient {
      */
     val worldRenderer: LevelRenderer
 
+    val gameRenderer: GameRenderer
     val levelExtractor: LevelExtractor
 
     fun reloadRenderer()

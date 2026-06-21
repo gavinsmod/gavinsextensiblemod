@@ -20,6 +20,7 @@
     "MixinInGameOverlayRenderer",
     "MixinLiquidBlockRenderer",
     "MixinLivingEntity",
+    "MixinLocalPlayer",
     "MixinMinecraftClient",
     "MixinMinecraftClientAttack",
     "MixinMobRenderer",
