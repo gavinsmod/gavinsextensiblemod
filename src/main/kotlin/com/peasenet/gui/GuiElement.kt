@@ -26,6 +26,7 @@ package com.peasenet.gui
 import com.peasenet.gavui.Gui
 import com.peasenet.gavui.GuiBuilder
 import com.peasenet.gavui.GuiScroll
+import com.peasenet.gavui.math.PointF
 import com.peasenet.main.GavinsModClient
 import com.peasenet.mixins.ScreenAccessor
 import com.peasenet.settings.Setting
@@ -41,8 +42,18 @@ import java.util.function.Consumer
  * @version 03-02-2023
  * A parent class that holds all that is needed to render an in game gui.
  */
-open class GuiElement(title: Component) :
+open class GuiElement(title: Component, columns: Int = 0) :
     Screen(Minecraft.getInstance(), GavinsModClient.minecraftClient.textRenderer, title) {
+
+
+    private var guiWidth = 200
+    private val elementHeight = 11f;
+    private val minWidth = 100
+    private val heightPadding = 12f;
+    private val widthPadding = 24f;
+    private val xPadding = 4f;
+
+    private val numColumns = columns.coerceAtLeast(0)
     /**
      * The box that contains the menu title in the top left corner of the screen.
      */
@@ -73,6 +84,8 @@ open class GuiElement(title: Component) :
             .setTitle(title)
             .build()
         super.init()
+        if(numColumns > 0)
+            resizeElements()
     }
 
 
@@ -163,4 +176,36 @@ open class GuiElement(title: Component) :
             guis.add(setting.gui!!)
     }
 
+    protected fun resizeElements() {
+        val screenWidth = Minecraft.getInstance().window.guiScaledWidth
+        val screenHeight = Minecraft.getInstance().window.guiScaledHeight
+        var longestWidth = 0f
+        for (setting in guis) {
+            val width = Minecraft.getInstance().font.width(setting.title)
+            if (width > longestWidth) {
+                longestWidth = width.toFloat() + widthPadding
+            }
+        }
+        longestWidth = longestWidth.coerceAtLeast(minWidth.toFloat())
+        guiWidth = ((longestWidth) * numColumns).toInt()
+        val offsetX = (screenWidth - guiWidth) / 2f
+        val numRows = Math.ceil(guis.size / numColumns.toDouble()).toInt()
+        val offsetY = (screenHeight - (elementHeight * numRows)) / 2f
+        var guiPosition = PointF(offsetX, offsetY)
+        var currentColumnIdx = 0
+        var currentRowIdx = 0
+        for (setting in guis) {
+            setting.position = guiPosition
+            setting.width = (longestWidth - xPadding/2f)
+            currentColumnIdx++
+            if (currentColumnIdx == numColumns) {
+                currentColumnIdx = 0
+                guiPosition = PointF(offsetX, guiPosition.y + heightPadding)
+                currentRowIdx++
+            } else {
+                guiPosition =
+                    guiPosition.add((longestWidth), 0f)
+            }
+        }
+    }
 }
