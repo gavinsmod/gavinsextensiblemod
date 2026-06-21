@@ -35,6 +35,8 @@ import com.peasenet.util.listeners.AirStrafeListener
 import com.peasenet.util.listeners.PacketSendListener
 import com.peasenet.util.listeners.RenderListener
 import com.mojang.blaze3d.vertex.PoseStack
+import com.peasenet.gui.mod.misc.GuiFreeCam
+import com.peasenet.gui.mod.render.GuiOreEsp
 import com.peasenet.util.PlayerUtils
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
 import net.minecraft.util.Mth
@@ -69,35 +71,13 @@ class ModFreeCam : MiscMod(
     }
 
     init {
-        subSettings {
+        clickSetting {
             title = translationKey
-            direction = Direction.RIGHT
-            slideSetting {
-                title = "gavinsmod.generic.speed"
-                value = config.freeCamSpeed
-                callback = { config.freeCamSpeed = it.value }
-            }
-            toggleSetting {
-                title = "gavinsmod.generic.esp"
-                state = config.espEnabled
-                callback = { config.espEnabled = it.state }
-            }
-            toggleSetting {
-                title = "gavinsmod.generic.tracer"
-                state = config.tracerEnabled
-                callback = { config.tracerEnabled = it.state }
-            }
-            colorSetting {
-                title = "gavinsmod.generic.color"
-                color = config.color
-                callback = { config.color = it.color }
-            }
-            slideSetting {
-                title = "gavinsmod.generic.alpha"
-                value = 1f
-                callback = { config.alpha = it.value }
+            callback = {
+                client.setScreen(GuiFreeCam())
             }
         }
+
     }
 
     override fun activate() {
