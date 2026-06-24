@@ -26,6 +26,7 @@ package com.peasenet.config.misc
 import com.peasenet.config.Config
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
+import com.peasenet.util.ChatCommand
 
 /**
  * The configuration for the FPS colors.
@@ -89,7 +90,7 @@ class FpsColorConfig : Config<FpsColorConfig>() {
         }
 
     init {
-        key = "fpsColors"
+        key = ChatCommand.FpsCounter.command
     }
 
 }

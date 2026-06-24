@@ -29,9 +29,12 @@ import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.Direction
 import com.peasenet.gavui.util.GavUISettings
 import com.peasenet.gavui.util.GuiUtil
+import com.peasenet.gui.mod.misc.GuiFreeCam
+import com.peasenet.gui.mod.render.GuiFpsCounter
 import com.peasenet.main.GavinsMod
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
+import com.peasenet.util.ChatCommand
 import com.peasenet.util.listeners.InGameHudRenderListener
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.network.chat.Component
@@ -43,37 +46,19 @@ import net.minecraft.network.chat.Component
  */
 class ModFpsCounter : MiscMod(
     "gavinsmod.mod.misc.fpscounter",
-    "fpscounter",
+    ChatCommand.FpsCounter.command,
 ), InGameHudRenderListener {
 
     private companion object {
-        lateinit var fpsColorConfig: FpsColorConfig
+        private val fpsColorConfig: FpsColorConfig
+            get() = Settings.getConfig(ChatCommand.FpsCounter)
     }
 
     init {
-        fpsColorConfig = Settings.getConfig("fpsColors")
-        subSettings {
+        clickSetting {
             title = translationKey
-            direction = Direction.RIGHT
-            toggleSetting {
-                title = "gavinsmod.settings.misc.fpscolors.enabled"
-                state = fpsColorConfig.isColorsEnabled
-                callback = { fpsColorConfig.isColorsEnabled = it.state }
-            }
-            colorSetting {
-                title = "gavinsmod.settings.misc.fps.color.slow"
-                color = fpsColorConfig.slowFps
-                callback = { fpsColorConfig.slowFps = it.color }
-            }
-            colorSetting {
-                title = "gavinsmod.settings.misc.fps.color.ok"
-                color = fpsColorConfig.okFps
-                callback = { fpsColorConfig.okFps = it.color }
-            }
-            colorSetting {
-                title = "gavinsmod.settings.misc.fps.color.fast"
-                color = fpsColorConfig.fastFps
-                callback = { fpsColorConfig.fastFps = it.color }
+            callback = {
+                client.setScreen(GuiFpsCounter())
             }
 
         }
@@ -103,8 +88,8 @@ class ModFpsCounter : MiscMod(
         val fps = GavinsModClient.minecraftClient.getFps()
         val fpsString = "FPS: $fps"
         val textWidth = GavinsModClient.minecraftClient.textRenderer.width(fpsString)
-        val xCoordinate = GavinsModClient.minecraftClient.window.guiScaledWidth - textWidth -1
-        val box = BoxF(PointF(xCoordinate.toFloat()-2, 0f) , textWidth.toFloat() + 3, 11f)
+        val xCoordinate = GavinsModClient.minecraftClient.window.guiScaledWidth - textWidth - 1
+        val box = BoxF(PointF(xCoordinate.toFloat() - 2, 0f), textWidth.toFloat() + 3, 11f)
         val maximumFps = GavinsModClient.minecraftClient.options.framerateLimit().get()
         var color = GavUISettings.getColor("gui.color.foreground")
         val colorEnabled = fpsColorConfig.isColorsEnabled

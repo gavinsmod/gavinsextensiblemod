@@ -9,6 +9,7 @@ import com.peasenet.settings.clickSetting
 import com.peasenet.settings.colorSetting
 import com.peasenet.settings.slideSetting
 import com.peasenet.settings.toggleSetting
+import com.peasenet.util.ChatCommand
 import net.minecraft.client.gui.components.FocusableTextWidget
 import net.minecraft.network.chat.Component
 import net.minecraft.client.Minecraft
@@ -29,7 +30,7 @@ class GuiOreEsp : GuiElement(Component.translatable("gavinsmod.mod.esp.ore"),2 )
     private lateinit var seedText: StringWidget
 
     private fun getSettings(): OreEspConfig {
-        return Settings.getConfig("oreesp")
+        return Settings.getConfig(ChatCommand.OreEsp)
     }
 
     override fun init() {
