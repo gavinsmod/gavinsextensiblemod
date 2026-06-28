@@ -140,6 +140,7 @@ class Mods {
         GavinsMod.addMod(ModOreEsp())
         GavinsMod.addMod(ModDeathCoordinates())
         GavinsMod.addMod(ModDeathTracer())
+        GavinsMod.addMod(ModProjectileTracer())
     }
 
     companion object {

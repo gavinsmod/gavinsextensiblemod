@@ -24,6 +24,7 @@
 package com.peasenet.mods.tracer
 
 import com.peasenet.gavui.color.Color
+import com.peasenet.util.ChatCommand
 import net.minecraft.world.level.block.entity.BeehiveBlockEntity
 
 /**
@@ -33,7 +34,7 @@ import net.minecraft.world.level.block.entity.BeehiveBlockEntity
  * @since 04-11-2023
  */
 class ModBeehiveTracer : BlockEntityTracer<BeehiveBlockEntity>("gavinsmod.mod.tracer.beehive",
-    "beehivetracer",
+    ChatCommand.BeehiveTracer,
     { it is BeehiveBlockEntity }) {
     init {
 //        val colorS

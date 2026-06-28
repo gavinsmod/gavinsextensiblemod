@@ -27,6 +27,7 @@ import com.peasenet.config.tracer.TracerConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.main.GavinsModClient
 import com.peasenet.main.Settings
+import com.peasenet.util.ChatCommand
 import net.minecraft.world.entity.player.Player
 
 /**
@@ -37,7 +38,7 @@ import net.minecraft.world.entity.player.Player
  */
 class ModEntityPlayerTracer : EntityTracer<Player>(
     "gavinsmod.mod.tracer.player",
-    "playertracer",
+    ChatCommand.PlayerTracer,
     { it is Player && it != GavinsModClient.player }
 ) {
     init {

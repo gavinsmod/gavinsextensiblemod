@@ -35,7 +35,7 @@ import net.minecraft.world.level.block.entity.SignBlockEntity
  * @since 04-11-2023
  */
 class ModSignTracer : BlockEntityTracer<BeehiveBlockEntity>("gavinsmod.mod.tracer.sign",
-    ChatCommand.SignTracer.command,
+    ChatCommand.SignTracer,
     { it is SignBlockEntity }) {
     init {
 //        val colorSetting =

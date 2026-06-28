@@ -24,6 +24,7 @@
 package com.peasenet.mods.tracer
 
 import com.peasenet.gavui.color.Color
+import com.peasenet.util.ChatCommand
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.ChestBlockEntity
@@ -38,7 +39,7 @@ import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity
  */
 class ModChestTracer : BlockEntityTracer<BlockEntity>(
     "gavinsmod.mod.tracer.chest",
-    "chesttracer",
+    ChatCommand.ChestTracer,
     { it is ChestBlockEntity || it is EnderChestBlockEntity || it is ShulkerBoxBlockEntity }
 ), RenderListener {
     init {

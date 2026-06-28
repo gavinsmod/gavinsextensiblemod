@@ -16,7 +16,7 @@ import kotlin.jvm.optionals.getOrNull
  * @since 12-29-2025
  */
 class ModDeathTracer :
-    TracerMod<ModDeathTracer>("gavinsmod.mod.tracer.deathtracer", ChatCommand.DeathTracer.command) {
+    TracerMod<ModDeathTracer>("gavinsmod.mod.tracer.deathtracer", ChatCommand.DeathTracer) {
 
     init {
         colorSetting {

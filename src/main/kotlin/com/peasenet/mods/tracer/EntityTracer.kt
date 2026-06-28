@@ -31,6 +31,7 @@ import com.peasenet.main.Settings
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.listeners.RenderListener
 import com.mojang.blaze3d.vertex.PoseStack
+import com.peasenet.util.ChatCommand
 import net.minecraft.world.entity.Entity
 import org.joml.Matrix3x2fStack
 
@@ -48,7 +49,7 @@ import org.joml.Matrix3x2fStack
  */
 @Suppress("UNCHECKED_CAST")
 abstract class EntityTracer<T : Entity>(
-    translationKey: String, chatCommand: String, val entityFilter: (Entity) -> Boolean,
+    translationKey: String, chatCommand: ChatCommand, val entityFilter: (Entity) -> Boolean,
 ) : TracerMod<T>(translationKey, chatCommand), RenderListener {
     override fun onTick() {
         super.onTick()

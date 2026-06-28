@@ -29,6 +29,7 @@ import com.peasenet.util.RenderUtils
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.world.level.block.entity.BlockEntity
 import com.mojang.blaze3d.vertex.PoseStack
+import com.peasenet.util.ChatCommand
 import net.minecraft.world.phys.Vec3
 import org.joml.Matrix3x2fStack
 
@@ -47,7 +48,7 @@ import org.joml.Matrix3x2fStack
 @Suppress("UNCHECKED_CAST")
 abstract class BlockEntityTracer<T : BlockEntity>(
     translationKey: String,
-    chatCommand: String,
+    chatCommand: ChatCommand,
     val blockFilter: (BlockEntity) -> Boolean,
 ) : TracerMod<T>(translationKey, chatCommand), RenderListener {
     override fun onEnable() {

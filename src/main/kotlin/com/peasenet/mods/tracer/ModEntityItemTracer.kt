@@ -27,6 +27,7 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.gui.mod.GuiItemEspTracerConfig
 import com.peasenet.util.listeners.RenderListener
 import com.mojang.blaze3d.vertex.PoseStack
+import com.peasenet.util.ChatCommand
 import net.minecraft.world.entity.item.ItemEntity
 import org.joml.Matrix3x2fStack
 
@@ -42,7 +43,7 @@ import org.joml.Matrix3x2fStack
  * @since 04-11-2023
  */
 class ModEntityItemTracer :
-    EntityTracer<ItemEntity>("gavinsmod.mod.tracer.item", "itemtracer", { it is ItemEntity }),
+    EntityTracer<ItemEntity>("gavinsmod.mod.tracer.item", ChatCommand.ItemTracer, { it is ItemEntity }),
     RenderListener {
     init {
 //        val menu = SettingBuilder<ClickSetting>().setTitle("gavinsmod.mod.tracer.item")

@@ -27,6 +27,7 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.gui.mod.tracer.GuiMobTracer
 import net.minecraft.client.Minecraft
 import com.mojang.blaze3d.vertex.PoseStack
+import com.peasenet.util.ChatCommand
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.Mob
 import org.joml.Matrix3x2fStack
@@ -39,7 +40,7 @@ import org.joml.Matrix3x2fStack
  */
 class ModMobTracer : EntityTracer<LivingEntity>(
     "gavinsmod.mod.tracer.mob",
-    "mobtracer",
+    ChatCommand.MobTracer,
     { it is Mob && config.inList(it.type) }
 ) {
     init {

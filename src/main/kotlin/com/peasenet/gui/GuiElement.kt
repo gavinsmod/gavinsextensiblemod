@@ -30,6 +30,7 @@ import com.peasenet.gavui.math.PointF
 import com.peasenet.main.GavinsModClient
 import com.peasenet.mixins.ScreenAccessor
 import com.peasenet.settings.Setting
+import com.peasenet.settings.SlideSetting
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.Screen
@@ -174,6 +175,10 @@ open class GuiElement(title: Component, columns: Int = 0) :
     fun addSetting(setting: Setting) {
         if (setting.gui != null)
             guis.add(setting.gui!!)
+    }
+
+    fun addSettings(settings: Array<Setting>) {
+        settings.forEach { addSetting(it) }
     }
 
     protected fun resizeElements() {

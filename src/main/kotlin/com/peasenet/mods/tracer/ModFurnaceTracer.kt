@@ -34,7 +34,7 @@ import net.minecraft.world.level.block.entity.FurnaceBlockEntity
  * @since 04-11-2023
  */
 class ModFurnaceTracer : BlockEntityTracer<FurnaceBlockEntity>("gavinsmod.mod.tracer.furnace",
-    ChatCommand.FurnaceTracer.command,
+    ChatCommand.FurnaceTracer,
     blockFilter = { it is FurnaceBlockEntity }) {
     init {
         colorSetting {

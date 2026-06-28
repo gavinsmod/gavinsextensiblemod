@@ -28,6 +28,7 @@ import com.peasenet.config.tracer.TracerConfig
 import com.peasenet.main.Settings
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
+import com.peasenet.util.ChatCommand
 import com.peasenet.util.event.data.CameraBob
 import com.peasenet.util.listeners.BlockEntityRenderListener
 import com.peasenet.util.listeners.CameraBobListener
@@ -58,10 +59,11 @@ import org.lwjgl.glfw.GLFW
  * @version 01-15-2025
  */
 abstract class TracerMod<T>(
-    translationKey: String, chatCommand: String, keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN
+    translationKey: String, chatCommand: ChatCommand, keyBinding: Int = GLFW.GLFW_KEY_UNKNOWN
 ) : Mod(
     translationKey, chatCommand, ModCategory.TRACERS, keyBinding
 ), CameraBobListener, RenderListener {
+
     protected var entityList: MutableList<T> = ArrayList()
 
     override fun onEnable() {

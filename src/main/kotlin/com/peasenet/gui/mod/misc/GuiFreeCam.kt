@@ -1,14 +1,13 @@
 package com.peasenet.gui.mod.misc
 
 import com.peasenet.config.misc.FreeCamConfig
-import com.peasenet.gavui.math.PointF
 import com.peasenet.gui.GuiElement
 import com.peasenet.main.Settings
+import com.peasenet.settings.Setting
 import com.peasenet.settings.colorSetting
 import com.peasenet.settings.slideSetting
 import com.peasenet.settings.toggleSetting
 import com.peasenet.util.ChatCommand
-import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
 
 /**
@@ -19,33 +18,29 @@ import net.minecraft.network.chat.Component
  */
 class GuiFreeCam : GuiElement(Component.translatable("gavinsmod.mod.misc.freecam"), 1) {
     override fun init() {
-        addSetting(slideSetting {
+        val settings = arrayOf<Setting>(slideSetting {
             title = "gavinsmod.generic.speed"
             value = getSettings().freeCamSpeed
             callback = { getSettings().freeCamSpeed = it.value }
-        })
-
-        addSetting(slideSetting {
+        },slideSetting {
             title = "gavinsmod.generic.alpha"
             value = 1f
             callback = { getSettings().alpha = it.value }
-        })
-
-        addSetting(toggleSetting {
+        },
+            toggleSetting {
             title = "gavinsmod.generic.esp"
             state = getSettings().espEnabled
             callback = { getSettings().espEnabled = it.state }
-        })
-        addSetting(toggleSetting {
+        }, toggleSetting {
             title = "gavinsmod.generic.tracer"
             state = getSettings().tracerEnabled
             callback = { getSettings().tracerEnabled = it.state }
-        })
-        addSetting(colorSetting {
+        }, colorSetting {
             title = "gavinsmod.generic.color"
             color = getSettings().color
             callback = { getSettings().color = it.color }
         })
+        addSettings(settings);
         super.init()
     }
     private fun getSettings(): FreeCamConfig {
