@@ -211,7 +211,6 @@ class GuiOreEsp : GuiElement(Component.translatable("gavinsmod.mod.esp.ore"),2 )
             state = getSettings().structureEsp
             callback = {
                 getSettings().structureEsp = it.state
-
             }
         })
 

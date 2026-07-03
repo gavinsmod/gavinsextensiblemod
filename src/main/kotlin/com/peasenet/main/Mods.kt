@@ -90,6 +90,7 @@ class Mods {
         Settings.addConfig(OreEspConfig())
         Settings.addConfig(HealthTagConfig())
         Settings.addConfig(NoFallConfig())
+        Settings.addConfig(ProjectileTracerConfig())
 
         /*@MODS@*/
         GavinsMod.addMod(ModAutoAttack())

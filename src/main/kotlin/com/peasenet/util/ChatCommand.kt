@@ -79,4 +79,5 @@ enum class ChatCommand(val command: String) {
     OreEsp("oreesp"),
     DeathCoordinates("deathcoordinates"),
     DeathTracer("deathtracer"),
+    ProjectileTracer("projectiletracer"),
 }

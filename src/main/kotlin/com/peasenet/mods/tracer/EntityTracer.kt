@@ -66,8 +66,8 @@ abstract class EntityTracer<T : Entity>(
             matrixStack.pushPose()
             RenderUtils.drawSingleLine(
                 matrixStack,
-                tracerOrigin,
                 end,
+                tracerOrigin,
                 getColor(e),
                 config.alpha,
                 withOffset = true,

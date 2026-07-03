@@ -35,7 +35,6 @@ import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexConsumer
 import com.peasenet.main.Mods
 import com.peasenet.mods.misc.ModFreeCam
-import net.minecraft.client.renderer.StagedVertexBuffer
 import net.minecraft.client.renderer.rendertype.RenderType
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.AABB
@@ -149,7 +148,7 @@ object RenderUtils {
      * @return The camera position.
      */
     fun getCameraPos(delta: Float = 0f): Vec3 {
-        if(Mods.isActive(ChatCommand.FreeCam)) {
+        if (Mods.isActive(ChatCommand.FreeCam)) {
             val freeCam: ModFreeCam = Mods.getMod(ChatCommand.FreeCam)
             return freeCam.getCameraPos(delta.toDouble())
         }
@@ -284,6 +283,132 @@ object RenderUtils {
         }
     }
 
+    fun drawLinedBox(
+        bb: AABB, matrixStack: PoseStack, color: Color = Colors.WHITE, alpha: Float = 1f, partialTicks: Float = 0f,
+    ) {
+        GL11.glDisable(GL11.GL_DEPTH_TEST)
+        val bufferSource = GemRenderSource()
+        val buffer = bufferSource.getBuffer(GemRenderLayers.QUADS)
+        var bb2 = bb.move((getCameraPos(partialTicks).reverse()))
+        val minX = bb2.minX.toFloat()
+        val minY = bb2.minY.toFloat()
+        val minZ = bb2.minZ.toFloat()
+        val maxX = bb2.maxX.toFloat()
+        val maxY = bb2.maxY.toFloat()
+        val maxZ = bb2.maxZ.toFloat()
+
+        val matrix4f = matrixStack.last()
+
+        // bottom quad
+        buffer.addVertex(matrix4f, minX, minY, minZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 1f, 0f, 0f)
+            .setLineWidth(2.0f)
+        buffer.addVertex(matrix4f, maxX, minY, minZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 1f, 0f, 0f)
+            .setLineWidth(2.0f)
+        buffer.addVertex(matrix4f, maxX, minY, maxZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 0f, 0f, 1f)
+            .setLineWidth(2.0f)
+        buffer.addVertex(matrix4f, minX, minY, maxZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 0f, 0f, 1f)
+            .setLineWidth(2.0f)
+
+        // top quad
+        buffer.addVertex(matrix4f, minX, maxY, minZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 1f, 0f, 0f)
+            .setLineWidth(2.0f)
+        buffer.addVertex(matrix4f, maxX, maxY, minZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 1f, 0f, 0f)
+            .setLineWidth(2.0f)
+        buffer.addVertex(matrix4f, maxX, maxY, maxZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 0f, 0f, 1f)
+            .setLineWidth(2.0f)
+        buffer.addVertex(matrix4f, minX, maxY, maxZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 0f, 0f, 1f)
+            .setLineWidth(2.0f)
+        // x- quad
+        buffer.addVertex(matrix4f, minX, minY, minZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 1f, 0f, 0f)
+            .setLineWidth(2.0f)
+        buffer.addVertex(matrix4f, minX, maxY, minZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 1f, 0f, 0f)
+            .setLineWidth(2.0f)
+        buffer.addVertex(matrix4f, minX, maxY, maxZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 0f, 0f, 1f)
+            .setLineWidth(2.0f)
+        buffer.addVertex(matrix4f, minX, minY, maxZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 0f, 0f, 1f)
+            .setLineWidth(2.0f)
+        // x+ quad
+        buffer.addVertex(matrix4f, maxX, minY, minZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 1f, 0f, 0f)
+            .setLineWidth(2.0f)
+        buffer.addVertex(matrix4f, maxX, maxY, minZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 1f, 0f, 0f)
+            .setLineWidth(2.0f)
+        buffer.addVertex(matrix4f, maxX, maxY, maxZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 0f, 0f, 1f)
+            .setLineWidth(2.0f)
+        buffer.addVertex(matrix4f, maxX, minY, maxZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 0f, 0f, 1f)
+            .setLineWidth(2.0f)
+        // z- quad
+        buffer.addVertex(matrix4f, minX, minY, minZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 1f, 0f, 0f)
+            .setLineWidth(2.0f)
+        buffer.addVertex(matrix4f, maxX, minY, minZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 1f, 0f, 0f)
+            .setLineWidth(2.0f)
+        buffer.addVertex(matrix4f, maxX, maxY, minZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 1f, 0f, 0f)
+            .setLineWidth(2.0f)
+        buffer.addVertex(matrix4f, minX, maxY, minZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 1f, 0f, 0f)
+            .setLineWidth(2.0f)
+        // z+ quad
+        buffer.addVertex(matrix4f, minX, minY, maxZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 0f, 0f, 1f)
+            .setLineWidth(2.0f)
+        buffer.addVertex(matrix4f, maxX, minY, maxZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 0f, 0f, 1f)
+            .setLineWidth(2.0f)
+        buffer.addVertex(matrix4f, maxX, maxY, maxZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 0f, 0f, 1f)
+            .setLineWidth(2.0f)
+        buffer.addVertex(matrix4f, minX, maxY, maxZ)
+            .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
+            .setNormal(matrix4f, 0f, 0f, 1f)
+            .setLineWidth(2.0f)
+
+
+
+        bufferSource.uploadAndDraw()
+        GL11.glEnable(GL11.GL_DEPTH_TEST)
+    }
+
     /**
      * Draws an outlined box.
      * @param bb The box to draw.
@@ -292,12 +417,25 @@ object RenderUtils {
      * @param alpha The alpha of the box.
      */
     fun drawOutlinedBox(
-        bb: AABB, matrixStack: PoseStack, color: Color = Colors.WHITE, alpha: Float = 1f, partialTicks: Float = 0f
+        bb: AABB, matrixStack: PoseStack, color: Color = Colors.WHITE, alpha: Float = 1f, partialTicks: Float = 0f,
     ) {
+        drawBox(
+            bb, matrixStack, GemRenderLayers.LINES, color, alpha, partialTicks
+        )
+    }
 
+    private fun drawBox(
+
+        bb: AABB,
+        matrixStack: PoseStack,
+        renderType: RenderType,
+        color: Color = Colors.WHITE,
+        alpha: Float = 1f,
+        partialTicks: Float = 0f,
+    ) {
         GL11.glDisable(GL11.GL_DEPTH_TEST)
         val bufferSource = GemRenderSource()
-        val buffer = bufferSource.getBuffer(GemRenderLayers.LINES)
+        val buffer = bufferSource.getBuffer(renderType)
         var bb2 = bb.move((getCameraPos(partialTicks).reverse()))
         val minX = bb2.minX.toFloat()
         val minY = bb2.minY.toFloat()
@@ -317,6 +455,7 @@ object RenderUtils {
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
             .setNormal(matrix4f, 1f, 0f, 0f)
             .setLineWidth(2.0f)
+
         buffer.addVertex(matrix4f, minX, minY, minZ)
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
             .setNormal(matrix4f, 0f, 0f, 1f)
@@ -325,6 +464,7 @@ object RenderUtils {
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
             .setNormal(matrix4f, 0f, 0f, 1f)
             .setLineWidth(2.0f)
+
         buffer.addVertex(matrix4f, minX, minY, maxZ)
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
             .setNormal(matrix4f, 0f, 0f, 1f)
@@ -341,6 +481,7 @@ object RenderUtils {
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
             .setNormal(matrix4f, 1f, 0f, 0f)
             .setLineWidth(2.0f)
+
         buffer.addVertex(matrix4f, minX, maxY, minZ)
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
             .setNormal(matrix4f, 1f, 0f, 0f)
@@ -410,9 +551,38 @@ object RenderUtils {
         GL11.glEnable(GL11.GL_DEPTH_TEST)
     }
 
+    fun drawSingleLine(
+        matrixStack: PoseStack,
+        start: Vector3f,
+        end: Vector3f,
+        color: Color,
+        alpha: Float = 1f,
+    ) {
+        GL11.glDisable(GL11.GL_DEPTH_TEST)
+        val bufferSource = GemRenderSource()
+        val bufferBuilder = bufferSource.getBuffer(GemRenderLayers.LINES)
+        val posMatrix = matrixStack.last()
+        bufferBuilder.addVertex(posMatrix, start)
+            .setColor(color.withAlpha(alpha).asInt)
+            .setNormal(posMatrix, end.x, end.y, end.z)
+            .setLineWidth(5f)
+        bufferBuilder
+            .addVertex(
+                posMatrix,
+                Vector3f(
+                    start.x + end.x,
+                    start.y + end.y,
+                    start.z + end.z
+                )
+            )
+            .setColor(color.withAlpha(alpha).asInt)
+            .setNormal(posMatrix, end.x, end.y, end.z)
+            .setLineWidth(5f)
+        bufferSource.uploadAndDraw()
+        GL11.glEnable(GL11.GL_DEPTH_TEST)
+    }
 
     fun drawSingleLineOptimized(
-
         matrixStack: PoseStack,
         start: Vec3,
         end: Vec3,
@@ -441,26 +611,30 @@ object RenderUtils {
 
     fun drawSingleLine(
         matrixStack: PoseStack,
-        start: Vec3,
         end: Vec3,
+        start: Vec3,
         color: Color,
         alpha: Float = 1f,
         partialTicks: Float = 0f,
         withOffset: Boolean = true,
         depthTest: Boolean = false,
         buffer: VertexConsumer? = null,
+        lineWidth: Float = 2.0f
     ) {
 
         GL11.glDisable(GL11.GL_DEPTH_TEST)
         val bufferSource = GemRenderSource()
         val bufferBuilder = bufferSource.getBuffer(GemRenderLayers.LINES)
         val posMatrix = matrixStack.last()
+        var bb1 = start
         var bb2 = end
-        if (withOffset)
-            bb2 = end.add((getCameraPos(partialTicks).reverse()))
-        val x1 = start.x.toFloat()
-        val y1 = start.y.toFloat()
-        val z1 = start.z.toFloat()
+        if (withOffset) {
+            bb1 = start.add((getCameraPos(partialTicks).reverse()))
+            bb2 = end.add((getCameraPos(partialTicks)).reverse())
+        }
+        val x1 = bb1.x.toFloat()
+        val y1 = bb1.y.toFloat()
+        val z1 = bb1.z.toFloat()
         val x2 = bb2.x.toFloat()
         val y2 = bb2.y.toFloat()
         val z2 = bb2.z.toFloat()
@@ -468,11 +642,11 @@ object RenderUtils {
         bufferBuilder.addVertex(posMatrix, x1, y1, z1)
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
             .setNormal(normal.x(), normal.y(), normal.z())
-            .setLineWidth(2.0f)
+            .setLineWidth(lineWidth)
         bufferBuilder.addVertex(posMatrix, x2, y2, z2)
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
             .setNormal(normal.x(), normal.y(), normal.z())
-            .setLineWidth(2.0f)
+            .setLineWidth(lineWidth)
         if (buffer == null)
             bufferSource.uploadAndDraw()
 
@@ -523,7 +697,7 @@ object RenderUtils {
      */
     fun getLookVec(delta: Float): Vec3 {
         val mc = Minecraft.getInstance()
-        if(Mods.isActive(ChatCommand.FreeCam)) {
+        if (Mods.isActive(ChatCommand.FreeCam)) {
             val freeCam: ModFreeCam = Mods.getMod(ChatCommand.FreeCam)
             val pitch = freeCam.camPitch
             val yaw = freeCam.camYaw
@@ -548,12 +722,13 @@ object RenderUtils {
         return e.boundingBox.move(offset)
     }
 
+
     fun renderEntityEsp(
         matrixStack: PoseStack,
         box: AABB,
         color: Color,
         alpha: Float,
-        partialTicks: Float
+        partialTicks: Float,
     ) {
         drawOutlinedBox(box, matrixStack, color, alpha, partialTicks)
     }
