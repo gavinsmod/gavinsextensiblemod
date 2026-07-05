@@ -24,11 +24,15 @@
 
 package com.peasenet.util
 
+import net.minecraft.client.multiplayer.ClientLevel
+import net.minecraft.resources.Identifier
+
 /**
  * The dimension of a Minecraft world.
  * @param dimension The dimension of a Minecraft world. Either "overworld", "the_nether", or "the_end".
  * @author GT3CH1
- * @version 03/22/2023
+ * @since 03/22/2023
+ * @version 07/05/2026
  */
 enum class Dimension(val dimension: String) {
     OVERWORLD("overworld"),
@@ -36,15 +40,14 @@ enum class Dimension(val dimension: String) {
     END("the_end");
 
     companion object {
-        /**
-         * Gets the dimension from a string.
-         */
-        fun fromValue(dim: String): Dimension {
-            for (d in entries) {
-                if (d.dimension == dim.lowercase())
-                    return d
+
+        fun fromWorld(world: ClientLevel): Dimension {
+            return when (world.dimension().identifier()) {
+                Identifier.withDefaultNamespace("overworld") -> OVERWORLD
+                Identifier.withDefaultNamespace("the_nether") -> NETHER
+                Identifier.withDefaultNamespace("the_end") -> END
+                else -> throw NotImplementedError("Dimension ${world.dimension().identifier()} is not implemented.")
             }
-            throw NotImplementedError("Dimension $dim is not implemented.")
         }
     }
 }

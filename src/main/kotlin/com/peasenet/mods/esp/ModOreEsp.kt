@@ -38,7 +38,7 @@ import kotlin.math.sin
  * This module has been modified from NoraTweaks, based off of Meteor Rejects
  * Source: https://github.com/noramibu/Nora-Tweaks, https://github.com/AntiCope/meteor-rejects/
  * @author GT3CH1
- * @version 12-06-2025
+ * @version 07-05-2026
  * @since 12-06-2025
  */
 class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.esp.ore", "oreesp") {
@@ -59,7 +59,7 @@ class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.esp.ore", "oreesp") {
             PlayerUtils.sendMessage("An invalid seed was provided!", true)
             return
         }
-        oreConfig = Ore.registry(Dimension.fromValue(client.getWorld().dimensionType().skybox.toString()))
+        oreConfig = Ore.registry(Dimension.fromWorld(client.getWorld()))
         super.onEnable()
         GemExecutor.execute {
             RenderUtils.getVisibleChunks().forEach(this::searchChunk)
@@ -123,9 +123,6 @@ class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.esp.ore", "oreesp") {
     }
 
     private fun oreHasNeighbor(blockPos: BlockPos, ore: Ore): Boolean {
-        if (blockPos.x == -268 && blockPos.y == 67 && blockPos.z == -95) {
-            println("test")
-        }
         return world.getBlockState(blockPos).block.defaultBlockState() == ore.blockState
     }
 

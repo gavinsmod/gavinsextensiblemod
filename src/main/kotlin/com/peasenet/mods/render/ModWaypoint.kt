@@ -100,11 +100,10 @@ class ModWaypoint : RenderMod(
     }
 
     override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
-        val playerDimension = Dimension.fromValue(Minecraft.getInstance().level?.dimensionType()?.skybox()?.name ?: "")
+        val playerDimension = Dimension.fromWorld(client.getWorld())
         val waypointLocs =
             Settings.getConfig<WaypointConfig>("waypoints").getLocations().filter { w -> w.canRender(playerDimension) }
         if (waypointLocs.isEmpty()) return
-        matrixStack.pushPose()
         for (w in waypointLocs) {
             val pos = w.coordinates.toVec3d()
             val bb = AABB(
@@ -112,14 +111,13 @@ class ModWaypoint : RenderMod(
             )
             if (w.renderEsp) RenderUtils.drawOutlinedBox(bb, matrixStack, w.color)
             if (w.renderTracer) {
-                val origin = RenderUtils.getLookVec(partialTicks).scale(10.0)
+                val origin = RenderUtils.getLookVec().scale(10.0)
                 RenderUtils.drawSingleLine(
-                    matrixStack, origin, bb.center, w.color
+                    matrixStack, bb.center, origin, w.color, withOffset = true
+
                 )
             }
         }
-        matrixStack.popPose()
-//        RenderUtils.cleanupRender(matrixStack)
     }
 
     override fun onCameraViewBob(c: CameraBob) {
