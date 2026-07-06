@@ -36,7 +36,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.core.BlockPos
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
-import org.joml.Matrix3x2fStack
 
 /**
  * A GavBlock is a block used for rendering block ESP and tracers.
@@ -361,15 +360,11 @@ class GavBlock(
         if (structureEsp) renderEdges(visibleEdges, offsetPos, matrixStack, colorToRender, alpha, buffer)
         else renderEdges(Edge.All.mask, offsetPos, matrixStack, colorToRender, alpha, buffer)
         if (tracers) {
-            val tracerOrigin = RenderUtils.getLookVec(partialTicks).scale(10.0)
-            RenderUtils.drawSingleLine(
+            RenderUtils.drawTracer(
                 matrixStack,
-                tracerOrigin,
                 offsetPos.add(0.5, 0.5, 0.5),
                 color,
                 alpha,
-                withOffset = true,
-                depthTest = false
             )
         }
         matrixStack.popPose()

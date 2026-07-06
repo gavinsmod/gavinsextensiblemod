@@ -113,7 +113,7 @@ class ModWaypoint : RenderMod(
             if (w.renderTracer) {
                 val origin = RenderUtils.getLookVec().scale(10.0)
                 RenderUtils.drawSingleLine(
-                    matrixStack, bb.center, origin, w.color, withOffset = true
+                    matrixStack, bb.center, origin, w.color, asCameraCoordinates = true
 
                 )
             }

@@ -98,11 +98,9 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
 
     override fun onEnable() {
         em.subscribe(RenderListener::class.java, this)
-        chunks.clear()
         em.subscribe(BlockUpdateListener::class.java, this)
         em.subscribe(WorldRenderListener::class.java, this)
         em.subscribe(ChunkUpdateListener::class.java, this)
-        em.subscribe(RenderListener::class.java, this)
         // search for chunks within render distance
         GemExecutor.execute {
             RenderUtils.getVisibleChunks().forEach(this::searchChunk)
@@ -115,7 +113,6 @@ class ModBlockEsp : BlockEsp<BlockEspConfig>(
         em.unsubscribe(WorldRenderListener::class.java, this)
         em.unsubscribe(ChunkUpdateListener::class.java, this)
         em.unsubscribe(RenderListener::class.java, this)
-        chunks.clear()
         super.onDisable()
     }
 

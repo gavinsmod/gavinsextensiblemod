@@ -31,7 +31,6 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import com.mojang.blaze3d.vertex.PoseStack
 import com.peasenet.util.ChatCommand
 import net.minecraft.world.phys.Vec3
-import org.joml.Matrix3x2fStack
 
 /**
  * A helper class for creating mods that trace block entities.
@@ -41,8 +40,8 @@ import org.joml.Matrix3x2fStack
  * @param blockFilter A lambda that filters block entities.
  * @see TracerMod
  *
- * @version 01-15-2025
  * @since 09-06-2024
+ * @version 07-05-2026
  * @author GT3CH1
  */
 @Suppress("UNCHECKED_CAST")
@@ -80,11 +79,9 @@ abstract class BlockEntityTracer<T : BlockEntity>(
     override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
         if (entityList.isEmpty()) return
         for (e in entityList) {
-            val tracerOrigin = RenderUtils.getLookVec(partialTicks).scale(10.0)
             val end = Vec3.atCenterOf(e.blockPos)
-            RenderUtils.drawSingleLine(
+            RenderUtils.drawTracer(
                 matrixStack,
-                tracerOrigin,
                 end,
                 getColor(),
                 config.alpha,

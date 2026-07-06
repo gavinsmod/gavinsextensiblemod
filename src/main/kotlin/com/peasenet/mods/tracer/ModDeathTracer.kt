@@ -31,7 +31,7 @@ class ModDeathTracer :
     override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
 
         val lastDeathCoordinates = Minecraft.getInstance().player?.lastDeathLocation?.getOrNull()?.pos ?: return
-        val tracerOrigin = RenderUtils.getLookVec(partialTicks).scale(10.0)
+        val tracerOrigin = RenderUtils.getLookVec().scale(10.0)
         val end = lastDeathCoordinates.toVec3d()
         RenderUtils.drawSingleLine(
             matrixStack,

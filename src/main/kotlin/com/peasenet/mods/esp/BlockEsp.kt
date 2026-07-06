@@ -96,6 +96,7 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
 
     override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
         // TODO: MC 1.21.10 update
+        matrixStack.pushPose()
         synchronized(chunks) {
             if (chunks.isEmpty()) return
             GL11.glDisable(GL11.GL_DEPTH_TEST)
@@ -114,6 +115,7 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
             }
             bufferSource.uploadAndDraw()
             GL11.glEnable(GL11.GL_DEPTH_TEST)
+            matrixStack.popPose()
         }
     }
 

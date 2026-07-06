@@ -44,11 +44,6 @@ class ModMobTracer : EntityTracer<LivingEntity>(
     { it is Mob && config.inList(it.type) }
 ) {
     init {
-//        val menu = SettingBuilder<ClickSetting>()
-//            .setTitle("gavinsmod.settings.mobtracer")
-//            .setCallback { MinecraftClient.getInstance().setScreen(GuiMobTracer()) }
-//            .buildClickSetting()
-//        addSetting(menu)
         clickSetting {
             title = "gavinsmod.settings.mobtracer"
             callback = { Minecraft.getInstance().setScreenAndShow(GuiMobTracer()) }

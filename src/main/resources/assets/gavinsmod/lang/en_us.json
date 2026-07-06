@@ -190,9 +190,9 @@
   "gavinsmod.settings.tracer.viewbobcancel": "View Bob Disabled",
 
   "gavinsmod.mod.tracer.projectile": "Projectile Tracer",
-  "gavinsmod.settings.projectiletracer.showimpact": "Show Marker",
-  "gavinsmod.settings.projectiletracer.impactcolor": "Marker Color",
-  "gavinsmod.settings.projectiletracer.impactalpha": "Marker Alpha",
+  "gavinsmod.settings.projectiletracer.showimpact": "Show Hit Marker",
+  "gavinsmod.settings.projectiletracer.impactcolor": "Hit Marker Color",
+  "gavinsmod.settings.projectiletracer.impactalpha": "Hit Marker Alpha",
   "gavinsmod.settings.projectiletracer.showhitentity": "Show Hit Entity",
   "gavinsmod.settings.projectiletracer.trajectoryalpha": "Trajectory Alpha",
   "gavinsmod.settings.projectiletracer.hitentitycolor": "Hit Entity Color",

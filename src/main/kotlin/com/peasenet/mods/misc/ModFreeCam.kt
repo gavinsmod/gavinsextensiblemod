@@ -24,9 +24,7 @@
 package com.peasenet.mods.misc
 
 import com.peasenet.config.misc.FreeCamConfig
-import com.peasenet.gavui.util.Direction
 import com.peasenet.main.Settings
-import com.peasenet.mods.tracer.TracerMod
 import com.peasenet.util.FakePlayer
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.AirStrafeEvent
@@ -36,12 +34,9 @@ import com.peasenet.util.listeners.PacketSendListener
 import com.peasenet.util.listeners.RenderListener
 import com.mojang.blaze3d.vertex.PoseStack
 import com.peasenet.gui.mod.misc.GuiFreeCam
-import com.peasenet.gui.mod.render.GuiOreEsp
-import com.peasenet.util.PlayerUtils
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
 import net.minecraft.util.Mth
 import net.minecraft.world.phys.Vec3
-import org.joml.Matrix3x2fStack
 
 /**
  * A mod that allows the camera to be moved freely.
@@ -143,18 +138,17 @@ class ModFreeCam : MiscMod(
     }
 
     private fun renderTracer(matrixStack: PoseStack, partialTicks: Float) {
-        val tracerOrigin = RenderUtils.getLookVec(partialTicks).scale(10.0)
+        val tracerOrigin = RenderUtils.getLookVec().scale(10.0)
         val end = RenderUtils.getLerpedBox(client.getPlayer(), partialTicks).center
-        matrixStack.pushPose()
         RenderUtils.drawSingleLine(
             matrixStack,
-            tracerOrigin,
-            end,
+            end = end,
+            start = tracerOrigin,
             config.color,
             config.alpha,
-            partialTicks
+            partialTicks,
+            asCameraCoordinates = true
         )
-        matrixStack.popPose()
     }
 
     private fun renderEsp(matrixStack: PoseStack, partialTicks: Float) {

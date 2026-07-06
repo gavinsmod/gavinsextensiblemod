@@ -33,8 +33,6 @@ import com.peasenet.util.math.MathUtils
 import net.minecraft.client.Minecraft
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexConsumer
-import com.peasenet.main.Mods
-import com.peasenet.mods.misc.ModFreeCam
 import net.minecraft.client.renderer.rendertype.RenderType
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.AABB
@@ -148,10 +146,10 @@ object RenderUtils {
      * @return The camera position.
      */
     fun getCameraPos(delta: Float = 0f): Vec3 {
-        if (Mods.isActive(ChatCommand.FreeCam)) {
-            val freeCam: ModFreeCam = Mods.getMod(ChatCommand.FreeCam)
-            return freeCam.getCameraPos(delta.toDouble())
-        }
+//        if (Mods.isActive(ChatCommand.FreeCam)) {
+//            val freeCam: ModFreeCam = Mods.getMod(ChatCommand.FreeCam)
+//            return freeCam.getCameraPos(delta.toDouble())
+//        }
         val camera = Minecraft.getInstance().gameRenderer.mainCamera.position()
         return camera!!
     }
@@ -284,12 +282,20 @@ object RenderUtils {
     }
 
     fun drawLinedBox(
-        bb: AABB, matrixStack: PoseStack, color: Color = Colors.WHITE, alpha: Float = 1f, partialTicks: Float = 0f,
+        bb: AABB,
+        matrixStack: PoseStack,
+        color: Color = Colors.WHITE,
+        alpha: Float = 1f,
+        partialTicks: Float = 0f,
+        asCameraCoordinates: Boolean = false,
     ) {
         GL11.glDisable(GL11.GL_DEPTH_TEST)
         val bufferSource = GemRenderSource()
         val buffer = bufferSource.getBuffer(GemRenderLayers.QUADS)
-        var bb2 = bb.move((getCameraPos(partialTicks).reverse()))
+        var bb2 = bb.move((getCameraPos().reverse()))
+        if (asCameraCoordinates) {
+            bb2 = bb
+        }
         val minX = bb2.minX.toFloat()
         val minY = bb2.minY.toFloat()
         val minZ = bb2.minZ.toFloat()
@@ -436,7 +442,8 @@ object RenderUtils {
         GL11.glDisable(GL11.GL_DEPTH_TEST)
         val bufferSource = GemRenderSource()
         val buffer = bufferSource.getBuffer(renderType)
-        var bb2 = bb.move((getCameraPos(partialTicks).reverse()))
+        // this allows us to specify the box in game coordinates instead of camera coordinates.
+        val bb2 = bb.move((getCameraPos().reverse()))
         val minX = bb2.minX.toFloat()
         val minY = bb2.minY.toFloat()
         val minZ = bb2.minZ.toFloat()
@@ -609,6 +616,49 @@ object RenderUtils {
 
     }
 
+    /**
+     * Draws a tracer from the players "eye" position to the given end point.
+     * @param matrixStack The matrix stack to use for rendering.
+     * @param end The end point of the tracer in game coordinates.
+     * @param color The color of the tracer.
+     * @param alpha The alpha value of the tracer.
+     * @param partialTicks The partial ticks for interpolation.
+     * @param lineWidth The width of the tracer line.
+     */
+    fun drawTracer(
+        matrixStack: PoseStack,
+        end: Vec3,
+        color: Color,
+        alpha: Float = 1f,
+        partialTicks: Float = 0f,
+        lineWidth: Float = 2.0f,
+    ) {
+        // this line is counterintuitive to the #drawSingleLine method, but it helps translates the start back to the players viewport.
+        val start = getCameraPos().add(getLookVec())
+        drawSingleLine(
+            matrixStack,
+            start,
+            end,
+            color,
+            alpha,
+            partialTicks,
+            lineWidth = lineWidth
+        )
+    }
+
+
+    /**
+     * Draws a single line between two points in 3D space.
+     * @param matrixStack The matrix stack to use for rendering.
+     * @param end The end point of the line in game coordinates.
+     * @param start The start point of the line in game coordinates.
+     * @param color The color of the line.
+     * @param alpha The alpha value of the line.
+     * @param partialTicks The partial ticks for interpolation.
+     * @param asCameraCoordinates Whether to treat the start and end points as camera coordinates.
+     * @param buffer The vertex consumer to use for rendering. If null, a new buffer will be created.
+     * @param lineWidth The width of the line.
+     */
     fun drawSingleLine(
         matrixStack: PoseStack,
         end: Vec3,
@@ -616,21 +666,20 @@ object RenderUtils {
         color: Color,
         alpha: Float = 1f,
         partialTicks: Float = 0f,
-        withOffset: Boolean = true,
-        depthTest: Boolean = false,
+        asCameraCoordinates: Boolean = false,
         buffer: VertexConsumer? = null,
-        lineWidth: Float = 2.0f
+        lineWidth: Float = 2.0f,
     ) {
 
         GL11.glDisable(GL11.GL_DEPTH_TEST)
         val bufferSource = GemRenderSource()
         val bufferBuilder = bufferSource.getBuffer(GemRenderLayers.LINES)
         val posMatrix = matrixStack.last()
-        var bb1 = start
-        var bb2 = end
-        if (withOffset) {
-            bb1 = start.add((getCameraPos(partialTicks).reverse()))
-            bb2 = end.add((getCameraPos(partialTicks)).reverse())
+        var bb1 = start.add((getCameraPos(partialTicks).reverse()))
+        var bb2 = end.add((getCameraPos(partialTicks)).reverse())
+        if (asCameraCoordinates) {
+            bb1 = start
+            bb2 = end
         }
         val x1 = bb1.x.toFloat()
         val y1 = bb1.y.toFloat()
@@ -639,13 +688,15 @@ object RenderUtils {
         val y2 = bb2.y.toFloat()
         val z2 = bb2.z.toFloat()
         val normal = Vector3f(x2, y2, z2).sub(Vector3f(x1, y1, z1)).normalize()
+        // startPos
         bufferBuilder.addVertex(posMatrix, x1, y1, z1)
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .setNormal(normal.x(), normal.y(), normal.z())
+            .setNormal(x2, y2, z2)
             .setLineWidth(lineWidth)
+        // endPos
         bufferBuilder.addVertex(posMatrix, x2, y2, z2)
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .setNormal(normal.x(), normal.y(), normal.z())
+            .setNormal(x2, y2, z2)
             .setLineWidth(lineWidth)
         if (buffer == null)
             bufferSource.uploadAndDraw()
@@ -692,19 +743,12 @@ object RenderUtils {
 
     /**
      * Gets the look vector of the player.
-     * @param delta The delta time.
      * @return The look vector of the player.
      */
-    fun getLookVec(delta: Float): Vec3 {
+    fun getLookVec(): Vec3 {
         val mc = Minecraft.getInstance()
-        if (Mods.isActive(ChatCommand.FreeCam)) {
-            val freeCam: ModFreeCam = Mods.getMod(ChatCommand.FreeCam)
-            val pitch = freeCam.camPitch
-            val yaw = freeCam.camYaw
-            return Rotation(pitch, yaw).asLookVec()
-        }
-        val pitch = mc.player!!.getViewXRot(delta)
-        val yaw = mc.player!!.getViewYRot(delta)
+        val pitch = mc.gameRenderer.mainCamera.xRot()
+        val yaw = mc.gameRenderer.mainCamera.yRot()
         return Rotation(pitch, yaw).asLookVec()
 
     }

@@ -23,6 +23,7 @@
  */
 package com.peasenet.mods.misc
 
+import com.mojang.blaze3d.systems.RenderSystem
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gavui.math.PointF
 import com.peasenet.gavui.util.GavUISettings
@@ -79,15 +80,15 @@ class ModGuiTextOverlay : MiscMod(
         for (mod in modList) {
             longestModName = textRenderer.width(I18n.get(mod.translationKey)).coerceAtLeast(longestModName)
         }
-        val box = BoxF(startingPoint, (longestModName + 4).toFloat(), modsCount * 10 + 2f)
+        val box = BoxF(startingPoint, (longestModName + 4).toFloat(), modsCount * 12f)
         matrixStack.pushMatrix()
-        GuiUtil.drawBox(
-            GavUISettings.getColor("gui.color.background"),
+        val color = GavUISettings.getColor("gui.color.background")
+        val alpha = GavUISettings.getFloat("gui.alpha")
+        GuiUtil.fill(
             box,
-            matrixStack,
-            GavUISettings.getFloat("gui.alpha")
-        )
-        matrixStack.popMatrix()
+            drawContext, color.withAlpha(alpha))
+        drawContext.guiRenderState.up()
+        drawContext.enableScissor(0,0, GavinsModClient.minecraftClient.window.width, GavinsModClient.minecraftClient.window.height)
         for ((index, mod) in modList.withIndex()) {
              drawContext.text(
                 textRenderer,
@@ -95,17 +96,17 @@ class ModGuiTextOverlay : MiscMod(
                 startingPoint.x.toInt() + 2,
                 startingPoint.y.toInt() + 2,
                 GavUISettings.getColor("gui.color.foreground").asInt,
-                true
+                false
             )
             if (modsCount > 1 && index < modsCount - 1) {
-                val p1 = Vec3(0.0, startingPoint.y + 11.5, 0.0)
-                val p2 = Vec3(longestModName + 4.0, startingPoint.y + 11.5, 0.0)
-                matrixStack.pushMatrix()
-                RenderUtils.drawSingleLine(matrixStack, p1, p2, GavUISettings.getColor("gui.color.border"), 1f, false)
-                matrixStack.pushMatrix()
+                val p1 = Vec3(0.0, startingPoint.y + 11.0, 0.0)
+                val p2 = Vec3(longestModName + 3.0, startingPoint.y + 11.5, 0.0)
+                drawContext.horizontalLine(p1.x.toInt(), p2.x.toInt(), p1.y.toInt(), GavUISettings.getColor("gui.color.border").asInt)
             }
-            startingPoint = startingPoint.add(0.0f, 10.0f)
+            startingPoint = startingPoint.add(0.0f, 12f)
         }
+        drawContext.disableScissor()
+        matrixStack.popMatrix()
 
 
     }

@@ -10,17 +10,13 @@ import com.peasenet.util.ChatCommand
 import com.peasenet.util.RenderUtils
 import net.minecraft.client.Minecraft
 import net.minecraft.client.player.LocalPlayer
+import net.minecraft.util.Mth
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.ExperienceOrb
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.projectile.Projectile
-import net.minecraft.world.item.BowItem
-import net.minecraft.world.item.CrossbowItem
-import net.minecraft.world.item.EnderpearlItem
-import net.minecraft.world.item.FishingRodItem
-import net.minecraft.world.item.SnowballItem
-import net.minecraft.world.item.TridentItem
+import net.minecraft.world.item.*
 import net.minecraft.world.level.ClipContext
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.HitResult
@@ -48,10 +44,16 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
         }
     }
 
+    fun angleFromRotation(f: Float, g: Float, h: Double): Vec3 {
+        val k = -Mth.sin((g * 0.017453292f).toDouble()) * Mth.cos((f * 0.017453292f).toDouble())
+        val l = -Mth.sin(((f + h) * 0.017453292f))
+        val m = Mth.cos((g * 0.017453292f).toDouble()) * Mth.cos((f * 0.017453292f).toDouble())
+        return Vec3(k.toDouble(), l.toDouble(), m.toDouble())
+    }
+
     override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
         val projectileList = getProjectileList(partialTicks)
         val eyePos = Minecraft.getInstance().player!!.getEyePosition(partialTicks)
-        matrixStack.pushPose()
         for (projectile in projectileList) {
             val handToEyeDelta: Vec3 = handToEyeDelta(projectile.offset, projectile.position, eyePos, 1, partialTicks)
             val impactData = getProjectileImpactData(projectile.position, projectile)
@@ -71,7 +73,6 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                         ProjectileTracerConfig.TRAJECTORY_WIDTH.LARGE -> 8.0f
                     }
                     when (getConfig().trajectoryStyle) {
-
                         ProjectileTracerConfig.TRAJECTORY_STYLE.LINE -> {
                             RenderUtils.drawSingleLine(
                                 matrixStack,
@@ -79,7 +80,7 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                                 end = pos.add(dir),
                                 color = projectile.color,
                                 alpha = getConfig().trajectoryAlpha,
-                                lineWidth = lineWidth
+                                lineWidth = lineWidth,
                             )
                         }
 
@@ -90,7 +91,7 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                                 end = pos.add(dir.scale(0.5)),
                                 color = projectile.color,
                                 alpha = getConfig().trajectoryAlpha,
-                                lineWidth = lineWidth
+                                lineWidth = lineWidth,
                             )
                         }
 
@@ -128,7 +129,6 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                     )
                 }
             }
-            matrixStack.popPose()
 
         }
 
@@ -156,7 +156,8 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                 if (pull <= 0.1) return projectileData
                 newProjectileData = ProjectileData(
                     velocity = velocity, offset = BOW_OFFSET, position = position, gravity = BOW_GRAVITY,
-                    color = getConfig().bowTrajectoryColor
+                    color = getConfig().bowTrajectoryColor,
+                    physicsOrder = PhysicsOrder.POSITION_DRAG_GRAVITY
                 )
             }
 
@@ -168,8 +169,11 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                         offset = CROSSBOW_OFFSET,
                         position = position,
                         color = getConfig().crossbowTrajectoryColor,
-                        gravity = CROSSBOW_GRAVITY
+                        gravity = CROSSBOW_GRAVITY,
+                        physicsOrder = PhysicsOrder.POSITION_DRAG_GRAVITY
                     )
+                } else {
+                    return emptyList()
                 }
             }
 
@@ -181,10 +185,24 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                     position = position,
                     color = getConfig().fishingRodTrajectoryColor,
                     gravity = FISHING_ROD_GRAVITY,
+                    physicsOrder = PhysicsOrder.POSITION_DRAG_GRAVITY
                 )
             }
 
             is SnowballItem -> {
+                val vel = getProjVelocity(partialTicks, SnowballItem.PROJECTILE_SHOOT_POWER.toDouble())
+                newProjectileData = ProjectileData(
+                    velocity = vel,
+                    offset = SNOWBALL_OFFSET,
+                    position = position,
+                    color = getConfig().snowballTrajectoryColor,
+                    gravity = SNOWBALL_GRAVITY,
+                    physicsOrder = PhysicsOrder.GRAVITY_DRAG_POSITION
+                )
+
+            }
+
+            is EggItem -> {
                 val vel = getProjVelocity(partialTicks, SNOWBALL_SCALE)
                 newProjectileData = ProjectileData(
                     velocity = vel,
@@ -192,8 +210,8 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                     position = position,
                     color = getConfig().snowballTrajectoryColor,
                     gravity = SNOWBALL_GRAVITY,
+                    physicsOrder = PhysicsOrder.GRAVITY_DRAG_POSITION
                 )
-
             }
 
             is EnderpearlItem -> {
@@ -204,18 +222,34 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                     position = position,
                     color = getConfig().enderpearlTrajectoryColor,
                     gravity = ENDERPEARL_GRAVITY,
+                    physicsOrder = PhysicsOrder.GRAVITY_DRAG_POSITION
                 )
 
             }
 
+            is SplashPotionItem -> {
+                val direction = angleFromRotation(player.xRot, player.yRot, -20.0).normalize()
+                val vel = direction.scale(POTION_SCALE.toDouble())
+                newProjectileData = ProjectileData(
+                    velocity = vel,
+                    offset = POTION_OFFSET,
+                    position = position,
+                    color = getConfig().snowballTrajectoryColor,
+                    gravity = 0.05,
+                    physicsOrder = PhysicsOrder.GRAVITY_DRAG_POSITION
+                )
+            }
+
             is TridentItem -> {
                 val vel = getProjVelocity(partialTicks, TRIDENT_SCALE)
+                if (!player.isUsingItem) return emptyList()
                 newProjectileData = ProjectileData(
                     velocity = vel,
                     offset = TRIDENT_OFFSET,
                     position = position,
                     gravity = TRIDENT_GRAVITY,
                     color = getConfig().tridentTrajectoryColor,
+                    physicsOrder = PhysicsOrder.POSITION_DRAG_GRAVITY
                 )
             }
             else ->
@@ -240,9 +274,26 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
         var newPos = projectilePosition
         for (i in 0..MAX_TRAJECTORY_POINTS) {
             trajectoryPoints.add(newPos)
-            velocity = velocity.scale(drag)
-            velocity = velocity.subtract(0.0, gravity, 0.0)
-            newPos = newPos.add(velocity)
+            // for all physics orders, start with the order in projectileData, then apply the other two in order.
+            when (projectileData.physicsOrder) {
+                PhysicsOrder.POSITION_DRAG_GRAVITY -> {
+                    newPos = newPos.add(velocity)
+                    velocity = velocity.scale(drag)
+                    velocity = velocity.subtract(0.0, gravity, 0.0)
+                }
+
+                PhysicsOrder.DRAG_POSITION_GRAVITY -> {
+                    velocity = velocity.scale(drag)
+                    newPos = newPos.add(velocity)
+                    velocity = velocity.subtract(0.0, gravity, 0.0)
+                }
+
+                PhysicsOrder.GRAVITY_DRAG_POSITION -> {
+                    velocity = velocity.subtract(0.0, gravity, 0.0)
+                    velocity = velocity.scale(drag)
+                    newPos = newPos.add(velocity)
+                }
+            }
             val box = AABB(prevPos, newPos).deflate(0.5)
             val entities: List<Entity?>? = client.getWorld().getEntitiesOfClass(
                 Entity::class.java, box
@@ -323,6 +374,7 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
         var offset: Vec3 = Vec3.ZERO,
         var position: Vec3 = Vec3.ZERO,
         var color: Color = Colors.RED,
+        var physicsOrder: PhysicsOrder = PhysicsOrder.POSITION_DRAG_GRAVITY,
     )
 
     data class ProjectileImpactData(
@@ -346,16 +398,20 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
         const val BOW_GRAVITY = 0.05
 
         val CROSSBOW_OFFSET = Vec3(0.09, -0.9, -0.2)
-        const val CROSSBOW_SCALE = 3.0
-        const val CROSSBOW_GRAVITY = 0.0325
+        const val CROSSBOW_SCALE = 3.5
+        const val CROSSBOW_GRAVITY = 0.04
 
         val FISHING_ROD_OFFSET = Vec3(0.2, -0.09, 0.2)
         const val FISHING_ROD_SCALE = 1.0
         const val FISHING_ROD_GRAVITY = 0.05
 
         val SNOWBALL_OFFSET = Vec3(0.2, -0.09, 0.2)
-        const val SNOWBALL_SCALE = 1.75
+        const val SNOWBALL_SCALE = 1.5
         const val SNOWBALL_GRAVITY = 0.03
+
+        val POTION_OFFSET = Vec3(0.2, -0.09, 0.2)
+        const val POTION_SCALE = SplashPotionItem.PROJECTILE_SHOOT_POWER
+        const val POTION_GRAVITY = 2.75
 
         val ENDERPEARL_OFFSET = Vec3(0.2, -0.09, 0.2)
         const val ENDERPEARL_SCALE = 1.75
@@ -373,6 +429,12 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
         }
 
     }
+}
+
+enum class PhysicsOrder {
+    POSITION_DRAG_GRAVITY,
+    DRAG_POSITION_GRAVITY,
+    GRAVITY_DRAG_POSITION
 }
 
 

@@ -43,11 +43,6 @@ class ModChestTracer : BlockEntityTracer<BlockEntity>(
     { it is ChestBlockEntity || it is EnderChestBlockEntity || it is ShulkerBoxBlockEntity }
 ), RenderListener {
     init {
-//        val colorSetting =
-//            SettingBuilder<ColorSetting>().setTitle("gavinsmod.settings.tracer.chest.color").setColor(config.chestColor)
-//                .setCallback { config.chestColor = it.color }
-//                .buildColorSetting()
-//        addSetting(colorSetting)
         colorSetting {
             title = "gavinsmod.settings.tracer.chest.color"
             color = config.chestColor
