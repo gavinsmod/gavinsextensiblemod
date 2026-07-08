@@ -32,7 +32,10 @@ import com.peasenet.util.RenderUtils
 import com.peasenet.util.listeners.RenderListener
 import com.mojang.blaze3d.vertex.PoseStack
 import com.peasenet.util.ChatCommand
+import com.peasenet.util.GemRenderLayers
+import com.peasenet.util.GemRenderSource
 import net.minecraft.world.entity.Entity
+import org.lwjgl.opengl.GL11
 
 /**
  * A tracer mod that traces entities of a specific type.
@@ -58,6 +61,8 @@ abstract class EntityTracer<T : Entity>(
 
     override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
         if (entityList.isEmpty()) return
+        val bufferSource = GemRenderSource()
+        val buffer = bufferSource.getBuffer()
         for (e in entityList) {
             val end = (RenderUtils.getLerpedBox(e, partialTicks).center)
             matrixStack.pushPose()
@@ -66,9 +71,11 @@ abstract class EntityTracer<T : Entity>(
                 end,
                 getColor(e),
                 config.alpha,
+                vertexConsumer = buffer
             )
             matrixStack.popPose()
         }
+        bufferSource.uploadAndDraw()
     }
 
     open fun getAlpha(): Float {

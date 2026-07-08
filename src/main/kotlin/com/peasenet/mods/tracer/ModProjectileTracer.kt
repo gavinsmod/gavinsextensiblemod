@@ -7,6 +7,8 @@ import com.peasenet.gavui.color.Colors
 import com.peasenet.gui.mod.tracer.GuiProjectileTracer
 import com.peasenet.main.Settings
 import com.peasenet.util.ChatCommand
+import com.peasenet.util.GemRenderLayers
+import com.peasenet.util.GemRenderSource
 import com.peasenet.util.RenderUtils
 import net.minecraft.client.Minecraft
 import net.minecraft.client.player.LocalPlayer
@@ -21,6 +23,7 @@ import net.minecraft.world.level.ClipContext
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
+import org.lwjgl.opengl.GL11
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -44,16 +47,19 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
         }
     }
 
-    fun angleFromRotation(f: Float, g: Float, h: Double): Vec3 {
-        val k = -Mth.sin((g * 0.017453292f).toDouble()) * Mth.cos((f * 0.017453292f).toDouble())
-        val l = -Mth.sin(((f + h) * 0.017453292f))
-        val m = Mth.cos((g * 0.017453292f).toDouble()) * Mth.cos((f * 0.017453292f).toDouble())
-        return Vec3(k.toDouble(), l.toDouble(), m.toDouble())
+    fun angleFromRotation(xRot: Float, yRot: Float, h: Double): Vec3 {
+        val x = -Mth.sin(yRot * Mth.DEG_TO_RAD.toDouble()) * Mth.cos(xRot * Mth.DEG_TO_RAD.toDouble())
+        val y = -Mth.sin(((xRot + h) * Mth.DEG_TO_RAD))
+        val z = Mth.cos((yRot * Mth.DEG_TO_RAD).toDouble()) * Mth.cos((xRot * Mth.DEG_TO_RAD).toDouble())
+        return Vec3(x.toDouble(), y.toDouble(), z.toDouble())
     }
 
     override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
         val projectileList = getProjectileList(partialTicks)
         val eyePos = Minecraft.getInstance().player!!.getEyePosition(partialTicks)
+        GL11.glDisable(GL11.GL_DEPTH_TEST)
+        val bufferSource = GemRenderSource()
+        val buffer = bufferSource.getBuffer(GemRenderLayers.LINES)
         for (projectile in projectileList) {
             val handToEyeDelta: Vec3 = handToEyeDelta(projectile.offset, projectile.position, eyePos, 1, partialTicks)
             val impactData = getProjectileImpactData(projectile.position, projectile)
@@ -125,12 +131,15 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                 )
                 if (getConfig().showHitEntityOutline) {
                     RenderUtils.drawOutlinedBox(
-                        lerped, matrixStack, getConfig().hitEntityOutlineColor, getConfig().hitEntityAlpha, partialTicks
+                        lerped, matrixStack, getConfig().hitEntityOutlineColor, getConfig().hitEntityAlpha, 2f, buffer
                     )
                 }
             }
 
         }
+        bufferSource.uploadAndDraw()
+
+        GL11.glEnable(GL11.GL_DEPTH_TEST)
 
     }
 
@@ -157,7 +166,8 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                 newProjectileData = ProjectileData(
                     velocity = velocity, offset = BOW_OFFSET, position = position, gravity = BOW_GRAVITY,
                     color = getConfig().bowTrajectoryColor,
-                    physicsOrder = PhysicsOrder.POSITION_DRAG_GRAVITY
+                    physicsOrder = PhysicsOrder.POSITION_DRAG_GRAVITY,
+                    waterDrag = 0.5
                 )
             }
 
@@ -178,13 +188,17 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
             }
 
             is FishingRodItem -> {
-                val vel = getProjVelocity(partialTicks, FISHING_ROD_SCALE)
+//                if (player.fishing != null)
+//                    return emptyList();
+                val direction = angleFromRotation(player.xRot, player.yRot, -5.0).normalize()
+                val vel = direction.scale(1.4)
                 newProjectileData = ProjectileData(
                     velocity = vel,
                     offset = FISHING_ROD_OFFSET,
                     position = position,
                     color = getConfig().fishingRodTrajectoryColor,
                     gravity = FISHING_ROD_GRAVITY,
+                    drag = 0.90,
                     physicsOrder = PhysicsOrder.POSITION_DRAG_GRAVITY
                 )
             }
@@ -197,25 +211,27 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                     position = position,
                     color = getConfig().snowballTrajectoryColor,
                     gravity = SNOWBALL_GRAVITY,
-                    physicsOrder = PhysicsOrder.GRAVITY_DRAG_POSITION
+                    physicsOrder = PhysicsOrder.GRAVITY_DRAG_POSITION,
+                    waterDrag = 0.8
                 )
 
             }
 
             is EggItem -> {
-                val vel = getProjVelocity(partialTicks, SNOWBALL_SCALE)
+                val vel = getProjVelocity(partialTicks, EggItem.PROJECTILE_SHOOT_POWER.toDouble())
                 newProjectileData = ProjectileData(
                     velocity = vel,
                     offset = SNOWBALL_OFFSET,
                     position = position,
                     color = getConfig().snowballTrajectoryColor,
                     gravity = SNOWBALL_GRAVITY,
-                    physicsOrder = PhysicsOrder.GRAVITY_DRAG_POSITION
+                    physicsOrder = PhysicsOrder.GRAVITY_DRAG_POSITION,
+                    waterDrag = 0.8
                 )
             }
 
             is EnderpearlItem -> {
-                val vel = getProjVelocity(partialTicks, ENDERPEARL_SCALE)
+                val vel = getProjVelocity(partialTicks, EnderpearlItem.PROJECTILE_SHOOT_POWER.toDouble())
                 newProjectileData = ProjectileData(
                     velocity = vel,
                     offset = ENDERPEARL_OFFSET,
@@ -228,7 +244,7 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
             }
 
             is SplashPotionItem -> {
-                val direction = angleFromRotation(player.xRot, player.yRot, -20.0).normalize()
+                val direction = angleFromRotation(player.xRot, player.yRot, -30.0).normalize()
                 val vel = direction.scale(POTION_SCALE.toDouble())
                 newProjectileData = ProjectileData(
                     velocity = vel,
@@ -236,7 +252,21 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                     position = position,
                     color = getConfig().snowballTrajectoryColor,
                     gravity = 0.05,
-                    physicsOrder = PhysicsOrder.GRAVITY_DRAG_POSITION
+                    physicsOrder = PhysicsOrder.GRAVITY_DRAG_POSITION,
+                    waterDrag = 0.8
+                )
+            }
+
+            is ExperienceBottleItem -> {
+                val direction = angleFromRotation(player.xRot, player.yRot, -20.0).normalize()
+                val vel = direction.scale(0.7)
+                newProjectileData = ProjectileData(
+                    velocity = vel,
+                    offset = POTION_OFFSET,
+                    position = position,
+                    gravity = 0.07,
+                    physicsOrder = PhysicsOrder.GRAVITY_DRAG_POSITION,
+                    waterDrag = 0.8
                 )
             }
 
@@ -252,6 +282,7 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                     physicsOrder = PhysicsOrder.POSITION_DRAG_GRAVITY
                 )
             }
+
             else ->
                 return emptyList()
         }
@@ -267,7 +298,7 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
         var hitEntity: Entity? = null;
         var hasHit = false;
         val trajectoryPoints: MutableList<Vec3> = ArrayList()
-        val drag = projectileData.drag
+        var drag = projectileData.drag
         val gravity = projectileData.gravity
         var velocity = projectileData.velocity.add(client.getPlayer().deltaMovement)
         var entityHitPos: Vec3? = null
@@ -314,16 +345,28 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                     }
                 }
             }
-
+            val waterHitResult = client.getWorld().clip(
+                ClipContext(
+                    prevPos,
+                    newPos,
+                    ClipContext.Block.COLLIDER,
+                    ClipContext.Fluid.WATER,
+                    client.getPlayer()
+                )
+            )
             val hitResult = client.getWorld().clip(
                 ClipContext(
                     prevPos,
                     newPos,
                     ClipContext.Block.COLLIDER,
                     ClipContext.Fluid.NONE,
-                    Minecraft.getInstance().player as Entity
+                    client.getPlayer()
                 )
             )
+
+            if (waterHitResult.type != HitResult.Type.MISS) {
+                drag = projectileData.waterDrag
+            }
 
             if (hitResult.type != HitResult.Type.MISS && prevPos.distanceToSqr(hitResult.location) < closest) {
                 newPos = hitResult.location
@@ -398,10 +441,10 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
         const val BOW_GRAVITY = 0.05
 
         val CROSSBOW_OFFSET = Vec3(0.09, -0.9, -0.2)
-        const val CROSSBOW_SCALE = 3.5
+        const val CROSSBOW_SCALE = 3.15
         const val CROSSBOW_GRAVITY = 0.04
 
-        val FISHING_ROD_OFFSET = Vec3(0.2, -0.09, 0.2)
+        val FISHING_ROD_OFFSET = Vec3(0.2, -0.2, -0.1)
         const val FISHING_ROD_SCALE = 1.0
         const val FISHING_ROD_GRAVITY = 0.05
 

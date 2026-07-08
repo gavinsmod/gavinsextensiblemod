@@ -32,6 +32,8 @@ import com.peasenet.main.Settings
 import com.peasenet.mods.ModCategory
 import com.peasenet.mods.render.waypoints.Waypoint
 import com.peasenet.util.Dimension
+import com.peasenet.util.GemRenderLayers
+import com.peasenet.util.GemRenderSource
 import com.peasenet.util.PlayerUtils
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.event.data.CameraBob
@@ -39,6 +41,7 @@ import com.peasenet.util.listeners.CameraBobListener
 import com.peasenet.util.listeners.RenderListener
 import net.minecraft.client.Minecraft
 import net.minecraft.world.phys.AABB
+import org.lwjgl.opengl.GL11
 
 /**
  * Creates a new mod to control waypoints.
@@ -104,20 +107,27 @@ class ModWaypoint : RenderMod(
         val waypointLocs =
             Settings.getConfig<WaypointConfig>("waypoints").getLocations().filter { w -> w.canRender(playerDimension) }
         if (waypointLocs.isEmpty()) return
+        GL11.glDisable(GL11.GL_DEPTH_TEST)
+        val bufferSource = GemRenderSource()
+        val buffer = bufferSource.getBuffer(GemRenderLayers.LINES)
         for (w in waypointLocs) {
             val pos = w.coordinates.toVec3d()
             val bb = AABB(
                 pos.x + 1, pos.y, pos.z + 1, pos.x, pos.y + 1.0, pos.z
             )
-            if (w.renderEsp) RenderUtils.drawOutlinedBox(bb, matrixStack, w.color)
+            if (w.renderEsp) RenderUtils.drawOutlinedBox(bb, matrixStack, w.color, 1f, 2f, buffer)
             if (w.renderTracer) {
-                val origin = RenderUtils.getLookVec().scale(10.0)
-                RenderUtils.drawSingleLine(
-                    matrixStack, bb.center, origin, w.color, asCameraCoordinates = true
-
+                RenderUtils.drawTracer(
+                    matrixStack, bb.center, w.color, 1f, vertexConsumer = buffer
                 )
             }
         }
+        bufferSource.uploadAndDraw()
+        GL11.glEnable(GL11.GL_DEPTH_TEST)
+    }
+
+    fun getAlpha() {
+
     }
 
     override fun onCameraViewBob(c: CameraBob) {

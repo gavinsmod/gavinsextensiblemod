@@ -30,9 +30,12 @@ import com.peasenet.util.RenderUtils
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.client.Minecraft
 import com.mojang.blaze3d.vertex.PoseStack
+import com.peasenet.util.GemRenderLayers
+import com.peasenet.util.GemRenderSource
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
 import org.joml.Matrix3x2fStack
+import org.lwjgl.opengl.GL11
 
 /**
  * A class that represents an ESP mod for block entities.
@@ -68,6 +71,9 @@ abstract class BlockEntityEsp<T : BlockEntity>(
 
     override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
         if (espList.isEmpty()) return
+        GL11.glDisable(GL11.GL_DEPTH_TEST)
+        val bufferSource = GemRenderSource()
+        val buffer = bufferSource.getBuffer(GemRenderLayers.LINES)
         matrixStack.pushPose()
         val scale = config.espSize / 0.25f
         for (e in espList) {
@@ -84,8 +90,13 @@ abstract class BlockEntityEsp<T : BlockEntity>(
                 bb,
                 matrixStack,
                 getColor(),
+                getAlpha(),
+                2f,
+                buffer
             )
         }
+        bufferSource.uploadAndDraw()
+        GL11.glEnable(GL11.GL_DEPTH_TEST)
         matrixStack.popPose()
     }
 }

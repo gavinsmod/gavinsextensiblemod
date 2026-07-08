@@ -30,6 +30,8 @@ import com.peasenet.util.listeners.RenderListener
 import net.minecraft.world.level.block.entity.BlockEntity
 import com.mojang.blaze3d.vertex.PoseStack
 import com.peasenet.util.ChatCommand
+import com.peasenet.util.GemRenderLayers
+import com.peasenet.util.GemRenderSource
 import net.minecraft.world.phys.Vec3
 
 /**
@@ -66,7 +68,8 @@ abstract class BlockEntityTracer<T : BlockEntity>(
         val level = client.getWorld()
         for (x in -RenderUtils.CHUNK_RADIUS..RenderUtils.CHUNK_RADIUS) {
             for (z in -RenderUtils.CHUNK_RADIUS..RenderUtils.CHUNK_RADIUS) {
-                val chunk = level.getChunk(x + client.getPlayer().chunkPosition().x, z + client.getPlayer().chunkPosition().z)
+                val chunk =
+                    level.getChunk(x + client.getPlayer().chunkPosition().x, z + client.getPlayer().chunkPosition().z)
                 for ((_, blockEntity) in chunk.blockEntities) {
                     if (blockFilter(blockEntity)) {
                         entityList.add(blockEntity as T)
@@ -78,6 +81,8 @@ abstract class BlockEntityTracer<T : BlockEntity>(
 
     override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
         if (entityList.isEmpty()) return
+        val bufferSource = GemRenderSource()
+        val buffer = bufferSource.getBuffer()
         for (e in entityList) {
             val end = Vec3.atCenterOf(e.blockPos)
             RenderUtils.drawTracer(
@@ -85,9 +90,12 @@ abstract class BlockEntityTracer<T : BlockEntity>(
                 end,
                 getColor(),
                 config.alpha,
-                partialTicks
+                partialTicks,
+                8f,
+                vertexConsumer = buffer
             )
         }
+        bufferSource.uploadAndDraw()
     }
 
     abstract fun getColor(): Color

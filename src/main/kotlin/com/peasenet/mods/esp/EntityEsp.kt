@@ -28,9 +28,12 @@ import com.peasenet.gavui.color.Color
 import com.peasenet.util.RenderUtils
 import com.peasenet.util.RenderUtils.renderEntityEsp
 import com.mojang.blaze3d.vertex.PoseStack
+import com.peasenet.util.GemRenderLayers
+import com.peasenet.util.GemRenderSource
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.phys.Vec3
 import org.joml.Matrix3x2fStack
+import org.lwjgl.opengl.GL11
 
 
 /**
@@ -62,6 +65,9 @@ abstract class EntityEsp<T : Entity>(
     }
 
     protected fun render(matrixStack: PoseStack, partialTicks: Float) {
+
+        val bufferSource = GemRenderSource()
+        val buffer = bufferSource.getBuffer()
         for (e in espList) {
             val bb = RenderUtils.getLerpedBox(e, partialTicks)
             renderEntityEsp(
@@ -69,9 +75,11 @@ abstract class EntityEsp<T : Entity>(
                 bb.inflate(config.espSize.toDouble()),
                 getColor(e),
                 config.alpha,
-                partialTicks
+                2f,
+                buffer
             )
         }
+        bufferSource.uploadAndDraw()
     }
 
 

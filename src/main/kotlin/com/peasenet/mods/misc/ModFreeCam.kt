@@ -34,9 +34,12 @@ import com.peasenet.util.listeners.PacketSendListener
 import com.peasenet.util.listeners.RenderListener
 import com.mojang.blaze3d.vertex.PoseStack
 import com.peasenet.gui.mod.misc.GuiFreeCam
+import com.peasenet.util.GemRenderLayers
+import com.peasenet.util.GemRenderSource
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket
 import net.minecraft.util.Mth
 import net.minecraft.world.phys.Vec3
+import org.lwjgl.opengl.GL11
 
 /**
  * A mod that allows the camera to be moved freely.
@@ -140,26 +143,30 @@ class ModFreeCam : MiscMod(
     private fun renderTracer(matrixStack: PoseStack, partialTicks: Float) {
         val tracerOrigin = RenderUtils.getLookVec().scale(10.0)
         val end = RenderUtils.getLerpedBox(client.getPlayer(), partialTicks).center
-        RenderUtils.drawSingleLine(
+        RenderUtils.drawTracer(
             matrixStack,
             end = end,
-            start = tracerOrigin,
             config.color,
             config.alpha,
             partialTicks,
-            asCameraCoordinates = true
         )
     }
 
     private fun renderEsp(matrixStack: PoseStack, partialTicks: Float) {
         val bb = RenderUtils.getLerpedBox(client.getPlayer(), partialTicks)
+        GL11.glDisable(GL11.GL_DEPTH_TEST)
+        val bufferSource = GemRenderSource()
+        val buffer = bufferSource.getBuffer(GemRenderLayers.LINES)
         RenderUtils.renderEntityEsp(
             matrixStack,
             bb,
             config.color,
             config.alpha,
-            partialTicks
+            2f,
+            buffer
         )
+        bufferSource.uploadAndDraw()
+        GL11.glEnable(GL11.GL_DEPTH_TEST)
     }
 
     fun turn(yaw: Double, pitch: Double) {
