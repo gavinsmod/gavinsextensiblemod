@@ -213,6 +213,8 @@
   "gavinsmod.settings.projectiletracer.tracerwidth.small": "Trajectory Width - Small",
   "gavinsmod.settings.projectiletracer.tracerwidth.medium": "Trajectory Width - Medium",
   "gavinsmod.settings.projectiletracer.tracerwidth.large": "Trajectory Width - Large",
+  "gavinsmod.settings.projectiletracer.showdistance": "Show Distance",
+  "gavinsmod.settings.projectiletracer.showentitydistance": "Show Entity Distance",
 
   "gavinsmod.settings.xray.blocks": "X-Ray Blocks",
   "gavinsmod.settings.xray.chests": "X-Ray Chests",

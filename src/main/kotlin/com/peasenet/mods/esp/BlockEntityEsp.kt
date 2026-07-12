@@ -86,13 +86,13 @@ abstract class BlockEntityEsp<T : BlockEntity>(
                 pos.y - 0.5 * scale,
                 pos.z - 0.5 * scale
             )
-            RenderUtils.drawOutlinedBox(
+            RenderUtils.drawOutlinedBoxOptimized(
                 bb,
                 matrixStack,
                 getColor(),
                 getAlpha(),
-                2f,
-                buffer
+                buffer,
+                2f
             )
         }
         bufferSource.uploadAndDraw()

@@ -24,7 +24,9 @@
 
 package com.peasenet.mixins;
 
+import com.peasenet.config.tracer.ProjectileTracerConfig;
 import com.peasenet.main.Mods;
+import com.peasenet.main.Settings;
 import com.peasenet.util.ChatCommand;
 import com.peasenet.util.event.EntityRenderNameEvent;
 import com.peasenet.util.event.EventManager;
@@ -34,6 +36,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -44,20 +47,17 @@ public abstract class EntityRendererMixin<T extends Entity, S extends EntityRend
     @Inject(at = @At("HEAD"), method = "shouldShowName", cancellable = true)
     private <E extends Entity, S extends EntityRenderState>
     void shouldShowName(E entity, double d, CallbackInfoReturnable<Boolean> cir) {
-        var hpTagsEnabled = Mods.isActive(ChatCommand.HealthTag) && entity instanceof LivingEntity;
-        if (hpTagsEnabled)
+        if (isEnabled(entity)) {
             cir.setReturnValue(true);
+        }
     }
 
     @Inject(at = @At("TAIL"), method = "extractRenderState")
     private void healthTags(T entity, S entityRenderState, float f, CallbackInfo ci) {
-        if (!Mods.isActive(ChatCommand.HealthTag)) {
+        if (!isEnabled(entity)) {
             return;
         }
-        if (!(entity instanceof LivingEntity le)) {
-            return;
-        }
-        var event = new EntityRenderNameEvent(le);
+        var event = new EntityRenderNameEvent((LivingEntity)entity);
         EventManager.getEventManager().call(event);
         if (!event.isCancelled()) {
             var data = event.getEventData();
@@ -68,5 +68,12 @@ public abstract class EntityRendererMixin<T extends Entity, S extends EntityRend
                 nameTag = Component.empty();
             entityRenderState.nameTag = nameTag.copy().append(" - ").append(event.getEventData());
         }
+    }
+
+    @Unique
+    private boolean isEnabled(Entity entity) {
+        ProjectileTracerConfig ptConfig = Settings.INSTANCE.getConfig(ChatCommand.ProjectileTracer);
+        boolean showEntityDistance = ptConfig.getShowEntityDistance();
+        return (Mods.isActive(ChatCommand.HealthTag) || (Mods.isActive(ChatCommand.ProjectileTracer) && showEntityDistance)) && entity instanceof LivingEntity;
     }
 }

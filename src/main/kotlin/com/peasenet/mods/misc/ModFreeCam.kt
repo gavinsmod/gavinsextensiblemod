@@ -141,11 +141,10 @@ class ModFreeCam : MiscMod(
     }
 
     private fun renderTracer(matrixStack: PoseStack, partialTicks: Float) {
-        val tracerOrigin = RenderUtils.getLookVec().scale(10.0)
         val end = RenderUtils.getLerpedBox(client.getPlayer(), partialTicks).center
         RenderUtils.drawTracer(
             matrixStack,
-            end = end,
+            end,
             config.color,
             config.alpha,
             partialTicks,

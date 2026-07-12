@@ -115,10 +115,10 @@ class ModWaypoint : RenderMod(
             val bb = AABB(
                 pos.x + 1, pos.y, pos.z + 1, pos.x, pos.y + 1.0, pos.z
             )
-            if (w.renderEsp) RenderUtils.drawOutlinedBox(bb, matrixStack, w.color, 1f, 2f, buffer)
+            if (w.renderEsp) RenderUtils.drawOutlinedBoxOptimized(bb, matrixStack, w.color, 1f, buffer,2f )
             if (w.renderTracer) {
                 RenderUtils.drawTracer(
-                    matrixStack, bb.center, w.color, 1f, vertexConsumer = buffer
+                    matrixStack, bb.center, w.color, 1f, partialTicks, 2f, buffer
                 )
             }
         }

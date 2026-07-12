@@ -29,7 +29,6 @@ import com.peasenet.config.esp.BlockEspConfig
 import com.peasenet.config.esp.CaveEspConfig
 import com.peasenet.config.esp.EspConfig
 import com.peasenet.config.esp.OreEspConfig
-//import com.peasenet.config.esp.OreEspConfig
 import com.peasenet.config.misc.FpsColorConfig
 import com.peasenet.config.misc.FreeCamConfig
 import com.peasenet.config.misc.MiscConfig
@@ -39,6 +38,7 @@ import com.peasenet.config.render.HealthTagConfig
 import com.peasenet.config.render.RadarConfig
 import com.peasenet.config.render.XrayConfig
 import com.peasenet.config.tracer.BlockTracerConfig
+import com.peasenet.config.tracer.ProjectileTracerConfig
 import com.peasenet.config.tracer.TracerConfig
 import com.peasenet.config.waypoint.WaypointConfig
 import com.peasenet.mods.Mod

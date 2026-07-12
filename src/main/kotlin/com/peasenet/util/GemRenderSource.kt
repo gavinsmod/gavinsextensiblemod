@@ -47,15 +47,12 @@ class GemRenderSource {
      * This will also re-enable GL_DEPTH_TEST
      */
     fun uploadAndDraw() {
-        if(_disabledDepthTest && GL11.glIsEnabled(GL11.GL_DEPTH_TEST)) {
-            throw Exception("Depth testing disable wanted but has not yet been disabled")
-        }
         try {
             if (draws.isEmpty())
                 return;
             stagedBuffer.upload()
             for (i in draws.indices) {
-                draw(drawTypes.get(i), draws.get(i))
+                draw(drawTypes[i], draws[i])
             }
             stagedBuffer.endDraw()
         } finally {

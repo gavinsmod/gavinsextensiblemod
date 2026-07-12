@@ -1,17 +1,28 @@
 package com.peasenet.mods.tracer
 
-import com.mojang.blaze3d.vertex.PoseStack
-import com.peasenet.config.Config
-import com.peasenet.gavui.color.Color
+import com.peasenet.config.tracer.ProjectileTracerConfig
 import com.peasenet.gavui.color.Colors
 import com.peasenet.gui.mod.tracer.GuiProjectileTracer
 import com.peasenet.main.Settings
+import com.mojang.blaze3d.vertex.PoseStack
+import com.mojang.blaze3d.vertex.VertexConsumer
+import com.peasenet.gavui.color.Color
+import com.peasenet.mods.tracer.projectiletracer.ImpactData
+import com.peasenet.mods.tracer.projectiletracer.PhysicsOrder
+import com.peasenet.mods.tracer.projectiletracer.ProjectileData
 import com.peasenet.util.ChatCommand
 import com.peasenet.util.GemRenderLayers
 import com.peasenet.util.GemRenderSource
 import com.peasenet.util.RenderUtils
+import com.peasenet.util.event.data.EntityNameRender
+import com.peasenet.util.event.data.LevelRenderEndEventData
+import com.peasenet.util.listeners.EntityRenderNameListener
+import com.peasenet.util.listeners.LevelRenderEndEventListener
+import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
 import net.minecraft.client.player.LocalPlayer
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.Style
 import net.minecraft.util.Mth
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.ExperienceOrb
@@ -30,13 +41,15 @@ import kotlin.math.sin
 
 /**
  *
+ * Draws a tracer for a projectile-based item (eg, bow, potion, egg, snowball) and other things to help the player aim better.
+ *
  * @author GT3CH1
- * @version 06-27-2026
+ * @version 7-12-2026
  * @since 06-27-2026 
  */
 class ModProjectileTracer : TracerMod<ModProjectileTracer>(
     translationKey = "gavinsmod.mod.tracer.projectile", chatCommand = ChatCommand.ProjectileTracer
-) {
+), EntityRenderNameListener, LevelRenderEndEventListener {
 
     init {
         clickSetting {
@@ -47,6 +60,29 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
         }
     }
 
+
+    // The last known impact position
+    private var impactPos: Vec3? = null
+
+    override fun onEnable() {
+        em.subscribe(EntityRenderNameListener::class.java, this)
+        em.subscribe(LevelRenderEndEventListener::class.java, this)
+        super.onEnable()
+    }
+
+    override fun onDisable() {
+        em.unsubscribe(EntityRenderNameListener::class.java, this)
+        em.unsubscribe(LevelRenderEndEventListener::class.java, this)
+        super.onDisable()
+    }
+
+    /**
+     * Calculates the angle from given rotation parameters.
+     * @param xRot The X rotation in degrees.
+     * @param yRot The Y rotation in degrees.
+     * @param h The height offset in degrees.
+     * @return A [Vec3] representing the direction vector.
+     */
     fun angleFromRotation(xRot: Float, yRot: Float, h: Double): Vec3 {
         val x = -Mth.sin(yRot * Mth.DEG_TO_RAD.toDouble()) * Mth.cos(xRot * Mth.DEG_TO_RAD.toDouble())
         val y = -Mth.sin(((xRot + h) * Mth.DEG_TO_RAD))
@@ -56,84 +92,47 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
 
     override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
         val projectileList = getProjectileList(partialTicks)
+        if (projectileList.isEmpty()) {
+            impactPos = null
+            return
+        }
+
         val eyePos = Minecraft.getInstance().player!!.getEyePosition(partialTicks)
         GL11.glDisable(GL11.GL_DEPTH_TEST)
         val bufferSource = GemRenderSource()
         val buffer = bufferSource.getBuffer(GemRenderLayers.LINES)
+        val config = getConfig()
         for (projectile in projectileList) {
-            val handToEyeDelta: Vec3 = handToEyeDelta(projectile.offset, projectile.position, eyePos, 1, partialTicks)
             val impactData = getProjectileImpactData(projectile.position, projectile)
-
-            val trajectoryPoints = impactData.trajectoryPoints
-            if (getConfig().showTrajectory) {
-                for (i in 0 until trajectoryPoints.size - 1) {
-                    val lerpedDelta = handToEyeDelta.scale((trajectoryPoints.size - (i * 1.0)) / trajectoryPoints.size)
-                    val nextLerpedDelta =
-                        handToEyeDelta.scale((trajectoryPoints.size - (i + 1 * 1.0)) / trajectoryPoints.size)
-                    val pos = trajectoryPoints[i].add(lerpedDelta)
-                    val dir = (trajectoryPoints[i + 1].add(nextLerpedDelta)).subtract(pos).scale(1.0)
-
-                    val lineWidth = when (getConfig().trajectoryWidth) {
-                        ProjectileTracerConfig.TRAJECTORY_WIDTH.SMALL -> 2.0f
-                        ProjectileTracerConfig.TRAJECTORY_WIDTH.MEDIUM -> 5f
-                        ProjectileTracerConfig.TRAJECTORY_WIDTH.LARGE -> 8.0f
-                    }
-                    when (getConfig().trajectoryStyle) {
-                        ProjectileTracerConfig.TRAJECTORY_STYLE.LINE -> {
-                            RenderUtils.drawSingleLine(
-                                matrixStack,
-                                start = pos,
-                                end = pos.add(dir),
-                                color = projectile.color,
-                                alpha = getConfig().trajectoryAlpha,
-                                lineWidth = lineWidth,
-                            )
-                        }
-
-                        ProjectileTracerConfig.TRAJECTORY_STYLE.DASHED -> {
-                            RenderUtils.drawSingleLine(
-                                matrixStack,
-                                start = pos,
-                                end = pos.add(dir.scale(0.5)),
-                                color = projectile.color,
-                                alpha = getConfig().trajectoryAlpha,
-                                lineWidth = lineWidth,
-                            )
-                        }
-
-                        ProjectileTracerConfig.TRAJECTORY_STYLE.BOX -> {
-                            val box = AABB(pos, pos).inflate(0.05)
-                            RenderUtils.drawLinedBox(
-                                box,
-                                matrixStack,
-                                projectile.color,
-                                alpha = getConfig().trajectoryAlpha,
-                                partialTicks
-                            )
-                        }
-                    }
-
-                }
-            }
-            if (impactData.miss() && getConfig().showImpact) {
-                // draw a box at the impact point
-                val impactPos = impactData.impact!!.location
-                val box = AABB(impactPos, impactPos).inflate(ENTITY_AABB_SCALE)
-                RenderUtils.drawLinedBox(
-                    box, matrixStack, getConfig().impactColor, alpha = getConfig().impactAlpha, partialTicks
+            if (config.showTrajectory) {
+                renderTrajectory(
+                    matrixStack,
+                    projectile,
+                    impactData,
+                    config.trajectoryWidth,
+                    config.trajectoryStyle,
+                    config.trajectoryAlpha,
+                    partialTicks,
+                    eyePos,
                 )
             }
-            if (impactData.hit() && getConfig().showHitEntity) {
-                if (impactData.hitEntity == null) return
-                val lerped = RenderUtils.getLerpedBox(impactData.hitEntity, partialTicks)
-                RenderUtils.drawLinedBox(
-                    lerped, matrixStack, getConfig().hitEntityColor, getConfig().hitEntityAlpha, partialTicks
+            if (impactData.missEntity() && config.showImpact) {
+                impactPos = impactData.impact!!.location
+                renderImpact(matrixStack, config.impactColor, config.impactAlpha)
+            }
+            if (impactData.hitEntity() && config.showHitEntity) {
+                val lerped = RenderUtils.getLerpedBox(impactData.hitEntity!!, partialTicks)
+                impactPos = lerped.center
+                renderEntityHit(
+                    lerped,
+                    matrixStack,
+                    config.hitEntityColor,
+                    config.hitEntityAlpha,
+                    config.hitEntityOutlineColor,
+                    config.hitEntityOutlineAlpha,
+                    config.showHitEntityOutline,
+                    buffer
                 )
-                if (getConfig().showHitEntityOutline) {
-                    RenderUtils.drawOutlinedBox(
-                        lerped, matrixStack, getConfig().hitEntityOutlineColor, getConfig().hitEntityAlpha, 2f, buffer
-                    )
-                }
             }
 
         }
@@ -143,13 +142,147 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
 
     }
 
-
-    fun getProjVelocity(partialTicks: Float, scale: Double, pull: Float = 1.0f): Vec3 {
-        val player = client.getPlayer()
-        val vel = player.getViewVector(partialTicks).scale(scale * pull)
-        return vel;
+    /**
+     * Renders a hitbox around the entity when a hit is detected.
+     * @param box The [AABB] representing the entity's bounding box.
+     * @param matrixStack The [PoseStack] for rendering transformations.
+     * @param entityHitColor The color of the hitbox.
+     * @param entityHitAlpha The alpha (transparency) of the hitbox.
+     * @param entityHitOutlineColor The color of the hitbox outline.
+     * @param entityHitOutlineAlpha The alpha (transparency) of the hitbox outline.
+     * @param showOutline Whether to show the outline of the hitbox.
+     * @param buffer The [VertexConsumer] for rendering the outline.
+     */
+    fun renderEntityHit(
+        box: AABB,
+        matrixStack: PoseStack,
+        entityHitColor: Color,
+        entityHitAlpha: Float,
+        entityHitOutlineColor: Color,
+        entityHitOutlineAlpha: Float,
+        showOutline: Boolean,
+        buffer: VertexConsumer,
+    ) {
+        RenderUtils.drawLinedBox(
+            box, matrixStack, entityHitColor, entityHitAlpha
+        )
+        if (showOutline) {
+            RenderUtils.drawOutlinedBox(
+                box, matrixStack, entityHitOutlineColor, entityHitOutlineAlpha, 2f, buffer
+            )
+        }
     }
 
+    /**
+     * Renders an impact marker.
+     * @param matrixStack The [PoseStack] for rendering transformations.
+     * @param impactColor The color of the impact marker.
+     * @param impactAlpha The alpha (transparency) of the impact marker.
+     */
+    fun renderImpact(matrixStack: PoseStack, impactColor: Color, impactAlpha: Float) {
+        val box = AABB(impactPos!!, impactPos!!).inflate(ENTITY_AABB_SCALE)
+        RenderUtils.drawLinedBox(
+            box, matrixStack, impactColor, alpha = impactAlpha
+        )
+    }
+
+
+    /**
+     * Renders the trajectory of a projectile.
+     * @param matrixStack The [PoseStack] for rendering transformations.
+     * @param projectile The [ProjectileData] containing information about the projectile.
+     * @param impactData The [ImpactData] containing information about the impact.
+     * @param trajectoryWidth The width of the trajectory line.
+     * @param trajectoryStyle The style of the trajectory line (LINE, DOTTED, DASHED).
+     * @param trajectoryAlpha The alpha (transparency) of the trajectory line.
+     * @param partialTicks The partial ticks for interpolation.
+     * @param eyePos The position of the player's eyes.
+     */
+    fun renderTrajectory(
+        matrixStack: PoseStack,
+        projectile: ProjectileData,
+        impactData: ImpactData,
+        trajectoryWidth: ProjectileTracerConfig.TrajectoryWidth,
+        trajectoryStyle: ProjectileTracerConfig.TrajectoryStyle,
+        trajectoryAlpha: Float,
+        partialTicks: Float,
+        eyePos: Vec3,
+    ) {
+        val handToEyeDelta: Vec3 = handToEyeDelta(projectile.offset, projectile.position, eyePos, 1, partialTicks)
+        val trajectoryPoints = impactData.trajectoryPoints
+        for (i in 0 until trajectoryPoints.size - 1) {
+            val lerpedDelta =
+                handToEyeDelta.scale((trajectoryPoints.size - (i * 1.0)) / trajectoryPoints.size)
+            val nextLerpedDelta =
+                handToEyeDelta.scale((trajectoryPoints.size - (i + 1 * 1.0)) / trajectoryPoints.size)
+            val pos = trajectoryPoints[i].add(lerpedDelta)
+            val dir = (trajectoryPoints[i + 1].add(nextLerpedDelta)).subtract(pos).scale(1.0)
+
+            val lineWidth = when (trajectoryWidth) {
+                ProjectileTracerConfig.TrajectoryWidth.SMALL -> 2.0f
+                ProjectileTracerConfig.TrajectoryWidth.MEDIUM -> 5f
+                ProjectileTracerConfig.TrajectoryWidth.LARGE -> 8.0f
+            }
+            when (trajectoryStyle) {
+                ProjectileTracerConfig.TrajectoryStyle.LINE -> {
+                    RenderUtils.drawSingleLine(
+                        matrixStack,
+                        start = pos,
+                        end = pos.add(dir),
+                        color = projectile.color,
+                        alpha = trajectoryAlpha,
+                        lineWidth = lineWidth,
+                    )
+                }
+
+                ProjectileTracerConfig.TrajectoryStyle.DASHED -> {
+                    RenderUtils.drawSingleLine(
+                        matrixStack,
+                        start = pos,
+                        end = pos.add(dir.scale(0.75)),
+                        color = projectile.color,
+                        alpha = trajectoryAlpha,
+                        lineWidth = lineWidth,
+                    )
+                }
+
+                ProjectileTracerConfig.TrajectoryStyle.DOTTED -> {
+                    val scale = when (trajectoryWidth) {
+                        ProjectileTracerConfig.TrajectoryWidth.SMALL -> 0.05
+                        ProjectileTracerConfig.TrajectoryWidth.MEDIUM -> 0.1
+                        ProjectileTracerConfig.TrajectoryWidth.LARGE -> 0.15
+                    }
+                    val box = AABB(pos, pos).inflate(scale)
+                    RenderUtils.drawLinedBox(
+                        box,
+                        matrixStack,
+                        projectile.color,
+                        alpha = trajectoryAlpha
+                    )
+                }
+            }
+
+        }
+    }
+
+    /**
+     * Gets the velocity of a projectile.
+     * @param partialTicks The ticket delta.
+     * @param throwPower The throw power of a projectile
+     * @param pullPower The pull power of a projectile
+     * @return vel A [Vec3] offset for the velocity of a projectile
+     */
+    fun getProjVelocity(partialTicks: Float, throwPower: Double, pullPower: Float = 1.0f): Vec3 {
+        val player = client.getPlayer()
+        val vel = player.getViewVector(partialTicks).scale(throwPower * pullPower)
+        return vel
+    }
+
+    /**
+     * Gets a list of projectile data from the players given projectile.
+     * @param partialTicks The tick delta
+     * @return A list of [ProjectileData] containing information about the projectile.
+     */
     fun getProjectileList(partialTicks: Float): List<ProjectileData> {
         val projectileData: MutableList<ProjectileData> = ArrayList()
         val player = client.getPlayer()
@@ -157,7 +290,7 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
         val item = itemStack.item
         val position = player.getEyePosition(partialTicks)
         val useTicks = player.getTicksUsingItem()
-        var newProjectileData = ProjectileData()
+        var newProjectileData: ProjectileData
         when (item) {
             is BowItem -> {
                 val pull = BowItem.getPowerForTime(useTicks)
@@ -188,8 +321,6 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
             }
 
             is FishingRodItem -> {
-//                if (player.fishing != null)
-//                    return emptyList();
                 val direction = angleFromRotation(player.xRot, player.yRot, -5.0).normalize()
                 val vel = direction.scale(1.4)
                 newProjectileData = ProjectileData(
@@ -283,8 +414,9 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                 )
             }
 
-            else ->
+            else -> {
                 return emptyList()
+            }
         }
         projectileData.add(
             newProjectileData
@@ -292,11 +424,17 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
         return projectileData
     }
 
-    fun getProjectileImpactData(projectilePosition: Vec3, projectileData: ProjectileData): ProjectileImpactData {
+    /**
+     * Calculates an impact for the given projectile position and data.
+     * @param projectilePosition The [Vec3] position of the projectile
+     * @param projectileData The [ProjectileData] containing information about the projectile
+     * @return An [ImpactData] containing information about the impact
+     */
+    fun getProjectileImpactData(projectilePosition: Vec3, projectileData: ProjectileData): ImpactData {
         var prevPos = projectileData.position
-        var impact: HitResult? = null;
-        var hitEntity: Entity? = null;
-        var hasHit = false;
+        var impact: HitResult? = null
+        var hitEntity: Entity? = null
+        var hasHit = false
         val trajectoryPoints: MutableList<Vec3> = ArrayList()
         var drag = projectileData.drag
         val gravity = projectileData.gravity
@@ -329,8 +467,8 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
             val entities: List<Entity?>? = client.getWorld().getEntitiesOfClass(
                 Entity::class.java, box
             ) { e -> !e.isSpectator && e.isAlive && (e !is Projectile) && (e !is ItemEntity) && (e !is ExperienceOrb) && (e !is EnderDragon) && (e !is LocalPlayer) }
-            val closest = Double.MAX_VALUE;
-            var closestEntity: Entity? = null;
+            var closest = Double.MAX_VALUE
+            var closestEntity: Entity? = null
             for (entity in entities!!) {
                 assert(entity != null)
                 val entityBox = entity!!.boundingBox.deflate(ENTITY_AABB_SCALE)
@@ -341,6 +479,7 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                     if (distance < closest) {
                         entityHitPos = raycastHit.get()
                         closestEntity = entity
+                        closest = distance
                         hasHit = true
                     }
                 }
@@ -386,15 +525,24 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
 
             prevPos = newPos
         }
-        return ProjectileImpactData(
-            trajectoryPoints = trajectoryPoints,
-            impact = impact,
-            hitEntity = hitEntity,
-            hasHit = hasHit,
+        return ImpactData(
+            trajectoryPoints,
+            impact,
+            hitEntity,
+            hasHit,
         )
 
     }
 
+    /**
+     * Calculates the vector between the players eye and hand.
+     * @param offset An offset that is used for calculating the position of the tracer start
+     * @param startPos The current position of a projectile
+     * @param eye The players eye position
+     * @param handMultiplier What hand the player is using, 1 for right hand, -1 for left hand
+     * @param delta The tick delta
+     * @return A [Vec3] representing the vector between the players eye and hand.
+     */
     fun handToEyeDelta(offset: Vec3, startPos: Vec3, eye: Vec3, handMultiplier: Int, delta: Float): Vec3 {
         val player = client.getPlayer()
         val yaw = Math.toRadians(-player.getViewYRot(delta).toDouble())
@@ -402,38 +550,45 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
         val forward = player.getViewVector(delta)
         val up = Vec3(-sin(pitch) * sin(yaw), cos(pitch), -sin(pitch) * cos(yaw)).normalize()
         val right = forward.cross(up).normalize()
-        var tmpOffset = offset;
+        var tmpOffset = offset
         if (client.gameRenderer.mainCamera().isDetached) tmpOffset = offset.scale(0.0)
 
         return right.scale(handMultiplier * tmpOffset.x).add(up.scale(tmpOffset.y)).add(forward.scale(tmpOffset.z))
             .add(eye.subtract(startPos))
     }
 
-    data class ProjectileData(
-        var gravity: Double = 0.03,
-        var drag: Double = 0.99,
-        var waterDrag: Double = 0.6,
-        var velocity: Vec3 = Vec3.ZERO,
-        var offset: Vec3 = Vec3.ZERO,
-        var position: Vec3 = Vec3.ZERO,
-        var color: Color = Colors.RED,
-        var physicsOrder: PhysicsOrder = PhysicsOrder.POSITION_DRAG_GRAVITY,
-    )
-
-    data class ProjectileImpactData(
-        val trajectoryPoints: List<Vec3>,
-        val impact: HitResult?,
-        val hitEntity: Entity?,
-        private val hasHit: Boolean,
-    ) {
-        fun hit(): Boolean {
-            return hitEntity != null && hasHit
+    override fun onEntityNameRender(er: EntityNameRender) {
+        if (!getConfig().showEntityDistance) {
+            er.cancel()
+            return
         }
-
-        fun miss(): Boolean {
-            return hitEntity == null && hasHit
-        }
+        val distanceToPlayer = er.entity.distanceTo(client.getPlayer())
+        // format as "distance: 10.0m" in red
+        val style = Style.EMPTY.withColor(ChatFormatting.WHITE)
+        val distanceFormat = String.format("%.1fm", distanceToPlayer)
+        val text = Component.empty().append(Component.literal(distanceFormat)).withStyle(style)
+        er.nameTag = text
     }
+
+    override fun onLevelRenderEnd(event: LevelRenderEndEventData) {
+        if (impactPos == null || !getConfig().showImpactDistance) {
+            event.cancel()
+            return
+        }
+        event.targetVec = impactPos!!
+        val impactDistance = event.targetVec.distanceTo(client.getPlayer().getEyePosition(0.0f))
+        // scale from 1/16 to 1/8 based on distance, with a max of 1/8
+        val scale = (1 / 32f) + (impactDistance / 100f)
+        val clampedScale = if (scale > 1 / 8f) 1 / 8f else scale
+        // scale y offset between 0.5 and 1.0 based on distance, with a max of 1.0
+        val yOffset = (0.25 + impactDistance / 10f).coerceIn(0.5, 2.0)
+        event.targetVec = event.targetVec.add(0.0, yOffset, 0.0)
+
+        event.scale = clampedScale.toFloat()
+        event.textToDraw = "${String.format("%.1f", impactDistance)}m"
+        event.backgroundColor = Colors.BLACK
+    }
+
 
     companion object {
         val BOW_OFFSET = Vec3(0.2, -0.025, -0.2)
@@ -445,19 +600,15 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
         const val CROSSBOW_GRAVITY = 0.04
 
         val FISHING_ROD_OFFSET = Vec3(0.2, -0.2, -0.1)
-        const val FISHING_ROD_SCALE = 1.0
         const val FISHING_ROD_GRAVITY = 0.05
 
         val SNOWBALL_OFFSET = Vec3(0.2, -0.09, 0.2)
-        const val SNOWBALL_SCALE = 1.5
         const val SNOWBALL_GRAVITY = 0.03
 
         val POTION_OFFSET = Vec3(0.2, -0.09, 0.2)
         const val POTION_SCALE = SplashPotionItem.PROJECTILE_SHOOT_POWER
-        const val POTION_GRAVITY = 2.75
 
         val ENDERPEARL_OFFSET = Vec3(0.2, -0.09, 0.2)
-        const val ENDERPEARL_SCALE = 1.75
         const val ENDERPEARL_GRAVITY = 0.03
 
         val TRIDENT_OFFSET = Vec3(0.2, .15, -0.2)
@@ -472,145 +623,4 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
         }
 
     }
-}
-
-enum class PhysicsOrder {
-    POSITION_DRAG_GRAVITY,
-    DRAG_POSITION_GRAVITY,
-    GRAVITY_DRAG_POSITION
-}
-
-
-class ProjectileTracerConfig : Config<ProjectileTracerConfig>() {
-    enum class TRAJECTORY_STYLE {
-        LINE, BOX, DASHED
-    }
-
-    enum class TRAJECTORY_WIDTH {
-        SMALL, MEDIUM, LARGE
-    }
-
-    init {
-        key = ChatCommand.ProjectileTracer.command
-    }
-
-    var alpha: Float = 1.0f
-        set(value) {
-            field = value.coerceIn(0.0f, 1.0f)
-        }
-
-    var showImpact: Boolean = true
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var impactColor = Colors.BLUE
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var impactAlpha = 0.25f
-        set(value) {
-            field = value.coerceIn(0.0f, 1.0f)
-            saveConfig()
-        }
-
-    var showHitEntity: Boolean = true
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var trajectoryAlpha = 1.0f
-        set(value) {
-            field = value.coerceIn(0.0f, 1.0f)
-            saveConfig()
-        }
-
-    var hitEntityColor = Colors.GREEN
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var hitEntityAlpha = 0.25f
-        set(value) {
-            field = value.coerceIn(0.0f, 1.0f)
-            saveConfig()
-        }
-
-    var showHitEntityOutline = true
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var hitEntityOutlineColor = Colors.WHITE
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var hitEntityOutlineAlpha = 0.5f
-        set(value) {
-            field = value.coerceIn(0.0f, 1.0f)
-            saveConfig()
-        }
-
-    var showTrajectory = true
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var bowTrajectoryColor = Colors.RED
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var crossbowTrajectoryColor = Colors.PURPLE
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var fishingRodTrajectoryColor = Colors.MEDIUM_SEA_GREEN
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var snowballTrajectoryColor = Colors.WHITE
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var enderpearlTrajectoryColor = Colors.DARK_SPRING_GREEN
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var tridentTrajectoryColor = Colors.MEDIUM_SEA_GREEN
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var trajectoryStyle = TRAJECTORY_STYLE.LINE
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
-    var trajectoryWidth = TRAJECTORY_WIDTH.MEDIUM
-        set(value) {
-            field = value
-            saveConfig()
-        }
-
 }

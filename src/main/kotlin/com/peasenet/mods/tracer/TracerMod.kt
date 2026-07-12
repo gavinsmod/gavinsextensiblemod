@@ -67,15 +67,17 @@ abstract class TracerMod<T>(
     protected var entityList: MutableList<T> = ArrayList()
 
     override fun onEnable() {
-        super.onEnable()
         em.subscribe(CameraBobListener::class.java, this)
         em.subscribe(RenderListener::class.java, this)
+
+        super.onEnable()
     }
 
     override fun onDisable() {
-        super.onDisable()
         em.unsubscribe(CameraBobListener::class.java, this)
         em.unsubscribe(RenderListener::class.java, this)
+
+        super.onDisable()
     }
 
     override fun onCameraViewBob(c: CameraBob) {

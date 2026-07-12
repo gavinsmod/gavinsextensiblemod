@@ -1,9 +1,8 @@
 package com.peasenet.gui.mod.tracer
 
-import com.peasenet.config.misc.FreeCamConfig
 import com.peasenet.gui.GuiElement
 import com.peasenet.main.Settings
-import com.peasenet.mods.tracer.ProjectileTracerConfig
+import com.peasenet.config.tracer.ProjectileTracerConfig
 import com.peasenet.settings.Setting
 import com.peasenet.settings.colorSetting
 import com.peasenet.settings.cycleSetting
@@ -14,8 +13,10 @@ import net.minecraft.network.chat.Component
 
 /**
  *
+ * A GUI for the [ProjectileTracerConfig] settings, allowing the user to customize the appearance and behavior of projectile tracers in the game.
+ *
  * @author GT3CH1
- * @version 07-03-2026
+ * @version 07-12-2026
  * @since 07-03-2026 
  */
 class GuiProjectileTracer : GuiElement(Component.translatable("gavinsmod.settings.mobtracer"), 2) {
@@ -85,6 +86,20 @@ class GuiProjectileTracer : GuiElement(Component.translatable("gavinsmod.setting
                 }
             },
 
+            toggleSetting {
+                title = "gavinsmod.settings.projectiletracer.showdistance"
+                state = getSettings().showImpactDistance
+                callback = {
+                    getSettings().showImpactDistance = it.state
+                }
+            },
+            toggleSetting {
+                title = "gavinsmod.settings.projectiletracer.showentitydistance"
+                state = getSettings().showEntityDistance
+                callback = {
+                    getSettings().showEntityDistance = it.state
+                }
+            },
 
             toggleSetting {
                 title = "gavinsmod.settings.projectiletracer.showhitentityoutline"
@@ -153,11 +168,11 @@ class GuiProjectileTracer : GuiElement(Component.translatable("gavinsmod.setting
             cycleSetting {
                 title =
                     "gavinsmod.settings.projectiletracer.tracerstyle." + getSettings().trajectoryStyle.name.lowercase()
-                cycleSize = ProjectileTracerConfig.TRAJECTORY_STYLE.entries.size
+                cycleSize = ProjectileTracerConfig.TrajectoryStyle.entries.size
                 cycleIndex = getSettings().trajectoryStyle.ordinal
                 callback = {
-                    val newIndex = (it.cycleIndex + 1) % ProjectileTracerConfig.TRAJECTORY_STYLE.entries.size
-                    getSettings().trajectoryStyle = ProjectileTracerConfig.TRAJECTORY_STYLE.entries[newIndex]
+                    val newIndex = (it.cycleIndex + 1) % ProjectileTracerConfig.TrajectoryStyle.entries.size
+                    getSettings().trajectoryStyle = ProjectileTracerConfig.TrajectoryStyle.entries[newIndex]
                     // add to the cycle setting to update the title
                     it.cycleIndex = newIndex
                     it.gui.title =
@@ -166,12 +181,13 @@ class GuiProjectileTracer : GuiElement(Component.translatable("gavinsmod.setting
             },
 
             cycleSetting {
-                title = "gavinsmod.settings.projectiletracer.tracerwidth." + getSettings().trajectoryWidth.name.lowercase()
-                cycleSize = ProjectileTracerConfig.TRAJECTORY_WIDTH.entries.size
+                title =
+                    "gavinsmod.settings.projectiletracer.tracerwidth." + getSettings().trajectoryWidth.name.lowercase()
+                cycleSize = ProjectileTracerConfig.TrajectoryWidth.entries.size
                 cycleIndex = getSettings().trajectoryWidth.ordinal
                 callback = {
-                    val newIndex = (it.cycleIndex + 1) % ProjectileTracerConfig.TRAJECTORY_WIDTH.entries.size
-                    getSettings().trajectoryWidth = ProjectileTracerConfig.TRAJECTORY_WIDTH.entries[newIndex]
+                    val newIndex = (it.cycleIndex + 1) % ProjectileTracerConfig.TrajectoryWidth.entries.size
+                    getSettings().trajectoryWidth = ProjectileTracerConfig.TrajectoryWidth.entries[newIndex]
                     // add to the cycle setting to update the title
                     it.cycleIndex = newIndex
                     it.gui.title =

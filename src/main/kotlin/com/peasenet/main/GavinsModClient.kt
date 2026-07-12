@@ -23,28 +23,36 @@
  */
 package com.peasenet.main
 
+import com.mojang.math.Axis
 import com.peasenet.gavui.Gui
+import com.peasenet.gavui.color.Colors
 import com.peasenet.gavui.math.BoxF
 import com.peasenet.gui.GuiMainMenu
 import com.peasenet.gui.GuiSettings
-import com.peasenet.gui.mod.GuiCombat
-import com.peasenet.gui.mod.GuiESP
-import com.peasenet.gui.mod.GuiMisc
-import com.peasenet.gui.mod.GuiMovement
-import com.peasenet.gui.mod.GuiRender
-import com.peasenet.gui.mod.GuiTracers
-import com.peasenet.gui.mod.ModGuiUtil
+import com.peasenet.gui.mod.*
 import com.peasenet.main.GavinsMod.Companion.guiList
 import com.peasenet.mixinterface.IClientPlayerEntity
 import com.peasenet.mixinterface.IMinecraftClient
 import com.peasenet.mods.Mod
 import com.peasenet.mods.ModCategory
 import com.peasenet.util.ModCommands
+import com.peasenet.util.RenderUtils
+import com.peasenet.util.event.EventManager
+import com.peasenet.util.event.TextRenderEvent
+import com.peasenet.util.event.data.LevelRenderEndEventData
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
+import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.Font
+import net.minecraft.client.renderer.gizmos.DrawableGizmoPrimitives
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.FormattedText
+import net.minecraft.network.chat.Style
+import net.minecraft.util.FormattedCharSequence
+import net.minecraft.world.phys.Vec3
 import java.util.function.Consumer
-import kotlin.collections.set
 
 /**
  * @author GT3CH1
@@ -52,7 +60,6 @@ import kotlin.collections.set
  * The main part of the mod that handles checking mods.
  */
 class GavinsModClient : ClientModInitializer {
-
 
 
     /**
@@ -71,6 +78,50 @@ class GavinsModClient : ClientModInitializer {
                 if (m.isActive || m.isDeactivating) m.onTick()
             }
         })
+        LevelRenderEvents.END_MAIN.register { context ->
+            val eventData = LevelRenderEndEventData()
+            val event = TextRenderEvent(eventData)
+            EventManager.eventManager.call(event)
+            if (event.isCancelled) return@register
+            val target = eventData.targetVec
+            val camera = minecraftClient.gameRenderer.mainCamera
+            val cameraPos = camera.position().add(RenderUtils.getLookVec())
+            // 3. Extract the pose stack and buffer source
+            val poseStack = context.poseStack() // Formerly context.getMatrices()
+
+            poseStack.pushPose()
+            // Translate relative to the camera position
+            val translation = target.subtract(cameraPos)
+            poseStack.translate(translation.x, translation.y, translation.z)
+            val yaw = camera.yRot()
+            val pitch = camera.xRot()
+            poseStack.scale(eventData.scale, eventData.scale, eventData.scale)
+            poseStack.mulPose(Axis.ZP.rotationDegrees(180f))
+            poseStack.mulPose(Axis.YP.rotationDegrees(yaw))
+            poseStack.mulPose(Axis.XN.rotationDegrees(pitch))
+
+//            poseStack.mulPose(GavinsModClient.minecraftClient.gameRenderer.mainCamera().rotation())
+            // Center the text horizontally
+            val text = Component.literal(eventData.textToDraw)
+            val textWidth = minecraftClient.textRenderer.width(eventData.textToDraw)
+            val xOffset = -textWidth / 2.0f
+            context.submitNodeCollector().submitText(
+                poseStack,
+                xOffset,
+                0.0f,
+                text.visualOrderText,
+                eventData.dropShadow,
+                eventData.displayMode,
+                eventData.lightCoords,
+                eventData.textColor.asInt,
+               0,
+                0
+            )
+            poseStack.popPose()
+        }
+
+
+
         guiSettings = GuiSettings()
         modCommands = ModCommands()
         setMainGui()
