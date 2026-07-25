@@ -108,7 +108,7 @@ class Mods {
         GavinsMod.addMod(ModFreeCam())
         GavinsMod.addMod(ModGuiTextOverlay())
         GavinsMod.addMod(ModAntiTrample())
-        GavinsMod.addMod(ModAutoJump())
+//        GavinsMod.addMod(ModAutoJump())
         GavinsMod.addMod(ModClimb())
         GavinsMod.addMod(ModDolphin())
         GavinsMod.addMod(ModFastMine())
