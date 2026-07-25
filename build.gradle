@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 buildscript {
     ext.kotlin_version = '2.4.0'
     repositories {
@@ -55,7 +57,11 @@ processResources {
 tasks.withType(JavaCompile).configureEach {
     it.options.release = 25
 }
-
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_25
+    }
+}
 java {
     // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
     // if it is present.

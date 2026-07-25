@@ -36,18 +36,24 @@ import com.peasenet.util.block.GavBlock
 import com.peasenet.util.chunk.GavChunk
 import com.peasenet.util.event.data.BlockUpdate
 import com.peasenet.util.event.data.WorldRender
-import com.peasenet.util.executor.GemExecutor
 import com.peasenet.util.listeners.BlockUpdateListener
 import com.peasenet.util.listeners.ChunkUpdateListener
 import com.peasenet.util.listeners.RenderListener
 import com.peasenet.util.listeners.WorldRenderListener
+import net.minecraft.tags.BlockTags
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.LeavesBlock
 import net.minecraft.world.level.block.MultifaceSpreadeableBlock
+import net.minecraft.world.level.block.SnowLayerBlock
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.client.Minecraft
 import net.minecraft.network.chat.Component
 import net.minecraft.core.BlockPos
+import net.minecraft.world.level.levelgen.Heightmap
+import net.minecraft.world.level.ClipContext
 import net.minecraft.world.level.chunk.ChunkAccess
+import net.minecraft.world.phys.HitResult
+import net.minecraft.world.phys.Vec3
 
 /**
  * An ESP mod that draws boxes around user selected blocks in the world.
@@ -82,30 +88,42 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
                 cycleIndex = getSettings().searchMode.ordinal
                 callback = { updateSearchMode(it) }
             }
+            cycleSetting {
+                title = renderDistanceTranslationKey + "." + getSettings().blockRenderDistance.name.lowercase()
+                cycleSize = CaveBlockRenderDistance.entries.size
+                cycleIndex = getSettings().blockRenderDistance.ordinal
+                callback = { updateRenderDistanceMode(it) }
+            }
+            toggleSetting {
+                title = hideVisibleTranslationKey
+                state = getSettings().hideVisibleBlocks
+                callback = { getSettings().hideVisibleBlocks = it.state }
+            }
         }
     }
 
     companion object {
         private const val searchTranslationKey = "gavinsmod.mod.esp.cave"
+        private const val renderDistanceTranslationKey = "gavinsmod.mod.esp.cave.renderdistance"
+        private const val hideVisibleTranslationKey = "gavinsmod.mod.esp.cave.hidevisible"
     }
 
     private val chunksToRender: Int
         get() {
-            return (Minecraft.getInstance().options.renderDistance().get())
+            return (Minecraft.getInstance().options.renderDistance().get()) / 2
         }
 
     override fun onEnable() {
-        em.subscribe(RenderListener::class.java, this)
+        roofTopByColumn.clear()
+        terrainSurfaceByColumn.clear()
         chunks.clear()
         em.subscribe(BlockUpdateListener::class.java, this)
         em.subscribe(WorldRenderListener::class.java, this)
         em.subscribe(ChunkUpdateListener::class.java, this)
         em.subscribe(RenderListener::class.java, this)
-        // search for chunks within render distance
-        GemExecutor.execute {
-//            chunks.values.forEach { seVarchChunk(it) }
+//        GemExecutor.execute {
             RenderUtils.getVisibleChunks(chunksToRender).forEach(this::searchChunk)
-        }
+//        }
         super.onEnable()
     }
 
@@ -114,6 +132,8 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
         em.unsubscribe(WorldRenderListener::class.java, this)
         em.unsubscribe(ChunkUpdateListener::class.java, this)
         em.unsubscribe(RenderListener::class.java, this)
+        roofTopByColumn.clear()
+        terrainSurfaceByColumn.clear()
         chunks.clear()
         super.onDisable()
     }
@@ -126,7 +146,7 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
 
 
     override fun searchChunk(chunk: ChunkAccess) {
-        GemExecutor.execute {
+//        GemExecutor.execute {
             synchronized(chunk) {
                 GavChunk.search(
                     chunk
@@ -136,7 +156,7 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
                     addBlocksFromChunk(it)
                 }
             }
-        }
+//        }
     }
 
 
@@ -149,7 +169,10 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
     override fun onBlockUpdate(bue: BlockUpdate) {
         val added = bue.newState.isAir && !bue.oldState.isAir
         val removed = !added && !bue.newState.isAir && bue.oldState.isAir
-        val chunk = world.getChunk(bue.blockPos) ?: return
+        val chunk = world.getChunk(bue.blockPos)
+        val key = columnKey(bue.blockPos.x, bue.blockPos.z)
+        roofTopByColumn.remove(key)
+        terrainSurfaceByColumn.remove(key)
         val gavBlock = GavBlock(bue.blockPos, { pos -> searchBlock(pos) })
         if (!added && !removed) {
             return
@@ -159,6 +182,31 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
 
     override fun chunkInRenderDistance(chunk: GavChunk): Boolean {
         return chunk.inRenderDistance(chunksToRender)
+    }
+
+    override fun maxBlockRenderDistance(): Double? {
+        return getSettings().blockRenderDistance.maxDistance
+    }
+
+    override fun shouldRenderBlock(block: GavBlock, partialTicks: Float): Boolean {
+        if (!getSettings().hideVisibleBlocks) {
+            return true
+        }
+        val player = client.getPlayer()
+        val eyePos = player.getEyePosition(partialTicks)
+        val blockCenter = Vec3(block.x + 0.5, block.y + 0.5, block.z + 0.5)
+        val hitResult = world.clip(
+            ClipContext(
+                eyePos,
+                blockCenter,
+                ClipContext.Block.COLLIDER,
+                ClipContext.Fluid.NONE,
+                player,
+            )
+        )
+
+        // MISS means there is no occluding block between the player and the cave block.
+        return hitResult.type != HitResult.Type.MISS
     }
 
 
@@ -174,12 +222,22 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
             1 -> SearchType.Tunnel
             else -> SearchType.Caves
         }
+        roofTopByColumn.clear()
+        terrainSurfaceByColumn.clear()
         val searchModeName = getSettings().searchMode.name.lowercase()
         searchMode.gui.title = Component.translatable("$searchTranslationKey.$searchModeName")
-        GemExecutor.execute {
+//        GemExecutor.execute {
             val visibleChunks: List<ChunkAccess> = RenderUtils.getVisibleChunks(chunksToRender)
             visibleChunks.forEach(this::searchChunk)
+//        }
+    }
+
+    private fun updateRenderDistanceMode(renderDistanceMode: CycleSetting) {
+        getSettings().blockRenderDistance = CaveBlockRenderDistance.entries.getOrElse(renderDistanceMode.gui.currentIndex) {
+            CaveBlockRenderDistance.BLOCKS_100
         }
+        val modeName = getSettings().blockRenderDistance.name.lowercase()
+        renderDistanceMode.gui.title = Component.translatable("$renderDistanceTranslationKey.$modeName")
     }
 
     /**
@@ -191,17 +249,19 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
      */
     private fun searchBlock(blockPos: BlockPos): Boolean {
         val newBlockState = world.getBlockState(blockPos)
-        if (!newBlockState.isAir && newBlockState.block !is MultifaceSpreadeableBlock && !newBlockState.liquid()) return false
+        if (!newBlockState.isAir && newBlockState.block !is MultifaceSpreadeableBlock && newBlockState.fluidState.isEmpty) return false
         val searchMode = getSettings().searchMode
         return when (searchMode) {
             SearchType.Caves -> {
-                ((canWalkThrough(blockPos, newBlockState) || canWalkOn(blockPos, newBlockState)) && hasRoof(
-                    blockPos
-                ))
+                val above = world.getBlockState(blockPos.above())
+                val below = world.getBlockState(blockPos.below())
+                val canWalkThrough = canWalkThrough(newBlockState, above, below)
+                val canWalkOn = canWalkOn(newBlockState, above, below)
+                (canWalkThrough || canWalkOn) && hasRoof(blockPos)
             }
 
             SearchType.Tunnel -> {
-                return isTunnel(blockPos) && hasRoof(blockPos)
+                isTunnel(blockPos) && hasRoof(blockPos)
             }
         }
     }
@@ -212,26 +272,22 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
 
 
     /**
-     * Gets whether the player can walk through this [blockState] at [blockPos], by checking if there is air above or below.
-     * @param blockPos The [BlockPos] to check.
-     * @param blockState The [BlockState] to check.
+     * Gets whether the player can walk through this [blockState], by checking if there is air above or below.
      * @return True if the player can walk through this block, false otherwise.
      */
-    private fun canWalkThrough(blockPos: BlockPos, blockState: BlockState): Boolean {
-        val above = world.getBlockState(blockPos.above())
-        val below = world.getBlockState(blockPos.below())
+    private fun canWalkThrough(blockState: BlockState, above: BlockState, below: BlockState): Boolean {
         return blockState.isAir && (above.isAir || below.isAir)
     }
 
     /**
-     * Gets whether the player can walk on this [blockState] at [blockPos].
-     * @param blockPos The [BlockPos] to check.
-     * @param blockState The [BlockState] to check.
+     * Gets whether the player can walk on this [blockState].
      */
-    private fun canWalkOn(blockPos: BlockPos, blockState: BlockState): Boolean {
-        val below = world.getBlockState(blockPos.below())
-        return blockState.isAir && !below.isAir && canWalkThrough(blockPos, blockState)
+    private fun canWalkOn(blockState: BlockState, above: BlockState, below: BlockState): Boolean {
+        return blockState.isAir && above.isAir && !below.isAir
     }
+
+    private val roofTopByColumn = hashMapOf<Long, Int>()
+    private val terrainSurfaceByColumn = hashMapOf<Long, Int>()
 
     /**
      * Checks whether this [blockPos] has a roof, i.e. there is a block above it.
@@ -239,20 +295,62 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
      * @return True if there is a block above it, false otherwise.
      */
     private fun hasRoof(blockPos: BlockPos): Boolean {
-        var tmpBlockPos = BlockPos.MutableBlockPos(blockPos.x, blockPos.y, blockPos.z)
+        val columnKey = columnKey(blockPos.x, blockPos.z)
+        val terrainY = getTerrainSurfaceY(columnKey, blockPos)
+        if (terrainY == Int.MIN_VALUE || blockPos.y >= terrainY) {
+            return false
+        }
+
+        val cachedTop = roofTopByColumn[columnKey]
+        if (cachedTop != null) {
+            return cachedTop >= blockPos.y
+        }
+
+        val tmpBlockPos = BlockPos.MutableBlockPos(blockPos.x, 0, blockPos.z)
         try {
-            val maxY = world.getChunk(blockPos).maxY
-            while (tmpBlockPos.y < maxY) {
-                val blockState1 = world.getBlockState(tmpBlockPos)
-                if (!blockState1.isAir && blockState1.block !is LeavesBlock) {
+            for (y in terrainY downTo blockPos.y) {
+                tmpBlockPos.setY(y)
+                val blockState = world.getBlockState(tmpBlockPos)
+                if (isRoofCandidate(blockState)) {
+                    roofTopByColumn[columnKey] = y
                     return true
                 }
-                tmpBlockPos = tmpBlockPos.above().mutable()
             }
-        } catch (exception: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             GavinsMod.LOGGER.error("Error for checking roof, blockPos: $blockPos")
         }
+        roofTopByColumn[columnKey] = Int.MIN_VALUE
         return false
+    }
+
+    private fun getTerrainSurfaceY(columnKey: Long, blockPos: BlockPos): Int {
+        val cachedSurface = terrainSurfaceByColumn[columnKey]
+        if (cachedSurface != null) {
+            return cachedSurface
+        }
+
+        val chunk = world.getChunk(blockPos)
+        val localX = blockPos.x and 15
+        val localZ = blockPos.z and 15
+
+        // WORLD_SURFACE_WG tracks terrain-generation height and excludes later placed structures/features.
+        val terrainY = chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, localX, localZ)
+        terrainSurfaceByColumn[columnKey] = terrainY
+        return terrainY
+    }
+
+    private fun isRoofCandidate(blockState: BlockState): Boolean {
+        return !blockState.isAir &&
+            blockState.fluidState.isEmpty &&
+            blockState.block !is LeavesBlock &&
+            blockState.block !is SnowLayerBlock &&
+            !blockState.`is`(BlockTags.LOGS) &&
+            !blockState.`is`(Blocks.SNOW_BLOCK) &&
+            !blockState.`is`(Blocks.POWDER_SNOW)
+    }
+
+    private fun columnKey(x: Int, z: Int): Long {
+        return (x.toLong() shl 32) xor (z.toLong() and 0xffffffffL)
     }
 }
 
@@ -270,3 +368,11 @@ enum class SearchType {
      */
     Tunnel
 }
+
+enum class CaveBlockRenderDistance(val maxDistance: Double?) {
+    BLOCKS_50(50.0),
+    BLOCKS_100(100.0),
+    BLOCKS_150(150.0),
+    UNLIMITED(null),
+}
+

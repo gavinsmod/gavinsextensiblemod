@@ -40,7 +40,6 @@ import com.peasenet.util.listeners.WorldRenderListener
 import com.mojang.blaze3d.vertex.PoseStack
 import com.peasenet.util.GemRenderLayers
 import com.peasenet.util.GemRenderSource
-import com.peasenet.util.RenderUtils
 import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.chunk.ChunkAccess
 import org.lwjgl.opengl.GL11
@@ -94,26 +93,65 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
      */
     open fun chunkInRenderDistance(chunk: GavChunk): Boolean = false
 
+    /**
+     * Maximum block distance from the player to render.
+     * Return null to disable per-block distance culling.
+     */
+    open fun maxBlockRenderDistance(): Double? = null
+
+    /**
+     * Per-block render filter evaluated on the render thread.
+     */
+    open fun shouldRenderBlock(block: GavBlock, partialTicks: Float): Boolean = true
+
     override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
-        // TODO: MC 1.21.10 update
-        matrixStack.pushPose()
+        if (chunks.isEmpty()) return
+
+        val settings = getSettings()
+        val blockColor = settings.blockColor
+        val alpha = settings.alpha
+        val structureEsp = settings.structureEsp
+        val blockTracer = settings.blockTracer
+        val maxBlockRenderDistance = maxBlockRenderDistance()
+        val blockRenderFilter: (GavBlock) -> Boolean = { block -> shouldRenderBlock(block, partialTicks) }
+
         synchronized(chunks) {
             if (chunks.isEmpty()) return
-            GL11.glDisable(GL11.GL_DEPTH_TEST)
-            val bufferSource = GemRenderSource()
-            val buffer = bufferSource.getBuffer(GemRenderLayers.LINES)
-            chunks.values.filter { chunkInRenderDistance(it) }.toMutableList().forEach {
-                it.render(
+            renderChunkSnapshot.clear()
+            renderChunkSnapshot.addAll(chunks.values)
+        }
+
+        matrixStack.pushPose()
+        GL11.glDisable(GL11.GL_DEPTH_TEST)
+        try {
+            var bufferSource: GemRenderSource? = null
+            var buffer: com.mojang.blaze3d.vertex.VertexConsumer? = null
+            var bufferCreated = false
+
+            for (chunk in renderChunkSnapshot) {
+                if (!chunkInRenderDistance(chunk)) continue
+                if (!bufferCreated) {
+                    bufferSource = GemRenderSource()
+                    buffer = bufferSource.getBuffer(GemRenderLayers.LINES)
+                    bufferCreated = true
+                }
+                chunk.render(
                     matrixStack,
-                    getSettings().blockColor,
+                    blockColor,
                     partialTicks,
-                    getSettings().alpha,
-                    getSettings().structureEsp,
-                    getSettings().blockTracer,
-                    buffer
+                    alpha,
+                    structureEsp,
+                    blockTracer,
+                    buffer!!,
+                    maxBlockRenderDistance,
+                    blockRenderFilter,
                 )
             }
-            bufferSource.uploadAndDraw()
+
+            if (bufferCreated) {
+                bufferSource?.uploadAndDraw()
+            }
+        } finally {
             GL11.glEnable(GL11.GL_DEPTH_TEST)
             matrixStack.popPose()
         }
@@ -148,7 +186,7 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
             } else {
                 chunks.remove(searchedChunk.key)
             }
-            updateNeighborChunks(searchedChunk.chunkPos)
+//            updateNeighborChunks(searchedChunk.chunkPos)
         }
     }
 
@@ -172,12 +210,10 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
             chunks[key] = gavChunk
             espChunk = gavChunk
         }
-        if (addBlock)
-            espChunk.addBlock(gavBlock)
-        else
-            espChunk.removeBlock(gavBlock)
+        if (addBlock) espChunk.addBlock(gavBlock)
+        else espChunk.removeBlock(gavBlock)
         espChunk.updateBlockNeighbors(gavBlock)
-        updateNeighborChunks(chunkPos)
+//        updateNeighborChunks(chunkPos)
     }
 
     /**
@@ -206,4 +242,5 @@ abstract class BlockEsp<T : IBlockEspTracerConfig>(
     }
 
     val chunks = HashMap<Int, GavChunk>()
+    private val renderChunkSnapshot = ArrayList<GavChunk>()
 }

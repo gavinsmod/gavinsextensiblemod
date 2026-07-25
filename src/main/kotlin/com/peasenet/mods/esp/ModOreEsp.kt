@@ -144,23 +144,45 @@ class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.esp.ore", "oreesp") {
     }
 
     override fun onRender(matrixStack: PoseStack, partialTicks: Float) {
+        if (chunks.isEmpty()) return
+
+        val settings = getSettings()
+        val alpha = settings.alpha
+        val structureEsp = settings.structureEsp
+
         synchronized(chunks) {
-            GL11.glDisable(GL11.GL_DEPTH_TEST)
-            val bufferSource = GemRenderSource()
-            val buffer = bufferSource.getBuffer(GemRenderLayers.LINES)
-            chunks.values.filter { chunkInRenderDistance(it) }.forEach {
-                it.render(
+            if (chunks.isEmpty()) return
+            renderChunkSnapshot.clear()
+            renderChunkSnapshot.addAll(chunks.values)
+        }
+
+        matrixStack.pushPose()
+        GL11.glDisable(GL11.GL_DEPTH_TEST)
+        try {
+            var bufferSource: GemRenderSource? = null
+            var buffer: com.mojang.blaze3d.vertex.VertexConsumer? = null
+
+            for (chunk in renderChunkSnapshot) {
+                if (!chunkInRenderDistance(chunk)) continue
+                if (bufferSource == null) {
+                    bufferSource = GemRenderSource()
+                    buffer = bufferSource.getBuffer(GemRenderLayers.LINES)
+                }
+                chunk.render(
                     matrixStack,
                     Colors.RED_ORANGE,
                     partialTicks,
-                    getSettings().alpha,
-                    getSettings().structureEsp,
+                    alpha,
+                    structureEsp,
                     blockTracer = false,
-                    buffer
+                    buffer = buffer!!
                 )
             }
-            bufferSource.uploadAndDraw()
+
+            bufferSource?.uploadAndDraw()
+        } finally {
             GL11.glEnable(GL11.GL_DEPTH_TEST)
+            matrixStack.popPose()
         }
     }
 
@@ -344,7 +366,7 @@ class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.esp.ore", "oreesp") {
     }
 
     override fun chunkInRenderDistance(chunk: GavChunk): Boolean {
-        return chunk.inRenderDistance(RenderUtils.getRenderDistance() / 2)
+        return chunk.inRenderDistance(RenderUtils.getRenderDistance() / 4)
     }
 
     companion object {
@@ -352,4 +374,6 @@ class ModOreEsp : BlockEsp<OreEspConfig>("gavinsmod.mod.esp.ore", "oreesp") {
             Mods.getMod<ModOreEsp>(ChatCommand.OreEsp).reload()
         }
     }
+
+    private val renderChunkSnapshot = ArrayList<GavChunk>()
 }

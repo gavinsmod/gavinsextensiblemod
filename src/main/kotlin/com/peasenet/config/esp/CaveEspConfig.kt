@@ -29,6 +29,7 @@ import com.peasenet.config.Config
 import com.peasenet.config.commons.IBlockEspTracerConfig
 import com.peasenet.gavui.color.Color
 import com.peasenet.gavui.color.Colors
+import com.peasenet.mods.esp.CaveBlockRenderDistance
 import com.peasenet.mods.esp.SearchType
 
 /**
@@ -64,6 +65,24 @@ class CaveEspConfig() : Config<CaveEspConfig>(), IBlockEspTracerConfig {
      * What [SearchType] to use.
      */
     var searchMode: SearchType = SearchType.Caves
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    /**
+     * Per-block render distance filter for Cave ESP.
+     */
+    var blockRenderDistance: CaveBlockRenderDistance = CaveBlockRenderDistance.BLOCKS_100
+        set(value) {
+            field = value
+            saveConfig()
+        }
+
+    /**
+     * When enabled, cave blocks directly visible to the player are not rendered.
+     */
+    var hideVisibleBlocks: Boolean = true
         set(value) {
             field = value
             saveConfig()

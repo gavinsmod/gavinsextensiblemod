@@ -27,14 +27,11 @@ package com.peasenet.util.block
 import com.peasenet.extensions.add
 import com.peasenet.extensions.and
 import com.peasenet.extensions.nand
-import com.peasenet.extensions.toVec3d
 import com.peasenet.gavui.color.Color
 import com.peasenet.util.RenderUtils
-import com.peasenet.util.RenderUtils.getCameraPos
 import com.mojang.blaze3d.vertex.PoseStack
 import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.core.BlockPos
-import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.Vec3
 
 /**
@@ -165,20 +162,20 @@ class GavBlock(
      */
     private fun renderEdges(
         edges: Int,
-        blockPos: Vec3,
+        cameraRelativePos: Vec3,
         matrixStack: PoseStack,
         color: Color,
         alpha: Float,
         buffer: VertexConsumer,
     ) {
-        if (edges and Edge.All == Edge.All.mask) {
-            renderEdge(Edge.All, blockPos, matrixStack, color, alpha, buffer)
+        if (edges == Edge.All.mask) {
+            renderAllEdges(cameraRelativePos, matrixStack, color, alpha, buffer)
             return
         }
-        Edge.entries.filter { it != Edge.All && it != Edge.None }.forEach { edge ->
+        for (edge in RENDERABLE_EDGES) {
             val maskedVal = edges and edge
             if (maskedVal != 0) {
-                renderEdge(edge, blockPos, matrixStack, color, alpha, buffer)
+                renderEdge(edge, cameraRelativePos, matrixStack, color, alpha, buffer)
             }
         }
     }
@@ -194,25 +191,24 @@ class GavBlock(
      */
     private fun renderEdge(
         edge: Edge,
-        blockPos: Vec3,
+        cameraRelativePos: Vec3,
         matrixStack: PoseStack,
         color: Color,
         alpha: Float,
         buffer: VertexConsumer,
     ) {
-        val startPos = blockPos.add((getCameraPos().reverse()))
         when (edge) {
             Edge.Edge1 -> {
                 RenderUtils.drawSingleLineOptimized(
-                    matrixStack, startPos, startPos.add(0, 0, 1), color, alpha, buffer
+                    matrixStack, cameraRelativePos, cameraRelativePos.add(0, 0, 1), color, alpha, buffer
                 )
             }
 
             Edge.Edge2 -> {
                 RenderUtils.drawSingleLineOptimized(
                     matrixStack,
-                    startPos.add(0, 0, 1),
-                    startPos.add(1, 0, 1),
+                    cameraRelativePos.add(0, 0, 1),
+                    cameraRelativePos.add(1, 0, 1),
                     color,
                     alpha,
                     buffer
@@ -221,15 +217,15 @@ class GavBlock(
 
             Edge.Edge3 -> {
                 RenderUtils.drawSingleLineOptimized(
-                    matrixStack, startPos.add(1, 0, 1), startPos.add(1, 0, 0), color, alpha,buffer
+                    matrixStack, cameraRelativePos.add(1, 0, 1), cameraRelativePos.add(1, 0, 0), color, alpha,buffer
                 )
             }
 
             Edge.Edge4 -> {
                 RenderUtils.drawSingleLineOptimized(
                     matrixStack,
-                    startPos.add(1, 0, 0),
-                    startPos.add(0, 0, 0),
+                    cameraRelativePos.add(1, 0, 0),
+                    cameraRelativePos.add(0, 0, 0),
                     color,
                     alpha,
                     buffer,
@@ -239,8 +235,8 @@ class GavBlock(
             Edge.Edge5 -> {
                 RenderUtils.drawSingleLineOptimized(
                     matrixStack,
-                    startPos,
-                    startPos.add(0, 1, 0),
+                    cameraRelativePos,
+                    cameraRelativePos.add(0, 1, 0),
                     color,
                     alpha,
                     buffer,
@@ -250,8 +246,8 @@ class GavBlock(
             Edge.Edge6 -> {
                 RenderUtils.drawSingleLineOptimized(
                     matrixStack,
-                    startPos.add(0, 0, 1),
-                    startPos.add(0, 1, 1),
+                    cameraRelativePos.add(0, 0, 1),
+                    cameraRelativePos.add(0, 1, 1),
                     color,
                     alpha,
                     buffer,
@@ -261,8 +257,8 @@ class GavBlock(
             Edge.Edge7 -> {
                 RenderUtils.drawSingleLineOptimized(
                     matrixStack,
-                    startPos.add(1, 0, 1),
-                    startPos.add(1, 1, 1),
+                    cameraRelativePos.add(1, 0, 1),
+                    cameraRelativePos.add(1, 1, 1),
                     color,
                     alpha,
                     buffer,
@@ -272,8 +268,8 @@ class GavBlock(
             Edge.Edge8 -> {
                 RenderUtils.drawSingleLineOptimized(
                     matrixStack,
-                    startPos.add(1, 0, 0),
-                    startPos.add(1, 1, 0),
+                    cameraRelativePos.add(1, 0, 0),
+                    cameraRelativePos.add(1, 1, 0),
                     color,
                     alpha,
                     buffer,
@@ -283,8 +279,8 @@ class GavBlock(
             Edge.Edge9 -> {
                 RenderUtils.drawSingleLineOptimized(
                     matrixStack,
-                    startPos.add(0, 1, 0),
-                    startPos.add(0, 1, 1),
+                    cameraRelativePos.add(0, 1, 0),
+                    cameraRelativePos.add(0, 1, 1),
                     color,
                     alpha,
                     buffer,
@@ -294,8 +290,8 @@ class GavBlock(
             Edge.Edge10 -> {
                 RenderUtils.drawSingleLineOptimized(
                     matrixStack,
-                    startPos.add(0, 1, 1),
-                    startPos.add(1, 1, 1),
+                    cameraRelativePos.add(0, 1, 1),
+                    cameraRelativePos.add(1, 1, 1),
                     color,
                     alpha,
                     buffer,
@@ -305,8 +301,8 @@ class GavBlock(
             Edge.Edge11 -> {
                 RenderUtils.drawSingleLineOptimized(
                     matrixStack,
-                    startPos.add(1, 1, 1),
-                    startPos.add(1, 1, 0),
+                    cameraRelativePos.add(1, 1, 1),
+                    cameraRelativePos.add(1, 1, 0),
                     color,
                     alpha,
                     buffer,
@@ -316,8 +312,8 @@ class GavBlock(
             Edge.Edge12 -> {
                 RenderUtils.drawSingleLineOptimized(
                     matrixStack,
-                    startPos.add(1, 1, 0),
-                    startPos.add(0, 1, 0),
+                    cameraRelativePos.add(1, 1, 0),
+                    cameraRelativePos.add(0, 1, 0),
                     color,
                     alpha,
                     buffer,
@@ -325,13 +321,22 @@ class GavBlock(
             }
 
             Edge.All -> {
-                val bb = AABB(
-                    blockPos.x + 1, blockPos.y, blockPos.z + 1, blockPos.x, blockPos.y + 1.0, blockPos.z
-                )
-                RenderUtils.drawOutlinedBoxOptimized(bb, matrixStack, color, alpha, buffer)
+                renderAllEdges(cameraRelativePos, matrixStack, color, alpha, buffer)
             }
 
             Edge.None -> {}
+        }
+    }
+
+    private fun renderAllEdges(
+        cameraRelativePos: Vec3,
+        matrixStack: PoseStack,
+        color: Color,
+        alpha: Float,
+        buffer: VertexConsumer,
+    ) {
+        for (edge in RENDERABLE_EDGES) {
+            renderEdge(edge, cameraRelativePos, matrixStack, color, alpha, buffer)
         }
     }
 
@@ -352,22 +357,40 @@ class GavBlock(
         structureEsp: Boolean = false,
         tracers: Boolean = false,
         buffer: VertexConsumer,
+        cameraPos: Vec3? = null,
+        tracerStart: Vec3? = null,
     ) {
 
         val colorToRender = this.color ?: color
-        matrixStack.pushPose()
-        val offsetPos = pos.toVec3d()
-        if (structureEsp) renderEdges(visibleEdges, offsetPos, matrixStack, colorToRender, alpha, buffer)
-        else renderEdges(Edge.All.mask, offsetPos, matrixStack, colorToRender, alpha, buffer)
+        val frameCameraPos = cameraPos ?: RenderUtils.getCameraPos(partialTicks)
+        val cameraRelativePos = Vec3(
+            x.toDouble() - frameCameraPos.x,
+            y.toDouble() - frameCameraPos.y,
+            z.toDouble() - frameCameraPos.z,
+        )
+        if (structureEsp) renderEdges(visibleEdges, cameraRelativePos, matrixStack, colorToRender, alpha, buffer)
+        else renderEdges(Edge.All.mask, cameraRelativePos, matrixStack, colorToRender, alpha, buffer)
         if (tracers) {
-            RenderUtils.drawTracer(
+            val tracerOrigin = tracerStart ?: frameCameraPos.add(RenderUtils.getLookVec())
+            val tracerStartRelative = Vec3(
+                tracerOrigin.x - frameCameraPos.x,
+                tracerOrigin.y - frameCameraPos.y,
+                tracerOrigin.z - frameCameraPos.z,
+            )
+            val tracerEndRelative = Vec3(
+                x + 0.5 - frameCameraPos.x,
+                y + 0.5 - frameCameraPos.y,
+                z + 0.5 - frameCameraPos.z,
+            )
+            RenderUtils.drawSingleLineOptimized(
                 matrixStack,
-                offsetPos.add(0.5, 0.5, 0.5),
-                color,
+                tracerStartRelative,
+                tracerEndRelative,
+                colorToRender,
                 alpha,
+                buffer,
             )
         }
-        matrixStack.popPose()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -378,5 +401,9 @@ class GavBlock(
         if (z != other.z) return false
 
         return true
+    }
+
+    private companion object {
+        val RENDERABLE_EDGES = Edge.entries.filter { it != Edge.All && it != Edge.None }
     }
 }

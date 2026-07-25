@@ -34,9 +34,6 @@ import net.minecraft.core.BlockPos
 import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.levelgen.Heightmap
 import net.minecraft.world.level.chunk.ChunkAccess
-import org.joml.Matrix3x2fStack
-import kotlin.math.abs
-import kotlin.math.sqrt
 
 /**
  * A GavChunk is a chunk that contains a list of GavBlocks used for
@@ -146,30 +143,19 @@ class GavChunk(val chunkPos: ChunkPos) {
      * @return True if the chunk is in the render distance, false otherwise.
      */
     fun inRenderDistance(renderDistance: Int = RenderUtils.getRenderDistance()): Boolean {
-        val currentDistance = this.getRenderDistance()
-        val res = currentDistance <= renderDistance
-        return res
-    }
-
-    /**
-     * Gets the render distance of the chunk.
-     *
-     * @return The render distance of the chunk.
-     */
-    private fun getRenderDistance(): Double {
-        // get the distance from the player to the chunk
-        val playerPos = GavinsModClient.minecraftClient.getPlayer().blockPosition()
-        val chunkPos = this.chunkPos
-        val x = abs(playerPos.x - chunkPos.x.times(16))
-        val z = abs(playerPos.z - chunkPos.z.times(16))
-        return sqrt((x * x + z * z).toDouble()).div(16f)
+        val player = GavinsModClient.minecraftClient.getPlayer()
+        val playerChunk = player.chunkPosition()
+        val dx = playerChunk.x - chunkPos.x
+        val dz = playerChunk.z - chunkPos.z
+        val renderDistanceSquared = renderDistance * renderDistance
+        return (dx * dx + dz * dz) <= renderDistanceSquared
     }
 
     /**
      * Renders the blocks in the chunk.
      *
      * @param matrixStack The matrix stack.
-     * @param bufferBuilder The buffer builder.
+     * @param buffer The line buffer.
      * @param blockColor The color of the block.q
      * @param partialTicks The partial ticks.
      * @param alpha The alpha of the block.
@@ -182,13 +168,43 @@ class GavChunk(val chunkPos: ChunkPos) {
         alpha: Float,
         structureEsp: Boolean = false, blockTracer: Boolean = false,
         buffer: VertexConsumer,
-        ) {
+        maxBlockRenderDistance: Double? = null,
+        blockRenderFilter: ((GavBlock) -> Boolean)? = null,
+    ) {
         synchronized(this) {
-            visibleBlocks.values.forEach { block ->
-                block.render(
-                    matrixStack, blockColor, partialTicks, alpha, structureEsp, blockTracer, buffer
-                )
+            if (visibleBlocks.isEmpty()) return
+            renderBlockSnapshot.clear()
+            renderBlockSnapshot.addAll(visibleBlocks.values)
+        }
+
+        val cameraPos = RenderUtils.getCameraPos(partialTicks)
+        val tracerStart = if (blockTracer) cameraPos.add(RenderUtils.getLookVec()) else null
+        val playerPos = GavinsModClient.minecraftClient.getPlayer().position()
+        val maxBlockDistanceSq = maxBlockRenderDistance?.let { it * it }
+
+        for (block in renderBlockSnapshot) {
+            if (maxBlockDistanceSq != null) {
+                val dx = (block.x + 0.5) - playerPos.x
+                val dy = (block.y + 0.5) - playerPos.y
+                val dz = (block.z + 0.5) - playerPos.z
+                if ((dx * dx + dy * dy + dz * dz) > maxBlockDistanceSq) {
+                    continue
+                }
             }
+            if (blockRenderFilter != null && !blockRenderFilter.invoke(block)) {
+                continue
+            }
+            block.render(
+                matrixStack,
+                blockColor,
+                partialTicks,
+                alpha,
+                structureEsp,
+                blockTracer,
+                buffer,
+                cameraPos,
+                tracerStart,
+            )
         }
     }
 
@@ -221,5 +237,7 @@ class GavChunk(val chunkPos: ChunkPos) {
             return searchChunk
         }
     }
+
+    private val renderBlockSnapshot = ArrayList<GavBlock>()
 }
 

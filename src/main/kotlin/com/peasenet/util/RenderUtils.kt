@@ -569,14 +569,20 @@ object RenderUtils {
         val x2 = end.x.toFloat()
         val y2 = end.y.toFloat()
         val z2 = end.z.toFloat()
-        val normal = Vector3f(x2, y2, z2).sub(Vector3f(x1, y1, z1)).normalize()
+        val dx = x2 - x1
+        val dy = y2 - y1
+        val dz = z2 - z1
+        val length = kotlin.math.sqrt((dx * dx + dy * dy + dz * dz).toDouble()).toFloat().coerceAtLeast(1.0e-6f)
+        val nx = dx / length
+        val ny = dy / length
+        val nz = dz / length
         buffer.addVertex(posMatrix, x1, y1, z1)
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .setNormal(normal.x(), normal.y(), normal.z())
+            .setNormal(nx, ny, nz)
             .setLineWidth(2.0f)
         buffer.addVertex(posMatrix, x2, y2, z2)
             .setColor(color.getRed(), color.getGreen(), color.getBlue(), alpha)
-            .setNormal(normal.x(), normal.y(), normal.z())
+            .setNormal(nx, ny, nz)
             .setLineWidth(2.0f)
 
     }
