@@ -315,6 +315,31 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                         gravity = CROSSBOW_GRAVITY,
                         physicsOrder = PhysicsOrder.POSITION_DRAG_GRAVITY
                     )
+                    if (hasEnchantment(itemStack, Enchantments.MULTISHOT)) {
+
+                        projectileData.add(newProjectileData)
+                        val offset = 10.0
+                        val posOffset = vel.yRot(Math.toRadians(offset).toFloat())
+                        val negOffset = vel.yRot(Math.toRadians(-offset).toFloat())
+                        newProjectileData = ProjectileData(
+                            velocity = posOffset,
+                            offset = CROSSBOW_OFFSET,
+                            position = position,
+                            color = getConfig().crossbowTrajectoryColor,
+                            gravity = CROSSBOW_GRAVITY,
+                            physicsOrder = PhysicsOrder.POSITION_DRAG_GRAVITY
+                        )
+                        projectileData.add(newProjectileData)
+                        newProjectileData = ProjectileData(
+                            velocity = negOffset,
+                            offset = CROSSBOW_OFFSET,
+                            position = position,
+                            color = getConfig().crossbowTrajectoryColor,
+                            gravity = CROSSBOW_GRAVITY,
+                            physicsOrder = PhysicsOrder.POSITION_DRAG_GRAVITY
+                        )
+                        projectileData.add(newProjectileData)
+                    }
                 } else {
                     return emptyList()
                 }
@@ -587,6 +612,17 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
         event.scale = clampedScale.toFloat()
         event.textToDraw = "${String.format("%.1f", impactDistance)}m"
         event.backgroundColor = Colors.BLACK
+    }
+
+    private fun hasEnchantment(stack: ItemStack, enchantment: ResourceKey<Enchantment>): Boolean {
+        try {
+            val reg = client.getPlayer().level().registryAccess()
+                .lookupOrThrow(Registries.ENCHANTMENT)
+            val enchantmentEntry = reg.getOrThrow(enchantment)
+            return EnchantmentHelper.getItemEnchantmentLevel(enchantmentEntry, stack) > 0
+        } catch (e: IllegalStateException) {
+            return false
+        }
     }
 
 
