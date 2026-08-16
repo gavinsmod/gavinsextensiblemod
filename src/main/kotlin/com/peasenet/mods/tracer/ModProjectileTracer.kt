@@ -21,15 +21,21 @@ import com.peasenet.util.listeners.LevelRenderEndEventListener
 import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
 import net.minecraft.client.player.LocalPlayer
+import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Style
+import net.minecraft.resources.ResourceKey
 import net.minecraft.util.Mth
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.ExperienceOrb
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.projectile.Projectile
+import net.minecraft.world.entity.projectile.ProjectileUtil
 import net.minecraft.world.item.*
+import net.minecraft.world.item.enchantment.Enchantment
+import net.minecraft.world.item.enchantment.EnchantmentHelper
+import net.minecraft.world.item.enchantment.Enchantments
 import net.minecraft.world.level.ClipContext
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.HitResult
@@ -97,6 +103,8 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
             return
         }
 
+        impactPos = null
+
         val eyePos = Minecraft.getInstance().player!!.getEyePosition(partialTicks)
         GL11.glDisable(GL11.GL_DEPTH_TEST)
         val bufferSource = GemRenderSource()
@@ -116,13 +124,18 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                     eyePos,
                 )
             }
+            if (impactData.missEntity()) {
+                impactPos = impactData.hitPosition ?: impactData.impact!!.location
+            }
             if (impactData.missEntity() && config.showImpact) {
-                impactPos = impactData.impact!!.location
                 renderImpact(matrixStack, config.impactColor, config.impactAlpha)
             }
-            if (impactData.hitEntity() && config.showHitEntity) {
+            if (impactData.hitEntity()) {
                 val lerped = RenderUtils.getLerpedBox(impactData.hitEntity!!, partialTicks)
-                impactPos = lerped.center
+                impactPos = impactData.hitPosition ?: lerped.center
+                if (!config.showHitEntity) {
+                    continue
+                }
                 renderEntityHit(
                     lerped,
                     matrixStack,
@@ -180,7 +193,7 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
      * @param impactAlpha The alpha (transparency) of the impact marker.
      */
     fun renderImpact(matrixStack: PoseStack, impactColor: Color, impactAlpha: Float) {
-        val box = AABB(impactPos!!, impactPos!!).inflate(ENTITY_AABB_SCALE)
+        val box = AABB(impactPos!!, impactPos!!).inflate(0.1)
         RenderUtils.drawLinedBox(
             box, matrixStack, impactColor, alpha = impactAlpha
         )
@@ -466,7 +479,8 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
         var velocity = projectileData.velocity.add(client.getPlayer().deltaMovement)
         var entityHitPos: Vec3? = null
         var newPos = projectilePosition
-        for (i in 0..MAX_TRAJECTORY_POINTS) {
+        var step = 0
+        while (step <= MAX_TRAJECTORY_POINTS) {
             trajectoryPoints.add(newPos)
             // for all physics orders, start with the order in projectileData, then apply the other two in order.
             when (projectileData.physicsOrder) {
@@ -488,27 +502,16 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                     newPos = newPos.add(velocity)
                 }
             }
-            val box = AABB(prevPos, newPos).deflate(0.5)
-            val entities: List<Entity?>? = client.getWorld().getEntitiesOfClass(
-                Entity::class.java, box
-            ) { e -> !e.isSpectator && e.isAlive && (e !is Projectile) && (e !is ItemEntity) && (e !is ExperienceOrb) && (e !is EnderDragon) && (e !is LocalPlayer) }
-            var closest = Double.MAX_VALUE
-            var closestEntity: Entity? = null
-            for (entity in entities!!) {
-                assert(entity != null)
-                val entityBox = entity!!.boundingBox.deflate(ENTITY_AABB_SCALE)
-                val raycastHit = entityBox?.clip(prevPos, newPos)
-
-                if (raycastHit?.isPresent ?: false) {
-                    val distance = prevPos.distanceTo(raycastHit.get())
-                    if (distance < closest) {
-                        entityHitPos = raycastHit.get()
-                        closestEntity = entity
-                        closest = distance
-                        hasHit = true
-                    }
-                }
-            }
+            val box = AABB(prevPos, newPos).inflate(ENTITY_SEARCH_PADDING)
+            val entityHitResult = ProjectileUtil.getEntityHitResult(
+                client.getPlayer(),
+                prevPos,
+                newPos,
+                box,
+                { e -> !e.isSpectator && e.isAlive && (e !is Projectile) && (e !is ItemEntity) && (e !is ExperienceOrb) && (e !is EnderDragon) && (e !is LocalPlayer) },
+                Double.MAX_VALUE
+            )
+            val closestDistanceSqr = entityHitResult?.location?.let { prevPos.distanceToSqr(it) } ?: Double.MAX_VALUE
             val waterHitResult = client.getWorld().clip(
                 ClipContext(
                     prevPos,
@@ -532,28 +535,32 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                 drag = projectileData.waterDrag
             }
 
-            if (hitResult.type != HitResult.Type.MISS && prevPos.distanceToSqr(hitResult.location) < closest) {
+            if (hitResult.type != HitResult.Type.MISS && prevPos.distanceToSqr(hitResult.location) < closestDistanceSqr) {
                 newPos = hitResult.location
                 hasHit = true
                 impact = hitResult
+                entityHitPos = hitResult.location
                 trajectoryPoints.add(newPos)
                 break
             }
 
-            if (entityHitPos != null) {
-                newPos = entityHitPos
-                hitEntity = closestEntity
+            if (entityHitResult != null) {
+                newPos = entityHitResult.location
+                hitEntity = entityHitResult.entity
                 hasHit = true
+                entityHitPos = entityHitResult.location
                 trajectoryPoints.add(newPos)
                 break
             }
 
             prevPos = newPos
+            step++
         }
         return ImpactData(
             trajectoryPoints,
             impact,
             hitEntity,
+            entityHitPos,
             hasHit,
         )
 
@@ -651,7 +658,7 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
         const val TRIDENT_SCALE = 2.75
         const val TRIDENT_GRAVITY = 0.05
 
-        const val ENTITY_AABB_SCALE = 0.1
+        const val ENTITY_SEARCH_PADDING = 1.0
         const val MAX_TRAJECTORY_POINTS = 200
 
         fun getConfig(): ProjectileTracerConfig {

@@ -15,6 +15,7 @@ data class ImpactData(
     val trajectoryPoints: List<Vec3>,
     val impact: HitResult?,
     val hitEntity: Entity?,
+    val hitPosition: Vec3?,
     private val hasHit: Boolean,
 ) {
     fun hitEntity(): Boolean {
