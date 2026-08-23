@@ -55,6 +55,22 @@ class XrayConfig : BlockListConfig<XrayConfig>({ it is DropExperienceBlock }) {
                 saveConfig()
         }
 
+    /**
+     * Gamma scale value (0.0–1.0).  Maps to an actual gamma of [1.0 + 15.0 * gamma],
+     * so the default of 1.0 produces the original max-gamma of 16.0.
+     */
+    var gamma: Float = 1.0f
+        set(value) {
+            field = value
+            if (!readMode)
+                saveConfig()
+        }
+
+    /**
+     * Returns the actual Minecraft gamma value that x-ray should target.
+     */
+    fun maxGamma(): Float = 1.0f + 15.0f * gamma
+
     init {
         key = "xray"
     }
@@ -78,6 +94,8 @@ class XrayConfigGsonAdapter : TypeAdapter<XrayConfig>() {
         out?.value(value?.blockCulling)
         out?.name("showLiquids")
         out?.value(value?.showLiquids)
+        out?.name("gamma")
+        out?.value(value?.gamma)
         out?.endObject()
     }
 
@@ -106,6 +124,10 @@ class XrayConfigGsonAdapter : TypeAdapter<XrayConfig>() {
 
                 "showLiquids" -> {
                     config.showLiquids = reader.nextBoolean()
+                }
+
+                "gamma" -> {
+                    config.gamma = reader.nextDouble().toFloat()
                 }
             }
         }

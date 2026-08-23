@@ -25,6 +25,8 @@ package com.peasenet.config.render
 
 import com.peasenet.config.Config
 import com.peasenet.main.Mods
+import com.peasenet.main.Settings
+import com.peasenet.util.ChatCommand
 
 /**
  * Configuration file for fullbright.
@@ -52,7 +54,10 @@ open class FullbrightConfig : Config<FullbrightConfig>() {
         key = "fullbright"
     }
 
-    fun maxGamma(): Float  {
-        return if (Mods.isActive("xray")) 16F else 1 + 15 * gamma
+    fun maxGamma(): Float {
+        if (Mods.isActive(ChatCommand.Xray)) {
+            return Settings.getConfig<XrayConfig>(ChatCommand.Xray).maxGamma()
+        }
+        return 1 + 15 * gamma
     }
 }

@@ -24,9 +24,8 @@
 package com.peasenet.mods.render
 
 import com.peasenet.config.render.XrayConfig
-import com.peasenet.gavui.util.Direction
-import com.peasenet.gui.mod.render.GuiXray
-import com.peasenet.main.GavinsMod
+import com.peasenet.gui.mod.render.GuiXraySettings
+import com.peasenet.main.Mods
 import com.peasenet.main.Settings
 import com.peasenet.util.ChatCommand
 import com.peasenet.util.RenderUtils
@@ -37,40 +36,22 @@ import com.peasenet.util.listeners.BlockEntityRenderListener
 import com.peasenet.util.listeners.ShouldDrawSideListener
 import com.peasenet.util.listeners.TessellateBlockListener
 import net.minecraft.world.level.block.state.BlockState
-import net.minecraft.client.Minecraft
 
 /**
  * @author GT3CH1
- * @version 01-15-2025
+ * @version 08-16-2026
  * A mod for xray like feature, allowing the player to see through certain blocks.
  */
 class ModXray : RenderMod(
     "gavinsmod.mod.render.xray",
     "xray"
 ), ShouldDrawSideListener, TessellateBlockListener, BlockEntityRenderListener {
+
     init {
-        subSettings {
+        clickSetting {
             title = translationKey
-            direction = Direction.RIGHT
-            toggleSetting {
-                title = "gavinsmod.settings.xray.culling"
-                callback = {
-                    Settings.getConfig<XrayConfig>("xray").blockCulling = it.state
-                    if (isActive) client.reloadRenderer()
-                }
-            }
-            toggleSetting {
-                title = "gavinsmod.settings.xray.liquids"
-                callback = {
-                    Settings.getConfig<XrayConfig>("xray").showLiquids = it.state
-                    if (isActive) client.reloadRenderer()
-                }
-            }
-            clickSetting {
-                title = "gavinsmod.settings.xray.blocks"
-                callback = {
-                    Minecraft.getInstance().setScreenAndShow(GuiXray())
-                }
+            callback = {
+                client.setScreen(GuiXraySettings())
             }
         }
     }
@@ -90,26 +71,29 @@ class ModXray : RenderMod(
     }
 
     override fun activate() {
-        client.setChunkCulling(Settings.getConfig<XrayConfig>("xray").blockCulling)
+        client.setChunkCulling(getConfig().blockCulling)
         super.activate()
         client.reloadRenderer()
     }
 
     override fun onTick() {
-        if (isActive && !RenderUtils.isHighGamma) RenderUtils.setHighGamma() else if (!GavinsMod.isEnabled("fullbright") && !RenderUtils.isLastGamma && deactivating) {
+        val targetGamma = getConfig().maxGamma().toDouble()
+        if (isActive && RenderUtils.gamma < targetGamma) {
+            // Persist the player's last-known gamma the first time we boost it.
+            if (RenderUtils.gamma <= 1.0) RenderUtils.setHighGamma()
+            RenderUtils.gamma = targetGamma
+        } else if (!Mods.isActive(ChatCommand.FullBright) && !RenderUtils.isLastGamma && deactivating) {
             RenderUtils.setLowGamma()
             deactivating = !RenderUtils.isLastGamma
         }
     }
 
     override fun deactivate() {
-        // check if full bright is disabled, if it is, reset gamma back to LAST_GAMMA
-        if (!GavinsMod.isEnabled(ChatCommand.FullBright))
+        if (!Mods.isActive(ChatCommand.FullBright))
             RenderUtils.setLowGamma()
         client.setChunkCulling(true)
         client.reloadRenderer()
         deactivating = true
-        RenderUtils.gamma = 4.0
         super.deactivate()
     }
 
@@ -127,14 +111,10 @@ class ModXray : RenderMod(
     }
 
     companion object {
-        /**
-         * Checks if a block is visible
-         *
-         * @param block Block to check
-         * @return True if visible, false if not
-         */
         fun shouldDrawFace(block: BlockState): Boolean {
             return Settings.getConfig<XrayConfig>("xray").isInList(block.block)
         }
+
+        fun getConfig(): XrayConfig = Settings.getConfig("xray")
     }
 }
