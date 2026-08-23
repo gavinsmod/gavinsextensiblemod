@@ -605,7 +605,6 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
             return
         }
         val distanceToPlayer = er.entity.distanceTo(client.getPlayer())
-        // format as "distance: 10.0m" in red
         val style = Style.EMPTY.withColor(ChatFormatting.WHITE)
         val distanceFormat = String.format("%.1fm", distanceToPlayer)
         val text = Component.empty().append(Component.literal(distanceFormat)).withStyle(style)
@@ -619,16 +618,14 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
         }
         event.targetVec = impactPos!!
         val impactDistance = event.targetVec.distanceTo(client.getPlayer().getEyePosition(0.0f))
-        // scale from 1/16 to 1/8 based on distance, with a max of 1/8
         val scale = (1 / 32f) + (impactDistance / 100f)
         val clampedScale = if (scale > 1 / 8f) 1 / 8f else scale
-        // scale y offset between 0.5 and 1.0 based on distance, with a max of 1.0
         val yOffset = (0.25 + impactDistance / 10f).coerceIn(0.5, 2.0)
         event.targetVec = event.targetVec.add(0.0, yOffset, 0.0)
-
-        event.scale = clampedScale.toFloat()
+        event.scale = clampedScale.toFloat() * 0.25f
         event.textToDraw = "${String.format("%.1f", impactDistance)}m"
-        event.backgroundColor = Colors.BLACK
+        event.outlineColor = getConfig().impactDistanceOutline.withAlpha(getConfig().impactDistanceAlpha)
+        event.textColor = getConfig().impactDistanceColor.withAlpha(getConfig().impactDistanceAlpha)
     }
 
     private fun hasEnchantment(stack: ItemStack, enchantment: ResourceKey<Enchantment>): Boolean {

@@ -86,11 +86,9 @@ class GavinsModClient : ClientModInitializer {
             val target = eventData.targetVec
             val camera = minecraftClient.gameRenderer.mainCamera
             val cameraPos = camera.position().add(RenderUtils.getLookVec())
-            // 3. Extract the pose stack and buffer source
-            val poseStack = context.poseStack() // Formerly context.getMatrices()
+            val poseStack = context.poseStack()
 
             poseStack.pushPose()
-            // Translate relative to the camera position
             val translation = target.subtract(cameraPos)
             poseStack.translate(translation.x, translation.y, translation.z)
             val yaw = camera.yRot()
@@ -99,9 +97,6 @@ class GavinsModClient : ClientModInitializer {
             poseStack.mulPose(Axis.ZP.rotationDegrees(180f))
             poseStack.mulPose(Axis.YP.rotationDegrees(yaw))
             poseStack.mulPose(Axis.XN.rotationDegrees(pitch))
-
-//            poseStack.mulPose(GavinsModClient.minecraftClient.gameRenderer.mainCamera().rotation())
-            // Center the text horizontally
             val text = Component.literal(eventData.textToDraw)
             val textWidth = minecraftClient.textRenderer.width(eventData.textToDraw)
             val xOffset = -textWidth / 2.0f
@@ -114,8 +109,8 @@ class GavinsModClient : ClientModInitializer {
                 eventData.displayMode,
                 eventData.lightCoords,
                 eventData.textColor.asInt,
-               0,
-                0
+               eventData.backgroundColor.asInt,
+                eventData.outlineColor.asInt
             )
             poseStack.popPose()
         }

@@ -19,12 +19,11 @@ import net.minecraft.network.chat.Component
  * @version 07-12-2026
  * @since 07-03-2026 
  */
-class GuiProjectileTracer : GuiElement(Component.translatable("gavinsmod.settings.mobtracer"), 2) {
+class GuiProjectileTracer : GuiElement(Component.translatable("gavinsmod.settings.mobtracer"), 3) {
 
     override fun init() {
 
         val settings = arrayOf<Setting>(
-
             toggleSetting {
                 title = "gavinsmod.settings.projectiletracer.showtrajectory"
                 state = getSettings().showTrajectory
@@ -93,6 +92,29 @@ class GuiProjectileTracer : GuiElement(Component.translatable("gavinsmod.setting
                     getSettings().showImpactDistance = it.state
                 }
             },
+
+            colorSetting {
+                title = "gavinsmod.settings.projectiletracer.distancetextcolor"
+                color = getSettings().impactDistanceColor
+                callback = {
+                    getSettings().impactDistanceColor = it.color
+                }
+            },
+            colorSetting {
+                title = "gavinsmod.settings.projectiletracer.distancetextoutlinecolor"
+                color = getSettings().impactDistanceOutline
+                callback = {
+                    getSettings().impactDistanceOutline = it.color
+                }
+            },
+            slideSetting {
+                title = "gavinsmod.settings.projectiletracer.distancetextalpha"
+                value = getSettings().impactDistanceAlpha
+                callback = {
+                    getSettings().impactDistanceAlpha = it.value
+                }
+            },
+
             toggleSetting {
                 title = "gavinsmod.settings.projectiletracer.showentitydistance"
                 state = getSettings().showEntityDistance
@@ -163,7 +185,6 @@ class GuiProjectileTracer : GuiElement(Component.translatable("gavinsmod.setting
                     getSettings().tridentTrajectoryColor = it.color
                 }
             },
-
 
             cycleSetting {
                 title =

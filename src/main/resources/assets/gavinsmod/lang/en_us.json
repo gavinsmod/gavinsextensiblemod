@@ -219,6 +219,9 @@
   "gavinsmod.settings.projectiletracer.tracerwidth.medium": "Trajectory Width - Medium",
   "gavinsmod.settings.projectiletracer.tracerwidth.large": "Trajectory Width - Large",
   "gavinsmod.settings.projectiletracer.showdistance": "Show Distance",
+  "gavinsmod.settings.projectiletracer.distancetextcolor": "Distance Color",
+  "gavinsmod.settings.projectiletracer.distancetextoutlinecolor": "Distance Outline Color",
+  "gavinsmod.settings.projectiletracer.distancetextalpha": "Distance Alpha",
   "gavinsmod.settings.projectiletracer.showentitydistance": "Show Entity Distance",
 
   "gavinsmod.settings.xray.blocks": "X-Ray Blocks",

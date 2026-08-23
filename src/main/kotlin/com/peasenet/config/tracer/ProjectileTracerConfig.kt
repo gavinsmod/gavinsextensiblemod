@@ -45,6 +45,22 @@ class ProjectileTracerConfig : Config<ProjectileTracerConfig>() {
             saveConfig()
         }
 
+    var impactDistanceColor = Colors.GREEN
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var impactDistanceOutline = Colors.BLACK
+        set(value) {
+            field = value
+            saveConfig()
+        }
+    var impactDistanceAlpha = 0.5f
+        set(value) {
+            field = value.coerceIn(0.0f, 1.0f)
+            saveConfig()
+        }
+
     var showEntityDistance = true
         set(value) {
             field = value

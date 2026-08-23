@@ -35,6 +35,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.input.MouseButtonEvent
+import net.minecraft.client.resources.language.I18n
 import net.minecraft.network.chat.Component
 import java.util.function.Consumer
 
@@ -51,7 +52,7 @@ open class GuiElement(title: Component, columns: Int = 0) :
     private val elementHeight = 11f;
     private val minWidth = 100
     private val heightPadding = 12f;
-    private val widthPadding = 24f;
+    private val widthPadding = 0f;
     private val xPadding = 4f;
 
     private val numColumns = columns.coerceAtLeast(0)
@@ -186,7 +187,8 @@ open class GuiElement(title: Component, columns: Int = 0) :
         val screenHeight = Minecraft.getInstance().window.guiScaledHeight
         var longestWidth = 0f
         for (setting in guis) {
-            val width = Minecraft.getInstance().font.width(setting.title)
+            var translated = I18n.get(setting.title.string)
+            val width = Minecraft.getInstance().font.width(translated)
             if (width > longestWidth) {
                 longestWidth = width.toFloat() + widthPadding
             }
