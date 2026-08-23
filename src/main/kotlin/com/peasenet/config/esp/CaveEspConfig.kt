@@ -49,8 +49,11 @@ class CaveEspConfig() : Config<CaveEspConfig>(), IBlockEspTracerConfig {
             saveConfig()
         }
 
-    @Exclude
     override var structureEsp: Boolean = true
+        set(value) {
+            field = value
+            saveConfig()
+        }
 
     @Exclude
     override var blockTracer: Boolean = false
@@ -81,8 +84,9 @@ class CaveEspConfig() : Config<CaveEspConfig>(), IBlockEspTracerConfig {
 
     /**
      * When enabled, cave blocks directly visible to the player are not rendered.
+     * TODO: This would be cool, but current implementaiton sucks.
      */
-    var hideVisibleBlocks: Boolean = true
+    var hideVisibleBlocks: Boolean = false
         set(value) {
             field = value
             saveConfig()

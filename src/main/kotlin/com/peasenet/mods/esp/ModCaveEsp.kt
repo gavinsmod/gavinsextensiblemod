@@ -94,10 +94,15 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
                 cycleIndex = getSettings().blockRenderDistance.ordinal
                 callback = { updateRenderDistanceMode(it) }
             }
+//            toggleSetting {
+//                title = hideVisibleTranslationKey
+//                state = getSettings().hideVisibleBlocks
+//                callback = { getSettings().hideVisibleBlocks = it.state }
+//            }
             toggleSetting {
-                title = hideVisibleTranslationKey
-                state = getSettings().hideVisibleBlocks
-                callback = { getSettings().hideVisibleBlocks = it.state }
+                title = "gavinsmod.mod.esp.blockesp.structure"
+                state = getSettings().structureEsp
+                callback = { getSettings().structureEsp = it.state }
             }
         }
     }
@@ -122,7 +127,7 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
         em.subscribe(ChunkUpdateListener::class.java, this)
         em.subscribe(RenderListener::class.java, this)
 //        GemExecutor.execute {
-            RenderUtils.getVisibleChunks(chunksToRender).forEach(this::searchChunk)
+        RenderUtils.getVisibleChunks(chunksToRender).forEach(this::searchChunk)
 //        }
         super.onEnable()
     }
@@ -142,20 +147,20 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
         return getSettings().blockColor
     }
 
-    override fun getSettings(): CaveEspConfig = Settings.getConfig("caveesp")
+    override fun getSettings(): CaveEspConfig = Settings.getConfig(ChatCommand.CaveEsp)
 
 
     override fun searchChunk(chunk: ChunkAccess) {
 //        GemExecutor.execute {
-            synchronized(chunk) {
-                GavChunk.search(
-                    chunk
-                ) { pos ->
-                    searchBlock(pos)
-                }.also {
-                    addBlocksFromChunk(it)
-                }
+        synchronized(chunk) {
+            GavChunk.search(
+                chunk
+            ) { pos ->
+                searchBlock(pos)
+            }.also {
+                addBlocksFromChunk(it)
             }
+        }
 //        }
     }
 
@@ -227,15 +232,16 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
         val searchModeName = getSettings().searchMode.name.lowercase()
         searchMode.gui.title = Component.translatable("$searchTranslationKey.$searchModeName")
 //        GemExecutor.execute {
-            val visibleChunks: List<ChunkAccess> = RenderUtils.getVisibleChunks(chunksToRender)
-            visibleChunks.forEach(this::searchChunk)
+        val visibleChunks: List<ChunkAccess> = RenderUtils.getVisibleChunks(chunksToRender)
+        visibleChunks.forEach(this::searchChunk)
 //        }
     }
 
     private fun updateRenderDistanceMode(renderDistanceMode: CycleSetting) {
-        getSettings().blockRenderDistance = CaveBlockRenderDistance.entries.getOrElse(renderDistanceMode.gui.currentIndex) {
-            CaveBlockRenderDistance.BLOCKS_100
-        }
+        getSettings().blockRenderDistance =
+            CaveBlockRenderDistance.entries.getOrElse(renderDistanceMode.gui.currentIndex) {
+                CaveBlockRenderDistance.BLOCKS_100
+            }
         val modeName = getSettings().blockRenderDistance.name.lowercase()
         renderDistanceMode.gui.title = Component.translatable("$renderDistanceTranslationKey.$modeName")
     }
@@ -341,12 +347,12 @@ class ModCaveEsp : BlockEsp<CaveEspConfig>(
 
     private fun isRoofCandidate(blockState: BlockState): Boolean {
         return !blockState.isAir &&
-            blockState.fluidState.isEmpty &&
-            blockState.block !is LeavesBlock &&
-            blockState.block !is SnowLayerBlock &&
-            !blockState.`is`(BlockTags.LOGS) &&
-            !blockState.`is`(Blocks.SNOW_BLOCK) &&
-            !blockState.`is`(Blocks.POWDER_SNOW)
+                blockState.fluidState.isEmpty &&
+                blockState.block !is LeavesBlock &&
+                blockState.block !is SnowLayerBlock &&
+                !blockState.`is`(BlockTags.LOGS) &&
+                !blockState.`is`(Blocks.SNOW_BLOCK) &&
+                !blockState.`is`(Blocks.POWDER_SNOW)
     }
 
     private fun columnKey(x: Int, z: Int): Long {
