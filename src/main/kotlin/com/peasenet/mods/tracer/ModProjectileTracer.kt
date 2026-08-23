@@ -329,29 +329,7 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
                         physicsOrder = PhysicsOrder.POSITION_DRAG_GRAVITY
                     )
                     if (hasEnchantment(itemStack, Enchantments.MULTISHOT)) {
-
-                        projectileData.add(newProjectileData)
-                        val offset = 10.0
-                        val posOffset = vel.yRot(Math.toRadians(offset).toFloat())
-                        val negOffset = vel.yRot(Math.toRadians(-offset).toFloat())
-                        newProjectileData = ProjectileData(
-                            velocity = posOffset,
-                            offset = CROSSBOW_OFFSET,
-                            position = position,
-                            color = getConfig().crossbowTrajectoryColor,
-                            gravity = CROSSBOW_GRAVITY,
-                            physicsOrder = PhysicsOrder.POSITION_DRAG_GRAVITY
-                        )
-                        projectileData.add(newProjectileData)
-                        newProjectileData = ProjectileData(
-                            velocity = negOffset,
-                            offset = CROSSBOW_OFFSET,
-                            position = position,
-                            color = getConfig().crossbowTrajectoryColor,
-                            gravity = CROSSBOW_GRAVITY,
-                            physicsOrder = PhysicsOrder.POSITION_DRAG_GRAVITY
-                        )
-                        projectileData.add(newProjectileData)
+                        newProjectileData = calculateMultishot(projectileData, newProjectileData, vel, position)
                     }
                 } else {
                     return emptyList()
@@ -460,6 +438,38 @@ class ModProjectileTracer : TracerMod<ModProjectileTracer>(
             newProjectileData
         )
         return projectileData
+    }
+
+    private fun calculateMultishot(
+        projectileData: MutableList<ProjectileData>,
+        newProjectileData: ProjectileData,
+        vel: Vec3,
+        position: Vec3,
+    ): ProjectileData {
+        var newProjectileData1 = newProjectileData
+        projectileData.add(newProjectileData1)
+        val offset = 10.0
+        val posOffset = vel.yRot(Math.toRadians(offset).toFloat())
+        val negOffset = vel.yRot(Math.toRadians(-offset).toFloat())
+        newProjectileData1 = ProjectileData(
+            velocity = posOffset,
+            offset = CROSSBOW_OFFSET,
+            position = position,
+            color = getConfig().crossbowTrajectoryColor,
+            gravity = CROSSBOW_GRAVITY,
+            physicsOrder = PhysicsOrder.POSITION_DRAG_GRAVITY
+        )
+        projectileData.add(newProjectileData1)
+        newProjectileData1 = ProjectileData(
+            velocity = negOffset,
+            offset = CROSSBOW_OFFSET,
+            position = position,
+            color = getConfig().crossbowTrajectoryColor,
+            gravity = CROSSBOW_GRAVITY,
+            physicsOrder = PhysicsOrder.POSITION_DRAG_GRAVITY
+        )
+        projectileData.add(newProjectileData1)
+        return newProjectileData1
     }
 
     /**
